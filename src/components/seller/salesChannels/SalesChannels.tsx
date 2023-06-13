@@ -17,7 +17,7 @@ export const SalesChannels: React.FC = () => {
     >
       <SalesChannelCard
         title="Web3 Commerce Store"
-        text="Create your decentralized Web3 commerce store and customise it match your brand's identity."
+        text="Create your decentralized Web3 commerce store and customise it to match your brand's identity."
         to={BosonRoutes.CreateStorefront}
         time="15 min"
       />

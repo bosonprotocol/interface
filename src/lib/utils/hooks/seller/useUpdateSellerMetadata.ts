@@ -25,7 +25,7 @@ type StoreSellerMetadataFn = ReturnType<
 >["mutateAsync"];
 
 export default function useUpdateSellerMetadata() {
-  const { sellers: currentSellers, lens } = useCurrentSellers();
+  const { sellers: currentSellers } = useCurrentSellers();
   const { address = "" } = useAccount();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
   const sellerId = seller?.id;
@@ -94,6 +94,8 @@ async function updateSellerMedatata(
   const cover = values?.coverPicture?.[0];
   const logoImage = getIpfsGatewayUrl(logo?.src || "");
   const coverPicture = getIpfsGatewayUrl(cover?.src || "");
+  const kindUsed = kindOrCurrentKind || ProfileType.REGULAR;
+  const metadataImages = seller.metadata?.images as SellerMetadata["images"];
   const metadataImagesToSave =
     logoImage || coverPicture
       ? [
@@ -120,9 +122,10 @@ async function updateSellerMedatata(
               ]
             : [])
         ]
+      : kindUsed === ProfileType.REGULAR
+      ? metadataImages ?? undefined
       : undefined;
 
-  const kindUsed = kindOrCurrentKind || ProfileType.REGULAR;
   const meta: Parameters<typeof storeSellerMetadata>[0] = {
     ...seller.metadata,
     name: seller.metadata?.name ?? undefined,

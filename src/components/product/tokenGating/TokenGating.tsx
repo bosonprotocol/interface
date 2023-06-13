@@ -159,7 +159,6 @@ export default function TokenGating() {
             <FormField
               title="Token Gating Description:"
               style={{ margin: "1rem 0 0 0" }}
-              tooltip="This offer requires to own at least one NFT of Makersplace collection: https://opensea.io/collection/makersplace"
             >
               <TokengatedTextarea
                 name={`${prefix}tokenGatingDesc`}

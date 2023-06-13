@@ -22,12 +22,12 @@ export const SalesChannelsForm: React.FC<SalesChannelsFormProps> = ({
           name="channels"
           options={[
             {
-              label: "Boson DCL",
-              value: Channels.BosonDCL
+              label: Channels["Boson Boulevard"],
+              value: Channels["Boson Boulevard"]
             },
             {
-              label: "Custom DCL",
-              value: Channels.CustomDCL
+              label: Channels["Own land"],
+              value: Channels["Own land"]
             }
           ]}
           isMulti

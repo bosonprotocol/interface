@@ -86,7 +86,7 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
                     margin="1.5rem 0"
                     color={colors.darkGrey}
                   >
-                    Your own environment
+                    Your own land
                   </Typography>
                 </Grid>
               </Label>

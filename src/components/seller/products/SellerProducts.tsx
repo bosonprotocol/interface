@@ -185,7 +185,7 @@ export default function SellerProducts({
         />
       </>
     );
-  }, [prepareCSVData, selected, refetch, sellerRoles]);
+  }, [prepareCSVData, selected, refetch, sellerRoles, refetchSellers]);
   const anyLoading = isLoading || isLoadingSellers;
   if (anyLoading) {
     return <Loading />;
