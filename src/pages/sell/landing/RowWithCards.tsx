@@ -17,8 +17,7 @@ interface RowWithCardsProps {
 export const RowWithCards: React.FC<RowWithCardsProps> = ({
   children,
   title,
-  subtitle,
-  withTags
+  subtitle
 }) => {
   return (
     <Grid flexDirection="column" alignItems="flex-start">

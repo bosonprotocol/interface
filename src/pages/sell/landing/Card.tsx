@@ -6,7 +6,7 @@ import Typography from "../../../components/ui/Typography";
 import { colors } from "../../../lib/styles/colors";
 
 const StyledGrid = styled(Grid)`
-  background: ${colors.lightGrey};
+  background: ${colors.lightGrey2};
   padding: 1.5rem;
 `;
 

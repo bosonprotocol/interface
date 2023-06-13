@@ -6,10 +6,12 @@ import BosonButton from "../../../components/ui/BosonButton";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { colors } from "../../../lib/styles/colors";
-import { ReactComponent as Decentralized } from "./assets/decentralized.svg";
-import { ReactComponent as Physicals } from "./assets/physicals.svg";
-import { ReactComponent as TokenGated } from "./assets/tokenGated.svg";
-import { ReactComponent as Visual } from "./assets/visual.svg";
+import decentralizedImg from "./assets/decentralized.webp";
+import glassesMonkeyImg from "./assets/glassesMonkey.webp";
+import sneakerImg from "./assets/sneaker.webp";
+import sneakerNftImg from "./assets/sneakerNft.webp";
+import tokenGatedImg from "./assets/tokenGated.webp";
+import visualImg from "./assets/visual.webp";
 import { Card } from "./Card";
 import { RowWithCards } from "./RowWithCards";
 
@@ -26,10 +28,10 @@ const Background = styled.div`
 
 export const SellerLandingPage: React.FC = () => {
   return (
-    <Grid flexDirection="column">
+    <Grid flexDirection="column" padding="5rem 0">
       <Background>
         <LayoutRoot>
-          <Grid>
+          <Grid gap="5rem">
             <Title tag="h1" fontWeight="600" $fontSize="3.5rem">
               Sell physical products as NFTs everywhere
             </Title>
@@ -54,19 +56,18 @@ export const SellerLandingPage: React.FC = () => {
             withTags={["Physical", "Storefront", "Token Gated"]}
           >
             <Card
-              image={<Visual />}
+              image={<img src={visualImg} width="128" height="128" />}
               title="Launch a Metaverse commerce experience"
               subtitle="Sell physical products as NFTs in the metaverse"
-              tags={["Physical"]}
             />
             <Card
-              image={<Decentralized />}
+              image={<img src={decentralizedImg} width="104" height="128" />}
               title="Set-up a decentralized Web3 Commerce store"
               subtitle="Build  and customise your own bespoke store"
               tags={["Storefront"]}
             />
             <Card
-              image={<TokenGated />}
+              image={<img src={tokenGatedImg} width="128" height="128" />}
               title="Enable token-gated dCommerce"
               subtitle="Token-gate your collection and enable exclusive access"
               tags={["Storefront", "Token Gated"]}
@@ -77,17 +78,17 @@ export const SellerLandingPage: React.FC = () => {
             subtitle="Drop physical, phygital, or token gated NFT collections"
           >
             <Card
-              image={<Physicals />}
+              image={<img src={sneakerImg} width="128" height="128" />}
               title="Create Physicals"
               subtitle="Tokenise physical products as an NFT, drop them everywhere"
             />
             <Card
-              image={<Decentralized />}
+              image={<img src={sneakerNftImg} width="128" height="128" />}
               title="Create Phygitals"
               subtitle="Bundle physical products with a digital twin"
             />
             <Card
-              image={<TokenGated />}
+              image={<img src={tokenGatedImg} width="128" height="128" />}
               title="Create token-gated offers"
               subtitle="Token-gate your collection and enable exclusive access"
             />
@@ -97,17 +98,17 @@ export const SellerLandingPage: React.FC = () => {
             subtitle="Sell physical, phygital, or token gates NFTs across  sales channels"
           >
             <Card
-              image={<Visual />}
+              image={<img src={decentralizedImg} width="104" height="128" />}
               title="Set-up a decentralized Web3 Commerce store"
               subtitle="Build  and customise your own bespoke store"
             />
             <Card
-              image={<Decentralized />}
+              image={<img src={visualImg} width="128" height="128" />}
               title="Launch a Metaverse commerce experience"
               subtitle="Sell physical products as NFTs in the metaverse"
             />
             <Card
-              image={<TokenGated />}
+              image={<img src={glassesMonkeyImg} width="128" height="128" />}
               title="Sell on NFT Marketplaces"
               subtitle="Tokenize physical products and drop on NFT marketplaces"
             />
