@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import { useMutation } from "react-query";
 
 import { authTokenTypes } from "../../../../components/modal/components/Profile/Lens/const";
-import { getLensTokenIdDecimal } from "../../../../components/modal/components/Profile/Lens/utils";
 import { useCoreSDK } from "../../useCoreSdk";
 
 type Props = Parameters<typeof updateSellerAccount>[1];
@@ -47,10 +46,8 @@ async function updateSellerAccount(
         : admin,
     authTokenId:
       authTokenType === authTokenTypes.LENS
-        ? getLensTokenIdDecimal(authTokenId || "0x0").toString()
-        : // ? (authTokenId || "0").toString() // in hex
-
-          "0",
+        ? (authTokenId || "0").toString() // in hex with a leading 0x if different from 0
+        : "0",
     authTokenType,
     clerk,
     assistant,
