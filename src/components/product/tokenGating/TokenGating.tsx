@@ -27,8 +27,9 @@ const TokengatedTextarea = styled(Textarea)`
 
 const TokengatedInfoWrapper = styled.div`
   display: grid;
-  grid-template-columns: minmax(8.75rem, 1fr) 4fr;
+  grid-template-columns: minmax(8.75rem, max-content) 4fr;
   grid-gap: 1rem;
+  width: 100%;
 `;
 
 const SymbolInput = styled(Input)`
@@ -54,15 +55,23 @@ export default function TokenGating() {
 
       <FormField
         title="Token gated offer"
-        subTitle="Limit the purchase of your item to users holding a specific token."
+        subTitle="Configure your token gated offer using the fields below"
       >
         <>
           <TokengatedInfoWrapper>
-            <FormField title="Token Type:" style={{ margin: "1rem 0 0 0" }}>
+            <FormField
+              title="Token Type:"
+              style={{ margin: "1rem 0 0 0" }}
+              required
+            >
               <Select name={`${prefix}tokenType`} options={TOKEN_TYPES} />
             </FormField>
 
-            <FormField title="Token Contract" style={{ margin: "1rem 0 0 0" }}>
+            <FormField
+              title="Token Contract"
+              style={{ margin: "1rem 0 0 0", width: "100%" }}
+              required
+            >
               <Input
                 name={`${prefix}tokenContract`}
                 type="string"
@@ -96,8 +105,9 @@ export default function TokenGating() {
             {tokenGating.tokenType?.value === erc721 && (
               <TokengatedInfoWrapper>
                 <FormField
-                  title="Criteria:"
-                  style={{ margin: "1rem 0 0 0", flexBasis: "50px" }}
+                  title="Token gating ownership requirements:"
+                  style={{ margin: "1rem 0 0 0" }}
+                  required
                 >
                   <Select
                     name={`${prefix}tokenCriteria`}
@@ -106,29 +116,30 @@ export default function TokenGating() {
                 </FormField>
                 {tokenGating.tokenCriteria?.value === minBalance ? (
                   <FormField
-                    title="Min Balance:"
+                    title="Minimum balance:"
                     style={{ margin: "1rem 0 0 0" }}
+                    required
                   >
                     <Input name={`${prefix}minBalance`} type="string" />
                   </FormField>
                 ) : (
-                  <FormField title="TokenId:" style={{ margin: "1rem 0 0 0" }}>
+                  <FormField title="Token ID:" style={{ margin: "1rem 0 0 0" }}>
                     <Input name={`${prefix}tokenId`} type="string" />
                   </FormField>
                 )}
               </TokengatedInfoWrapper>
             )}
 
-            {(tokenGating.tokenType?.value === erc20 ||
-              tokenGating.tokenType?.value === erc1155) && (
+            {tokenGating.tokenType?.value === erc20 && (
               <Grid gap="1rem" alignItems="flex-start">
                 <FormField
-                  title="Min Balance:"
+                  title="Minimum balance:"
                   style={{ margin: "1rem 0 0 0" }}
+                  required
                 >
                   <Input name={`${prefix}minBalance`} type="string" />
                 </FormField>
-                {symbol && tokenGating.tokenType?.value === erc20 && (
+                {symbol && (
                   <FormField
                     title=""
                     style={{ margin: "1rem 0 0 0", flex: "0" }}
@@ -142,27 +153,58 @@ export default function TokenGating() {
                     />
                   </FormField>
                 )}
-                {tokenGating.tokenType?.value === erc1155 && (
-                  <FormField title="TokenId:" style={{ margin: "1rem 0 0 0" }}>
-                    <Input name={`${prefix}tokenId`} type="string" />
-                  </FormField>
-                )}
               </Grid>
             )}
           </>
-          <Grid>
-            <FormField title="Max commits:" style={{ margin: "1rem 0 0 0" }}>
-              <Input name={`${prefix}maxCommits`} type="string" />
-            </FormField>
-          </Grid>
+          {tokenGating.tokenType?.value === erc1155 ? (
+            <>
+              <Grid>
+                <FormField
+                  title="Token ID:"
+                  style={{ margin: "1rem 0 0 0" }}
+                  required
+                >
+                  <Input name={`${prefix}tokenId`} type="string" />
+                </FormField>
+              </Grid>
+              <Grid gap="1rem" alignItems="flex-start">
+                <FormField
+                  title="Minimum balance:"
+                  required
+                  style={{ margin: "1rem 0 0 0" }}
+                >
+                  <Input name={`${prefix}minBalance`} type="string" />
+                </FormField>
+
+                <FormField
+                  title="Maximum commits:"
+                  required
+                  style={{ margin: "1rem 0 0 0" }}
+                >
+                  <Input name={`${prefix}maxCommits`} type="string" />
+                </FormField>
+              </Grid>
+            </>
+          ) : (
+            <Grid>
+              <FormField
+                title="Maximum commits:"
+                style={{ margin: "1rem 0 0 0" }}
+                required
+              >
+                <Input name={`${prefix}maxCommits`} type="string" />
+              </FormField>
+            </Grid>
+          )}
+
           <Grid>
             <FormField
-              title="Token Gating Description:"
+              title="Token gating description:"
               style={{ margin: "1rem 0 0 0" }}
             >
               <TokengatedTextarea
                 name={`${prefix}tokenGatingDesc`}
-                placeholder="Token Gating Description"
+                placeholder="Token gating description"
               />
             </FormField>
           </Grid>

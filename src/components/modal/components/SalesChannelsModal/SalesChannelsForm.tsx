@@ -17,7 +17,10 @@ export const SalesChannelsForm: React.FC<SalesChannelsFormProps> = ({
   const { isSubmitting } = useFormikContext<FormType>();
   return (
     <Grid flexDirection="column" gap="2rem" alignItems="flex-end">
-      <FormField title="Current channels">
+      <FormField
+        title="Current channels"
+        subTitle="Add the channel(s) where this product is live. Sales channel information is not updated automatically. "
+      >
         <Select
           name="channels"
           options={[
