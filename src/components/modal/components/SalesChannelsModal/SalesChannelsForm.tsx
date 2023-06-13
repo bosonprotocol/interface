@@ -37,7 +37,7 @@ export const SalesChannelsForm: React.FC<SalesChannelsFormProps> = ({
       <BosonButton type="submit" disabled={isSubmitting}>
         {isSubmitting ? (
           <>
-            Saving <Spinner />
+            Saving <Spinner size={15} />
           </>
         ) : (
           "Save"
