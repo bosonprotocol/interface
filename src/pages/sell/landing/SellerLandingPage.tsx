@@ -53,7 +53,6 @@ export const SellerLandingPage: React.FC = () => {
           <RowWithCards
             title="Quick start templates"
             subtitle="Get up and running in minutes using our popular templates"
-            withTags={["Physical", "Storefront", "Token Gated"]}
           >
             <Card
               image={<img src={visualImg} width="128" height="128" />}
@@ -64,13 +63,11 @@ export const SellerLandingPage: React.FC = () => {
               image={<img src={decentralizedImg} width="104" height="128" />}
               title="Set-up a decentralized Web3 Commerce store"
               subtitle="Build  and customise your own bespoke store"
-              tags={["Storefront"]}
             />
             <Card
               image={<img src={tokenGatedImg} width="128" height="128" />}
               title="Enable token-gated dCommerce"
               subtitle="Token-gate your collection and enable exclusive access"
-              tags={["Storefront", "Token Gated"]}
             />
           </RowWithCards>
           <RowWithCards
