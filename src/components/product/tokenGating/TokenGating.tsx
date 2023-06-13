@@ -60,7 +60,7 @@ export default function TokenGating() {
         <>
           <TokengatedInfoWrapper>
             <FormField
-              title="Token Type:"
+              title="Token Type"
               style={{ margin: "1rem 0 0 0" }}
               required
             >
@@ -68,7 +68,7 @@ export default function TokenGating() {
             </FormField>
 
             <FormField
-              title="Token Contract"
+              title="Token contract"
               style={{ margin: "1rem 0 0 0", width: "100%" }}
               required
             >
@@ -105,7 +105,7 @@ export default function TokenGating() {
             {tokenGating.tokenType?.value === erc721 && (
               <TokengatedInfoWrapper>
                 <FormField
-                  title="Token gating ownership requirements:"
+                  title="Token gating ownership requirements"
                   style={{ margin: "1rem 0 0 0" }}
                   required
                 >
@@ -116,14 +116,14 @@ export default function TokenGating() {
                 </FormField>
                 {tokenGating.tokenCriteria?.value === minBalance ? (
                   <FormField
-                    title="Minimum balance:"
+                    title="Minimum balance"
                     style={{ margin: "1rem 0 0 0" }}
                     required
                   >
                     <Input name={`${prefix}minBalance`} type="string" />
                   </FormField>
                 ) : (
-                  <FormField title="Token ID:" style={{ margin: "1rem 0 0 0" }}>
+                  <FormField title="Token ID" style={{ margin: "1rem 0 0 0" }}>
                     <Input name={`${prefix}tokenId`} type="string" />
                   </FormField>
                 )}
@@ -133,7 +133,7 @@ export default function TokenGating() {
             {tokenGating.tokenType?.value === erc20 && (
               <Grid gap="1rem" alignItems="flex-start">
                 <FormField
-                  title="Minimum balance:"
+                  title="Minimum balance"
                   style={{ margin: "1rem 0 0 0" }}
                   required
                 >
@@ -160,7 +160,7 @@ export default function TokenGating() {
             <>
               <Grid>
                 <FormField
-                  title="Token ID:"
+                  title="Token ID"
                   style={{ margin: "1rem 0 0 0" }}
                   required
                 >
@@ -169,7 +169,7 @@ export default function TokenGating() {
               </Grid>
               <Grid gap="1rem" alignItems="flex-start">
                 <FormField
-                  title="Minimum balance:"
+                  title="Minimum balance"
                   required
                   style={{ margin: "1rem 0 0 0" }}
                 >
@@ -177,7 +177,7 @@ export default function TokenGating() {
                 </FormField>
 
                 <FormField
-                  title="Maximum commits:"
+                  title="Maximum commits"
                   required
                   style={{ margin: "1rem 0 0 0" }}
                 >
@@ -188,7 +188,7 @@ export default function TokenGating() {
           ) : (
             <Grid>
               <FormField
-                title="Maximum commits:"
+                title="Maximum commits"
                 style={{ margin: "1rem 0 0 0" }}
                 required
               >
@@ -199,7 +199,7 @@ export default function TokenGating() {
 
           <Grid>
             <FormField
-              title="Token gating description:"
+              title="Token gating description"
               style={{ margin: "1rem 0 0 0" }}
             >
               <TokengatedTextarea
