@@ -2,6 +2,7 @@ import * as Sentry from "@sentry/browser";
 // inspired by https://3dtransforms.desandro.com/carousel
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
+import { useSwipeable } from "react-swipeable";
 import styled, { css } from "styled-components";
 
 import ProductCard from "../../components/productCard/ProductCard";
@@ -250,6 +251,13 @@ export default function Carousel() {
         "translateZ(" + -radius + "px) " + rotateFn + "(" + angle + "deg)";
     }
   }
+  const handlers = useSwipeable({
+    onSwipedLeft: () => onNextClick(),
+    onSwipedRight: () => onPreviousClick(),
+    swipeDuration: 500,
+    preventScrollOnSwipe: true,
+    trackMouse: true
+  });
   if (isLoading) {
     return <Loading />;
   }
@@ -257,7 +265,7 @@ export default function Carousel() {
     return <></>;
   }
   return (
-    <Scene>
+    <Scene {...handlers}>
       <CarouselContainer ref={carouselRef} data-testid="carousel">
         {uiOffers?.map((offer: Offer, idx: number) => {
           const clampedSelectedIndex =

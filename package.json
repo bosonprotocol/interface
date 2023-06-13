@@ -107,7 +107,7 @@
     "react-router-dom": "^6.4.0",
     "react-scripts": "^5.0.1",
     "react-select": "^5.4.0",
-    "react-swipeable": "^7.0.0",
+    "react-swipeable": "^7.0.1",
     "react-table": "^7.8.0",
     "react-uuid": "^1.0.3",
     "rehype-raw": "^6.1.1",
