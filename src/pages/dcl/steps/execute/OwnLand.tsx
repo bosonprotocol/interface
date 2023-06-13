@@ -30,7 +30,7 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
       >
         <StyledGrid flexDirection="column" alignItems="flex-start">
           <Typography fontWeight="600" $fontSize="2rem">
-            Add product to your own environment{" "}
+            Add product to your own land
           </Typography>
           <Typography tag="p">
             The developer documentation provides comprehensive guidance on
@@ -92,13 +92,15 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
             },
             {
               title:
-                "Do I need a developer to integrate the Metaverse Commerce Toolkit into my DCL land?",
-              description: ""
+                "Do I need a developer to integrate the Metaverse Commerce Toolkit into my scene on my own DCL land?",
+              description:
+                "Integrating the Metaverse Commerce Toolkit requires some familiarity and understanding of integrating scenes in DCL. In addition, a basic knowledge of Typescript coding is required."
             },
             {
               title:
                 "How long does it take to integrate the Metaverse Commerce Toolkit into my DCL land?",
-              description: ""
+              description:
+                "Typically, users who are familiar with DCL and Typescript have integrated the Metaverse Commerce Toolkit into their scene within a few hours."
             },
             {
               title:

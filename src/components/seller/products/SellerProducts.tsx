@@ -2,6 +2,7 @@ import { offers } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import uniqBy from "lodash/uniqBy";
+import { ArrowsClockwise } from "phosphor-react";
 import { useMemo, useState } from "react";
 
 import { CONFIG } from "../../../lib/config";
@@ -174,9 +175,17 @@ export default function SellerProducts({
           }}
         />
         <SellerAddNewProduct sellerRoles={sellerRoles} />
+        <ArrowsClockwise
+          size={15}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            refetch();
+            refetchSellers();
+          }}
+        />
       </>
     );
-  }, [prepareCSVData, selected, refetch, sellerRoles]);
+  }, [prepareCSVData, selected, refetch, sellerRoles, refetchSellers]);
   const anyLoading = isLoading || isLoadingSellers;
   if (anyLoading) {
     return <Loading />;

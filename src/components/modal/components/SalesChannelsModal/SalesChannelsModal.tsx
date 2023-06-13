@@ -33,7 +33,7 @@ export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
             .filter((ch) => {
               return (
                 ch.tag === Channels.dApp ||
-                ch.deployments?.some((ch) => ch.product.uuid === productUuid)
+                ch.deployments?.some((ch) => ch.product?.uuid === productUuid)
               );
             })
             .map((saleChannel) => ({
@@ -74,13 +74,14 @@ export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
                       ...(sl?.deployments
                         ?.filter(
                           (deployment) =>
-                            deployment.product.uuid !== productUuid
+                            deployment.product?.uuid !== productUuid
                         )
                         .map((d) => ({
                           ...d,
                           status: d.status || undefined,
                           link: d.link || undefined,
-                          lastUpdated: d.lastUpdated || undefined
+                          lastUpdated: d.lastUpdated || undefined,
+                          product: d.product || undefined
                         })) ?? []),
                       ...(isProductInChannel
                         ? [
@@ -89,7 +90,9 @@ export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
                                 uuid: productUuid,
                                 version
                               },
-                              lastUpdated: Date.now() / 1000
+                              lastUpdated: Math.floor(
+                                Date.now() / 1000
+                              ).toString()
                             }
                           ]
                         : [])

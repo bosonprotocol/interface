@@ -25,7 +25,7 @@ type StoreSellerMetadataFn = ReturnType<
 >["mutateAsync"];
 
 export default function useUpdateSellerMetadata() {
-  const { sellers: currentSellers, lens } = useCurrentSellers();
+  const { sellers: currentSellers } = useCurrentSellers();
   const { address = "" } = useAccount();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
   const sellerId = seller?.id;
@@ -53,11 +53,7 @@ export default function useUpdateSellerMetadata() {
     }
     const { data: sellersToUse } = await refetchSeller();
     const sellerToUse = sellersToUse?.length ? sellersToUse[0] : seller;
-    const lensProfile = lens?.length ? lens[0] : undefined;
-    const useLens = sellerToUse.metadata?.kind
-      ? sellerToUse.metadata?.kind === ProfileType.LENS &&
-        sellerToUse.authTokenType === AuthTokenType.LENS
-      : !!lensProfile;
+    const useLens = sellerToUse?.authTokenType === AuthTokenType.LENS;
     const currentKind = useLens ? ProfileType.LENS : ProfileType.REGULAR;
     return updateSellerMedatata(
       {
@@ -98,6 +94,7 @@ async function updateSellerMedatata(
   const cover = values?.coverPicture?.[0];
   const logoImage = getIpfsGatewayUrl(logo?.src || "");
   const coverPicture = getIpfsGatewayUrl(cover?.src || "");
+  const kindUsed = kindOrCurrentKind || ProfileType.REGULAR;
   const metadataImages = seller.metadata?.images as SellerMetadata["images"];
   const metadataImagesToSave =
     logoImage || coverPicture
@@ -125,9 +122,10 @@ async function updateSellerMedatata(
               ]
             : [])
         ]
-      : metadataImages ?? undefined;
+      : kindUsed === ProfileType.REGULAR
+      ? metadataImages ?? undefined
+      : undefined;
 
-  const kindUsed = kindOrCurrentKind || ProfileType.REGULAR;
   const meta: Parameters<typeof storeSellerMetadata>[0] = {
     ...seller.metadata,
     name: seller.metadata?.name ?? undefined,
@@ -154,9 +152,14 @@ async function updateSellerMedatata(
     salesChannels: values.salesChannels
       ? values.salesChannels
       : seller.metadata?.salesChannels
-      ? (seller.metadata?.salesChannels?.map((saleChannel) =>
-          removeEmpty(saleChannel)
-        ) as SalesChannels)
+      ? (seller.metadata?.salesChannels?.map((saleChannel) => {
+          return {
+            ...removeEmpty(saleChannel),
+            deployments: saleChannel?.deployments?.map((deployment) =>
+              removeEmpty(deployment)
+            )
+          };
+        }) as SalesChannels)
       : undefined
   };
   const { metadataUri } = await storeSellerMetadata(meta);

@@ -17,17 +17,20 @@ export const SalesChannelsForm: React.FC<SalesChannelsFormProps> = ({
   const { isSubmitting } = useFormikContext<FormType>();
   return (
     <Grid flexDirection="column" gap="2rem" alignItems="flex-end">
-      <FormField title="Current channels">
+      <FormField
+        title="Current channels"
+        subTitle="Add the channel(s) where this product is live. Sales channel information is not updated automatically. "
+      >
         <Select
           name="channels"
           options={[
             {
-              label: "BOSON DCL",
-              value: Channels.BosonDCL
+              label: Channels["Boson Boulevard"],
+              value: Channels["Boson Boulevard"]
             },
             {
-              label: "Custom DCL",
-              value: Channels.CustomDCL
+              label: Channels["Own land"],
+              value: Channels["Own land"]
             }
           ]}
           isMulti
@@ -37,7 +40,7 @@ export const SalesChannelsForm: React.FC<SalesChannelsFormProps> = ({
       <BosonButton type="submit" disabled={isSubmitting}>
         {isSubmitting ? (
           <>
-            Saving <Spinner />
+            Saving <Spinner size={15} />
           </>
         ) : (
           "Save"

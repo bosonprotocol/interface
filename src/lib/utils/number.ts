@@ -28,4 +28,5 @@ export const isNumeric = (strNumber: string) => {
   ); // ...and ensure strings of whitespace fail
 };
 
-export const decimalToHex = (decimal: number): string => decimal.toString(16);
+export const decimalToHex = (decimal: number): string =>
+  "0x" + decimal.toString(16);

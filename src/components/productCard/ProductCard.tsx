@@ -1,4 +1,5 @@
 import {
+  AuthTokenType,
   Currencies,
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
@@ -27,7 +28,6 @@ import {
   ExtendedOffer,
   FilterOptions
 } from "../../pages/explore/WithAllOffers";
-import { ProfileType } from "../modal/components/Profile/const";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
@@ -79,7 +79,7 @@ export default function ProductCard({
   });
   const seller = offer?.seller;
   const metadata = seller?.metadata;
-  const useLens = !metadata || metadata.kind === ProfileType.LENS;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const regularProfilePicture =
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const [lens] = lensProfiles;

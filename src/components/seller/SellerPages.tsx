@@ -19,22 +19,6 @@ import { SalesChannels } from "./salesChannels/SalesChannels";
 
 export const DEFAULT_SELLER_PAGE = SellerCenterSubRoutes.Dashboard;
 
-// type Label = keyof typeof SellerCenterSubRoutes;
-// type Url = typeof SellerCenterSubRoutes[Label];
-// type SellerPageTypes = Record<
-//   Url,
-//   {
-//     url: Url;
-//     label: Label;
-//     icon: React.ForwardRefExoticComponent<
-//       IconProps & React.RefAttributes<SVGSVGElement>
-//     >;
-//     externalPath: string | null;
-//     component: (props: SellerInsideProps & WithSellerDataProps) => JSX.Element;
-//     withoutWrapper?: boolean;
-//   }
-// >;
-
 export const sellerPageTypes = {
   dashboard: {
     url: SellerCenterSubRoutes.Dashboard,

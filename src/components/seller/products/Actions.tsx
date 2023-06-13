@@ -197,7 +197,13 @@ const Actions: React.FC<ActionsProps> = ({ label, items }) => {
           <DropdownMenu.Content className="DropdownMenuContent" sideOffset={5}>
             {items.map((item) => {
               return (
-                <DropdownMenu.Item className="DropdownMenuItem" key={item.key}>
+                <DropdownMenu.Item
+                  className="DropdownMenuItem"
+                  key={item.key}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   {item.content}
                 </DropdownMenu.Item>
               );
