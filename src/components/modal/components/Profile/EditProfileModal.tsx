@@ -26,6 +26,7 @@ export default function EditProfileModal() {
   const lensProfile = lens?.length ? lens[0] : undefined;
   const hasMetadata = !!seller?.metadata;
   const metadata = seller?.metadata;
+  const authTokenType = seller?.authTokenType;
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
@@ -68,7 +69,13 @@ export default function EditProfileModal() {
   const Component = useCallback(() => {
     const profileDataFromMetadata: CreateProfile =
       buildRegularProfileFromMetadata(metadata);
-    const forceDirty = !hasMetadata || metadata?.kind !== profileType;
+    const forceDirty =
+      !hasMetadata ||
+      metadata?.kind !== profileType ||
+      (profileType === ProfileType.LENS && // to fix inconsistencies between the authTokenType and the metadata kind
+        authTokenType !== AuthTokenType.LENS) ||
+      (profileType === ProfileType.REGULAR &&
+        authTokenType !== AuthTokenType.NONE);
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
         onSubmit={async () => {
@@ -96,7 +103,7 @@ export default function EditProfileModal() {
       <p>There has been an error, please try again...</p>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileType]);
+  }, [profileType, authTokenType]);
 
   if (!address) {
     return (

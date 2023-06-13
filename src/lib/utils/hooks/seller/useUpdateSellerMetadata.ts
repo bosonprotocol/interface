@@ -53,11 +53,7 @@ export default function useUpdateSellerMetadata() {
     }
     const { data: sellersToUse } = await refetchSeller();
     const sellerToUse = sellersToUse?.length ? sellersToUse[0] : seller;
-    const lensProfile = lens?.length ? lens[0] : undefined;
-    const useLens = sellerToUse.metadata?.kind
-      ? sellerToUse.metadata?.kind === ProfileType.LENS &&
-        sellerToUse.authTokenType === AuthTokenType.LENS
-      : !!lensProfile;
+    const useLens = sellerToUse?.authTokenType === AuthTokenType.LENS;
     const currentKind = useLens ? ProfileType.LENS : ProfileType.REGULAR;
     return updateSellerMedatata(
       {
@@ -98,7 +94,6 @@ async function updateSellerMedatata(
   const cover = values?.coverPicture?.[0];
   const logoImage = getIpfsGatewayUrl(logo?.src || "");
   const coverPicture = getIpfsGatewayUrl(cover?.src || "");
-  const metadataImages = seller.metadata?.images as SellerMetadata["images"];
   const metadataImagesToSave =
     logoImage || coverPicture
       ? [
@@ -125,7 +120,7 @@ async function updateSellerMedatata(
               ]
             : [])
         ]
-      : metadataImages ?? undefined;
+      : undefined;
 
   const kindUsed = kindOrCurrentKind || ProfileType.REGULAR;
   const meta: Parameters<typeof storeSellerMetadata>[0] = {

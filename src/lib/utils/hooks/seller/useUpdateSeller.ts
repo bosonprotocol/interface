@@ -48,7 +48,9 @@ async function updateSellerAccount(
     authTokenId:
       authTokenType === authTokenTypes.LENS
         ? getLensTokenIdDecimal(authTokenId || "0x0").toString()
-        : "0",
+        : // ? (authTokenId || "0").toString() // in hex
+
+          "0",
     authTokenType,
     clerk,
     assistant,
