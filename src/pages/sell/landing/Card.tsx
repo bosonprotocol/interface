@@ -26,9 +26,13 @@ interface CardProps {
 
 export const Card: React.FC<CardProps> = ({ image, title, subtitle, tags }) => {
   return (
-    <StyledGrid flexDirection="column" alignItems="flex-start">
+    <StyledGrid
+      flexDirection="column"
+      alignItems="flex-start"
+      justifyContent="flex-start"
+    >
       {image}
-      <Typography fontWeight="600" $fontSize="1.25rem">
+      <Typography fontWeight="600" $fontSize="1.25rem" marginTop="1rem">
         {title}
       </Typography>
       <Typography fontWeight="400" $fontSize="1rem" margin="0.25rem 0 2.5rem 0">
