@@ -10,8 +10,10 @@ import {
   RowGapPerRow
 } from "../../../components/ui/GridContainer";
 import Typography from "../../../components/ui/Typography";
+import { SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import decentralizedImg from "./assets/decentralized.webp";
 import glassesMonkeyImg from "./assets/glassesMonkey.webp";
 import sneakerImg from "./assets/sneaker.webp";
@@ -87,6 +89,7 @@ const StyledGrid = styled(Grid)`
 `;
 
 export const SellerLandingPage: React.FC = () => {
+  const navigate = useKeepQueryParamsNavigate();
   return (
     <Grid flexDirection="column" padding="5rem 0">
       <Background>
@@ -103,7 +106,11 @@ export const SellerLandingPage: React.FC = () => {
               alignItems="flex-end"
               justifyContent="center"
             >
-              <BosonButton>
+              <BosonButton
+                onClick={() =>
+                  navigate({ pathname: SellerCenterRoutes.CreateProduct })
+                }
+              >
                 <span style={{ whiteSpace: "pre", fontSize: "1rem" }}>
                   Start from scratch
                 </span>
