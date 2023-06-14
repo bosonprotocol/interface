@@ -29,7 +29,8 @@ export const BosonRoutes = {
 
 export const SellerCenterRoutes = {
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
-  CreateProduct: `${BosonRoutes.Sell}/create-product`
+  CreateProduct: `${BosonRoutes.Sell}/create-product`,
+  BatchCreateOffers: `${BosonRoutes.Sell}/batch-create-offers`
 };
 
 export const DisputeResolverCenterRoutes = {

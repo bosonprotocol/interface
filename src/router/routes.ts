@@ -7,6 +7,7 @@ import {
   ProductRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
+import BatchCreateOffersPage from "../pages/batch-create-offers/BatchCreateOffers";
 import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
 import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
 import CreateProductPage from "../pages/create-product/CreateProduct";
@@ -116,6 +117,11 @@ export default [
     ...base,
     path: SellerCenterRoutes.CreateProduct,
     component: CreateProductPage
+  },
+  {
+    ...base,
+    path: SellerCenterRoutes.BatchCreateOffers,
+    component: BatchCreateOffersPage
   },
   {
     ...base,
