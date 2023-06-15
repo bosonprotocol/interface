@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { HTMLAttributes, ReactNode } from "react";
 import styled from "styled-components";
 
 import Grid from "../../../components/ui/Grid";
@@ -8,6 +8,19 @@ import { colors } from "../../../lib/styles/colors";
 const StyledGrid = styled(Grid)`
   background: ${colors.lightGrey2};
   padding: 1.5rem;
+  color: initial;
+  :hover {
+    cursor: pointer;
+    filter: drop-shadow(5px 5px 10px ${colors.grey}) brightness(101%);
+
+    .title {
+      text-decoration: underline;
+    }
+    img {
+      transform: scale(1.1);
+      transition: all 0.2s ease;
+    }
+  }
 `;
 
 const Tag = styled.div`
@@ -22,17 +35,30 @@ interface CardProps {
   title: string;
   subtitle: string;
   tags?: string[];
+  onClick?: HTMLAttributes<HTMLDivElement>["onClick"];
 }
 
-export const Card: React.FC<CardProps> = ({ image, title, subtitle, tags }) => {
+export const Card: React.FC<CardProps> = ({
+  image,
+  title,
+  subtitle,
+  tags,
+  onClick
+}) => {
   return (
     <StyledGrid
       flexDirection="column"
       alignItems="flex-start"
       justifyContent="flex-start"
+      onClick={onClick}
     >
       {image}
-      <Typography fontWeight="600" $fontSize="1.25rem" marginTop="1rem">
+      <Typography
+        fontWeight="600"
+        $fontSize="1.25rem"
+        marginTop="1rem"
+        className="title"
+      >
         {title}
       </Typography>
       <Typography fontWeight="400" $fontSize="1rem" margin="0.25rem 0 2.5rem 0">

@@ -1,4 +1,4 @@
-import React, { CSSProperties, forwardRef } from "react";
+import React, { CSSProperties, forwardRef, HTMLAttributes } from "react";
 import styled from "styled-components";
 
 import { IGrid } from "./Grid";
@@ -47,15 +47,18 @@ const Wrapper = styled.div<WrapperProps>`
     ${({ textAlign }) => (textAlign ? `text-align:${textAlign};` : "")}
     ${({ opacity }) => (opacity ? `opacity:${opacity};` : "")}
 `;
+type Tag = keyof JSX.IntrinsicElements;
 
-interface ITypography extends WrapperProps {
-  children?: string | React.ReactNode;
-  tag?: keyof JSX.IntrinsicElements;
-  style?: React.CSSProperties;
-  onClick?: () => void;
-}
+type ITypography<T extends Tag> = WrapperProps &
+  Omit<HTMLAttributes<T>, "color"> & {
+    children?: string | React.ReactNode;
+    tag?: Tag;
+    style?: React.CSSProperties;
+    onClick?: () => void;
+  };
 
-const Typography = forwardRef<HTMLElement, ITypography>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Typography = forwardRef<HTMLElement, ITypography<any>>(
   ({ tag = "div", children, style = {}, ...props }, ref) => {
     return (
       <Wrapper style={style} {...props} as={tag} ref={ref}>

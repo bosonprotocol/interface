@@ -4,6 +4,8 @@ import EscalateModal from "./components/Chat/components/EscalateModal/EscalateMo
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CompleteExchange from "./components/CompleteExchange";
+import { AccountCreationModal } from "./components/createProduct/AccountCreationModal";
+import VariableStepsExplainerModal from "./components/createProduct/VariableStepsExplainerModal";
 import CreateProductDraft from "./components/CreateProductDraft";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
@@ -76,7 +78,9 @@ export const MODAL_TYPES = {
   PROFILE_DETAILS: "PROFILE_DETAILS",
   IMAGE_EDITOR: "IMAGE_EDITOR",
   IFRAME_MODAL: "IFRAME_MODAL",
-  SALES_CHANNELS: "SALES_CHANNELS"
+  SALES_CHANNELS: "SALES_CHANNELS",
+  ACCOUNT_CREATION: "ACCOUNT_CREATION",
+  VARIABLE_STEPS_EXPLAINER: "VARIABLE_STEPS_EXPLAINER"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -118,5 +122,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal,
   [MODAL_TYPES.IMAGE_EDITOR]: ImageEditorModal,
   [MODAL_TYPES.IFRAME_MODAL]: IframeModal,
-  [MODAL_TYPES.SALES_CHANNELS]: SalesChannelsModal
+  [MODAL_TYPES.SALES_CHANNELS]: SalesChannelsModal,
+  [MODAL_TYPES.ACCOUNT_CREATION]: AccountCreationModal,
+  [MODAL_TYPES.VARIABLE_STEPS_EXPLAINER]: VariableStepsExplainerModal
 } as const;

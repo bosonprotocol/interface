@@ -2,6 +2,8 @@ import React from "react";
 import styled, { CSSProperties } from "styled-components";
 
 import { LayoutRoot } from "../../../components/layout/Layout";
+import { VariableStep } from "../../../components/modal/components/createProduct/VariableStepsExplainerModal";
+import { useModal } from "../../../components/modal/useModal";
 import BosonButton from "../../../components/ui/BosonButton";
 import Grid from "../../../components/ui/Grid";
 import {
@@ -10,7 +12,8 @@ import {
   RowGapPerRow
 } from "../../../components/ui/GridContainer";
 import Typography from "../../../components/ui/Typography";
-import { SellerCenterRoutes } from "../../../lib/routing/routes";
+import { CreateProductParameters } from "../../../lib/routing/parameters";
+import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -90,6 +93,7 @@ const StyledGrid = styled(Grid)`
 
 export const SellerLandingPage: React.FC = () => {
   const navigate = useKeepQueryParamsNavigate();
+  const { showModal } = useModal();
   return (
     <Grid flexDirection="column" padding="5rem 0">
       <Background>
@@ -132,16 +136,56 @@ export const SellerLandingPage: React.FC = () => {
               image={<img src={visualImg} width="128" height="128" />}
               title="Launch a Metaverse commerce experience"
               subtitle="Sell physical products as NFTs in the metaverse"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Launch a Metaverse commerce experience",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.CreateYourProducts,
+                    VariableStep.SetupYourDCLStore
+                  ],
+                  to: {
+                    pathname: SellerCenterRoutes.CreateProduct
+                  }
+                });
+              }}
             />
             <Card
               image={<img src={decentralizedImg} width="104" height="128" />}
               title="Set-up a decentralized Web3 Commerce store"
               subtitle="Build  and customise your own bespoke store"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Set-up a decentralized Web3 Commerce store",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.SetupYourWeb3Store,
+                    VariableStep.CreateYourProducts
+                  ],
+                  to: {
+                    pathname: BosonRoutes.CreateStorefront
+                  }
+                });
+              }}
             />
             <Card
               image={<img src={tokenGatedImg} width="128" height="128" />}
               title="Enable token-gated dCommerce"
               subtitle="Token-gate your collection and enable exclusive access"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Set-up a decentralized Web3 Commerce store",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.SetupYourWeb3Store,
+                    VariableStep.CreateYourProducts
+                  ],
+                  to: {
+                    pathname: SellerCenterRoutes.CreateProduct,
+                    search: [[CreateProductParameters.tokenGated, "1"]]
+                  }
+                });
+              }}
             />
           </RowWithCards>
           <RowWithCards
@@ -152,16 +196,55 @@ export const SellerLandingPage: React.FC = () => {
               image={<img src={sneakerImg} width="128" height="128" />}
               title="Create Physicals"
               subtitle="Tokenise physical products as an NFT, drop them everywhere"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Create Physicals",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.CreateYourProducts,
+                    VariableStep.AddSalesChannels
+                  ],
+                  to: {
+                    pathname: BosonRoutes.CreateStorefront
+                  }
+                });
+              }}
             />
             <Card
               image={<img src={sneakerNftImg} width="128" height="128" />}
               title="Create Phygitals"
               subtitle="Bundle physical products with a digital twin"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Create Physicals",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.CreateYourProducts,
+                    VariableStep.AddSalesChannels
+                  ],
+                  to: {
+                    pathname: BosonRoutes.CreateStorefront
+                  }
+                });
+              }}
             />
             <Card
               image={<img src={tokenGatedImg} width="128" height="128" />}
               title="Create token-gated offers"
               subtitle="Token-gate your collection and enable exclusive access"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Create Physicals",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.CreateYourProducts,
+                    VariableStep.AddSalesChannels
+                  ],
+                  to: {
+                    pathname: BosonRoutes.CreateStorefront
+                  }
+                });
+              }}
             />
           </RowWithCards>
           <RowWithCards
@@ -172,16 +255,55 @@ export const SellerLandingPage: React.FC = () => {
               image={<img src={decentralizedImg} width="104" height="128" />}
               title="Set-up a decentralized Web3 Commerce store"
               subtitle="Build  and customise your own bespoke store"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Create Physicals",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.CreateYourProducts,
+                    VariableStep.AddSalesChannels
+                  ],
+                  to: {
+                    pathname: BosonRoutes.CreateStorefront
+                  }
+                });
+              }}
             />
             <Card
               image={<img src={visualImg} width="128" height="128" />}
               title="Launch a Metaverse commerce experience"
               subtitle="Sell physical products as NFTs in the metaverse"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Create Physicals",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.CreateYourProducts,
+                    VariableStep.AddSalesChannels
+                  ],
+                  to: {
+                    pathname: BosonRoutes.CreateStorefront
+                  }
+                });
+              }}
             />
             <Card
               image={<img src={glassesMonkeyImg} width="128" height="128" />}
               title="Sell on NFT Marketplaces"
               subtitle="Tokenize physical products and drop on NFT marketplaces"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Create Physicals",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.CreateYourProducts,
+                    VariableStep.AddSalesChannels
+                  ],
+                  to: {
+                    pathname: BosonRoutes.CreateStorefront
+                  }
+                });
+              }}
             />
           </RowWithCards>
         </Grid>

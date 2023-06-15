@@ -35,7 +35,7 @@ const addNewParams = (
 
 export const getKeepStoreFieldsQueryParams = (
   location: ReturnType<typeof useLocation>,
-  toSearch: string | undefined | null
+  toSearch: ConstructorParameters<typeof URLSearchParams>[0]
 ) => {
   const urlParams = new URLSearchParams(location.search);
   deleteQueryParamsThatAreNotStoreFields(urlParams);
@@ -46,12 +46,15 @@ export const getKeepStoreFieldsQueryParams = (
   return urlParams.toString();
 };
 
+export type To = Omit<Partial<Path>, "search"> & {
+  search?: Parameters<typeof getKeepStoreFieldsQueryParams>[1];
+};
 export function useKeepQueryParamsNavigate() {
   const navigate = useNavigate();
   const location = useLocation();
   const locationRef = useRef(location);
   return useCallback(
-    (to: Partial<Path>, options?: NavigateOptions) => {
+    (to: To, options?: NavigateOptions) => {
       const search = getKeepStoreFieldsQueryParams(
         locationRef.current,
         to.search

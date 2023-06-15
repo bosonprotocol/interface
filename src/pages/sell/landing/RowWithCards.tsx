@@ -11,7 +11,6 @@ interface RowWithCardsProps {
   title: string;
   subtitle: string;
   children: ReactNode;
-  withTags?: string[];
 }
 
 export const RowWithCards: React.FC<RowWithCardsProps> = ({

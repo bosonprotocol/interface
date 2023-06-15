@@ -111,7 +111,7 @@ export default [
       ...base.app,
       withLayout: false,
       withFooter: true,
-      fluidHeader: true
+      fluidHeader: false
     }
   },
   {

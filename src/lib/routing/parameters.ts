@@ -30,3 +30,7 @@ export const UrlParameters = {
   tokenId: "id",
   disputeResolverPageId: "disputeResolverPage"
 } as const;
+
+export const CreateProductParameters = {
+  tokenGated: "tokenGated"
+};
