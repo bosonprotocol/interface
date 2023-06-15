@@ -250,9 +250,9 @@ export const tokenGatingValidationSchema = Yup.object({
           )
           .typeError("Value must be an integer greater than or equal to 0")
           .required(validationMessage.required)
-    }),
+    })
 
-    tokenGatingDesc: Yup.string().required(validationMessage.required)
+    // tokenGatingDesc: Yup.string().required(validationMessage.required)
   })
 });
 

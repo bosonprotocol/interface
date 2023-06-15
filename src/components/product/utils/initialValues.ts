@@ -116,7 +116,7 @@ export const tokenGatingInitialValues: TokenGating = {
     minBalance: undefined,
     tokenId: undefined,
     maxCommits: "",
-    tokenGatingDesc: "",
+    // tokenGatingDesc: "",
     tokenCriteria: TOKEN_CRITERIA[0]
   }
 };

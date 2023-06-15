@@ -1,28 +1,47 @@
 import { useState } from "react";
 import styled from "styled-components";
 
+import { breakpoint } from "../../../lib/styles/breakpoint";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-import { FormField, Input, Select, Textarea } from "../../form";
+import { FormField, Input, Select } from "../../form";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
-import {
-  ContainerProductPage,
-  ProductButtonGroup,
-  SectionTitle
-} from "../Product.styles";
+import { ProductButtonGroup, SectionTitle } from "../Product.styles";
 import { TOKEN_CRITERIA, TOKEN_TYPES } from "../utils";
 import { useCreateForm } from "../utils/useCreateForm";
+
+const ContainerProductPage = styled.div`
+  width: 100%;
+  .inputGroup:not(:last-of-type) {
+    margin-bottom: 2rem;
+  }
+  ${breakpoint.m} {
+    max-width: 45rem;
+  }
+`;
+
+const StyledSelect = styled(Select)`
+  && {
+    height: initial;
+  }
+`;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563px;
 `;
 
-const TokengatedTextarea = styled(Textarea)`
-  padding: 0.5rem;
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 54px;
-  max-height: 500px;
+// const TokengatedTextarea = styled(Textarea)`
+//   padding: 0.5rem;
+//   min-width: 100%;
+//   max-width: 100%;
+//   min-height: 54px;
+//   max-height: 500px;
+// `;
+
+const StyledGrid = styled(Grid)`
+  > * {
+    min-width: fit-content;
+  }
 `;
 
 const TokengatedInfoWrapper = styled.div`
@@ -35,7 +54,6 @@ const TokengatedInfoWrapper = styled.div`
 const SymbolInput = styled(Input)`
   width: 20%;
   height: 100%;
-  margin-top: 20px;
 `;
 
 const prefix = "tokenGating.";
@@ -61,6 +79,7 @@ export default function TokenGating() {
           <TokengatedInfoWrapper>
             <FormField
               title="Token Type"
+              subTitle="Choose an option"
               style={{ margin: "1rem 0 0 0" }}
               required
             >
@@ -68,7 +87,8 @@ export default function TokenGating() {
             </FormField>
 
             <FormField
-              title="Token contract"
+              title="Token address"
+              subTitle={`Enter the ${tokenGating.tokenType?.label}'s contract address`}
               style={{ margin: "1rem 0 0 0", width: "100%" }}
               required
             >
@@ -103,37 +123,44 @@ export default function TokenGating() {
 
           <>
             {tokenGating.tokenType?.value === erc721 && (
-              <TokengatedInfoWrapper>
+              <StyledGrid flex="1" flexWrap="wrap" gap="1rem">
                 <FormField
                   title="Token gating ownership requirements"
+                  subTitle="Target a specific NFT or specify a minimum collection balance"
                   style={{ margin: "1rem 0 0 0" }}
                   required
                 >
-                  <Select
+                  <StyledSelect
                     name={`${prefix}tokenCriteria`}
                     options={TOKEN_CRITERIA}
                   />
                 </FormField>
                 {tokenGating.tokenCriteria?.value === minBalance ? (
                   <FormField
-                    title="Minimum balance"
+                    title="Minimum collection balance"
+                    subTitle="Specify the minimum number of NFTs  that a wallet must hold"
                     style={{ margin: "1rem 0 0 0" }}
                     required
                   >
                     <Input name={`${prefix}minBalance`} type="string" />
                   </FormField>
                 ) : (
-                  <FormField title="Token ID" style={{ margin: "1rem 0 0 0" }}>
+                  <FormField
+                    title="Token ID"
+                    subTitle="Enter the Token ID for the specific NFT"
+                    style={{ margin: "1rem 0 0 0" }}
+                  >
                     <Input name={`${prefix}tokenId`} type="string" />
                   </FormField>
                 )}
-              </TokengatedInfoWrapper>
+              </StyledGrid>
             )}
 
             {tokenGating.tokenType?.value === erc20 && (
-              <Grid gap="1rem" alignItems="flex-start">
+              <StyledGrid flex="1" flexWrap="wrap" gap="1rem">
                 <FormField
-                  title="Minimum balance"
+                  title="Minimum token balance"
+                  subTitle="Specify the minimum token balance a wallet must hold to unlock this gate"
                   style={{ margin: "1rem 0 0 0" }}
                   required
                 >
@@ -141,7 +168,8 @@ export default function TokenGating() {
                 </FormField>
                 {symbol && (
                   <FormField
-                    title=""
+                    title="Currency"
+                    subTitle="Set from the token address"
                     style={{ margin: "1rem 0 0 0", flex: "0" }}
                   >
                     <SymbolInput
@@ -153,7 +181,7 @@ export default function TokenGating() {
                     />
                   </FormField>
                 )}
-              </Grid>
+              </StyledGrid>
             )}
           </>
           {tokenGating.tokenType?.value === erc1155 ? (
@@ -161,15 +189,17 @@ export default function TokenGating() {
               <Grid>
                 <FormField
                   title="Token ID"
+                  subTitle="Enter the specific Token ID from the ERC1155"
                   style={{ margin: "1rem 0 0 0" }}
                   required
                 >
                   <Input name={`${prefix}tokenId`} type="string" />
                 </FormField>
               </Grid>
-              <Grid gap="1rem" alignItems="flex-start">
+              <StyledGrid flex="1" flexWrap="wrap" gap="1rem">
                 <FormField
-                  title="Minimum balance"
+                  title="Minimum token balance"
+                  subTitle="Specify the minimum token balance a wallet must hold to unlock this gate"
                   required
                   style={{ margin: "1rem 0 0 0" }}
                 >
@@ -177,18 +207,20 @@ export default function TokenGating() {
                 </FormField>
 
                 <FormField
-                  title="Maximum commits"
+                  title="Unlocks per wallet"
+                  subTitle="Specify the maximum number of times a wallet can unlock the token gate"
                   required
                   style={{ margin: "1rem 0 0 0" }}
                 >
                   <Input name={`${prefix}maxCommits`} type="string" />
                 </FormField>
-              </Grid>
+              </StyledGrid>
             </>
           ) : (
             <Grid>
               <FormField
-                title="Maximum commits"
+                title="Unlocks per wallet"
+                subTitle="Specify the maximum number of times a wallet can unlock the token gate"
                 style={{ margin: "1rem 0 0 0" }}
                 required
               >
@@ -197,6 +229,8 @@ export default function TokenGating() {
             </Grid>
           )}
 
+          {/* 
+          // TODO: might come back later
           <Grid>
             <FormField
               title="Token gating description"
@@ -207,7 +241,7 @@ export default function TokenGating() {
                 placeholder="Token gating description"
               />
             </FormField>
-          </Grid>
+          </Grid> */}
         </>
       </FormField>
       <ProductInformationButtonGroup>

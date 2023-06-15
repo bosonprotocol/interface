@@ -163,7 +163,7 @@ async function getProductV1Metadata({
     image: productMainImageLink ? productMainImageLink : "",
     type: MetadataType.PRODUCT_V1,
     attributes: [...nftAttributes, ...additionalAttributes],
-    condition: tokenGating?.tokenGatingDesc || undefined,
+    condition: /*tokenGating?.tokenGatingDesc ||*/ undefined,
     product: {
       uuid: uuid(),
       version: 1,
