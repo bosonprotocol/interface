@@ -23,6 +23,7 @@ import {
   getNextTo,
   getVariableStepsFromQueryParams,
   QueryParamStep,
+  useRemoveLandingQueryParams,
   VariableStep
 } from "./createProduct/const";
 
@@ -73,7 +74,8 @@ interface Props {
 }
 export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
   const { showModal, hideModal } = useModal();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const removeLandingQueryParams = useRemoveLandingQueryParams();
+  const [searchParams] = useSearchParams();
   const [show, setShow] = useState<boolean>(false);
 
   const iframeString = htmlString.substring(
@@ -251,6 +253,8 @@ export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
                   to: getNextTo(nextStepResult.nextStep),
                   firstActiveStep: nextStepResult.nextStepInNumber
                 });
+              } else {
+                removeLandingQueryParams();
               }
             } else {
               hideModal();

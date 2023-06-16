@@ -4,13 +4,18 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import Layout from "../../components/layout/Layout";
+import { useRemoveLandingQueryParams } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
 import Typography from "../../components/ui/Typography";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
+import { CongratulationsType } from "../create-product/congratulations/Congratulations";
+import { CongratulationsPage } from "../create-product/congratulations/CongratulationsPage";
 import NotFound from "../not-found/NotFound";
 import CustomStoreFormContent, {
   formValuesWithOneLogoUrl
@@ -27,11 +32,15 @@ const Root = styled(Layout)`
 
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
+  const navigate = useKeepQueryParamsNavigate();
+  const removeLandingQueryParams = useRemoveLandingQueryParams();
+  const [isSuccess, setSuccess] = useState<boolean>(false);
   const [hasSubmitError, setHasSubmitError] = useState<boolean>(false);
   const primaryColor = useCSSVariable("--primary");
   const storage = useIpfsStorage();
   const { sellers } = useCurrentSellers();
   const seller = sellers?.[0];
+  const sellerId = seller?.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
   const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
 
@@ -45,6 +54,21 @@ export default function CustomStore() {
 
   if (!isSellerCurated) {
     return <NotFound />;
+  }
+
+  if (isSuccess) {
+    return (
+      <CongratulationsPage
+        sellerId={sellerId}
+        type={CongratulationsType.CustomStore}
+        onClose={() => {
+          removeLandingQueryParams();
+          navigate({
+            pathname: BosonRoutes.Root
+          });
+        }}
+      />
+    );
   }
 
   return (
@@ -100,7 +124,10 @@ export default function CustomStore() {
             showModal(modalTypes.CUSTOM_STORE, {
               title: "Congratulations!",
               ipfsUrl,
-              htmlString: html
+              htmlString: html,
+              onClose: () => {
+                setSuccess(true);
+              }
             });
           } catch (error) {
             console.error(error);

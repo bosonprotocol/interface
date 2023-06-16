@@ -12,7 +12,7 @@ import {
   RowGapPerRow
 } from "../../../components/ui/GridContainer";
 import Typography from "../../../components/ui/Typography";
-import { CreateProductParameters } from "../../../lib/routing/parameters";
+import { SellerLandingPageParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -186,12 +186,12 @@ export const SellerLandingPage: React.FC = () => {
                   title: "Set-up a decentralized Web3 Commerce store",
                   order: [
                     VariableStep.CreateYourProfile,
-                    VariableStep.SetupYourWeb3Store,
-                    VariableStep.CreateYourProducts
+                    VariableStep.CreateYourTokenGatedProduct,
+                    VariableStep.AddSalesChannels
                   ],
                   to: {
                     pathname: SellerCenterRoutes.CreateProduct,
-                    search: [[CreateProductParameters.tokenGated, "1"]]
+                    search: [[SellerLandingPageParameters.sltokenGated, "1"]]
                   },
                   firstActiveStep: hasSeller ? 1 : 0,
                   doSetQueryParams: true

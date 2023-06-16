@@ -31,11 +31,8 @@ export const UrlParameters = {
   disputeResolverPageId: "disputeResolverPage"
 } as const;
 
-export const CreateProductParameters = {
-  tokenGated: "tokenGated"
-};
-
 export const SellerLandingPageParameters = {
   slsteps: "slsteps", // slsteps = seller landing steps
-  sltitle: "sltitle"
+  sltitle: "sltitle",
+  sltokenGated: "sltokenGated"
 };

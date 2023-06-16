@@ -4,11 +4,10 @@ import {
   Storefront,
   UserCirclePlus
 } from "phosphor-react";
+import { useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 
-import {
-  CreateProductParameters,
-  SellerLandingPageParameters
-} from "../../../../lib/routing/parameters";
+import { SellerLandingPageParameters } from "../../../../lib/routing/parameters";
 import {
   BosonRoutes,
   SellerCenterRoutes
@@ -75,7 +74,7 @@ export const variableStepMap = {
     body: "Create a physical or digi-physical product, enriching it with details, such as images and videos.",
     to: {
       pathname: SellerCenterRoutes.CreateProduct,
-      search: [[CreateProductParameters.tokenGated, "1"]]
+      search: [[SellerLandingPageParameters.sltokenGated, "1"]]
     }
   },
   [VariableStep.SetupYourDCLStore]: {
@@ -149,7 +148,19 @@ export const getNextButtonText = (nextStep: NextStep): string => {
   return `Continue to ${titleWithFirstLowerCase}`;
 };
 
-export const getNextTo = (nextStep: NextStep): To => {
+export const getNextTo = (
+  nextStep: NextStep
+): Omit<To, "search"> & { search?: string[][] } => {
   const nextVariableStep = queryParamToVariableStep[nextStep];
   return variableStepMap[nextVariableStep].to;
+};
+
+export const useRemoveLandingQueryParams = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  return useCallback(() => {
+    Object.keys(SellerLandingPageParameters).forEach((key) => {
+      searchParams.delete(key);
+    });
+    setSearchParams(searchParams);
+  }, [searchParams, setSearchParams]);
 };

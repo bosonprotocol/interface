@@ -53,6 +53,7 @@ export const BosonLand: React.FC<BosonLandProps> = ({ setSuccess }) => {
             Apply <ArrowSquareOut size={24} />
           </Button>
           <BosonButton
+            type="button"
             onClick={() => setSuccess()}
             style={{ marginTop: "3.5rem" }}
           >

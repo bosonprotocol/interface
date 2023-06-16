@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { CreateProductParameters } from "../../../lib/routing/parameters";
+import { SellerLandingPageParameters } from "../../../lib/routing/parameters";
 import {
   clearLocalStorage,
   getItemFromStorage,
@@ -14,7 +14,9 @@ import type { CreateProductForm } from "./types";
 const MAIN_KEY = "create-product";
 export function useInitialValues() {
   const [searchParams] = useSearchParams();
-  const isTokenGated = searchParams.get(CreateProductParameters.tokenGated);
+  const isTokenGated = searchParams.get(
+    SellerLandingPageParameters.sltokenGated
+  );
   const initialValues = useMemo(
     () => getItemFromStorage<CreateProductForm | null>(MAIN_KEY, null),
     []

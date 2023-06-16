@@ -1,6 +1,7 @@
 import { useFormikContext } from "formik";
 import React, { useState } from "react";
 
+import { useRemoveLandingQueryParams } from "../../../../components/modal/components/createProduct/const";
 import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { CongratulationsType } from "../../../create-product/congratulations/Congratulations";
 import { CongratulationsPage } from "../../../create-product/congratulations/CongratulationsPage";
@@ -10,6 +11,7 @@ import { BosonLand } from "./BosonLand";
 import { OwnLand } from "./OwnLand";
 
 export const ExecuteStep: React.FC = () => {
+  const removeLandingQueryParams = useRemoveLandingQueryParams();
   const { sellers } = useCurrentSellers();
   const sellerId = sellers[0]?.id;
   const { values } = useFormikContext<FormType>();
@@ -19,6 +21,9 @@ export const ExecuteStep: React.FC = () => {
     <CongratulationsPage
       sellerId={sellerId}
       type={CongratulationsType.Boulevard}
+      reset={() => {
+        removeLandingQueryParams();
+      }}
     />
   ) : location === LocationValues.OwnLand ? (
     <OwnLand setSuccess={() => setSuccess(true)} />

@@ -9,7 +9,10 @@ import {
 import { storeFields } from "../../../pages/custom-store/store-fields";
 import { SellerLandingPageParameters } from "../../routing/parameters";
 
-const deleteNotEssentialQueryParams = (urlParams: URLSearchParams) => {
+const deleteNonEssentialQueryParams = (
+  urlParams: URLSearchParams,
+  options: { removeSellerLandingQueryParams?: boolean } = {}
+) => {
   Array.from(urlParams.keys()).forEach((queryParamKey) => {
     const isStoreField =
       !!storeFields[queryParamKey as keyof typeof storeFields];
@@ -17,7 +20,10 @@ const deleteNotEssentialQueryParams = (urlParams: URLSearchParams) => {
       !!SellerLandingPageParameters[
         queryParamKey as keyof typeof SellerLandingPageParameters
       ];
-    if (!isStoreField && !isSellerLandingQueryParam) {
+    if (
+      !isStoreField &&
+      (!isSellerLandingQueryParam || options.removeSellerLandingQueryParams)
+    ) {
       urlParams.delete(queryParamKey);
     }
   });
@@ -40,10 +46,11 @@ const addNewParams = (
 
 export const getKeepStoreFieldsQueryParams = (
   location: ReturnType<typeof useLocation>,
-  toSearch: ConstructorParameters<typeof URLSearchParams>[0]
+  toSearch: ConstructorParameters<typeof URLSearchParams>[0],
+  options: { removeSellerLandingQueryParams?: boolean } = {}
 ) => {
   const urlParams = new URLSearchParams(location.search);
-  deleteNotEssentialQueryParams(urlParams);
+  deleteNonEssentialQueryParams(urlParams, options);
 
   const newQueryParams = new URLSearchParams(toSearch || "");
   addNewParams(newQueryParams, urlParams);
@@ -59,10 +66,17 @@ export function useKeepQueryParamsNavigate() {
   const location = useLocation();
   const locationRef = useRef(location);
   return useCallback(
-    (to: To, options?: NavigateOptions) => {
+    (
+      to: To,
+      options?: NavigateOptions & { removeSellerLandingQueryParams?: boolean }
+    ) => {
       const search = getKeepStoreFieldsQueryParams(
         locationRef.current,
-        to.search
+        to.search,
+        {
+          removeSellerLandingQueryParams:
+            options?.removeSellerLandingQueryParams
+        }
       );
       navigate(
         {

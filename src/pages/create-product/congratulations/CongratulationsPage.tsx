@@ -15,11 +15,9 @@ const Background = styled.div`
   flex: 1;
 `;
 
-export const CongratulationsPage: React.FC<CongratulationsPageProps> = ({
-  reset,
-  sellerId,
-  type
-}) => {
+export const CongratulationsPage: React.FC<CongratulationsPageProps> = (
+  props
+) => {
   // const { setFullWidth } = useLayoutContext();
   // useEffect(() => {
   //   setFullWidth(true);
@@ -30,7 +28,7 @@ export const CongratulationsPage: React.FC<CongratulationsPageProps> = ({
   return (
     <Background>
       <LayoutRoot fullWidth>
-        <Congratulations reset={reset} sellerId={sellerId} type={type} />
+        <Congratulations {...props} />
       </LayoutRoot>
     </Background>
   );

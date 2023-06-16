@@ -11,7 +11,6 @@ import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
 import { useConvertionRate } from "../../../components/convertion-rate/useConvertionRate";
-import { useLayoutContext } from "../../../components/layout/Context";
 import { ModalHeaderTitle } from "../../../components/modal/header/ModalHeaderTitle";
 import useOffersBacked from "../../../components/seller/common/useOffersBacked";
 import { getSellerCenterPath } from "../../../components/seller/paths";
@@ -65,6 +64,7 @@ export type CongratulationsProps = {
   reset?: () => void;
   sellerId: string;
   type: CongratulationsType;
+  onClose?: () => void;
 };
 
 const useDepositWarning = (sellerId: string) => {
@@ -158,22 +158,33 @@ const messageMap = {
 } as const;
 
 export const Congratulations: React.FC<CongratulationsProps> = ({
-  reset,
   sellerId,
-  type
+  type,
+  onClose,
+  reset
 }) => {
   const navigate = useKeepQueryParamsNavigate();
-  const { setFullWidth } = useLayoutContext();
+  // const { setFullWidth } = useLayoutContext();
   const displayDepositWarning = useDepositWarning(sellerId);
-  const navigateTo = (...args: Parameters<typeof navigate>) => {
-    setFullWidth(false);
+  const beforeNavigateTo = () => {
+    // setFullWidth(false);
     reset?.();
-    navigate(...args);
   };
-  const goHome = () => {
-    navigateTo({
-      pathname: BosonRoutes.Root
+  const navigateTo = (to: Parameters<typeof navigate>[0]) => {
+    beforeNavigateTo();
+    navigate(to, {
+      removeSellerLandingQueryParams: true
     });
+  };
+  const handleOnClose = () => {
+    if (onClose) {
+      beforeNavigateTo();
+      onClose();
+    } else {
+      navigateTo({
+        pathname: BosonRoutes.Root
+      });
+    }
   };
   const goToCreateNewProduct = () => {
     navigateTo({
@@ -184,7 +195,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
   return (
     <Container>
       <ModalHeaderTitle
-        handleOnClose={() => goHome()}
+        handleOnClose={() => handleOnClose()}
         title="Congratulations!"
         closable
       />

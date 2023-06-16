@@ -7,6 +7,7 @@ import {
   getNextTo,
   getVariableStepsFromQueryParams,
   QueryParamStep,
+  useRemoveLandingQueryParams,
   VariableStep
 } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
@@ -65,17 +66,15 @@ export default function CreateProduct() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seller]);
-  console.log(
-    "createdOffersIds",
-    createdOffersIds,
-    "searchParams",
-    searchParams
+  const removeLandingQueryParams = useRemoveLandingQueryParams();
+  const isTokenGated = searchParams.get(
+    SellerLandingPageParameters.sltokenGated
   );
   useEffect(() => {
     if (createdOffersIds.length) {
       const nextStepResult = getNextStepFromQueryParams(
         searchParams,
-        QueryParamStep.product
+        isTokenGated ? QueryParamStep.tokenproduct : QueryParamStep.product
       );
 
       if (nextStepResult) {
@@ -93,10 +92,12 @@ export default function CreateProduct() {
           to: getNextTo(nextStepResult.nextStep),
           firstActiveStep: nextStepResult.nextStepInNumber
         });
+      } else {
+        removeLandingQueryParams();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createdOffersIds]);
+  }, [createdOffersIds, removeLandingQueryParams]);
 
   if (!!seller && !isSellerCurated) {
     return <NotFound />;

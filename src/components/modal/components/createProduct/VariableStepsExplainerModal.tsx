@@ -1,6 +1,5 @@
 import { CheckCircle } from "phosphor-react";
-import React, { useEffect, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useMemo } from "react";
 import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -135,7 +134,7 @@ interface VariableStepsExplainerModalProps {
   order:
     | [VariableStep, VariableStep, VariableStep]
     | [VariableStep, VariableStep, VariableStep, VariableStep];
-  to: To;
+  to: Omit<To, "search"> & { search?: string[][] };
   text?: string;
   buttonText?: string;
   firstActiveStep?: number;
@@ -152,7 +151,6 @@ const VariableStepsExplainerModal: React.FC<
   doSetQueryParams,
   buttonText
 }) => {
-  const [, setSearchParams] = useSearchParams();
   const { isConnected } = useAccount();
   const { sellers } = useCurrentSellers();
   const navigate = useKeepQueryParamsNavigate();
@@ -161,16 +159,17 @@ const VariableStepsExplainerModal: React.FC<
   const stepsData = useMemo(() => {
     return order.map((o) => variableStepMap[o]);
   }, [order]);
-  const modalTitle = store.modalProps?.title;
-  useEffect(() => {
+  const modalTitle: string = store.modalProps?.title;
+  const nextSearchParams: string[][] = useMemo(() => {
     if (doSetQueryParams) {
       const steps = order.map((o) => variableStepToQueryParam[o]).join(",");
-      setSearchParams({
-        [SellerLandingPageParameters.slsteps]: steps,
-        [SellerLandingPageParameters.sltitle]: modalTitle ?? ""
-      });
+      return [
+        [SellerLandingPageParameters.slsteps, steps],
+        [SellerLandingPageParameters.sltitle, modalTitle ?? ""]
+      ];
     }
-  }, [doSetQueryParams, setSearchParams, order, modalTitle]);
+    return [];
+  }, [doSetQueryParams, order, modalTitle]);
   return (
     <>
       <Grid flexDirection="column" marginBottom="2.5rem">
@@ -214,7 +213,10 @@ const VariableStepsExplainerModal: React.FC<
         <BosonButton
           onClick={() => {
             if (hasSeller) {
-              navigate(to);
+              navigate({
+                ...to,
+                search: [...(to?.search ?? []), ...nextSearchParams]
+              });
             } else {
               showModal("ACCOUNT_CREATION", {
                 title: store.modalProps?.title

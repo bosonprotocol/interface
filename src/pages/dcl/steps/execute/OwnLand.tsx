@@ -77,6 +77,7 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
             </a>
           </Grid>
           <BosonButton
+            type="button"
             onClick={() => setSuccess()}
             style={{ marginTop: "3.5rem" }}
           >
