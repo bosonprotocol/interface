@@ -22,9 +22,10 @@ export const layoutPadding = css`
 `;
 
 export const LayoutRoot = styled.div<{ fullWidth?: boolean }>`
+  position: relative;
   ${({ fullWidth }) => {
     if (fullWidth) {
-      return "";
+      return css``;
     }
     return css`
       margin: 0 auto;

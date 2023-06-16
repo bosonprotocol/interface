@@ -92,7 +92,10 @@ export const DCLPage: React.FC<DCLPageProps> = () => {
   return (
     <Background
       style={{
-        background: colors.white
+        background: colors.white,
+        display: "flex",
+        flexDirection: "column",
+        flex: "1"
       }}
     >
       <Formik<FormType>
@@ -106,7 +109,14 @@ export const DCLPage: React.FC<DCLPageProps> = () => {
       >
         {() => {
           return (
-            <Form style={{ height: "100%" }}>
+            <Form
+              style={{
+                height: "100%",
+                display: "flex",
+                flex: "1",
+                flexDirection: "column"
+              }}
+            >
               <StyledGrid>
                 <ArrowLeft
                   style={{ ...iconStyle }}
@@ -152,7 +162,7 @@ export const DCLPage: React.FC<DCLPageProps> = () => {
               {currentStep === Step._0_DETAILS ? (
                 <DetailsStep goToNextStep={goToNextStep} />
               ) : currentStep === Step._1_EXECUTE ? (
-                <ExecuteStep handleOnClose={onClose} />
+                <ExecuteStep />
               ) : (
                 <div>Something went wrong, please try again...</div>
               )}

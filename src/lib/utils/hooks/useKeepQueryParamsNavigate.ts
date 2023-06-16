@@ -7,12 +7,17 @@ import {
 } from "react-router-dom";
 
 import { storeFields } from "../../../pages/custom-store/store-fields";
+import { SellerLandingPageParameters } from "../../routing/parameters";
 
-const deleteQueryParamsThatAreNotStoreFields = (urlParams: URLSearchParams) => {
+const deleteNotEssentialQueryParams = (urlParams: URLSearchParams) => {
   Array.from(urlParams.keys()).forEach((queryParamKey) => {
     const isStoreField =
       !!storeFields[queryParamKey as keyof typeof storeFields];
-    if (!isStoreField) {
+    const isSellerLandingQueryParam =
+      !!SellerLandingPageParameters[
+        queryParamKey as keyof typeof SellerLandingPageParameters
+      ];
+    if (!isStoreField && !isSellerLandingQueryParam) {
       urlParams.delete(queryParamKey);
     }
   });
@@ -38,7 +43,7 @@ export const getKeepStoreFieldsQueryParams = (
   toSearch: ConstructorParameters<typeof URLSearchParams>[0]
 ) => {
   const urlParams = new URLSearchParams(location.search);
-  deleteQueryParamsThatAreNotStoreFields(urlParams);
+  deleteNotEssentialQueryParams(urlParams);
 
   const newQueryParams = new URLSearchParams(toSearch || "");
   addNewParams(newQueryParams, urlParams);

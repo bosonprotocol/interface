@@ -24,7 +24,12 @@ import {
 } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import toast from "react-hot-toast";
-import { generatePath, useLocation, useNavigate } from "react-router-dom";
+import {
+  generatePath,
+  useLocation,
+  useNavigate,
+  useSearchParams
+} from "react-router-dom";
 import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
@@ -52,7 +57,10 @@ import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
-import { UrlParameters } from "../../lib/routing/parameters";
+import {
+  SellerLandingPageParameters,
+  UrlParameters
+} from "../../lib/routing/parameters";
 import { ProductRoutes } from "../../lib/routing/routes";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
@@ -328,7 +336,7 @@ function CreateProductInner({
 }: Props) {
   const history = useNavigate();
   const location = useLocation();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
@@ -374,10 +382,33 @@ function CreateProductInner({
   const setCurrentStepWithHistory = useCallback(
     (step: number) => {
       setCurrentStep(step);
-      history(".", { replace: true, state: { ...location.state, step } });
+      const deleteAllExceptSellerLandingQueryParams = () => {
+        Array.from(searchParams.keys()).forEach((queryParamKey) => {
+          const isSellerLandingQueryParam =
+            !!SellerLandingPageParameters[
+              queryParamKey as keyof typeof SellerLandingPageParameters
+            ];
+          if (!isSellerLandingQueryParam) {
+            searchParams.delete(queryParamKey);
+          }
+        });
+        setSearchParams(searchParams);
+      };
+      deleteAllExceptSellerLandingQueryParams();
+      history(
+        { pathname: ".", search: `?${searchParams.toString()}` },
+        {
+          replace: true,
+          state: {
+            ...location.state,
+            search: `?${searchParams.toString()}`,
+            step
+          }
+        }
+      );
       window.history.pushState(null, "", window.location.href);
     },
-    [history, location, setCurrentStep]
+    [history, location.state, searchParams, setSearchParams]
   );
 
   const onCreateNew = () => {

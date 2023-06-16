@@ -1,5 +1,4 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCallback, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -9,6 +8,7 @@ import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdat
 import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { Switch } from "../../../form/Switch";
+import ConnectButton from "../../../header/ConnectButton";
 import { CreateProfile } from "../../../product/utils";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";

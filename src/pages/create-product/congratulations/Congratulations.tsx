@@ -21,6 +21,7 @@ import GridContainer from "../../../components/ui/GridContainer";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import {
+  BosonRoutes,
   SellerCenterRoutes,
   SellerCenterSubRoutes
 } from "../../../lib/routing/routes";
@@ -39,9 +40,12 @@ import { CardCTA } from "./CardCTA";
 
 const Container = styled.div`
   background: ${colors.white};
-  margin: 3.8125rem 7.875rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   ${breakpoint.xs} {
-    margin: 4.8125rem 8.875rem;
+    margin: 4.8125rem 4.875rem;
   }
   ${breakpoint.s} {
     margin: 5.8125rem 9.875rem;
@@ -57,9 +61,10 @@ const Container = styled.div`
   }
 `;
 
-type CreateProductCongratulationsProps = {
-  reset: () => void;
+export type CongratulationsProps = {
+  reset?: () => void;
   sellerId: string;
+  type: CongratulationsType;
 };
 
 const useDepositWarning = (sellerId: string) => {
@@ -138,26 +143,48 @@ const useDepositWarning = (sellerId: string) => {
   return offersBacked.displayWarning;
 };
 
-export const CreateProductCongratulations: React.FC<
-  CreateProductCongratulationsProps
-> = ({ reset, sellerId }) => {
+export enum CongratulationsType {
+  Boulevard = "Boulevard",
+  CustomStore = "CustomStore",
+  NewProduct = "NewProduct"
+}
+
+const messageMap = {
+  [CongratulationsType.Boulevard]:
+    "Your request to sell on Boson Boulevard has been sent!",
+  [CongratulationsType.CustomStore]:
+    "Your storefront is now successfully created!",
+  [CongratulationsType.NewProduct]: "Your product is now successfully created!"
+} as const;
+
+export const Congratulations: React.FC<CongratulationsProps> = ({
+  reset,
+  sellerId,
+  type
+}) => {
   const navigate = useKeepQueryParamsNavigate();
   const { setFullWidth } = useLayoutContext();
   const displayDepositWarning = useDepositWarning(sellerId);
   const navigateTo = (...args: Parameters<typeof navigate>) => {
     setFullWidth(false);
-    reset();
+    reset?.();
     navigate(...args);
+  };
+  const goHome = () => {
+    navigateTo({
+      pathname: BosonRoutes.Root
+    });
   };
   const goToCreateNewProduct = () => {
     navigateTo({
       pathname: SellerCenterRoutes.CreateProduct
     });
   };
+  const message = messageMap[type];
   return (
     <Container>
       <ModalHeaderTitle
-        handleOnClose={() => goToCreateNewProduct()}
+        handleOnClose={() => goHome()}
         title="Congratulations!"
         closable
       />
@@ -169,7 +196,7 @@ export const CreateProductCongratulations: React.FC<
             style={{ marginBottom: "2rem" }}
           />
           <Typography fontWeight="600" $fontSize="1.5rem" textAlign="center">
-            Your product is now created and deployed in the dApp!
+            {message}
           </Typography>
         </Grid>
         <GridContainer

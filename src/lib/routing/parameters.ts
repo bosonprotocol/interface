@@ -34,3 +34,8 @@ export const UrlParameters = {
 export const CreateProductParameters = {
   tokenGated: "tokenGated"
 };
+
+export const SellerLandingPageParameters = {
+  slsteps: "slsteps", // slsteps = seller landing steps
+  sltitle: "sltitle"
+};

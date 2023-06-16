@@ -2,7 +2,7 @@ import React from "react";
 import styled, { CSSProperties } from "styled-components";
 
 import { LayoutRoot } from "../../../components/layout/Layout";
-import { VariableStep } from "../../../components/modal/components/createProduct/VariableStepsExplainerModal";
+import { VariableStep } from "../../../components/modal/components/createProduct/const";
 import { useModal } from "../../../components/modal/useModal";
 import BosonButton from "../../../components/ui/BosonButton";
 import Grid from "../../../components/ui/Grid";
@@ -16,6 +16,7 @@ import { CreateProductParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import decentralizedImg from "./assets/decentralized.webp";
 import glassesMonkeyImg from "./assets/glassesMonkey.webp";
@@ -92,8 +93,11 @@ const StyledGrid = styled(Grid)`
 `;
 
 export const SellerLandingPage: React.FC = () => {
+  const { sellers } = useCurrentSellers();
+  const hasSeller = !!sellers.length;
   const navigate = useKeepQueryParamsNavigate();
   const { showModal } = useModal();
+  console.log({ hasSeller });
   return (
     <Grid flexDirection="column" padding="5rem 0">
       <Background>
@@ -134,19 +138,22 @@ export const SellerLandingPage: React.FC = () => {
           >
             <Card
               image={<img src={visualImg} width="128" height="128" />}
-              title="Launch a Metaverse commerce experience"
+              title="Launch a Metaverse commerce store"
               subtitle="Sell physical products as NFTs in the metaverse"
               onClick={() => {
                 showModal("VARIABLE_STEPS_EXPLAINER", {
                   title: "Launch a Metaverse commerce experience",
                   order: [
                     VariableStep.CreateYourProfile,
+                    VariableStep.SetupYourWeb3Store,
                     VariableStep.CreateYourProducts,
                     VariableStep.SetupYourDCLStore
                   ],
                   to: {
-                    pathname: SellerCenterRoutes.CreateProduct
-                  }
+                    pathname: BosonRoutes.CreateStorefront
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />
@@ -164,7 +171,9 @@ export const SellerLandingPage: React.FC = () => {
                   ],
                   to: {
                     pathname: BosonRoutes.CreateStorefront
-                  }
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />
@@ -183,7 +192,9 @@ export const SellerLandingPage: React.FC = () => {
                   to: {
                     pathname: SellerCenterRoutes.CreateProduct,
                     search: [[CreateProductParameters.tokenGated, "1"]]
-                  }
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />
@@ -206,7 +217,9 @@ export const SellerLandingPage: React.FC = () => {
                   ],
                   to: {
                     pathname: BosonRoutes.CreateStorefront
-                  }
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />
@@ -224,7 +237,9 @@ export const SellerLandingPage: React.FC = () => {
                   ],
                   to: {
                     pathname: BosonRoutes.CreateStorefront
-                  }
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />
@@ -242,7 +257,9 @@ export const SellerLandingPage: React.FC = () => {
                   ],
                   to: {
                     pathname: BosonRoutes.CreateStorefront
-                  }
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />
@@ -265,7 +282,9 @@ export const SellerLandingPage: React.FC = () => {
                   ],
                   to: {
                     pathname: BosonRoutes.CreateStorefront
-                  }
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />
@@ -283,7 +302,9 @@ export const SellerLandingPage: React.FC = () => {
                   ],
                   to: {
                     pathname: BosonRoutes.CreateStorefront
-                  }
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />
@@ -301,7 +322,9 @@ export const SellerLandingPage: React.FC = () => {
                   ],
                   to: {
                     pathname: BosonRoutes.CreateStorefront
-                  }
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
                 });
               }}
             />

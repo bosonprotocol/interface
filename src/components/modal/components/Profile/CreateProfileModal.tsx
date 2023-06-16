@@ -1,5 +1,4 @@
 import { subgraph } from "@bosonprotocol/react-kit";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
@@ -11,6 +10,7 @@ import useGetLensProfiles from "../../../../lib/utils/hooks/lens/profile/useGetL
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { Switch } from "../../../form/Switch";
+import ConnectButton from "../../../header/ConnectButton";
 import { CreateProfile } from "../../../product/utils";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../ui/BosonButton";

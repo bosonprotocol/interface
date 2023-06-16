@@ -22,10 +22,17 @@ type DetailsStepProps = {
   goToNextStep: () => void;
 };
 export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
-  const { values, handleChange, handleBlur, isValid, touched, errors } =
-    useFormikContext<FormType>();
+  const {
+    values,
+    handleChange,
+    handleBlur,
+    isValid,
+    touched,
+    errors,
+    setFieldTouched
+  } = useFormikContext<FormType>();
   return (
-    <StyledDCLLayout width="auto">
+    <StyledDCLLayout width="100%">
       <Grid
         justifyContent="space-between"
         alignItems="flex-start"
@@ -132,6 +139,7 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
             type="button"
             onClick={() => {
               if (!touched.location) {
+                setFieldTouched("location", true);
                 return;
               }
               if (isValid) {
