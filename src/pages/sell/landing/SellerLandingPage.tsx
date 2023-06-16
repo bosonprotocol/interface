@@ -92,6 +92,61 @@ const StyledGrid = styled(Grid)`
   }
 `;
 
+type CommonProps = {
+  showModal: ReturnType<typeof useModal>["showModal"];
+  hasSeller: boolean;
+};
+
+const SetupDecentralizedWeb3Store = ({ showModal, hasSeller }: CommonProps) => (
+  <Card
+    image={<img src={decentralizedImg} width="104" height="128" />}
+    title="Set-up a decentralized Web3 Commerce store"
+    subtitle="Build  and customise your own bespoke store"
+    onClick={() => {
+      showModal("VARIABLE_STEPS_EXPLAINER", {
+        title: "Set-up a decentralized Web3 Commerce store",
+        order: [
+          VariableStep.CreateYourProfile,
+          VariableStep.SetupYourWeb3Store,
+          VariableStep.CreateYourProducts
+        ],
+        to: {
+          pathname: BosonRoutes.CreateStorefront
+        },
+        firstActiveStep: hasSeller ? 1 : 0,
+        doSetQueryParams: true
+      });
+    }}
+  />
+);
+
+const LaunchMetaverseCommerceExperience = ({
+  showModal,
+  hasSeller
+}: CommonProps) => (
+  <Card
+    image={<img src={visualImg} width="128" height="128" />}
+    title="Launch a Metaverse commerce store"
+    subtitle="Sell physical products as NFTs in the metaverse"
+    onClick={() => {
+      showModal("VARIABLE_STEPS_EXPLAINER", {
+        title: "Launch a Metaverse commerce experience",
+        order: [
+          VariableStep.CreateYourProfile,
+          VariableStep.SetupYourWeb3Store,
+          VariableStep.CreateYourProducts,
+          VariableStep.SetupYourDCLStore
+        ],
+        to: {
+          pathname: BosonRoutes.CreateStorefront
+        },
+        firstActiveStep: hasSeller ? 1 : 0,
+        doSetQueryParams: true
+      });
+    }}
+  />
+);
+
 export const SellerLandingPage: React.FC = () => {
   const { sellers } = useCurrentSellers();
   const hasSeller = !!sellers.length;
@@ -135,46 +190,13 @@ export const SellerLandingPage: React.FC = () => {
             title="Quick start templates"
             subtitle="Get up and running in minutes using our popular templates"
           >
-            <Card
-              image={<img src={visualImg} width="128" height="128" />}
-              title="Launch a Metaverse commerce store"
-              subtitle="Sell physical products as NFTs in the metaverse"
-              onClick={() => {
-                showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Launch a Metaverse commerce experience",
-                  order: [
-                    VariableStep.CreateYourProfile,
-                    VariableStep.SetupYourWeb3Store,
-                    VariableStep.CreateYourProducts,
-                    VariableStep.SetupYourDCLStore
-                  ],
-                  to: {
-                    pathname: BosonRoutes.CreateStorefront
-                  },
-                  firstActiveStep: hasSeller ? 1 : 0,
-                  doSetQueryParams: true
-                });
-              }}
+            <LaunchMetaverseCommerceExperience
+              hasSeller={hasSeller}
+              showModal={showModal}
             />
-            <Card
-              image={<img src={decentralizedImg} width="104" height="128" />}
-              title="Set-up a decentralized Web3 Commerce store"
-              subtitle="Build  and customise your own bespoke store"
-              onClick={() => {
-                showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Set-up a decentralized Web3 Commerce store",
-                  order: [
-                    VariableStep.CreateYourProfile,
-                    VariableStep.SetupYourWeb3Store,
-                    VariableStep.CreateYourProducts
-                  ],
-                  to: {
-                    pathname: BosonRoutes.CreateStorefront
-                  },
-                  firstActiveStep: hasSeller ? 1 : 0,
-                  doSetQueryParams: true
-                });
-              }}
+            <SetupDecentralizedWeb3Store
+              hasSeller={hasSeller}
+              showModal={showModal}
             />
             <Card
               image={<img src={tokenGatedImg} width="128" height="128" />}
@@ -182,7 +204,7 @@ export const SellerLandingPage: React.FC = () => {
               subtitle="Token-gate your collection and enable exclusive access"
               onClick={() => {
                 showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Set-up a decentralized Web3 Commerce store",
+                  title: "Enable token-gated dCommerce",
                   order: [
                     VariableStep.CreateYourProfile,
                     VariableStep.CreateYourTokenGatedProduct,
@@ -237,14 +259,15 @@ export const SellerLandingPage: React.FC = () => {
               subtitle="Token-gate your collection and enable exclusive access"
               onClick={() => {
                 showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Create Physicals",
+                  title: "Enable token-gated dCommerce",
                   order: [
                     VariableStep.CreateYourProfile,
-                    VariableStep.CreateYourProducts,
+                    VariableStep.CreateYourTokenGatedProduct,
                     VariableStep.AddSalesChannels
                   ],
                   to: {
-                    pathname: BosonRoutes.CreateStorefront
+                    pathname: SellerCenterRoutes.CreateProduct,
+                    search: [[SellerLandingPageParameters.sltokenGated, "1"]]
                   },
                   firstActiveStep: hasSeller ? 1 : 0,
                   doSetQueryParams: true
@@ -256,45 +279,13 @@ export const SellerLandingPage: React.FC = () => {
             title="Launch in new sales channels"
             subtitle="Sell physical, phygital, or token gates NFTs across  sales channels"
           >
-            <Card
-              image={<img src={decentralizedImg} width="104" height="128" />}
-              title="Set-up a decentralized Web3 Commerce store"
-              subtitle="Build  and customise your own bespoke store"
-              onClick={() => {
-                showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Create Physicals",
-                  order: [
-                    VariableStep.CreateYourProfile,
-                    VariableStep.CreateYourProducts,
-                    VariableStep.AddSalesChannels
-                  ],
-                  to: {
-                    pathname: BosonRoutes.CreateStorefront
-                  },
-                  firstActiveStep: hasSeller ? 1 : 0,
-                  doSetQueryParams: true
-                });
-              }}
+            <SetupDecentralizedWeb3Store
+              hasSeller={hasSeller}
+              showModal={showModal}
             />
-            <Card
-              image={<img src={visualImg} width="128" height="128" />}
-              title="Launch a Metaverse commerce experience"
-              subtitle="Sell physical products as NFTs in the metaverse"
-              onClick={() => {
-                showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Create Physicals",
-                  order: [
-                    VariableStep.CreateYourProfile,
-                    VariableStep.CreateYourProducts,
-                    VariableStep.AddSalesChannels
-                  ],
-                  to: {
-                    pathname: BosonRoutes.CreateStorefront
-                  },
-                  firstActiveStep: hasSeller ? 1 : 0,
-                  doSetQueryParams: true
-                });
-              }}
+            <LaunchMetaverseCommerceExperience
+              hasSeller={hasSeller}
+              showModal={showModal}
             />
             <Card
               image={<img src={glassesMonkeyImg} width="128" height="128" />}
