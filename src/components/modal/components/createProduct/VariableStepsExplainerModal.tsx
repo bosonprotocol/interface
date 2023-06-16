@@ -54,7 +54,11 @@ const Step = styled.div<{ $isActive: boolean }>`
       return css``;
     }
     return css`
-      filter: opacity(50%);
+      background: ${colors.lightGrey}AA;
+      color: ${colors.black}AA;
+      svg {
+        filter: opacity(50%);
+      }
     `;
   }}
   &:not(:last-child) {
@@ -70,6 +74,14 @@ const Step = styled.div<{ $isActive: boolean }>`
       border-left: 30rem solid transparent;
       border-right: 30rem solid transparent;
       border-top: 1rem solid ${colors.lightGrey};
+      ${({ $isActive }) => {
+        if ($isActive) {
+          return css``;
+        }
+        return css`
+          border-top: 1rem solid ${colors.lightGrey}AA;
+        `;
+      }}
     }
 
     &:after {
@@ -107,6 +119,14 @@ const Step = styled.div<{ $isActive: boolean }>`
         border-left: 1rem solid ${colors.lightGrey};
         border-bottom: 10rem solid transparent;
         border-right: none;
+        ${({ $isActive }) => {
+          if ($isActive) {
+            return css``;
+          }
+          return css`
+            border-left: 1rem solid ${colors.lightGrey}AA;
+          `;
+        }}
       }
 
       &:after {
@@ -196,7 +216,11 @@ const VariableStepsExplainerModal: React.FC<
         <StepWrapper $numSteps={stepsData.length}>
           {stepsData.map((data, index) => {
             return (
-              <Step key={data.key} $isActive={index >= firstActiveStep}>
+              <Step
+                key={data.key}
+                $isActive={index >= firstActiveStep}
+                style={{ zIndex: 1 + -index }}
+              >
                 {data.icon}
                 <Typography fontWeight="600" $fontSize="1.25rem">
                   {data.title}
