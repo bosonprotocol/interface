@@ -237,7 +237,7 @@ export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
                 searchParams,
                 QueryParamStep.store
               );
-              hideModal();
+              hideModal(!nextStepResult);
               if (nextStepResult) {
                 showModal("VARIABLE_STEPS_EXPLAINER", {
                   title:
@@ -257,7 +257,7 @@ export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
                 removeLandingQueryParams();
               }
             } else {
-              hideModal();
+              hideModal(true);
             }
           }}
         >

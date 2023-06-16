@@ -20,7 +20,6 @@ import GridContainer from "../../../components/ui/GridContainer";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import {
-  BosonRoutes,
   SellerCenterRoutes,
   SellerCenterSubRoutes
 } from "../../../lib/routing/routes";
@@ -182,7 +181,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
       onClose();
     } else {
       navigateTo({
-        pathname: BosonRoutes.Root
+        pathname: getSellerCenterPath("Dashboard")
       });
     }
   };

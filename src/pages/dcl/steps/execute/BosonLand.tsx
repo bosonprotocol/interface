@@ -46,12 +46,15 @@ export const BosonLand: React.FC<BosonLandProps> = ({ setSuccess }) => {
             </a>{" "}
             us.
           </p>
-          <Button theme="secondary">
-            {
-              // TODO: add typeform link
-            }
-            Apply <ArrowSquareOut size={24} />
-          </Button>
+          <a
+            href="https://form.typeform.com/to/opn9sH8o"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button theme="secondary">
+              Apply <ArrowSquareOut size={24} />
+            </Button>
+          </a>
           <BosonButton
             type="button"
             onClick={() => setSuccess()}

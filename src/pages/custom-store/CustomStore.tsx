@@ -6,8 +6,8 @@ import styled from "styled-components";
 import Layout from "../../components/layout/Layout";
 import { useRemoveLandingQueryParams } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
+import { getSellerCenterPath } from "../../components/seller/paths";
 import Typography from "../../components/ui/Typography";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -34,7 +34,8 @@ export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const removeLandingQueryParams = useRemoveLandingQueryParams();
-  const [isSuccess, setSuccess] = useState<boolean>(false);
+  const [showCongratulationsPage, setShowCongratulationsPage] =
+    useState<boolean>(false);
   const [hasSubmitError, setHasSubmitError] = useState<boolean>(false);
   const primaryColor = useCSSVariable("--primary");
   const storage = useIpfsStorage();
@@ -56,7 +57,7 @@ export default function CustomStore() {
     return <NotFound />;
   }
 
-  if (isSuccess) {
+  if (showCongratulationsPage) {
     return (
       <CongratulationsPage
         sellerId={sellerId}
@@ -64,7 +65,7 @@ export default function CustomStore() {
         onClose={() => {
           removeLandingQueryParams();
           navigate({
-            pathname: BosonRoutes.Root
+            pathname: getSellerCenterPath("Sales Channels")
           });
         }}
       />
@@ -125,8 +126,8 @@ export default function CustomStore() {
               title: "Congratulations!",
               ipfsUrl,
               htmlString: html,
-              onClose: () => {
-                setSuccess(true);
+              onClose: (show: boolean) => {
+                setShowCongratulationsPage(!!show);
               }
             });
           } catch (error) {

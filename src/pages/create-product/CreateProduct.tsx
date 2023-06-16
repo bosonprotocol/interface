@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import {
@@ -70,13 +70,14 @@ export default function CreateProduct() {
   const isTokenGated = searchParams.get(
     SellerLandingPageParameters.sltokenGated
   );
+  const nextStepResult = useMemo(() => {
+    return getNextStepFromQueryParams(
+      searchParams,
+      isTokenGated ? QueryParamStep.tokenproduct : QueryParamStep.product
+    );
+  }, [isTokenGated, searchParams]);
   useEffect(() => {
     if (createdOffersIds.length) {
-      const nextStepResult = getNextStepFromQueryParams(
-        searchParams,
-        isTokenGated ? QueryParamStep.tokenproduct : QueryParamStep.product
-      );
-
       if (nextStepResult) {
         hideModal();
         showModal("VARIABLE_STEPS_EXPLAINER", {
@@ -97,13 +98,13 @@ export default function CreateProduct() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createdOffersIds, removeLandingQueryParams]);
+  }, [createdOffersIds, removeLandingQueryParams, nextStepResult]);
 
   if (!!seller && !isSellerCurated) {
     return <NotFound />;
   }
 
-  return createdOffersIds.length ? (
+  return !nextStepResult && createdOffersIds.length ? (
     <CongratulationsPage
       reset={() => setCreatedOffersIds([])}
       sellerId={seller?.id}
