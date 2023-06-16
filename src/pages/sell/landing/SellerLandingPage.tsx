@@ -227,7 +227,7 @@ export const SellerLandingPage: React.FC = () => {
               title="Create Phygitals"
               subtitle="Bundle physical products with a digital twin"
               as="a"
-              href="https://form.typeform.com/to/TODO:"
+              href="https://form.typeform.com/to/NaiNUsqn"
               target="_blank"
               rel="noopener noreferrer"
             />
@@ -301,7 +301,7 @@ export const SellerLandingPage: React.FC = () => {
               title="Sell on NFT Marketplaces"
               subtitle="Tokenize physical products and drop on NFT marketplaces"
               as="a"
-              href="https://form.typeform.com/to/TODO:"
+              href="https://form.typeform.com/to/yMuFfFwd"
               target="_blank"
               rel="noopener noreferrer"
             />
