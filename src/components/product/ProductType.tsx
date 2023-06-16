@@ -13,6 +13,7 @@ import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import {
   getItemFromStorage,
   saveItemInStorage
@@ -127,6 +128,7 @@ export default function ProductType({
   isDraftModalClosed
 }: Props) {
   const { openConnectModal } = useConnectModal();
+  const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
   const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
     useCreateForm();
@@ -287,25 +289,35 @@ export default function ProductType({
       // Seller needs to set their profile
       if (!store.modalType) {
         // Show create profile popup
-        showModal(
-          MODAL_TYPES.CREATE_PROFILE,
-          {
-            title: "Create Profile",
-            initialRegularCreateProfile: values["createYourProfile"],
-            seller: currentSellers?.length ? currentSellers[0] : undefined,
-            lensProfile: lens?.length ? lens[0] : undefined,
-            onRegularProfileCreated: setProfileInForm,
-            closable: false,
-            onClose: async () => {
-              await refetch();
-            }
+        showModal("ACCOUNT_CREATION", {
+          title: store.modalProps?.title,
+          onClose: () => {
+            navigate({
+              pathname: BosonRoutes.Root
+            });
           },
-          "auto",
-          undefined,
-          {
-            xs: `${breakpointNumbers.m + 1}px`
+          onClickCreateAccount: () => {
+            showModal(
+              MODAL_TYPES.CREATE_PROFILE,
+              {
+                title: "Create Profile",
+                initialRegularCreateProfile: values["createYourProfile"],
+                seller: currentSellers?.length ? currentSellers[0] : undefined,
+                lensProfile: lens?.length ? lens[0] : undefined,
+                onRegularProfileCreated: setProfileInForm,
+                closable: false,
+                onClose: async () => {
+                  await refetch();
+                }
+              },
+              "auto",
+              undefined,
+              {
+                xs: `${breakpointNumbers.m + 1}px`
+              }
+            );
           }
-        );
+        });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -324,7 +336,7 @@ export default function ProductType({
   ]);
   const [wasConnectModalOpen, setWasConnectModalOpen] =
     useState<boolean>(false);
-  const navigate = useNavigate();
+  const reactRouterNavigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const prevPath = (state as { prevPath: string })?.prevPath;
@@ -342,7 +354,7 @@ export default function ProductType({
           {({ connectModalOpen }) => {
             if (wasConnectModalOpen && !connectModalOpen) {
               if (prevPath && prevPath !== "/sell/create-product") {
-                navigate(-1);
+                reactRouterNavigate(-1);
               } else {
                 return <Navigate to={{ pathname: BosonRoutes.Root }} />;
               }

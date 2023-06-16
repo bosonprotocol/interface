@@ -1,15 +1,19 @@
 import { ArrowRight } from "phosphor-react";
 import React from "react";
 
-import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import personWatchImg from "./assets/personWatch.webp";
 
-export const AccountCreationModal: React.FC = () => {
-  const navigate = useKeepQueryParamsNavigate();
+type AccountCreationModalProps = {
+  onClickCreateAccount?: () => void;
+};
+
+export const AccountCreationModal: React.FC<AccountCreationModalProps> = ({
+  onClickCreateAccount
+}) => {
   const { showModal } = useModal();
   return (
     <Grid justifyContent="center" flexDirection="column">
@@ -30,8 +34,11 @@ export const AccountCreationModal: React.FC = () => {
         <BosonButton
           style={{ marginTop: "2.5rem" }}
           onClick={() => {
-            // navigate({ pathname: SellerCenterRoutes.CreateProduct });
-            showModal("CREATE_PROFILE");
+            if (onClickCreateAccount) {
+              onClickCreateAccount();
+            } else {
+              showModal("CREATE_PROFILE");
+            }
           }}
         >
           Create an account <ArrowRight size={15} />

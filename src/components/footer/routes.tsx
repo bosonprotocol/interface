@@ -126,7 +126,10 @@ export const getSellRoutes = ({
 }) => {
   const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
-
+  productRoutes.push({
+    name: "Sell",
+    url: BosonRoutes.Sell
+  });
   productRoutes.push({
     name: "Create Products",
     url: SellerCenterRoutes.CreateProduct

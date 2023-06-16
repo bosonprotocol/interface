@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 
 import Grid from "../../../components/ui/Grid";
@@ -34,8 +34,10 @@ interface CardProps {
   image: ReactNode;
   title: string;
   subtitle: string;
+  as?: React.ElementType;
   tags?: string[];
-  onClick?: HTMLAttributes<HTMLDivElement>["onClick"];
+  onClick?: () => void;
+  [x: string]: any;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -43,7 +45,9 @@ export const Card: React.FC<CardProps> = ({
   title,
   subtitle,
   tags,
-  onClick
+  onClick,
+  as,
+  ...rest
 }) => {
   return (
     <StyledGrid
@@ -51,6 +55,8 @@ export const Card: React.FC<CardProps> = ({
       alignItems="flex-start"
       justifyContent="flex-start"
       onClick={onClick}
+      as={as}
+      {...rest}
     >
       {image}
       <Typography

@@ -97,7 +97,6 @@ export const SellerLandingPage: React.FC = () => {
   const hasSeller = !!sellers.length;
   const navigate = useKeepQueryParamsNavigate();
   const { showModal } = useModal();
-  console.log({ hasSeller });
   return (
     <Grid flexDirection="column" padding="5rem 0">
       <Background>
@@ -227,21 +226,10 @@ export const SellerLandingPage: React.FC = () => {
               image={<img src={sneakerNftImg} width="128" height="128" />}
               title="Create Phygitals"
               subtitle="Bundle physical products with a digital twin"
-              onClick={() => {
-                showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Create Physicals",
-                  order: [
-                    VariableStep.CreateYourProfile,
-                    VariableStep.CreateYourProducts,
-                    VariableStep.AddSalesChannels
-                  ],
-                  to: {
-                    pathname: BosonRoutes.CreateStorefront
-                  },
-                  firstActiveStep: hasSeller ? 1 : 0,
-                  doSetQueryParams: true
-                });
-              }}
+              as="a"
+              href="https://form.typeform.com/to/TODO:"
+              target="_blank"
+              rel="noopener noreferrer"
             />
             <Card
               image={<img src={tokenGatedImg} width="128" height="128" />}
@@ -312,21 +300,10 @@ export const SellerLandingPage: React.FC = () => {
               image={<img src={glassesMonkeyImg} width="128" height="128" />}
               title="Sell on NFT Marketplaces"
               subtitle="Tokenize physical products and drop on NFT marketplaces"
-              onClick={() => {
-                showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Create Physicals",
-                  order: [
-                    VariableStep.CreateYourProfile,
-                    VariableStep.CreateYourProducts,
-                    VariableStep.AddSalesChannels
-                  ],
-                  to: {
-                    pathname: BosonRoutes.CreateStorefront
-                  },
-                  firstActiveStep: hasSeller ? 1 : 0,
-                  doSetQueryParams: true
-                });
-              }}
+              as="a"
+              href="https://form.typeform.com/to/TODO:"
+              target="_blank"
+              rel="noopener noreferrer"
             />
           </RowWithCards>
         </Grid>
