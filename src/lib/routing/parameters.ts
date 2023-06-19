@@ -30,3 +30,9 @@ export const UrlParameters = {
   tokenId: "id",
   disputeResolverPageId: "disputeResolverPage"
 } as const;
+
+export const SellerLandingPageParameters = {
+  slsteps: "slsteps", // slsteps = seller landing steps
+  sltitle: "sltitle",
+  sltokenGated: "sltokenGated"
+};

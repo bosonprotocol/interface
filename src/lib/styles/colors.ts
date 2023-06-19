@@ -29,6 +29,7 @@ export const colors = {
   darkGrey: "#556072",
   darkGreyTimeStamp: "#E8EAF1",
   lightGrey: "#F1F3F9",
+  lightGrey2: "#eff0f7",
   border: "#5560720f",
   white: "#FFFFFF",
   primaryBgColor: "#FFFFFF"

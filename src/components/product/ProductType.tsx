@@ -13,16 +13,16 @@ import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import {
   getItemFromStorage,
   saveItemInStorage
 } from "../../lib/utils/hooks/useLocalStorage";
 import Navigate from "../customNavigation/Navigate";
-import { FormField } from "../form";
+import { Error as SimpleError, FormField } from "../form";
 import { authTokenTypes } from "../modal/components/Profile/Lens/const";
 import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
 import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
-import { MODAL_TYPES } from "../modal/ModalComponents";
 import { useModal } from "../modal/useModal";
 import { getSellerCenterPath } from "../seller/paths";
 import BosonButton from "../ui/BosonButton";
@@ -127,8 +127,10 @@ export default function ProductType({
   isDraftModalClosed
 }: Props) {
   const { openConnectModal } = useConnectModal();
+  const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const { handleChange, values, nextIsDisabled } = useCreateForm();
+  const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
+    useCreateForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
     useField<CreateYourProfile["createYourProfile"]>("createYourProfile");
   const isProfileSetFromForm = (
@@ -179,10 +181,6 @@ export default function ProductType({
   const isAdmin = currentRoles?.find((role) => role === "admin");
   const isSellerNotAssistant = (isClerk || isAdmin) && !isAssistant;
 
-  // If the seller exists but no LENS profile attached to it, it's a regular seller
-  // const isRegularSeller =
-  //   currentSellers && currentSellers?.length > 0 && !lens?.length;
-
   const isAdminLinkedToLens =
     !isLoading &&
     isSuccess &&
@@ -204,18 +202,7 @@ export default function ProductType({
       enabled: false
     }
   );
-  // const currentAssistant = currentSellers.find((seller) => {
-  //   return seller.assistant.toLowerCase() === address?.toLowerCase();
-  // }); // lens profile of the current user
-  // const assistantLens: Profile | null = useMemo(
-  //   () =>
-  //     lens.find((lensProfile) => {
-  //       const lensIdDecimal = getLensTokenIdDecimal(lensProfile.id).toString();
-  //       const authTokenId = currentAssistant?.authTokenId;
-  //       return lensIdDecimal === authTokenId;
-  //     }) || null,
-  //   [currentAssistant?.authTokenId, lens]
-  // );
+
   const setProfileInForm = useCallback(
     (regularProfile: CreateYourProfile["createYourProfile"]) => {
       helpersCreateYourProfile.setValue(regularProfile);
@@ -301,25 +288,35 @@ export default function ProductType({
       // Seller needs to set their profile
       if (!store.modalType) {
         // Show create profile popup
-        showModal(
-          MODAL_TYPES.CREATE_PROFILE,
-          {
-            title: "Create Profile",
-            initialRegularCreateProfile: values["createYourProfile"],
-            seller: currentSellers?.length ? currentSellers[0] : undefined,
-            lensProfile: lens?.length ? lens[0] : undefined,
-            onRegularProfileCreated: setProfileInForm,
-            closable: false,
-            onClose: async () => {
-              await refetch();
-            }
+        showModal("ACCOUNT_CREATION", {
+          title: store.modalProps?.title,
+          onClose: () => {
+            navigate({
+              pathname: BosonRoutes.Root
+            });
           },
-          "auto",
-          undefined,
-          {
-            xs: `${breakpointNumbers.m + 1}px`
+          onClickCreateAccount: () => {
+            showModal(
+              "CREATE_PROFILE",
+              {
+                title: "Create Profile",
+                initialRegularCreateProfile: values["createYourProfile"],
+                seller: currentSellers?.length ? currentSellers[0] : undefined,
+                lensProfile: lens?.length ? lens[0] : undefined,
+                onRegularProfileCreated: setProfileInForm,
+                closable: false,
+                onClose: async () => {
+                  await refetch();
+                }
+              },
+              "auto",
+              undefined,
+              {
+                xs: `${breakpointNumbers.m + 1}px`
+              }
+            );
           }
-        );
+        });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -338,7 +335,7 @@ export default function ProductType({
   ]);
   const [wasConnectModalOpen, setWasConnectModalOpen] =
     useState<boolean>(false);
-  const navigate = useNavigate();
+  const reactRouterNavigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const prevPath = (state as { prevPath: string })?.prevPath;
@@ -356,7 +353,7 @@ export default function ProductType({
           {({ connectModalOpen }) => {
             if (wasConnectModalOpen && !connectModalOpen) {
               if (prevPath && prevPath !== "/sell/create-product") {
-                navigate(-1);
+                reactRouterNavigate(-1);
               } else {
                 return <Navigate to={{ pathname: BosonRoutes.Root }} />;
               }
@@ -387,6 +384,7 @@ export default function ProductType({
                   value="physical"
                   checked={values.productType.productType === "physical"}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
                 <Grid
                   justifyContent="center"
@@ -413,6 +411,7 @@ export default function ProductType({
                   value="phygital"
                   checked={values.productType.productType === "phygital"}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   disabled
                 />
                 <Grid
@@ -443,6 +442,13 @@ export default function ProductType({
                 </Grid>
               </Label>
             </Grid>
+            <SimpleError
+              display={
+                touched.productType?.productType &&
+                !!errors?.productType?.productType
+              }
+              message={errors?.productType?.productType}
+            />
           </FormField>
           <FormField
             title="Product variants"
@@ -459,6 +465,7 @@ export default function ProductType({
                   value="oneItemType"
                   checked={values.productType.productVariant === "oneItemType"}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
                 <Grid
                   justifyContent="center"
@@ -487,6 +494,7 @@ export default function ProductType({
                     values.productType.productVariant === "differentVariants"
                   }
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
                 <Grid
                   justifyContent="center"
@@ -507,6 +515,13 @@ export default function ProductType({
                 </Grid>
               </Label>
             </Grid>
+            <SimpleError
+              display={
+                touched.productType?.productVariant &&
+                !!errors?.productType?.productVariant
+              }
+              message={errors?.productType?.productVariant}
+            />
           </FormField>
           <FormField
             title="Token Gating"
@@ -523,6 +538,7 @@ export default function ProductType({
                   value="false"
                   checked={values.productType.tokenGatedOffer === "false"}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
                 <Grid
                   justifyContent="center"
@@ -549,6 +565,7 @@ export default function ProductType({
                   value="true"
                   checked={values.productType.tokenGatedOffer === "true"}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
                 <Grid
                   justifyContent="center"
@@ -569,6 +586,13 @@ export default function ProductType({
                 </Grid>
               </Label>
             </Grid>
+            <SimpleError
+              display={
+                touched.productType?.tokenGatedOffer &&
+                !!errors?.productType?.tokenGatedOffer
+              }
+              message={errors?.productType?.tokenGatedOffer}
+            />
           </FormField>
         </GridContainer>
         <ProductButtonGroup>

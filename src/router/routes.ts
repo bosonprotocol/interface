@@ -14,6 +14,7 @@ import { DCLPage } from "../pages/dcl/DCLPage";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
+import SellerLandingPage from "../pages/sell/landing/SellerLandingPage";
 import SellerCenterPage from "../pages/sell/SellerCenter";
 
 const AboutPage = lazy(() => import("../pages/about/AboutPage"));
@@ -101,6 +102,17 @@ export default [
       withFooter: false
     },
     role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+  },
+  {
+    ...base,
+    path: BosonRoutes.Sell,
+    component: SellerLandingPage,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: true,
+      fluidHeader: false
+    }
   },
   {
     ...base,

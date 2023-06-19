@@ -1,3 +1,7 @@
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
+
+import { SellerLandingPageParameters } from "../../../lib/routing/parameters";
 import {
   clearLocalStorage,
   getItemFromStorage,
@@ -9,15 +13,32 @@ import type { CreateProductForm } from "./types";
 
 const MAIN_KEY = "create-product";
 export function useInitialValues() {
-  const initialValues = getItemFromStorage<CreateProductForm | null>(
-    MAIN_KEY,
-    null
+  const [searchParams] = useSearchParams();
+  const isTokenGated = searchParams.get(
+    SellerLandingPageParameters.sltokenGated
+  );
+  const initialValues = useMemo(
+    () => getItemFromStorage<CreateProductForm | null>(MAIN_KEY, null),
+    []
+  );
+  const cloneBaseValues = useMemo(() => structuredClone(baseValues), []);
+  const cloneInitialValues = useMemo(
+    () =>
+      initialValues
+        ? structuredClone(initialValues)
+        : ({} as Partial<NonNullable<typeof initialValues>>),
+    [initialValues]
   );
 
+  if (isTokenGated) {
+    cloneBaseValues.productType.tokenGatedOffer = "true";
+    cloneInitialValues.productType.tokenGatedOffer = "true";
+  }
+
   return {
-    shouldDisplayModal: initialValues !== null,
-    base: baseValues,
-    draft: initialValues,
+    shouldDisplayModal: cloneInitialValues !== null,
+    base: cloneBaseValues,
+    draft: cloneInitialValues,
     remove: removeItemInStorage,
     save: saveItemInStorage,
     clear: clearLocalStorage,

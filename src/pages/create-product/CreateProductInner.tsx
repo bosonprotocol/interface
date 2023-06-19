@@ -24,7 +24,12 @@ import {
 } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import toast from "react-hot-toast";
-import { generatePath, useLocation, useNavigate } from "react-router-dom";
+import {
+  generatePath,
+  useLocation,
+  useNavigate,
+  useSearchParams
+} from "react-router-dom";
 import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
@@ -42,8 +47,7 @@ import {
   CreateProductForm,
   OPTIONS_EXCHANGE_POLICY,
   optionUnitKeys,
-  TOKEN_TYPES,
-  TokenGating
+  TOKEN_TYPES
 } from "../../components/product/utils";
 import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
@@ -52,7 +56,10 @@ import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
-import { UrlParameters } from "../../lib/routing/parameters";
+import {
+  SellerLandingPageParameters,
+  UrlParameters
+} from "../../lib/routing/parameters";
 import { ProductRoutes } from "../../lib/routing/routes";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
@@ -105,7 +112,6 @@ type GetProductV1MetadataProps = {
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
-  tokenGating: TokenGating["tokenGating"];
 };
 async function getProductV1Metadata({
   contactPreference,
@@ -122,8 +128,7 @@ async function getProductV1Metadata({
   visualImages,
   shippingInfo,
   termsOfExchange,
-  supportedJurisdictions,
-  tokenGating
+  supportedJurisdictions
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
   const profileImage = createYourProfile?.logo?.[0];
   const coverImage = createYourProfile?.coverPicture?.[0];
@@ -328,7 +333,7 @@ function CreateProductInner({
 }: Props) {
   const history = useNavigate();
   const location = useLocation();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
@@ -374,10 +379,33 @@ function CreateProductInner({
   const setCurrentStepWithHistory = useCallback(
     (step: number) => {
       setCurrentStep(step);
-      history(".", { replace: true, state: { ...location.state, step } });
+      const deleteAllExceptSellerLandingQueryParams = () => {
+        Array.from(searchParams.keys()).forEach((queryParamKey) => {
+          const isSellerLandingQueryParam =
+            !!SellerLandingPageParameters[
+              queryParamKey as keyof typeof SellerLandingPageParameters
+            ];
+          if (!isSellerLandingQueryParam) {
+            searchParams.delete(queryParamKey);
+          }
+        });
+        setSearchParams(searchParams);
+      };
+      deleteAllExceptSellerLandingQueryParams();
+      history(
+        { pathname: ".", search: `?${searchParams.toString()}` },
+        {
+          replace: true,
+          state: {
+            ...location.state,
+            search: `?${searchParams.toString()}`,
+            step
+          }
+        }
+      );
       window.history.pushState(null, "", window.location.href);
     },
-    [history, location, setCurrentStep]
+    [history, location.state, searchParams, setSearchParams]
   );
 
   const onCreateNew = () => {
@@ -538,8 +566,7 @@ function CreateProductInner({
       productVariantsImages,
       productType,
       termsOfExchange,
-      shippingInfo,
-      tokenGating
+      shippingInfo
     } = values;
 
     const productMainImageLink: string | undefined =
@@ -720,8 +747,7 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions,
-          tokenGating
+          supportedJurisdictions
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -808,8 +834,7 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions,
-          tokenGating
+          supportedJurisdictions
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
@@ -893,7 +918,6 @@ function CreateProductInner({
         }
       });
     } catch (error: any) {
-      // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
       const hasUserRejectedTx =
         "code" in error &&
@@ -990,6 +1014,7 @@ function CreateProductInner({
           enableReinitialize
         >
           {({ values }) => {
+            // TODO: fix: these setState calls cause this warning: Warning: Cannot update a component (`CreateProductInner`) while rendering a different component (`Formik`). To locate the bad setState() call inside `Formik`, follow the stack trace as described in
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
