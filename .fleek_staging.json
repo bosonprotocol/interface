@@ -9,6 +9,7 @@
   "build": {
     "baseDir": "",
     "publicDir": "build",
+    "command": "npm run build && cp ./ipfs-404.html ./build/ipfs-404.html",
     "rootDir": ""
   }
 }
