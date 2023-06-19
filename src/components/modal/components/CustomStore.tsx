@@ -240,8 +240,9 @@ export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
               );
               hideModal(!nextStepResult);
               if (nextStepResult) {
+                const title = getSlTitle(searchParams);
                 showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: getSlTitle(searchParams),
+                  title,
                   doSetQueryParams: false,
                   order: getVariableStepsFromQueryParams(searchParams) as [
                     VariableStep,

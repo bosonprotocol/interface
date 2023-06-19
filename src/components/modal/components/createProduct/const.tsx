@@ -107,14 +107,22 @@ export const variableStepMap = {
   }
 };
 
+export const flowsTitles = {
+  "Set-up a decentralized Web3 Commerce store": true,
+  "Launch a Metaverse commerce store": true,
+  "Enable token-gated dCommerce": true,
+  "Create Physicals": true,
+  "Create Phygitals": true,
+  "Create token-gated offers": true,
+  "Sell on NFT Marketplaces": true
+} as const;
+
 export const getSlTitle = (searchParams: URLSearchParams): string => {
   const candidateTitle =
     searchParams.get(SellerLandingPageParameters.sltitle) ?? "";
   if (
     candidateTitle &&
-    Object.values(variableStepMap).some(
-      (value) => value.title === candidateTitle
-    )
+    flowsTitles[candidateTitle as keyof typeof flowsTitles]
   ) {
     return candidateTitle;
   }

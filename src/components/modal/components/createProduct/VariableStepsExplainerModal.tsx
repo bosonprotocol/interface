@@ -243,7 +243,14 @@ const VariableStepsExplainerModal: React.FC<
               });
             } else {
               showModal("ACCOUNT_CREATION", {
-                title: store.modalProps?.title
+                title: store.modalProps?.title,
+                waitUntilIndexed: true,
+                onCloseCreateProfile: () => {
+                  navigate({
+                    ...to,
+                    search: [...(to?.search ?? []), ...nextSearchParams]
+                  });
+                }
               });
             }
           }}

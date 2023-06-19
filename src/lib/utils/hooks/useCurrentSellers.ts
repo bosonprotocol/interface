@@ -377,12 +377,14 @@ export function useCurrentSellers({
     sellers: sellerValues,
     lens,
     refetch: async () => {
-      enableResultByAddress && resultByAddress.refetch();
-      enableResultById && resultById.refetch();
-      enableResultLensId && resultByLensId.refetch();
-      enableSellerById && refetchFetchSellers();
-      enableSellerById && sellerById.refetch();
-      enableResultLens && resultLens.refetch();
+      return Promise.allSettled([
+        enableResultByAddress && resultByAddress.refetch(),
+        enableResultById && resultById.refetch(),
+        enableResultLensId && resultByLensId.refetch(),
+        enableSellerById && refetchFetchSellers(),
+        enableSellerById && sellerById.refetch(),
+        enableResultLens && resultLens.refetch()
+      ]);
     }
   };
 }

@@ -275,7 +275,11 @@ export default function Seller() {
                 )}
                 {isMySeller && (
                   <div style={{ marginLeft: "1.5rem" }}>
-                    <EditProfile onClose={refetch} />
+                    <EditProfile
+                      onClose={() => {
+                        refetch();
+                      }}
+                    />
                   </div>
                 )}
                 <SellerSocial

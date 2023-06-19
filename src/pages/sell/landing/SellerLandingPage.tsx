@@ -130,7 +130,7 @@ const LaunchMetaverseCommerceExperience = ({
     subtitle="Sell physical products as NFTs in the metaverse"
     onClick={() => {
       showModal("VARIABLE_STEPS_EXPLAINER", {
-        title: "Launch a Metaverse commerce experience",
+        title: "Launch a Metaverse commerce store",
         order: [
           VariableStep.CreateYourProfile,
           VariableStep.SetupYourWeb3Store,
@@ -259,7 +259,7 @@ export const SellerLandingPage: React.FC = () => {
               subtitle="Token-gate your collection and enable exclusive access"
               onClick={() => {
                 showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Enable token-gated dCommerce",
+                  title: "Enable token-gated offers",
                   order: [
                     VariableStep.CreateYourProfile,
                     VariableStep.CreateYourTokenGatedProduct,

@@ -8,6 +8,7 @@ import { colors } from "../../../../lib/styles/colors";
 import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
+import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { Switch } from "../../../form/Switch";
 import ConnectButton from "../../../header/ConnectButton";
@@ -23,18 +24,42 @@ import { ProfileType } from "./const";
 import LensProfileFlow from "./Lens/LensProfileFlow";
 import { CreateRegularProfileFlow } from "./Regular/CreateRegularProfileFlow";
 
+const waitForIndexedSeller = async (
+  refetch: ReturnType<typeof useCurrentSellers>["refetch"]
+) => {
+  let i = 0;
+  while (i < 100) {
+    const r = await refetch();
+    const [resultByAddress] = r;
+    if (resultByAddress.status === "fulfilled") {
+      const val = resultByAddress.value;
+      if (val) {
+        const hasSellers = val.data?.sellers?.length;
+        if (hasSellers) {
+          break;
+        }
+      }
+    }
+    await new Promise<void>((resolve) => setTimeout(() => resolve(), 300));
+
+    i++;
+  }
+};
+
 interface Props {
-  initialRegularCreateProfile: CreateProfile;
+  initialRegularCreateProfile?: CreateProfile;
   onRegularProfileCreated?: (createValues: CreateProfile) => void;
   seller?: subgraph.SellerFieldsFragment;
   lensProfile?: Profile;
+  waitUntilIndexed?: boolean;
 }
 
 export default function CreateProfileModal({
   initialRegularCreateProfile,
   onRegularProfileCreated,
   seller,
-  lensProfile: selectedProfile
+  lensProfile: selectedProfile,
+  waitUntilIndexed
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
@@ -67,6 +92,7 @@ export default function CreateProfileModal({
   const [switchChecked, setSwitchChecked] = useState<boolean>(
     profileType === ProfileType.LENS
   );
+  const { refetch } = useCurrentSellers();
   const setSwitchAndProfileType = useCallback((switchToLens: boolean) => {
     setSwitchChecked(switchToLens);
     setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
@@ -122,11 +148,13 @@ export default function CreateProfileModal({
   if (profileType === undefined && hasLensProfile) {
     return <ChooseProfileType setProfileType={setProfileType} />;
   }
-
   return profileType === ProfileType.LENS ? (
     <LensProfileFlow
       onSubmit={async (id, overrides) => {
-        hideModal(selectedProfile);
+        if (waitUntilIndexed) {
+          await waitForIndexedSeller(refetch);
+        }
+        hideModal(true);
         if (selectedProfile) {
           onRegularProfileCreated?.(overrides);
         }
@@ -141,12 +169,16 @@ export default function CreateProfileModal({
   ) : (
     <CreateRegularProfileFlow
       initialData={initialRegularCreateProfile}
-      onSubmit={(regularProfile) => {
+      onSubmit={async (regularProfile) => {
+        if (waitUntilIndexed) {
+          await waitForIndexedSeller(refetch);
+        }
+
         toast((t) => (
           <SuccessTransactionToast t={t} action="Create Seller Account" />
         ));
         onRegularProfileCreated?.(regularProfile);
-        hideModal();
+        hideModal(true);
       }}
       switchButton={SwitchButton}
     />

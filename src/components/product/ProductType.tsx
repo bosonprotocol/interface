@@ -23,7 +23,6 @@ import { Error as SimpleError, FormField } from "../form";
 import { authTokenTypes } from "../modal/components/Profile/Lens/const";
 import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
 import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
-import { MODAL_TYPES } from "../modal/ModalComponents";
 import { useModal } from "../modal/useModal";
 import { getSellerCenterPath } from "../seller/paths";
 import BosonButton from "../ui/BosonButton";
@@ -298,7 +297,7 @@ export default function ProductType({
           },
           onClickCreateAccount: () => {
             showModal(
-              MODAL_TYPES.CREATE_PROFILE,
+              "CREATE_PROFILE",
               {
                 title: "Create Profile",
                 initialRegularCreateProfile: values["createYourProfile"],

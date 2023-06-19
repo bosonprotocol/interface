@@ -9,10 +9,14 @@ import personWatchImg from "./assets/personWatch.webp";
 
 type AccountCreationModalProps = {
   onClickCreateAccount?: () => void;
+  onCloseCreateProfile?: () => void;
+  waitUntilIndexed?: boolean;
 };
 
 export const AccountCreationModal: React.FC<AccountCreationModalProps> = ({
-  onClickCreateAccount
+  onClickCreateAccount,
+  onCloseCreateProfile,
+  waitUntilIndexed
 }) => {
   const { showModal } = useModal();
   return (
@@ -37,7 +41,14 @@ export const AccountCreationModal: React.FC<AccountCreationModalProps> = ({
             if (onClickCreateAccount) {
               onClickCreateAccount();
             } else {
-              showModal("CREATE_PROFILE");
+              showModal("CREATE_PROFILE", {
+                waitUntilIndexed: !!waitUntilIndexed,
+                onClose: (isCreated: boolean) => {
+                  if (isCreated) {
+                    onCloseCreateProfile?.();
+                  }
+                }
+              });
             }
           }}
         >
