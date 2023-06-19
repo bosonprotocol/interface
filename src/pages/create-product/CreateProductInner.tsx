@@ -569,8 +569,7 @@ function CreateProductInner({
       productVariantsImages,
       productType,
       termsOfExchange,
-      shippingInfo,
-      tokenGating
+      shippingInfo
     } = values;
 
     const productMainImageLink: string | undefined =
@@ -922,7 +921,6 @@ function CreateProductInner({
         }
       });
     } catch (error: any) {
-      // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
       const hasUserRejectedTx =
         "code" in error &&
