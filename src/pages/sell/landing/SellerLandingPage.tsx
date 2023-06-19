@@ -237,7 +237,7 @@ export const SellerLandingPage: React.FC = () => {
                     VariableStep.AddSalesChannels
                   ],
                   to: {
-                    pathname: BosonRoutes.CreateStorefront
+                    pathname: SellerCenterRoutes.CreateProduct
                   },
                   firstActiveStep: hasSeller ? 1 : 0,
                   doSetQueryParams: true
