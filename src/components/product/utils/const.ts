@@ -104,11 +104,11 @@ export const TOKEN_TYPES = [
 export const TOKEN_CRITERIA = [
   {
     value: "minbalance",
-    label: "minBalance"
+    label: "Collection balance"
   },
   {
     value: "tokenid",
-    label: "tokenId"
+    label: "Specific token"
   }
 ] as const;
 
