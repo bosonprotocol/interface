@@ -379,9 +379,6 @@ function CreateProductInner({
   const setCurrentStepWithHistory = useCallback(
     (step: number) => {
       setCurrentStep(step);
-      // delete all query params except for:
-      // - seller landing query params so that the state of the flows is preserved
-      // - create product query params
       const deleteAllExceptSellerLandingQueryParams = () => {
         Array.from(searchParams.keys()).forEach((queryParamKey) => {
           const isSellerLandingQueryParam =
