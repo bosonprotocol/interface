@@ -32,8 +32,8 @@ export const AccountCreationModal: React.FC<AccountCreationModalProps> = ({
           Create an account in 2 Minutes
         </Typography>
         <Typography fontWeight="400" $fontSize="1.25rem">
-          There was no account found connected to you wallet. Create a new
-          account in minutes to start your seller experience.
+          There was no account found connected to you wallet. Create an account
+          in minutes to start selling on Boson.
         </Typography>
         <BosonButton
           style={{ marginTop: "2.5rem" }}

@@ -226,7 +226,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
           <CardCTA
             icon={<Megaphone color={colors.secondary} />}
             title="Add Sales Channels"
-            text="You can now add more Sales Channels to promote and sell your product at different places."
+            text="Adding more sales channels expands the reach of your products by selling them  across different destinations."
             cta={
               <Button
                 theme="secondary"
@@ -245,8 +245,8 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
           />
           <CardCTA
             icon={<Storefront color={colors.secondary} />}
-            title="Create new product"
-            text="Save time when creating multiple products. You can add new channels and pay your deposits later."
+            title="Create new products"
+            text="Create new products and benefits to grow revenues and engage new audiences."
             cta={
               <Button
                 theme="secondary"
@@ -254,7 +254,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
                   goToCreateNewProduct();
                 }}
               >
-                Create new product <Plus color={colors.secondary} size={20} />
+                Create new products <Plus color={colors.secondary} size={20} />
               </Button>
             }
           />
@@ -262,7 +262,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
             <CardCTA
               icon={<Warning color={colors.green} />}
               title="Funds needed to go live"
-              text="You must provide funds to cover your seller deposit. For multiple products you can do all at once."
+              text="Provide funds  in the seller pool for your offer to go live. Funds in the pool will apply to all your products."
               cta={
                 <Button
                   theme="bosonPrimary"
