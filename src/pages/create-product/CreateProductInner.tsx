@@ -751,8 +751,7 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions,
-          tokenGating
+          supportedJurisdictions
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -839,8 +838,7 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions,
-          tokenGating
+          supportedJurisdictions
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
