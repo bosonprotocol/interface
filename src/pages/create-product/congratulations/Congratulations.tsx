@@ -144,6 +144,7 @@ const useDepositWarning = (sellerId: string) => {
 
 export enum CongratulationsType {
   Boulevard = "Boulevard",
+  OwnLand = "OwnLand",
   CustomStore = "CustomStore",
   NewProduct = "NewProduct"
 }
@@ -151,6 +152,8 @@ export enum CongratulationsType {
 const messageMap = {
   [CongratulationsType.Boulevard]:
     "Your request to sell on Boson Boulevard has been sent!",
+  [CongratulationsType.OwnLand]:
+    "You have reviewed the DCL Metaverse Commerce toolkit!",
   [CongratulationsType.CustomStore]:
     "Your storefront is now successfully created!",
   [CongratulationsType.NewProduct]: "Your product is now successfully created!"

@@ -107,6 +107,20 @@ export const variableStepMap = {
   }
 };
 
+export const getSlTitle = (searchParams: URLSearchParams): string => {
+  const candidateTitle =
+    searchParams.get(SellerLandingPageParameters.sltitle) ?? "";
+  if (
+    candidateTitle &&
+    Object.values(variableStepMap).some(
+      (value) => value.title === candidateTitle
+    )
+  ) {
+    return candidateTitle;
+  }
+  return "";
+};
+
 export const getVariableStepsFromQueryParams = (
   searchParams: URLSearchParams
 ): VariableStep[] => {

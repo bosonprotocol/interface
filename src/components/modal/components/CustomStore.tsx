@@ -21,6 +21,7 @@ import {
   getNextButtonText,
   getNextStepFromQueryParams,
   getNextTo,
+  getSlTitle,
   getVariableStepsFromQueryParams,
   QueryParamStep,
   useRemoveLandingQueryParams,
@@ -240,8 +241,7 @@ export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
               hideModal(!nextStepResult);
               if (nextStepResult) {
                 showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title:
-                    searchParams.get(SellerLandingPageParameters.sltitle) ?? "",
+                  title: getSlTitle(searchParams),
                   doSetQueryParams: false,
                   order: getVariableStepsFromQueryParams(searchParams) as [
                     VariableStep,

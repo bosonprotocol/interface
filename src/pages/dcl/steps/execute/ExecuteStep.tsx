@@ -20,7 +20,11 @@ export const ExecuteStep: React.FC = () => {
   return isSuccess && sellerId ? (
     <CongratulationsPage
       sellerId={sellerId}
-      type={CongratulationsType.Boulevard}
+      type={
+        location === LocationValues.BosonLand
+          ? CongratulationsType.Boulevard
+          : CongratulationsType.OwnLand
+      }
       reset={() => {
         removeLandingQueryParams();
       }}
