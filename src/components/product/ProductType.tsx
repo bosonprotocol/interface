@@ -4,12 +4,11 @@ import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
-import { generatePath, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
@@ -25,7 +24,7 @@ import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
 import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
 import { MODAL_TYPES } from "../modal/ModalComponents";
 import { useModal } from "../modal/useModal";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
+import { getSellerCenterPath } from "../seller/paths";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
@@ -55,7 +54,7 @@ const productTypeItemsPerRow = {
   l: 1,
   xl: 1
 };
-const Label = styled.label`
+export const Label = styled.label`
   max-width: 12.5rem;
   align-items: center;
   border: 1px solid ${colors.lightGrey};
@@ -66,7 +65,7 @@ const Label = styled.label`
   height: 197px;
   cursor: pointer;
 `;
-const RadioButton = styled.input`
+export const RadioButton = styled.input`
   position: absolute;
   opacity: 0;
   width: 0;
@@ -85,8 +84,8 @@ const RadioButton = styled.input`
   }
 `;
 
-const Box = styled.div`
-  padding: 1.75rem;
+export const Box = styled.div`
+  padding: 0.875rem;
   height: 100%;
   width: 100%;
   p {
@@ -96,11 +95,20 @@ const Box = styled.div`
     margin: 0.938rem 0 0 0;
   }
 `;
+
+export const RadioButtonText = styled(Typography).attrs({
+  tag: "p",
+  fontWeight: "600",
+  $fontSize: "1rem",
+  margin: "1.5rem 0",
+  color: colors.darkGrey
+})``;
+
 const Container = styled.div`
   max-width: 26.5rem;
 `;
 
-const ProductImage = styled(Image)`
+export const ProductImage = styled(Image)`
   width: 6.25rem;
   height: 6.25rem;
   padding-top: 0;
@@ -359,7 +367,6 @@ export default function ProductType({
       </>
     );
   }
-
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product type</SectionTitle>
@@ -381,10 +388,23 @@ export default function ProductType({
                   checked={values.productType.productType === "physical"}
                   onChange={handleChange}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage src={physicalProduct} />
-                  <Typography tag="p">Physical</Typography>
-                </Box>
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="1rem"
+                    margin="1.5rem 0"
+                    color={colors.darkGrey}
+                  >
+                    Physical
+                  </Typography>
+                </Grid>
               </Label>
               <Label>
                 <RadioButton
@@ -395,15 +415,32 @@ export default function ProductType({
                   onChange={handleChange}
                   disabled
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage src={phygitalProduct} />
-                  <Typography tag="p" margin="1rem 0 0 0">
-                    Phygital
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="1rem"
+                    margin="1rem 0 0 0"
+                    color={colors.darkGrey}
+                  >
+                    Physical
                   </Typography>
-                  <Typography tag="p" $fontSize="0.7rem" margin="0.3rem 0 0 0">
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="0.7rem"
+                    margin="0.3rem 0 1.3125rem 0"
+                    color={colors.darkGrey}
+                  >
                     COMING SOON
                   </Typography>
-                </Box>
+                </Grid>
               </Label>
             </Grid>
           </FormField>
@@ -423,7 +460,12 @@ export default function ProductType({
                   checked={values.productType.productVariant === "oneItemType"}
                   onChange={handleChange}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={oneItemTypeProduct}
                     style={{
@@ -433,8 +475,8 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">One item type</Typography>
-                </Box>
+                  <RadioButtonText>One item type</RadioButtonText>
+                </Grid>
               </Label>
               <Label>
                 <RadioButton
@@ -446,7 +488,12 @@ export default function ProductType({
                   }
                   onChange={handleChange}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={differentVariantsProduct}
                     style={{
@@ -456,8 +503,70 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">Different variants</Typography>
-                </Box>
+                  <RadioButtonText>Different variants</RadioButtonText>
+                </Grid>
+              </Label>
+            </Grid>
+          </FormField>
+          <FormField
+            title="Token Gating"
+            required
+            style={{
+              marginBottom: 0
+            }}
+          >
+            <Grid>
+              <Label>
+                <RadioButton
+                  type="radio"
+                  name="productType.tokenGatedOffer"
+                  value="false"
+                  checked={values.productType.tokenGatedOffer === "false"}
+                  onChange={handleChange}
+                />
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
+                  <ProductImage
+                    src={oneItemTypeProduct}
+                    style={{
+                      width: "62px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <RadioButtonText>Open access</RadioButtonText>
+                </Grid>
+              </Label>
+              <Label>
+                <RadioButton
+                  type="radio"
+                  name="productType.tokenGatedOffer"
+                  value="true"
+                  checked={values.productType.tokenGatedOffer === "true"}
+                  onChange={handleChange}
+                />
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
+                  <ProductImage
+                    src={differentVariantsProduct}
+                    style={{
+                      width: "54px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <RadioButtonText>Token gated</RadioButtonText>
+                </Grid>
               </Label>
             </Grid>
           </FormField>
@@ -471,9 +580,7 @@ export default function ProductType({
             }}
             onClick={() => {
               navigate({
-                pathname: generatePath(SellerCenterRoutes.SellerCenter, {
-                  [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-                })
+                pathname: getSellerCenterPath("Dashboard")
               });
             }}
           >

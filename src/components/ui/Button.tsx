@@ -35,6 +35,9 @@ const BaseButton = styled.button<{
           color: ${props.theme.hover.color} !important;
           svg {
             fill: ${props.theme.hover.color} !important;
+            line {
+              stroke: ${props.theme.hover.color} !important;
+            }
           }
         `};
         ${props.theme.hover.borderColor &&

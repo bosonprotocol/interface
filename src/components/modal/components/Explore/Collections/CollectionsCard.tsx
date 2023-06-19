@@ -1,3 +1,4 @@
+import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { Fragment, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -13,7 +14,6 @@ import { ExtendedSeller } from "../../../../../pages/explore/WithAllOffers";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import Typography from "../../../../ui/Typography";
-import { ProfileType } from "../../Profile/const";
 
 const CardContainer = styled.div`
   position: relative;
@@ -72,7 +72,7 @@ export default function CollectionsCard({ collection }: Props) {
   const metadata = seller?.metadata;
   const [lens] = lensProfiles;
 
-  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
 
   const name =
     (useLens ? lens?.name : metadata?.name) ??

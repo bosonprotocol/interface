@@ -13,14 +13,17 @@ export const SUPPORTED_FILE_FORMATS = [
   "image/webp"
 ];
 
-export const CREATE_PRODUCT_STEPS = (isMultiVariant: boolean) => [
+export const CREATE_PRODUCT_STEPS = (
+  isMultiVariant: boolean,
+  isTokenGated: boolean
+) => [
   {
     name: "Product Data",
     steps: isMultiVariant ? 4 : 3
   } as const,
   {
     name: "Terms of Sale",
-    steps: 3
+    steps: isTokenGated ? 4 : 3
   } as const,
   {
     name: "Confirm",

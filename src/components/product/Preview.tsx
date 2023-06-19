@@ -145,13 +145,11 @@ export default function Preview({
 
   const exchangeDate = Date.now().toString();
 
-  const termsOfSale = hasMultipleVariants
-    ? values.variantsCoreTermsOfSale
-    : values.coreTermsOfSale;
+  const { tokenGating } = values;
 
   const condition =
-    termsOfSale.tokenType && termsOfSale.tokenGatedOffer.value === "true"
-      ? buildCondition(termsOfSale, decimals)
+    tokenGating.tokenType && values.productType.tokenGatedOffer === "true"
+      ? buildCondition(tokenGating, decimals)
       : undefined;
 
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)

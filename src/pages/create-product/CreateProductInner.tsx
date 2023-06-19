@@ -14,7 +14,14 @@ import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import map from "lodash/map";
-import { useCallback, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import toast from "react-hot-toast";
 import { generatePath, useLocation, useNavigate } from "react-router-dom";
@@ -35,7 +42,8 @@ import {
   CreateProductForm,
   OPTIONS_EXCHANGE_POLICY,
   optionUnitKeys,
-  TOKEN_TYPES
+  TOKEN_TYPES,
+  TokenGating
 } from "../../components/product/utils";
 import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
@@ -97,9 +105,7 @@ type GetProductV1MetadataProps = {
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
-  commonTermsOfSale:
-    | CreateProductForm["coreTermsOfSale"]
-    | CreateProductForm["variantsCoreTermsOfSale"];
+  tokenGating: TokenGating["tokenGating"];
 };
 async function getProductV1Metadata({
   contactPreference,
@@ -117,7 +123,7 @@ async function getProductV1Metadata({
   shippingInfo,
   termsOfExchange,
   supportedJurisdictions,
-  commonTermsOfSale
+  tokenGating
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
   const profileImage = createYourProfile?.logo?.[0];
   const coverImage = createYourProfile?.coverPicture?.[0];
@@ -157,7 +163,7 @@ async function getProductV1Metadata({
     image: productMainImageLink ? productMainImageLink : "",
     type: MetadataType.PRODUCT_V1,
     attributes: [...nftAttributes, ...additionalAttributes],
-    condition: commonTermsOfSale?.tokenGatingDesc || undefined,
+    condition: /*tokenGating?.tokenGatingDesc ||*/ undefined,
     product: {
       uuid: uuid(),
       version: 1,
@@ -306,7 +312,7 @@ function extractVisualImages(
 interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
-  showInvalidRoleModal: () => void;
+  setCreatedOffersIds: Dispatch<SetStateAction<string[]>>;
   isDraftModalClosed: boolean;
 }
 interface SupportedJuridiction {
@@ -317,7 +323,7 @@ interface SupportedJuridiction {
 function CreateProductInner({
   initial,
   showCreateProductDraftModal,
-  showInvalidRoleModal,
+  setCreatedOffersIds,
   isDraftModalClosed
 }: Props) {
   const history = useNavigate();
@@ -332,6 +338,7 @@ function CreateProductInner({
     () => productVariant === "differentVariants" || false,
     [productVariant]
   );
+  const [isTokenGated, setIsTokenGated] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(
     location?.state?.step || FIRST_STEP
   );
@@ -340,7 +347,16 @@ function CreateProductInner({
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
   const coreSDK = useCoreSDK();
+  const showInvalidRoleModal = useCallback(() => {
+    showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
+      title: "Invalid Role",
+      action: "create a product",
+      requiredRole: "assistant",
+      closable: false
+    });
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     function onBackButtonEvent(e: any) {
       const currentStep = e.state?.usr?.step || 0;
@@ -465,6 +481,7 @@ function CreateProductInner({
       isDraftModalClosed,
       showInvalidRoleModal,
       isMultiVariant,
+      isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
       isOneSetOfImages
     });
@@ -483,6 +500,7 @@ function CreateProductInner({
     isDraftModalClosed,
     showInvalidRoleModal,
     isMultiVariant,
+    isTokenGated,
     isOneSetOfImages,
     currentStep
   ]);
@@ -520,7 +538,8 @@ function CreateProductInner({
       productVariantsImages,
       productType,
       termsOfExchange,
-      shippingInfo
+      shippingInfo,
+      tokenGating
     } = values;
 
     const productMainImageLink: string | undefined =
@@ -702,7 +721,7 @@ function CreateProductInner({
           shippingInfo,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale
+          tokenGating
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -790,7 +809,7 @@ function CreateProductInner({
           shippingInfo,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale
+          tokenGating
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
@@ -831,15 +850,18 @@ function CreateProductInner({
         });
         offersToCreate.push(offerData);
       }
-      const isTokenGated = commonTermsOfSale.tokenGatedOffer.value === "true";
+      const isTokenGated = productType.tokenGatedOffer === "true";
       await createOffers({
         sellerToCreate: null,
         isMultiVariant,
         offersToCreate,
-        tokenGatedInfo: isTokenGated ? commonTermsOfSale : null,
+        tokenGatedInfo: isTokenGated ? values.tokenGating : null,
         conditionDecimals: decimals,
         onGetExchangeTokenDecimals: setDecimals,
-        onCreatedOffersWithVariants: ({ firstOffer }) => {
+        onCreatedOffersWithVariants: ({ firstOffer, createdOffers }) => {
+          createdOffers.length &&
+            setCreatedOffersIds(createdOffers.map((offer) => offer.id));
+
           toast((t) => (
             <SuccessTransactionToast
               t={t}
@@ -854,6 +876,7 @@ function CreateProductInner({
           ));
         },
         onCreatedSingleOffers: ({ offer: createdOffer }) => {
+          createdOffer && setCreatedOffersIds([createdOffer.id]);
           toast((t) => (
             <SuccessTransactionToast
               t={t}
@@ -926,11 +949,8 @@ function CreateProductInner({
   }, [isOneSetOfImages]);
 
   const getDecimalOnPreview = async (values: CreateProductForm) => {
-    const coreTermsOfSaleKey = isMultiVariant
-      ? "variantsCoreTermsOfSale"
-      : "coreTermsOfSale";
-    const tokenContract = values?.[coreTermsOfSaleKey]?.tokenContract;
-    const tokenType = values?.[coreTermsOfSaleKey]?.tokenType;
+    const tokenContract = values.tokenGating?.tokenContract;
+    const tokenType = values.tokenGating?.tokenType;
 
     if (
       tokenContract &&
@@ -950,7 +970,7 @@ function CreateProductInner({
     <CreateProductWrapper>
       <MultiStepsContainer>
         <MultiSteps
-          data={CREATE_PRODUCT_STEPS(isMultiVariant)}
+          data={CREATE_PRODUCT_STEPS(isMultiVariant, isTokenGated)}
           active={currentStep}
           callback={handleClickStep}
           disableInactiveSteps
@@ -972,6 +992,11 @@ function CreateProductInner({
           {({ values }) => {
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
+            }
+            const formTokenGated =
+              values.productType.tokenGatedOffer === "true";
+            if (isTokenGated !== formTokenGated) {
+              setIsTokenGated(formTokenGated);
             }
             getDecimalOnPreview(values);
 

@@ -44,7 +44,12 @@ export default function SellerFilters({ setSearch, search, buttons }: Props) {
   // };
 
   return (
-    <Grid gap="1rem" padding="2rem 0" justifyContent="space-between">
+    <Grid
+      gap="1rem"
+      padding="2rem 0"
+      justifyContent="space-between"
+      flexWrap="wrap"
+    >
       <div>
         <Grid gap="1rem" padding="0" justifyContent="flex-start">
           {/* <SelectFilterWrapper>

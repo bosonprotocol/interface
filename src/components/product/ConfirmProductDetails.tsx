@@ -164,8 +164,7 @@ export default function ConfirmProductDetails({
   const commonTermsOfSale = isMultiVariant
     ? values.variantsCoreTermsOfSale
     : values.coreTermsOfSale;
-  const { offerValidityPeriod, redemptionPeriod, tokenGatedOffer } =
-    commonTermsOfSale;
+  const { offerValidityPeriod, redemptionPeriod } = commonTermsOfSale;
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -402,7 +401,9 @@ export default function ConfirmProductDetails({
                     <FormFieldContainer>
                       <FormField title="Token Gated Offer" required>
                         <ContentValue tag="p">
-                          {tokenGatedOffer?.label}
+                          {values.productType.tokenGatedOffer === "true"
+                            ? "Yes"
+                            : "No"}
                         </ContentValue>
                       </FormField>
                     </FormFieldContainer>

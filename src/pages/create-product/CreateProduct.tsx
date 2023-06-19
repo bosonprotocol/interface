@@ -6,11 +6,13 @@ import { useInitialValues } from "../../components/product/utils/useInitialValue
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import NotFound from "../not-found/NotFound";
+import { CreateProductCongratulationsPage } from "./congratulations/CreateProductCongratulationsPage";
 import CreateProductInner from "./CreateProductInner";
 
-function CreateProduct() {
+export default function CreateProduct() {
   const store = useInitialValues();
   const [initial, setInitial] = useState<CreateProductForm>(store.base);
+  const [createdOffersIds, setCreatedOffersIds] = useState<string[]>([]);
   const [isDraftModalClosed, setDraftModalClosed] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
   const { sellers } = useCurrentSellers();
@@ -52,28 +54,20 @@ function CreateProduct() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seller]);
 
-  const showInvalidRoleModal = useCallback(() => {
-    showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
-      title: "Invalid Role",
-      action: "create a product",
-      requiredRole: "assistant",
-      closable: false
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   if (!!seller && !isSellerCurated) {
     return <NotFound />;
   }
-  return (
+  return createdOffersIds.length ? (
+    <CreateProductCongratulationsPage
+      reset={() => setCreatedOffersIds([])}
+      sellerId={seller.id}
+    />
+  ) : (
     <CreateProductInner
       initial={initial}
       showCreateProductDraftModal={showCreateProductDraftModal}
-      showInvalidRoleModal={showInvalidRoleModal}
       isDraftModalClosed={isDraftModalClosed}
+      setCreatedOffersIds={setCreatedOffersIds}
     />
   );
 }
-
-export default CreateProduct;

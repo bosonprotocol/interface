@@ -88,6 +88,7 @@ type Props = {
   children: React.ReactNode;
   as?: React.ElementType;
   src?: string;
+  [x: string]: unknown;
 } & IGrid &
   React.HTMLAttributes<HTMLDivElement>;
 
