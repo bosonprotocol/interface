@@ -555,7 +555,7 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <RadioButtonText>Open access</RadioButtonText>
+                  <RadioButtonText>Ungated</RadioButtonText>
                 </Grid>
               </Label>
               <Label>

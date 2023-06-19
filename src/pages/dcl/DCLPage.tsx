@@ -29,11 +29,11 @@ const StyledGrid = styled(Grid)`
 
 const STEPS = [
   {
-    name: "Details",
+    name: "Location",
     steps: 1
   } as const,
   {
-    name: "Execute",
+    name: "Set-up",
     steps: 1
   } as const
 ];

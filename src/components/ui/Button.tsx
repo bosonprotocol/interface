@@ -38,6 +38,12 @@ const BaseButton = styled.button<{
             line {
               stroke: ${props.theme.hover.color} !important;
             }
+            polyline {
+              stroke: ${props.theme.hover.color} !important;
+            }
+            path {
+              stroke: ${props.theme.hover.color} !important;
+            }
           }
         `};
         ${props.theme.hover.borderColor &&
