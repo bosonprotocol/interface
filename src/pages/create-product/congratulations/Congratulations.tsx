@@ -165,7 +165,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
   type,
   onClose,
   reset,
-  closable
+  closable = true
 }) => {
   const navigate = useKeepQueryParamsNavigate();
   // const { setFullWidth } = useLayoutContext();
