@@ -47,8 +47,7 @@ import {
   CreateProductForm,
   OPTIONS_EXCHANGE_POLICY,
   optionUnitKeys,
-  TOKEN_TYPES,
-  TokenGating
+  TOKEN_TYPES
 } from "../../components/product/utils";
 import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
@@ -113,7 +112,6 @@ type GetProductV1MetadataProps = {
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
-  tokenGating: TokenGating["tokenGating"];
 };
 async function getProductV1Metadata({
   contactPreference,
@@ -130,8 +128,7 @@ async function getProductV1Metadata({
   visualImages,
   shippingInfo,
   termsOfExchange,
-  supportedJurisdictions,
-  tokenGating
+  supportedJurisdictions
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
   const profileImage = createYourProfile?.logo?.[0];
   const coverImage = createYourProfile?.coverPicture?.[0];
