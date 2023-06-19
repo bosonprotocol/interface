@@ -28,6 +28,7 @@ export const ExecuteStep: React.FC = () => {
       reset={() => {
         removeLandingQueryParams();
       }}
+      closable={false}
     />
   ) : location === LocationValues.OwnLand ? (
     <OwnLand setSuccess={() => setSuccess(true)} />

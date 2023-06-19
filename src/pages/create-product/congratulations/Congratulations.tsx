@@ -64,6 +64,7 @@ export type CongratulationsProps = {
   sellerId: string;
   type: CongratulationsType;
   onClose?: () => void;
+  closable?: boolean;
 };
 
 const useDepositWarning = (sellerId: string) => {
@@ -163,7 +164,8 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
   sellerId,
   type,
   onClose,
-  reset
+  reset,
+  closable = true
 }) => {
   const navigate = useKeepQueryParamsNavigate();
   // const { setFullWidth } = useLayoutContext();
@@ -199,7 +201,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
       <ModalHeaderTitle
         handleOnClose={() => handleOnClose()}
         title="Congratulations!"
-        closable
+        closable={closable}
       />
       <Grid flexDirection="column" padding="2rem">
         <Grid flexDirection="column" margin="2.5rem 4.625rem">
