@@ -7,10 +7,10 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
-import Collapse from "../../../components/collapse/Collapse";
 import { SellerLandingPageParameters } from "../../../lib/routing/parameters";
 import { colors } from "../../../lib/styles/colors";
 import copyToClipboard from "../../../lib/utils/copyToClipboard";
+import Collapse from "../../collapse/Collapse";
 import { Notify } from "../../detail/Detail.style";
 import { CopyButton } from "../../form/Field.styles";
 import BosonButton from "../../ui/BosonButton";
@@ -70,10 +70,17 @@ const StyledCopyButton = styled(CopyButton)`
 `;
 
 interface Props {
+  text: string;
   ipfsUrl: string;
   htmlString: string;
+  buttonText: string;
 }
-export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
+export function CustomStoreModal({
+  ipfsUrl = "",
+  htmlString = "",
+  text,
+  buttonText
+}: Props) {
   const { showModal, hideModal } = useModal();
   const removeLandingQueryParams = useRemoveLandingQueryParams();
   const [searchParams] = useSearchParams();
@@ -91,8 +98,7 @@ export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
         $fontSize="1.25rem"
         lineHeight="1.875rem"
       >
-        Congrats for creating your storefront. See the URL and further options
-        below:
+        {text}
       </Typography>
       <CollapsibleContainer>
         <Grid justifyContent="flex-start" gap="0.5rem">
@@ -262,7 +268,7 @@ export default function CustomStore({ ipfsUrl = "", htmlString = "" }: Props) {
             }
           }}
         >
-          Done
+          {buttonText || "Done"}
         </BosonButton>
       </Grid>
     </>
