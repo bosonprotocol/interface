@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
 import Layout from "../../components/layout/Layout";
@@ -8,6 +9,7 @@ import { useRemoveLandingQueryParams } from "../../components/modal/components/c
 import { useModal } from "../../components/modal/useModal";
 import { getSellerCenterPath } from "../../components/seller/paths";
 import Typography from "../../components/ui/Typography";
+import { SellerLandingPageParameters } from "../../lib/routing/parameters";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -32,6 +34,7 @@ const Root = styled(Layout)`
 
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
+  const [searchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const removeLandingQueryParams = useRemoveLandingQueryParams();
   const [showCongratulationsPage, setShowCongratulationsPage] =
@@ -120,10 +123,16 @@ export default function CustomStore() {
       </html>`;
 
             const cid = await storage.add(html);
-
+            const hasSteps = searchParams.has(
+              SellerLandingPageParameters.slsteps
+            );
             const ipfsUrl = getIpfsGatewayUrl(cid);
             showModal(modalTypes.CUSTOM_STORE, {
-              title: "Congratulations!",
+              title: hasSteps ? "Next Steps" : "Congratulations!",
+              text: hasSteps
+                ? "Your storefront URL and further options are below:"
+                : "Congrats for creating your storefront. See the URL and further options below:",
+              buttonText: hasSteps ? "Next" : "Done",
               ipfsUrl,
               htmlString: html,
               onClose: (show: boolean) => {

@@ -7,7 +7,7 @@ import CompleteExchange from "./components/CompleteExchange";
 import { AccountCreationModal } from "./components/createProduct/AccountCreationModal";
 import VariableStepsExplainerModal from "./components/createProduct/VariableStepsExplainerModal";
 import CreateProductDraft from "./components/CreateProductDraft";
-import CustomStore from "./components/CustomStore";
+import { CustomStoreModal } from "./components/CustomStoreModal";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
 import DisputeResolverDecideModal from "./components/DisputeResolver/DisputeResolverDecideModal";
@@ -90,7 +90,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
   [MODAL_TYPES.CREATE_PROFILE]: CreateProfileModal,
   [MODAL_TYPES.EDIT_PROFILE]: EditProfileModal,
-  [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
+  [MODAL_TYPES.CUSTOM_STORE]: CustomStoreModal,
   [MODAL_TYPES.DETAIL_WIDGET]: DetailWidget,
   [MODAL_TYPES.DISPUTE_RESOLUTION_DECIDE_MODAL]: DisputeResolverDecideModal,
   [MODAL_TYPES.DISPUTE_RESOLUTION_REFUSE_MODAL]: DisputeResolverRefuseModal,
