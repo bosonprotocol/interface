@@ -106,7 +106,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         itemsPerRow={{
           xs: 1,
           s: 2,
-          m: 4,
+          m: 3,
           l: 4,
           xl: 4
         }}

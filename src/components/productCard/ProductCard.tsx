@@ -42,28 +42,33 @@ interface Props {
 const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-card="product-card"] {
     height: 500px;
-    color: ${colors.black};
+    color: var(--textColor);
+    background: var(--upperCardBgColor);
+    .bottom {
+      background: var(--lowerCardBgColor);
+    }
+    * {
+      color: var(--textColor);
+    }
     [data-image-wrapper] {
       img {
         object-fit: contain;
       }
     }
+    ${({ $isCustomStoreFront }) => {
+      if (!$isCustomStoreFront) {
+        return css`
+          border: 1px solid rgba(85, 96, 114, 0.15);
+        `;
+      }
+      return "";
+    }}
   }
   [data-avatarname="product-card"] {
     max-width: 100%;
     word-break: break-word;
+    color: var(--accent);
   }
-  ${({ $isCustomStoreFront }) => {
-    if (!$isCustomStoreFront) {
-      return "";
-    }
-
-    return css`
-      [data-avatarname="product-card"] {
-        color: ${colors.black};
-      }
-    `;
-  }};
 `;
 
 export default function ProductCard({

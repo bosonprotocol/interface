@@ -18,6 +18,8 @@ const GlobalStyle = createGlobalStyle<{
   $fontFamily: string;
   $buttonBgColor: string;
   $buttonTextColor: string;
+  $upperCardBgColor: string;
+  $lowerCardBgColor: string;
 }>`
   img {
     pointer-events: none;
@@ -91,6 +93,14 @@ const GlobalStyle = createGlobalStyle<{
       props.$buttonTextColor && !props.$withBosonStyles
         ? props.$buttonTextColor
         : colors.black};
+    --upperCardBgColor: ${(props) =>
+      props.$upperCardBgColor && !props.$withBosonStyles
+        ? props.$upperCardBgColor
+        : colors.white};
+    --lowerCardBgColor: ${(props) =>
+      props.$lowerCardBgColor && !props.$withBosonStyles
+        ? props.$lowerCardBgColor
+        : colors.white};
 
     font-size: 12px;
     ${breakpoint.xs} {

@@ -67,6 +67,8 @@ export default function App({
   const fontFamily = useCustomStoreQueryParameter("fontFamily");
   const buttonBgColor = useCustomStoreQueryParameter("buttonBgColor");
   const buttonTextColor = useCustomStoreQueryParameter("buttonTextColor");
+  const upperCardBgColor = useCustomStoreQueryParameter("upperCardBgColor");
+  const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
   const LayoutWrapper = useMemo(() => {
     return getLayoutWrapper(withFullLayout);
   }, [withFullLayout]);
@@ -97,6 +99,8 @@ export default function App({
                   $fontFamily={fontFamily}
                   $buttonBgColor={buttonBgColor}
                   $buttonTextColor={buttonTextColor}
+                  $upperCardBgColor={upperCardBgColor}
+                  $lowerCardBgColor={lowerCardBgColor}
                 />
                 {withHeader && <Header fluidHeader={fluidHeader} />}
                 <Wrapper>{children}</Wrapper>

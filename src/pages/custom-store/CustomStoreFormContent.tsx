@@ -656,6 +656,26 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     />
                   </Grid>
                 </Grid>
+                <Grid gap={gapBetweenInputs}>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Upper card background</FieldDescription>
+                    <InputColor
+                      name={storeFields.upperCardBgColor}
+                      placeholder={
+                        formModel.formFields.upperCardBgColor.placeholder
+                      }
+                    />
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Lower card background</FieldDescription>
+                    <InputColor
+                      name={storeFields.lowerCardBgColor}
+                      placeholder={
+                        formModel.formFields.lowerCardBgColor.placeholder
+                      }
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
               {/* // NOTE: we may wish to show it again in the future */}
               {/* <Grid flexDirection="column" alignItems="flex-start">
