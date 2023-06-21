@@ -121,7 +121,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         };
       }) || []
     );
-  }, [values.productVariants.variants]);
+  }, [values.productVariants?.variants]);
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
   }, []);
