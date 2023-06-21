@@ -382,7 +382,7 @@ export default function ProductType({
                   type="radio"
                   name="productType.productType"
                   value="physical"
-                  checked={values.productType.productType === "physical"}
+                  checked={values.productType?.productType === "physical"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -409,7 +409,7 @@ export default function ProductType({
                   type="radio"
                   name="productType.productType"
                   value="phygital"
-                  checked={values.productType.productType === "phygital"}
+                  checked={values.productType?.productType === "phygital"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   disabled
@@ -463,7 +463,7 @@ export default function ProductType({
                   type="radio"
                   name="productType.productVariant"
                   value="oneItemType"
-                  checked={values.productType.productVariant === "oneItemType"}
+                  checked={values.productType?.productVariant === "oneItemType"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -491,7 +491,7 @@ export default function ProductType({
                   name="productType.productVariant"
                   value="differentVariants"
                   checked={
-                    values.productType.productVariant === "differentVariants"
+                    values.productType?.productVariant === "differentVariants"
                   }
                   onChange={handleChange}
                   onBlur={handleBlur}
