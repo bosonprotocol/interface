@@ -148,7 +148,7 @@ export default function Preview({
   const { tokenGating } = values;
 
   const condition =
-    tokenGating.tokenType && values.productType.tokenGatedOffer === "true"
+    tokenGating.tokenType && values.productType?.tokenGatedOffer === "true"
       ? buildCondition(tokenGating, decimals)
       : undefined;
 
