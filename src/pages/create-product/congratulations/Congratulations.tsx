@@ -241,7 +241,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
                   });
                 }}
               >
-                Add a Sales Channel <Plus color={colors.secondary} size={20} />
+                Add a sales channel <Plus color={colors.secondary} size={20} />
               </Button>
             }
           />

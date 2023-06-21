@@ -97,14 +97,14 @@ type CommonProps = {
   hasSeller: boolean;
 };
 
-const SetupDecentralizedWeb3Store = ({ showModal, hasSeller }: CommonProps) => (
+const SetupAWeb3CommerceStore = ({ showModal, hasSeller }: CommonProps) => (
   <Card
     image={<img src={decentralizedImg} width="104" height="128" />}
-    title="Set-up a decentralized Web3 Commerce store"
-    subtitle="Build  and customise your own bespoke store"
+    title="Set-up a Web3 commerce store"
+    subtitle="Build and customise your own bespoke store "
     onClick={() => {
       showModal("VARIABLE_STEPS_EXPLAINER", {
-        title: "Set-up a decentralized Web3 Commerce store",
+        title: "Set-up a Web3 commerce store",
         order: [
           VariableStep.CreateYourProfile,
           VariableStep.SetupYourWeb3Store,
@@ -139,6 +139,30 @@ const LaunchMetaverseCommerceExperience = ({
         ],
         to: {
           pathname: BosonRoutes.CreateStorefront
+        },
+        firstActiveStep: hasSeller ? 1 : 0,
+        doSetQueryParams: true
+      });
+    }}
+  />
+);
+
+const CreateTokenGatedOffers = ({ showModal, hasSeller }: CommonProps) => (
+  <Card
+    image={<img src={tokenGatedImg} width="128" height="128" />}
+    title="Create token-gated offers"
+    subtitle="Token-gate your collection and enable exclusive access"
+    onClick={() => {
+      showModal("VARIABLE_STEPS_EXPLAINER", {
+        title: "Create token-gated offers",
+        order: [
+          VariableStep.CreateYourProfile,
+          VariableStep.CreateYourTokenGatedProduct,
+          VariableStep.AddSalesChannels
+        ],
+        to: {
+          pathname: SellerCenterRoutes.CreateProduct,
+          search: [[SellerLandingPageParameters.sltokenGated, "1"]]
         },
         firstActiveStep: hasSeller ? 1 : 0,
         doSetQueryParams: true
@@ -194,35 +218,18 @@ export const SellerLandingPage: React.FC = () => {
               hasSeller={hasSeller}
               showModal={showModal}
             />
-            <SetupDecentralizedWeb3Store
+            <SetupAWeb3CommerceStore
               hasSeller={hasSeller}
               showModal={showModal}
             />
-            <Card
-              image={<img src={tokenGatedImg} width="128" height="128" />}
-              title="Enable token-gated dCommerce"
-              subtitle="Token-gate your collection and enable exclusive access"
-              onClick={() => {
-                showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Enable token-gated dCommerce",
-                  order: [
-                    VariableStep.CreateYourProfile,
-                    VariableStep.CreateYourTokenGatedProduct,
-                    VariableStep.AddSalesChannels
-                  ],
-                  to: {
-                    pathname: SellerCenterRoutes.CreateProduct,
-                    search: [[SellerLandingPageParameters.sltokenGated, "1"]]
-                  },
-                  firstActiveStep: hasSeller ? 1 : 0,
-                  doSetQueryParams: true
-                });
-              }}
+            <CreateTokenGatedOffers
+              hasSeller={hasSeller}
+              showModal={showModal}
             />
           </RowWithCards>
           <RowWithCards
             title="Create NFTs"
-            subtitle="Drop physical, phygital, or token gated NFT collections"
+            subtitle="Create physical, phygital, or token gated NFT collections"
           >
             <Card
               image={<img src={sneakerImg} width="128" height="128" />}
@@ -247,39 +254,22 @@ export const SellerLandingPage: React.FC = () => {
             <Card
               image={<img src={sneakerNftImg} width="128" height="128" />}
               title="Create Phygitals"
-              subtitle="Bundle physical products with a digital twin"
+              subtitle="Bundle physical products with a digital twin all in one offer"
               as="a"
               href="https://form.typeform.com/to/NaiNUsqn"
               target="_blank"
               rel="noopener noreferrer"
             />
-            <Card
-              image={<img src={tokenGatedImg} width="128" height="128" />}
-              title="Create token-gated offers"
-              subtitle="Token-gate your collection and enable exclusive access"
-              onClick={() => {
-                showModal("VARIABLE_STEPS_EXPLAINER", {
-                  title: "Enable token-gated offers",
-                  order: [
-                    VariableStep.CreateYourProfile,
-                    VariableStep.CreateYourTokenGatedProduct,
-                    VariableStep.AddSalesChannels
-                  ],
-                  to: {
-                    pathname: SellerCenterRoutes.CreateProduct,
-                    search: [[SellerLandingPageParameters.sltokenGated, "1"]]
-                  },
-                  firstActiveStep: hasSeller ? 1 : 0,
-                  doSetQueryParams: true
-                });
-              }}
+            <CreateTokenGatedOffers
+              hasSeller={hasSeller}
+              showModal={showModal}
             />
           </RowWithCards>
           <RowWithCards
             title="Launch in new sales channels"
             subtitle="Sell physical, phygital, or token gates NFTs across  sales channels"
           >
-            <SetupDecentralizedWeb3Store
+            <SetupAWeb3CommerceStore
               hasSeller={hasSeller}
               showModal={showModal}
             />
