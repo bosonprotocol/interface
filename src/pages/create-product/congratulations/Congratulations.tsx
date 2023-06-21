@@ -227,7 +227,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
         >
           <CardCTA
             icon={<Megaphone color={colors.secondary} />}
-            title="Add Sales Channels"
+            title="Add a sales channel"
             text="Adding more sales channels expands the reach of your products by selling them  across different destinations."
             cta={
               <Button

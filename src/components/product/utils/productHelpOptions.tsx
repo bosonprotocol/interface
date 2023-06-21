@@ -57,7 +57,7 @@ export const productInformationHelp = [
   {
     title: "What are search tags used for?",
     description:
-      "Search tags are used to help you differentiate your own products or to increase your item’s visibility when a buyer is looking for similar items. Search tags are free form and can include things like shape, style, functions, seasons, etc."
+      "Search tags are used to help you differentiate your own products or to increase your item's visibility when a buyer is looking for similar items. Search tags are free form and can include things like shape, style, function, season, etc."
   },
   {
     title: "What are attributes used for?",
@@ -70,7 +70,7 @@ export const productImagesHelp = [
   {
     title: "How many images do I need?",
     description:
-      "While at least one thumbnail image is required, we recommend adding as many images as you can to show your item's most important qualities."
+      "While at least one thumbnail image is required, we recommend adding as many images as you can to show your item's most interesting characteristics."
   },
   {
     title: "Can I add images to my variations?",
@@ -97,8 +97,21 @@ export const coreTermsOfSaleHelp = [
   } as const,
   {
     title: "How long should the redemption period be?",
-    description:
-      "During the redemption period, buyers can trade, transfer, or gift the rNFT. Hence, the longer the redemption period, the more the buyers can benefit from the transferable nature of these rNFTs. A buyer can also redeem the rNFT for the physical item anytime during this period, so consider how long you feel comfortable storing this physical item and factor this into the redemption period."
+    description: (
+      <>
+        <Typography tag="p" style={{ margin: "0" }}>
+          During the redemption period, buyers can trade, transfer, or gift the
+          rNFT. Hence, the longer the redemption period, the more buyers can
+          benefit from the transferable nature of these rNFTs. You, as a seller,
+          also benefit via royalties from these secondary sales.
+        </Typography>
+        <Typography tag="p" style={{ margin: "0" }}>
+          A buyer can also redeem the rNFT for the physical item anytime during
+          this period, so consider how long you feel comfortable storing this
+          physical item and factor this into the redemption period.
+        </Typography>
+      </>
+    )
   } as const
 ];
 export const tokenGatingHelp = [
@@ -109,7 +122,8 @@ export const tokenGatingHelp = [
   },
   {
     title: "Which networks does token gating work with?",
-    description: "Token gating currently works with Polygon."
+    description:
+      "Token gating currently works on Polygon but will soon work on other EVM chains."
   },
   {
     title: "What configuration can you give for each token type?",
@@ -157,7 +171,7 @@ export const termsOfExchangeHelp = [
   {
     title: "What is an exchange policy?",
     description:
-      "The exchange policy covers the contractual and the protocol terms of the exchange to protect both the buyer and seller. It includes the obligations of both parties to follow through with their commitment, as well as the evidence requirements in the event of a dispute. Further, it includes fair protocol terms, to make it easy for sellers to set-up a fair exchange."
+      "The exchange policy helps sellers configure their offers in a way that enables fair exchange. It covers the contractual terms of the exchange, both on-chain and off-chain, defined to protect both the buyer and seller. It includes the obligations of both parties to follow through with their commitment, as well as the evidence requirements in the event of a dispute."
   },
   {
     title: "What is a dispute resolver?",
@@ -167,7 +181,7 @@ export const termsOfExchangeHelp = [
   {
     title: "Do I have to set a seller deposit?",
     description:
-      "No, seller deposits are optional. You can set the seller deposit to ‘0’ if you do not want to set a deposit."
+      "No, seller deposits are optional. You can set the seller deposit to '0' if you do not want to set a deposit."
   },
   {
     title: "What is the buyer cancellation penalty?",
@@ -177,7 +191,7 @@ export const termsOfExchangeHelp = [
   {
     title: "How long should the dispute period be?",
     description:
-      "The dispute period should be a minimum of 30 days, post redemption."
+      "The dispute period should be a minimum of 30 days, post redemption, to meet our fair exchange guidelines."
   }
 ];
 export const shippingInfoHelp = [
@@ -188,6 +202,7 @@ export const shippingInfoHelp = [
   },
   {
     title: "How long should the return period be?",
-    description: "The return period should be a minimum of 15 days."
+    description:
+      "The return period should be a minimum of 15 days to meet our fair exchange guidelines."
   }
 ];
