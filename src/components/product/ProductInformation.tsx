@@ -68,7 +68,7 @@ const AddAttributesContainer = ({
   const { values } = useCreateForm();
 
   const elements: ElementType[] = useMemo(
-    () => values?.productInformation?.attributes,
+    () => values?.productInformation?.attributes || [],
     [values?.productInformation?.attributes]
   );
 
