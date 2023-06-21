@@ -2,16 +2,20 @@
 import { offers } from "@bosonprotocol/react-kit";
 import { Form, Formik } from "formik";
 import { useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 
 import DetailTable, { Data } from "../../components/detail/DetailTable";
 import { FormField } from "../../components/form";
+import { useModal } from "../../components/modal/useModal";
 import {
   ContainerProductPage,
   SectionTitle
 } from "../../components/product/Product.styles";
+import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import BosonButton from "../../components/ui/BosonButton";
 import Typography from "../../components/ui/Typography";
+import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
 import { useOffers } from "../../lib/utils/hooks/offers";
 import { useGetOfferMetadata } from "../../lib/utils/hooks/offers/useGetOfferMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
@@ -77,10 +81,13 @@ function BatchCreateOffers() {
   >([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [invalidFile, setInvalidFile] = useState(false);
+  const [decimals, setDecimals] = useState<number | undefined>(undefined);
+
   const fileRef = useRef<{ files: File[] | null } | null>(null);
-  const isFormValid = true;
 
   const currentSeller = useCurrentSellers();
+  const { mutateAsync: createOffers } = useCreateOffers();
+  const { showModal } = useModal();
 
   useMemo(async () => {
     if (selectedFile) {
@@ -174,17 +181,58 @@ function BatchCreateOffers() {
     offerMetadatas.data
   ]);
 
-  const createOffers = async () => {
+  const handleCreateOffers = async () => {
     console.log(
       "Create Offers",
       offersToBeCreated.map((offer) => offer.metadataHash)
     );
     // TODO: call coreSDK to create the offers (taking into account the max number of offers that can be created in a batch transaction)
+    try {
+      await createOffers({
+        sellerToCreate: null,
+        offersToCreate: offersToBeCreated,
+        tokenGatedInfo: null, // TODO: add token gated info
+        conditionDecimals: decimals,
+        onGetExchangeTokenDecimals: setDecimals,
+        onCreatedOffersWithVariants: () => {
+          toast((t) => (
+            <SuccessTransactionToast
+              t={t}
+              action={`${offersToBeCreated.length} offers created`}
+            />
+          ));
+        },
+        onCreatedSingleOffers: ({ offer: createdOffer }) => {
+          toast((t) => (
+            <SuccessTransactionToast
+              t={t}
+              action={`Created offer: ${createdOffer?.metadata?.name}`}
+            />
+          ));
+        }
+      });
+    } catch (error: any) {
+      // TODO: FAILURE MODAL
+      console.error("error->", error.errors ?? error);
+      const hasUserRejectedTx =
+        "code" in error &&
+        (error as unknown as { code: string })?.code === "ACTION_REJECTED";
+      if (hasUserRejectedTx) {
+        showModal("TRANSACTION_FAILED");
+      } else {
+        showModal("TRANSACTION_FAILED", {
+          errorMessage: "Something went wrong"
+        });
+      }
+    }
   };
 
   return (
     <>
-      <Formik initialValues={{ files: "" }} onSubmit={() => createOffers()}>
+      <Formik
+        initialValues={{ files: "" }}
+        onSubmit={() => handleCreateOffers()}
+      >
         <Form>
           <ContainerProductPage>
             <SectionTitle tag="h2">Batch Create Offers</SectionTitle>

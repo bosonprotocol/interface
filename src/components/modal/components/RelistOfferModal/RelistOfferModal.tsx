@@ -176,7 +176,6 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
           };
 
           await createOffers({
-            isMultiVariant,
             sellerToCreate: null,
             offersToCreate,
             tokenGatedInfo: isTokenGated
