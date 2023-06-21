@@ -1,9 +1,11 @@
 import { accounts, offers, subgraph } from "@bosonprotocol/react-kit";
+import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import { useAccount } from "wagmi";
 
 import { useModal } from "../../../../components/modal/useModal";
 import { TOKEN_TYPES } from "../../../../components/product/utils";
+import LoadingToast from "../../../../components/toasts/common/LoadingToast";
 import { poll } from "../../../../pages/create-product/utils";
 import {
   buildCondition,
@@ -11,6 +13,14 @@ import {
 } from "../../../../pages/create-product/utils/buildCondition";
 import { useCoreSDK } from "../../useCoreSdk";
 import { useAddPendingTransaction } from "../transactions/usePendingTransactions";
+
+const getOfferCreationToast = () => {
+  const toastId = toast((t) => {
+    t.duration = Infinity;
+    return <LoadingToast t={t}>Offer creation in progress</LoadingToast>;
+  });
+  return toastId;
+};
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
@@ -209,6 +219,7 @@ export function useCreateOffers() {
           );
           await txResponse.wait();
         }
+        const toastId = getOfferCreationToast();
         let createdOffers: OfferFieldsFragment[] | null = null;
         await poll(
           async () => {
@@ -226,6 +237,7 @@ export function useCreateOffers() {
           },
           500
         );
+        toast.dismiss(toastId);
         const allCreatedOffers =
           createdOffers as unknown as OfferFieldsFragment[];
         const [firstOffer] = allCreatedOffers;
@@ -369,6 +381,7 @@ export function useCreateOffers() {
         const txReceipt = await txResponse.wait();
         const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
         let createdOffer: OfferFieldsFragment | null = null;
+        const toastId = getOfferCreationToast();
         await poll(
           async () => {
             createdOffer = await coreSDK.getOfferById(offerId as string);
@@ -379,6 +392,7 @@ export function useCreateOffers() {
           },
           500
         );
+        toast.dismiss(toastId);
         if (!createdOffer) {
           return;
         }
