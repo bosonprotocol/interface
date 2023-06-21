@@ -109,7 +109,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     !hasVariants || values.imagesSpecificOrAll?.value === "all";
   const tabsData = useMemo(() => {
     return (
-      values.productVariants.variants?.map((variant, index) => {
+      values.productVariants?.variants?.map((variant, index) => {
         return {
           id: variant.name || index + "",
           title: variant.name || `Variant ${index}`,
