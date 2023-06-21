@@ -32,6 +32,7 @@ import RevokeProduct from "./components/RevokeProduct";
 import { SalesChannelsModal } from "./components/SalesChannelsModal/SalesChannelsModal";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
 import FinanceWithdraw from "./components/SellerFinance/FinanceWithdraw";
+import { PreparingTransactionModal } from "./components/Transactions/PreparingTransactionModal/PreparingTransactionModal";
 import RecentTransactionsModal from "./components/Transactions/RecentTransactionsModal/RecentTransactionsModal";
 import TransactionFailedModal from "./components/Transactions/TransactionFailedModal/TransactionFailedModal";
 import TransactionSubmittedModal from "./components/Transactions/TransactionSubmittedModal/TransactionSubmittedModal";
@@ -80,7 +81,8 @@ export const MODAL_TYPES = {
   IFRAME_MODAL: "IFRAME_MODAL",
   SALES_CHANNELS: "SALES_CHANNELS",
   ACCOUNT_CREATION: "ACCOUNT_CREATION",
-  VARIABLE_STEPS_EXPLAINER: "VARIABLE_STEPS_EXPLAINER"
+  VARIABLE_STEPS_EXPLAINER: "VARIABLE_STEPS_EXPLAINER",
+  PREPARING_TRANSACTION: "PREPARING_TRANSACTION"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -124,5 +126,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.IFRAME_MODAL]: IframeModal,
   [MODAL_TYPES.SALES_CHANNELS]: SalesChannelsModal,
   [MODAL_TYPES.ACCOUNT_CREATION]: AccountCreationModal,
-  [MODAL_TYPES.VARIABLE_STEPS_EXPLAINER]: VariableStepsExplainerModal
+  [MODAL_TYPES.VARIABLE_STEPS_EXPLAINER]: VariableStepsExplainerModal,
+  [MODAL_TYPES.PREPARING_TRANSACTION]: PreparingTransactionModal
 } as const;

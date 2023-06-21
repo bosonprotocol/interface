@@ -558,63 +558,66 @@ function CreateProductInner({
   };
 
   const handleSendData = async (values: CreateProductForm) => {
-    const {
-      coreTermsOfSale,
-      createYourProfile,
-      productInformation,
-      productImages,
-      productVariantsImages,
-      productType,
-      termsOfExchange,
-      shippingInfo
-    } = values;
+    try {
+      showModal("PREPARING_TRANSACTION", undefined, "auto", undefined, {
+        xs: "400px"
+      });
+      const {
+        coreTermsOfSale,
+        createYourProfile,
+        productInformation,
+        productImages,
+        productVariantsImages,
+        productType,
+        termsOfExchange,
+        shippingInfo
+      } = values;
 
-    const productMainImageLink: string | undefined =
-      isMultiVariant && !isOneSetOfImages
-        ? productVariantsImages?.find((variant) => {
-            return variant.productImages?.thumbnail?.[0]?.src;
-          })?.productImages?.thumbnail?.[0]?.src
-        : productImages?.thumbnail?.[0]?.src;
+      const productMainImageLink: string | undefined =
+        isMultiVariant && !isOneSetOfImages
+          ? productVariantsImages?.find((variant) => {
+              return variant.productImages?.thumbnail?.[0]?.src;
+            })?.productImages?.thumbnail?.[0]?.src
+          : productImages?.thumbnail?.[0]?.src;
 
-    const productAttributes: Array<{
-      trait_type: string;
-      value: string;
-    }> = productInformation.attributes.map(
-      ({ name, value }: { name: string; value: string }) => {
-        return {
-          trait_type: name,
-          value: value || ""
-        };
-      }
-    );
-
-    const supportedJurisdictions: Array<SupportedJuridiction> =
-      shippingInfo.jurisdiction.reduce(
-        (
-          prev: Array<SupportedJuridiction>,
-          { region, time }: { region: string; time: string }
-        ) => {
-          if (region.length === 0 || time.length === 0) {
-            return prev;
-          } else {
-            return [
-              ...prev,
-              {
-                label: region,
-                deliveryTime: time
-              }
-            ];
-          }
-        },
-        []
+      const productAttributes: Array<{
+        trait_type: string;
+        value: string;
+      }> = productInformation.attributes.map(
+        ({ name, value }: { name: string; value: string }) => {
+          return {
+            trait_type: name,
+            value: value || ""
+          };
+        }
       );
 
-    // filter empty attributes
-    const additionalAttributes = productAttributes.filter((attribute) => {
-      return attribute.trait_type.length > 0;
-    });
+      const supportedJurisdictions: Array<SupportedJuridiction> =
+        shippingInfo.jurisdiction.reduce(
+          (
+            prev: Array<SupportedJuridiction>,
+            { region, time }: { region: string; time: string }
+          ) => {
+            if (region.length === 0 || time.length === 0) {
+              return prev;
+            } else {
+              return [
+                ...prev,
+                {
+                  label: region,
+                  deliveryTime: time
+                }
+              ];
+            }
+          },
+          []
+        );
 
-    try {
+      // filter empty attributes
+      const additionalAttributes = productAttributes.filter((attribute) => {
+        return attribute.trait_type.length > 0;
+      });
+
       const redemptionPointUrl =
         shippingInfo.redemptionPointUrl &&
         shippingInfo.redemptionPointUrl.length > 0
@@ -923,11 +926,21 @@ function CreateProductInner({
         "code" in error &&
         (error as unknown as { code: string })?.code === "ACTION_REJECTED";
       if (hasUserRejectedTx) {
-        showModal("TRANSACTION_FAILED");
-      } else {
-        showModal("TRANSACTION_FAILED", {
-          errorMessage: "Something went wrong"
+        showModal("TRANSACTION_FAILED", undefined, "auto", undefined, {
+          xs: "400px"
         });
+      } else {
+        showModal(
+          "TRANSACTION_FAILED",
+          {
+            errorMessage: "Something went wrong"
+          },
+          "auto",
+          undefined,
+          {
+            xs: "400px"
+          }
+        );
       }
     }
   };
