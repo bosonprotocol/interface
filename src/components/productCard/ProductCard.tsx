@@ -39,17 +39,29 @@ interface Props {
   isHoverDisabled?: boolean;
 }
 
-const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
+const ProductCardWrapper = styled.div<{
+  $isCustomStoreFront: boolean;
+  $isLowerCardBgColorDefined: boolean;
+}>`
   [data-card="product-card"] {
     height: 500px;
-    color: var(--textColor);
     background: var(--upperCardBgColor);
-    .bottom {
-      background: var(--lowerCardBgColor);
-    }
-    * {
-      color: var(--textColor);
-    }
+    ${({ $isLowerCardBgColorDefined }) => {
+      if ($isLowerCardBgColorDefined) {
+        return css`
+          color: var(--textColor);
+
+          .bottom {
+            background: var(--lowerCardBgColor);
+          }
+          * {
+            color: var(--textColor);
+          }
+        `;
+      }
+      return css``;
+    }}
+
     [data-image-wrapper] {
       img {
         object-fit: contain;
@@ -67,7 +79,15 @@ const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-avatarname="product-card"] {
     max-width: 100%;
     word-break: break-word;
-    color: var(--accent);
+
+    ${({ $isLowerCardBgColorDefined }) => {
+      if ($isLowerCardBgColorDefined) {
+        return css`
+          color: var(--accent);
+        `;
+      }
+      return css``;
+    }}
   }
 `;
 
@@ -176,9 +196,13 @@ export default function ProductCard({
     !allVariantsHaveSamePrice;
 
   const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name ?? "";
-
+  const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
+  const isLowerCardBgColorDefined = !!lowerCardBgColor;
   return (
-    <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
+    <ProductCardWrapper
+      $isCustomStoreFront={!!isCustomStoreFront}
+      $isLowerCardBgColorDefined={isLowerCardBgColorDefined}
+    >
       {isTokenGated && (
         <LockIcon>
           <Lock size={20} color={colors.grey} />
