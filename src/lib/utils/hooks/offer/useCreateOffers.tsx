@@ -65,13 +65,23 @@ export function useCreateOffers() {
         }
         return decimalsLocal;
       };
-      showModal("WAITING_FOR_CONFIRMATION");
+      showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
+        xs: "400px"
+      });
       if (!sellerToCreate && !hasSellerAccount) {
-        return showModal("TRANSACTION_FAILED", {
-          errorMessage: "Can't create seller",
-          detailedErrorMessage:
-            "No seller data was provided to create a seller account"
-        });
+        return showModal(
+          "TRANSACTION_FAILED",
+          {
+            errorMessage: "Can't create seller",
+            detailedErrorMessage:
+              "No seller data was provided to create a seller account"
+          },
+          "auto",
+          undefined,
+          {
+            xs: "400px"
+          }
+        );
       }
       // seller should always exist at this point as it should have been created in the modal at the beginning of the offer creation flow
       const seller: accounts.CreateSellerArgs | null = sellerToCreate;
@@ -97,10 +107,18 @@ export function useCreateOffers() {
           } else {
             txResponse = await coreSDK.createSeller(seller);
           }
-          showModal("TRANSACTION_SUBMITTED", {
-            action: "Create seller",
-            txHash: txResponse.hash
-          });
+          showModal(
+            "TRANSACTION_SUBMITTED",
+            {
+              action: "Create seller",
+              txHash: txResponse.hash
+            },
+            "auto",
+            undefined,
+            {
+              xs: "400px"
+            }
+          );
           addPendingTransaction({
             type: subgraph.EventType.SellerCreated,
             hash: txResponse.hash,
@@ -108,7 +126,9 @@ export function useCreateOffers() {
             accountType: "Seller"
           });
           await txResponse.wait();
-          showModal("WAITING_FOR_CONFIRMATION");
+          showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
+            xs: "400px"
+          });
         }
         if (isMetaTx) {
           // createOfferBatch with meta-transaction
@@ -129,10 +149,18 @@ export function useCreateOffers() {
         } else {
           txResponse = await coreSDK.createOfferBatch(offersToCreate);
         }
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Create offer with variants",
-          txHash: txResponse.hash
-        });
+        showModal(
+          "TRANSACTION_SUBMITTED",
+          {
+            action: "Create offer with variants",
+            txHash: txResponse.hash
+          },
+          "auto",
+          undefined,
+          {
+            xs: "400px"
+          }
+        );
         addPendingTransaction({
           type: subgraph.EventType.OfferCreated,
           hash: txResponse.hash,
@@ -143,7 +171,9 @@ export function useCreateOffers() {
         const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
 
         if (isTokenGated) {
-          showModal("WAITING_FOR_CONFIRMATION");
+          showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
+            xs: "400px"
+          });
           const decimals = await onBeforeBuildCondition();
           const condition = buildCondition(tokenGatedInfo, decimals);
 
@@ -165,10 +195,18 @@ export function useCreateOffers() {
           } else {
             txResponse = await coreSDK.createGroup({ offerIds, ...condition });
           }
-          showModal("TRANSACTION_SUBMITTED", {
-            action: "Create condition group for offers",
-            txHash: txResponse.hash
-          });
+          showModal(
+            "TRANSACTION_SUBMITTED",
+            {
+              action: "Create condition group for offers",
+              txHash: txResponse.hash
+            },
+            "auto",
+            undefined,
+            {
+              xs: "400px"
+            }
+          );
           await txResponse.wait();
         }
         let createdOffers: OfferFieldsFragment[] | null = null;
@@ -216,10 +254,18 @@ export function useCreateOffers() {
               sigV: v,
               nonce
             });
-            showModal("TRANSACTION_SUBMITTED", {
-              action: "Create seller",
-              txHash: createSellerResponse.hash
-            });
+            showModal(
+              "TRANSACTION_SUBMITTED",
+              {
+                action: "Create seller",
+                txHash: createSellerResponse.hash
+              },
+              "auto",
+              undefined,
+              {
+                xs: "400px"
+              }
+            );
             addPendingTransaction({
               type: subgraph.EventType.SellerCreated,
               hash: createSellerResponse.hash,
@@ -227,7 +273,15 @@ export function useCreateOffers() {
               accountType: "Seller"
             });
             await createSellerResponse.wait();
-            showModal("WAITING_FOR_CONFIRMATION");
+            showModal(
+              "WAITING_FOR_CONFIRMATION",
+              undefined,
+              "auto",
+              undefined,
+              {
+                xs: "400px"
+              }
+            );
           }
           // createOffer with meta-transaction
           const nonce = Date.now();
@@ -283,10 +337,18 @@ export function useCreateOffers() {
                 : await coreSDK.createOffer(offerData);
           }
         }
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Create offer",
-          txHash: txResponse.hash
-        });
+        showModal(
+          "TRANSACTION_SUBMITTED",
+          {
+            action: "Create offer",
+            txHash: txResponse.hash
+          },
+          "auto",
+          undefined,
+          {
+            xs: "400px"
+          }
+        );
 
         addPendingTransaction({
           type: subgraph.EventType.OfferCreated,
