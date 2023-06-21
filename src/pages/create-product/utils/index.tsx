@@ -28,7 +28,8 @@ import {
   productTypeHelp,
   productVariantsHelp,
   shippingInfoHelp,
-  termsOfExchangeHelp
+  termsOfExchangeHelp,
+  tokenGatingHelp
 } from "../../../components/product/utils/productHelpOptions";
 import { ScroolToID } from "../../../components/utils/Scroll";
 import { isTruthy } from "../../../lib/types/helpers";
@@ -170,7 +171,7 @@ export const createProductSteps = ({
       </>
     ),
     validation: tokenGatingValidationSchema,
-    helpSection: coreTermsOfSaleHelp
+    helpSection: tokenGatingHelp
   };
   const termsOfExchange = {
     ui: (
