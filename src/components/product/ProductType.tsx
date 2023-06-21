@@ -134,7 +134,7 @@ export default function ProductType({
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
     useField<CreateYourProfile["createYourProfile"]>("createYourProfile");
   const isProfileSetFromForm = (
-    Object.keys(createYourProfile.value) as Array<
+    Object.keys(createYourProfile.value || {}) as Array<
       keyof typeof createYourProfile.value
     >
   ).some((key) => {
