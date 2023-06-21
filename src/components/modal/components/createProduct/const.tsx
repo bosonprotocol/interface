@@ -64,14 +64,14 @@ export const variableStepMap = {
     key: VariableStep.CreateYourProducts,
     icon: <CirclesThreePlus color={colors.secondary} />,
     title: "Create your products",
-    body: "Create a physical or digi-physical product, enriching it with details, such as images and videos.",
+    body: "Create a physical or phygital product, enriching it with details, such as images and videos",
     to: { pathname: SellerCenterRoutes.CreateProduct }
   },
   [VariableStep.CreateYourTokenGatedProduct]: {
     key: VariableStep.CreateYourTokenGatedProduct,
     icon: <CirclesThreePlus color={colors.secondary} />,
     title: "Setup a token-gated offer",
-    body: "Create a physical or digi-physical product, enriching it with details, such as images and videos.",
+    body: "Create a physical or phygital product, enriching it with details, such as images and videos",
     to: {
       pathname: SellerCenterRoutes.CreateProduct,
       search: [[SellerLandingPageParameters.sltokenGated, "1"]]

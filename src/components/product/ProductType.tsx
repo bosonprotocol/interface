@@ -428,7 +428,7 @@ export default function ProductType({
                     margin="1rem 0 0 0"
                     color={colors.darkGrey}
                   >
-                    Physical
+                    Phygital
                   </Typography>
                   <Typography
                     tag="p"

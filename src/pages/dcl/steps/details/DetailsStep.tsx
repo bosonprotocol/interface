@@ -157,7 +157,7 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
             {
               title: "Which Metaverses can I set up a store in?",
               description:
-                "Currently, our Metaverse Commerce Toolkit supports setting up a store in Decentraland (DCL). We are expanding into other Metaverse and will be supporting setting up stores in many more places. "
+                "Currently, our Metaverse Commerce Toolkit supports setting up a store on your own land or on Boson Boulevard in Decentraland (DCL). We are expanding into other Metaverse and will be supporting setting up stores in many more places."
             },
             {
               title: "What is Boson Boulevard?",
