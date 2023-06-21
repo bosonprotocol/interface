@@ -51,7 +51,7 @@ const ViewMore = styled(LinkWithQuery)`
     transform: translateX(0);
   }
   &:hover {
-    color: ${colors.black};
+    filter: invert(50%);
     > svg {
       transform: translateX(5px);
       fill: ${colors.black};
