@@ -878,7 +878,7 @@ function CreateProductInner({
         });
         offersToCreate.push(offerData);
       }
-      const isTokenGated = productType.tokenGatedOffer === "true";
+      const isTokenGated = productType?.tokenGatedOffer === "true";
       await createOffers({
         sellerToCreate: null,
         isMultiVariant,
@@ -1032,7 +1032,7 @@ function CreateProductInner({
               setProductVariant(values?.productType?.productVariant);
             }
             const formTokenGated =
-              values.productType.tokenGatedOffer === "true";
+              values.productType?.tokenGatedOffer === "true";
             if (isTokenGated !== formTokenGated) {
               setIsTokenGated(formTokenGated);
             }

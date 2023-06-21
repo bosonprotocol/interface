@@ -31,8 +31,12 @@ export function useInitialValues() {
   );
 
   if (isTokenGated) {
-    cloneBaseValues.productType.tokenGatedOffer = "true";
-    cloneInitialValues.productType.tokenGatedOffer = "true";
+    if (cloneBaseValues.productType) {
+      cloneBaseValues.productType.tokenGatedOffer = "true";
+    }
+    if (cloneInitialValues.productType) {
+      cloneInitialValues.productType.tokenGatedOffer = "true";
+    }
   }
 
   return {

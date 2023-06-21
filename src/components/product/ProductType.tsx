@@ -536,7 +536,7 @@ export default function ProductType({
                   type="radio"
                   name="productType.tokenGatedOffer"
                   value="false"
-                  checked={values.productType.tokenGatedOffer === "false"}
+                  checked={values.productType?.tokenGatedOffer === "false"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -563,7 +563,7 @@ export default function ProductType({
                   type="radio"
                   name="productType.tokenGatedOffer"
                   value="true"
-                  checked={values.productType.tokenGatedOffer === "true"}
+                  checked={values.productType?.tokenGatedOffer === "true"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
