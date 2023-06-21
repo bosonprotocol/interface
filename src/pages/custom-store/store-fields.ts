@@ -261,8 +261,8 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
       options: [
-        { label: "All products", value: "all", default: true },
-        { label: "Only my own products", value: "mine" },
+        { label: "Only my own products", value: "mine", default: true },
+        { label: "All products", value: "all" },
         { label: "Custom", value: "custom" }
       ]
     },
