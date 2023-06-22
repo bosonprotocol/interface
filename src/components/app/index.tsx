@@ -73,7 +73,12 @@ export default function App({
     return getLayoutWrapper(withFullLayout);
   }, [withFullLayout]);
   const Wrapper = withLayout ? LayoutWrapper : Fragment;
-
+  console.log({
+    secondaryBgColor,
+    withBosonStyles,
+    secondary:
+      secondaryBgColor && !withBosonStyles ? secondaryBgColor : "lightGrey"
+  });
   return (
     <ThemeProvider theme={theme}>
       <IconContext.Provider

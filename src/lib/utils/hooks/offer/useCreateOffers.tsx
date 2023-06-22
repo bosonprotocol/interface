@@ -55,73 +55,40 @@ export function useCreateOffers() {
       onCreatedOffersWithVariants,
       onCreatedSingleOffers
     }: UseCreateOffersProps) => {
-      const hasSellerAccount = !sellerToCreate;
-      const isTokenGated = !!tokenGatedInfo;
-      const onBeforeBuildCondition = async () => {
-        let decimalsLocal: number | undefined = conditionDecimals;
-        if (
-          tokenGatedInfo?.tokenContract &&
-          tokenGatedInfo.tokenType?.value === TOKEN_TYPES[0].value
-        ) {
-          try {
-            const { decimals: tokenDecimals } =
-              await coreSDK.getExchangeTokenInfo(tokenGatedInfo.tokenContract);
-            decimalsLocal = tokenDecimals;
-            onGetExchangeTokenDecimals?.(decimalsLocal);
-          } catch (error) {
-            decimalsLocal = undefined;
-            onGetExchangeTokenDecimals?.(decimalsLocal);
+      let toastId: string | undefined;
+      try {
+        const hasSellerAccount = !sellerToCreate;
+        const isTokenGated = !!tokenGatedInfo;
+        const onBeforeBuildCondition = async () => {
+          let decimalsLocal: number | undefined = conditionDecimals;
+          if (
+            tokenGatedInfo?.tokenContract &&
+            tokenGatedInfo.tokenType?.value === TOKEN_TYPES[0].value
+          ) {
+            try {
+              const { decimals: tokenDecimals } =
+                await coreSDK.getExchangeTokenInfo(
+                  tokenGatedInfo.tokenContract
+                );
+              decimalsLocal = tokenDecimals;
+              onGetExchangeTokenDecimals?.(decimalsLocal);
+            } catch (error) {
+              decimalsLocal = undefined;
+              onGetExchangeTokenDecimals?.(decimalsLocal);
+            }
           }
-        }
-        return decimalsLocal;
-      };
-      showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
-        xs: "400px"
-      });
-      if (!sellerToCreate && !hasSellerAccount) {
-        return showModal(
-          "TRANSACTION_FAILED",
-          {
-            errorMessage: "Can't create seller",
-            detailedErrorMessage:
-              "No seller data was provided to create a seller account"
-          },
-          "auto",
-          undefined,
-          {
-            xs: "400px"
-          }
-        );
-      }
-      // seller should always exist at this point as it should have been created in the modal at the beginning of the offer creation flow
-      const seller: accounts.CreateSellerArgs | null = sellerToCreate;
-      let txResponse;
-      if (isMultiVariant) {
-        if (!hasSellerAccount && seller) {
-          if (isMetaTx) {
-            // createSeller with meta-transaction
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateSeller({
-                createSellerArgs: seller,
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          } else {
-            txResponse = await coreSDK.createSeller(seller);
-          }
-          showModal(
-            "TRANSACTION_SUBMITTED",
+          return decimalsLocal;
+        };
+        showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
+          xs: "400px"
+        });
+        if (!sellerToCreate && !hasSellerAccount) {
+          return showModal(
+            "TRANSACTION_FAILED",
             {
-              action: "Create seller",
-              txHash: txResponse.hash
+              errorMessage: "Can't create seller",
+              detailedErrorMessage:
+                "No seller data was provided to create a seller account"
             },
             "auto",
             undefined,
@@ -129,148 +96,36 @@ export function useCreateOffers() {
               xs: "400px"
             }
           );
-          addPendingTransaction({
-            type: subgraph.EventType.SellerCreated,
-            hash: txResponse.hash,
-            isMetaTx,
-            accountType: "Seller"
-          });
-          await txResponse.wait();
-          showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
-            xs: "400px"
-          });
         }
-        if (isMetaTx) {
-          // createOfferBatch with meta-transaction
-          const nonce = Date.now();
-          const { r, s, v, functionName, functionSignature } =
-            await coreSDK.signMetaTxCreateOfferBatch({
-              createOffersArgs: offersToCreate,
-              nonce
-            });
-          txResponse = await coreSDK.relayMetaTransaction({
-            functionName,
-            functionSignature,
-            sigR: r,
-            sigS: s,
-            sigV: v,
-            nonce
-          });
-        } else {
-          txResponse = await coreSDK.createOfferBatch(offersToCreate);
-        }
-        showModal(
-          "TRANSACTION_SUBMITTED",
-          {
-            action: "Create offer with variants",
-            txHash: txResponse.hash
-          },
-          "auto",
-          undefined,
-          {
-            xs: "400px"
-          }
-        );
-        addPendingTransaction({
-          type: subgraph.EventType.OfferCreated,
-          hash: txResponse.hash,
-          isMetaTx,
-          accountType: "Seller"
-        });
-        const txReceipt = await txResponse.wait();
-        const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
-
-        if (isTokenGated) {
-          showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
-            xs: "400px"
-          });
-          const decimals = await onBeforeBuildCondition();
-          const condition = buildCondition(tokenGatedInfo, decimals);
-
-          if (isMetaTx) {
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateGroup({
-                createGroupArgs: { offerIds, ...condition },
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          } else {
-            txResponse = await coreSDK.createGroup({ offerIds, ...condition });
-          }
-          showModal(
-            "TRANSACTION_SUBMITTED",
-            {
-              action: "Create condition group for offers",
-              txHash: txResponse.hash
-            },
-            "auto",
-            undefined,
-            {
-              xs: "400px"
-            }
-          );
-          await txResponse.wait();
-        }
-        const toastId = getOfferCreationToast();
-        let createdOffers: OfferFieldsFragment[] | null = null;
-        await poll(
-          async () => {
-            createdOffers = (
-              await Promise.all(
-                offerIds.map((offerId) =>
-                  coreSDK.getOfferById(offerId as string)
-                )
-              )
-            ).filter((offer) => !!offer);
-            return createdOffers;
-          },
-          (offers) => {
-            return offers.length !== offerIds.length;
-          },
-          500
-        );
-        toast.dismiss(toastId);
-        const allCreatedOffers =
-          createdOffers as unknown as OfferFieldsFragment[];
-        const [firstOffer] = allCreatedOffers;
-        onCreatedOffersWithVariants?.({
-          firstOffer,
-          createdOffers: allCreatedOffers
-        });
-      } else {
-        // no variants
-        const [offerData] = offersToCreate;
-        if (isMetaTx) {
-          // meta-transaction
+        // seller should always exist at this point as it should have been created in the modal at the beginning of the offer creation flow
+        const seller: accounts.CreateSellerArgs | null = sellerToCreate;
+        let txResponse;
+        if (isMultiVariant) {
           if (!hasSellerAccount && seller) {
-            // createSeller with meta-transaction
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateSeller({
-                createSellerArgs: seller,
+            if (isMetaTx) {
+              // createSeller with meta-transaction
+              const nonce = Date.now();
+              const { r, s, v, functionName, functionSignature } =
+                await coreSDK.signMetaTxCreateSeller({
+                  createSellerArgs: seller,
+                  nonce
+                });
+              txResponse = await coreSDK.relayMetaTransaction({
+                functionName,
+                functionSignature,
+                sigR: r,
+                sigS: s,
+                sigV: v,
                 nonce
               });
-            const createSellerResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
+            } else {
+              txResponse = await coreSDK.createSeller(seller);
+            }
             showModal(
               "TRANSACTION_SUBMITTED",
               {
                 action: "Create seller",
-                txHash: createSellerResponse.hash
+                txHash: txResponse.hash
               },
               "auto",
               undefined,
@@ -280,11 +135,11 @@ export function useCreateOffers() {
             );
             addPendingTransaction({
               type: subgraph.EventType.SellerCreated,
-              hash: createSellerResponse.hash,
+              hash: txResponse.hash,
               isMetaTx,
               accountType: "Seller"
             });
-            await createSellerResponse.wait();
+            await txResponse.wait();
             showModal(
               "WAITING_FOR_CONFIRMATION",
               undefined,
@@ -295,15 +150,12 @@ export function useCreateOffers() {
               }
             );
           }
-          // createOffer with meta-transaction
-          const nonce = Date.now();
-          if (isTokenGated) {
-            const decimals = await onBeforeBuildCondition();
-            const condition = buildCondition(tokenGatedInfo, decimals);
+          if (isMetaTx) {
+            // createOfferBatch with meta-transaction
+            const nonce = Date.now();
             const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateOfferWithCondition({
-                offerToCreate: offerData,
-                condition,
+              await coreSDK.signMetaTxCreateOfferBatch({
+                createOffersArgs: offersToCreate,
                 nonce
               });
             txResponse = await coreSDK.relayMetaTransaction({
@@ -315,94 +167,269 @@ export function useCreateOffers() {
               nonce
             });
           } else {
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateOffer({
-                createOfferArgs: offerData,
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
+            txResponse = await coreSDK.createOfferBatch(offersToCreate);
           }
-        } else {
-          // no meta tx
-          if (isTokenGated) {
-            const decimals = await onBeforeBuildCondition();
-            const condition = buildCondition(tokenGatedInfo, decimals);
-            txResponse =
-              !hasSellerAccount && seller
-                ? await coreSDK.createSellerAndOfferWithCondition(
-                    seller,
-                    offerData,
-                    condition
-                  )
-                : await coreSDK.createOfferWithCondition(offerData, condition);
-          } else {
-            txResponse =
-              !hasSellerAccount && seller
-                ? await coreSDK.createSellerAndOffer(seller, offerData)
-                : await coreSDK.createOffer(offerData);
-          }
-        }
-        showModal(
-          "TRANSACTION_SUBMITTED",
-          {
-            action: "Create offer",
-            txHash: txResponse.hash
-          },
-          "auto",
-          undefined,
-          {
-            xs: "400px"
-          }
-        );
-
-        addPendingTransaction({
-          type: subgraph.EventType.OfferCreated,
-          hash: txResponse.hash,
-          isMetaTx,
-          accountType: "Seller"
-        });
-
-        if (!hasSellerAccount && seller) {
+          showModal(
+            "TRANSACTION_SUBMITTED",
+            {
+              action: "Create offer with variants",
+              txHash: txResponse.hash
+            },
+            "auto",
+            undefined,
+            {
+              xs: "400px"
+            }
+          );
           addPendingTransaction({
-            type: subgraph.EventType.SellerCreated,
+            type: subgraph.EventType.OfferCreated,
             hash: txResponse.hash,
             isMetaTx,
             accountType: "Seller"
           });
+          const txReceipt = await txResponse.wait();
+          const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
+
+          if (isTokenGated) {
+            showModal(
+              "WAITING_FOR_CONFIRMATION",
+              undefined,
+              "auto",
+              undefined,
+              {
+                xs: "400px"
+              }
+            );
+            const decimals = await onBeforeBuildCondition();
+            const condition = buildCondition(tokenGatedInfo, decimals);
+
+            if (isMetaTx) {
+              const nonce = Date.now();
+              const { r, s, v, functionName, functionSignature } =
+                await coreSDK.signMetaTxCreateGroup({
+                  createGroupArgs: { offerIds, ...condition },
+                  nonce
+                });
+              txResponse = await coreSDK.relayMetaTransaction({
+                functionName,
+                functionSignature,
+                sigR: r,
+                sigS: s,
+                sigV: v,
+                nonce
+              });
+            } else {
+              txResponse = await coreSDK.createGroup({
+                offerIds,
+                ...condition
+              });
+            }
+            showModal(
+              "TRANSACTION_SUBMITTED",
+              {
+                action: "Create condition group for offers",
+                txHash: txResponse.hash
+              },
+              "auto",
+              undefined,
+              {
+                xs: "400px"
+              }
+            );
+            await txResponse.wait();
+          }
+          toastId = getOfferCreationToast();
+          let createdOffers: OfferFieldsFragment[] | null = null;
+          await poll(
+            async () => {
+              createdOffers = (
+                await Promise.all(
+                  offerIds.map((offerId) =>
+                    coreSDK.getOfferById(offerId as string)
+                  )
+                )
+              ).filter((offer) => !!offer);
+              return createdOffers;
+            },
+            (offers) => {
+              return offers.length !== offerIds.length;
+            },
+            500
+          );
+          toast.dismiss(toastId);
+          const allCreatedOffers =
+            createdOffers as unknown as OfferFieldsFragment[];
+          const [firstOffer] = allCreatedOffers;
+          onCreatedOffersWithVariants?.({
+            firstOffer,
+            createdOffers: allCreatedOffers
+          });
+        } else {
+          // no variants
+          const [offerData] = offersToCreate;
+          if (isMetaTx) {
+            // meta-transaction
+            if (!hasSellerAccount && seller) {
+              // createSeller with meta-transaction
+              const nonce = Date.now();
+              const { r, s, v, functionName, functionSignature } =
+                await coreSDK.signMetaTxCreateSeller({
+                  createSellerArgs: seller,
+                  nonce
+                });
+              const createSellerResponse = await coreSDK.relayMetaTransaction({
+                functionName,
+                functionSignature,
+                sigR: r,
+                sigS: s,
+                sigV: v,
+                nonce
+              });
+              showModal(
+                "TRANSACTION_SUBMITTED",
+                {
+                  action: "Create seller",
+                  txHash: createSellerResponse.hash
+                },
+                "auto",
+                undefined,
+                {
+                  xs: "400px"
+                }
+              );
+              addPendingTransaction({
+                type: subgraph.EventType.SellerCreated,
+                hash: createSellerResponse.hash,
+                isMetaTx,
+                accountType: "Seller"
+              });
+              await createSellerResponse.wait();
+              showModal(
+                "WAITING_FOR_CONFIRMATION",
+                undefined,
+                "auto",
+                undefined,
+                {
+                  xs: "400px"
+                }
+              );
+            }
+            // createOffer with meta-transaction
+            const nonce = Date.now();
+            if (isTokenGated) {
+              const decimals = await onBeforeBuildCondition();
+              const condition = buildCondition(tokenGatedInfo, decimals);
+              const { r, s, v, functionName, functionSignature } =
+                await coreSDK.signMetaTxCreateOfferWithCondition({
+                  offerToCreate: offerData,
+                  condition,
+                  nonce
+                });
+              txResponse = await coreSDK.relayMetaTransaction({
+                functionName,
+                functionSignature,
+                sigR: r,
+                sigS: s,
+                sigV: v,
+                nonce
+              });
+            } else {
+              const { r, s, v, functionName, functionSignature } =
+                await coreSDK.signMetaTxCreateOffer({
+                  createOfferArgs: offerData,
+                  nonce
+                });
+              txResponse = await coreSDK.relayMetaTransaction({
+                functionName,
+                functionSignature,
+                sigR: r,
+                sigS: s,
+                sigV: v,
+                nonce
+              });
+            }
+          } else {
+            // no meta tx
+            if (isTokenGated) {
+              const decimals = await onBeforeBuildCondition();
+              const condition = buildCondition(tokenGatedInfo, decimals);
+              txResponse =
+                !hasSellerAccount && seller
+                  ? await coreSDK.createSellerAndOfferWithCondition(
+                      seller,
+                      offerData,
+                      condition
+                    )
+                  : await coreSDK.createOfferWithCondition(
+                      offerData,
+                      condition
+                    );
+            } else {
+              txResponse =
+                !hasSellerAccount && seller
+                  ? await coreSDK.createSellerAndOffer(seller, offerData)
+                  : await coreSDK.createOffer(offerData);
+            }
+          }
+          showModal(
+            "TRANSACTION_SUBMITTED",
+            {
+              action: "Create offer",
+              txHash: txResponse.hash
+            },
+            "auto",
+            undefined,
+            {
+              xs: "400px"
+            }
+          );
+
+          addPendingTransaction({
+            type: subgraph.EventType.OfferCreated,
+            hash: txResponse.hash,
+            isMetaTx,
+            accountType: "Seller"
+          });
+
+          if (!hasSellerAccount && seller) {
+            addPendingTransaction({
+              type: subgraph.EventType.SellerCreated,
+              hash: txResponse.hash,
+              isMetaTx,
+              accountType: "Seller"
+            });
+          }
+
+          const txReceipt = await txResponse.wait();
+          const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
+          let createdOffer: OfferFieldsFragment | null = null;
+          toastId = getOfferCreationToast();
+          await poll(
+            async () => {
+              createdOffer = await coreSDK.getOfferById(offerId as string);
+              return createdOffer;
+            },
+            (offer) => {
+              return !offer;
+            },
+            500
+          );
+          toast.dismiss(toastId);
+          if (!createdOffer) {
+            return;
+          }
+
+          onCreatedSingleOffers?.({
+            offer: createdOffer
+          });
         }
 
-        const txReceipt = await txResponse.wait();
-        const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-        let createdOffer: OfferFieldsFragment | null = null;
-        const toastId = getOfferCreationToast();
-        await poll(
-          async () => {
-            createdOffer = await coreSDK.getOfferById(offerId as string);
-            return createdOffer;
-          },
-          (offer) => {
-            return !offer;
-          },
-          500
-        );
-        toast.dismiss(toastId);
-        if (!createdOffer) {
-          return;
+        hideModal();
+      } finally {
+        if (toastId) {
+          toast.dismiss(toastId);
         }
-
-        onCreatedSingleOffers?.({
-          offer: createdOffer
-        });
       }
-
-      hideModal();
     }
   );
 }

@@ -52,13 +52,13 @@ export const baseAppProps = {
   fluidHeader: false,
   withBosonStyles: true,
   withBanner: false
-};
+} as const;
 const base = {
   component: null,
   index: false,
   app: baseAppProps,
   role: []
-};
+} as const;
 
 export const UserRoles = {
   Guest: "Guest",
@@ -278,6 +278,10 @@ export default [
   {
     ...base,
     path: BosonRoutes.SellerPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     component: ProfilePagePage,
     componentProps: {
       profileType: "seller"
