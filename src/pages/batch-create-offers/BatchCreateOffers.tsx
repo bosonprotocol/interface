@@ -22,12 +22,22 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 
 // see https://dev.to/atosh502/file-uploads-and-validation-with-react-and-formik-2mbk
 
-const FileUpload = ({ fileRef, name, onChange }: any) => {
+const FileUpload = ({
+  fileRef,
+  name,
+  onChange
+}: {
+  fileRef?: React.MutableRefObject<{ files: File[] | null } | null>;
+  name?: string;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+}) => {
   return (
     <div>
       <label htmlFor="files">Choose files</label>{" "}
       <input
-        ref={fileRef}
+        ref={
+          fileRef as unknown as React.LegacyRef<HTMLInputElement> | undefined
+        }
         multiple={true}
         type="file"
         name={name}
@@ -46,13 +56,11 @@ const ButtonsSection = styled.div`
 const readOffersList = async (
   file: File
 ): Promise<offers.CreateOfferArgs[]> => {
-  return new Promise<any>((resolve, reject) => {
+  return new Promise<offers.CreateOfferArgs[]>((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = (e: ProgressEvent<FileReader>) => {
       const text = e.target?.result?.toString() || "";
-      console.log(text);
       const json = JSON.parse(text) as offers.CreateOfferArgs[];
-      console.log(json);
       if (Array.isArray(json)) {
         json.forEach((o: offers.CreateOfferArgs) => {
           if (!o.metadataHash || !o.metadataUri) {
@@ -79,7 +87,7 @@ function BatchCreateOffers() {
   const [offersToBeCreated, setOffersToBeCreated] = useState<
     offers.CreateOfferArgs[]
   >([]);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [invalidFile, setInvalidFile] = useState(false);
   const [decimals, setDecimals] = useState<number | undefined>(undefined);
 
@@ -126,7 +134,6 @@ function BatchCreateOffers() {
   );
 
   useMemo(async () => {
-    console.log("offersList", offersList);
     const existingHashes: string[] = [];
     if (sellerOffers.isSuccess) {
       for (const offer of sellerOffers.data) {
@@ -182,11 +189,7 @@ function BatchCreateOffers() {
   ]);
 
   const handleCreateOffers = async () => {
-    console.log(
-      "Create Offers",
-      offersToBeCreated.map((offer) => offer.metadataHash)
-    );
-    // TODO: call coreSDK to create the offers (taking into account the max number of offers that can be created in a batch transaction)
+    // TODO: take into account the max number of offers that can be created in a batch transaction
     try {
       await createOffers({
         sellerToCreate: null,
@@ -211,12 +214,12 @@ function BatchCreateOffers() {
           ));
         }
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // TODO: FAILURE MODAL
-      console.error("error->", error.errors ?? error);
+      console.error("error->", (error as { errors: unknown }).errors ?? error);
       const hasUserRejectedTx =
-        "code" in error &&
-        (error as unknown as { code: string })?.code === "ACTION_REJECTED";
+        "code" in (error as { [key: string]: unknown }) &&
+        (error as { code: string })?.code === "ACTION_REJECTED";
       if (hasUserRejectedTx) {
         showModal("TRANSACTION_FAILED");
       } else {
@@ -239,14 +242,13 @@ function BatchCreateOffers() {
             <FormField
               title="Offers list"
               required
-              subTitle="Upload the JSON file which list all offers to be created."
+              subTitle="Upload the JSON file that lists all offers to be created."
             >
               <FileUpload
                 name="files"
                 fileRef={fileRef}
-                onChange={(e: any) => {
-                  console.log("setSelectedFile", e.target.files[0]);
-                  setSelectedFile(e.target.files[0]);
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setSelectedFile(e.target?.files?.[0] || null);
                 }}
               />
             </FormField>
