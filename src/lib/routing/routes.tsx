@@ -30,12 +30,23 @@ export const BosonRoutes = {
 export const SellerCenterRoutes = {
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
   CreateProduct: `${BosonRoutes.Sell}/create-product`,
-  BatchCreateOffers: `${BosonRoutes.Sell}/batch-create-offers`
-};
+  BatchCreateOffers: `${BosonRoutes.Sell}/batch-create-offers`,
+  DCL: `${BosonRoutes.Sell}/dcl`
+} as const;
+
+export const SellerCenterSubRoutes = {
+  Dashboard: "dashboard",
+  Products: "products",
+  Exchanges: "exchanges",
+  Messages: "messages",
+  Finances: "finances",
+  "Sales Channels": "salesChannels",
+  "Profile Details": "profileDetails"
+} as const;
 
 export const DisputeResolverCenterRoutes = {
   DisputeResolverCenter: `${BosonRoutes.DRAdmin}/:${UrlParameters.disputeResolverPageId}`
-};
+} as const;
 
 export const ProductRoutes = {
   Root: "/products",

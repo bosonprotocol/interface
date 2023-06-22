@@ -33,6 +33,8 @@ export const storeFields = {
   textColor: "textColor",
   footerBgColor: "footerBgColor",
   footerTextColor: "footerTextColor",
+  upperCardBgColor: "upperCardBgColor",
+  lowerCardBgColor: "lowerCardBgColor",
   fontFamily: "fontFamily",
   navigationBarPosition: "navigationBarPosition",
   showFooter: "showFooter",
@@ -100,7 +102,7 @@ export const formModel = {
     [storeFields.bannerUpload]: {
       name: storeFields.bannerUpload,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Banner Image"
+      placeholder: "Banner image"
     },
     [storeFields.logoUrl]: {
       name: storeFields.logoUrl
@@ -113,7 +115,7 @@ export const formModel = {
     [storeFields.logoUpload]: {
       name: storeFields.logoUpload,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Logo Image"
+      placeholder: "Logo image"
     },
     [storeFields.headerBgColor]: {
       name: storeFields.headerBgColor,
@@ -148,12 +150,22 @@ export const formModel = {
     [storeFields.footerBgColor]: {
       name: storeFields.footerBgColor,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Footer Color"
+      placeholder: "Footer color"
     },
     [storeFields.footerTextColor]: {
       name: storeFields.footerTextColor,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Footer Text Color"
+      placeholder: "Footer text color"
+    },
+    [storeFields.upperCardBgColor]: {
+      name: storeFields.upperCardBgColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Upper card background color"
+    },
+    [storeFields.lowerCardBgColor]: {
+      name: storeFields.lowerCardBgColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Lower card background color"
     },
     [storeFields.fontFamily]: {
       name: storeFields.fontFamily,
@@ -249,8 +261,8 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
       options: [
-        { label: "All products", value: "all", default: true },
-        { label: "Only my own products", value: "mine" },
+        { label: "Only my own products", value: "mine", default: true },
+        { label: "All products", value: "all" },
         { label: "Custom", value: "custom" }
       ]
     },
@@ -348,6 +360,8 @@ export const validationSchema = Yup.object<Record<KeysToValidate, any>>({
   // NOTE: we may wish to show it again in the future
   // [storeFields.footerBgColor]: Yup.string(),
   [storeFields.footerTextColor]: Yup.string(),
+  [storeFields.upperCardBgColor]: Yup.string(),
+  [storeFields.lowerCardBgColor]: Yup.string(),
   [storeFields.buttonBgColor]: Yup.string(),
   [storeFields.buttonTextColor]: Yup.string(),
   [storeFields.textColor]: Yup.string(),
@@ -442,6 +456,8 @@ export const initialValues: Yup.InferType<typeof validationSchema> = {
   [storeFields.accentColor]: "",
   [storeFields.textColor]: colors.black,
   // [storeFields.footerBgColor]: colors.black,
+  [storeFields.upperCardBgColor]: colors.white,
+  [storeFields.lowerCardBgColor]: colors.white,
   [storeFields.buttonBgColor]: colors.primary,
   [storeFields.buttonTextColor]: colors.black,
   [storeFields.footerTextColor]: colors.white,

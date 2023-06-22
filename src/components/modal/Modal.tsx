@@ -1,4 +1,3 @@
-import { X } from "phosphor-react";
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import styled, { css } from "styled-components";
@@ -6,8 +5,8 @@ import styled, { css } from "styled-components";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import Button from "../ui/Button";
-import Typography from "../ui/Typography";
+import { ModalHeader } from "./header/ModalHeader";
+import { ModalHeaderTitle } from "./header/ModalHeaderTitle";
 import { ModalType, Store } from "./ModalContext";
 
 const Root = styled.div`
@@ -173,30 +172,6 @@ const Wrapper = styled.div<{
     `};
 `;
 
-const Header = styled(Typography)<{ $title?: string }>`
-  position: relative;
-
-  text-align: left;
-  padding: 1rem 2rem;
-  display: flex;
-  border-bottom: 2px solid ${colors.border};
-  align-items: center;
-  justify-content: ${(props) => {
-    return props.$title ? "space-between" : "flex-end";
-  }};
-  gap: 0.5rem;
-`;
-
-const HeaderWithTitle = styled(Header)`
-  height: 4.25rem;
-`;
-
-const Close = styled(X)`
-  line {
-    stroke: ${colors.darkGrey};
-  }
-`;
-
 const Content = styled.div<{
   $modalType: ModalType;
   $size: Props["size"];
@@ -295,23 +270,17 @@ export default function Modal({
         $maxWidths={maxWidths}
       >
         {HeaderComponent ? (
-          <Header tag="div" margin="0">
-            {HeaderComponent}
-            {closable && (
-              <Button data-close theme="blank" onClick={handleOnClose}>
-                <Close />
-              </Button>
-            )}
-          </Header>
+          <ModalHeader
+            headerComponent={HeaderComponent}
+            closable={closable}
+            handleOnClose={handleOnClose}
+          />
         ) : (
-          <HeaderWithTitle tag="h3" $title={title} margin="0">
-            {title}
-            {closable && (
-              <Button data-close theme="blank" onClick={handleOnClose}>
-                <Close />
-              </Button>
-            )}
-          </HeaderWithTitle>
+          <ModalHeaderTitle
+            title={title}
+            closable={closable}
+            handleOnClose={handleOnClose}
+          />
         )}
         <Content $size={size} $modalType={modalType}>
           {children}

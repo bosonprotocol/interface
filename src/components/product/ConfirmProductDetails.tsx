@@ -164,8 +164,7 @@ export default function ConfirmProductDetails({
   const commonTermsOfSale = isMultiVariant
     ? values.variantsCoreTermsOfSale
     : values.coreTermsOfSale;
-  const { offerValidityPeriod, redemptionPeriod, tokenGatedOffer } =
-    commonTermsOfSale;
+  const { offerValidityPeriod, redemptionPeriod } = commonTermsOfSale;
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -354,11 +353,8 @@ export default function ConfirmProductDetails({
       <CollapseContainer>
         <Collapse title={<Typography tag="h3">Terms of Sale</Typography>}>
           <TermsOfSaleContent>
-            <Grid
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              flexWrap="wrap"
-              flex="1 1"
+            <div
+              style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}
             >
               {!isMultiVariant && (
                 <>
@@ -402,18 +398,18 @@ export default function ConfirmProductDetails({
                     <FormFieldContainer>
                       <FormField title="Token Gated Offer" required>
                         <ContentValue tag="p">
-                          {tokenGatedOffer?.label}
+                          {values.productType?.tokenGatedOffer === "true"
+                            ? "Yes"
+                            : "No"}
                         </ContentValue>
                       </FormField>
                     </FormFieldContainer>
                   </GridBox>
                 </>
               )}
-            </Grid>
-            <Grid
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              flex="1 1"
+            </div>
+            <div
+              style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}
             >
               <GridBox $minWidth="16rem">
                 <FormFieldContainer
@@ -491,7 +487,7 @@ export default function ConfirmProductDetails({
                   </FormField>
                 </FormFieldContainer>
               </GridBox>
-            </Grid>
+            </div>
           </TermsOfSaleContent>
         </Collapse>
       </CollapseContainer>

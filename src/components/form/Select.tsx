@@ -1,6 +1,11 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useField } from "formik";
-import Select from "react-select";
+import Select, {
+  ActionMeta,
+  MultiValue,
+  SingleValue,
+  StylesConfig
+} from "react-select";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -13,9 +18,12 @@ const StyledSelect = styled(Select)`
   * {
     font-size: 13.33px;
   }
+  [class*="-indicatorContainer"] {
+    padding: 6.92px; // to make selects less tall but as tall as inputs
+  }
 ` as Select;
 
-const customStyles = (error: any) => ({
+const customStyles = (error: any): StylesConfig<any, true> => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   singleValue: (provided: any, state: any) => {
     return {
@@ -55,7 +63,8 @@ const customStyles = (error: any) => ({
     ...provided,
     zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
     position: "relative",
-    width: "100%"
+    width: "100%",
+    height: "25px"
   }),
   option: (provided: any, state: any) => ({
     ...provided,
@@ -72,7 +81,20 @@ const customStyles = (error: any) => ({
   }),
   indicatorSeparator: () => ({
     display: "none"
-  })
+  }),
+  multiValue: (base, state) => {
+    return (state.data as Record<string, any>).isFixed
+      ? { ...base, backgroundColor: colors.darkGrey }
+      : base;
+  },
+  multiValueLabel: (base, state) => {
+    return state.data.isFixed
+      ? { ...base, fontWeight: "bold", color: colors.white, paddingRight: 6 }
+      : base;
+  },
+  multiValueRemove: (base, state) => {
+    return state.data.isFixed ? { ...base, display: "none" } : base;
+  }
 });
 
 export default function SelectComponent({
@@ -85,7 +107,7 @@ export default function SelectComponent({
   errorMessage,
   onChange,
   ...props
-}: SelectProps) {
+}: SelectProps<boolean>) {
   const [field, meta, helpers] = useField(name);
   const displayErrorMessage =
     meta.error && meta.touched && !errorMessage
@@ -98,13 +120,50 @@ export default function SelectComponent({
     typeof displayErrorMessage === typeof "string" &&
     displayErrorMessage !== "";
 
-  const handleChange = (option: SelectDataProps<string>) => {
-    if (!meta.touched) {
-      helpers.setTouched(true);
-    }
-    helpers.setValue(option);
-    onChange?.(option);
-  };
+  let handleChange:
+    | ((
+        newValue: MultiValue<SelectDataProps<string>> | null,
+        actionMeta: ActionMeta<SelectDataProps<string>>
+      ) => void)
+    | ((newValue: SingleValue<SelectDataProps<string> | null>) => void);
+  if (props.isMulti) {
+    handleChange = (
+      newValue: MultiValue<SelectDataProps<string>> | null,
+      actionMeta: ActionMeta<SelectDataProps<string>>
+    ) => {
+      let newValueTemp: typeof newValue = newValue;
+      if (!meta.touched) {
+        helpers.setTouched(true);
+      }
+      switch (actionMeta.action) {
+        case "remove-value":
+        case "pop-value":
+          if (actionMeta.removedValue.isFixed) {
+            return;
+          }
+          break;
+        case "clear":
+          if (Array.isArray(field.value)) {
+            newValueTemp = (field.value as any[]).filter((v) => v.isFixed);
+          }
+          break;
+      }
+
+      helpers.setValue(newValueTemp);
+      onChange?.(newValueTemp);
+    };
+  } else {
+    handleChange = (newValue: SingleValue<SelectDataProps<string> | null>) => {
+      const newValueTemp: typeof newValue = newValue;
+      if (!meta.touched) {
+        helpers.setTouched(true);
+      }
+
+      helpers.setValue(newValueTemp);
+      onChange?.(newValueTemp);
+    };
+  }
+
   const handleBlur = () => {
     if (!meta.touched) {
       helpers.setTouched(true);
@@ -120,12 +179,14 @@ export default function SelectComponent({
         placeholder={placeholder}
         options={options}
         value={field.value}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         onChange={handleChange}
         onBlur={handleBlur}
         isSearchable={isSearchable}
         isClearable={isClearable}
         isDisabled={disabled}
-        isOptionDisabled={(option) => option.disabled}
+        isOptionDisabled={(option) => !!option.disabled}
       />
       <Error display={displayError} message={displayErrorMessage} />{" "}
     </>

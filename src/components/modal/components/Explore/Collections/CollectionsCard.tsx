@@ -1,6 +1,7 @@
+import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { Fragment, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
@@ -9,13 +10,15 @@ import { zIndex } from "../../../../../lib/styles/zIndex";
 import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import useSellerNumbers from "../../../../../lib/utils/hooks/useSellerNumbers";
+import { useCustomStoreQueryParameter } from "../../../../../pages/custom-store/useCustomStoreQueryParameter";
 import { ExtendedSeller } from "../../../../../pages/explore/WithAllOffers";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import Typography from "../../../../ui/Typography";
-import { ProfileType } from "../../Profile/const";
 
-const CardContainer = styled.div`
+const CardContainer = styled.div<{
+  $isUpperCardBgColorDefined: boolean;
+}>`
   position: relative;
   padding-bottom: 7.8125rem;
   background: ${colors.lightGrey};
@@ -31,6 +34,14 @@ const CardContainer = styled.div`
       transform: translate(-50%, -50%) scale(1.05);
     }
   }
+  ${({ $isUpperCardBgColorDefined }) => {
+    if ($isUpperCardBgColorDefined) {
+      return css`
+        background: var(--upperCardBgColor);
+      `;
+    }
+    return css``;
+  }}
 `;
 const ImagesContainer = styled.div`
   display: grid;
@@ -40,7 +51,9 @@ const ImagesContainer = styled.div`
   overflow: hidden;
 `;
 
-const DataContainer = styled.div`
+const DataContainer = styled.div<{
+  $isLowerCardBgColorDefined: boolean;
+}>`
   padding: 1rem 1.5rem 1rem 1.5rem;
   background: ${colors.white};
   position: absolute;
@@ -48,6 +61,21 @@ const DataContainer = styled.div`
   left: 0;
   right: 0;
   z-index: ${zIndex.OfferCard};
+
+  ${({ $isLowerCardBgColorDefined }) => {
+    if ($isLowerCardBgColorDefined) {
+      return css`
+        color: var(--textColor);
+
+        background: var(--lowerCardBgColor);
+
+        * {
+          color: var(--textColor);
+        }
+      `;
+    }
+    return css``;
+  }}
 `;
 
 const StyledGrid = styled(Grid)`
@@ -72,7 +100,7 @@ export default function CollectionsCard({ collection }: Props) {
   const metadata = seller?.metadata;
   const [lens] = lensProfiles;
 
-  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
 
   const name =
     (useLens ? lens?.name : metadata?.name) ??
@@ -91,9 +119,13 @@ export default function CollectionsCard({ collection }: Props) {
 
     return array.slice(0, imagesNumber);
   }, [collection]);
+  const upperCardBgColor = useCustomStoreQueryParameter("upperCardBgColor");
+
+  const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
 
   return (
     <CardContainer
+      $isUpperCardBgColorDefined={!!upperCardBgColor}
       onClick={() => {
         navigate({
           pathname: generatePath(BosonRoutes.SellerPage, {
@@ -113,7 +145,7 @@ export default function CollectionsCard({ collection }: Props) {
               )
           )}
       </ImagesContainer>
-      <DataContainer>
+      <DataContainer $isLowerCardBgColorDefined={!!lowerCardBgColor}>
         <div>
           <Typography
             color={colors.black}

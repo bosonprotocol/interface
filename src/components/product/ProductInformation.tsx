@@ -19,6 +19,13 @@ import {
 import { CATEGORY_OPTIONS } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
+const StyledTextarea = styled(Textarea)`
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 54px;
+  max-height: 500px;
+`;
+
 const AddProductContainer = styled.div`
   display: grid;
   grid-template-columns: minmax(11.25rem, 1fr) 3fr;
@@ -61,7 +68,7 @@ const AddAttributesContainer = ({
   const { values } = useCreateForm();
 
   const elements: ElementType[] = useMemo(
-    () => values?.productInformation?.attributes,
+    () => values?.productInformation?.attributes || [],
     [values?.productInformation?.attributes]
   );
 
@@ -145,7 +152,7 @@ export default function ProductInformation() {
         required
         subTitle="Describe your product with as much detail as possible."
       >
-        <Textarea
+        <StyledTextarea
           name="productInformation.description"
           placeholder="Include information like shipping is included, or whether duties/taxes are covered."
         />

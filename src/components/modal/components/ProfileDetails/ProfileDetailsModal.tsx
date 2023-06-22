@@ -19,7 +19,7 @@ export const ProfileDetailsModal: React.FC<ProfileDetailsModalProps> = ({
     [UrlParameters.sellerId]: sellerId
   });
   return (
-    <Grid justifyContent="center" gap="2rem">
+    <Grid justifyContent="center" gap="2rem" flexWrap="wrap">
       <EditProfile />
       <Button as="div" theme="secondary" type={null as never}>
         <LinkWithQuery to={sellerUrl} style={{ all: "unset" }}>

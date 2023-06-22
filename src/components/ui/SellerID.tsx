@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -13,7 +13,6 @@ import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getLensImageUrl } from "../../lib/utils/images";
-import { ProfileType } from "../modal/components/Profile/const";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import Image from "./Image";
 
@@ -102,7 +101,7 @@ const SellerID: React.FC<
   const hasCursorPointer = !!onClick || onClick === undefined;
   const seller = sellers[0] ?? offer?.seller;
   const metadata = seller?.metadata;
-  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const regularProfilePicture =
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const lensProfilePicture = getLensProfilePictureUrl(lens);

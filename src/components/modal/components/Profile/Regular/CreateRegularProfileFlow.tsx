@@ -10,7 +10,7 @@ import { RegularProfileMultiSteps } from "./RegularProfileMultiSteps";
 import RegularProfileSummary from "./RegularProfileSummary";
 
 interface CreateRegularProfileFlowProps {
-  onSubmit: (data: CreateProfile) => void;
+  onSubmit: (data: CreateProfile) => Promise<void>;
   initialData?: CreateProfile;
   switchButton: () => ReactElement;
 }
@@ -69,8 +69,8 @@ export const CreateRegularProfileFlow: React.FC<
         <RegularProfileSummary
           bosonAccount={bosonAccount}
           values={regularProfile}
-          onSubmit={() => {
-            onSubmit(regularProfile);
+          onSubmit={async () => {
+            await onSubmit(regularProfile);
           }}
         />
       ) : (

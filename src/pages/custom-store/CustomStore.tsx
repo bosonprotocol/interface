@@ -1,16 +1,23 @@
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
-import Layout from "../../components/Layout";
+import Layout from "../../components/layout/Layout";
+import { useRemoveLandingQueryParams } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
+import { getSellerCenterPath } from "../../components/seller/paths";
 import Typography from "../../components/ui/Typography";
+import { SellerLandingPageParameters } from "../../lib/routing/parameters";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
+import { CongratulationsType } from "../create-product/congratulations/Congratulations";
+import { CongratulationsPage } from "../create-product/congratulations/CongratulationsPage";
 import NotFound from "../not-found/NotFound";
 import CustomStoreFormContent, {
   formValuesWithOneLogoUrl
@@ -27,11 +34,17 @@ const Root = styled(Layout)`
 
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
+  const [searchParams] = useSearchParams();
+  const navigate = useKeepQueryParamsNavigate();
+  const removeLandingQueryParams = useRemoveLandingQueryParams();
+  const [showCongratulationsPage, setShowCongratulationsPage] =
+    useState<boolean>(false);
   const [hasSubmitError, setHasSubmitError] = useState<boolean>(false);
   const primaryColor = useCSSVariable("--primary");
   const storage = useIpfsStorage();
   const { sellers } = useCurrentSellers();
   const seller = sellers?.[0];
+  const sellerId = seller?.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
   const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
 
@@ -45,6 +58,21 @@ export default function CustomStore() {
 
   if (!isSellerCurated) {
     return <NotFound />;
+  }
+
+  if (showCongratulationsPage) {
+    return (
+      <CongratulationsPage
+        sellerId={sellerId}
+        type={CongratulationsType.CustomStore}
+        onClose={() => {
+          removeLandingQueryParams();
+          navigate({
+            pathname: getSellerCenterPath("Sales Channels")
+          });
+        }}
+      />
+    );
   }
 
   return (
@@ -95,12 +123,21 @@ export default function CustomStore() {
       </html>`;
 
             const cid = await storage.add(html);
-
+            const hasSteps = searchParams.has(
+              SellerLandingPageParameters.slsteps
+            );
             const ipfsUrl = getIpfsGatewayUrl(cid);
             showModal(modalTypes.CUSTOM_STORE, {
-              title: "Congratulations!",
+              title: hasSteps ? "Next Steps" : "Congratulations!",
+              text: hasSteps
+                ? "Your storefront URL and further options are below:"
+                : "Congrats for creating your storefront. See the URL and further options below:",
+              buttonText: hasSteps ? "Next" : "Done",
               ipfsUrl,
-              htmlString: html
+              htmlString: html,
+              onClose: (show: boolean) => {
+                setShowCongratulationsPage(!!show);
+              }
             });
           } catch (error) {
             console.error(error);

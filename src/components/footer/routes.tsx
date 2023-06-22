@@ -17,7 +17,7 @@ import {
 import { isTruthy } from "../../lib/types/helpers";
 import { UserRoles } from "../../router/routes";
 import { checkIfUserHaveRole } from "../../router/useUserRoles";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
+import { getSellerCenterPath } from "../seller/paths";
 import ViewTxButton from "../transactions/ViewTxButton";
 
 export const SOCIAL_ROUTES = [
@@ -126,7 +126,10 @@ export const getSellRoutes = ({
 }) => {
   const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
-
+  productRoutes.push({
+    name: "Sell",
+    url: BosonRoutes.Sell
+  });
   productRoutes.push({
     name: "Create Products",
     url: SellerCenterRoutes.CreateProduct
@@ -138,9 +141,7 @@ export const getSellRoutes = ({
   ) {
     productRoutes.push({
       name: "Seller Center",
-      url: generatePath(SellerCenterRoutes.SellerCenter, {
-        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-      })
+      url: getSellerCenterPath("Dashboard")
     });
   }
   if (

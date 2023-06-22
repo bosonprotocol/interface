@@ -11,9 +11,11 @@ import BatchCreateOffersPage from "../pages/batch-create-offers/BatchCreateOffer
 import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
 import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
 import CreateProductPage from "../pages/create-product/CreateProduct";
+import { DCLPage } from "../pages/dcl/DCLPage";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
+import SellerLandingPage from "../pages/sell/landing/SellerLandingPage";
 import SellerCenterPage from "../pages/sell/SellerCenter";
 
 const AboutPage = lazy(() => import("../pages/about/AboutPage"));
@@ -75,6 +77,7 @@ export interface IRoutes extends RouteProps {
   };
   app?: {
     withLayout?: boolean;
+    withFullLayout?: boolean;
     withFooter?: boolean;
     fluidHeader?: boolean;
   };
@@ -103,6 +106,17 @@ export default [
   },
   {
     ...base,
+    path: BosonRoutes.Sell,
+    component: SellerLandingPage,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: true,
+      fluidHeader: false
+    }
+  },
+  {
+    ...base,
     path: `${SellerCenterRoutes.SellerCenter}/*`,
     component: SellerCenterPage,
     app: {
@@ -122,6 +136,20 @@ export default [
     ...base,
     path: SellerCenterRoutes.BatchCreateOffers,
     component: BatchCreateOffersPage
+  },
+  {
+    ...base,
+    path: SellerCenterRoutes.DCL,
+    component: DCLPage,
+    app: {
+      ...base.app,
+      withHeader: false,
+      withLayout: true,
+      withFullLayout: true,
+      withFooter: false,
+      fluidHeader: false
+    },
+    role: [UserRoles.Seller]
   },
   {
     ...base,
@@ -313,4 +341,4 @@ export default [
     path: BosonRoutes.Error404,
     component: NotFoundPage
   }
-];
+] as IRoutes[];

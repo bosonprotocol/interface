@@ -1,4 +1,5 @@
 import { Warning } from "phosphor-react";
+import { useState } from "react";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
@@ -17,7 +18,7 @@ import { ProfileType } from "../const";
 interface Props {
   values: CreateProfile;
   bosonAccount: BosonAccount;
-  onSubmit: (createdSellerId: string) => void;
+  onSubmit: (createdSellerId: string) => Promise<void>;
 }
 
 export default function RegularProfileSummary({
@@ -25,6 +26,7 @@ export default function RegularProfileSummary({
   bosonAccount,
   onSubmit
 }: Props) {
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const logo = values?.logo?.[0];
   const cover = values?.coverPicture?.[0];
   const logoImage = getIpfsGatewayUrl(logo?.src || "");
@@ -340,22 +342,31 @@ export default function RegularProfileSummary({
           <BosonButton
             variant="primaryFill"
             onClick={async () => {
-              const data = await createSeller({
-                values,
-                bosonAccount,
-                kind: ProfileType.REGULAR
-              });
+              setSubmitting(true);
+              try {
+                const data = await createSeller({
+                  values,
+                  bosonAccount,
+                  kind: ProfileType.REGULAR
+                });
 
-              const createdSellerId = (data || "") as string;
-              onSubmit(createdSellerId);
+                const createdSellerId = (data || "") as string;
+                await onSubmit(createdSellerId);
+              } catch (error) {
+                console.error(error);
+              } finally {
+                setSubmitting(false);
+              }
             }}
-            disabled={isCreatingSellerAccount || isCreatedSellerAccount}
+            disabled={
+              isCreatingSellerAccount || isCreatedSellerAccount || submitting
+            }
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Create Seller Account
               </Typography>
-              {isCreatingSellerAccount && <Spinner size={15} />}
+              {(isCreatingSellerAccount || submitting) && <Spinner size={15} />}
             </Grid>
           </BosonButton>
         </Grid>

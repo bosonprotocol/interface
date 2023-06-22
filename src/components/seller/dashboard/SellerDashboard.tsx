@@ -18,6 +18,7 @@ import GridContainer from "../../ui/GridContainer";
 import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 import { WithSellerDataProps } from "../common/WithSellerData";
+import { getSellerCenterPath } from "../paths";
 import { SellerInsideProps } from "../SellerInside";
 import { SellerInner } from "./SellerDashboard.styles";
 import SellerDashboardInfo from "./SellerDashboardInfo";
@@ -203,9 +204,7 @@ export default function SellerDashboard({
               name="Commits"
               items={commits.slice(0, 3)}
               onClick={() => {
-                const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
-                  [UrlParameters.sellerPage]: "exchanges"
-                });
+                const pathname = getSellerCenterPath("Exchanges");
                 navigate({ pathname }, { state: { currentTag: "live-rnfts" } });
               }}
             />

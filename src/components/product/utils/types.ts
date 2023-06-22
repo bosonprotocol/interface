@@ -16,6 +16,7 @@ import {
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
+  tokenGatingValidationSchema,
   variantsCoreTermsOfSaleValidationSchema
 } from "./validationSchema";
 
@@ -42,6 +43,8 @@ export type CoreTermsOfSale = Yup.InferType<
 export type VariantsCoreTermsOfSale = Yup.InferType<
   typeof variantsCoreTermsOfSaleValidationSchema
 >;
+
+export type TokenGating = Yup.InferType<typeof tokenGatingValidationSchema>;
 
 export type TermsOfExchange = Yup.InferType<
   typeof termsOfExchangeValidationSchema
@@ -94,4 +97,5 @@ export type CreateProductForm = CreateYourProfile &
   DisputeCentreAdditionalInformation &
   DisputeCentreMakeProposal &
   DisputeCentreValidationSchemaProposalSummary &
-  ImagesSpecificOrAll;
+  ImagesSpecificOrAll &
+  TokenGating;

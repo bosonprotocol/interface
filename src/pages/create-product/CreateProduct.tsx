@@ -1,16 +1,32 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
+import {
+  getNextButtonText,
+  getNextStepFromQueryParams,
+  getNextTo,
+  getSlTitle,
+  getVariableStepsFromQueryParams,
+  QueryParamStep,
+  useRemoveLandingQueryParams,
+  VariableStep
+} from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
 import { CreateProductForm } from "../../components/product/utils/types";
 import { useInitialValues } from "../../components/product/utils/useInitialValues";
+import { SellerLandingPageParameters } from "../../lib/routing/parameters";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import NotFound from "../not-found/NotFound";
+import { CongratulationsType } from "./congratulations/Congratulations";
+import { CongratulationsPage } from "./congratulations/CongratulationsPage";
 import CreateProductInner from "./CreateProductInner";
 
-function CreateProduct() {
+export default function CreateProduct() {
   const store = useInitialValues();
+  const [searchParams] = useSearchParams();
   const [initial, setInitial] = useState<CreateProductForm>(store.base);
+  const [createdOffersIds, setCreatedOffersIds] = useState<string[]>([]);
   const [isDraftModalClosed, setDraftModalClosed] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
   const { sellers } = useCurrentSellers();
@@ -51,29 +67,56 @@ function CreateProduct() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seller]);
-
-  const showInvalidRoleModal = useCallback(() => {
-    showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
-      title: "Invalid Role",
-      action: "create a product",
-      requiredRole: "assistant",
-      closable: false
-    });
-
+  const removeLandingQueryParams = useRemoveLandingQueryParams();
+  const isTokenGated = searchParams.get(
+    SellerLandingPageParameters.sltokenGated
+  );
+  const nextStepResult = useMemo(() => {
+    return getNextStepFromQueryParams(
+      searchParams,
+      isTokenGated ? QueryParamStep.tokenproduct : QueryParamStep.product
+    );
+  }, [isTokenGated, searchParams]);
+  useEffect(() => {
+    if (createdOffersIds.length) {
+      if (nextStepResult) {
+        hideModal();
+        showModal("VARIABLE_STEPS_EXPLAINER", {
+          title: getSlTitle(searchParams),
+          doSetQueryParams: false,
+          order: getVariableStepsFromQueryParams(searchParams) as [
+            VariableStep,
+            VariableStep,
+            VariableStep
+          ],
+          text: "Your product is now successfully created! ",
+          buttonText: getNextButtonText(nextStepResult.nextStep),
+          to: getNextTo(nextStepResult.nextStep),
+          firstActiveStep: nextStepResult.nextStepInNumber
+        });
+      } else {
+        removeLandingQueryParams();
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [createdOffersIds, removeLandingQueryParams, nextStepResult]);
 
   if (!!seller && !isSellerCurated) {
     return <NotFound />;
   }
-  return (
+
+  return !nextStepResult && createdOffersIds.length ? (
+    <CongratulationsPage
+      reset={() => setCreatedOffersIds([])}
+      sellerId={seller?.id}
+      type={CongratulationsType.NewProduct}
+    />
+  ) : (
     <CreateProductInner
       initial={initial}
       showCreateProductDraftModal={showCreateProductDraftModal}
-      showInvalidRoleModal={showInvalidRoleModal}
       isDraftModalClosed={isDraftModalClosed}
+      setCreatedOffersIds={setCreatedOffersIds}
     />
   );
 }
-
-export default CreateProduct;

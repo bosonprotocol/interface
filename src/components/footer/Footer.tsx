@@ -19,7 +19,7 @@ import SocialLogo, {
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import useUserRoles from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import Layout from "../Layout";
+import Layout from "../layout/Layout";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
 import Typography from "../ui/Typography";
@@ -272,8 +272,9 @@ function CustomStoreAdditionalLinks() {
 
 function ByBoson() {
   return (
-    <Grid justifyContent="center">
-      <Typography $fontSize="0.8rem">Powered by Boson</Typography>
+    <Grid justifyContent="center" alignItems="center" gap="0.5rem">
+      <Typography $fontSize="0.8rem">Powered by</Typography>
+      <img src={logo} alt="boson logo" width="100" />
     </Grid>
   );
 }

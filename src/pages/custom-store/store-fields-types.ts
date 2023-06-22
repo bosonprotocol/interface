@@ -18,6 +18,8 @@ export type StoreFields = {
   textColor: string;
   footerBgColor: string; // deleted but kept for backwards compatibility
   footerTextColor: string;
+  upperCardBgColor: string;
+  lowerCardBgColor: string;
   buttonBgColor: string;
   buttonTextColor: string;
   fontFamily: string;

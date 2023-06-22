@@ -36,6 +36,7 @@ export const ConfirmationAlert = styled.div`
   margin-top: 2rem;
   display: flex;
   color: ${colors.white};
+  align-items: center;
 `;
 
 export const IconWrapper = styled.div`

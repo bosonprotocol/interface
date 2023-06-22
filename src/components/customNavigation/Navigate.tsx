@@ -6,20 +6,20 @@ import {
 
 import { getKeepStoreFieldsQueryParams } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
-type NavigateProps = Parameters<typeof ReactRouterDomNavigate>[0];
+type NavigateProps = Omit<Parameters<typeof ReactRouterDomNavigate>[0], "to"> &
+  Required<{ to: Partial<Path> }> & {
+    search?: Parameters<typeof getKeepStoreFieldsQueryParams>[1];
+  };
 
-export default function Navigate(
-  props: Omit<NavigateProps, "to"> & Required<{ to: Partial<Path> }>
-) {
+export default function Navigate({ search, ...props }: NavigateProps) {
   const location = useLocation();
-  // TODO: doesnt currently support passing query params in the 'to' parameter
-  const search = getKeepStoreFieldsQueryParams(location, null);
+  const searchWithStoreFields = getKeepStoreFieldsQueryParams(location, search);
   return (
     <ReactRouterDomNavigate
       {...props}
       to={{
         ...props.to,
-        search
+        search: searchWithStoreFields
       }}
       state={{ ...props.state, prevPath: location.pathname }}
     />

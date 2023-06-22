@@ -4,17 +4,29 @@ import { Copy, CopySimple, Info } from "phosphor-react";
 import * as pretty from "pretty";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
-import Collapse from "../../../components/collapse/Collapse";
+import { SellerLandingPageParameters } from "../../../lib/routing/parameters";
 import { colors } from "../../../lib/styles/colors";
 import copyToClipboard from "../../../lib/utils/copyToClipboard";
+import Collapse from "../../collapse/Collapse";
 import { Notify } from "../../detail/Detail.style";
 import { CopyButton } from "../../form/Field.styles";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
-import { ModalProps } from "../ModalContext";
+import { useModal } from "../useModal";
+import {
+  getNextButtonText,
+  getNextStepFromQueryParams,
+  getNextTo,
+  getSlTitle,
+  getVariableStepsFromQueryParams,
+  QueryParamStep,
+  useRemoveLandingQueryParams,
+  VariableStep
+} from "./createProduct/const";
 
 const CopyIcon = styled(CopySimple)`
   cursor: pointer;
@@ -58,15 +70,20 @@ const StyledCopyButton = styled(CopyButton)`
 `;
 
 interface Props {
+  text: string;
   ipfsUrl: string;
   htmlString: string;
-  hideModal: NonNullable<ModalProps["hideModal"]>;
+  buttonText: string;
 }
-export default function CustomStore({
+export function CustomStoreModal({
   ipfsUrl = "",
   htmlString = "",
-  hideModal
+  text,
+  buttonText
 }: Props) {
+  const { showModal, hideModal } = useModal();
+  const removeLandingQueryParams = useRemoveLandingQueryParams();
+  const [searchParams] = useSearchParams();
   const [show, setShow] = useState<boolean>(false);
 
   const iframeString = htmlString.substring(
@@ -81,8 +98,7 @@ export default function CustomStore({
         $fontSize="1.25rem"
         lineHeight="1.875rem"
       >
-        Congrats for creating your storefront. See the URL and further options
-        below:
+        {text}
       </Typography>
       <CollapsibleContainer>
         <Grid justifyContent="flex-start" gap="0.5rem">
@@ -222,9 +238,37 @@ export default function CustomStore({
         <BosonButton
           variant="primaryFill"
           type="button"
-          onClick={() => hideModal()}
+          onClick={() => {
+            if (searchParams.has(SellerLandingPageParameters.slsteps)) {
+              const nextStepResult = getNextStepFromQueryParams(
+                searchParams,
+                QueryParamStep.store
+              );
+              hideModal(!nextStepResult);
+              if (nextStepResult) {
+                const title = getSlTitle(searchParams);
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title,
+                  doSetQueryParams: false,
+                  order: getVariableStepsFromQueryParams(searchParams) as [
+                    VariableStep,
+                    VariableStep,
+                    VariableStep
+                  ],
+                  text: "Your storefront is now successfully created!",
+                  buttonText: getNextButtonText(nextStepResult.nextStep),
+                  to: getNextTo(nextStepResult.nextStep),
+                  firstActiveStep: nextStepResult.nextStepInNumber
+                });
+              } else {
+                removeLandingQueryParams();
+              }
+            } else {
+              hideModal(true);
+            }
+          }}
         >
-          Done
+          {buttonText || "Done"}
         </BosonButton>
       </Grid>
     </>

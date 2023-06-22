@@ -4,28 +4,27 @@ import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
-import { generatePath, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import {
   getItemFromStorage,
   saveItemInStorage
 } from "../../lib/utils/hooks/useLocalStorage";
 import Navigate from "../customNavigation/Navigate";
-import { FormField } from "../form";
+import { Error as SimpleError, FormField } from "../form";
 import { authTokenTypes } from "../modal/components/Profile/Lens/const";
 import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
 import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
-import { MODAL_TYPES } from "../modal/ModalComponents";
 import { useModal } from "../modal/useModal";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
+import { getSellerCenterPath } from "../seller/paths";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
@@ -55,7 +54,7 @@ const productTypeItemsPerRow = {
   l: 1,
   xl: 1
 };
-const Label = styled.label`
+export const Label = styled.label`
   max-width: 12.5rem;
   align-items: center;
   border: 1px solid ${colors.lightGrey};
@@ -66,7 +65,7 @@ const Label = styled.label`
   height: 197px;
   cursor: pointer;
 `;
-const RadioButton = styled.input`
+export const RadioButton = styled.input`
   position: absolute;
   opacity: 0;
   width: 0;
@@ -85,8 +84,8 @@ const RadioButton = styled.input`
   }
 `;
 
-const Box = styled.div`
-  padding: 1.75rem;
+export const Box = styled.div`
+  padding: 0.875rem;
   height: 100%;
   width: 100%;
   p {
@@ -96,11 +95,20 @@ const Box = styled.div`
     margin: 0.938rem 0 0 0;
   }
 `;
+
+export const RadioButtonText = styled(Typography).attrs({
+  tag: "p",
+  fontWeight: "600",
+  $fontSize: "1rem",
+  margin: "1.5rem 0",
+  color: colors.darkGrey
+})``;
+
 const Container = styled.div`
   max-width: 26.5rem;
 `;
 
-const ProductImage = styled(Image)`
+export const ProductImage = styled(Image)`
   width: 6.25rem;
   height: 6.25rem;
   padding-top: 0;
@@ -119,12 +127,14 @@ export default function ProductType({
   isDraftModalClosed
 }: Props) {
   const { openConnectModal } = useConnectModal();
+  const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const { handleChange, values, nextIsDisabled } = useCreateForm();
+  const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
+    useCreateForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
     useField<CreateYourProfile["createYourProfile"]>("createYourProfile");
   const isProfileSetFromForm = (
-    Object.keys(createYourProfile.value) as Array<
+    Object.keys(createYourProfile.value || {}) as Array<
       keyof typeof createYourProfile.value
     >
   ).some((key) => {
@@ -171,10 +181,6 @@ export default function ProductType({
   const isAdmin = currentRoles?.find((role) => role === "admin");
   const isSellerNotAssistant = (isClerk || isAdmin) && !isAssistant;
 
-  // If the seller exists but no LENS profile attached to it, it's a regular seller
-  // const isRegularSeller =
-  //   currentSellers && currentSellers?.length > 0 && !lens?.length;
-
   const isAdminLinkedToLens =
     !isLoading &&
     isSuccess &&
@@ -196,18 +202,7 @@ export default function ProductType({
       enabled: false
     }
   );
-  // const currentAssistant = currentSellers.find((seller) => {
-  //   return seller.assistant.toLowerCase() === address?.toLowerCase();
-  // }); // lens profile of the current user
-  // const assistantLens: Profile | null = useMemo(
-  //   () =>
-  //     lens.find((lensProfile) => {
-  //       const lensIdDecimal = getLensTokenIdDecimal(lensProfile.id).toString();
-  //       const authTokenId = currentAssistant?.authTokenId;
-  //       return lensIdDecimal === authTokenId;
-  //     }) || null,
-  //   [currentAssistant?.authTokenId, lens]
-  // );
+
   const setProfileInForm = useCallback(
     (regularProfile: CreateYourProfile["createYourProfile"]) => {
       helpersCreateYourProfile.setValue(regularProfile);
@@ -293,25 +288,35 @@ export default function ProductType({
       // Seller needs to set their profile
       if (!store.modalType) {
         // Show create profile popup
-        showModal(
-          MODAL_TYPES.CREATE_PROFILE,
-          {
-            title: "Create Profile",
-            initialRegularCreateProfile: values["createYourProfile"],
-            seller: currentSellers?.length ? currentSellers[0] : undefined,
-            lensProfile: lens?.length ? lens[0] : undefined,
-            onRegularProfileCreated: setProfileInForm,
-            closable: false,
-            onClose: async () => {
-              await refetch();
-            }
+        showModal("ACCOUNT_CREATION", {
+          title: store.modalProps?.title,
+          onClose: () => {
+            navigate({
+              pathname: BosonRoutes.Root
+            });
           },
-          "auto",
-          undefined,
-          {
-            xs: `${breakpointNumbers.m + 1}px`
+          onClickCreateAccount: () => {
+            showModal(
+              "CREATE_PROFILE",
+              {
+                title: "Create Profile",
+                initialRegularCreateProfile: values["createYourProfile"],
+                seller: currentSellers?.length ? currentSellers[0] : undefined,
+                lensProfile: lens?.length ? lens[0] : undefined,
+                onRegularProfileCreated: setProfileInForm,
+                closable: false,
+                onClose: async () => {
+                  await refetch();
+                }
+              },
+              "auto",
+              undefined,
+              {
+                xs: `${breakpointNumbers.m + 1}px`
+              }
+            );
           }
-        );
+        });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -330,7 +335,7 @@ export default function ProductType({
   ]);
   const [wasConnectModalOpen, setWasConnectModalOpen] =
     useState<boolean>(false);
-  const navigate = useNavigate();
+  const reactRouterNavigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const prevPath = (state as { prevPath: string })?.prevPath;
@@ -348,7 +353,7 @@ export default function ProductType({
           {({ connectModalOpen }) => {
             if (wasConnectModalOpen && !connectModalOpen) {
               if (prevPath && prevPath !== "/sell/create-product") {
-                navigate(-1);
+                reactRouterNavigate(-1);
               } else {
                 return <Navigate to={{ pathname: BosonRoutes.Root }} />;
               }
@@ -359,7 +364,6 @@ export default function ProductType({
       </>
     );
   }
-
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product type</SectionTitle>
@@ -378,34 +382,73 @@ export default function ProductType({
                   type="radio"
                   name="productType.productType"
                   value="physical"
-                  checked={values.productType.productType === "physical"}
+                  checked={values.productType?.productType === "physical"}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage src={physicalProduct} />
-                  <Typography tag="p">Physical</Typography>
-                </Box>
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="1rem"
+                    margin="1.5rem 0"
+                    color={colors.darkGrey}
+                  >
+                    Physical
+                  </Typography>
+                </Grid>
               </Label>
               <Label>
                 <RadioButton
                   type="radio"
                   name="productType.productType"
                   value="phygital"
-                  checked={values.productType.productType === "phygital"}
+                  checked={values.productType?.productType === "phygital"}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   disabled
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage src={phygitalProduct} />
-                  <Typography tag="p" margin="1rem 0 0 0">
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="1rem"
+                    margin="1rem 0 0 0"
+                    color={colors.darkGrey}
+                  >
                     Phygital
                   </Typography>
-                  <Typography tag="p" $fontSize="0.7rem" margin="0.3rem 0 0 0">
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="0.7rem"
+                    margin="0.3rem 0 1.3125rem 0"
+                    color={colors.darkGrey}
+                  >
                     COMING SOON
                   </Typography>
-                </Box>
+                </Grid>
               </Label>
             </Grid>
+            <SimpleError
+              display={
+                touched.productType?.productType &&
+                !!errors?.productType?.productType
+              }
+              message={errors?.productType?.productType}
+            />
           </FormField>
           <FormField
             title="Product variants"
@@ -420,10 +463,16 @@ export default function ProductType({
                   type="radio"
                   name="productType.productVariant"
                   value="oneItemType"
-                  checked={values.productType.productVariant === "oneItemType"}
+                  checked={values.productType?.productVariant === "oneItemType"}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={oneItemTypeProduct}
                     style={{
@@ -433,8 +482,8 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">One item type</Typography>
-                </Box>
+                  <RadioButtonText>One item type</RadioButtonText>
+                </Grid>
               </Label>
               <Label>
                 <RadioButton
@@ -442,11 +491,17 @@ export default function ProductType({
                   name="productType.productVariant"
                   value="differentVariants"
                   checked={
-                    values.productType.productVariant === "differentVariants"
+                    values.productType?.productVariant === "differentVariants"
                   }
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={differentVariantsProduct}
                     style={{
@@ -456,10 +511,88 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">Different variants</Typography>
-                </Box>
+                  <RadioButtonText>Different variants</RadioButtonText>
+                </Grid>
               </Label>
             </Grid>
+            <SimpleError
+              display={
+                touched.productType?.productVariant &&
+                !!errors?.productType?.productVariant
+              }
+              message={errors?.productType?.productVariant}
+            />
+          </FormField>
+          <FormField
+            title="Token Gating"
+            required
+            style={{
+              marginBottom: 0
+            }}
+          >
+            <Grid>
+              <Label>
+                <RadioButton
+                  type="radio"
+                  name="productType.tokenGatedOffer"
+                  value="false"
+                  checked={values.productType?.tokenGatedOffer === "false"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
+                  <ProductImage
+                    src={oneItemTypeProduct}
+                    style={{
+                      width: "62px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <RadioButtonText>Ungated</RadioButtonText>
+                </Grid>
+              </Label>
+              <Label>
+                <RadioButton
+                  type="radio"
+                  name="productType.tokenGatedOffer"
+                  value="true"
+                  checked={values.productType?.tokenGatedOffer === "true"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
+                  <ProductImage
+                    src={differentVariantsProduct}
+                    style={{
+                      width: "54px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <RadioButtonText>Token gated</RadioButtonText>
+                </Grid>
+              </Label>
+            </Grid>
+            <SimpleError
+              display={
+                touched.productType?.tokenGatedOffer &&
+                !!errors?.productType?.tokenGatedOffer
+              }
+              message={errors?.productType?.tokenGatedOffer}
+            />
           </FormField>
         </GridContainer>
         <ProductButtonGroup>
@@ -471,9 +604,7 @@ export default function ProductType({
             }}
             onClick={() => {
               navigate({
-                pathname: generatePath(SellerCenterRoutes.SellerCenter, {
-                  [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-                })
+                pathname: getSellerCenterPath("Dashboard")
               });
             }}
           >

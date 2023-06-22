@@ -1,9 +1,9 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { Globe } from "phosphor-react";
 import { useEffect, useState } from "react";
 
 import DetailShare from "../../../components/detail/DetailShare";
-import { ProfileType } from "../../../components/modal/components/Profile/const";
 import { getLensWebsite } from "../../../components/modal/components/Profile/Lens/utils";
 import {
   Profile,
@@ -51,9 +51,8 @@ export default function SellerSocial({
   voucherCloneAddress
 }: Props) {
   const [openSeaUrl, setOpenSeaUrl] = useState<string | null>(null);
-  const useLens =
-    (!seller.metadata || seller.metadata?.kind === ProfileType.LENS) &&
-    sellerLens;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
+
   const website = useLens
     ? getLensWebsite(sellerLens as Profile)
     : seller.metadata?.website;

@@ -51,7 +51,7 @@ const ViewMore = styled(LinkWithQuery)`
     transform: translateX(0);
   }
   &:hover {
-    color: ${colors.black};
+    filter: invert(50%);
     > svg {
       transform: translateX(5px);
       fill: ${colors.black};
@@ -106,7 +106,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         itemsPerRow={{
           xs: 1,
           s: 2,
-          m: 4,
+          m: 3,
           l: 4,
           xl: 4
         }}

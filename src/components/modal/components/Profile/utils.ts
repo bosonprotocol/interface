@@ -6,7 +6,6 @@ import {
   CreateProfile,
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
 } from "../../../product/utils";
-import { ProfileType } from "./const";
 import {
   getLensCoverPictureUrl,
   getLensDescription,
@@ -23,11 +22,7 @@ export function buildProfileFromMetadata(
     | null,
   lensProfile: Profile | undefined | null
 ): CreateProfile {
-  const useLens = metadata?.kind
-    ? metadata?.kind === ProfileType.LENS &&
-      sellerAuthTokenType === AuthTokenType.LENS &&
-      !!lensProfile
-    : !!lensProfile;
+  const useLens = sellerAuthTokenType === AuthTokenType.LENS;
   const regularProfileImage = metadata?.images?.find(
     (img) => img.tag === "profile"
   );

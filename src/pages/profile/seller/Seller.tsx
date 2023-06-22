@@ -1,3 +1,4 @@
+import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -5,7 +6,6 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { EditProfile } from "../../../components/detail/EditProfile";
-import { ProfileType } from "../../../components/modal/components/Profile/const";
 import {
   getLensCoverPictureUrl,
   getLensProfilePictureUrl,
@@ -120,7 +120,7 @@ export default function Seller() {
   const seller = sellersData[0];
   const metadata = seller?.metadata;
   const [sellerLens] = sellersLens;
-  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
   sellerId = sellersData?.length ? sellersData[0].id : sellerId;
   const lensCoverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
   const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
@@ -275,7 +275,11 @@ export default function Seller() {
                 )}
                 {isMySeller && (
                   <div style={{ marginLeft: "1.5rem" }}>
-                    <EditProfile onClose={refetch} />
+                    <EditProfile
+                      onClose={() => {
+                        refetch();
+                      }}
+                    />
                   </div>
                 )}
                 <SellerSocial
