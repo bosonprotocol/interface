@@ -171,7 +171,8 @@ export default [
     component: ExplorePage,
     app: {
       ...base.app,
-      withLayout: false
+      withLayout: false,
+      withBosonStyles: false
     }
   },
   {
@@ -180,7 +181,8 @@ export default [
     component: ExplorePage,
     app: {
       ...base.app,
-      withLayout: false
+      withLayout: false,
+      withBosonStyles: false
     }
   },
   {
@@ -260,7 +262,11 @@ export default [
   {
     ...base,
     path: BosonRoutes.Account,
-    component: PublicOrPrivateAccountPage
+    component: PublicOrPrivateAccountPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
   },
   {
     ...base,
@@ -270,6 +276,10 @@ export default [
   {
     ...base,
     path: BosonRoutes.BuyerPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     component: ProfilePagePage,
     componentProps: {
       profileType: "buyer"
@@ -329,7 +339,8 @@ export default [
     ...base,
     path: BosonRoutes.AboutPage,
     app: {
-      ...base.app
+      ...base.app,
+      withBosonStyles: false
     },
     component: AboutPage
   },
@@ -337,6 +348,10 @@ export default [
     ...base,
     exact: false,
     path: BosonRoutes.Error404,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     component: NotFoundPage
   }
 ] as IRoutes[];
