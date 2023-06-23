@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { offers } from "@bosonprotocol/react-kit";
 import { Form, Formik } from "formik";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
@@ -97,7 +97,9 @@ function BatchCreateOffers() {
   const { mutateAsync: createOffers } = useCreateOffers();
   const { showModal } = useModal();
 
-  useMemo(async () => {
+  const onFileUploadChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target?.files?.[0] || null;
+    setSelectedFile(selectedFile);
     if (selectedFile) {
       try {
         setOffersList(await readOffersList(selectedFile));
@@ -110,7 +112,7 @@ function BatchCreateOffers() {
       setOffersList([]);
       setInvalidFile(false);
     }
-  }, [selectedFile]);
+  };
 
   const sellerOffers = useOffers(
     {
@@ -133,7 +135,7 @@ function BatchCreateOffers() {
     }
   );
 
-  useMemo(async () => {
+  useEffect(() => {
     const existingHashes: string[] = [];
     if (sellerOffers.isSuccess) {
       for (const offer of sellerOffers.data) {
@@ -233,7 +235,7 @@ function BatchCreateOffers() {
   return (
     <>
       <Formik
-        initialValues={{ files: "" }}
+        initialValues={{ files: [] }}
         onSubmit={() => handleCreateOffers()}
       >
         <Form>
@@ -247,9 +249,7 @@ function BatchCreateOffers() {
               <FileUpload
                 name="files"
                 fileRef={fileRef}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setSelectedFile(e.target?.files?.[0] || null);
-                }}
+                onChange={onFileUploadChange}
               />
             </FormField>
           </ContainerProductPage>
@@ -259,11 +259,11 @@ function BatchCreateOffers() {
             <BosonButton
               type="submit"
               variant="primaryFill"
-              disabled={!offersToBeCreated || offersToBeCreated.length == 0}
+              disabled={!offersToBeCreated?.length}
             >
               Create Offers
             </BosonButton>
-          </ButtonsSection>{" "}
+          </ButtonsSection>
         </Form>
       </Formik>
     </>
