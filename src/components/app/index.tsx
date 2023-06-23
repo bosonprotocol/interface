@@ -73,7 +73,6 @@ export default function App({
     return getLayoutWrapper(withFullLayout);
   }, [withFullLayout]);
   const Wrapper = withLayout ? LayoutWrapper : Fragment;
-
   return (
     <ThemeProvider theme={theme}>
       <IconContext.Provider

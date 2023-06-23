@@ -1,6 +1,7 @@
 import { Form, Formik } from "formik";
 import { ArrowLeft } from "phosphor-react";
 import React, { CSSProperties, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { useLayoutContext } from "../../components/layout/Context";
@@ -8,6 +9,7 @@ import { Close } from "../../components/modal/header/styles";
 import { getSellerCenterPath } from "../../components/seller/paths";
 import MultiSteps from "../../components/step/MultiSteps";
 import Grid from "../../components/ui/Grid";
+import { SellerLandingPageParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { DetailsStep } from "./steps/details/DetailsStep";
@@ -67,6 +69,7 @@ const iconStyle: CSSProperties = {
 const iconSize = 32;
 
 export const DCLPage: React.FC<DCLPageProps> = () => {
+  const [searchParams] = useSearchParams();
   const { setFullWidth, fullWidth } = useLayoutContext();
   const navigate = useKeepQueryParamsNavigate();
   const [currentStep, setCurrentStep] = useState<Step>(Step._0_DETAILS);
@@ -79,10 +82,19 @@ export const DCLPage: React.FC<DCLPageProps> = () => {
     });
   };
 
-  const onClose = () =>
+  const onClose = () => {
+    if (searchParams.has(SellerLandingPageParameters.slsteps)) {
+      navigate({
+        pathname: getSellerCenterPath("Dashboard")
+      });
+      return;
+    }
+
     navigate({
       pathname: getSellerCenterPath("Sales Channels")
     });
+  };
+
   useEffect(() => {
     return () => {
       fullWidth && setFullWidth(false);
