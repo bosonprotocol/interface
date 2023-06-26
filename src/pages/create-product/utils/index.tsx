@@ -48,7 +48,7 @@ export const poll = async function <T>(
   return result;
 };
 
-const wait = async (ms: number) => {
+export const wait = async (ms: number) => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });

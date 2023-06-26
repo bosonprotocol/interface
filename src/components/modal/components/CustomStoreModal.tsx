@@ -205,6 +205,7 @@ export function CustomStoreModal({
                         return {
                           ...sl,
                           tag: sl?.tag || "",
+                          name: sl?.name || "",
                           link: sl?.link || undefined,
                           settingsEditor: sl?.settingsEditor || undefined,
                           settingsUri: sl?.settingsUri || undefined,

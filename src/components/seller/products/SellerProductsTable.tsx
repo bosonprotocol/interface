@@ -59,6 +59,7 @@ const TagWrapper = styled.div`
   padding: 0.5em 0.75em;
   font-size: 0.75rem;
   font-weight: 600;
+  white-space: pre;
 `;
 
 const VoidButton = styled(BosonButton)`
@@ -712,11 +713,17 @@ export default function SellerProductsTable({
             ),
             salesChannels: (() => {
               return (
-                <Grid gap="1rem" justifyContent="flex-start">
+                <Grid
+                  gap="1rem"
+                  justifyContent="flex-start"
+                  style={{ overflow: "auto" }}
+                >
                   {salesChannels
                     .filter(
                       (ch) =>
-                        ch.tag === Channels.dApp ||
+                        [Channels.dApp, Channels["Custom storefront"]].includes(
+                          ch.tag as unknown as Channels
+                        ) ||
                         ch.deployments?.some(
                           (deployment) =>
                             deployment?.product?.uuid ===
@@ -731,7 +738,7 @@ export default function SellerProductsTable({
                             channel.tag + "-" + channel.link + "-" + channel.id
                           }
                         >
-                          {channel.tag}
+                          {channel.name ?? channel.tag}
                         </TagWrapper>
                       );
                     })}

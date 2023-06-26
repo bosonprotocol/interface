@@ -1,8 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { Channels } from "../../modal/components/SalesChannelsModal/form";
+import Button from "../../ui/Button";
 import GridContainer from "../../ui/GridContainer";
 import { SalesChannelCard } from "./SalesChannelCard";
 
@@ -31,12 +33,17 @@ export const SalesChannels: React.FC<SalesChannelsProps> = ({ sellerId }) => {
       <SalesChannelCard
         title="Web3 Commerce Store"
         text="Create your decentralized Web3 commerce store and customise it to match your brand's identity."
-        to={
-          hasStoreFrontSaved
-            ? BosonRoutes.ManageStorefronts
-            : BosonRoutes.CreateStorefront
-        }
+        to={BosonRoutes.CreateStorefront}
         time="15 min"
+        {...(hasStoreFrontSaved && {
+          secondCta: (
+            <Link to={{ pathname: BosonRoutes.ManageStorefronts }}>
+              <Button theme="secondary" size="small">
+                Manage
+              </Button>
+            </Link>
+          )
+        })}
       />
       <SalesChannelCard
         title="Metaverse Store"
