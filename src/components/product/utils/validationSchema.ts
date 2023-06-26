@@ -201,7 +201,7 @@ export const tokenGatingValidationSchema = Yup.object({
       ),
     maxCommits: Yup.string()
       .required(validationMessage.required)
-      .matches(/^\+?[1-9]\d*$/, "Value must greater than or equal to 0"),
+      .matches(/^\+?[1-9]\d*$/, "Value must greater than 0"),
     tokenType: Yup.object()
       .required(validationMessage.required)
       .shape({
