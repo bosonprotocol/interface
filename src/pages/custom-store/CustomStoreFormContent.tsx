@@ -394,6 +394,28 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   }
                   return null;
                 }
+                case storeFields.contactInfoLinks: {
+                  const contactInfoLinksList = JSON.parse(
+                    value
+                  ) as unknown as SelectDataProps<string>[];
+                  const listWithLabels = contactInfoLinksList.map((cil) => {
+                    let label = cil.label;
+                    if (!cil.label) {
+                      const matchedOption =
+                        formModel.formFields.contactInfoLinks.options.find(
+                          (option) => option.value === cil.value
+                        );
+                      if (matchedOption) {
+                        label = matchedOption.label;
+                      }
+                    }
+                    return {
+                      ...cil,
+                      label
+                    };
+                  });
+                  return [key, listWithLabels];
+                }
 
                 case storeFields.additionalFooterLinks:
                   return [key, JSON.parse(value)];
