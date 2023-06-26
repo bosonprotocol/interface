@@ -28,7 +28,8 @@ export const UrlParameters = {
   buyerId: "id",
   sellerId: "id",
   tokenId: "id",
-  disputeResolverPageId: "disputeResolverPage"
+  disputeResolverPageId: "disputeResolverPage",
+  customStoreUrl: "customStoreUrl"
 } as const;
 
 export const SellerLandingPageParameters = {

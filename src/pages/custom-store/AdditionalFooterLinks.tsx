@@ -72,6 +72,9 @@ const AdditionalFooterLinks: React.FC<AdditionalFooterLinksProps> = ({
   };
   const removeEmptyRowsExceptOne = () => {
     const value = values.additionalFooterLinks;
+    if (!value) {
+      return;
+    }
     const onlyFilledValues = value.filter((v) => !!v?.label || !!v?.url);
     const someRowsAreNotFilled = onlyFilledValues?.length !== value?.length;
     const oneRowIsNotFilled = onlyFilledValues.length - 1 < value?.length;
@@ -97,18 +100,27 @@ const AdditionalFooterLinks: React.FC<AdditionalFooterLinksProps> = ({
     });
   };
   useEffect(() => {
+    if (!values.additionalFooterLinks) {
+      return;
+    }
     if (
       values.additionalFooterLinks.length <
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       (touched.additionalFooterLinks?.length || 0)
     ) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       touched.additionalFooterLinks?.splice(
         -1,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         (touched.additionalFooterLinks?.length || 0) -
           values.additionalFooterLinks.length
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.additionalFooterLinks.length]);
+  }, [values.additionalFooterLinks?.length]);
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap={gap}>
       {!!links?.length && (

@@ -1,19 +1,29 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as Sentry from "@sentry/browser";
+import { Form, Formik } from "formik";
 import { Copy, CopySimple, Info } from "phosphor-react";
 import * as pretty from "pretty";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
+import * as Yup from "yup";
 
 import { SellerLandingPageParameters } from "../../../lib/routing/parameters";
 import { colors } from "../../../lib/styles/colors";
 import copyToClipboard from "../../../lib/utils/copyToClipboard";
+import useUpdateSellerMetadata from "../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
+import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import Collapse from "../../collapse/Collapse";
 import { Notify } from "../../detail/Detail.style";
+import SimpleError from "../../error/SimpleError";
+import { Input } from "../../form";
 import { CopyButton } from "../../form/Field.styles";
+import { Spinner } from "../../loading/Spinner";
+import { getSellerCenterPath } from "../../seller/paths";
+import SuccessToast from "../../toasts/common/SuccessToast";
 import BosonButton from "../../ui/BosonButton";
+import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 import { useModal } from "../useModal";
@@ -27,6 +37,7 @@ import {
   useRemoveLandingQueryParams,
   VariableStep
 } from "./createProduct/const";
+import { Channels } from "./SalesChannelsModal/form";
 
 const CopyIcon = styled(CopySimple)`
   cursor: pointer;
@@ -74,18 +85,30 @@ interface Props {
   ipfsUrl: string;
   htmlString: string;
   buttonText: string;
+  sellerId: string;
+  // withOwnProducts:
+  //   | NonNullable<StoreFields["withOwnProducts"]>["value"]
+  //   | undefined;
+  // offerCurationList: string;
+  // sellerCurationList: string;
 }
 export function CustomStoreModal({
   ipfsUrl = "",
   htmlString = "",
   text,
-  buttonText
+  buttonText,
+  sellerId
 }: Props) {
+  const [hasError, setError] = useState<boolean>(false);
   const { showModal, hideModal } = useModal();
   const removeLandingQueryParams = useRemoveLandingQueryParams();
   const [searchParams] = useSearchParams();
   const [show, setShow] = useState<boolean>(false);
-
+  const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
+  const { refetch: refetchSeller } = useSellers(
+    { id: sellerId },
+    { enabled: false }
+  );
   const iframeString = htmlString.substring(
     htmlString.indexOf("<iframe"),
     htmlString.indexOf("</body")
@@ -141,6 +164,187 @@ export function CustomStoreModal({
             <Typography tag="p">URL has been copied to clipboard</Typography>
           </Notify>
         </Grid>
+      </CollapsibleContainer>
+      <CollapsibleContainer>
+        <Grid justifyContent="flex-start" gap="0.5rem">
+          <Heading>Save Custom Store URL</Heading>
+        </Grid>
+
+        <Formik
+          initialValues={{
+            name: ""
+          }}
+          onSubmit={async ({ name }) => {
+            try {
+              setError(false);
+              const { data: sellers } = await refetchSeller();
+              const seller = sellers?.[0];
+              if (!seller) {
+                throw new Error("Seller could not be fetched");
+              }
+              if (!seller.metadata) {
+                throw new Error("Seller.metadata was not fetched");
+              }
+
+              // each storefront is a sales channel
+              const storeFrontSalesChannel = {
+                tag: Channels["Custom storefront"],
+                name,
+                deployments: [
+                  {
+                    link: ipfsUrl,
+                    lastUpdated: Math.floor(Date.now() / 1000).toString()
+                  }
+                ]
+              };
+              if (seller.metadata?.salesChannels?.length) {
+                await updateSellerMetadata({
+                  values: {
+                    salesChannels: [
+                      ...(seller.metadata?.salesChannels ?? []).map((sl) => {
+                        return {
+                          ...sl,
+                          tag: sl?.tag || "",
+                          link: sl?.link || undefined,
+                          settingsEditor: sl?.settingsEditor || undefined,
+                          settingsUri: sl?.settingsUri || undefined,
+                          deployments: [
+                            ...(sl?.deployments?.map((d) => ({
+                              ...d,
+                              status: d.status || undefined,
+                              link: d.link || undefined,
+                              lastUpdated: d.lastUpdated || undefined,
+                              product: d.product || undefined
+                            })) ?? [])
+                          ]
+                        };
+                      }),
+                      storeFrontSalesChannel
+                    ]
+                  }
+                });
+              } else {
+                await updateSellerMetadata({
+                  values: {
+                    salesChannels: [storeFrontSalesChannel]
+                  }
+                });
+              }
+              // // each storefront is a new deployment of a sales channel
+              // const storeFrontDeployment = {
+              //   link: ipfsUrl,
+              //   lastUpdated: Math.floor(Date.now() / 1000).toString(),
+              //   name
+              // };
+              // if (seller.metadata?.salesChannels?.length) {
+              //   await updateSellerMetadata({
+              //     values: {
+              //       salesChannels: (seller.metadata?.salesChannels ?? []).map(
+              //         (sl) => {
+              //           const isStoreFront =
+              //             sl.tag === Channels["Custom storefront"];
+              //           const deployments =
+              //             sl?.deployments?.map((d) => {
+              //               return {
+              //                 ...d,
+              //                 status: d.status || undefined,
+              //                 link: d.link || undefined,
+              //                 lastUpdated: d.lastUpdated || undefined,
+              //                 product: d.product
+              //                   ? {
+              //                       ...d.product,
+              //                       uuid: d.product.uuid,
+              //                       version: d.product.version
+              //                     }
+              //                   : undefined
+              //               };
+              //             }) ?? [];
+              //           return {
+              //             ...sl,
+              //             tag: sl?.tag || "",
+              //             link: sl?.link || undefined,
+              //             settingsEditor: sl?.settingsEditor || undefined,
+              //             settingsUri: sl?.settingsUri || undefined,
+              //             deployments: isStoreFront
+              //               ? [...deployments, storeFrontDeployment]
+              //               : deployments || undefined
+              //           };
+              //         }
+              //       )
+              //     }
+              //   });
+              // } else {
+              //   await updateSellerMetadata({
+              //     values: {
+              //       salesChannels: [
+              //         {
+              //           tag: Channels["Custom storefront"],
+              //           deployments: [storeFrontDeployment]
+              //         }
+              //       ]
+              //     }
+              //   });
+              // }
+
+              toast((t) => (
+                <SuccessToast t={t}>Custom store has been saved</SuccessToast>
+              ));
+            } catch (error) {
+              console.error(error);
+              setError(true);
+              Sentry.captureException(error);
+            }
+          }}
+          validationSchema={Yup.object({
+            name: Yup.string().required("Name is a required field")
+          })}
+        >
+          {({ isSubmitting }) => {
+            return (
+              <Form>
+                <p>
+                  Here you can decide to store this store front by typying in a
+                  name in the input below. You will be able to manage all saved
+                  storefronts by going to{" "}
+                  <Link
+                    to={{
+                      pathname: getSellerCenterPath("Sales Channels")
+                    }}
+                  >
+                    Sales channels
+                  </Link>{" "}
+                  and then select Web3 Commerce Store.
+                </p>
+                <Grid
+                  alignItems="flex-start"
+                  justifyContent="flex-start"
+                  gap="0.5rem"
+                >
+                  <Grid
+                    flexDirection="column"
+                    justifyContent="flex-start"
+                    alignItems="flex-start"
+                  >
+                    <Input
+                      name="name"
+                      style={{ border: "1px solid grey" }}
+                      placeholder="Name to identify store"
+                    />
+                  </Grid>
+                  <Button
+                    theme="secondary"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Saving..." : "Save"}
+                    {isSubmitting && <Spinner />}
+                  </Button>
+                </Grid>
+                {hasError && <SimpleError />}
+              </Form>
+            );
+          }}
+        </Formik>
       </CollapsibleContainer>
       <CollapsibleContainer>
         <Collapse title={<Heading>Link to ENS</Heading>}>

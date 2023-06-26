@@ -9,6 +9,7 @@ import { Input, Select, Upload } from "../../components/form";
 import InputColor from "../../components/form/InputColor";
 import { SwitchForm } from "../../components/form/Switch";
 import { SelectDataProps } from "../../components/form/types";
+import { Spinner } from "../../components/loading/Spinner";
 import { useModal } from "../../components/modal/useModal";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
@@ -51,7 +52,9 @@ const ignoreStoreFields: ReadonlyArray<keyof InternalOnlyStoreFields> = [
   storeFields.customStoreUrl
 ] as const;
 
-export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
+export const formValuesWithOneLogoUrl = (
+  values: Omit<StoreFormFields, "footerBgColor" | "supportFunctionality">
+) => {
   const entries = Object.entries(values)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .filter(([key]) => !ignoreStoreFields.includes(key as any))
@@ -150,7 +153,7 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { showModal } = useModal();
-  const { setFieldValue, values, isValid, setValues } =
+  const { setFieldValue, values, isValid, setValues, isSubmitting } =
     useFormikContext<StoreFormFields>();
   const { sellerIds } = useCurrentSellers();
 
@@ -308,11 +311,11 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   }, [renderCommitProxyField]);
 
   useEffect(() => {
-    if (!values.customStoreUrl) {
-      return;
-    }
     // load data from an existing storefront
     (async () => {
+      if (!values.customStoreUrl) {
+        return;
+      }
       try {
         let iframeSrc = values.customStoreUrl.replace("/#/", "/");
         let url = new URL(iframeSrc);
@@ -902,8 +905,13 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </CollapseWithTrigger>
         </Grid>
         {hasSubmitError && <SimpleError />}
-        <BosonButton type="submit" variant="primaryFill" disabled={!isValid}>
-          Create
+        <BosonButton
+          type="submit"
+          variant="primaryFill"
+          disabled={!isValid || isSubmitting}
+        >
+          {isSubmitting ? "Creating..." : "Create"}
+          {isSubmitting && <Spinner />}
         </BosonButton>
       </Grid>
       <div>

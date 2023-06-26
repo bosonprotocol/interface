@@ -1,10 +1,23 @@
 import React from "react";
 
 import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
+import { useSellers } from "../../../lib/utils/hooks/useSellers";
+import { Channels } from "../../modal/components/SalesChannelsModal/form";
 import GridContainer from "../../ui/GridContainer";
 import { SalesChannelCard } from "./SalesChannelCard";
 
-export const SalesChannels: React.FC = () => {
+type SalesChannelsProps = {
+  sellerId: string;
+};
+export const SalesChannels: React.FC<SalesChannelsProps> = ({ sellerId }) => {
+  const { data: sellers } = useSellers(
+    { id: sellerId },
+    { enabled: !!sellerId }
+  );
+  const salesChannels = sellers?.[0]?.metadata?.salesChannels;
+  const hasStoreFrontSaved = salesChannels?.some(
+    (sl) => sl.tag === Channels["Custom storefront"]
+  );
   return (
     <GridContainer
       itemsPerRow={{
@@ -18,7 +31,11 @@ export const SalesChannels: React.FC = () => {
       <SalesChannelCard
         title="Web3 Commerce Store"
         text="Create your decentralized Web3 commerce store and customise it to match your brand's identity."
-        to={BosonRoutes.CreateStorefront}
+        to={
+          hasStoreFrontSaved
+            ? BosonRoutes.ManageStorefronts
+            : BosonRoutes.CreateStorefront
+        }
         time="15 min"
       />
       <SalesChannelCard

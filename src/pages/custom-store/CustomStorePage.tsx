@@ -3,13 +3,17 @@ import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
+import * as Yup from "yup";
 
 import Layout from "../../components/layout/Layout";
 import { useRemoveLandingQueryParams } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
 import { getSellerCenterPath } from "../../components/seller/paths";
 import Typography from "../../components/ui/Typography";
-import { SellerLandingPageParameters } from "../../lib/routing/parameters";
+import {
+  SellerLandingPageParameters,
+  UrlParameters
+} from "../../lib/routing/parameters";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -74,7 +78,7 @@ export default function CustomStore() {
       />
     );
   }
-
+  const customStoreUrl = searchParams.get(UrlParameters.customStoreUrl) ?? "";
   return (
     <Root>
       <Typography
@@ -85,8 +89,8 @@ export default function CustomStore() {
       >
         Create Custom Store
       </Typography>
-      <Formik<typeof initialValues>
-        initialValues={{ ...initialValues }}
+      <Formik<Yup.InferType<typeof validationSchema>>
+        initialValues={{ ...initialValues, customStoreUrl }}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           setHasSubmitError(false);
@@ -135,9 +139,13 @@ export default function CustomStore() {
               buttonText: hasSteps ? "Next" : "Done",
               ipfsUrl,
               htmlString: html,
+              sellerId,
               onClose: (show: boolean) => {
                 setShowCongratulationsPage(!!show);
               }
+              // withOwnProducts: values.withOwnProducts?.value,
+              // offerCurationList: values.offerCurationList ?? "",
+              // sellerCurationList: values.sellerCurationList ?? ""
             });
           } catch (error) {
             console.error(error);
