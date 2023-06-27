@@ -9,19 +9,21 @@ import {
 import { Signer } from "ethers";
 import { arrayify } from "ethers/lib/utils";
 
-export type ChainName =
-  | "ETHEREUM"
-  | "POLYGON"
-  | "ARBITRUM"
-  | "AVALANCHE"
-  | "BINANCE"
-  | "OPTIMISM";
+import { NotifiConfig } from "../../../lib/utils/hooks/chat/useNotifi";
 
-export type NotifiConfig = {
-  dappId: string;
-  cardId: string;
-  chain: ChainName;
-};
+// export type ChainName =
+//   | "ETHEREUM"
+//   | "POLYGON"
+//   | "ARBITRUM"
+//   | "AVALANCHE"
+//   | "BINANCE"
+//   | "OPTIMISM";
+
+// export type NotifiConfig = {
+//   dappId: string;
+//   cardId: string;
+//   chain: ChainName;
+// };
 
 export default function NotifiModal({
   signer,
@@ -32,7 +34,7 @@ export default function NotifiModal({
   signer?: Signer | null;
   address?: string;
   topics?: string[] | null;
-  notifiConfig: NotifiConfig;
+  notifiConfig: NotifiConfig | null;
 }) {
   const inputLabels: NotifiInputFieldsText = {
     label: {
@@ -56,7 +58,7 @@ export default function NotifiModal({
 
   return (
     <>
-      {signer && address && (
+      {signer && address && notifiConfig && (
         <NotifiContext
           dappAddress={notifiConfig.dappId}
           env="Development"

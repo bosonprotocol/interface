@@ -168,10 +168,10 @@ const MessageContent = ({
   exchange
 }: MessageContentProps) => {
   const { showModal } = useModal();
-  const messageContent = message.data.content;
-  const messageContentType = message.data.contentType;
+  const messageContent = message.data?.content;
+  const messageContentType = message.data?.contentType;
   const isRegularMessage =
-    typeof message.data.content.value === "string" &&
+    typeof message.data?.content.value === "string" &&
     messageContentType === MessageType.String;
   const isFileMessage = messageContentType === MessageType.File;
   const isProposalMessage = messageContentType === MessageType.Proposal;

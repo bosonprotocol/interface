@@ -178,6 +178,7 @@ interface Props {
   prevPath: string;
   address?: string;
   isChatInitialized: boolean;
+  showNotifiIcon: boolean;
   setShowNotifiModal?: React.Dispatch<React.SetStateAction<boolean>>;
   notifiRegistration: NotifiTopic[] | null;
 }
@@ -196,6 +197,7 @@ export default function MessageList({
   prevPath,
   address,
   isChatInitialized,
+  showNotifiIcon,
   setShowNotifiModal = () => {
     console.log("click Notifi");
   },
@@ -212,8 +214,6 @@ export default function MessageList({
     }
   }, [currentExchange]);
   const comesFromSellerCenter = !!prevPath?.startsWith(`${BosonRoutes.Sell}/`);
-  console.log("rebuild MessageList ...");
-  console.log("notifiRegistration", notifiRegistration);
   return (
     <Container
       $chatListOpen={chatListOpen}
@@ -251,7 +251,7 @@ export default function MessageList({
         )}
         <PageTitle>
           Messages
-          {address && isChatInitialized && (
+          {address && isChatInitialized && showNotifiIcon && (
             <NotifiIcon>
               <Tooltip
                 content={
@@ -299,7 +299,6 @@ export default function MessageList({
               : iAmTheSeller
               ? exchange?.buyer.wallet
               : undefined;
-            console.log("exchangePeerAddress", exchangePeerAddress);
             const isExchangeRegistered =
               notifiRegistration?.find(
                 (convo) =>
@@ -348,7 +347,7 @@ export default function MessageList({
                       withBosonStyles={false}
                     />
                   </MessageInfo>
-                  {notifiRegistration ? (
+                  {notifiRegistration && showNotifiIcon ? (
                     isExchangeRegistered ? (
                       <NotifiLogo>
                         <img
@@ -373,7 +372,6 @@ export default function MessageList({
                           }
                         />
                       </NotifiLogo>
-                      // <></>
                     )
                   ) : (
                     <></>
