@@ -140,7 +140,7 @@ export const getSellRoutes = ({
     isAccountSeller
   ) {
     productRoutes.push({
-      name: "Seller Center",
+      name: "Seller Hub",
       url: getSellerCenterPath("Dashboard")
     });
   }

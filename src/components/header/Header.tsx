@@ -314,7 +314,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                 >
                   {isSeller
                     ? hasSellerOffers
-                      ? "Seller Center"
+                      ? "Seller Hub"
                       : "Create Products"
                     : "Sell on Boson"}
                 </BosonButton>
