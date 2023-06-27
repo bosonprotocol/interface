@@ -608,7 +608,7 @@ export default function ProductType({
               });
             }}
           >
-            Seller Center
+            Seller Hub
           </BosonButton>
           <BosonButton
             variant="primaryFill"

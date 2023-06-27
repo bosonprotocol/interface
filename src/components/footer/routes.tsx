@@ -127,7 +127,7 @@ export const getSellRoutes = ({
   const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
   productRoutes.push({
-    name: "Sell",
+    name: "Templates & Guides",
     url: BosonRoutes.Sell
   });
   productRoutes.push({
@@ -140,7 +140,7 @@ export const getSellRoutes = ({
     isAccountSeller
   ) {
     productRoutes.push({
-      name: "Seller Center",
+      name: "Seller Hub",
       url: getSellerCenterPath("Dashboard")
     });
   }

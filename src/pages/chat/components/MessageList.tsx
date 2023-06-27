@@ -196,9 +196,7 @@ export default function MessageList({
           >
             <div>
               <ArrowLeft size={14} />
-              <span style={{ marginLeft: "0.5rem" }}>
-                Back to Seller Center
-              </span>
+              <span style={{ marginLeft: "0.5rem" }}>Back to Seller Hub</span>
             </div>
           </BackToSellerCenterButton>
         )}

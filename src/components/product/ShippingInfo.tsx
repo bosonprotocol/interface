@@ -204,30 +204,30 @@ export default function ShippingInfo() {
             </div>
           </FieldContainer>
         </FormField>
+        <FormField
+          title="Redemption point"
+          subTitle="The default redemption point is the Boson app. You can add a specific website from which buyers can redeem the rNFT, for example, your customised Web3 storefront."
+        >
+          {/* <FieldContainer>
+             TODO: not used for now, might come back <div>
+              <Input
+                placeholder="Add Redemption Point Name..."
+                name="shippingInfo.redemptionPointName"
+              />
+            </div> 
+            <div>*/}
+          <Input
+            placeholder="Add Redemption Point Url..."
+            name="shippingInfo.redemptionPointUrl"
+          />
+          {/* </div> 
+          </FieldContainer>*/}
+        </FormField>
       </RequiredContainer>
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
         >
-          <FormField
-            title="Redemption point"
-            subTitle="The website from which buyers can redeem the rNFT. By default the redemption point will be the Boson dApp."
-          >
-            <FieldContainer>
-              <div>
-                <Input
-                  placeholder="Add Redemption Point Name..."
-                  name="shippingInfo.redemptionPointName"
-                />
-              </div>
-              <div>
-                <Input
-                  placeholder="Add Redemption Point Url..."
-                  name="shippingInfo.redemptionPointUrl"
-                />
-              </div>
-            </FieldContainer>
-          </FormField>
           <FormField
             title={`Dimensions L x W x H in ${unit}`}
             subTitle="Specify the dimension and weight of your package"
