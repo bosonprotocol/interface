@@ -114,9 +114,14 @@ export const ManageStoreFrontsPage = () => {
   const { sellers, refetch } = useCurrentSellers();
 
   const salesChannels = sellers?.[0]?.metadata?.salesChannels;
-  const storeFronts = salesChannels?.filter(
-    (sl) => sl.tag === Channels["Custom storefront"]
-  );
+  const storeFronts = salesChannels
+    ?.filter((sl) => sl.tag === Channels["Custom storefront"])
+    .sort((st1, st2) => {
+      return (
+        Number(st2.deployments?.[0]?.lastUpdated) -
+        Number(st1.deployments?.[0]?.lastUpdated)
+      );
+    });
   if (!isConnected) {
     return (
       <Grid justifyContent="flex-start" alignItems="center" gap="1rem">
@@ -152,7 +157,7 @@ export const ManageStoreFrontsPage = () => {
             />
           </Grid>
           <Grid tag="ul" gap="1rem" flexDirection="column" padding="1rem 0">
-            {storeFronts?.map((sf, index) => {
+            {storeFronts?.map((sf) => {
               const name = sf.name || "Unnamed storefront";
               const preview: string = sf.deployments?.[0]?.link || "";
               const lastUpdated: number | undefined = sf.deployments?.[0]
@@ -160,7 +165,7 @@ export const ManageStoreFrontsPage = () => {
                 ? Number(sf.deployments?.[0]?.lastUpdated) * 1000
                 : undefined;
               return (
-                <StoreFrontItem key={`${sf.id}-${sf.name}-${index}`}>
+                <StoreFrontItem key={`${sf.id}-${sf.name}-${preview}`}>
                   <Grid
                     gap="1rem"
                     justifyContent="space-between"

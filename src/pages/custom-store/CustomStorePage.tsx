@@ -158,10 +158,8 @@ export default function CustomStore() {
               sellerId,
               onClose: (show: boolean) => {
                 setShowCongratulationsPage(!!show);
-              }
-              // withOwnProducts: values.withOwnProducts?.value,
-              // offerCurationList: values.offerCurationList ?? "",
-              // sellerCurationList: values.sellerCurationList ?? ""
+              },
+              withOwnProducts: values.withOwnProducts?.value
             });
           } catch (error) {
             console.error(error);
