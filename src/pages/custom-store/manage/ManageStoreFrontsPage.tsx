@@ -126,7 +126,7 @@ export const ManageStoreFrontsPage = () => {
   }
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
-      <div>
+      <Grid flexDirection="column" alignItems="flex-start" flex="0">
         <Typography fontWeight="600" $fontSize="2rem" marginTop="2rem">
           Create a new custom storefront
         </Typography>
@@ -137,7 +137,7 @@ export const ManageStoreFrontsPage = () => {
         <Link to={{ pathname: BosonRoutes.CreateStorefront }}>
           <Button theme="secondary">Create one now</Button>
         </Link>
-      </div>
+      </Grid>
       {storeFronts?.length ? (
         <Grid flexDirection="column" alignItems="flex-start">
           <Grid justifyContent="flex-start" gap="1rem">
