@@ -4,6 +4,7 @@ import EscalateModal from "./components/Chat/components/EscalateModal/EscalateMo
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CompleteExchange from "./components/CompleteExchange";
+import { ConfirmationModal } from "./components/Confirmation/ConfirmationModal";
 import { AccountCreationModal } from "./components/createProduct/AccountCreationModal";
 import VariableStepsExplainerModal from "./components/createProduct/VariableStepsExplainerModal";
 import CreateProductDraft from "./components/CreateProductDraft";
@@ -82,7 +83,8 @@ export const MODAL_TYPES = {
   SALES_CHANNELS: "SALES_CHANNELS",
   ACCOUNT_CREATION: "ACCOUNT_CREATION",
   VARIABLE_STEPS_EXPLAINER: "VARIABLE_STEPS_EXPLAINER",
-  PREPARING_TRANSACTION: "PREPARING_TRANSACTION"
+  PREPARING_TRANSACTION: "PREPARING_TRANSACTION",
+  CONFIRMATION: "CONFIRMATION"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -127,5 +129,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.SALES_CHANNELS]: SalesChannelsModal,
   [MODAL_TYPES.ACCOUNT_CREATION]: AccountCreationModal,
   [MODAL_TYPES.VARIABLE_STEPS_EXPLAINER]: VariableStepsExplainerModal,
-  [MODAL_TYPES.PREPARING_TRANSACTION]: PreparingTransactionModal
+  [MODAL_TYPES.PREPARING_TRANSACTION]: PreparingTransactionModal,
+  [MODAL_TYPES.CONFIRMATION]: ConfirmationModal
 } as const;

@@ -3,13 +3,21 @@ import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
+import * as Yup from "yup";
 
+import ConnectButton from "../../components/header/ConnectButton";
 import Layout from "../../components/layout/Layout";
 import { useRemoveLandingQueryParams } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
 import { getSellerCenterPath } from "../../components/seller/paths";
+import Grid from "../../components/ui/Grid";
+import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
-import { SellerLandingPageParameters } from "../../lib/routing/parameters";
+import {
+  SellerLandingPageParameters,
+  UrlParameters
+} from "../../lib/routing/parameters";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -34,6 +42,7 @@ const Root = styled(Layout)`
 
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
+  const { isConnected } = useAccount();
   const [searchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const removeLandingQueryParams = useRemoveLandingQueryParams();
@@ -42,11 +51,22 @@ export default function CustomStore() {
   const [hasSubmitError, setHasSubmitError] = useState<boolean>(false);
   const primaryColor = useCSSVariable("--primary");
   const storage = useIpfsStorage();
-  const { sellers } = useCurrentSellers();
+  const { sellers, isLoading } = useCurrentSellers();
   const seller = sellers?.[0];
   const sellerId = seller?.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
   const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
+
+  if (!isConnected) {
+    return (
+      <Grid justifyContent="flex-start" alignItems="center" gap="1rem">
+        <ConnectButton /> Please connect your wallet
+      </Grid>
+    );
+  }
+  if (isLoading) {
+    return <Loading />;
+  }
 
   if (!seller) {
     return (
@@ -74,7 +94,7 @@ export default function CustomStore() {
       />
     );
   }
-
+  const customStoreUrl = searchParams.get(UrlParameters.customStoreUrl) ?? "";
   return (
     <Root>
       <Typography
@@ -85,8 +105,8 @@ export default function CustomStore() {
       >
         Create Custom Store
       </Typography>
-      <Formik<typeof initialValues>
-        initialValues={{ ...initialValues }}
+      <Formik<Yup.InferType<typeof validationSchema>>
+        initialValues={{ ...initialValues, customStoreUrl }}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           setHasSubmitError(false);
@@ -135,9 +155,11 @@ export default function CustomStore() {
               buttonText: hasSteps ? "Next" : "Done",
               ipfsUrl,
               htmlString: html,
+              sellerId,
               onClose: (show: boolean) => {
                 setShowCongratulationsPage(!!show);
-              }
+              },
+              withOwnProducts: values.withOwnProducts?.value
             });
           } catch (error) {
             console.error(error);

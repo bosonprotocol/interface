@@ -9,7 +9,6 @@ import {
 } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
 import { AdditionalFooterLink } from "./AdditionalFooterLinksTypes";
-import { StoreFormFields } from "./store-fields-types";
 
 export const storeFields = {
   isCustomStoreFront: "isCustomStoreFront",
@@ -64,6 +63,11 @@ const getYesNoOptions = (defaultValue: "yes" | "no") => {
 
 const standardRequiredErrorMessage = "This field is required";
 const notUrlErrorMessage = "This is not a URL like: www.example.com";
+const withOwnProductsOptions = [
+  { label: "Only my own products", value: "mine", default: true },
+  { label: "All products", value: "all" },
+  { label: "Custom", value: "custom" }
+] as const;
 export const formModel = {
   formFields: {
     [storeFields.customStoreUrl]: {
@@ -260,11 +264,7 @@ export const formModel = {
       name: storeFields.withOwnProducts,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
-      options: [
-        { label: "Only my own products", value: "mine", default: true },
-        { label: "All products", value: "all" },
-        { label: "Custom", value: "custom" }
-      ]
+      options: withOwnProductsOptions
     },
     [storeFields.sellerCurationList]: {
       name: storeFields.sellerCurationList,
@@ -324,13 +324,9 @@ export const uploadMaxMB = 5;
 const MAX_FILE_SIZE = uploadMaxMB * 1024 * 1024; // 5 MB
 const SUPPORTED_FILE_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
-type KeysToValidate = keyof Omit<
-  StoreFormFields,
-  "supportFunctionality" | "footerBgColor"
->;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const validationSchema = Yup.object<Record<KeysToValidate, any>>({
-  [storeFields.isCustomStoreFront]: Yup.string().oneOf(["true"]),
+const withOwnProductsValues = withOwnProductsOptions.map((v) => v.value);
+export const validationSchema = Yup.object({
+  [storeFields.isCustomStoreFront]: Yup.string().oneOf(["true"]).required(),
   [storeFields.customStoreUrl]: Yup.string(),
   [storeFields.storeName]: Yup.string(),
   [storeFields.title]: Yup.string(),
@@ -412,7 +408,9 @@ export const validationSchema = Yup.object<Record<KeysToValidate, any>>({
   [storeFields.copyright]: Yup.string(),
   [storeFields.withOwnProducts]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
-    value: Yup.string().required(standardRequiredErrorMessage)
+    value: Yup.mixed<typeof withOwnProductsValues[number]>()
+      .oneOf(withOwnProductsValues)
+      .required(standardRequiredErrorMessage)
   }).nullable(),
   [storeFields.sellerCurationList]: Yup.string(),
   [storeFields.offerCurationList]: Yup.string(),
@@ -476,9 +474,10 @@ export const initialValues: Yup.InferType<typeof validationSchema> = {
   [storeFields.additionalFooterLinks]: [] as AdditionalFooterLink[],
   [storeFields.copyright]: "",
   [storeFields.withOwnProducts]:
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     formModel.formFields.withOwnProducts.options.find(
       (option) => "default" in option && option.default
-    ) as SelectDataProps,
+    )!,
   [storeFields.sellerCurationList]: "",
   [storeFields.offerCurationList]: "",
   [storeFields.commitProxyAddress]: "",

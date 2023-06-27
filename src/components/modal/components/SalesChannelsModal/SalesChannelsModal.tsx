@@ -32,15 +32,19 @@ export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
           ...sellerSalesChannels
             .filter((ch) => {
               return (
-                ch.tag === Channels.dApp ||
+                [Channels.dApp, Channels["Custom storefront"]].includes(
+                  ch.tag as unknown as Channels
+                ) ||
                 ch.deployments?.some((ch) => ch.product?.uuid === productUuid)
               );
             })
             .map((saleChannel) => ({
               value: saleChannel.tag,
-              label: saleChannel.tag,
+              label: saleChannel.name ?? saleChannel.tag,
               disabled: false,
-              isFixed: saleChannel.tag === Channels.dApp
+              isFixed: [Channels.dApp, Channels["Custom storefront"]].includes(
+                saleChannel.tag as unknown as Channels
+              )
             }))
         ]
       }}

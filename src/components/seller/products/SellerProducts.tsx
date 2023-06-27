@@ -2,7 +2,6 @@ import { offers } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import uniqBy from "lodash/uniqBy";
-import { ArrowsClockwise } from "phosphor-react";
 import { useMemo, useState } from "react";
 
 import { CONFIG } from "../../../lib/config";
@@ -12,6 +11,7 @@ import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import Loading from "../../ui/Loading";
+import { UpdateIcon } from "../../ui/UpdateIcon";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerAddNewProduct from "../SellerAddNewProduct";
 import SellerBatchVoid from "../SellerBatchVoid";
@@ -175,12 +175,11 @@ export default function SellerProducts({
           }}
         />
         <SellerAddNewProduct sellerRoles={sellerRoles} />
-        <ArrowsClockwise
+        <UpdateIcon
           size={15}
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            refetch();
-            refetchSellers();
+          onClick={async () => {
+            await refetch();
+            await refetchSellers();
           }}
         />
       </>

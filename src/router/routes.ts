@@ -19,7 +19,12 @@ import SellerCenterPage from "../pages/sell/SellerCenter";
 
 const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
-const CustomStorePage = lazy(() => import("../pages/custom-store/CustomStore"));
+const CustomStorePage = lazy(
+  () => import("../pages/custom-store/CustomStorePage")
+);
+const ManageStoreFrontsPage = lazy(
+  () => import("../pages/custom-store/manage/ManageStoreFrontsPage")
+);
 const DisputeCentrePage = lazy(
   () => import("../pages/dispute-centre/DisputeCentre")
 );
@@ -267,6 +272,11 @@ export default [
       ...base.app,
       withBosonStyles: false
     }
+  },
+  {
+    ...base,
+    path: BosonRoutes.ManageStorefronts,
+    component: ManageStoreFrontsPage
   },
   {
     ...base,

@@ -15,5 +15,6 @@ export type FormType = Yup.InferType<typeof validationSchema>;
 export enum Channels {
   dApp = "dApp",
   "Boson Boulevard" = "Boson Boulevard",
-  "Own land" = "Own land"
+  "Own land" = "Own land",
+  "Custom storefront" = "Custom storefront"
 }
