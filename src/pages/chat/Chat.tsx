@@ -1,8 +1,13 @@
+import {
+  ClientData as NotifiClientData,
+  useNotifiClient
+} from "@notifi-network/notifi-react-hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
-import { useAccount } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
 
+import { NotifiConfig } from "../../components/modal/components/NotifiModal";
 import { useModal } from "../../components/modal/useModal";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -14,7 +19,7 @@ import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
-import MessageList from "./components/MessageList";
+import MessageList, { NotifiTopic } from "./components/MessageList";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
@@ -63,6 +68,7 @@ const getIsSameThread = (
 
 export default function Chat() {
   const { address } = useAccount();
+  const { data: signer } = useSigner();
 
   const {
     seller: {
@@ -122,6 +128,10 @@ export default function Chat() {
   const [selectedExchange, selectExchange] = useState<Exchange>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
+  const [notifiRegistration, setNotifiRegistration] = useState<
+    NotifiTopic[] | null
+  >(null);
+
   const params = useParams();
   const location = useLocation();
   const exchangeId = params["*"];
@@ -132,12 +142,91 @@ export default function Chat() {
   const { isXXS, isXS, isS } = useBreakpoints();
   const { showModal, modalTypes } = useModal();
   const { bosonXmtp } = useChatContext();
+  const notifiConfig: NotifiConfig = {
+    // dappId: "testludobosondapp",
+    dappId: "junitest.xyz",
+    // cardId: "db7bdfd7b72d427ea2c8840785cfa0b4"
+    cardId: "f94c8ab903d849e2b70204c4357372cc",
+    chain: "POLYGON" // NOTE - Please update to the correct chain name.
+    //If Ethereum, use "ETHEREUM"
+    //If Polygon, use "POLYGON"
+    //If Arbitrum, use "ARBITRUM"
+    //If Binance, use "BINANCE"
+    //If Optimism, use OPTIMISM
+  };
+  const notifiClient = useNotifiClient({
+    dappAddress: notifiConfig.dappId,
+    env: "Development",
+    walletPublicKey: address as string,
+    walletBlockchain: notifiConfig.chain
+  });
+
+  const fetchNotifiData = (data: NotifiClientData | null) => {
+    const xmtpAlert = data?.alerts?.find(
+      (alert: { filter?: { filterType?: string } }) =>
+        alert.filter?.filterType === "WEB3_CHAT_MESSAGES"
+    );
+    console.log("xmtpAlert", JSON.stringify(xmtpAlert));
+    const xmtpSources = xmtpAlert?.sourceGroup?.sources?.filter(
+      (source: unknown) => (source as { type?: string }).type === "XMTP"
+    );
+    console.log("xmtpSources", JSON.stringify(xmtpSources));
+    const sourceTopics = xmtpSources?.map(
+      (source: unknown) => (source as { name?: string }).name
+    ) as string[];
+    console.log("sourceTopics", sourceTopics);
+    setAlreadyRegisteredTopics(sourceTopics);
+  };
+
+  const onNotifiPopupClosed = useCallback(() => {
+    notifiClient.fetchData(true).then((data) => {
+      fetchNotifiData(data);
+    });
+  }, [notifiClient]);
+
+  const [alreadyRegisteredTopics, setAlreadyRegisteredTopics] = useState<
+    string[]
+  >([]);
+
+  useEffect(() => {
+    if (notifiClient.loading) {
+      setAlreadyRegisteredTopics([]);
+    }
+    fetchNotifiData(notifiClient.data);
+  }, [notifiClient.data, notifiClient.loading]);
+
+  useEffect(() => {
+    if (bosonXmtp) {
+      bosonXmtp.getConversations().then((convos: unknown[]) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newTopicDatas = convos.map((convo: any) => {
+          return {
+            topic: convo.topic,
+            peerAddress: convo.peerAddress,
+            registered: alreadyRegisteredTopics?.includes(convo.topic) || false
+          };
+        });
+        setNotifiRegistration(newTopicDatas);
+      });
+    } else {
+      // topics are not ready yet
+      setNotifiRegistration(null);
+    }
+  }, [bosonXmtp, alreadyRegisteredTopics]);
 
   const setShowNotifiModal = () => {
+    const topics = notifiRegistration?.map((notifiTopic) => notifiTopic.topic);
     showModal(
       modalTypes.NOTIFI,
       {
-        title: `Notifi`
+        title: `Notifi`,
+        onClose: () => {
+          onNotifiPopupClosed();
+        },
+        signer,
+        address,
+        topics,
+        notifiConfig
       },
       "auto"
     );
@@ -225,20 +314,25 @@ export default function Chat() {
           address={address}
           isChatInitialized={isChatInitialized}
           setShowNotifiModal={setShowNotifiModal}
+          notifiRegistration={notifiRegistration}
         />
 
-        {exchangeIdNotOwned ? (
+        {exchangeIdNotOwned || !selectedExchange ? (
           <>
             {(location.pathname === `${BosonRoutes.Chat}/` ||
               location.pathname === `${BosonRoutes.Chat}` ||
               !isSellerOrBuyer) && (
               <SelectMessageContainer>
                 <SimpleMessage>
-                  {exchangeIdNotOwned
-                    ? "You don't have this exchange"
-                    : isSellerOrBuyer && exchanges.length
-                    ? "Select a message"
-                    : "You need to have an exchange to chat"}
+                  {exchangeIdNotOwned ? (
+                    "You don't have this exchange"
+                  ) : isSellerOrBuyer && exchanges.length ? (
+                    <>
+                      <span>&#8592;</span> {"Please select a conversation"}
+                    </>
+                  ) : (
+                    "You need to have an exchange to chat"
+                  )}
                 </SimpleMessage>
               </SelectMessageContainer>
             )}
@@ -259,6 +353,7 @@ export default function Chat() {
                   prevPath={previousPath}
                   onTextAreaChange={onTextAreaChange}
                   textAreaValue={parseInputValue}
+                  bosonXmtp={bosonXmtp}
                 />
               }
             />
