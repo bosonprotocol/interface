@@ -819,13 +819,7 @@ export default function SellerProductsTable({
                             style={{ width: "100%" }}
                             tooltip="This action is restricted to only the assistant wallet"
                             disabled={!offer || !sellerRoles?.isAssistant}
-                            onClick={async (
-                              event: Parameters<
-                                NonNullable<
-                                  Parameters<typeof Button>[0]["onClick"]
-                                >
-                              >[0]
-                            ) => {
+                            onClick={async (event) => {
                               event.stopPropagation();
                               if (!offer) {
                                 return;

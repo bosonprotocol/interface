@@ -40,10 +40,10 @@ export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
             })
             .map((saleChannel) => ({
               value: saleChannel.tag,
-              label: saleChannel.tag,
+              label: saleChannel.name ?? saleChannel.tag,
               disabled: false,
               isFixed: [Channels.dApp, Channels["Custom storefront"]].includes(
-                (saleChannel.name ?? saleChannel.tag) as unknown as Channels
+                saleChannel.tag as unknown as Channels
               )
             }))
         ]
