@@ -151,7 +151,7 @@ export default function CustomStore() {
               title: hasSteps ? "Next Steps" : "Congratulations!",
               text: hasSteps
                 ? "Your storefront URL and further options are below:"
-                : "Congrats for creating your storefront. See the URL and further options below:",
+                : "Your storefront has been successfully created. The URL along with further options are included below:",
               buttonText: hasSteps ? "Next" : "Done",
               ipfsUrl,
               htmlString: html,

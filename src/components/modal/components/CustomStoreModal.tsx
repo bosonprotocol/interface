@@ -5,7 +5,7 @@ import { Copy, CopySimple, Info } from "phosphor-react";
 import * as pretty from "pretty";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import * as Yup from "yup";
 
@@ -21,7 +21,6 @@ import SimpleError from "../../error/SimpleError";
 import { Input } from "../../form";
 import { CopyButton } from "../../form/Field.styles";
 import { Spinner } from "../../loading/Spinner";
-import { getSellerCenterPath } from "../../seller/paths";
 import SuccessToast from "../../toasts/common/SuccessToast";
 import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
@@ -250,17 +249,8 @@ export function CustomStoreModal({
               return (
                 <Form>
                   <p>
-                    Here you can decide to store this store front by typying in
-                    a name in the input below. You will be able to manage all
-                    saved storefronts by going to{" "}
-                    <Link
-                      to={{
-                        pathname: getSellerCenterPath("Sales Channels")
-                      }}
-                    >
-                      Sales channels
-                    </Link>{" "}
-                    and then select Web3 Commerce Store.
+                    Provide a name below to identify the storefront and to save
+                    the link to your Seller Hub.
                   </p>
                   <Grid
                     alignItems="flex-start"
