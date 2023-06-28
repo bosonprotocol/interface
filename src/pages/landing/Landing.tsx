@@ -99,24 +99,23 @@ export default function Landing() {
       pathname: BosonRoutes.Explore,
       search: name ? `${ExploreQueryParameters.name}=${name}` : ""
     });
-  const withUnderBanner = bannerUrl && bannerImgPosition === "under";
+  const realBannerImgPosition = title ? bannerImgPosition : "over";
+  const withUnderBanner = bannerUrl && realBannerImgPosition === "under";
   const TitleAndDescriptionWrapper = withUnderBanner ? Layout : Div;
   return (
     <LandingPage ref={ref} isCustomStoreFront={isCustomStoreFront}>
       {isCustomStoreFront ? (
         <div>
-          {bannerUrl && bannerImgPosition === "over" && (
-            <div
+          {bannerUrl && realBannerImgPosition === "over" && (
+            <img
+              src={bannerUrl}
               style={{
-                backgroundImage: `url(${bannerUrl})`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
+                objectFit: "contain",
                 translate: "-50%",
                 marginLeft: "50%",
-                height: "14rem",
                 width: "100vw"
               }}
+              alt="banner image"
             />
           )}
 
@@ -124,12 +123,11 @@ export default function Landing() {
             style={{
               ...(withUnderBanner && {
                 backgroundImage: `url(${bannerUrl})`,
-                backgroundPosition: "center",
+                backgroundPosition: "top center",
                 backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
+                backgroundSize: "contain",
                 translate: "-50%",
                 marginLeft: "50%",
-                minHeight: "14rem",
                 width: "100vw"
               })
             }}
