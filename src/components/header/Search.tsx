@@ -34,15 +34,16 @@ const InputWrapper = styled(Grid)<{
       : css`
           max-width: 487px;
           border-bottom: none;
-          margin: 1.25rem;
-          padding: 0.25rem 1rem;
+          margin: 1.25rem 0.5rem 1.25rem 0;
+          padding: 0.25rem 1rem 0.25rem 1rem;
           min-width: 20vw;
           background: ${colors.lightGrey};
         `}
 `;
 
 const Input = styled.input`
-  width: 100%;
+  max-width: 100%;
+  width: 21.25rem;
   font-size: 16px;
   background: transparent;
   border: 0px solid ${colors.border};
@@ -96,6 +97,7 @@ export default function Search({ isMobile, navigationBarPosition }: Props) {
         onKeyDown={handleKeyDown}
         value={name}
         placeholder="Search"
+        style={{ flex: "1" }}
       />
       {isMobile && (
         <BosonButton onClick={navigateToExplore} variant="primaryFill">

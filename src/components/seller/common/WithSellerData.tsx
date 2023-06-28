@@ -27,7 +27,6 @@ import { useSellerCurationListFn } from "../../../lib/utils/hooks/useSellers";
 import useFunds, { FundsProps } from "../../../pages/account/funds/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import Loading from "../../ui/Loading";
-import { SellerInsideProps } from "../SellerInside";
 import useOffersBacked from "./useOffersBacked";
 
 export const Wrapper = styled.div`
@@ -79,10 +78,13 @@ export interface WithSellerDataProps {
   sellerRoles: SellerRolesProps;
   isSellerCurated: boolean;
 }
-export function WithSellerData(
-  WrappedComponent: React.ComponentType<SellerInsideProps & WithSellerDataProps>
-) {
-  const ComponentWithSellerData = (props: SellerInsideProps) => {
+
+export function WithSellerData<
+  U extends Partial<WithSellerDataProps>,
+  A,
+  T extends Omit<A, keyof WithSellerDataProps>
+>(WrappedComponent: React.ComponentType<A>) {
+  const ComponentWithSellerData = (props: T & U & { sellerId: string }) => {
     const sellerId = CONFIG.mockSellerId || props.sellerId;
     const sellerRoles = useSellerRoles(sellerId);
     const checkIfSellerIsInCurationList = useSellerCurationListFn();
@@ -171,7 +173,10 @@ export function WithSellerData(
         </Wrapper>
       );
     }
+
     return (
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       <WrappedComponent {...props} {...newProps} offersBacked={offersBacked} />
     );
   };

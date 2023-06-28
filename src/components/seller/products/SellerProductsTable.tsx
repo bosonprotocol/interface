@@ -35,6 +35,8 @@ import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQuer
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import { CheckboxWrapper } from "../../form/Field.styles";
+import { Spinner } from "../../loading/Spinner";
+import { Channels } from "../../modal/components/SalesChannelsModal/form";
 import { useModal } from "../../modal/useModal";
 import OfferStatuses from "../../offer/OfferStatuses";
 import Price from "../../price/index";
@@ -44,9 +46,21 @@ import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
+import { UnthemedButton } from "../../ui/UnthemedButton";
 import PaginationPages from "../common/PaginationPages";
 import { BackedProps, OffersBackedProps } from "../common/WithSellerData";
+import Actions from "./Actions";
 import OfferVariation from "./OfferVariation";
+import { SalesChannels } from "./types";
+
+const TagWrapper = styled.div`
+  background-color: ${colors.lightGrey};
+  display: inline-block;
+  padding: 0.5em 0.75em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: pre;
+`;
 
 const VoidButton = styled(BosonButton)`
   background: transparent;
@@ -61,7 +75,7 @@ const VoidButton = styled(BosonButton)`
 
 const StyledCheckboxWrapper = styled(CheckboxWrapper)``;
 
-interface Props {
+export interface SellerProductsTableProps {
   offers: (ExtendedOffer | null)[];
   isError: boolean;
   isLoading?: boolean;
@@ -70,6 +84,11 @@ interface Props {
   sellerRoles: SellerRolesProps;
   currentTag: string;
   offersBacked: OffersBackedProps;
+  columnsToShow?: ProductsTableColumnId[] | Readonly<ProductsTableColumnId[]>;
+  salesChannels: SalesChannels;
+  refetchSellers: () => void;
+  isSellersRefetching: boolean;
+  sellerId: string;
 }
 
 interface IIndeterminateInputProps {
@@ -244,11 +263,6 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
-const RelistButton = styled(Button)`
-  * {
-    line-height: 21px;
-  }
-`;
 
 const statusOrder = [
   OffersKit.OfferState.NOT_YET_VALID,
@@ -273,72 +287,120 @@ const compareOffersSortByStatus = (
   );
 };
 
+export enum ProductsTableColumnId {
+  offerId = "offerId",
+  warningIcon = "warningIcon",
+  image = "image",
+  sku = "sku",
+  productName = "productName",
+  status = "status",
+  quantity = "quantity",
+  price = "price",
+  offerValidity = "offerValidity",
+  salesChannels = "salesChannels",
+  action = "action"
+}
+const defaultColumnsToShow = Object.values(ProductsTableColumnId);
+
 export default function SellerProductsTable({
   offers,
   refetch,
   setSelected,
   sellerRoles,
   currentTag,
-  offersBacked
-}: Props) {
+  offersBacked,
+  columnsToShow = defaultColumnsToShow,
+  salesChannels: salesChannelsWithoutdApp,
+  refetchSellers,
+  isSellersRefetching,
+  sellerId
+}: SellerProductsTableProps) {
+  const salesChannels: SalesChannels = useMemo(
+    () => [
+      {
+        tag: Channels.dApp,
+        id: `${sellerId}-${Channels.dApp.toLowerCase()}-sale-channel`
+      } as SalesChannels[number],
+      ...salesChannelsWithoutdApp
+    ],
+    [salesChannelsWithoutdApp, sellerId]
+  );
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
-    () => [
-      {
-        Header: "Offer ID",
-        accessor: "offerId"
-      } as const,
-      {
-        Header: "",
-        accessor: "warningIcon",
-        disableSortBy: true,
-        maxWidth: 30
-      } as const,
-      {
-        Header: "",
-        accessor: "image",
-        disableSortBy: true,
-        maxWidth: 50
-      } as const,
-      {
-        Header: "ID/SKU",
-        accessor: "sku",
-        maxWidth: 80
-      } as const,
-      {
-        Header: "Product name",
-        accessor: "productName",
-        maxWidth: 200
-      } as const,
-      {
-        Header: "Status",
-        accessor: "status",
-        disableSortBy: true,
-        maxWidth: 100
-      } as const,
-      {
-        Header: "Quantity (available/total)",
-        accessor: "quantity",
-        disableSortBy: true
-      } as const,
-      {
-        Header: "Price",
-        accessor: "price",
-        disableSortBy: true
-      } as const,
-      {
-        Header: "Offer validity",
-        accessor: "offerValidity",
-        disableSortBy: true
-      } as const,
-      {
-        Header: "Action",
-        accessor: "action",
-        disableSortBy: true
-      } as const
-    ],
-    []
+    () =>
+      [
+        {
+          id: ProductsTableColumnId.offerId,
+          Header: "Offer ID",
+          accessor: "offerId"
+        } as const,
+        {
+          id: ProductsTableColumnId.warningIcon,
+          Header: "",
+          accessor: "warningIcon",
+          disableSortBy: true,
+          maxWidth: 30
+        } as const,
+        {
+          id: ProductsTableColumnId.image,
+          Header: "",
+          accessor: "image",
+          disableSortBy: true,
+          maxWidth: 50
+        } as const,
+        {
+          id: ProductsTableColumnId.sku,
+          Header: "ID/SKU",
+          accessor: "sku",
+          maxWidth: 80
+        } as const,
+        {
+          id: ProductsTableColumnId.productName,
+          Header: "Product name",
+          accessor: "productName",
+          maxWidth: 200
+        } as const,
+        {
+          id: ProductsTableColumnId.status,
+          Header: "Status",
+          accessor: "status",
+          disableSortBy: true,
+          maxWidth: 100
+        } as const,
+        {
+          id: ProductsTableColumnId.quantity,
+          Header: "Quantity (available/total)",
+          accessor: "quantity",
+          disableSortBy: true
+        } as const,
+        {
+          id: ProductsTableColumnId.price,
+          Header: "Price",
+          accessor: "price",
+          disableSortBy: true
+        } as const,
+        {
+          id: ProductsTableColumnId.offerValidity,
+          Header: "Offer validity",
+          accessor: "offerValidity",
+          disableSortBy: true
+        } as const,
+        {
+          id: ProductsTableColumnId.salesChannels,
+          Header: "Sales channels",
+          accessor: "salesChannels",
+          disableSortBy: true,
+          width: 280
+        } as const,
+        {
+          id: ProductsTableColumnId.action,
+          Header: "Action",
+          accessor: "action",
+          disableSortBy: true
+        } as const
+      ].filter((col) => columnsToShow.includes(col.id)),
+    [columnsToShow]
   );
 
   const shouldDisplayFundWarning = useCallback(
@@ -649,6 +711,41 @@ export default function SellerProductsTable({
                 </span>
               </Typography>
             ),
+            salesChannels: (() => {
+              return (
+                <Grid
+                  gap="1rem"
+                  justifyContent="flex-start"
+                  style={{ overflow: "auto" }}
+                >
+                  {salesChannels
+                    .filter(
+                      (ch) =>
+                        [Channels.dApp, Channels["Custom storefront"]].includes(
+                          ch.tag as unknown as Channels
+                        ) ||
+                        ch.deployments?.some(
+                          (deployment) =>
+                            deployment?.product?.uuid ===
+                              offer?.additional?.product.uuid &&
+                            offer?.additional?.product.uuid
+                        )
+                    )
+                    .map((channel) => {
+                      return (
+                        <TagWrapper
+                          key={
+                            channel.tag + "-" + channel.link + "-" + channel.id
+                          }
+                        >
+                          {channel.name ?? channel.tag}
+                        </TagWrapper>
+                      );
+                    })}
+                  {isSellersRefetching && <Spinner size={10} />}
+                </Grid>
+              );
+            })(),
             action: (() => {
               const withVoidButton = !(
                 status === OffersKit.OfferState.EXPIRED ||
@@ -656,86 +753,135 @@ export default function SellerProductsTable({
                 offer?.quantityAvailable === "0"
               );
               return (
-                <Grid gap="1rem">
-                  {withVoidButton && (
-                    <VoidButton
-                      variant="secondaryInverted"
-                      size={ButtonSize.Small}
-                      disabled={!sellerRoles?.isAssistant}
-                      tooltip="This action is restricted to only the assistant wallet"
-                      onClick={() => {
-                        if (offer) {
-                          if (showVariant) {
-                            showModal(
-                              modalTypes.VOID_PRODUCT,
-                              {
-                                title: "Void Confirmation",
-                                offers: offer.additional?.variants.filter(
-                                  (variant) => {
-                                    variant.validUntilDate;
-                                    return (
-                                      !variant.voided &&
-                                      !dayjs(
-                                        getDateTimestamp(offer?.validUntilDate)
-                                      ).isBefore(dayjs())
-                                    );
-                                  }
-                                ) as Offer[],
-                                refetch
-                              },
-                              "s"
-                            );
-                          } else {
-                            showModal(
-                              modalTypes.VOID_PRODUCT,
-                              {
-                                title: "Void Confirmation",
-                                offerId: offer.id,
+                <Grid gap="1rem" justifyContent="flex-end">
+                  <Actions
+                    label="Actions"
+                    items={[
+                      ...(withVoidButton
+                        ? [
+                            {
+                              key: "void",
+                              content: (
+                                <UnthemedButton
+                                  style={{ width: "100%" }}
+                                  disabled={!sellerRoles?.isAssistant}
+                                  tooltip="This action is restricted to only the assistant wallet"
+                                  onClick={() => {
+                                    if (offer) {
+                                      if (showVariant) {
+                                        showModal(
+                                          modalTypes.VOID_PRODUCT,
+                                          {
+                                            title: "Void Confirmation",
+                                            offers:
+                                              offer.additional?.variants.filter(
+                                                (variant) => {
+                                                  variant.validUntilDate;
+                                                  return (
+                                                    !variant.voided &&
+                                                    !dayjs(
+                                                      getDateTimestamp(
+                                                        offer?.validUntilDate
+                                                      )
+                                                    ).isBefore(dayjs())
+                                                  );
+                                                }
+                                              ) as Offer[],
+                                            refetch
+                                          },
+                                          "s"
+                                        );
+                                      } else {
+                                        showModal(
+                                          modalTypes.VOID_PRODUCT,
+                                          {
+                                            title: "Void Confirmation",
+                                            offerId: offer.id,
+                                            offer,
+                                            refetch
+                                          },
+                                          "xs"
+                                        );
+                                      }
+                                    }
+                                  }}
+                                >
+                                  Void
+                                </UnthemedButton>
+                              )
+                            }
+                          ]
+                        : []),
+                      {
+                        key: "relist",
+                        content: (
+                          <UnthemedButton
+                            style={{ width: "100%" }}
+                            tooltip="This action is restricted to only the assistant wallet"
+                            disabled={!offer || !sellerRoles?.isAssistant}
+                            onClick={async (event) => {
+                              event.stopPropagation();
+                              if (!offer) {
+                                return;
+                              }
+                              showModal(modalTypes.RELIST_OFFER, {
+                                title: `Relist Offer "${offer.metadata.name}"`,
                                 offer,
-                                refetch
-                              },
-                              "xs"
-                            );
-                          }
-                        }
-                      }}
-                    >
-                      Void
-                    </VoidButton>
-                  )}
-                  <RelistButton
-                    theme="orangeInverse"
-                    style={{
-                      padding: "0.25rem 1rem",
-                      margin: "1px"
-                    }}
-                    tooltip="This action is restricted to only the assistant wallet"
-                    disabled={!offer || !sellerRoles?.isAssistant}
-                    onClick={async (
-                      event: Parameters<
-                        NonNullable<Parameters<typeof Button>[0]["onClick"]>
-                      >[0]
-                    ) => {
-                      event.stopPropagation();
-                      if (!offer) {
-                        return;
+                                onRelistedSuccessfully: refetch
+                              });
+                            }}
+                          >
+                            Relist
+                          </UnthemedButton>
+                        )
+                      },
+                      {
+                        key: "update-sales-channels",
+                        content: (
+                          <UnthemedButton
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              if (
+                                !offer ||
+                                !offer.additional?.product.uuid ||
+                                !offer.additional?.product.version
+                              ) {
+                                return;
+                              }
+                              showModal(
+                                modalTypes.SALES_CHANNELS,
+                                {
+                                  title: "Update sales channels",
+                                  productUuid: offer.additional?.product.uuid,
+                                  version: offer.additional?.product.version,
+                                  sellerSalesChannels: salesChannels,
+                                  onClose: () => {
+                                    setTimeout(() => {
+                                      refetchSellers();
+                                    }, 10000); // give enough time to the subgraph to reindex
+                                  }
+                                },
+                                "auto",
+                                undefined,
+                                {
+                                  m: "35rem"
+                                }
+                              );
+                            }}
+                          >
+                            Update sales channels
+                          </UnthemedButton>
+                        )
                       }
-                      showModal(modalTypes.RELIST_OFFER, {
-                        title: `Relist Offer "${offer.metadata.name}"`,
-                        offer,
-                        onRelistedSuccessfully: refetch
-                      });
-                    }}
-                  >
-                    Relist
-                  </RelistButton>
+                    ].filter(isTruthy)}
+                  />
                 </Grid>
               );
             })()
           };
         })
         .sort(compareOffersSortByStatus),
-    [offers] // eslint-disable-line
+    [offers, salesChannels, isSellersRefetching] // eslint-disable-line
   );
 
   const tableProps = useTable(
@@ -878,104 +1024,107 @@ export default function SellerProductsTable({
 
   return (
     <>
-      <Table {...getTableProps()}>
-        <div className="thead">
-          {headerGroups.map((headerGroup, key) => (
-            <div
-              {...headerGroup.getHeaderGroupProps()}
-              key={`seller_table_thead_tr_${key}`}
-              className="tr"
-            >
-              {headerGroup.headers.map((column, i) => {
+      <div style={{ width: "100%", overflow: "auto" }}>
+        <Table {...getTableProps()}>
+          <div className="thead">
+            {headerGroups.map((headerGroup, key) => (
+              <div
+                {...headerGroup.getHeaderGroupProps()}
+                key={`seller_table_thead_tr_${key}`}
+                className="tr"
+              >
+                {headerGroup.headers.map((column, i) => {
+                  return (
+                    <div
+                      data-sortable={column.disableSortBy}
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      key={`seller_table_thead_th_${i}`}
+                      className="th"
+                    >
+                      {column.render("Header")}
+                      {i > 0 && !column.disableSortBy && (
+                        <HeaderSorter>
+                          {column?.isSorted ? (
+                            column?.isSortedDesc ? (
+                              <CaretDown size={14} />
+                            ) : (
+                              <CaretUp size={14} />
+                            )
+                          ) : (
+                            ""
+                          )}
+                        </HeaderSorter>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+          <div {...getTableBodyProps()} className="tbody">
+            {(page.length > 0 &&
+              page.map((row, index) => {
+                prepareRow(row);
                 return (
                   <div
-                    data-sortable={column.disableSortBy}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    key={`seller_table_thead_th_${i}`}
-                    className="th"
+                    {...row.getRowProps()}
+                    key={`seller_table_tbody_tr_${row.original.offerId}-${index}`}
+                    className="row"
                   >
-                    {column.render("Header")}
-                    {i > 0 && !column.disableSortBy && (
-                      <HeaderSorter>
-                        {column?.isSorted ? (
-                          column?.isSortedDesc ? (
-                            <CaretDown size={14} />
-                          ) : (
-                            <CaretUp size={14} />
-                          )
-                        ) : (
-                          ""
-                        )}
-                      </HeaderSorter>
-                    )}
+                    {row.cells.map((cell) => {
+                      const hasSubRows = cell.row.subRows.length > 1;
+                      return (
+                        <div
+                          {...cell.getCellProps()}
+                          key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
+                          onClick={() => {
+                            if (hasSubRows) {
+                              if (
+                                (!cell.row.isExpanded &&
+                                  cell.column.id === "action") ||
+                                cell.column.id === "productName"
+                              ) {
+                                cell.row.toggleRowExpanded();
+                              }
+                            } else if (
+                              cell.column.id !== "action" &&
+                              cell.column.id !== "selection" &&
+                              cell.column.id !== "status"
+                            ) {
+                              const pathname = generatePath(
+                                ProductRoutes.ProductDetail,
+                                {
+                                  [UrlParameters.uuid]:
+                                    row?.original?.uuid ?? ""
+                                }
+                              );
+                              navigate({ pathname });
+                            }
+                          }}
+                        >
+                          {cell.render("Cell")}
+                        </div>
+                      );
+                    })}
                   </div>
                 );
-              })}
-            </div>
-          ))}
-        </div>
-        <div {...getTableBodyProps()} className="tbody">
-          {(page.length > 0 &&
-            page.map((row, index) => {
-              prepareRow(row);
-              return (
-                <div
-                  {...row.getRowProps()}
-                  key={`seller_table_tbody_tr_${row.original.offerId}-${index}`}
-                  className="row"
-                >
-                  {row.cells.map((cell) => {
-                    const hasSubRows = cell.row.subRows.length > 1;
-                    return (
-                      <div
-                        {...cell.getCellProps()}
-                        key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
-                        onClick={() => {
-                          if (hasSubRows) {
-                            if (
-                              (!cell.row.isExpanded &&
-                                cell.column.id === "action") ||
-                              cell.column.id === "productName"
-                            ) {
-                              cell.row.toggleRowExpanded();
-                            }
-                          } else if (
-                            cell.column.id !== "action" &&
-                            cell.column.id !== "selection" &&
-                            cell.column.id !== "status"
-                          ) {
-                            const pathname = generatePath(
-                              ProductRoutes.ProductDetail,
-                              {
-                                [UrlParameters.uuid]: row?.original?.uuid ?? ""
-                              }
-                            );
-                            navigate({ pathname });
-                          }
-                        }}
-                      >
-                        {cell.render("Cell")}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })) || (
-            <div>
+              })) || (
               <div>
-                <Typography
-                  tag="h6"
-                  justifyContent="center"
-                  padding="1rem 0"
-                  margin="0"
-                >
-                  No data to display
-                </Typography>
+                <div>
+                  <Typography
+                    tag="h6"
+                    justifyContent="center"
+                    padding="1rem 0"
+                    margin="0"
+                  >
+                    No data to display
+                  </Typography>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      </Table>
+            )}
+          </div>
+        </Table>
+      </div>
       <Pagination>
         <Grid>
           <Grid justifyContent="flex-start" gap="1rem">

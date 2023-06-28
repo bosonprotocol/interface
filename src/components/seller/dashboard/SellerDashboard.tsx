@@ -18,6 +18,7 @@ import GridContainer from "../../ui/GridContainer";
 import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 import { WithSellerDataProps } from "../common/WithSellerData";
+import { getSellerCenterPath } from "../paths";
 import { SellerInsideProps } from "../SellerInside";
 import { SellerInner } from "./SellerDashboard.styles";
 import SellerDashboardInfo from "./SellerDashboardInfo";
@@ -150,18 +151,25 @@ export default function SellerDashboard({
             color={colors.white}
           >
             <Grid justifyContent="space-between" alignItems="center">
-              <div>
+              <div style={{ flex: "1 1 100%" }}>
                 <Typography tag="h4" padding="0">
                   Top up your seller deposit pool!
                 </Typography>
                 <Typography tag="p" padding="0">
-                  Currently, your product can't be purchased because the funds
-                  in your seller deposit pool is insufficient.
+                  Currently, your product(s) can't be purchased because there
+                  are insufficient funds in your seller pool.
                 </Typography>
               </div>
-              <Grid justifyContent="flex-end" alignItems="center">
+              <Grid
+                justifyContent="flex-end"
+                alignItems="center"
+                flexGrow="0"
+                flexShrink="1"
+                flexBasis="0%"
+              >
                 <BosonButton
                   variant="primaryFill"
+                  style={{ whiteSpace: "pre" }}
                   onClick={() => {
                     const pathname = generatePath(
                       SellerCenterRoutes.SellerCenter,
@@ -196,9 +204,7 @@ export default function SellerDashboard({
               name="Commits"
               items={commits.slice(0, 3)}
               onClick={() => {
-                const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
-                  [UrlParameters.sellerPage]: "exchanges"
-                });
+                const pathname = getSellerCenterPath("Exchanges");
                 navigate({ pathname }, { state: { currentTag: "live-rnfts" } });
               }}
             />

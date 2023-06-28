@@ -27,32 +27,33 @@ export type SocialLogoValues =
 
 interface Props {
   logo: SocialLogoValues | undefined | null;
+  size?: number;
 }
 
-export default function SocialLogo({ logo }: Props) {
+export default function SocialLogo({ logo, size }: Props) {
   switch (logo) {
     case "facebook":
-      return <FacebookLogo />;
+      return <FacebookLogo size={size} />;
     case "instagram":
-      return <InstagramLogo />;
+      return <InstagramLogo size={size} />;
     case "linkedin":
-      return <LinkedinLogo />;
+      return <LinkedinLogo size={size} />;
     case "medium":
-      return <MediumLogo />;
+      return <MediumLogo size={size} />;
     case "pinterest":
-      return <PinterestLogo />;
+      return <PinterestLogo size={size} />;
     case "reddit":
-      return <RedditLogo />;
+      return <RedditLogo size={size} />;
     case "snapchat":
-      return <SnapchatLogo />;
+      return <SnapchatLogo size={size} />;
     case "tiktok":
-      return <TiktokLogo />;
+      return <TiktokLogo size={size} />;
     case "twitch":
-      return <TwitchLogo />;
+      return <TwitchLogo size={size} />;
     case "twitter":
-      return <TwitterLogo />;
+      return <TwitterLogo size={size} />;
     case "youtube":
-      return <YoutubeLogo />;
+      return <YoutubeLogo size={size} />;
     default:
       return null;
   }

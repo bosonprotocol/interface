@@ -175,7 +175,7 @@ export default function TermsOfExchange() {
           <FormField
             title="Exchange policy"
             required
-            subTitle="The exchange policy covers contractual and protocol terms of the exchange to protect buyer and seller."
+            subTitle="The exchange policy covers both contractual and protocol terms of the exchange that protect buyer and seller."
           >
             <Select
               placeholder="Choose exchange policy..."
@@ -187,7 +187,7 @@ export default function TermsOfExchange() {
           <FormField
             title="Buyer cancellation penalty"
             required
-            subTitle="If the buyer fails to redeem the item within the redemption period they will be receive back the payment minus the buyer cancel penalty."
+            subTitle="If the buyer fails to redeem the item within the redemption period, they will be reimbursed the amount paid minus the buyer cancellation penalty."
           >
             <FieldContainer>
               <div>
@@ -224,7 +224,7 @@ export default function TermsOfExchange() {
           <FormField
             title="Seller deposit"
             required
-            subTitle="The seller deposit is charged when a buyer commits to the offer and is used to hold the seller accountable to follow through with their commitment to deliver the physical item. If you break your commitment as a seller, then your deposit will be transferred to the buyer. A deposit value is required to be set below, but it is up to you as the seller to choose the value or set it to 0."
+            subTitle="The seller deposit is used to ensure that the seller follows through with their commitment to deliver the physical item and is charged when a buyer commits to the offer. If a seller breaks this commitment, then the seller deposit will be transferred to the buyer along with the amount the buyer paid for the offer. A deposit value is required to be set below, but it is up to the seller to choose this value or set it to 0."
           >
             <FieldContainer>
               <div>
@@ -258,9 +258,9 @@ export default function TermsOfExchange() {
             </FieldContainer>
           </FormField>
           <FormField
-            title="Dispute Resolver"
+            title="Dispute resolver"
             required
-            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise."
+            subTitle="The dispute resolver will resolve disputes between buyer and seller when disputes arise."
           >
             <Select
               placeholder="Choose Dispute Resolver..."
@@ -270,9 +270,9 @@ export default function TermsOfExchange() {
             />
           </FormField>
           <FormField
-            title="Dispute Period"
+            title="Dispute period"
             required
-            subTitle="The time a buyer has to raise a dispute after they redeemed. When the dispute period passes, you will receive payment for the item."
+            subTitle="The time a buyer has to raise a dispute after the offer was redeemed. When the dispute period ends, the seller will receive payment for the item."
           >
             <FieldContainer>
               <div>

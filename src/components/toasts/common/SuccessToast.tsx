@@ -20,7 +20,7 @@ interface Props {
   children: ReactNode;
 }
 
-export default function SuccessToast({ t, children }: Props) {
+export function SuccessToast({ t, children }: Props) {
   return (
     <Grid gap="1rem">
       <Grid flexBasis="0">
@@ -39,3 +39,5 @@ export default function SuccessToast({ t, children }: Props) {
     </Grid>
   );
 }
+
+export default SuccessToast;

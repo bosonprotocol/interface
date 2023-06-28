@@ -10,14 +10,21 @@ import {
 import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
 import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
 import CreateProductPage from "../pages/create-product/CreateProduct";
+import { DCLPage } from "../pages/dcl/DCLPage";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
+import SellerLandingPage from "../pages/sell/landing/SellerLandingPage";
 import SellerCenterPage from "../pages/sell/SellerCenter";
 
 const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
-const CustomStorePage = lazy(() => import("../pages/custom-store/CustomStore"));
+const CustomStorePage = lazy(
+  () => import("../pages/custom-store/CustomStorePage")
+);
+const ManageStoreFrontsPage = lazy(
+  () => import("../pages/custom-store/manage/ManageStoreFrontsPage")
+);
 const DisputeCentrePage = lazy(
   () => import("../pages/dispute-centre/DisputeCentre")
 );
@@ -50,13 +57,13 @@ export const baseAppProps = {
   fluidHeader: false,
   withBosonStyles: true,
   withBanner: false
-};
+} as const;
 const base = {
   component: null,
   index: false,
   app: baseAppProps,
   role: []
-};
+} as const;
 
 export const UserRoles = {
   Guest: "Guest",
@@ -74,9 +81,9 @@ export interface IRoutes extends RouteProps {
   };
   app?: {
     withLayout?: boolean;
+    withFullLayout?: boolean;
     withFooter?: boolean;
     fluidHeader?: boolean;
-    withBanner?: boolean;
   };
 }
 export default [
@@ -87,8 +94,7 @@ export default [
     component: LandingPage,
     app: {
       ...base.app,
-      withBosonStyles: false,
-      withBanner: true
+      withBosonStyles: false
     }
   },
   {
@@ -101,6 +107,17 @@ export default [
       withFooter: false
     },
     role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+  },
+  {
+    ...base,
+    path: BosonRoutes.Sell,
+    component: SellerLandingPage,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: true,
+      fluidHeader: false
+    }
   },
   {
     ...base,
@@ -121,6 +138,20 @@ export default [
   },
   {
     ...base,
+    path: SellerCenterRoutes.DCL,
+    component: DCLPage,
+    app: {
+      ...base.app,
+      withHeader: false,
+      withLayout: true,
+      withFullLayout: true,
+      withFooter: false,
+      fluidHeader: false
+    },
+    role: [UserRoles.Seller]
+  },
+  {
+    ...base,
     path: BosonRoutes.Explore,
     component: ExplorePage,
     app: {
@@ -135,7 +166,8 @@ export default [
     component: ExplorePage,
     app: {
       ...base.app,
-      withLayout: false
+      withLayout: false,
+      withBosonStyles: false
     }
   },
   {
@@ -144,7 +176,8 @@ export default [
     component: ExplorePage,
     app: {
       ...base.app,
-      withLayout: false
+      withLayout: false,
+      withBosonStyles: false
     }
   },
   {
@@ -153,7 +186,8 @@ export default [
     component: ExplorePage,
     app: {
       ...base.app,
-      withLayout: false
+      withLayout: false,
+      withBosonStyles: false
     }
   },
   {
@@ -233,7 +267,16 @@ export default [
   {
     ...base,
     path: BosonRoutes.Account,
-    component: PublicOrPrivateAccountPage
+    component: PublicOrPrivateAccountPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
+  },
+  {
+    ...base,
+    path: BosonRoutes.ManageStorefronts,
+    component: ManageStoreFrontsPage
   },
   {
     ...base,
@@ -243,6 +286,10 @@ export default [
   {
     ...base,
     path: BosonRoutes.BuyerPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     component: ProfilePagePage,
     componentProps: {
       profileType: "buyer"
@@ -251,6 +298,10 @@ export default [
   {
     ...base,
     path: BosonRoutes.SellerPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     component: ProfilePagePage,
     componentProps: {
       profileType: "seller"
@@ -298,7 +349,8 @@ export default [
     ...base,
     path: BosonRoutes.AboutPage,
     app: {
-      ...base.app
+      ...base.app,
+      withBosonStyles: false
     },
     component: AboutPage
   },
@@ -306,6 +358,10 @@ export default [
     ...base,
     exact: false,
     path: BosonRoutes.Error404,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     component: NotFoundPage
   }
-];
+] as IRoutes[];

@@ -1,9 +1,11 @@
 import * as ReactSwitch from "@radix-ui/react-switch";
-import React, { ReactNode } from "react";
+import { useField } from "formik";
+import React, { ReactElement, ReactNode } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import Grid from "../ui/Grid";
+import Input from "./Input";
 
 const height = "20px";
 const StyledSwitchRoot = styled(ReactSwitch.Root)`
@@ -39,19 +41,45 @@ const StyledSwitchThumb = styled(ReactSwitch.Thumb)`
 `;
 
 type SwitchProps = Parameters<typeof ReactSwitch.Root>[0] & {
-  label?: ReactNode;
+  label?: ({
+    toggleFormValue,
+    checked
+  }: {
+    toggleFormValue?: () => unknown;
+    checked: boolean | undefined;
+  }) => ReactElement;
   gridProps?: Omit<Parameters<typeof Grid>[0], "children">;
 };
 
-const Switch: React.FC<SwitchProps> = ({ label, gridProps, ...rest }) => {
+export const SwitchForm: React.FC<
+  Omit<SwitchProps, "checked"> & { name: string }
+> = ({ ...props }) => {
+  const { name } = props;
+  const [field, , helpers] = useField(name ?? "");
+  return (
+    <Switch
+      {...props}
+      onCheckedChange={(checked) => helpers.setValue(checked)}
+      toggleFormValue={() => helpers.setValue(!field.value)}
+      checked={field.value}
+    >
+      <Input type="hidden" name={name} />
+    </Switch>
+  );
+};
+export const Switch: React.FC<
+  SwitchProps & {
+    children?: ReactNode;
+    toggleFormValue?: () => unknown;
+  }
+> = ({ label, gridProps, children, toggleFormValue, ...rest }) => {
   return (
     <Grid justifyContent="flex-start" gap="1rem" {...gridProps}>
       <StyledSwitchRoot {...rest} data-root>
         <StyledSwitchThumb data-thumb />
       </StyledSwitchRoot>
-      {label}
+      {label?.({ toggleFormValue, checked: rest.checked })}
+      {children}
     </Grid>
   );
 };
-
-export default Switch;

@@ -41,6 +41,7 @@ const RenderModalComponent = ({
       headerComponent={store.modalProps?.headerComponent}
       closable={store.modalProps?.closable}
       modalType={store.modalType}
+      hidden={store.modalProps?.hidden}
     >
       <ModalComponent
         id="modal"

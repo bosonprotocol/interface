@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 import bytesToSize from "../../../lib/utils/bytesToSize";
-import { FileProps } from "../../form/Upload/WithUploadToIpfs";
+import { FileProps } from "../../form/Upload/types";
 import { SUPPORTED_FILE_FORMATS } from "./const";
 
 export const validationOfRequiredIpfsImage = () =>

@@ -41,7 +41,7 @@ const ViewMoreButton = styled.button`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: ${colors.secondary};
+  color: var(--accent);
   font-size: 1rem;
   font-weight: 600;
   width: auto;

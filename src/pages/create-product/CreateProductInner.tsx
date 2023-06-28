@@ -7,15 +7,29 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
+import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import map from "lodash/map";
-import { useCallback, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import toast from "react-hot-toast";
-import { generatePath, useLocation, useNavigate } from "react-router-dom";
+import {
+  generatePath,
+  useLocation,
+  useNavigate,
+  useSearchParams
+} from "react-router-dom";
 import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
@@ -23,7 +37,7 @@ import { BigNumber, ethers } from "ethers";
 import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
-import { FileProps } from "../../components/form/Upload/WithUploadToIpfs";
+import { FileProps } from "../../components/form/Upload/types";
 import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
@@ -38,8 +52,14 @@ import {
 import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
+import BosonButton from "../../components/ui/BosonButton";
+import Grid from "../../components/ui/Grid";
+import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
-import { UrlParameters } from "../../lib/routing/parameters";
+import {
+  SellerLandingPageParameters,
+  UrlParameters
+} from "../../lib/routing/parameters";
 import { ProductRoutes } from "../../lib/routing/routes";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
@@ -92,9 +112,6 @@ type GetProductV1MetadataProps = {
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
-  commonTermsOfSale:
-    | CreateProductForm["coreTermsOfSale"]
-    | CreateProductForm["variantsCoreTermsOfSale"];
 };
 async function getProductV1Metadata({
   contactPreference,
@@ -111,8 +128,7 @@ async function getProductV1Metadata({
   visualImages,
   shippingInfo,
   termsOfExchange,
-  supportedJurisdictions,
-  commonTermsOfSale
+  supportedJurisdictions
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
   const profileImage = createYourProfile?.logo?.[0];
   const coverImage = createYourProfile?.coverPicture?.[0];
@@ -152,7 +168,7 @@ async function getProductV1Metadata({
     image: productMainImageLink ? productMainImageLink : "",
     type: MetadataType.PRODUCT_V1,
     attributes: [...nftAttributes, ...additionalAttributes],
-    condition: commonTermsOfSale?.tokenGatingDesc || undefined,
+    condition: /*tokenGating?.tokenGatingDesc ||*/ undefined,
     product: {
       uuid: uuid(),
       version: 1,
@@ -301,7 +317,7 @@ function extractVisualImages(
 interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
-  showInvalidRoleModal: () => void;
+  setCreatedOffersIds: Dispatch<SetStateAction<string[]>>;
   isDraftModalClosed: boolean;
 }
 interface SupportedJuridiction {
@@ -312,12 +328,12 @@ interface SupportedJuridiction {
 function CreateProductInner({
   initial,
   showCreateProductDraftModal,
-  showInvalidRoleModal,
+  setCreatedOffersIds,
   isDraftModalClosed
 }: Props) {
   const history = useNavigate();
   const location = useLocation();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
@@ -327,6 +343,7 @@ function CreateProductInner({
     () => productVariant === "differentVariants" || false,
     [productVariant]
   );
+  const [isTokenGated, setIsTokenGated] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(
     location?.state?.step || FIRST_STEP
   );
@@ -335,7 +352,16 @@ function CreateProductInner({
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
   const coreSDK = useCoreSDK();
+  const showInvalidRoleModal = useCallback(() => {
+    showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
+      title: "Invalid Role",
+      action: "create a product",
+      requiredRole: "assistant",
+      closable: false
+    });
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     function onBackButtonEvent(e: any) {
       const currentStep = e.state?.usr?.step || 0;
@@ -353,10 +379,33 @@ function CreateProductInner({
   const setCurrentStepWithHistory = useCallback(
     (step: number) => {
       setCurrentStep(step);
-      history(".", { replace: true, state: { ...location.state, step } });
+      const deleteAllExceptSellerLandingQueryParams = () => {
+        Array.from(searchParams.keys()).forEach((queryParamKey) => {
+          const isSellerLandingQueryParam =
+            !!SellerLandingPageParameters[
+              queryParamKey as keyof typeof SellerLandingPageParameters
+            ];
+          if (!isSellerLandingQueryParam) {
+            searchParams.delete(queryParamKey);
+          }
+        });
+        setSearchParams(searchParams);
+      };
+      deleteAllExceptSellerLandingQueryParams();
+      history(
+        { pathname: ".", search: `?${searchParams.toString()}` },
+        {
+          replace: true,
+          state: {
+            ...location.state,
+            search: `?${searchParams.toString()}`,
+            step
+          }
+        }
+      );
       window.history.pushState(null, "", window.location.href);
     },
-    [history, location, setCurrentStep]
+    [history, location.state, searchParams, setSearchParams]
   );
 
   const onCreateNew = () => {
@@ -460,6 +509,7 @@ function CreateProductInner({
       isDraftModalClosed,
       showInvalidRoleModal,
       isMultiVariant,
+      isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
       isOneSetOfImages
     });
@@ -478,6 +528,7 @@ function CreateProductInner({
     isDraftModalClosed,
     showInvalidRoleModal,
     isMultiVariant,
+    isTokenGated,
     isOneSetOfImages,
     currentStep
   ]);
@@ -507,63 +558,66 @@ function CreateProductInner({
   };
 
   const handleSendData = async (values: CreateProductForm) => {
-    const {
-      coreTermsOfSale,
-      createYourProfile,
-      productInformation,
-      productImages,
-      productVariantsImages,
-      productType,
-      termsOfExchange,
-      shippingInfo
-    } = values;
+    try {
+      showModal("PREPARING_TRANSACTION", undefined, "auto", undefined, {
+        xs: "400px"
+      });
+      const {
+        coreTermsOfSale,
+        createYourProfile,
+        productInformation,
+        productImages,
+        productVariantsImages,
+        productType,
+        termsOfExchange,
+        shippingInfo
+      } = values;
 
-    const productMainImageLink: string | undefined =
-      isMultiVariant && !isOneSetOfImages
-        ? productVariantsImages?.find((variant) => {
-            return variant.productImages?.thumbnail?.[0]?.src;
-          })?.productImages?.thumbnail?.[0]?.src
-        : productImages?.thumbnail?.[0]?.src;
+      const productMainImageLink: string | undefined =
+        isMultiVariant && !isOneSetOfImages
+          ? productVariantsImages?.find((variant) => {
+              return variant.productImages?.thumbnail?.[0]?.src;
+            })?.productImages?.thumbnail?.[0]?.src
+          : productImages?.thumbnail?.[0]?.src;
 
-    const productAttributes: Array<{
-      trait_type: string;
-      value: string;
-    }> = productInformation.attributes.map(
-      ({ name, value }: { name: string; value: string }) => {
-        return {
-          trait_type: name,
-          value: value || ""
-        };
-      }
-    );
-
-    const supportedJurisdictions: Array<SupportedJuridiction> =
-      shippingInfo.jurisdiction.reduce(
-        (
-          prev: Array<SupportedJuridiction>,
-          { region, time }: { region: string; time: string }
-        ) => {
-          if (region.length === 0 || time.length === 0) {
-            return prev;
-          } else {
-            return [
-              ...prev,
-              {
-                label: region,
-                deliveryTime: time
-              }
-            ];
-          }
-        },
-        []
+      const productAttributes: Array<{
+        trait_type: string;
+        value: string;
+      }> = productInformation.attributes.map(
+        ({ name, value }: { name: string; value: string }) => {
+          return {
+            trait_type: name,
+            value: value || ""
+          };
+        }
       );
 
-    // filter empty attributes
-    const additionalAttributes = productAttributes.filter((attribute) => {
-      return attribute.trait_type.length > 0;
-    });
+      const supportedJurisdictions: Array<SupportedJuridiction> =
+        shippingInfo.jurisdiction.reduce(
+          (
+            prev: Array<SupportedJuridiction>,
+            { region, time }: { region: string; time: string }
+          ) => {
+            if (region.length === 0 || time.length === 0) {
+              return prev;
+            } else {
+              return [
+                ...prev,
+                {
+                  label: region,
+                  deliveryTime: time
+                }
+              ];
+            }
+          },
+          []
+        );
 
-    try {
+      // filter empty attributes
+      const additionalAttributes = productAttributes.filter((attribute) => {
+        return attribute.trait_type.length > 0;
+      });
+
       const redemptionPointUrl =
         shippingInfo.redemptionPointUrl &&
         shippingInfo.redemptionPointUrl.length > 0
@@ -696,8 +750,7 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions,
-          commonTermsOfSale
+          supportedJurisdictions
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -784,8 +837,7 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions,
-          commonTermsOfSale
+          supportedJurisdictions
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
@@ -826,15 +878,18 @@ function CreateProductInner({
         });
         offersToCreate.push(offerData);
       }
-      const isTokenGated = commonTermsOfSale.tokenGatedOffer.value === "true";
+      const isTokenGated = productType?.tokenGatedOffer === "true";
       await createOffers({
         sellerToCreate: null,
         isMultiVariant,
         offersToCreate,
-        tokenGatedInfo: isTokenGated ? commonTermsOfSale : null,
+        tokenGatedInfo: isTokenGated ? values.tokenGating : null,
         conditionDecimals: decimals,
         onGetExchangeTokenDecimals: setDecimals,
-        onCreatedOffersWithVariants: ({ firstOffer }) => {
+        onCreatedOffersWithVariants: ({ firstOffer, createdOffers }) => {
+          createdOffers.length &&
+            setCreatedOffersIds(createdOffers.map((offer) => offer.id));
+
           toast((t) => (
             <SuccessTransactionToast
               t={t}
@@ -849,6 +904,7 @@ function CreateProductInner({
           ));
         },
         onCreatedSingleOffers: ({ offer: createdOffer }) => {
+          createdOffer && setCreatedOffersIds([createdOffer.id]);
           toast((t) => (
             <SuccessTransactionToast
               t={t}
@@ -865,17 +921,26 @@ function CreateProductInner({
         }
       });
     } catch (error: any) {
-      // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
       const hasUserRejectedTx =
         "code" in error &&
         (error as unknown as { code: string })?.code === "ACTION_REJECTED";
       if (hasUserRejectedTx) {
-        showModal("TRANSACTION_FAILED");
-      } else {
-        showModal("TRANSACTION_FAILED", {
-          errorMessage: "Something went wrong"
+        showModal("TRANSACTION_FAILED", undefined, "auto", undefined, {
+          xs: "400px"
         });
+      } else {
+        showModal(
+          "TRANSACTION_FAILED",
+          {
+            errorMessage: "Something went wrong"
+          },
+          "auto",
+          undefined,
+          {
+            xs: "400px"
+          }
+        );
       }
     }
   };
@@ -921,11 +986,8 @@ function CreateProductInner({
   }, [isOneSetOfImages]);
 
   const getDecimalOnPreview = async (values: CreateProductForm) => {
-    const coreTermsOfSaleKey = isMultiVariant
-      ? "variantsCoreTermsOfSale"
-      : "coreTermsOfSale";
-    const tokenContract = values?.[coreTermsOfSaleKey]?.tokenContract;
-    const tokenType = values?.[coreTermsOfSaleKey]?.tokenType;
+    const tokenContract = values.tokenGating?.tokenContract;
+    const tokenType = values.tokenGating?.tokenType;
 
     if (
       tokenContract &&
@@ -945,7 +1007,7 @@ function CreateProductInner({
     <CreateProductWrapper>
       <MultiStepsContainer>
         <MultiSteps
-          data={CREATE_PRODUCT_STEPS(isMultiVariant)}
+          data={CREATE_PRODUCT_STEPS(isMultiVariant, isTokenGated)}
           active={currentStep}
           callback={handleClickStep}
           disableInactiveSteps
@@ -965,24 +1027,53 @@ function CreateProductInner({
           enableReinitialize
         >
           {({ values }) => {
+            // TODO: fix: these setState calls cause this warning: Warning: Cannot update a component (`CreateProductInner`) while rendering a different component (`Formik`). To locate the bad setState() call inside `Formik`, follow the stack trace as described in
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
+            }
+            const formTokenGated =
+              values.productType?.tokenGatedOffer === "true";
+            if (isTokenGated !== formTokenGated) {
+              setIsTokenGated(formTokenGated);
             }
             getDecimalOnPreview(values);
 
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (
-                  <Preview
-                    togglePreview={setIsPreviewVisible}
-                    seller={currentAssistant as any}
-                    isMultiVariant={isMultiVariant}
-                    isOneSetOfImages={isOneSetOfImages}
-                    hasMultipleVariants={
-                      !!values.productVariants.variants.length
-                    }
-                    decimals={decimals}
-                  />
+                  <ErrorBoundary
+                    FallbackComponent={({ resetErrorBoundary }) => (
+                      <Grid flexDirection="column" gap="1rem">
+                        <Typography fontWeight="600">
+                          Sorry, the preview is unavailable right now, please
+                          try again later.
+                        </Typography>
+                        <BosonButton
+                          onClick={() => resetErrorBoundary()}
+                          variant="accentInverted"
+                        >
+                          Back
+                        </BosonButton>
+                      </Grid>
+                    )}
+                    onError={(error) => {
+                      Sentry.captureException(error);
+                    }}
+                    onReset={() => {
+                      setIsPreviewVisible(false);
+                    }}
+                  >
+                    <Preview
+                      togglePreview={setIsPreviewVisible}
+                      seller={currentAssistant as any}
+                      isMultiVariant={isMultiVariant}
+                      isOneSetOfImages={isOneSetOfImages}
+                      hasMultipleVariants={
+                        !!values.productVariants.variants.length
+                      }
+                      decimals={decimals}
+                    />
+                  </ErrorBoundary>
                 ) : (
                   wizardStep.currentStep
                 )}

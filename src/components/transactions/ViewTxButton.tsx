@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 
 import { usePendingTransactionsStore } from "../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -6,7 +6,12 @@ import { Spinner } from "../loading/Spinner";
 import { useModal } from "../modal/useModal";
 import Grid from "../ui/Grid";
 
-export default function ViewTxButton() {
+type ViewTxButtonProps = {
+  children?: ReactNode;
+  [x: string]: unknown;
+};
+
+export default function ViewTxButton({ children, ...rest }: ViewTxButtonProps) {
   const { showModal } = useModal();
   const coreSDK = useCoreSDK();
   const {
@@ -50,13 +55,20 @@ export default function ViewTxButton() {
           "m"
         );
       }}
+      {...rest}
     >
-      {numPendingTx ? (
-        <>
-          <span>{numPendingTx}</span> Pending <Spinner size={15} />
-        </>
+      {children ? (
+        children
       ) : (
-        <>My Transactions</>
+        <>
+          {numPendingTx ? (
+            <>
+              <span>{numPendingTx}</span> Pending <Spinner size={15} />
+            </>
+          ) : (
+            <>My Transactions</>
+          )}
+        </>
       )}
     </Grid>
   );

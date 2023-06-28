@@ -7,7 +7,7 @@ export const SUPPORTED_FILE_FORMATS = [
   "image/jpeg",
   "image/png",
   "application/pdf"
-];
+] as const;
 
 export const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 
@@ -43,7 +43,10 @@ export const validationOfFile = ({
         ","
       )}`,
       (files: File[]) => {
-        return (files || []).every((file) => formats.includes(file.type));
+        return (files || []).every((file) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formats.includes(file.type as any)
+        );
       }
     );
 };

@@ -20,6 +20,7 @@ function SellerAddNewProduct({ sellerRoles }: Props) {
       onClick={() => {
         navigate({ pathname: SellerCenterRoutes.CreateProduct });
       }}
+      style={{ whiteSpace: "pre" }}
     >
       Add product <PlusCircle size={16} />
     </BosonButton>

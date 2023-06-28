@@ -1,22 +1,28 @@
+import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import { getKeepStoreFieldsQueryParams } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
-interface Props {
-  children: string | JSX.Element;
+export type LinkWithQueryProps = {
+  children: ReactNode;
   to: string;
   state?: Record<string, unknown>;
-  [x: string]: unknown;
-}
-export const LinkWithQuery = ({ children, to, state, ...props }: Props) => {
+  search?: Parameters<typeof getKeepStoreFieldsQueryParams>[1];
+} & Parameters<typeof Link>[0];
+export const LinkWithQuery = ({
+  children,
+  to,
+  state,
+  search,
+  ...props
+}: LinkWithQueryProps) => {
   const location = useLocation();
-  // TODO: doesnt currently support passing query params in the 'to' parameter
-  const search = getKeepStoreFieldsQueryParams(location, null);
+  const searchWithStoreFields = getKeepStoreFieldsQueryParams(location, search);
   return (
     <Link
       to={{
         pathname: to,
-        search
+        search: searchWithStoreFields
       }}
       state={{ ...state, prevPath: location.pathname }}
       {...props}

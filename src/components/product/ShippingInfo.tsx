@@ -70,7 +70,7 @@ const AddSupportedJurisdictions = () => {
 
   return (
     <FormField
-      title="Supported Jurisdictions"
+      title="Supported jurisdictions"
       subTitle="Select the jurisdictions you will ship to."
     >
       <FieldArray
@@ -182,13 +182,13 @@ export default function ShippingInfo() {
         </FormField> */}
         <AddSupportedJurisdictions />
         <FormField
-          title="Return Period"
-          subTitle="The period the Buyer must contact the Seller for a return after being delivered."
+          title="Return period"
+          subTitle="The period within which the buyer must contact the seller for a return after the item has been delivered."
         >
           <FieldContainer>
             <div>
               <Input
-                placeholder="Return Period"
+                placeholder="Return period"
                 name="shippingInfo.returnPeriod"
                 type="number"
                 min="0"
@@ -197,38 +197,37 @@ export default function ShippingInfo() {
             </div>
             <div>
               <Select
-                placeholder="Choose Return Period Unit..."
+                placeholder="Choose return period Unit..."
                 name="shippingInfo.returnPeriodUnit"
                 options={OPTIONS_PERIOD}
               />
             </div>
           </FieldContainer>
         </FormField>
+        <FormField
+          title="Redemption point"
+          subTitle="The default redemption point is the Boson app. You can add a specific website from which buyers can redeem the rNFT, for example, your customised Web3 storefront."
+        >
+          {/* <FieldContainer>
+             TODO: not used for now, might come back <div>
+              <Input
+                placeholder="Add Redemption Point Name..."
+                name="shippingInfo.redemptionPointName"
+              />
+            </div> 
+            <div>*/}
+          <Input
+            placeholder="Add Redemption Point Url..."
+            name="shippingInfo.redemptionPointUrl"
+          />
+          {/* </div> 
+          </FieldContainer>*/}
+        </FormField>
       </RequiredContainer>
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
         >
-          <FormField
-            title="Redemption point"
-            subTitle="The website from which buyers can redeem the rNFT.
-              By default the redemption point will be the Boson dApp."
-          >
-            <FieldContainer>
-              <div>
-                <Input
-                  placeholder="Add Redemption Point Name..."
-                  name="shippingInfo.redemptionPointName"
-                />
-              </div>
-              <div>
-                <Input
-                  placeholder="Add Redemption Point Url..."
-                  name="shippingInfo.redemptionPointUrl"
-                />
-              </div>
-            </FieldContainer>
-          </FormField>
           <FormField
             title={`Dimensions L x W x H in ${unit}`}
             subTitle="Specify the dimension and weight of your package"

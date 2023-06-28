@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
 import bytesToSize from "../../lib/utils/bytesToSize";
 import { Select, Upload } from "../form";
 import FormField from "../form/FormField";
@@ -14,19 +13,6 @@ import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
-
-export const Box = styled.div`
-  padding: 1.625rem 0;
-  height: 100%;
-  width: 100%;
-  min-height: 9.375rem;
-  text-align: center;
-  border: 1px solid ${colors.lightGrey};
-`;
-
-export const Container = styled.div`
-  width: 100%;
-`;
 
 const ContainerProductImage = styled.div`
   max-width: 43.5rem;
@@ -55,6 +41,7 @@ const StyledSelect = styled(Select)`
 const StyledTabs = styled(Tabs)`
   [data-tab-title] {
     padding-right: 2rem;
+    font-size: 0.8063rem;
   }
 `;
 
@@ -122,7 +109,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     !hasVariants || values.imagesSpecificOrAll?.value === "all";
   const tabsData = useMemo(() => {
     return (
-      values.productVariants.variants?.map((variant, index) => {
+      values.productVariants?.variants?.map((variant, index) => {
         return {
           id: variant.name || index + "",
           title: variant.name || `Variant ${index}`,
@@ -134,7 +121,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         };
       }) || []
     );
-  }, [values.productVariants.variants]);
+  }, [values.productVariants?.variants]);
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
   }, []);

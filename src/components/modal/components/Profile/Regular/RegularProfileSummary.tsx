@@ -1,4 +1,5 @@
 import { Warning } from "phosphor-react";
+import { useState } from "react";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
@@ -17,7 +18,7 @@ import { ProfileType } from "../const";
 interface Props {
   values: CreateProfile;
   bosonAccount: BosonAccount;
-  onSubmit: (createdSellerId: string) => void;
+  onSubmit: (createdSellerId: string) => Promise<void>;
 }
 
 export default function RegularProfileSummary({
@@ -25,6 +26,7 @@ export default function RegularProfileSummary({
   bosonAccount,
   onSubmit
 }: Props) {
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const logo = values?.logo?.[0];
   const cover = values?.coverPicture?.[0];
   const logoImage = getIpfsGatewayUrl(logo?.src || "");
@@ -64,7 +66,7 @@ export default function RegularProfileSummary({
                 alignItems="flex-start"
                 gap="1.625rem"
               >
-                <Grid>
+                <Grid alignItems="flex-start">
                   <Grid
                     flexDirection="column"
                     alignItems="flex-start"
@@ -102,7 +104,7 @@ export default function RegularProfileSummary({
                       src={coverPicture}
                       style={{
                         maxHeight: "80px",
-                        maxWidth: "80px",
+                        maxWidth: "300px",
                         objectFit: "contain"
                       }}
                     />
@@ -140,7 +142,7 @@ export default function RegularProfileSummary({
                       $fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
-                      Contact email
+                      Contact email *
                     </Typography>
                     <Typography
                       fontWeight="400"
@@ -160,7 +162,7 @@ export default function RegularProfileSummary({
                       $fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
-                      Website / Social media link
+                      Website / Social media link *
                     </Typography>
                     <Typography
                       fontWeight="400"
@@ -211,6 +213,26 @@ export default function RegularProfileSummary({
                     {values.description}
                   </Typography>
                 </Grid>
+                <Grid
+                  flexDirection="column"
+                  alignItems="flex-start"
+                  gap="0.25rem"
+                >
+                  <Typography
+                    fontWeight="600"
+                    $fontSize="0.75rem"
+                    lineHeight="1.125rem"
+                  >
+                    Choose a communication channel *
+                  </Typography>
+                  <Typography
+                    fontWeight="400"
+                    $fontSize="0.75rem"
+                    lineHeight="1.125rem"
+                  >
+                    {values.contactPreference.label}
+                  </Typography>
+                </Grid>
               </Grid>
             </Collapse>
           </Grid>
@@ -241,7 +263,7 @@ export default function RegularProfileSummary({
                     $fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
-                    Secondary royalties
+                    Secondary royalties *
                   </Typography>
                   <Typography
                     fontWeight="400"
@@ -261,7 +283,8 @@ export default function RegularProfileSummary({
                     $fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
-                    Address for royalty payments
+                    Address for royalty payments{" "}
+                    {(bosonAccount.secondaryRoyalties || 0) > 0 ? "*" : ""}
                   </Typography>
                   <Typography
                     fontWeight="400"
@@ -319,22 +342,31 @@ export default function RegularProfileSummary({
           <BosonButton
             variant="primaryFill"
             onClick={async () => {
-              const data = await createSeller({
-                values,
-                bosonAccount,
-                kind: ProfileType.REGULAR
-              });
+              setSubmitting(true);
+              try {
+                const data = await createSeller({
+                  values,
+                  bosonAccount,
+                  kind: ProfileType.REGULAR
+                });
 
-              const createdSellerId = (data || "") as string;
-              onSubmit(createdSellerId);
+                const createdSellerId = (data || "") as string;
+                await onSubmit(createdSellerId);
+              } catch (error) {
+                console.error(error);
+              } finally {
+                setSubmitting(false);
+              }
             }}
-            disabled={isCreatingSellerAccount || isCreatedSellerAccount}
+            disabled={
+              isCreatingSellerAccount || isCreatedSellerAccount || submitting
+            }
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Create Seller Account
               </Typography>
-              {isCreatingSellerAccount && <Spinner size={15} />}
+              {(isCreatingSellerAccount || submitting) && <Spinner size={15} />}
             </Grid>
           </BosonButton>
         </Grid>

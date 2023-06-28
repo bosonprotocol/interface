@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { useSearchParams } from "react-router-dom";
 
-import { StoreFields } from "./store-fields";
+import { StoreFields } from "./store-fields-types";
 
 interface Options {
   parseJson: boolean;

@@ -116,10 +116,8 @@ export default function Preview({
     togglePreview(false);
   };
   const name = values.productInformation.productTitle || "Untitled";
-
-  const price = isMultiVariant
-    ? firstVariant.price
-    : values.coreTermsOfSale.price;
+  const price =
+    (isMultiVariant ? firstVariant.price : values.coreTermsOfSale.price) || 0;
   const exchangeTokenDecimals = Number(exchangeToken?.decimals || 18);
   const priceBN = parseUnits(
     price < 0.1 ? fixformattedString(price) : price.toString(),
@@ -147,13 +145,11 @@ export default function Preview({
 
   const exchangeDate = Date.now().toString();
 
-  const termsOfSale = hasMultipleVariants
-    ? values.variantsCoreTermsOfSale
-    : values.coreTermsOfSale;
+  const { tokenGating } = values;
 
   const condition =
-    termsOfSale.tokenType && termsOfSale.tokenGatedOffer.value === "true"
-      ? buildCondition(termsOfSale, decimals)
+    tokenGating.tokenType && values.productType?.tokenGatedOffer === "true"
+      ? buildCondition(tokenGating, decimals)
       : undefined;
 
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled, { css } from "styled-components";
 
+import whiteImg from "../../../assets/white.jpeg";
 import Avatar from "../../../components/avatar";
 import DetailShare from "../../../components/detail/DetailShare";
 import { Spinner } from "../../../components/loading/Spinner";
@@ -20,7 +21,6 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
 import { useCustomStoreQueryParameter } from "../../custom-store/useCustomStoreQueryParameter";
 import NotFound from "../../not-found/NotFound";
-import backgroundFluid from "../common/background-img.png";
 import {
   AddressContainer,
   AvatarContainer,
@@ -164,7 +164,7 @@ export default function Buyer({ manageFundsId }: Props) {
     <>
       <BasicInfo>
         <ProfileSectionWrapper>
-          <BannerImage src={backgroundFluid} />
+          <BannerImage src={whiteImg} />
           <BannerImageLayer>
             <AvatarContainer>
               <Avatar

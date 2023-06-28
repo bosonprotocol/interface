@@ -1,5 +1,4 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCallback, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -8,7 +7,8 @@ import { colors } from "../../../../lib/styles/colors";
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Switch from "../../../form/Switch";
+import { Switch } from "../../../form/Switch";
+import ConnectButton from "../../../header/ConnectButton";
 import { CreateProfile } from "../../../product/utils";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
@@ -26,10 +26,8 @@ export default function EditProfileModal() {
   const lensProfile = lens?.length ? lens[0] : undefined;
   const hasMetadata = !!seller?.metadata;
   const metadata = seller?.metadata;
-  const useLens = seller?.metadata?.kind
-    ? seller?.metadata?.kind === ProfileType.LENS &&
-      seller.authTokenType === AuthTokenType.LENS
-    : !!lensProfile;
+  const authTokenType = seller?.authTokenType;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
   const { hideModal } = useModal();
@@ -54,7 +52,7 @@ export default function EditProfileModal() {
           justifyContent: "flex-end"
         }}
         checked={switchChecked}
-        label={
+        label={() => (
           <Typography
             color={colors.secondary}
             $fontSize="0.8rem"
@@ -63,7 +61,7 @@ export default function EditProfileModal() {
           >
             Link Lens Profile
           </Typography>
-        }
+        )}
       />
     ),
     [switchChecked, setSwitchAndProfileType]
@@ -71,7 +69,13 @@ export default function EditProfileModal() {
   const Component = useCallback(() => {
     const profileDataFromMetadata: CreateProfile =
       buildRegularProfileFromMetadata(metadata);
-    const forceDirty = !hasMetadata || metadata?.kind !== profileType;
+    const forceDirty =
+      !hasMetadata ||
+      metadata?.kind !== profileType ||
+      (profileType === ProfileType.LENS && // to fix inconsistencies between the authTokenType and the metadata kind
+        authTokenType !== AuthTokenType.LENS) ||
+      (profileType === ProfileType.REGULAR &&
+        authTokenType !== AuthTokenType.NONE);
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
         onSubmit={async () => {
@@ -99,7 +103,7 @@ export default function EditProfileModal() {
       <p>There has been an error, please try again...</p>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileType]);
+  }, [profileType, authTokenType]);
 
   if (!address) {
     return (

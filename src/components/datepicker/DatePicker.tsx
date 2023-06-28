@@ -115,10 +115,7 @@ export default function DatePicker({
   };
 
   useDidMountEffect(() => {
-    if (
-      (!period && date !== null) ||
-      (period && date !== null && secondDate !== null)
-    ) {
+    if ((!period && date !== null) || (period && date !== null)) {
       setShowTime(true);
     }
 

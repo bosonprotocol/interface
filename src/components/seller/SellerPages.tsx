@@ -7,104 +7,81 @@ import {
   Storefront,
   User
 } from "phosphor-react";
-import React from "react";
 
-import { BosonRoutes } from "../../lib/routing/routes";
+import { BosonRoutes, SellerCenterSubRoutes } from "../../lib/routing/routes";
 import Navigate from "../customNavigation/Navigate";
-import { WithSellerDataProps } from "./common/WithSellerData";
 import SellerDashboard from "./dashboard/SellerDashboard";
 import SellerExchanges from "./exchanges/SellerExchanges";
 import SellerFinances from "./finances/SellerFinances";
 import SellerProducts from "./products/SellerProducts";
 import { ProfileDetails } from "./profileDetails/ProfileDetails";
-import { SellerInsideProps } from "./SellerInside";
+import { SalesChannels } from "./salesChannels/SalesChannels";
 
-export const DEFAULT_SELLER_PAGE = "dashboard";
+export const DEFAULT_SELLER_PAGE = SellerCenterSubRoutes.Dashboard;
 
 export const sellerPageTypes = {
   dashboard: {
-    url: DEFAULT_SELLER_PAGE,
+    url: SellerCenterSubRoutes.Dashboard,
     label: "Dashboard",
     icon: GridFour,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof SellerDashboard>[0]) => (
       <SellerDashboard {...props} />
     ),
     withoutWrapper: true
   },
   products: {
-    url: "products",
+    url: SellerCenterSubRoutes.Products,
     label: "Products",
     icon: Storefront,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof SellerProducts>[0]) => (
       <SellerProducts {...props} />
     )
   },
   exchanges: {
-    url: "exchanges",
+    url: SellerCenterSubRoutes.Exchanges,
     label: "Exchanges",
     icon: ArrowsLeftRight,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof SellerExchanges>[0]) => (
       <SellerExchanges {...props} />
     )
   },
   messages: {
-    url: "messages",
+    url: SellerCenterSubRoutes.Messages,
     label: "Messages",
     icon: Chats,
     externalPath: BosonRoutes.Chat,
     component: () => <Navigate replace to={{ pathname: BosonRoutes.Chat }} />
   },
   finances: {
-    url: "finances",
+    url: SellerCenterSubRoutes.Finances,
     label: "Finances",
     icon: Bank,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof SellerFinances>[0]) => (
       <SellerFinances {...props} />
     )
   },
-  customStoreFront: {
-    url: "customStoreFront",
-    label: "Custom Storefront",
+  salesChannels: {
+    url: SellerCenterSubRoutes["Sales Channels"],
+    label: "Sales Channels",
     icon: Megaphone,
-    externalPath: BosonRoutes.CreateStorefront,
-    component: () => (
-      <Navigate replace to={{ pathname: BosonRoutes.CreateStorefront }} />
-    )
+    externalPath: null,
+    component: (props: Parameters<typeof SalesChannels>[0]) => (
+      <SalesChannels {...props} />
+    ),
+    withoutWrapper: true
   },
   profileDetails: {
-    url: "profileDetails",
+    url: SellerCenterSubRoutes["Profile Details"],
     label: "Profile Details",
     icon: User,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof ProfileDetails>[0]) => (
       <ProfileDetails {...props} />
     ),
     withoutWrapper: true
   }
-};
-
-export type SellerPageTypes = keyof typeof sellerPageTypes;
-
-export type SellerPage = {
-  url: string;
-  externalPath: string;
-  label: string;
-  icon: React.ReactNode | JSX.Element;
-  component: React.ReactNode | JSX.Element;
-  withoutWrapper?: boolean;
-};
-
-export type SellerPages = {
-  [x in keyof SellerPageTypes]: SellerPage;
-};
-
-export const SellerPages = (type: string | undefined) => {
-  return () =>
-    sellerPageTypes[
-      (type || DEFAULT_SELLER_PAGE) as keyof typeof sellerPageTypes
-    ];
 };

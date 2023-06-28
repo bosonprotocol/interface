@@ -1,8 +1,25 @@
+import { useFormikContext } from "formik";
 import { ReactNode } from "react";
+import styled from "styled-components";
+import { useAccount } from "wagmi";
 
+import { getIpfsGatewayUrl } from "../../../../lib/utils/ipfs";
 import { websitePattern } from "../../../../lib/validation/regex/url";
+import SellerImagesSection from "../../../../pages/profile/seller/SellerImagesSection";
 import { FormField, Input, Select, Textarea, Upload } from "../../../form";
-import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../product/utils";
+import {
+  CreateProfile,
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
+} from "../../../product/utils";
+import Grid from "../../../ui/Grid";
+import GridContainer from "../../../ui/GridContainer";
+
+const SellerImagesSectionContainer = styled.div`
+  position: relative;
+  width: 100%;
+  margin-bottom: 4.5rem;
+  display: flex;
+`;
 
 interface Props {
   onBlurName?: () => void;
@@ -25,28 +42,59 @@ export function ProfileFormFields({
   disableName,
   disableDescription
 }: Props) {
+  const { address = "" } = useAccount();
+  const { values } = useFormikContext<CreateProfile>();
+  const profileImage = getIpfsGatewayUrl(values.logo?.[0]?.src ?? "");
+  const coverPicture = getIpfsGatewayUrl(values.coverPicture?.[0]?.src ?? "");
   return (
     <>
-      <FormField
-        title="Logo / Profile picture"
-        subTitle={logoSubtitle}
-        required
+      <GridContainer
+        itemsPerRow={{
+          xs: 1,
+          s: 2,
+          m: 2,
+          l: 2,
+          xl: 2
+        }}
       >
-        <Upload
-          name="logo"
-          multiple={false}
-          disabled={disableLogo}
-          withUpload
-        />
-      </FormField>
-      <FormField title="Cover picture" subTitle={coverSubtitle} required>
-        <Upload
-          name="coverPicture"
-          multiple={false}
-          disabled={disableCover}
-          withUpload
-        />
-      </FormField>
+        <FormField
+          title="Logo / Profile picture"
+          subTitle={logoSubtitle}
+          required
+        >
+          <Upload
+            name="logo"
+            multiple={false}
+            disabled={disableLogo}
+            withUpload
+            withEditor
+            borderRadius={100}
+          />
+        </FormField>
+        <FormField title="Cover picture" subTitle={coverSubtitle} required>
+          <Upload
+            name="coverPicture"
+            multiple={false}
+            disabled={disableCover}
+            withUpload
+            withEditor
+            width={1531}
+            height={190}
+            imgPreviewStyle={{ objectFit: "contain" }}
+          />
+        </FormField>
+      </GridContainer>
+      <Grid>
+        <FormField title="Preview">
+          <SellerImagesSectionContainer>
+            <SellerImagesSection
+              address={address}
+              profileImage={profileImage}
+              coverImage={coverPicture}
+            />
+          </SellerImagesSectionContainer>
+        </FormField>
+      </Grid>
       <FormField title="Your brand / name" required>
         <Input
           name="name"
@@ -59,7 +107,7 @@ export function ProfileFormFields({
       <FormField title="Description" required>
         <Textarea
           name="description"
-          placeholder="Describe"
+          placeholder="Tell people more about your brand"
           disabled={disableDescription}
         />
       </FormField>
@@ -88,9 +136,18 @@ export function ProfileFormFields({
         <Input name="legalTradingName" placeholder="Polly Seller UK ltd." />
       </FormField>
       <FormField
-        title="Communication method"
+        title="Ongoing communication method"
+        subTitle={
+          <>
+            First-time Communication: Initially, the buyer's delivery address
+            will always be sent to you via the dApp's chat function (XMTP).
+            <br></br>
+            Ongoing communication: Please choose between - continuing on chat
+            (XMTP) or switching to email. (Used for sending tracking IDs or
+            receiving inquiries from buyers about their order status.)
+          </>
+        }
         required
-        subTitle="The buyer's delivery address will be sent to you via the dApp's chat function (XMTP). For further communication, like sending tracking IDs or receiving inquiries from buyers about their order status, specify your preference: continuing on XMTP (chat) or switching to email."
       >
         <Select
           placeholder="Choose a communication channel..."

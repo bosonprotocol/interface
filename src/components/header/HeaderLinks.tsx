@@ -19,7 +19,6 @@ const NavigationLinks = styled.div<{
   isMobile: boolean;
   isOpen: boolean;
   $navigationBarPosition: string;
-  hasTopBanner: boolean;
 }>`
   background-color: var(--headerBgColor);
   color: var(--headerTextColor);
@@ -35,20 +34,14 @@ const NavigationLinks = styled.div<{
       color: var(--accent);
     }
   }
-  ${({ isMobile, isOpen, $navigationBarPosition, hasTopBanner }) =>
+  ${({ isMobile, isOpen, $navigationBarPosition }) =>
     isMobile
       ? css`
           position: absolute;
           ${() => {
-            if (hasTopBanner) {
-              return css`
-                top: calc(${HEADER_HEIGHT} + 3rem);
-              `;
-            } else {
-              return css`
-                top: calc(${HEADER_HEIGHT} + 2px);
-              `;
-            }
+            return css`
+              top: calc(${HEADER_HEIGHT} + 2px);
+            `;
           }}
           left: 0;
           right: 0;
@@ -113,7 +106,7 @@ const NavigationLinks = styled.div<{
               a,
               [data-anchor] {
                 justify-content: center;
-                padding: 1rem;
+                padding: 1rem 0;
               }
             `;
           }}
@@ -133,6 +126,7 @@ const NavigationLinks = styled.div<{
 const Links = styled.div<{ isMobile: boolean; $navigationBarPosition: string }>`
   display: flex;
   justify-content: end;
+  gap: 1rem;
   flex-direction: ${({ isMobile, $navigationBarPosition }) =>
     isMobile || ["left", "right"].includes($navigationBarPosition)
       ? "column"
@@ -145,13 +139,11 @@ interface Props {
   isMobile: boolean;
   isOpen: boolean;
   navigationBarPosition: string;
-  hasTopBanner?: boolean;
 }
 export default function HeaderLinks({
   isMobile,
   isOpen,
-  navigationBarPosition,
-  hasTopBanner = false
+  navigationBarPosition
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
   const { address } = useAccount();
@@ -176,7 +168,6 @@ export default function HeaderLinks({
       isMobile={isMobile}
       isOpen={isOpen}
       $navigationBarPosition={navigationBarPosition}
-      hasTopBanner={hasTopBanner}
     >
       <Search
         isMobile={isMobile}

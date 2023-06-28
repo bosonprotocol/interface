@@ -2,9 +2,11 @@ import * as Sentry from "@sentry/browser";
 // inspired by https://3dtransforms.desandro.com/carousel
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
+import { useSwipeable } from "react-swipeable";
 import styled, { css } from "styled-components";
 
 import ProductCard from "../../components/productCard/ProductCard";
+import Loading from "../../components/ui/Loading";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
@@ -192,7 +194,7 @@ export default function Carousel() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
-  const { products } = useProductsByFilteredOffers({
+  const { products, isLoading } = useProductsByFilteredOffers({
     voided: false,
     valid: true,
     first: numCells,
@@ -249,9 +251,21 @@ export default function Carousel() {
         "translateZ(" + -radius + "px) " + rotateFn + "(" + angle + "deg)";
     }
   }
-
+  const handlers = useSwipeable({
+    onSwipedLeft: () => onNextClick(),
+    onSwipedRight: () => onPreviousClick(),
+    swipeDuration: 500,
+    preventScrollOnSwipe: true,
+    trackMouse: true
+  });
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (!uiOffers?.length) {
+    return <></>;
+  }
   return (
-    <Scene>
+    <Scene {...handlers}>
       <CarouselContainer ref={carouselRef} data-testid="carousel">
         {uiOffers?.map((offer: Offer, idx: number) => {
           const clampedSelectedIndex =

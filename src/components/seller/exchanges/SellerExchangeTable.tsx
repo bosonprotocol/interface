@@ -27,7 +27,6 @@ import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import ExchangeTimeline from "../../../pages/chat/components/ExchangeTimeline";
 import { CheckboxWrapper } from "../../form/Field.styles";
 import ExchangeStatuses from "../../offer/ExchangeStatuses";
-import { OfferHistoryStatuses } from "../../offer/OfferHistory";
 import Price from "../../price/index";
 import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
@@ -42,6 +41,14 @@ import {
 } from "./SellerAction";
 import SellerExchangeTimePeriod from "./SellerExchangeTimePeriod";
 
+const OfferHistoryStatuses = styled.div`
+  padding: 0.5rem 0;
+  min-width: 13rem;
+  > div {
+    height: initial;
+    margin-bottom: 3rem;
+  }
+`;
 interface Props {
   data: (Exchange | null)[];
   isError: boolean;

@@ -19,6 +19,13 @@ import {
 import { CATEGORY_OPTIONS } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
+const StyledTextarea = styled(Textarea)`
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 54px;
+  max-height: 500px;
+`;
+
 const AddProductContainer = styled.div`
   display: grid;
   grid-template-columns: minmax(11.25rem, 1fr) 3fr;
@@ -61,7 +68,7 @@ const AddAttributesContainer = ({
   const { values } = useCreateForm();
 
   const elements: ElementType[] = useMemo(
-    () => values?.productInformation?.attributes,
+    () => values?.productInformation?.attributes || [],
     [values?.productInformation?.attributes]
   );
 
@@ -92,7 +99,7 @@ const AddAttributesContainer = ({
                       </div>
                       <div>
                         <Input
-                          placeholder="Attribute Value"
+                          placeholder="Attribute value"
                           name={`productInformation.attributes[${key}].value`}
                         />
                       </div>
@@ -103,7 +110,7 @@ const AddAttributesContainer = ({
 
               <Error
                 display={hasDuplicated}
-                message={"You can’t have duplicate attributes!"}
+                message={"You can't have duplicate attributes!"}
               />
               {!checkLastElementIsPristine(elements) && (
                 <Button
@@ -131,7 +138,7 @@ export default function ProductInformation() {
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Information</SectionTitle>
       <FormField
-        title="Product Title"
+        title="Product title"
         required
         subTitle="Use words people would search for when looking for your item."
       >
@@ -143,11 +150,11 @@ export default function ProductInformation() {
       <FormField
         title="Description"
         required
-        subTitle="Describe your product. Provide as much detail as possible."
+        subTitle="Describe your product with as much detail as possible."
       >
-        <Textarea
+        <StyledTextarea
           name="productInformation.description"
-          placeholder="Describe"
+          placeholder="Include information like shipping is included, or whether duties/taxes are covered."
         />
       </FormField>
       <FormField
@@ -164,7 +171,7 @@ export default function ProductInformation() {
         />
       </FormField>
       <FormField
-        title="Search Tags"
+        title="Search tags"
         required
         subTitle="Input any relevant tags to make your offer stand out."
       >

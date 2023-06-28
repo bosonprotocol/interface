@@ -32,7 +32,7 @@ export const loadAndSetMedia = (
   reader.readAsDataURL(fileOrBlob);
 };
 
-export const loadAndSetImagePromise = (image: File) => {
+export const loadAndSetImagePromise = (image: File): Promise<string> => {
   return new Promise<Parameters<Parameters<typeof loadAndSetMedia>[1]>[0]>(
     (resolve, reject) => {
       loadAndSetMedia(image, resolve, reject);

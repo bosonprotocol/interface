@@ -1,14 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { generatePath } from "react-router-dom";
 
-import { UrlParameters } from "../../../lib/routing/parameters";
-import { SellerCenterRoutes } from "../../../lib/routing/routes";
-import { breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useModal } from "../../modal/useModal";
 import { WithSellerDataProps } from "../common/WithSellerData";
+import { getSellerCenterPath } from "../paths";
 import { SellerInsideProps } from "../SellerInside";
-import { DEFAULT_SELLER_PAGE } from "../SellerPages";
 
 export const ProfileDetails: React.FC<
   SellerInsideProps & WithSellerDataProps
@@ -16,9 +12,7 @@ export const ProfileDetails: React.FC<
   const navigate = useKeepQueryParamsNavigate();
   const redirect = useCallback(() => {
     navigate({
-      pathname: generatePath(SellerCenterRoutes.SellerCenter, {
-        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-      })
+      pathname: getSellerCenterPath("Dashboard")
     });
   }, [navigate]);
   const { showModal, store } = useModal();
@@ -37,7 +31,8 @@ export const ProfileDetails: React.FC<
       "auto",
       undefined,
       {
-        xs: `${breakpointNumbers.m + 1}px`
+        xs: "400px",
+        l: "600px"
       }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps

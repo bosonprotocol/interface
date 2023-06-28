@@ -131,11 +131,11 @@ export default function LensProfileFlow({
         <LensBosonAccountForm
           isEdit={isEdit}
           formValues={bosonAccount}
-          onSubmit={(values) => {
+          onSubmit={async (values) => {
             setBosonAccount(values);
             if (seller) {
               // In case the boson seller already exists, we wont show the summary page
-              onSubmit("", lensFormValues);
+              await onSubmit("", lensFormValues);
             } else {
               setStep(LensStep.SUMMARY);
             }

@@ -16,11 +16,19 @@ export default function CreateProductDraft({ chooseNew, chooseDraft }: Props) {
           Do you wish to continue editing this product or start fresh?
         </Typography>
       </Grid>
-      <Grid flexDirection="row" justifyContent="space-between">
-        <BosonButton variant="primaryFill" onClick={chooseDraft}>
+      <Grid flexDirection="row" justifyContent="space-between" flexWrap="wrap">
+        <BosonButton
+          variant="primaryFill"
+          onClick={chooseDraft}
+          style={{ whiteSpace: "pre-line" }}
+        >
           Edit draft
         </BosonButton>
-        <BosonButton variant="accentInverted" onClick={chooseNew}>
+        <BosonButton
+          variant="accentInverted"
+          onClick={chooseNew}
+          style={{ whiteSpace: "pre-line" }}
+        >
           Start Fresh
         </BosonButton>
       </Grid>

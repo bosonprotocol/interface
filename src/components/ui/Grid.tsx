@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { CSSProperties, forwardRef } from "react";
 import styled from "styled-components";
 
 type JustifyContent =
@@ -44,8 +44,8 @@ type JustifySelf =
   | "safe"
   | "unsafe";
 export interface IGrid {
-  $width?: string;
-  $height?: string;
+  $width?: CSSProperties["width"];
+  $height?: CSSProperties["height"];
   alignItems?: AlignItems;
   flexBasis?: string;
   flexDirection?: FlexDirection;
@@ -54,9 +54,13 @@ export interface IGrid {
   flexShrink?: string;
   flexWrap?: string;
   gap?: string;
-  flex?: string;
-  padding?: string;
-  margin?: string;
+  flex?: CSSProperties["flex"];
+  padding?: CSSProperties["padding"];
+  margin?: CSSProperties["margin"];
+  marginTop?: CSSProperties["marginTop"];
+  marginRight?: CSSProperties["marginRight"];
+  marginBottom?: CSSProperties["marginBottom"];
+  marginLeft?: CSSProperties["marginLeft"];
   rowGap?: string;
   columnGap?: string;
   alignSelf?: AlignSelf;
@@ -81,6 +85,11 @@ const Container = styled.div<IGrid>`
   ${({ flex }) => (flex ? `> * { flex: ${flex}; }` : "")}
   ${({ padding }) => (padding ? `padding:${padding};` : "")}
   ${({ margin }) => (margin ? `margin:${margin};` : "")}
+  ${({ marginTop }) => (marginTop ? `margin-top:${marginTop};` : "")}
+  ${({ marginRight }) => (marginRight ? `margin-right:${marginRight};` : "")}
+  ${({ marginBottom }) =>
+    marginBottom ? `margin-bottom:${marginBottom};` : ""}
+  ${({ marginLeft }) => (marginLeft ? `margin-left:${marginLeft};` : "")}
   ${({ alignSelf }) => (alignSelf ? `align-self:${alignSelf};` : "")}
   ${({ justifySelf }) => (justifySelf ? `justify-self:${justifySelf};` : "")}
 `;
@@ -88,6 +97,7 @@ type Props = {
   children: React.ReactNode;
   as?: React.ElementType;
   src?: string;
+  [x: string]: unknown;
 } & IGrid &
   React.HTMLAttributes<HTMLDivElement>;
 

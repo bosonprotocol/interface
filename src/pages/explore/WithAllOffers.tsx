@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import { LayoutRoot } from "../../components/Layout";
+import { LayoutRoot } from "../../components/layout/Layout";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
@@ -16,6 +16,7 @@ import { colors } from "../../lib/styles/colors";
 import type { Offer } from "../../lib/types/offer";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
 import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
+import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
 import useSearchParams from "./useSearchParams";
@@ -42,7 +43,7 @@ const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
   padding: 3rem 0 4rem 0;
   min-height: 55.5vh;
 `;
-export const Wrapper = styled.div`
+const Wrapper = styled.div`
   text-align: center;
 `;
 interface PriceDetails {
@@ -52,7 +53,7 @@ interface PriceDetails {
     symbol: string;
   };
 }
-export interface OfferAdditional {
+interface OfferAdditional {
   isValid?: boolean;
   status?: string;
   uuid?: string;
@@ -73,7 +74,7 @@ export interface OfferAdditional {
   };
 }
 export type ExtendedOffer = OfferAdditional & Offer;
-export interface SellerAdditional {
+interface SellerAdditional {
   title?: string;
   brandName?: string;
   createdAt?: string;
@@ -100,7 +101,7 @@ export interface FilterOptions {
   exchangeOrderBy?: string;
   validFromDate_lte?: string;
 }
-export interface ExtendedProducts {
+interface ExtendedProducts {
   products?: ExtendedOffer[];
   sellers?: ExtendedSeller[];
   isLoading?: boolean;
@@ -129,7 +130,10 @@ export function WithAllOffers<P>(
   const ComponentWithAllOffers = (props: P) => {
     const location = useLocation();
     const { params, handleChange } = useSearchParams();
-
+    const isCustomStoreFront =
+      useCustomStoreQueryParameter("isCustomStoreFront");
+    const onlyMyProducts =
+      useCustomStoreQueryParameter("withOwnProducts") === "mine";
     const isPrimaryBgColorChanged =
       useIsCustomStoreValueChanged("primaryBgColor");
 
@@ -137,7 +141,10 @@ export function WithAllOffers<P>(
       let options = {
         pagination: true,
         itemsPerPage: ITEMS_PER_PAGE || 10,
-        type: ["Sellers", "Products"]
+        type:
+          isCustomStoreFront && onlyMyProducts
+            ? ["Products"]
+            : ["Sellers", "Products"]
       };
       if (location?.pathname === BosonRoutes.Explore) {
         options = {
@@ -230,14 +237,18 @@ export function WithAllOffers<P>(
       }
     );
     const { isLoading, isError } = products;
-
     return (
       <ExploreContainer>
         <LayoutRoot>
           <TopContainer>
-            <Typography tag="h2" $fontSize="2.25rem">
+            <Typography
+              tag="h2"
+              $fontSize="2.25rem"
+              style={{ visibility: isCustomStoreFront ? "hidden" : undefined }}
+            >
               Explore products
             </Typography>
+
             <Grid justifyContent="flex-end">
               <ExploreSelect params={params} handleChange={handleChange} />
             </Grid>
