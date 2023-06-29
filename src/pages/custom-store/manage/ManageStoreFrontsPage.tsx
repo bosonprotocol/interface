@@ -108,6 +108,11 @@ const StoreFrontItem = styled.li`
   width: 100%;
 `;
 
+const iconProps = {
+  weight: "regular",
+  size: 20
+} as const;
+
 export const ManageStoreFrontsPage = () => {
   const { isConnected } = useAccount();
   const { showModal } = useModal();
@@ -200,7 +205,7 @@ export const ManageStoreFrontsPage = () => {
                           }
                         }}
                       >
-                        <Copy weight="regular" />
+                        <Copy {...iconProps} />
                       </CopyButton>
                     )}
                     <Link
@@ -211,11 +216,11 @@ export const ManageStoreFrontsPage = () => {
                         }`
                       }}
                     >
-                      <Gear style={{ color: "initial" }} weight="regular" />
+                      <Gear style={{ color: "initial" }} {...iconProps} />
                     </Link>
                     <Trash
                       style={{ cursor: "pointer" }}
-                      weight="regular"
+                      {...iconProps}
                       onClick={() => {
                         showModal(
                           "CONFIRMATION",
