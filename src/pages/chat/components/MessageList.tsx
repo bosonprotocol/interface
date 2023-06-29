@@ -157,10 +157,6 @@ const PageTitle = styled.div`
   }
 `;
 
-const NotifiIcon = styled.div`
-  cursor: pointer;
-`;
-
 export type NotifiTopic = {
   topic: string;
   peerAddress: string;
@@ -248,18 +244,17 @@ export default function MessageList({
         <PageTitle>
           Messages
           {address && isChatInitialized && showNotifiIcon && (
-            <NotifiIcon>
-              <Tooltip
-                content={
-                  "Be notified chen receiving new messages on XMTP with Notifi"
-                }
-                size={20}
-              >
-                <BellRinging
-                  onClick={() => setShowNotifiModal(true)}
-                ></BellRinging>
-              </Tooltip>
-            </NotifiIcon>
+            <Tooltip
+              content={
+                "Be notified when receiving new messages on XMTP with Notifi"
+              }
+              size={20}
+            >
+              <BellRinging
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowNotifiModal(true)}
+              ></BellRinging>
+            </Tooltip>
           )}
         </PageTitle>
       </Header>
@@ -295,12 +290,11 @@ export default function MessageList({
               : iAmTheSeller
               ? exchange?.buyer.wallet
               : undefined;
-            const isExchangeRegistered =
-              notifiRegistration?.find(
-                (convo) =>
-                  convo.peerAddress.toLowerCase() ===
-                  exchangePeerAddress?.toLowerCase()
-              )?.registered || false;
+            const isExchangeRegistered = !!notifiRegistration?.find(
+              (convo) =>
+                convo.peerAddress.toLowerCase() ===
+                exchangePeerAddress?.toLowerCase()
+            )?.registered;
             return (
               <MessageItem
                 $active={messageKey === activeMessageKey}
@@ -352,7 +346,7 @@ export default function MessageList({
                           width={"100%"}
                           height={"100%"}
                           title={
-                            "[NOTIFI] You have registered to this conversation"
+                            "[NOTIFI] You have been registered to this conversation"
                           }
                         />
                       </NotifiLogo>
@@ -364,7 +358,7 @@ export default function MessageList({
                           width={"100%"}
                           height={"100%"}
                           title={
-                            "[NOTIFI] You have not registered to this conversation yet"
+                            "[NOTIFI] You have not been registered to this conversation yet"
                           }
                         />
                       </NotifiLogo>

@@ -11,20 +11,6 @@ import { arrayify } from "ethers/lib/utils";
 
 import { NotifiConfig } from "../../../lib/utils/hooks/chat/useNotifi";
 
-// export type ChainName =
-//   | "ETHEREUM"
-//   | "POLYGON"
-//   | "ARBITRUM"
-//   | "AVALANCHE"
-//   | "BINANCE"
-//   | "OPTIMISM";
-
-// export type NotifiConfig = {
-//   dappId: string;
-//   cardId: string;
-//   chain: ChainName;
-// };
-
 export default function NotifiModal({
   signer,
   address,
@@ -61,7 +47,7 @@ export default function NotifiModal({
       {signer && address && notifiConfig && (
         <NotifiContext
           dappAddress={notifiConfig.dappId}
-          env="Development"
+          env={notifiConfig.env}
           signMessage={async (message: Uint8Array) => {
             const result = await signer.signMessage(message);
             return arrayify(result);

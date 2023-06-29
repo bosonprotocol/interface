@@ -10,6 +10,7 @@ export type ChainName =
 
 export type NotifiConfig = {
   dappId: string;
+  env: "Production" | "Staging" | "Development" | "Local";
   cardId: string;
   chain: ChainName;
 };
@@ -17,7 +18,12 @@ export type NotifiConfig = {
 export function getNotifiConfig(): NotifiConfig | null {
   try {
     const notifiConfig = JSON.parse(CONFIG.XMTP_NOTIFI || "{}") as NotifiConfig;
-    if (notifiConfig.dappId && notifiConfig.cardId && notifiConfig.chain) {
+    if (
+      notifiConfig.dappId &&
+      notifiConfig.env &&
+      notifiConfig.cardId &&
+      notifiConfig.chain
+    ) {
       return notifiConfig;
     }
   } catch (e) {

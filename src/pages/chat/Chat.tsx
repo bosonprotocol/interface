@@ -17,6 +17,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { isTruthy } from "../../lib/types/helpers";
 import { getNotifiConfig } from "../../lib/utils/hooks/chat/useNotifi";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
@@ -70,6 +71,8 @@ const getIsSameThread = (
 ) => {
   return textAreaValue.exchangeId === exchangeId;
 };
+
+const EMPTY_STRING_ARRAY: string[] = [];
 
 export default function Chat() {
   const { address } = useAccount();
@@ -157,33 +160,33 @@ export default function Chat() {
   const { bosonXmtp } = useChatContext();
   const notifiConfig = getNotifiConfig();
 
-  // TODO: ideally if notifiConfig is null, do not call useNotifiClient()
-
   const notifiClient = useNotifiClient({
     dappAddress: notifiConfig?.dappId || "",
-    env: "Development",
+    env: notifiConfig?.env || "Development",
     walletPublicKey: address as string,
     walletBlockchain: notifiConfig?.chain || "ETHEREUM"
   });
   const fetchNotifiData = (data: NotifiClientData | null) => {
     const xmtpAlert = data?.alerts?.find(
-      (alert: { filter?: { filterType?: string } }) =>
-        alert.filter?.filterType === "WEB3_CHAT_MESSAGES"
+      (alert) => alert.filter?.filterType === "WEB3_CHAT_MESSAGES"
     );
     const xmtpSources = xmtpAlert?.sourceGroup?.sources?.filter(
-      (source: unknown) => (source as { type?: string }).type === "XMTP"
+      (source) => source?.type === "XMTP"
     );
-    const sourceTopics = xmtpSources?.map(
-      (source: unknown) => (source as { name?: string }).name
-    ) as string[];
+    const sourceTopics =
+      xmtpSources?.map((source) => source?.name).filter(isTruthy) ??
+      EMPTY_STRING_ARRAY;
     setAlreadyRegisteredTopics(sourceTopics);
   };
 
   const onNotifiPopupClosed = useCallback(() => {
     if (notifiClient) {
-      notifiClient.fetchData(true).then((data) => {
-        fetchNotifiData(data);
-      });
+      notifiClient
+        .fetchData(true)
+        .then((data) => {
+          fetchNotifiData(data);
+        })
+        .catch(console.error);
     }
   }, [notifiClient]);
 
@@ -193,7 +196,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (!notifiClient || notifiClient.loading) {
-      setAlreadyRegisteredTopics([]);
+      setAlreadyRegisteredTopics(EMPTY_STRING_ARRAY);
     } else {
       fetchNotifiData(notifiClient.data);
     }
@@ -201,17 +204,21 @@ export default function Chat() {
 
   useEffect(() => {
     if (bosonXmtp) {
-      bosonXmtp.getConversations().then((convos: unknown[]) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const newTopicDatas = convos.map((convo: any) => {
-          return {
-            topic: convo.topic,
-            peerAddress: convo.peerAddress,
-            registered: alreadyRegisteredTopics?.includes(convo.topic) || false
-          };
-        });
-        setNotifiRegistration(newTopicDatas);
-      });
+      bosonXmtp
+        .getConversations()
+        .then((convos: { topic: string; peerAddress: string }[]) => {
+          const newTopicDatas = convos.map(
+            (convo: { topic: string; peerAddress: string }) => {
+              return {
+                topic: convo.topic,
+                peerAddress: convo.peerAddress,
+                registered: !!alreadyRegisteredTopics?.includes(convo.topic)
+              };
+            }
+          );
+          setNotifiRegistration(newTopicDatas);
+        })
+        .catch(console.error);
     } else {
       // topics are not ready yet
       setNotifiRegistration(null);
