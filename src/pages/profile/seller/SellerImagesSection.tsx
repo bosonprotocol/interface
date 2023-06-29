@@ -1,8 +1,7 @@
 import Avatar from "@davatar/react";
-import React, { useRef } from "react";
-import Moveable from "react-moveable";
-// import Draggable from "react-draggable";
-import styled from "styled-components";
+import React from "react";
+import Draggable from "react-draggable";
+import styled, { css } from "styled-components";
 
 import whiteImg from "../../../assets/white.jpeg";
 import Image from "../../../components/ui/Image";
@@ -11,7 +10,7 @@ import { colors } from "../../../lib/styles/colors";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import {
   AvatarContainer,
-  BannerImageLayer,
+  // BannerImageLayer,
   ProfileSectionWrapper
 } from "../ProfilePage.styles";
 
@@ -19,19 +18,71 @@ import {
 //   max-width: 100%;
 // `;
 
-const StyledBannerImage = styled.img`
-  pointer-events: initial;
+const BannerImageLayer = styled.div`
+  position: absolute;
+  top: 0;
+  ${breakpoint.s} {
+    height: 11.875rem;
+  }
+`;
+
+const WrapperWrapper = styled.div.attrs({ "data-wrapper-wrapper": true })`
+  border: 1px solid green;
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: calc(9rem + 20px);
+  ${breakpoint.s} {
+    height: calc(11.875rem + 20px);
+  }
+`;
+
+const BannerWrapper = styled.div.attrs({ "data-banner-wrapper": true })<{
+  $isTop: boolean;
+}>`
+  border: 1px solid red;
+  pointer-events: none;
+  overflow: hidden;
+  background: blue;
+  z-index: 1;
+  position: absolute;
+  ${({ $isTop }) => {
+    return css`
+      ${$isTop ? "top:0" : "bottom:0"};
+    `;
+  }}
+  width: 100%;
+  height: 10px;
+`;
+
+const StyledBannerImage = styled.img<{ $isObjectFitContain: boolean }>`
+  pointer-events: auto;
   /* height: 9rem;
   ${breakpoint.s} {
     height: 11.875rem;
   } */
-  width: 100vw;
-  object-fit: contain;
+  /* width: 100vw; */
+  /* object-fit: cover; */
   /*z-index: -1;
    position: absolute;
   left: 0;
   right: 0; */
   max-width: 100%;
+  border: 1px solid ${colors.lightGrey};
+  ${({ $isObjectFitContain }) => {
+    if ($isObjectFitContain) {
+      return css`
+        object-fit: contain;
+      `;
+    }
+    return css`
+      object-fit: cover;
+      height: 9rem;
+      ${breakpoint.s} {
+        height: 11.875rem;
+      }
+    `;
+  }}
 `;
 
 const StyledImage = styled(Image)`
@@ -48,79 +99,38 @@ interface SellerImagesSectionProps {
   coverImage?: string;
   profileImage?: string;
   address: string;
+  draggable?: boolean;
+  isObjectFitContain?: boolean;
 }
 
 const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
   coverImage,
   profileImage,
-  address: currentSellerAddress
+  address: currentSellerAddress,
+  draggable,
+  isObjectFitContain
 }) => {
   const { isLteXS } = useBreakpoints();
-  const parent = useRef<HTMLDivElement>(null);
-  const ref = useRef<HTMLImageElement>(null);
-  console.log("parent", parent);
   return (
     <ProfileSectionWrapper>
-      <div
-        id="parent"
-        style={{ border: "1px solid red", height: "500px" }}
-        ref={parent}
-      >
-        {/* <Draggable offsetParent={ref.current ?? undefined}> */}
-        <StyledBannerImage
-          ref={ref}
-          src={coverImage || whiteImg}
-          data-cover-img
-          style={{ border: `1px solid ${colors.lightGrey}` }}
-        />
-        <Moveable
-          draggable={true}
-          target={ref.current}
-          // dragContainer={parent.current}
-          // container={parent.current}
-          // rootContainer={parent.current}
-          origin={true}
-          onDrag={({
-            target,
-            beforeDelta,
-            beforeDist,
-            left,
-            top,
-            right,
-            bottom,
-            delta,
-            dist,
-            transform,
-            clientX,
-            clientY
-          }) => {
-            // console.log("onDrag left, top", left, top);
-            // target!.style.left = `${left}px`;
-            // target!.style.top = `${top}px`;
-            // console.log("onDrag translate", dist, "transform", transform);
-            // target!.style.transform = transform;
-            // const translateX =
-            console.log("onDrag", {
-              beforeDelta,
-              beforeDist,
-              left,
-              top,
-              right,
-              bottom,
-              delta,
-              dist,
-              transform,
-              clientX,
-              clientY
-            });
-            target!.style.transform = transform;
-          }}
-          onDragEnd={({ target, isDrag, clientX, clientY }) => {
-            console.log("onDragEnd", target, isDrag);
-          }}
-        ></Moveable>
-        {/* </Draggable> */}
-      </div>
+      <WrapperWrapper>
+        <BannerWrapper $isTop={true} />
+        <Draggable
+          // {...isObjectFitContain ? {bounds:'parent'}:{top: -10, left: -10, right: 10, bottom: 10}}
+          // bounds={{ top: -10, left: -10, right: 10, bottom: 200 }}
+          bounds="parent"
+          disabled={!draggable}
+          axis="y"
+        >
+          <StyledBannerImage
+            src={coverImage || whiteImg}
+            data-cover-img
+            draggable={false}
+            $isObjectFitContain={!!isObjectFitContain}
+          />
+        </Draggable>
+        <BannerWrapper $isTop={false} />
+      </WrapperWrapper>
       <BannerImageLayer>
         <AvatarContainer>
           {profileImage ? (

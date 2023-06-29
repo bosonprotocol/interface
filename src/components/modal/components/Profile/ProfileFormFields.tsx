@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -11,6 +11,7 @@ import {
   CreateProfile,
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
 } from "../../../product/utils";
+import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import GridContainer from "../../../ui/GridContainer";
 
@@ -46,6 +47,7 @@ export function ProfileFormFields({
   const { values } = useFormikContext<CreateProfile>();
   const profileImage = getIpfsGatewayUrl(values.logo?.[0]?.src ?? "");
   const coverPicture = getIpfsGatewayUrl(values.coverPicture?.[0]?.src ?? "");
+  const [isObjectFitContain, setObjectFitContain] = useState<boolean>(true);
   return (
     <>
       <GridContainer
@@ -86,11 +88,19 @@ export function ProfileFormFields({
       </GridContainer>
       <Grid>
         <FormField title="Preview">
+          <Button
+            type="button"
+            onClick={() => setObjectFitContain((prev) => !prev)}
+          >
+            isObjectFitContain={isObjectFitContain + ""}
+          </Button>
           <SellerImagesSectionContainer>
             <SellerImagesSection
               address={address}
               profileImage={profileImage}
               coverImage={coverPicture}
+              draggable
+              isObjectFitContain={isObjectFitContain}
             />
           </SellerImagesSectionContainer>
         </FormField>

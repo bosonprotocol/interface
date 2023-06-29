@@ -6,6 +6,7 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 
 export const ProfileSectionWrapper = styled.div`
+  position: relative;
   max-width: 68.75rem;
   width: 100%;
   margin-left: auto;
