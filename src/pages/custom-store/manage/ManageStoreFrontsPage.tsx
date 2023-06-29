@@ -140,13 +140,13 @@ export const ManageStoreFrontsPage = () => {
           or not to see them here later;
         </p>
         <Link to={{ pathname: BosonRoutes.CreateStorefront }}>
-          <Button theme="secondary">Create one now</Button>
+          <Button theme="secondary">Create a storefront</Button>
         </Link>
       </Grid>
       {storeFronts?.length ? (
         <Grid flexDirection="column" alignItems="flex-start">
           <Grid justifyContent="flex-start" gap="1rem">
-            <Typography fontWeight="600" $fontSize="2rem">
+            <Typography fontWeight="600" $fontSize="1.6rem">
               My storefronts
             </Typography>
             <UpdateIcon
@@ -172,11 +172,15 @@ export const ManageStoreFrontsPage = () => {
                     alignItems="flex-start"
                   >
                     <Grid flexDirection="column" alignItems="flex-start">
-                      <Typography $fontSize="1.5rem">{name}</Typography>
+                      <Typography $fontSize="1.2rem">{name}</Typography>
 
-                      <Typography $fontSize="1rem" padding="0 0 1rem 0">
+                      <Typography $fontSize="0.6rem" padding="0 0 1rem 0">
                         Creation date:{" "}
-                        {lastUpdated ? dayjs(lastUpdated).format("LLL") : "-"}
+                        {lastUpdated
+                          ? `${dayjs(lastUpdated).format("LLL")} GMT${dayjs(
+                              lastUpdated
+                            ).format("Z")}`
+                          : "-"}
                       </Typography>
                     </Grid>
                     {preview && (
@@ -219,8 +223,8 @@ export const ManageStoreFrontsPage = () => {
                             // children: hasError ? <SimpleError /> : null,
                             text: (
                               <p>
-                                Are you sure you want to delete{" "}
-                                <strong> {name} </strong> storefront?
+                                Are you sure you want to delete &nbsp;
+                                <strong> {name} </strong> &nbsp; storefront?
                               </p>
                             ),
                             cta: (
