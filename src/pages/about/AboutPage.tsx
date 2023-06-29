@@ -152,6 +152,10 @@ function AboutPage() {
           {CONFIG.ipfsImageGateway}
         </a>
       </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>XMTP NOTIFI CONFIG:</span>
+        <span>{CONFIG.XMTP_NOTIFI || "-"}</span>
+      </Text>
     </Wrapper>
   );
 }

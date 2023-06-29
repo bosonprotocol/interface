@@ -1,0 +1,22 @@
+diff --git a/node_modules/@notifi-network/notifi-react-card/dist/index.css b/node_modules/@notifi-network/notifi-react-card/dist/index.css
+index ef9cdb3..69bd635 100644
+--- a/node_modules/@notifi-network/notifi-react-card/dist/index.css
++++ b/node_modules/@notifi-network/notifi-react-card/dist/index.css
+@@ -1208,7 +1208,7 @@ input::-webkit-inner-spin-button {
+ .EventTypeHealthCheckRow__buttonContainer {
+   display: flex;
+   flex-direction: row;
+-  justify-content: start;
++  justify-content: flex-start;
+ }
+ .EventTypeTradingPairsRow__container {
+   display: flex;
+@@ -1411,7 +1411,7 @@ input::-webkit-inner-spin-button {
+   flex: 1;
+   flex-direction: column;
+   align-items: center;
+-  justify-content: start;
++  justify-content: flex-start;
+   gap: 20px;
+ }
+ .NotifiUserInfoPanel__emailConfirmationSent,

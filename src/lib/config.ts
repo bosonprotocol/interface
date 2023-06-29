@@ -137,7 +137,8 @@ export const CONFIG = {
     LENS_PROFILES_CONTRACT_PARTIAL_ABI:
       config.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
-  }
+  },
+  XMTP_NOTIFI: process.env.REACT_APP_XMTP_NOTIFI
 };
 
 function stringToBoolean(value: unknown | undefined, defaultValue: boolean) {

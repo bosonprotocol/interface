@@ -45,7 +45,6 @@ import { useInfiniteThread } from "../../../lib/utils/hooks/chat/useInfiniteThre
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useChatContext } from "../ChatProvider/ChatContext";
 import { BuyerOrSeller, MessageDataWithInfo } from "../types";
 import { sendFilesToChat, sendProposalToChat } from "../utils/send";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
@@ -340,6 +339,7 @@ interface Props {
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
   refetchExchanges: () => void;
+  bosonXmtp: BosonXmtpClient | undefined;
 }
 const ChatConversation = ({
   myBuyerId,
@@ -350,7 +350,8 @@ const ChatConversation = ({
   prevPath,
   onTextAreaChange,
   textAreaValue,
-  refetchExchanges
+  refetchExchanges,
+  bosonXmtp
 }: Props) => {
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
@@ -372,7 +373,6 @@ const ChatConversation = ({
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
-  const { bosonXmtp } = useChatContext();
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
       return null;

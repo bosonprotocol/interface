@@ -1,10 +1,13 @@
-import { ArrowLeft } from "phosphor-react";
+import { ArrowLeft, BellRinging } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import notifiLogoChecked from "../../../assets/notifi-logo-checked.png";
+import notifiLogoUnchecked from "../../../assets/notifi-logo-unchecked.png";
 import { getSellerCenterPath } from "../../../components/seller/paths";
 import { sellerPageTypes } from "../../../components/seller/SellerPages";
+import Tooltip from "../../../components/tooltip/Tooltip";
 import Image from "../../../components/ui/Image";
 import SellerID from "../../../components/ui/SellerID";
 import Video from "../../../components/ui/Video";
@@ -90,6 +93,7 @@ const ExchangesThreads = styled.div`
 
 const MessageItem = styled.div<{ $active?: boolean }>`
   border-bottom: 1px solid ${colors.border};
+  position: relative;
   ${({ $active }) =>
     $active &&
     `
@@ -98,6 +102,10 @@ const MessageItem = styled.div<{ $active?: boolean }>`
   :hover {
     background-color: ${colors.border};
   }
+`;
+
+const NotifiLogo = styled.div`
+  height: 1.5em;
 `;
 
 const StyledImage = styled(Image)`
@@ -134,6 +142,27 @@ const MessageInfo = styled.div`
   }
 `;
 
+const PageTitle = styled.div`
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.5rem;
+  ${breakpoint.xxs} {
+    font-size: 1rem;
+  }
+  ${breakpoint.l} {
+    font-size: 1rem;
+  }
+  ${breakpoint.xl} {
+    font-size: 1.5rem;
+  }
+`;
+
+export type NotifiTopic = {
+  topic: string;
+  peerAddress: string;
+  registered: boolean;
+};
+
 interface Props {
   myBuyerId: string;
   mySellerId: string;
@@ -144,6 +173,11 @@ interface Props {
   isConversationOpened: boolean;
   setChatListOpen: (p: boolean) => void;
   prevPath: string;
+  address?: string;
+  isChatInitialized: boolean;
+  showNotifiIcon: boolean;
+  setShowNotifiModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  notifiRegistration: NotifiTopic[] | null;
 }
 
 const getMessageItemKey = (exchange: Exchange) => exchange.id;
@@ -157,7 +191,14 @@ export default function MessageList({
   currentExchange,
   isConversationOpened,
   setChatListOpen,
-  prevPath
+  prevPath,
+  address,
+  isChatInitialized,
+  showNotifiIcon,
+  setShowNotifiModal = () => {
+    console.log("click Notifi");
+  },
+  notifiRegistration
 }: Props) {
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentExchange ? getMessageItemKey(currentExchange) : ""
@@ -200,7 +241,22 @@ export default function MessageList({
             </div>
           </BackToSellerCenterButton>
         )}
-        Messages
+        <PageTitle>
+          Messages
+          {address && isChatInitialized && showNotifiIcon && (
+            <Tooltip
+              content={
+                "Be notified when receiving new messages on XMTP with Notifi"
+              }
+              size={20}
+            >
+              <BellRinging
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowNotifiModal(true)}
+              ></BellRinging>
+            </Tooltip>
+          )}
+        </PageTitle>
       </Header>
       <ExchangesThreads>
         {exchanges
@@ -229,6 +285,16 @@ export default function MessageList({
                 />
               );
             };
+            const exchangePeerAddress = iAmTheBuyer
+              ? exchange?.offer.seller.assistant
+              : iAmTheSeller
+              ? exchange?.buyer.wallet
+              : undefined;
+            const isExchangeRegistered = !!notifiRegistration?.find(
+              (convo) =>
+                convo.peerAddress.toLowerCase() ===
+                exchangePeerAddress?.toLowerCase()
+            )?.registered;
             return (
               <MessageItem
                 $active={messageKey === activeMessageKey}
@@ -261,7 +327,6 @@ export default function MessageList({
                   ) : (
                     renderProductImage()
                   )}
-
                   <MessageInfo>
                     <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
                     <SellerID
@@ -272,6 +337,35 @@ export default function MessageList({
                       withBosonStyles={false}
                     />
                   </MessageInfo>
+                  {notifiRegistration && showNotifiIcon ? (
+                    isExchangeRegistered ? (
+                      <NotifiLogo>
+                        <img
+                          src={notifiLogoChecked}
+                          alt="notifi-logo"
+                          width={"100%"}
+                          height={"100%"}
+                          title={
+                            "[NOTIFI] You have been registered to this conversation"
+                          }
+                        />
+                      </NotifiLogo>
+                    ) : (
+                      <NotifiLogo>
+                        <img
+                          src={notifiLogoUnchecked}
+                          alt="notifi-logo"
+                          width={"100%"}
+                          height={"100%"}
+                          title={
+                            "[NOTIFI] You have not been registered to this conversation yet"
+                          }
+                        />
+                      </NotifiLogo>
+                    )
+                  ) : (
+                    <></>
+                  )}
                 </MessageContent>
               </MessageItem>
             );

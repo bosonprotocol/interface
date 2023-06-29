@@ -18,7 +18,7 @@ export default function ChatProvider({ children }: Props) {
   const [error, setError] = useState<unknown>();
   const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpClient>();
   useEffect(() => {
-    if (signer && initialize && !bosonXmtp) {
+    if (signer && initialize && !bosonXmtp && !isLoading) {
       setLoading(true);
       BosonXmtpClient.initialise(
         signer,

@@ -20,6 +20,7 @@ import { IframeModal } from "./components/IframeModal/IframeModal";
 import { ImageEditorModal } from "./components/ImageEditorModal/ImageEditorModal";
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
+import NotifiModal from "./components/NotifiModal";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import CreateProfileModal from "./components/Profile/CreateProfileModal";
 import EditProfileModal from "./components/Profile/EditProfileModal";
@@ -77,6 +78,7 @@ export const MODAL_TYPES = {
   PROGRESS_BAR: "PROGRESS_BAR",
   EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
   RELIST_OFFER: "RELIST_OFFER",
+  NOTIFI: "NOTIFI",
   PROFILE_DETAILS: "PROFILE_DETAILS",
   IMAGE_EDITOR: "IMAGE_EDITOR",
   IFRAME_MODAL: "IFRAME_MODAL",
@@ -123,6 +125,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
     ExportExchangesWithDeliveryModal,
   [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
+  [MODAL_TYPES.NOTIFI]: NotifiModal,
   [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal,
   [MODAL_TYPES.IMAGE_EDITOR]: ImageEditorModal,
   [MODAL_TYPES.IFRAME_MODAL]: IframeModal,

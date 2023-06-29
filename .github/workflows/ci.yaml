@@ -57,6 +57,7 @@ jobs:
       REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_TESTING }}
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_TESTING }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_TESTING }}
+      REACT_APP_XMTP_NOTIFI: ${{ secrets.REACT_APP_XMTP_NOTIFI_TESTING }}
 
   call-reusable-workflow-testing:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
@@ -87,6 +88,7 @@ jobs:
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID_TESTING }}
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_TESTING }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_TESTING }}
+      REACT_APP_XMTP_NOTIFI: ${{ secrets.REACT_APP_XMTP_NOTIFI_TESTING }}
 
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
@@ -117,6 +119,7 @@ jobs:
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID_STAGING }}
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_STAGING }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_STAGING }}
+      REACT_APP_XMTP_NOTIFI: ${{ secrets.REACT_APP_XMTP_NOTIFI_STAGING }}
 
   call-reusable-workflow-production:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
@@ -147,6 +150,7 @@ jobs:
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID_PROD }}
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_PRODUCTION }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_PRODUCTION }}
+      REACT_APP_XMTP_NOTIFI: ${{ secrets.REACT_APP_XMTP_NOTIFI_PRODUCTION }}
 
   job-summary:
     name: Create Job Summary
