@@ -1,8 +1,9 @@
 import { ChatDots, Warning } from "phosphor-react";
 import styled from "styled-components";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount } from "wagmi";
 
 import { colors } from "../../../../../lib/styles/colors";
+import { useEthersSigner } from "../../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
 import ConnectButton from "../../../../header/ConnectButton";
 import { Spinner } from "../../../../loading/Spinner";
@@ -33,7 +34,7 @@ interface Props {
   message?: string;
 }
 export default function InitializeChat({ isError = false, message }: Props) {
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const { initialize, bosonXmtp, isInitializing } = useChatContext();
   const { address } = useAccount();
 

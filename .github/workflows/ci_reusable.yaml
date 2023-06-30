@@ -67,6 +67,8 @@ on:
         required: true
       REACT_APP_META_TX_API_IDS:
         required: true
+      REACT_APP_WALLET_CONNECT_PROJECT_ID:
+        required: true
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}

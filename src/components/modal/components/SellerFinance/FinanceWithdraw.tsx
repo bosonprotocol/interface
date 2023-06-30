@@ -4,10 +4,11 @@ import * as Sentry from "@sentry/browser";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
-import { useAccount, useBalance, useSigner } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 
 import { CONFIG, config } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
+import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import {
   getNumberWithDecimals,
@@ -56,17 +57,17 @@ export default function FinanceWithdraw({
   const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(true);
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const { address } = useAccount();
   const addPendingTransaction = useAddPendingTransaction();
 
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {
-          addressOrName: address,
-          token: exchangeToken
+          address: address,
+          token: exchangeToken as `0x${string}`
         }
-      : { addressOrName: address }
+      : { address: address }
   );
   const { showModal, hideModal } = useModal();
 

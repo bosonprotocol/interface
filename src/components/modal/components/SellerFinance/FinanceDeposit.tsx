@@ -3,9 +3,10 @@ import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
-import { useAccount, useBalance, useSigner } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 
 import { CONFIG, config } from "../../../../lib/config";
+import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
 import { poll } from "../../../../pages/create-product/utils";
@@ -44,15 +45,15 @@ export default function FinanceDeposit({
   const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(true);
   const [depositError, setDepositError] = useState<unknown>(null);
 
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const { address } = useAccount();
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {
-          addressOrName: address,
-          token: exchangeToken
+          address: address,
+          token: exchangeToken as `0x${string}`
         }
-      : { addressOrName: address }
+      : { address: address }
   );
 
   const { showModal, hideModal } = useModal();

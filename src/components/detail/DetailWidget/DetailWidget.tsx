@@ -19,7 +19,7 @@ import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount, useBalance, useSigner } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 
 import { ReactComponent as Logo } from "../../../assets/logo-white.svg";
 import { CONFIG } from "../../../lib/config";
@@ -33,6 +33,7 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { getHasExchangeDisputeResolutionElapsed } from "../../../lib/utils/exchange";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
 import {
   useAddPendingTransaction,
@@ -366,10 +367,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { data: dataBalance } = useBalance(
     offer.exchangeToken.address !== ethers.constants.AddressZero
       ? {
-          addressOrName: address,
-          token: offer.exchangeToken.address
+          address: address,
+          token: offer.exchangeToken.address as `0x${string}`
         }
-      : { addressOrName: address }
+      : { address: address }
   );
 
   const {
@@ -391,11 +392,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       exchangeStatus as unknown as exchanges.ExtendedExchangeState
     );
 
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const isBuyerInsufficientFunds = useMemo(
-    () => dataBalance?.value.lt(BigNumber.from(offer.price)),
+  const isBuyerInsufficientFunds: boolean = useMemo(
+    () => !!dataBalance?.value && dataBalance?.value < BigInt(offer.price),
     [dataBalance, offer.price]
   );
 

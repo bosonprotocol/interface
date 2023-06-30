@@ -1,16 +1,21 @@
 import { EnvironmentType } from "@bosonprotocol/react-kit";
-import { Chain, connectorsForWallets, wallet } from "@rainbow-me/rainbowkit";
-import { chain, configureChains, createClient } from "wagmi";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { Chain, connectorsForWallets } from "@rainbow-me/rainbowkit";
+import {
+  metaMaskWallet,
+  walletConnectWallet
+} from "@rainbow-me/rainbowkit/wallets";
+import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
+import { configureChains, createConfig } from "wagmi";
+import { polygon, polygonMumbai } from "wagmi/chains";
 
 import ethIcon from "./assets/ethereum-chain-icon.svg";
 import { CONFIG } from "./config";
 
 const chainPerEnviromnent: Record<EnvironmentType, Chain> = {
   local: getLocalNetworkChainConfig(),
-  testing: chain.polygonMumbai,
-  staging: chain.polygonMumbai,
-  production: chain.polygon
+  testing: polygonMumbai,
+  staging: polygonMumbai,
+  production: polygon
 };
 
 function getBosonTestNetworkChainConfig(): Chain {
@@ -26,7 +31,8 @@ function getBosonTestNetworkChainConfig(): Chain {
       symbol: CONFIG.nativeCoin?.symbol || ""
     },
     rpcUrls: {
-      default: CONFIG.jsonRpcUrl
+      default: { http: [CONFIG.jsonRpcUrl] }, // TODO:check
+      public: { http: [CONFIG.jsonRpcUrl] } // TODO:check
     },
     blockExplorers: {
       default: {
@@ -51,7 +57,8 @@ function getLocalNetworkChainConfig(): Chain {
       symbol: CONFIG.nativeCoin?.symbol || ""
     },
     rpcUrls: {
-      default: CONFIG.jsonRpcUrl
+      default: { http: [CONFIG.jsonRpcUrl] }, // TODO:check
+      public: { http: [CONFIG.jsonRpcUrl] } // TODO:check
     },
     blockExplorers: {
       default: {
@@ -71,22 +78,30 @@ function getChainForEnvironment(): Array<Chain> {
   return [chain];
 }
 
-const { provider, chains } = configureChains(getChainForEnvironment(), [
+const { publicClient, chains } = configureChains(getChainForEnvironment(), [
   jsonRpcProvider({
-    rpc: (chain: Chain) => ({ http: chain.rpcUrls.default })
+    rpc: (chain: Chain) => {
+      return {
+        http: chain.rpcUrls.default.http[0],
+        webSocket: chain.rpcUrls.default.webSocket?.[0]
+      };
+    }
   })
 ]);
 export { chains };
-
+const projectId = CONFIG.walletConnect.projectId;
 const connectors = connectorsForWallets([
   {
     groupName: "Popular",
-    wallets: [wallet.metaMask({ chains }), wallet.walletConnect({ chains })]
+    wallets: [
+      metaMaskWallet({ chains, projectId }),
+      walletConnectWallet({ chains, projectId })
+    ]
   }
 ]);
 
-export const wagmiClient = createClient({
+export const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider
+  publicClient
 });

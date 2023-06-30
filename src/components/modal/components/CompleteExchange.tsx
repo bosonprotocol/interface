@@ -9,10 +9,10 @@ import { BigNumberish } from "ethers";
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
+import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -102,7 +102,7 @@ export default function CompleteExchange({
 }: Props) {
   const coreSdk = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const { hideModal, showModal } = useModal();
 
   const completeExchangePool = useCallback(
