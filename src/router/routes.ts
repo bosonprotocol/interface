@@ -12,7 +12,6 @@ import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
 import CreateProductPage from "../pages/create-product/CreateProduct";
 import { DCLPage } from "../pages/dcl/DCLPage";
 import ExplorePage from "../pages/explore/Explore";
-import HiddenTest from "../pages/HiddenTest";
 import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
 import SellerLandingPage from "../pages/sell/landing/SellerLandingPage";
@@ -354,16 +353,6 @@ export default [
       withBosonStyles: false
     },
     component: AboutPage
-  },
-  {
-    ...base,
-    path: "/hiddentest",
-    app: {
-      ...base.app,
-      withHeader: false,
-      withBosonStyles: false
-    },
-    component: HiddenTest
   },
   {
     ...base,

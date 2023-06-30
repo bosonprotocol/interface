@@ -1,12 +1,13 @@
 import Avatar from "@davatar/react";
-import React from "react";
+import React, { useRef, useState } from "react";
 import Draggable from "react-draggable";
 import styled, { css } from "styled-components";
 
 import whiteImg from "../../../assets/white.jpeg";
+import Button from "../../../components/ui/Button";
+import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
 import { breakpoint } from "../../../lib/styles/breakpoint";
-import { colors } from "../../../lib/styles/colors";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import {
   AvatarContainer,
@@ -17,23 +18,33 @@ import {
 // const StyledBannerImage = styled(BannerImage)`
 //   max-width: 100%;
 // `;
-
+const hiddenHeight = "100px";
+const smallHeight = "9rem";
+const bigHeight = "11.875rem";
 const BannerImageLayer = styled.div`
   position: absolute;
   top: 0;
+  height: ${smallHeight};
   ${breakpoint.s} {
-    height: 11.875rem;
+    height: ${bigHeight};
   }
 `;
 
 const WrapperWrapper = styled.div.attrs({ "data-wrapper-wrapper": true })`
   border: 1px solid green;
   display: flex;
+  overflow: hidden;
   align-items: center;
   position: relative;
-  height: calc(9rem + 20px);
+  height: calc(${smallHeight} + ${hiddenHeight} * 2);
   ${breakpoint.s} {
-    height: calc(11.875rem + 20px);
+    height: calc(${bigHeight} + ${hiddenHeight} * 2);
+  }
+  + * {
+    top: ${hiddenHeight};
+  }
+  img {
+    flex: 1;
   }
 `;
 
@@ -43,7 +54,7 @@ const BannerWrapper = styled.div.attrs({ "data-banner-wrapper": true })<{
   border: 1px solid red;
   pointer-events: none;
   overflow: hidden;
-  background: blue;
+  /* background: blue; */
   z-index: 1;
   position: absolute;
   ${({ $isTop }) => {
@@ -52,34 +63,29 @@ const BannerWrapper = styled.div.attrs({ "data-banner-wrapper": true })<{
     `;
   }}
   width: 100%;
-  height: 10px;
+  height: ${hiddenHeight};
 `;
 
 const StyledBannerImage = styled.img<{ $isObjectFitContain: boolean }>`
   pointer-events: auto;
-  /* height: 9rem;
-  ${breakpoint.s} {
-    height: 11.875rem;
-  } */
-  /* width: 100vw; */
-  /* object-fit: cover; */
-  /*z-index: -1;
-   position: absolute;
-  left: 0;
-  right: 0; */
   max-width: 100%;
-  border: 1px solid ${colors.lightGrey};
+  transform: none !important;
   ${({ $isObjectFitContain }) => {
     if ($isObjectFitContain) {
       return css`
         object-fit: contain;
+        /* width: 100%; */
+        max-height: 100%;
       `;
     }
     return css`
       object-fit: cover;
-      height: 9rem;
+      width: 100%;
+      position: absolute;
+
+      height: ${smallHeight};
       ${breakpoint.s} {
-        height: 11.875rem;
+        height: ${bigHeight};
       }
     `;
   }}
@@ -100,30 +106,66 @@ interface SellerImagesSectionProps {
   profileImage?: string;
   address: string;
   draggable?: boolean;
-  isObjectFitContain?: boolean;
 }
 
 const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
   coverImage,
   profileImage,
   address: currentSellerAddress,
-  draggable,
-  isObjectFitContain
+  draggable
 }) => {
   const { isLteXS } = useBreakpoints();
+  const [resetCounter, setResetCounter] = useState<number>(0);
+  const [isObjectFitContain, setObjectFitContain] = useState<boolean>(true);
+  const imageRef = useRef<HTMLImageElement>(null);
   return (
     <ProfileSectionWrapper>
+      <Grid marginBottom="1rem">
+        <Button
+          type="button"
+          onClick={() => {
+            setObjectFitContain((prev) => !prev);
+            if (imageRef.current) {
+              imageRef.current.style.objectPosition = "initial";
+            }
+            setResetCounter((prev) => ++prev);
+          }}
+        >
+          object-fit: {isObjectFitContain ? "contain" : "cover"}
+        </Button>
+        <Button
+          type="button"
+          onClick={() => {
+            if (imageRef.current) {
+              imageRef.current.style.objectPosition = "initial";
+            }
+            setResetCounter((prev) => ++prev);
+          }}
+        >
+          Reset
+        </Button>
+      </Grid>
       <WrapperWrapper>
         <BannerWrapper $isTop={true} />
         <Draggable
-          // {...isObjectFitContain ? {bounds:'parent'}:{top: -10, left: -10, right: 10, bottom: 10}}
-          // bounds={{ top: -10, left: -10, right: 10, bottom: 200 }}
-          bounds="parent"
+          // bounds="parent"
+          key={resetCounter}
           disabled={!draggable}
-          axis="y"
+          onDrag={(e, data) => {
+            console.log("e", e, "data", data);
+            data.node.style.objectPosition = `${data.x}px ${data.y}px`;
+            if (!isObjectFitContain) {
+              // data.node.style.clipPath = `polygon(0 ${data.y}px, 100% ${data.y}px, 100% 63%, 0 63%)`;
+            }
+          }}
         >
           <StyledBannerImage
-            src={coverImage || whiteImg}
+            ref={imageRef}
+            src={
+              "https://ik.imagekit.io/lens/media-snapshot/b7c1682e55814fec77bedc631f7713a64ba56b3d05c0ed3c3078bfacae519750.webp?img-format=auto" ||
+              coverImage ||
+              whiteImg
+            }
             data-cover-img
             draggable={false}
             $isObjectFitContain={!!isObjectFitContain}
