@@ -31,8 +31,8 @@ function getLocalNetworkChainConfig(): Chain {
       symbol: CONFIG.nativeCoin?.symbol || ""
     },
     rpcUrls: {
-      default: { http: [CONFIG.jsonRpcUrl] }, // TODO:check
-      public: { http: [CONFIG.jsonRpcUrl] } // TODO:check
+      default: { http: [CONFIG.jsonRpcUrl] },
+      public: { http: [CONFIG.jsonRpcUrl] }
     },
     blockExplorers: {
       default: {
