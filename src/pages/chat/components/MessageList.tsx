@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { getSellerCenterPath } from "../../../components/seller/paths";
 import { sellerPageTypes } from "../../../components/seller/SellerPages";
 import Image from "../../../components/ui/Image";
 import SellerID from "../../../components/ui/SellerID";
@@ -188,19 +189,14 @@ export default function MessageList({
               navigate({
                 pathname:
                   sellerCenterMessagesUrl === prevPath
-                    ? generatePath(SellerCenterRoutes.SellerCenter, {
-                        [UrlParameters.sellerPage]:
-                          sellerPageTypes.dashboard.url
-                      })
+                    ? getSellerCenterPath("Dashboard")
                     : prevPath
               });
             }}
           >
             <div>
               <ArrowLeft size={14} />
-              <span style={{ marginLeft: "0.5rem" }}>
-                Back to Seller Center
-              </span>
+              <span style={{ marginLeft: "0.5rem" }}>Back to Seller Hub</span>
             </div>
           </BackToSellerCenterButton>
         )}

@@ -17,7 +17,7 @@ import {
 import { isTruthy } from "../../lib/types/helpers";
 import { UserRoles } from "../../router/routes";
 import { checkIfUserHaveRole } from "../../router/useUserRoles";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
+import { getSellerCenterPath } from "../seller/paths";
 import ViewTxButton from "../transactions/ViewTxButton";
 
 export const SOCIAL_ROUTES = [
@@ -76,7 +76,7 @@ export const getShopRoutes = ({
         name: string;
         url: string;
       }
-    | { component: () => ReactElement }
+    | { component: (props?: Record<string, unknown>) => ReactElement }
   )[] = [];
   if (
     !isSupportFunctionalityDefined ||
@@ -103,7 +103,9 @@ export const getShopRoutes = ({
     (isSupportFunctionalityDefined && !onlySeller)
   ) {
     productRoutes.push({
-      component: () => <ViewTxButton>View Transactions</ViewTxButton>
+      component: (props) => (
+        <ViewTxButton {...props}>View Transactions</ViewTxButton>
+      )
     });
   }
   return productRoutes;
@@ -124,26 +126,22 @@ export const getSellRoutes = ({
 }) => {
   const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
+  productRoutes.push({
+    name: "Templates & Guides",
+    url: BosonRoutes.Sell
+  });
+  productRoutes.push({
+    name: "Create Products",
+    url: SellerCenterRoutes.CreateProduct
+  });
   if (
     (!isSupportFunctionalityDefined ||
       (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))) &&
     isAccountSeller
   ) {
     productRoutes.push({
-      name: "Create Products",
-      url: SellerCenterRoutes.CreateProduct
-    });
-  }
-  if (
-    (!isSupportFunctionalityDefined ||
-      (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))) &&
-    isAccountSeller
-  ) {
-    productRoutes.push({
-      name: "Seller Dashboard",
-      url: generatePath(SellerCenterRoutes.SellerCenter, {
-        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-      })
+      name: "Seller Hub",
+      url: getSellerCenterPath("Dashboard")
     });
   }
   if (
@@ -181,6 +179,10 @@ export const getHelpLinks = ({
     ) && {
       name: "Dispute Center",
       url: BosonRoutes.DisputeCenter
+    },
+    {
+      name: "Email",
+      email: "info@bosonapp.io"
     }
   ].filter(isTruthy);
 };

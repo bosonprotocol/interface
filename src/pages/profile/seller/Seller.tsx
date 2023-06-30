@@ -1,4 +1,4 @@
-import Avatar from "@davatar/react";
+import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -6,7 +6,6 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { EditProfile } from "../../../components/detail/EditProfile";
-import { ProfileType } from "../../../components/modal/components/Profile/const";
 import {
   getLensCoverPictureUrl,
   getLensProfilePictureUrl,
@@ -14,7 +13,6 @@ import {
 } from "../../../components/modal/components/Profile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
-import Image from "../../../components/ui/Image";
 import Loading from "../../../components/ui/Loading";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -32,17 +30,14 @@ import useSellerNumbers from "../../../lib/utils/hooks/useSellerNumbers";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { getLensImageUrl } from "../../../lib/utils/images";
 import NotFound from "../../not-found/NotFound";
-import backgroundFluid from "../common/background-img.png";
 import ReadMore from "../common/ReadMore";
 import {
   AddressContainer,
-  AvatarContainer,
   AvatarEmptySpace,
-  BannerImage,
-  BannerImageLayer,
   BasicInfo,
   ProfileSectionWrapper
 } from "../ProfilePage.styles";
+import SellerImagesSection from "./SellerImagesSection";
 import SellerSocial from "./SellerSocial";
 import Tabs from "./Tabs";
 
@@ -58,16 +53,6 @@ const LensTitle = styled(Typography)`
   ${breakpoint.s} {
     margin: 0 0.5rem 0 0;
     font-size: 1rem;
-  }
-`;
-
-const StyledImage = styled(Image)`
-  img {
-    object-fit: contain;
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 100%;
   }
 `;
 
@@ -135,7 +120,7 @@ export default function Seller() {
   const seller = sellersData[0];
   const metadata = seller?.metadata;
   const [sellerLens] = sellersLens;
-  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
   sellerId = sellersData?.length ? sellersData[0].id : sellerId;
   const lensCoverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
   const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
@@ -234,30 +219,11 @@ export default function Seller() {
   return (
     <>
       <BasicInfo>
-        <ProfileSectionWrapper>
-          <BannerImage src={coverImage || backgroundFluid} />
-          <BannerImageLayer>
-            <AvatarContainer>
-              {profileImage ? (
-                <StyledImage
-                  src={profileImage}
-                  style={{
-                    width: "160px !important",
-                    height: "160px !important",
-                    paddingTop: "0",
-                    borderRadius: "50%",
-                    backgroundColor: "var(--primaryBgColor)"
-                  }}
-                />
-              ) : (
-                <Avatar
-                  address={currentSellerAddress}
-                  size={!isLteXS ? 160 : 80}
-                />
-              )}
-            </AvatarContainer>
-          </BannerImageLayer>
-        </ProfileSectionWrapper>
+        <SellerImagesSection
+          coverImage={coverImage}
+          profileImage={profileImage}
+          address={currentSellerAddress}
+        />
 
         <ProfileSectionWrapper>
           <Grid justifyContent="space-between" alignItems="flex-start">
@@ -309,7 +275,11 @@ export default function Seller() {
                 )}
                 {isMySeller && (
                   <div style={{ marginLeft: "1.5rem" }}>
-                    <EditProfile onClose={refetch} />
+                    <EditProfile
+                      onClose={() => {
+                        refetch();
+                      }}
+                    />
                   </div>
                 )}
                 <SellerSocial

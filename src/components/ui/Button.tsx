@@ -1,5 +1,5 @@
 import { Loading } from "@bosonprotocol/react-kit";
-import { Fragment } from "react";
+import { forwardRef, Fragment } from "react";
 import styled, { css, ThemeProvider } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -35,6 +35,15 @@ const BaseButton = styled.button<{
           color: ${props.theme.hover.color} !important;
           svg {
             fill: ${props.theme.hover.color} !important;
+            line {
+              stroke: ${props.theme.hover.color} !important;
+            }
+            polyline {
+              stroke: ${props.theme.hover.color} !important;
+            }
+            path {
+              stroke: ${props.theme.hover.color} !important;
+            }
           }
         `};
         ${props.theme.hover.borderColor &&
@@ -194,7 +203,6 @@ const allThemes = ({ withBosonStyle }: { withBosonStyle?: boolean }) => {
     },
     blankSecondaryOutline: {
       color: "var(--accent)",
-      padding: "0.75rem 0.5rem",
       borderWidth: 1,
       borderColor: colors.secondary,
       hover: {
@@ -261,51 +269,57 @@ export interface IButton {
   withBosonStyle?: boolean;
 }
 
-const Button: React.FC<IButton> = ({
-  children,
-  onClick,
-  size = "regular",
-  theme = "primary",
-  type = "button",
-  step = 0,
-  fill = false,
-  isLoading = false,
-  tooltip = "",
-  withBosonStyle = false,
-  ...rest
-}) => {
-  const Wrapper = tooltip !== "" && rest?.disabled ? Tooltip : Fragment;
-  const wrapperParams =
-    tooltip !== "" && rest?.disabled ? { wrap: false, content: tooltip } : {};
+const Button = forwardRef<HTMLButtonElement, IButton>(
+  (
+    {
+      children,
+      onClick,
+      size = "regular",
+      theme = "primary",
+      type = "button",
+      step = 0,
+      fill = false,
+      isLoading = false,
+      tooltip = "",
+      withBosonStyle = false,
+      ...rest
+    },
+    ref
+  ) => {
+    const Wrapper = tooltip !== "" && rest?.disabled ? Tooltip : Fragment;
+    const wrapperParams =
+      tooltip !== "" && rest?.disabled ? { wrap: false, content: tooltip } : {};
 
-  return (
-    <ThemeProvider theme={allThemes({ withBosonStyle })[theme]}>
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
-      <Wrapper {...wrapperParams}>
-        <BaseButton
-          onClick={onClick}
-          type={type}
-          size={size}
-          fill={fill ? fill : undefined}
-          {...rest}
-        >
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <ChildWrapperButton data-child-wrapper-button>
-              {children}
-              {step !== 0 && (
-                <Typography>
-                  <small>Step {step}</small>
-                </Typography>
-              )}
-            </ChildWrapperButton>
-          )}
-        </BaseButton>
-      </Wrapper>
-    </ThemeProvider>
-  );
-};
+    return (
+      <ThemeProvider theme={allThemes({ withBosonStyle })[theme]}>
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <Wrapper {...wrapperParams}>
+          <BaseButton
+            onClick={onClick}
+            type={type}
+            size={size}
+            fill={fill ? fill : undefined}
+            {...rest}
+            ref={ref}
+          >
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <ChildWrapperButton data-child-wrapper-button>
+                {children}
+                {step !== 0 && (
+                  <Typography>
+                    <small>Step {step}</small>
+                  </Typography>
+                )}
+              </ChildWrapperButton>
+            )}
+          </BaseButton>
+        </Wrapper>
+      </ThemeProvider>
+    );
+  }
+);
 
 export default Button;

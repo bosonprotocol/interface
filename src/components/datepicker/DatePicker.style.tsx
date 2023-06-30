@@ -85,30 +85,8 @@ export const Selector = styled.div`
   padding-bottom: 0.5rem;
   border-bottom: 1px solid ${colors.border};
 `;
-export const TimeSelector = styled.div`
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 10rem;
-  max-height: 10rem;
-  padding: 0px 0.5rem 0 1rem;
-`;
-export const TimeSelectorElement = styled.div.attrs(
-  (props: { active: boolean }) => ({
-    active: props.active
-  })
-)`
-  padding: 0.25rem 0.5rem;
-  ${({ active }) =>
-    active
-      ? css`
-          background: ${colors.secondary};
-        `
-      : css`
-          background: ${colors.white};
-        `}
-`;
 
-export const CalendarFlex = styled.div`
+const CalendarFlex = styled.div`
   display: flex;
   > div {
     flex: 1;

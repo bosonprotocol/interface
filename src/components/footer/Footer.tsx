@@ -1,20 +1,27 @@
-import { useMemo, useState } from "react";
+import { CSSProperties, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { isTruthy } from "../../lib/types/helpers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { sanitizeUrl } from "../../lib/utils/url";
+import { AdditionalFooterLink } from "../../pages/custom-store/AdditionalFooterLinksTypes";
+import {
+  ContactInfoLinkIcon,
+  ContactInfoLinkIconValues
+} from "../../pages/custom-store/ContactInfoLinkIcon";
 import SocialLogo, {
   SocialLogoValues
 } from "../../pages/custom-store/SocialLogo";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import useUserRoles from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import Layout from "../Layout";
+import Layout from "../layout/Layout";
 import Grid from "../ui/Grid";
+import GridContainer from "../ui/GridContainer";
 import Typography from "../ui/Typography";
 import {
   ADDITIONAL_LINKS,
@@ -24,12 +31,12 @@ import {
   SOCIAL_ROUTES
 } from "./routes";
 
-const Footer = styled.footer`
+const Footer = styled.footer<{ padding?: CSSProperties["padding"] }>`
   width: 100%;
   background-color: var(--footerBgColor);
   color: var(--footerTextColor);
 
-  padding: 4rem 1rem 2rem 1rem;
+  padding: ${({ padding }) => padding || "4rem 1rem 2rem 1rem"};
   margin-top: auto;
 `;
 
@@ -47,25 +54,34 @@ const LogoGrid = styled(Grid)`
     flex-direction: row;
   }
 `;
-const NavigationGrid = styled(Grid)`
-  gap: 5rem;
-  padding: 0 2rem 2rem 0;
+const CustomGridContainer = styled.div`
+  display: grid;
+  white-space: pre;
 
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   ${breakpoint.xs} {
-    gap: 5rem;
-    padding: 0 0rem 2rem 0;
+    margin-left: auto;
+    grid-template-columns: repeat(2, max-content);
+    grid-column-gap: 4rem;
+  }
+  ${breakpoint.s} {
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.m} {
-    gap: 10rem;
-    padding: 0 6rem 2rem 0;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.l} {
-    gap: 15rem;
-    padding: 0 8rem 2rem 0;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.xl} {
-    gap: 15rem;
-    padding: 0 10rem 2rem 0;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
 `;
 
@@ -120,7 +136,7 @@ function Socials() {
             rel="noopener noreferrer"
             key={`social_nav_${value}_${url}`}
           >
-            <SocialLogo logo={value} />
+            <SocialLogo logo={value} size={15} />
           </a>
         );
       });
@@ -133,14 +149,151 @@ function Socials() {
     }
     return null;
   }, [isCustomStoreFront, isLteS, isXXS, socialMediaLinks]);
+  return renderSocialLinks?.length ? (
+    <div>
+      {isCustomStoreFront && (
+        <Typography $fontSize="1rem" fontWeight="600" tag="p">
+          FOLLOW US
+        </Typography>
+      )}
+      <NavigationLinks
+        gap={isLteS && !isXXS ? "16px" : "32px"}
+        style={{ justifyContent: "flex-start" }}
+      >
+        {renderSocialLinks}
+      </NavigationLinks>
+    </div>
+  ) : null;
+}
+
+function ContactInfoLinks() {
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
+  const contactInfoLinks = useCustomStoreQueryParameter<
+    { value: ContactInfoLinkIconValues; text: string }[]
+  >("contactInfoLinks", { parseJson: true });
+  const renderContactInfoLinks = useMemo(() => {
+    if (isCustomStoreFront && typeof contactInfoLinks !== "string") {
+      return contactInfoLinks.map(({ text, value }) => {
+        if (value === "address") {
+          return (
+            <Grid justifyContent="flex-start" gap="1rem" key={value}>
+              <ContactInfoLinkIcon icon={value} size={15} /> {text}
+            </Grid>
+          );
+        }
+        if (value === "email") {
+          return (
+            <Grid justifyContent="flex-start" gap="1rem" key={value}>
+              <ContactInfoLinkIcon icon={value} size={15} />
+              <a
+                href={"mailto:" + sanitizeUrl(text)}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={`contact_info_link_${value}_${text}`}
+              >
+                {text}
+              </a>
+            </Grid>
+          );
+        }
+        if (value === "phone") {
+          return (
+            <Grid justifyContent="flex-start" gap="1rem" key={value}>
+              <ContactInfoLinkIcon icon={value} size={15} />
+              <a
+                href={"tel:" + sanitizeUrl(text)}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={`contact_info_link_${value}_${text}`}
+              >
+                {text}
+              </a>
+            </Grid>
+          );
+        }
+        return null;
+      });
+    }
+    return null;
+  }, [isCustomStoreFront, contactInfoLinks]);
+  return renderContactInfoLinks?.length ? (
+    <div>
+      <Typography $fontSize="1rem" fontWeight="600" tag="p">
+        GET IN TOUCH
+      </Typography>
+      <NavigationLinks
+        flexDirection="column"
+        gap={"0"}
+        style={{ alignItems: "center", justifyContent: "flex-end" }}
+      >
+        {renderContactInfoLinks}
+      </NavigationLinks>
+    </div>
+  ) : null;
+}
+
+function CustomStoreAdditionalLinks() {
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
+  const additionalFooterLinks = useCustomStoreQueryParameter<
+    AdditionalFooterLink[]
+  >("additionalFooterLinks", { parseJson: true });
+  const renderAdditionalLinks = useMemo(() => {
+    if (isCustomStoreFront && typeof additionalFooterLinks !== "string") {
+      return additionalFooterLinks.map(({ label, value, url }, index) => {
+        return (
+          <a
+            key={`${label}-${value}-${index}`}
+            href={sanitizeUrl(url)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {label}
+          </a>
+        );
+      });
+    }
+    return null;
+  }, [isCustomStoreFront, additionalFooterLinks]);
+  return renderAdditionalLinks?.length ? (
+    <div>
+      <Typography $fontSize="1rem" fontWeight="600" tag="p">
+        CLIENT SERVICE
+      </Typography>
+      <NavigationLinks
+        flexDirection="column"
+        gap={"0"}
+        style={{ alignItems: "flex-start", justifyContent: "flex-end" }}
+      >
+        {renderAdditionalLinks}
+      </NavigationLinks>
+    </div>
+  ) : null;
+}
+
+function ByBoson() {
   return (
-    <NavigationLinks gap={isLteS && !isXXS ? "16px" : "32px"}>
-      {renderSocialLinks}
-    </NavigationLinks>
+    <Grid justifyContent="center" alignItems="center" gap="0.5rem">
+      <Typography $fontSize="0.8rem">Powered by</Typography>
+      <img src={logo} alt="boson logo" width="100" />
+    </Grid>
   );
 }
 
-export default function FooterComponent() {
+export default function ({ withFooter }: { withFooter: boolean }) {
+  const showFooterValue = useCustomStoreQueryParameter("showFooter");
+  const showFooter = ["", "true"].includes(showFooterValue);
+  return withFooter ? (
+    showFooter ? (
+      <FullFooter />
+    ) : (
+      <Footer padding="2rem 1rem">
+        <ByBoson />
+      </Footer>
+    )
+  ) : null;
+}
+
+function FullFooter() {
   const { roles, sellerId, buyerId } = useUserRoles({ role: [] });
   const { data: sellerExchanges } = useExchanges(
     { sellerId, disputed: null },
@@ -154,14 +307,10 @@ export default function FooterComponent() {
       enabled: !!buyerId
     }
   );
-  const { isXXS } = useBreakpoints();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
   const copyright = useCustomStoreQueryParameter("copyright");
-  const additionalFooterLinks = useCustomStoreQueryParameter<
-    { label: string; value: string }[]
-  >("additionalFooterLinks", { parseJson: true });
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });
@@ -192,7 +341,11 @@ export default function FooterComponent() {
           </LinkWithQuery>
         );
       } else if ("component" in nav && nav.component) {
-        acc.push(nav.component());
+        acc.push(
+          nav.component({
+            key: "view-transactions"
+          })
+        );
       }
     }
     return acc;
@@ -219,14 +372,31 @@ export default function FooterComponent() {
   const helpLinks = getHelpLinks({
     roles,
     hasExchangesAsBuyerOrSeller
-  }).map(
-    (nav) =>
-      nav && (
-        <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
-          {nav.name}
-        </LinkWithQuery>
-      )
-  );
+  })
+    .map((nav) => {
+      if (nav) {
+        if (nav.url) {
+          return (
+            <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
+              {nav.name}
+            </LinkWithQuery>
+          );
+        }
+        if (nav.email) {
+          return (
+            <a
+              href={"mailto:" + sanitizeUrl(nav.email)}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={`help_email`}
+            >
+              {nav.name}
+            </a>
+          );
+        }
+      }
+    })
+    .filter(isTruthy);
   return (
     <Footer>
       <Layout>
@@ -238,62 +408,99 @@ export default function FooterComponent() {
               data-testid="logo"
             />
           </LinkWithQuery>
-          <NavigationGrid
-            justifyContent={isXXS ? "flex-start" : "flex-end"}
-            alignItems="flex-start"
-          >
-            {!!shopLinks.length && (
-              <div>
-                <Typography tag="h5">Shop</Typography>
-                <NavigationLinks flexDirection="column">
-                  {shopLinks}
-                </NavigationLinks>
-              </div>
-            )}
-            {!!sellLinks.length && (
-              <div>
-                <Typography tag="h5">Sell</Typography>
-                <NavigationLinks flexDirection="column">
-                  {sellLinks}
-                </NavigationLinks>
-              </div>
-            )}
-            {!!helpLinks.length && (
-              <div>
-                <Typography tag="h5">Help</Typography>
-                <NavigationLinks flexDirection="column">
-                  {helpLinks}
-                </NavigationLinks>
-              </div>
-            )}
-          </NavigationGrid>
-        </LogoGrid>
-        <Grid justifyContent="flex-end">
-          <Socials />
-        </Grid>
-        <Grid padding="2rem 0 0 0" justifyContent="flex-end" gap="1rem">
-          <Typography tag="p">
-            {isCustomStoreFront ? copyright : `© ${year} Bosonapp.io`}
-          </Typography>
-
-          <>
-            {isCustomStoreFront && typeof additionalFooterLinks !== "string" ? (
-              <NavigationLinks>
-                {additionalFooterLinks.map((footerLink, index) => {
-                  return (
-                    <a
-                      key={`${footerLink.label}-${footerLink.value}-${index}`}
-                      href={sanitizeUrl(footerLink.value)}
-                      target="_blank"
-                      style={{ textAlign: "center" }}
-                      rel="noopener noreferrer"
+          {isCustomStoreFront ? (
+            <GridContainer
+              itemsPerRow={{
+                xs: 1,
+                s: 2,
+                m: 2,
+                l: 2,
+                xl: 2
+              }}
+              columnGap="12rem"
+              rowGap="2rem"
+            >
+              <CustomStoreAdditionalLinks />
+              <GridContainer
+                itemsPerRow={{
+                  xs: 1,
+                  s: 1,
+                  m: 1,
+                  l: 1,
+                  xl: 1
+                }}
+              >
+                <div>
+                  <Grid justifyContent="flex-start">
+                    <ContactInfoLinks />
+                  </Grid>
+                </div>
+                <div>
+                  <Grid justifyContent="flex-start">
+                    <Socials />
+                  </Grid>
+                </div>
+              </GridContainer>
+            </GridContainer>
+          ) : (
+            <GridContainer
+              itemsPerRow={{
+                xs: 1,
+                s: 1,
+                m: 1,
+                l: 1,
+                xl: 1
+              }}
+              style={{ width: "100%" }}
+            >
+              <CustomGridContainer>
+                {!!shopLinks.length && (
+                  <div>
+                    <Typography tag="h5">Shop</Typography>
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
                     >
-                      {footerLink.label}
-                    </a>
-                  );
-                })}
-              </NavigationLinks>
-            ) : (
+                      {shopLinks}
+                    </NavigationLinks>
+                  </div>
+                )}
+                {!!sellLinks.length && (
+                  <div>
+                    <Typography tag="h5">Sell</Typography>
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
+                    >
+                      {sellLinks}
+                    </NavigationLinks>
+                  </div>
+                )}
+                {!!helpLinks.length && (
+                  <div>
+                    <Typography tag="h5">Help</Typography>
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
+                    >
+                      {helpLinks}
+                    </NavigationLinks>
+                  </div>
+                )}
+              </CustomGridContainer>
+              <Grid justifyContent="flex-end">
+                <Socials />
+              </Grid>
+            </GridContainer>
+          )}
+        </LogoGrid>
+
+        <Grid padding="2rem 0 0 0" justifyContent="flex-end" gap="1rem">
+          <>
+            {!isCustomStoreFront && (
               <NavigationLinks>
                 {ADDITIONAL_LINKS.map((footerLink, index) => {
                   return (
@@ -309,6 +516,12 @@ export default function FooterComponent() {
             )}
           </>
         </Grid>
+        <Grid justifyContent="center">
+          <Typography $fontSize="0.8rem">
+            {isCustomStoreFront ? copyright : `© ${year} Bosonapp.io`}
+          </Typography>
+        </Grid>
+        {isCustomStoreFront && <ByBoson />}
       </Layout>
     </Footer>
   );

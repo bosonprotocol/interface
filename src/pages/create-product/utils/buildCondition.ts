@@ -5,14 +5,10 @@ import {
 } from "@bosonprotocol/common";
 import { utils } from "ethers";
 
-import { CreateProductForm } from "../../../components/product/utils";
+import { TokenGating } from "../../../components/product/utils";
 
-type JointTermsOfSale =
-  | CreateProductForm["coreTermsOfSale"]
-  | CreateProductForm["variantsCoreTermsOfSale"];
-
-export type CommonTermsOfSale = Pick<
-  JointTermsOfSale,
+export type PartialTokenGating = Pick<
+  TokenGating["tokenGating"],
   | "tokenId"
   | "minBalance"
   | "tokenType"
@@ -22,49 +18,49 @@ export type CommonTermsOfSale = Pick<
 >;
 
 export const buildCondition = (
-  commonTermsOfSale: CommonTermsOfSale,
+  partialTokenGating: PartialTokenGating,
   decimals?: number
 ): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
   let method: EvaluationMethod = EvaluationMethod.None;
   let threshold;
-  let tokenId = commonTermsOfSale.tokenId || "0";
+  let tokenId = partialTokenGating.tokenId || "0";
 
   let formatedValue = null;
-  if (decimals && commonTermsOfSale.minBalance) {
-    formatedValue = utils.parseUnits(commonTermsOfSale.minBalance, decimals);
+  if (decimals && partialTokenGating.minBalance) {
+    formatedValue = utils.parseUnits(partialTokenGating.minBalance, decimals);
   }
 
-  switch (commonTermsOfSale.tokenType.value) {
+  switch (partialTokenGating.tokenType.value) {
     case "erc1155":
       tokenType = TokenType.MultiToken;
       method = EvaluationMethod.Threshold;
-      threshold = commonTermsOfSale.minBalance;
+      threshold = partialTokenGating.minBalance;
       break;
     case "erc721":
       tokenType = TokenType.NonFungibleToken;
-      if (commonTermsOfSale.tokenCriteria.value === "tokenid") {
+      if (partialTokenGating.tokenCriteria.value === "tokenid") {
         method = EvaluationMethod.SpecificToken;
         // if erc721 and SpecificToken we should set the threshold as zero
         threshold = "0";
       } else {
         method = EvaluationMethod.Threshold;
-        threshold = commonTermsOfSale.minBalance;
+        threshold = partialTokenGating.minBalance;
         tokenId = "0";
       }
       break;
     default:
       tokenType = TokenType.FungibleToken;
       method = EvaluationMethod.Threshold;
-      threshold = formatedValue || commonTermsOfSale.minBalance;
+      threshold = formatedValue || partialTokenGating.minBalance;
       break;
   }
   return {
     method,
     tokenType,
-    tokenAddress: commonTermsOfSale.tokenContract || "",
+    tokenAddress: partialTokenGating.tokenContract || "",
     tokenId,
     threshold: threshold || "",
-    maxCommits: commonTermsOfSale.maxCommits || ""
+    maxCommits: partialTokenGating.maxCommits || ""
   };
 };

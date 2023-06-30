@@ -3,7 +3,6 @@ import {
   NftImage,
   Profile
 } from "../../../../../lib/utils/hooks/lens/graphql/generated";
-import { LensProfileType } from "./validationSchema";
 
 export const getLensEmail = (profile: Profile): string => {
   return (
@@ -48,7 +47,7 @@ export const getLensCoverPictureUrl = (profile: Profile): string => {
 };
 
 export const getLensTokenIdDecimal = (lenseProfileId: Profile["id"]) => {
-  return parseInt(lenseProfileId, 16);
+  return parseInt(lenseProfileId, 16); // hex to decimal
 };
 
 export const getLensTokenIdHex = (lenseProfileIdDecimal: Profile["id"]) => {
@@ -65,17 +64,4 @@ export const getLensTokenIdHex = (lenseProfileIdDecimal: Profile["id"]) => {
 export const isMatchingLensHandle = (handle: string): boolean => {
   const lensHandleRegex = /^.+\.(lens|test)$/;
   return handle.match(lensHandleRegex) !== null;
-};
-
-export const getLensProfileInfo = (
-  profile: Profile
-): Omit<LensProfileType, "logo" | "coverPicture" | "contactPreference"> => {
-  return {
-    name: profile.name || "",
-    handle: String(profile.handle),
-    email: getLensEmail(profile) || "",
-    description: profile.bio || "",
-    website: getLensWebsite(profile) || "",
-    legalTradingName: getLensLegalTradingName(profile) || ""
-  };
 };

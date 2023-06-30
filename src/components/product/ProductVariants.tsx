@@ -284,11 +284,9 @@ export default function ProductVariants() {
         </Grid>
       </StyledFormField>
       <StyledFormField
-        title="Define Variants"
+        title="Define variants"
         required
-        subTitle="The table below shows each possible variant combination given the inputs
-        above. You can remove a combination by selecting the rightmost button on
-        the relevant row."
+        subTitle="Shown below are the variant combinations using the inputs above. Remove a specific combination by selecting the 'Remove button against it."
       >
         <Table>
           <THead>

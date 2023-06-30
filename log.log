@@ -1,0 +1,72 @@
+➜  interface git:(upgrade-rainbowkit-albert) ✗ npm i @rainbow-me/rainbowkit@1.0.4
+npm ERR! code ERESOLVE
+npm ERR! ERESOLVE unable to resolve dependency tree
+npm ERR! 
+npm ERR! While resolving: interface@0.1.0
+npm ERR! Found: wagmi@0.7.15
+npm ERR! node_modules/wagmi
+npm ERR!   wagmi@"^0.7.15" from the root project
+npm ERR! 
+npm ERR! Could not resolve dependency:
+npm ERR! peer wagmi@"~1.0.1 || ~1.1.0 || ~1.2.0 || ~1.3.0" from @rainbow-me/rainbowkit@1.0.4
+npm ERR! node_modules/@rainbow-me/rainbowkit
+npm ERR!   @rainbow-me/rainbowkit@"1.0.4" from the root project
+npm ERR! 
+npm ERR! Fix the upstream dependency conflict, or retry
+npm ERR! this command with --force, or --legacy-peer-deps
+npm ERR! to accept an incorrect (and potentially broken) dependency resolution.
+npm ERR! 
+npm ERR! See /Users/albertfolch/.npm/eresolve-report.txt for a full report.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/albertfolch/.npm/_logs/2023-06-30T09_04_38_286Z-debug-0.log
+
+
+➜  interface git:(upgrade-rainbowkit-albert) ✗ npm i wagmi@latest                
+npm WARN ERESOLVE overriding peer dependency
+npm WARN While resolving: interface@0.1.0
+npm WARN Found: wagmi@0.7.15
+npm WARN node_modules/wagmi
+npm WARN   peer wagmi@"0.5.x || 0.6.x || 0.7.x" from @rainbow-me/rainbowkit@0.7.4
+npm WARN   node_modules/@rainbow-me/rainbowkit
+npm WARN     @rainbow-me/rainbowkit@"^0.7.4" from the root project
+npm WARN   1 more (the root project)
+npm WARN 
+npm WARN Could not resolve dependency:
+npm WARN peer wagmi@"0.5.x || 0.6.x || 0.7.x" from @rainbow-me/rainbowkit@0.7.4
+npm WARN node_modules/@rainbow-me/rainbowkit
+npm WARN   @rainbow-me/rainbowkit@"^0.7.4" from the root project
+npm WARN ERESOLVE overriding peer dependency
+npm WARN ERESOLVE overriding peer dependency
+npm ERR! code ERESOLVE
+npm ERR! ERESOLVE could not resolve
+npm ERR! 
+npm ERR! While resolving: wagmi@1.3.3
+npm ERR! Found: typescript@4.9.5
+npm ERR! node_modules/typescript
+npm ERR!   peerOptional typescript@">=5.0.4" from @wagmi/core@1.3.3
+npm ERR!   node_modules/wagmi/node_modules/@wagmi/core
+npm ERR!     @wagmi/core@"1.3.3" from wagmi@1.3.3
+npm ERR!     node_modules/wagmi
+npm ERR!       wagmi@"1.3.3" from the root project
+npm ERR! 
+npm ERR! Could not resolve dependency:
+npm ERR! peerOptional typescript@">=5.0.4" from wagmi@1.3.3
+npm ERR! node_modules/wagmi
+npm ERR!   wagmi@"1.3.3" from the root project
+npm ERR! 
+npm ERR! Conflicting peer dependency: typescript@5.1.6
+npm ERR! node_modules/typescript
+npm ERR!   peerOptional typescript@">=5.0.4" from wagmi@1.3.3
+npm ERR!   node_modules/wagmi
+npm ERR!     wagmi@"1.3.3" from the root project
+npm ERR! 
+npm ERR! Fix the upstream dependency conflict, or retry
+npm ERR! this command with --force, or --legacy-peer-deps
+npm ERR! to accept an incorrect (and potentially broken) dependency resolution.
+npm ERR! 
+npm ERR! See /Users/albertfolch/.npm/eresolve-report.txt for a full report.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/albertfolch/.npm/_logs/2023-06-30T09_06_21_550Z-debug-0.log
+➜  interface git:(upgrade-rainbowkit-albert) 

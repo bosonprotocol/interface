@@ -8,49 +8,7 @@ import {
   websitePattern
 } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
-import { SocialLogoValues } from "./SocialLogo";
-
-export type SelectType<Value extends string = string> =
-  SelectDataProps<Value> | null;
-
-export type StoreFields = {
-  isCustomStoreFront: string;
-  storeName: string;
-  title: string;
-  description: string;
-  logoUrl: string;
-  headerBgColor: string;
-  headerTextColor: string;
-  primaryBgColor: string;
-  secondaryBgColor: string;
-  accentColor: string;
-  textColor: string;
-  footerBgColor: string;
-  footerTextColor: string;
-  buttonBgColor: string;
-  buttonTextColor: string;
-  fontFamily: string;
-  navigationBarPosition: SelectType;
-  copyright: string;
-  showFooter: SelectType;
-  socialMediaLinks: SelectType<SocialLogoValues>[];
-  additionalFooterLinks: SelectType[];
-  withOwnProducts: SelectType;
-  sellerCurationList: string;
-  offerCurationList: string;
-  commitProxyAddress: string;
-  openseaLinkToOriginalMainnetCollection: string;
-  metaTransactionsApiKey: string;
-  supportFunctionality: SelectType[];
-};
-
-export type StoreFormFields = StoreFields & {
-  logoUrlText: string;
-  logoUpload: { name: string; size: number; src: string; type: string }[];
-  withAdditionalFooterLinks: SelectType;
-  withMetaTx: SelectType;
-  customStoreUrl: string;
-};
+import { AdditionalFooterLink } from "./AdditionalFooterLinksTypes";
 
 export const storeFields = {
   isCustomStoreFront: "isCustomStoreFront",
@@ -58,6 +16,11 @@ export const storeFields = {
   storeName: "storeName",
   title: "title",
   description: "description",
+  bannerSwitch: "bannerSwitch",
+  bannerImgPosition: "bannerImgPosition",
+  bannerUrl: "bannerUrl",
+  bannerUrlText: "bannerUrlText",
+  bannerUpload: "bannerUpload",
   logoUrl: "logoUrl",
   logoUrlText: "logoUrlText",
   logoUpload: "logoUpload",
@@ -69,12 +32,14 @@ export const storeFields = {
   textColor: "textColor",
   footerBgColor: "footerBgColor",
   footerTextColor: "footerTextColor",
+  upperCardBgColor: "upperCardBgColor",
+  lowerCardBgColor: "lowerCardBgColor",
   fontFamily: "fontFamily",
   navigationBarPosition: "navigationBarPosition",
   showFooter: "showFooter",
   copyright: "copyright",
   socialMediaLinks: "socialMediaLinks",
-  withAdditionalFooterLinks: "withAdditionalFooterLinks",
+  contactInfoLinks: "contactInfoLinks",
   additionalFooterLinks: "additionalFooterLinks",
   withOwnProducts: "withOwnProducts",
   sellerCurationList: "sellerCurationList",
@@ -98,6 +63,11 @@ const getYesNoOptions = (defaultValue: "yes" | "no") => {
 
 const standardRequiredErrorMessage = "This field is required";
 const notUrlErrorMessage = "This is not a URL like: www.example.com";
+const withOwnProductsOptions = [
+  { label: "Only my own products", value: "mine", default: true },
+  { label: "All products", value: "all" },
+  { label: "Custom", value: "custom" }
+] as const;
 export const formModel = {
   formFields: {
     [storeFields.customStoreUrl]: {
@@ -120,6 +90,24 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
+    [storeFields.bannerImgPosition]: {
+      name: storeFields.bannerImgPosition,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
+    [storeFields.bannerUrl]: {
+      name: storeFields.bannerUrl
+    },
+    [storeFields.bannerUrlText]: {
+      name: storeFields.bannerUrlText,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
+    [storeFields.bannerUpload]: {
+      name: storeFields.bannerUpload,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Banner image"
+    },
     [storeFields.logoUrl]: {
       name: storeFields.logoUrl
     },
@@ -131,7 +119,7 @@ export const formModel = {
     [storeFields.logoUpload]: {
       name: storeFields.logoUpload,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Logo Image"
+      placeholder: "Logo image"
     },
     [storeFields.headerBgColor]: {
       name: storeFields.headerBgColor,
@@ -166,12 +154,22 @@ export const formModel = {
     [storeFields.footerBgColor]: {
       name: storeFields.footerBgColor,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Footer Color"
+      placeholder: "Footer color"
     },
     [storeFields.footerTextColor]: {
       name: storeFields.footerTextColor,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Footer Text Color"
+      placeholder: "Footer text color"
+    },
+    [storeFields.upperCardBgColor]: {
+      name: storeFields.upperCardBgColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Upper card background color"
+    },
+    [storeFields.lowerCardBgColor]: {
+      name: storeFields.lowerCardBgColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Lower card background color"
     },
     [storeFields.fontFamily]: {
       name: storeFields.fontFamily,
@@ -229,16 +227,28 @@ export const formModel = {
         { label: "Youtube", value: "youtube", url: "" }
       ]
     },
-    [storeFields.withAdditionalFooterLinks]: {
-      name: storeFields.withAdditionalFooterLinks,
+    [storeFields.contactInfoLinks]: {
+      name: storeFields.contactInfoLinks,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
-      options: getYesNoOptions("no")
+      options: [
+        { label: "Phone", value: "phone", text: "" },
+        { label: "Email", value: "email", text: "" },
+        { label: "Address", value: "address", text: "" }
+      ]
     },
     [storeFields.additionalFooterLinks]: {
       name: storeFields.additionalFooterLinks,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: ""
+      placeholder: "",
+      options: [
+        { label: "Home", value: "home", url: "" },
+        { label: "FAQs", value: "email", url: "" },
+        { label: "Contact Us", value: "contact_us", url: "" },
+        { label: "How Boson Works", value: "how_boson_works", url: "" },
+        { label: "Terms of Service", value: "terms_of_service", url: "" },
+        { label: "Privacy Policy", value: "privacy_policy", url: "" }
+      ] as AdditionalFooterLink[]
     },
     [storeFields.navigationBarPosition]: {
       name: storeFields.navigationBarPosition,
@@ -254,11 +264,7 @@ export const formModel = {
       name: storeFields.withOwnProducts,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
-      options: [
-        { label: "All products", value: "all", default: true },
-        { label: "Only my own products", value: "mine" },
-        { label: "Custom", value: "custom" }
-      ]
+      options: withOwnProductsOptions
     },
     [storeFields.sellerCurationList]: {
       name: storeFields.sellerCurationList,
@@ -318,11 +324,22 @@ export const uploadMaxMB = 5;
 const MAX_FILE_SIZE = uploadMaxMB * 1024 * 1024; // 5 MB
 const SUPPORTED_FILE_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
+const withOwnProductsValues = withOwnProductsOptions.map((v) => v.value);
 export const validationSchema = Yup.object({
+  [storeFields.isCustomStoreFront]: Yup.string().oneOf(["true"]).required(),
   [storeFields.customStoreUrl]: Yup.string(),
   [storeFields.storeName]: Yup.string(),
   [storeFields.title]: Yup.string(),
   [storeFields.description]: Yup.string(),
+  [storeFields.bannerSwitch]: Yup.boolean(),
+  [storeFields.bannerImgPosition]: Yup.string(),
+  [storeFields.bannerUrl]: Yup.string(),
+  [storeFields.bannerUrlText]: Yup.string(),
+  [storeFields.bannerUpload]: validationOfFile({
+    isOptional: true,
+    maxFileSizeInB: MAX_FILE_SIZE,
+    supportedFormats: SUPPORTED_FILE_FORMATS
+  }),
   [storeFields.logoUrl]: Yup.string(),
   [storeFields.logoUrlText]: Yup.string(),
   [storeFields.logoUpload]: validationOfFile({
@@ -339,6 +356,8 @@ export const validationSchema = Yup.object({
   // NOTE: we may wish to show it again in the future
   // [storeFields.footerBgColor]: Yup.string(),
   [storeFields.footerTextColor]: Yup.string(),
+  [storeFields.upperCardBgColor]: Yup.string(),
+  [storeFields.lowerCardBgColor]: Yup.string(),
   [storeFields.buttonBgColor]: Yup.string(),
   [storeFields.buttonTextColor]: Yup.string(),
   [storeFields.textColor]: Yup.string(),
@@ -363,14 +382,18 @@ export const validationSchema = Yup.object({
         .required(standardRequiredErrorMessage)
     })
   ),
-  [storeFields.withAdditionalFooterLinks]: Yup.object({
-    label: Yup.string().required(standardRequiredErrorMessage),
-    value: Yup.string().required(standardRequiredErrorMessage)
-  }).nullable(),
+  [storeFields.contactInfoLinks]: Yup.array(
+    Yup.object({
+      label: Yup.string().required(standardRequiredErrorMessage),
+      value: Yup.string().required(standardRequiredErrorMessage),
+      text: Yup.string().required(standardRequiredErrorMessage)
+    })
+  ),
   [storeFields.additionalFooterLinks]: Yup.array(
     Yup.object({
-      label: Yup.string(),
-      value: Yup.string()
+      label: Yup.string().required(standardRequiredErrorMessage),
+      value: Yup.string(),
+      url: Yup.string()
         .matches(new RegExp(websitePattern), notUrlErrorMessage)
         .when("label", (label) => {
           if (label) {
@@ -385,7 +408,9 @@ export const validationSchema = Yup.object({
   [storeFields.copyright]: Yup.string(),
   [storeFields.withOwnProducts]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
-    value: Yup.string().required(standardRequiredErrorMessage)
+    value: Yup.mixed<typeof withOwnProductsValues[number]>()
+      .oneOf(withOwnProductsValues)
+      .required(standardRequiredErrorMessage)
   }).nullable(),
   [storeFields.sellerCurationList]: Yup.string(),
   [storeFields.offerCurationList]: Yup.string(),
@@ -398,10 +423,6 @@ export const validationSchema = Yup.object({
     new RegExp(websitePattern),
     notUrlErrorMessage
   ),
-  [storeFields.withMetaTx]: Yup.object({
-    label: Yup.string().required(standardRequiredErrorMessage),
-    value: Yup.string().required(standardRequiredErrorMessage)
-  }).nullable(),
   [storeFields.metaTransactionsApiKey]: Yup.string()
   // NOTE: we may wish to show it again in the future
   // [storeFields.supportFunctionality]: Yup.array(
@@ -412,12 +433,17 @@ export const validationSchema = Yup.object({
   // )
 });
 
-export const initialValues = {
+export const initialValues: Yup.InferType<typeof validationSchema> = {
   [storeFields.isCustomStoreFront]: "true",
   [storeFields.customStoreUrl]: "",
   [storeFields.storeName]: "",
   [storeFields.title]: "",
   [storeFields.description]: "",
+  [storeFields.bannerSwitch]: false,
+  [storeFields.bannerImgPosition]: "",
+  [storeFields.bannerUrl]: "",
+  [storeFields.bannerUrlText]: "",
+  [storeFields.bannerUpload]: [],
   [storeFields.logoUrl]: "",
   [storeFields.logoUrlText]: "",
   [storeFields.logoUpload]: [],
@@ -427,7 +453,9 @@ export const initialValues = {
   [storeFields.secondaryBgColor]: colors.lightGrey,
   [storeFields.accentColor]: "",
   [storeFields.textColor]: colors.black,
-  [storeFields.footerBgColor]: colors.black,
+  // [storeFields.footerBgColor]: colors.black,
+  [storeFields.upperCardBgColor]: colors.white,
+  [storeFields.lowerCardBgColor]: colors.white,
   [storeFields.buttonBgColor]: colors.primary,
   [storeFields.buttonTextColor]: colors.black,
   [storeFields.footerTextColor]: colors.white,
@@ -442,20 +470,18 @@ export const initialValues = {
     (option) => "default" in option && option.default
   ) as SelectDataProps,
   [storeFields.socialMediaLinks]: [] as (SelectDataProps & { url: string })[],
-  [storeFields.withAdditionalFooterLinks]: null as unknown as SelectDataProps,
-  [storeFields.additionalFooterLinks]: [] as SelectDataProps[],
+  [storeFields.contactInfoLinks]: [] as (SelectDataProps & { text: string })[],
+  [storeFields.additionalFooterLinks]: [] as AdditionalFooterLink[],
   [storeFields.copyright]: "",
   [storeFields.withOwnProducts]:
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     formModel.formFields.withOwnProducts.options.find(
       (option) => "default" in option && option.default
-    ) as SelectDataProps,
+    )!,
   [storeFields.sellerCurationList]: "",
   [storeFields.offerCurationList]: "",
   [storeFields.commitProxyAddress]: "",
   [storeFields.openseaLinkToOriginalMainnetCollection]: "",
-  [storeFields.withMetaTx]: formModel.formFields.withMetaTx.options.find(
-    (option) => "default" in option && option.default
-  ) as SelectDataProps,
-  [storeFields.metaTransactionsApiKey]: "",
-  [storeFields.supportFunctionality]: [] as SelectDataProps[]
+  [storeFields.metaTransactionsApiKey]: ""
+  // [storeFields.supportFunctionality]: [] as SelectDataProps[]
 } as const;

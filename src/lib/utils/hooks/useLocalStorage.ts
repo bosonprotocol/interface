@@ -32,7 +32,7 @@ export type GetItemFromStorageKey =
 export function getItemFromStorage<T>(
   key: GetItemFromStorageKey,
   initialValue: T
-) {
+): T {
   if (typeof window === "undefined") {
     return initialValue;
   }

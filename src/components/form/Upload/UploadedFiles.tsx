@@ -1,4 +1,4 @@
-import { UploadFileType } from "./Upload";
+import { UploadFileType } from "./types";
 import UploadedFile from "./UploadedFile";
 
 interface Props {

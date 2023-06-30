@@ -1,8 +1,8 @@
 import { Dayjs } from "dayjs";
-import { ReactNode } from "react";
-import { SingleValue } from "react-select";
+import { CSSProperties, ReactNode } from "react";
+import { MultiValue, SingleValue } from "react-select";
 
-import { UploadFileType } from "./Upload/Upload";
+import { UploadFileType } from "./Upload/types";
 
 export interface BaseProps {
   name: string;
@@ -64,6 +64,7 @@ export interface SelectDataProps<Value extends string = string> {
   label: string;
   value: Value;
   disabled?: boolean;
+  isFixed?: boolean;
   [others: string]: unknown;
 }
 
@@ -80,14 +81,18 @@ export interface BaseSelectProps {
   onChange?: OnChange;
 }
 
-export interface SelectProps extends BaseProps {
-  isMulti?: boolean;
+export interface SelectProps<IsMulti extends boolean> extends BaseProps {
+  isMulti?: IsMulti;
   disabled?: boolean;
   isClearable?: boolean;
   isSearchable?: boolean;
   options: Array<SelectDataProps> | Readonly<Array<SelectDataProps>>;
   errorMessage?: string;
-  onChange?: (option: SelectDataProps<string>) => void;
+  onChange?: (
+    option: IsMulti extends true
+      ? MultiValue<SelectDataProps<string>>
+      : SingleValue<SelectDataProps<string>>
+  ) => void;
   label?: string;
   className?: string;
   classNamePrefix?: string;
@@ -104,4 +109,9 @@ export interface UploadProps extends BaseProps {
   onLoadSinglePreviewImage?: (base64Uri: string) => void;
   withUpload?: boolean;
   onLoading?: (loading: boolean) => void;
+  withEditor?: boolean;
+  borderRadius?: number;
+  width?: number;
+  height?: number;
+  imgPreviewStyle?: Pick<CSSProperties, "objectFit">;
 }

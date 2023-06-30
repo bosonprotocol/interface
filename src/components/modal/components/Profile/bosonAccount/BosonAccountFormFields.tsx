@@ -103,6 +103,7 @@ export default function BosonAccountFormFields({
         <StyledFormField
           title="Address for royalty payments"
           subTitle="This address will receive royalty payments"
+          required={!!fieldSecondaryRoyalties.value}
         >
           <>
             <Input

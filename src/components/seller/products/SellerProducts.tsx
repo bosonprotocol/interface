@@ -8,8 +8,10 @@ import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import Loading from "../../ui/Loading";
+import { UpdateIcon } from "../../ui/UpdateIcon";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerAddNewProduct from "../SellerAddNewProduct";
 import SellerBatchVoid from "../SellerBatchVoid";
@@ -17,7 +19,9 @@ import SellerExport from "../SellerExport";
 import SellerFilters from "../SellerFilters";
 import { SellerInsideProps } from "../SellerInside";
 import SellerTags from "../SellerTags";
-import SellerProductsTable from "./SellerProductsTable";
+import SellerProductsTable, {
+  SellerProductsTableProps
+} from "./SellerProductsTable";
 
 const productTags = [
   {
@@ -46,13 +50,29 @@ interface FilterValue {
   value: string;
   label: string;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const emptyArray: any[] = [];
 export default function SellerProducts({
   products: productsData,
   sellerRoles,
   sellerId,
-  offersBacked
-}: SellerInsideProps & WithSellerDataProps) {
+  offersBacked,
+  columnsToShow
+}: SellerInsideProps &
+  WithSellerDataProps &
+  Pick<SellerProductsTableProps, "columnsToShow">) {
+  const {
+    data: sellers,
+    isLoading: isLoadingSellers,
+    refetch: refetchSellers,
+    isRefetching: isSellersRefetching
+  } = useSellers(
+    {
+      id: sellerId
+    },
+    { enabled: !!sellerId }
+  );
+  const salesChannels = sellers?.[0]?.metadata?.salesChannels ?? emptyArray;
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
@@ -155,11 +175,18 @@ export default function SellerProducts({
           }}
         />
         <SellerAddNewProduct sellerRoles={sellerRoles} />
+        <UpdateIcon
+          size={15}
+          onClick={async () => {
+            await refetch();
+            await refetchSellers();
+          }}
+        />
       </>
     );
-  }, [prepareCSVData, selected, refetch, sellerRoles]);
-
-  if (isLoading) {
+  }, [prepareCSVData, selected, refetch, sellerRoles, refetchSellers]);
+  const anyLoading = isLoading || isLoadingSellers;
+  if (anyLoading) {
     return <Loading />;
   }
 
@@ -180,12 +207,17 @@ export default function SellerProducts({
       <SellerProductsTable
         currentTag={currentTag}
         offers={allOffers}
-        isLoading={isLoading}
+        isLoading={anyLoading}
+        isSellersRefetching={isSellersRefetching}
         isError={isError}
         refetch={refetch}
         setSelected={setSelected}
         sellerRoles={sellerRoles}
         offersBacked={offersBacked}
+        columnsToShow={columnsToShow}
+        salesChannels={salesChannels}
+        refetchSellers={refetchSellers}
+        sellerId={sellerId}
       />
     </>
   );

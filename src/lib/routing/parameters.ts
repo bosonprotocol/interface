@@ -9,15 +9,6 @@ export const ExploreQueryParameters = {
   sellerCurationList: "sellerCurationList"
 } as const;
 
-export const CollectionsQueryParameters = {
-  value: "value",
-  orderDirection: "orderDirection",
-  orderBy: "orderBy",
-  exchangeOrderBy: "exchangeOrderBy",
-  validFromDate_lte: "validFromDate_lte",
-  disputeResolver: "dr-admin"
-} as const;
-
 export const AccountQueryParameters = {
   tab: "tab",
   manageFunds: "manageFunds"
@@ -37,5 +28,12 @@ export const UrlParameters = {
   buyerId: "id",
   sellerId: "id",
   tokenId: "id",
-  disputeResolverPageId: "disputeResolverPage"
+  disputeResolverPageId: "disputeResolverPage",
+  customStoreUrl: "customStoreUrl"
 } as const;
+
+export const SellerLandingPageParameters = {
+  slsteps: "slsteps", // slsteps = seller landing steps
+  sltitle: "sltitle",
+  sltokenGated: "sltokenGated"
+};

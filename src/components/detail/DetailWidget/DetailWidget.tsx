@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useBalance, useSigner } from "wagmi";
 
+import { ReactComponent as Logo } from "../../../assets/logo-white.svg";
 import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -117,6 +118,17 @@ const RedeemButton = styled(BosonButton)`
       > div {
         gap: 1rem;
       }
+    }
+  }
+`;
+
+const BlackLogo = styled(Logo)`
+  width: 6.25rem;
+  height: fit-content;
+  padding: 1.2rem 0 0 0;
+  :first-child {
+    path:first-child {
+      fill: ${colors.black};
     }
   }
 `;
@@ -334,6 +346,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
   const removePendingTransaction = useRemovePendingTransaction();
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
+
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -877,7 +891,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isPauseCommitting={!address}
                     buttonRef={commitButtonRef}
                     onGetSignerAddress={handleOnGetSignerAddress}
-                    disabled={isCommitDisabled}
+                    disabled={!!isCommitDisabled}
                     offerId={offer.id}
                     exchangeToken={offer.exchangeToken.address}
                     price={offer.price}
@@ -1055,6 +1069,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               )}
             </Grid>
           </>
+        )}
+        {isCustomStoreFront && (
+          <Grid justifyContent="center" alignItems="center">
+            <BlackLogo />
+          </Grid>
         )}
       </Widget>
     </>

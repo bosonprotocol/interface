@@ -1,4 +1,5 @@
 import { useField } from "formik";
+import { useRef } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -17,7 +18,7 @@ const Container = styled.div`
   border: 1px solid ${colors.border};
   border-radius: 0;
   outline: none;
-
+  cursor: pointer;
   ${transition}
 `;
 
@@ -38,14 +39,18 @@ export default function InputColor({ name, ...props }: InputColorProps) {
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
-
+  const colorRef = useRef<HTMLInputElement>(null);
   return (
     <>
-      <Container>
+      <Container
+        onClick={() => {
+          colorRef.current?.click();
+        }}
+      >
         <span style={{ color: colors.darkGrey }}>
           {field.value?.toUpperCase() || props.placeholder}
         </span>
-        <ColorPicker name={name} />
+        <ColorPicker name={name} ref={colorRef} />
       </Container>
       <Error display={displayError} message={errorMessage} />
     </>

@@ -164,8 +164,7 @@ export default function ConfirmProductDetails({
   const commonTermsOfSale = isMultiVariant
     ? values.variantsCoreTermsOfSale
     : values.coreTermsOfSale;
-  const { offerValidityPeriod, redemptionPeriod, tokenGatedOffer } =
-    commonTermsOfSale;
+  const { offerValidityPeriod, redemptionPeriod } = commonTermsOfSale;
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -189,7 +188,7 @@ export default function ConfirmProductDetails({
               >
                 <GridBox $minWidth="5.625rem">
                   <FormFieldContainer>
-                    <FormField title="Product Title" required>
+                    <FormField title="Product title" required>
                       <ContentValue tag="p">
                         {values.productInformation.productTitle}
                       </ContentValue>
@@ -230,7 +229,7 @@ export default function ConfirmProductDetails({
                 </FormField>
               </FormFieldContainer>
               <FormFieldContainer style={{ margin: 0 }}>
-                <FormField title="Search Tags" required>
+                <FormField title="Search tags" required>
                   <TagsWrapper>
                     {map(values.productInformation.tags, (tag, index) => {
                       return (
@@ -354,11 +353,8 @@ export default function ConfirmProductDetails({
       <CollapseContainer>
         <Collapse title={<Typography tag="h3">Terms of Sale</Typography>}>
           <TermsOfSaleContent>
-            <Grid
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              flexWrap="wrap"
-              flex="1 1"
+            <div
+              style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}
             >
               {!isMultiVariant && (
                 <>
@@ -402,18 +398,18 @@ export default function ConfirmProductDetails({
                     <FormFieldContainer>
                       <FormField title="Token Gated Offer" required>
                         <ContentValue tag="p">
-                          {tokenGatedOffer?.label}
+                          {values.productType?.tokenGatedOffer === "true"
+                            ? "Yes"
+                            : "No"}
                         </ContentValue>
                       </FormField>
                     </FormFieldContainer>
                   </GridBox>
                 </>
               )}
-            </Grid>
-            <Grid
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              flex="1 1"
+            </div>
+            <div
+              style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}
             >
               <GridBox $minWidth="16rem">
                 <FormFieldContainer
@@ -439,7 +435,7 @@ export default function ConfirmProductDetails({
                     marginBottom: 0
                   }}
                 >
-                  <FormField title="Offer Validity period" required>
+                  <FormField title="Offer validity period" required>
                     <ContentValue tag="p">
                       {offerValidityPeriod[0] && offerValidityPeriod[1] && (
                         <>
@@ -462,7 +458,7 @@ export default function ConfirmProductDetails({
                     marginBottom: 0
                   }}
                 >
-                  <FormField title="Buyer Cancel Penalty" required>
+                  <FormField title="Buyer cancellation penalty" required>
                     <ContentValue tag="p">
                       {values?.termsOfExchange?.buyerCancellationPenalty || 0}{" "}
                       {values?.termsOfExchange?.buyerCancellationPenaltyUnit
@@ -480,7 +476,7 @@ export default function ConfirmProductDetails({
                     marginBottom: 0
                   }}
                 >
-                  <FormField title="Seller Deposit" required>
+                  <FormField title="Seller deposit" required>
                     <ContentValue tag="p">
                       {values?.termsOfExchange?.sellerDeposit || 0}{" "}
                       {values?.termsOfExchange?.sellerDepositUnit.label ===
@@ -491,7 +487,7 @@ export default function ConfirmProductDetails({
                   </FormField>
                 </FormFieldContainer>
               </GridBox>
-            </Grid>
+            </div>
           </TermsOfSaleContent>
         </Collapse>
       </CollapseContainer>
@@ -509,7 +505,7 @@ export default function ConfirmProductDetails({
         <InitializeChatContainer>
           <InitializeChat
             isError={chatInitializationStatus === "ERROR"}
-            message="To proceed, first initialize your chat client that enables two way communication with buyers and receiving delivery details."
+            message="To proceed, first initialize your chat client to enable two way communication with buyers and to receive delivery details."
           />
         </InitializeChatContainer>
       )}

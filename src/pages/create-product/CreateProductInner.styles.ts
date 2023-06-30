@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const ProductLayoutContainer = styled.div(
   ({ isPreviewVisible }: { isPreviewVisible: boolean }) => {
     if (!isPreviewVisible) {
-      return `
+      return css`
         display: flex;
         justify-content: space-between;
         > form {
@@ -20,7 +20,7 @@ export const HelpWrapper = styled.div`
 `;
 
 export const CreateProductWrapper = styled.div`
-  font-family: "Plus Jakarta Sans";
+  width: 100%;
 
   > div:first-child {
     margin-bottom: 2rem;

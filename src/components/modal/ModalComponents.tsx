@@ -4,8 +4,11 @@ import EscalateModal from "./components/Chat/components/EscalateModal/EscalateMo
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CompleteExchange from "./components/CompleteExchange";
+import { ConfirmationModal } from "./components/Confirmation/ConfirmationModal";
+import { AccountCreationModal } from "./components/createProduct/AccountCreationModal";
+import VariableStepsExplainerModal from "./components/createProduct/VariableStepsExplainerModal";
 import CreateProductDraft from "./components/CreateProductDraft";
-import CustomStore from "./components/CustomStore";
+import { CustomStoreModal } from "./components/CustomStoreModal";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
 import DisputeResolverDecideModal from "./components/DisputeResolver/DisputeResolverDecideModal";
@@ -13,6 +16,8 @@ import DisputeResolverRefuseModal from "./components/DisputeResolver/DisputeReso
 import ExchangePolicyDetailsModal from "./components/ExchangePolicyDetails";
 import ExpireVoucherModal from "./components/ExpireVoucherModal";
 import ExportExchangesWithDeliveryModal from "./components/ExportExchangesWithDeliveryModal";
+import { IframeModal } from "./components/IframeModal/IframeModal";
+import { ImageEditorModal } from "./components/ImageEditorModal/ImageEditorModal";
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
@@ -25,8 +30,10 @@ import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
 import { RelistOfferModal } from "./components/RelistOfferModal/RelistOfferModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
+import { SalesChannelsModal } from "./components/SalesChannelsModal/SalesChannelsModal";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
 import FinanceWithdraw from "./components/SellerFinance/FinanceWithdraw";
+import { PreparingTransactionModal } from "./components/Transactions/PreparingTransactionModal/PreparingTransactionModal";
 import RecentTransactionsModal from "./components/Transactions/RecentTransactionsModal/RecentTransactionsModal";
 import TransactionFailedModal from "./components/Transactions/TransactionFailedModal/TransactionFailedModal";
 import TransactionSubmittedModal from "./components/Transactions/TransactionSubmittedModal/TransactionSubmittedModal";
@@ -70,7 +77,14 @@ export const MODAL_TYPES = {
   PROGRESS_BAR: "PROGRESS_BAR",
   EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
   RELIST_OFFER: "RELIST_OFFER",
-  PROFILE_DETAILS: "PROFILE_DETAILS"
+  PROFILE_DETAILS: "PROFILE_DETAILS",
+  IMAGE_EDITOR: "IMAGE_EDITOR",
+  IFRAME_MODAL: "IFRAME_MODAL",
+  SALES_CHANNELS: "SALES_CHANNELS",
+  ACCOUNT_CREATION: "ACCOUNT_CREATION",
+  VARIABLE_STEPS_EXPLAINER: "VARIABLE_STEPS_EXPLAINER",
+  PREPARING_TRANSACTION: "PREPARING_TRANSACTION",
+  CONFIRMATION: "CONFIRMATION"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -80,7 +94,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
   [MODAL_TYPES.CREATE_PROFILE]: CreateProfileModal,
   [MODAL_TYPES.EDIT_PROFILE]: EditProfileModal,
-  [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
+  [MODAL_TYPES.CUSTOM_STORE]: CustomStoreModal,
   [MODAL_TYPES.DETAIL_WIDGET]: DetailWidget,
   [MODAL_TYPES.DISPUTE_RESOLUTION_DECIDE_MODAL]: DisputeResolverDecideModal,
   [MODAL_TYPES.DISPUTE_RESOLUTION_REFUSE_MODAL]: DisputeResolverRefuseModal,
@@ -109,5 +123,12 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
     ExportExchangesWithDeliveryModal,
   [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
-  [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal
+  [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal,
+  [MODAL_TYPES.IMAGE_EDITOR]: ImageEditorModal,
+  [MODAL_TYPES.IFRAME_MODAL]: IframeModal,
+  [MODAL_TYPES.SALES_CHANNELS]: SalesChannelsModal,
+  [MODAL_TYPES.ACCOUNT_CREATION]: AccountCreationModal,
+  [MODAL_TYPES.VARIABLE_STEPS_EXPLAINER]: VariableStepsExplainerModal,
+  [MODAL_TYPES.PREPARING_TRANSACTION]: PreparingTransactionModal,
+  [MODAL_TYPES.CONFIRMATION]: ConfirmationModal
 } as const;

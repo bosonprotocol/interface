@@ -1,4 +1,5 @@
 import {
+  AuthTokenType,
   Currencies,
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
@@ -27,7 +28,6 @@ import {
   ExtendedOffer,
   FilterOptions
 } from "../../pages/explore/WithAllOffers";
-import { ProfileType } from "../modal/components/Profile/const";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
@@ -39,31 +39,56 @@ interface Props {
   isHoverDisabled?: boolean;
 }
 
-const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
+const ProductCardWrapper = styled.div<{
+  $isCustomStoreFront: boolean;
+  $isLowerCardBgColorDefined: boolean;
+}>`
   [data-card="product-card"] {
     height: 500px;
-    color: ${colors.black};
+    background: var(--upperCardBgColor);
+    ${({ $isLowerCardBgColorDefined }) => {
+      if ($isLowerCardBgColorDefined) {
+        return css`
+          color: var(--textColor);
+
+          .bottom {
+            background: var(--lowerCardBgColor);
+          }
+          * {
+            color: var(--textColor);
+          }
+        `;
+      }
+      return css``;
+    }}
+
     [data-image-wrapper] {
       img {
         object-fit: contain;
       }
     }
+    ${({ $isCustomStoreFront }) => {
+      if (!$isCustomStoreFront) {
+        return css`
+          border: 1px solid rgba(85, 96, 114, 0.15);
+        `;
+      }
+      return "";
+    }}
   }
   [data-avatarname="product-card"] {
     max-width: 100%;
     word-break: break-word;
-  }
-  ${({ $isCustomStoreFront }) => {
-    if (!$isCustomStoreFront) {
-      return "";
-    }
 
-    return css`
-      [data-avatarname="product-card"] {
-        color: ${colors.black};
+    ${({ $isLowerCardBgColorDefined }) => {
+      if ($isLowerCardBgColorDefined) {
+        return css`
+          color: var(--accent);
+        `;
       }
-    `;
-  }};
+      return css``;
+    }}
+  }
 `;
 
 export default function ProductCard({
@@ -79,7 +104,7 @@ export default function ProductCard({
   });
   const seller = offer?.seller;
   const metadata = seller?.metadata;
-  const useLens = !metadata || metadata.kind === ProfileType.LENS;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const regularProfilePicture =
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const [lens] = lensProfiles;
@@ -171,9 +196,13 @@ export default function ProductCard({
     !allVariantsHaveSamePrice;
 
   const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name ?? "";
-
+  const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
+  const isLowerCardBgColorDefined = !!lowerCardBgColor;
   return (
-    <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
+    <ProductCardWrapper
+      $isCustomStoreFront={!!isCustomStoreFront}
+      $isLowerCardBgColorDefined={isLowerCardBgColorDefined}
+    >
       {isTokenGated && (
         <LockIcon>
           <Lock size={20} color={colors.grey} />

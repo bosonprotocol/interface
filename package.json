@@ -42,18 +42,20 @@
   },
   "dependencies": {
     "@bosonprotocol/chat-sdk": "^1.3.1-alpha.1",
-    "@bosonprotocol/react-kit": "^0.17.3",
+    "@bosonprotocol/react-kit": "^0.17.5",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",
     "@ethersproject/units": "^5.6.1",
     "@glidejs/glide": "^3.5.2",
     "@graphql-codegen/fragment-matcher": "^3.3.1",
     "@popperjs/core": "^2.11.5",
+    "@radix-ui/react-dropdown-menu": "^2.0.5",
+    "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-progress": "^1.0.0",
     "@radix-ui/react-switch": "^1.0.2",
     "@radix-ui/react-toast": "^1.0.0",
     "@radix-ui/react-tooltip": "^1.0.0",
-    "@rainbow-me/rainbowkit": "^0.7.4",
+    "@rainbow-me/rainbowkit": "^1.0.4",
     "@sentry/react": "^7.18.0",
     "@sentry/tracing": "^7.18.0",
     "@shopify/react-web-worker": "^5.0.5",
@@ -64,6 +66,7 @@
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.20",
+    "array-move": "^4.0.0",
     "assert": "^2.0.0",
     "babel-plugin-istanbul": "^6.1.1",
     "buffer": "^6.0.3",
@@ -87,9 +90,12 @@
     "pretty": "^2.0.0",
     "query-string": "^7.1.1",
     "react": "^18.2.0",
+    "react-avatar-editor": "^13.0.0",
     "react-chartjs-2": "^4.2.0",
     "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-easy-sort": "^1.5.1",
     "react-error-boundary": "^4.0.4",
     "react-hot-toast": "^2.4.0",
     "react-infinite-scroll-component": "^6.1.0",
@@ -101,7 +107,7 @@
     "react-router-dom": "^6.4.0",
     "react-scripts": "^5.0.1",
     "react-select": "^5.4.0",
-    "react-swipeable": "^7.0.0",
+    "react-swipeable": "^7.0.1",
     "react-table": "^7.8.0",
     "react-uuid": "^1.0.3",
     "rehype-raw": "^6.1.1",
@@ -109,7 +115,8 @@
     "stream-browserify": "^3.0.0",
     "use-resize-observer": "^9.0.2",
     "util": "^0.12.4",
-    "wagmi": "^0.7.15",
+    "viem": "^1.2.6",
+    "wagmi": "^1.3.3",
     "web-vitals": "^2.1.4",
     "webpack": "^5.73.0",
     "yup": "^0.32.11",
@@ -125,6 +132,7 @@
     "@types/lodash.merge": "^4.6.7",
     "@types/lodash.uniqby": "^4.7.7",
     "@types/pretty": "^2.0.1",
+    "@types/react-avatar-editor": "^13.0.0",
     "@types/react-csv": "^1.1.3",
     "@types/react-table": "^7.7.12",
     "@types/styled-components": "^5.1.25",
@@ -151,7 +159,7 @@
     "react-app-rewired": "^2.2.1",
     "run-script-os": "^1.1.6",
     "styled-components": "^5.3.5",
-    "typescript": "^4.7.4",
+    "typescript": "^5.1.6",
     "webpack-bundle-analyzer": "^4.6.1"
   },
   "browserslist": {
@@ -171,5 +179,8 @@
   "volta": {
     "node": "16.16.0",
     "npm": "8.11.0"
+  },
+  "overrides": {
+    "typescript": "^5.1.6"
   }
 }

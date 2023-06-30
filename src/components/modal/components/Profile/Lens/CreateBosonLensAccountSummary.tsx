@@ -1,5 +1,5 @@
 import { Warning } from "phosphor-react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
@@ -29,7 +29,7 @@ interface Props {
   values: LensProfileType;
   bosonAccount: BosonAccount;
   isEdit: boolean;
-  onSubmit: (id: string) => void;
+  onSubmit: (id: string) => Promise<void>;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
 }
 export default function CreateBosonLensAccountSummary({
@@ -108,11 +108,18 @@ export default function CreateBosonLensAccountSummary({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const onSubmitWithArgs = useCallback(
-    (action: string, id?: string) => {
-      toast((t) => <SuccessTransactionToast t={t} action={action} />);
-      onSubmit(id || "");
+    async (action: string, id?: string) => {
+      setSubmitting(true);
+      try {
+        toast((t) => <SuccessTransactionToast t={t} action={action} />);
+        await onSubmit(id || "");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setSubmitting(false);
+      }
     },
     [onSubmit]
   );
@@ -144,7 +151,7 @@ export default function CreateBosonLensAccountSummary({
                 alignItems="flex-start"
                 gap="1.625rem"
               >
-                <Grid>
+                <Grid alignItems="flex-start">
                   <Grid
                     flexDirection="column"
                     alignItems="flex-start"
@@ -182,7 +189,7 @@ export default function CreateBosonLensAccountSummary({
                       src={coverPicture}
                       style={{
                         maxHeight: "80px",
-                        maxWidth: "80px",
+                        maxWidth: "300px",
                         objectFit: "contain"
                       }}
                     />
@@ -282,7 +289,7 @@ export default function CreateBosonLensAccountSummary({
                       $fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
-                      Website / Social media link
+                      Website / Social media link *
                     </Typography>
                     <Typography
                       fontWeight="400"
@@ -363,7 +370,7 @@ export default function CreateBosonLensAccountSummary({
                     $fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
-                    Secondary royalties
+                    Secondary royalties *
                   </Typography>
                   <Typography
                     fontWeight="400"
@@ -383,7 +390,8 @@ export default function CreateBosonLensAccountSummary({
                     $fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
-                    Address for royalty payments
+                    Address for royalty payments{" "}
+                    {(bosonAccount.secondaryRoyalties || 0) > 0 ? "*" : ""}
                   </Typography>
                   <Typography
                     fontWeight="400"
@@ -471,6 +479,7 @@ export default function CreateBosonLensAccountSummary({
           isCreatingSellerAccount={isCreatingSellerAccount}
           isUpdatingSellerAccount={isUpdatingSellerAccount}
           onSubmit={onSubmitWithArgs}
+          submitting={submitting}
         />
       </Grid>
     </>
@@ -490,7 +499,8 @@ interface CTAsProps {
   isCreatedSellerAccount: boolean;
   isCreatingSellerAccount: boolean;
   isUpdatingSellerAccount: boolean;
-  onSubmit: (action: string, id?: string) => void;
+  onSubmit: (action: string, id?: string) => Promise<void>;
+  submitting: boolean;
 }
 
 function CTAs({
@@ -502,7 +512,8 @@ function CTAs({
   isCreatedSellerAccount,
   isCreatingSellerAccount,
   isUpdatingSellerAccount,
-  onSubmit
+  onSubmit,
+  submitting
 }: CTAsProps) {
   switch (true) {
     case hasLensHandle && !hasAdminSellerAccount:
@@ -515,13 +526,15 @@ function CTAs({
               const createdSellerId = (data || "") as string;
               onSubmit("Create Seller Account", createdSellerId);
             }}
-            disabled={isCreatingSellerAccount || isCreatedSellerAccount}
+            disabled={
+              isCreatingSellerAccount || isCreatedSellerAccount || submitting
+            }
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Create Seller Account
               </Typography>
-              {isCreatingSellerAccount && <Spinner size={15} />}
+              {(submitting || isCreatingSellerAccount) && <Spinner size={15} />}
             </Grid>
           </BosonButton>
         </Grid>
@@ -535,13 +548,13 @@ function CTAs({
               await updateSellerAccount();
               onSubmit("Update Seller Account");
             }}
-            disabled={isUpdatingSellerAccount}
+            disabled={isUpdatingSellerAccount || submitting}
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Update Seller Account
               </Typography>
-              {isUpdatingSellerAccount && <Spinner size={15} />}
+              {(isUpdatingSellerAccount || submitting) && <Spinner size={15} />}
             </Grid>
           </BosonButton>
         </Grid>

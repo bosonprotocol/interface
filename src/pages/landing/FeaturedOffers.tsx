@@ -43,7 +43,7 @@ const ViewMore = styled(LinkWithQuery)`
   align-items: center;
   cursor: pointer;
   ${() => buttonText};
-  color: ${colors.secondary};
+  color: var(--accent);
 
   transition: all 150ms ease-in-out;
   > svg {
@@ -51,7 +51,7 @@ const ViewMore = styled(LinkWithQuery)`
     transform: translateX(0);
   }
   &:hover {
-    color: ${colors.black};
+    filter: invert(50%);
     > svg {
       transform: translateX(5px);
       fill: ${colors.black};
@@ -93,10 +93,8 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
           {title}
         </Title>
         <ViewMore to={BosonRoutes.Explore}>
-          <>
-            View more
-            <CaretRight size={24} />
-          </>
+          View more
+          <CaretRight size={24} />
         </ViewMore>
       </TopContainer>
       <OfferList
@@ -108,7 +106,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         itemsPerRow={{
           xs: 1,
           s: 2,
-          m: 4,
+          m: 3,
           l: 4,
           xl: 4
         }}
