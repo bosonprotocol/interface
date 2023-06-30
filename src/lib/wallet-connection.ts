@@ -18,32 +18,6 @@ const chainPerEnviromnent: Record<EnvironmentType, Chain> = {
   production: polygon
 };
 
-function getBosonTestNetworkChainConfig(): Chain {
-  return {
-    id: 1234,
-    name: "Boson Test (PoA)",
-    network: "boson",
-    iconUrl: ethIcon,
-    iconBackground: "#fff",
-    nativeCurrency: {
-      decimals: Number(CONFIG.nativeCoin?.decimals) || 18,
-      name: CONFIG.nativeCoin?.name || "",
-      symbol: CONFIG.nativeCoin?.symbol || ""
-    },
-    rpcUrls: {
-      default: { http: [CONFIG.jsonRpcUrl] }, // TODO:check
-      public: { http: [CONFIG.jsonRpcUrl] } // TODO:check
-    },
-    blockExplorers: {
-      default: {
-        name: "Development",
-        url: "https://explorer.bsn-development-potassium.bosonportal.io/"
-      }
-    },
-    testnet: true
-  };
-}
-
 function getLocalNetworkChainConfig(): Chain {
   return {
     id: 31337,
@@ -72,9 +46,6 @@ function getLocalNetworkChainConfig(): Chain {
 
 function getChainForEnvironment(): Array<Chain> {
   const chain = chainPerEnviromnent[CONFIG.envName];
-  if (!chain) {
-    return [getBosonTestNetworkChainConfig()];
-  }
   return [chain];
 }
 
