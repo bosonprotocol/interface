@@ -1,10 +1,11 @@
 import Avatar from "@davatar/react";
+import { ArrowsClockwise } from "phosphor-react";
 import React, { useRef, useState } from "react";
 import Draggable from "react-draggable";
 import styled, { css } from "styled-components";
 
 import whiteImg from "../../../assets/white.jpeg";
-import Button from "../../../components/ui/Button";
+import { Switch } from "../../../components/form/Switch";
 import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -54,6 +55,7 @@ const StyledBannerImage = styled.img<{ $isObjectFitContain: boolean }>`
   pointer-events: auto;
   max-width: 100%;
   transform: none !important;
+  object-position: 0 0;
   ${({ $isObjectFitContain }) => {
     if ($isObjectFitContain) {
       return css`
@@ -99,39 +101,50 @@ const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
   draggable
 }) => {
   const { isLteXS } = useBreakpoints();
-  const [defaultPosition, setDefaultPosition] = useState<number>(0);
-  const handleReset = () => {
-    setDefaultPosition((prev) => prev + 1);
-  };
+  const [position, setPosition] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0
+  });
   const [isObjectFitContain, setObjectFitContain] = useState<boolean>(true);
   const imageRef = useRef<HTMLImageElement>(null);
+
+  const handlePosition = ({ x, y }: { x: number; y: number }) => {
+    const xValue = isObjectFitContain ? x : 0;
+    const newPosition = { x: xValue, y };
+    setPosition(newPosition);
+    return newPosition;
+  };
+  const handleReset = () => {
+    if (imageRef.current) {
+      imageRef.current.style.objectPosition = "0px 0px";
+    }
+    setPosition({ x: 0, y: 0 });
+  };
   return (
     <Grid flexDirection="column">
       <ButtonsContainer>
         <Grid marginBottom="1rem" justifyContent="space-between" gap="1rem">
-          <Button
-            type="button"
-            onClick={() => {
+          <Switch
+            onCheckedChange={() => {
               setObjectFitContain((prev) => !prev);
-              if (imageRef.current) {
-                imageRef.current.style.objectPosition = "center";
-              }
               handleReset();
             }}
-          >
-            object-fit: {isObjectFitContain ? "contain" : "cover"}
-          </Button>
-          <Button
-            type="button"
+            checked={!isObjectFitContain}
+            label={() => (
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => setObjectFitContain((prev) => !prev)}
+              >
+                Fit: {isObjectFitContain ? "Contain" : "Cover"}
+              </div>
+            )}
+          />
+          <ArrowsClockwise
+            style={{ cursor: "pointer" }}
             onClick={() => {
-              if (imageRef.current) {
-                imageRef.current.style.objectPosition = "center";
-              }
               handleReset();
             }}
-          >
-            Reset
-          </Button>
+          />
         </Grid>
       </ButtonsContainer>
       <ProfileSectionWrapper>
@@ -139,10 +152,25 @@ const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
           <Draggable
             // bounds="parent"
             // key={"" + defaultPosition}
+            position={position}
             disabled={!draggable}
+            onStart={(e, data) => {
+              console.log("onStart", "data", data);
+              const { x, y } = handlePosition({ x: data.x, y: data.y });
+              data.node.style.objectPosition = `${x}px ${y}px`;
+            }}
             onDrag={(e, data) => {
-              console.log("e", e, "data", data);
-              data.node.style.objectPosition = `${data.x}px ${data.y}px`;
+              console.log("onDrag", "data", data);
+              const { x, y } = handlePosition({ x: data.x, y: data.y });
+              data.node.style.objectPosition = `${x}px ${y}px`;
+              if (!isObjectFitContain) {
+                // data.node.style.clipPath = `polygon(0 ${data.y}px, 100% ${data.y}px, 100% 63%, 0 63%)`;
+              }
+            }}
+            onStop={(e, data) => {
+              console.log("onStop", "data", data);
+              const { x, y } = handlePosition({ x: data.x, y: data.y });
+              data.node.style.objectPosition = `${x}px ${y}px`;
               if (!isObjectFitContain) {
                 // data.node.style.clipPath = `polygon(0 ${data.y}px, 100% ${data.y}px, 100% 63%, 0 63%)`;
               }
@@ -151,7 +179,8 @@ const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
             <StyledBannerImage
               ref={imageRef}
               src={
-                "https://ik.imagekit.io/lens/media-snapshot/b7c1682e55814fec77bedc631f7713a64ba56b3d05c0ed3c3078bfacae519750.webp?img-format=auto" ||
+                "https://lens.infura-ipfs.io/ipfs/QmSVKtWuurA7qqpDWnKtiKcHkHib2rbEZhGXuX8bAezumH" ||
+                // "https://ik.imagekit.io/lens/media-snapshot/b7c1682e55814fec77bedc631f7713a64ba56b3d05c0ed3c3078bfacae519750.webp?img-format=auto" ||
                 coverImage ||
                 whiteImg
               }
