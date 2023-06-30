@@ -120,20 +120,24 @@ const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
     }
     setPosition({ x: 0, y: 0 });
   };
+  const handleChangeObjectFitContain = () => {
+    setObjectFitContain((prev) => !prev);
+    handleReset();
+  };
+
   return (
     <Grid flexDirection="column">
       <ButtonsContainer>
         <Grid marginBottom="1rem" justifyContent="space-between" gap="1rem">
           <Switch
             onCheckedChange={() => {
-              setObjectFitContain((prev) => !prev);
-              handleReset();
+              handleChangeObjectFitContain();
             }}
             checked={!isObjectFitContain}
             label={() => (
               <div
                 style={{ cursor: "pointer" }}
-                onClick={() => setObjectFitContain((prev) => !prev)}
+                onClick={() => handleChangeObjectFitContain()}
               >
                 Fit: {isObjectFitContain ? "Contain" : "Cover"}
               </div>
