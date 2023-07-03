@@ -3,13 +3,13 @@ import * as Sentry from "@sentry/browser";
 import qs from "query-string";
 import { useState } from "react";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { displayFloat } from "../../../lib/utils/calcPrice";
+import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -63,7 +63,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
   const { hideModal, showModal } = useModal();
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const navigate = useKeepQueryParamsNavigate();
 
   const { currency, price, penalty, refund } = useRefundData(

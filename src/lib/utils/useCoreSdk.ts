@@ -1,11 +1,11 @@
 import { hooks } from "@bosonprotocol/react-kit";
 import { providers } from "ethers";
-import { useSigner } from "wagmi";
 
 import { CONFIG } from "../config";
+import { useEthersSigner } from "./hooks/ethers/useEthersSigner";
 
 export function useCoreSDK() {
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   return hooks.useCoreSdk({
     ...CONFIG,
     web3Provider: signer?.provider as providers.Web3Provider

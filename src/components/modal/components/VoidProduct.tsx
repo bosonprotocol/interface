@@ -10,11 +10,11 @@ import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
+import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
@@ -197,7 +197,7 @@ export default function VoidProduct({
   const coreSdk = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const { hideModal } = useModal();
 
   const handleFinish = useCallback(() => {

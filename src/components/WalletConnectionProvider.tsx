@@ -12,7 +12,7 @@ import { WagmiConfig } from "wagmi";
 
 import { colors } from "../lib/styles/colors";
 import { useCSSVariable } from "../lib/utils/hooks/useCSSVariable";
-import { chains, wagmiClient } from "../lib/wallet-connection";
+import { chains, wagmiConfig } from "../lib/wallet-connection";
 import FallbackAvatar from "./avatar/fallback-avatar";
 
 interface Props {
@@ -43,7 +43,7 @@ export default function WalletConnectionProvider({ children }: Props) {
   } as Theme);
 
   return (
-    <WagmiConfig client={wagmiClient}>
+    <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         chains={chains}
         theme={walletConnectionTheme}
