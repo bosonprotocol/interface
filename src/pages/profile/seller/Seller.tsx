@@ -34,12 +34,20 @@ import ReadMore from "../common/ReadMore";
 import {
   AddressContainer,
   AvatarEmptySpace,
+  avatarHeight,
   BasicInfo,
   ProfileSectionWrapper
 } from "../ProfilePage.styles";
 import SellerImagesSection from "./SellerImagesSection";
 import SellerSocial from "./SellerSocial";
 import Tabs from "./Tabs";
+
+const StyledSellerImagesSection = styled(SellerImagesSection)`
+  margin-bottom: calc(${avatarHeight} / 2);
+  ${breakpoint.s} {
+    margin-bottom: unset;
+  }
+`;
 
 const SellerCalculationContainer = styled.div`
   margin-bottom: 2rem;
@@ -56,7 +64,7 @@ const LensTitle = styled(Typography)`
   }
 `;
 
-const FollowLens = styled.div`
+const SellerButton = styled.div`
   margin-left: 0.75rem;
   padding: 0.25rem 1rem;
   border: 2px solid ${colors.secondary};
@@ -219,7 +227,7 @@ export default function Seller() {
   return (
     <>
       <BasicInfo>
-        <SellerImagesSection
+        <StyledSellerImagesSection
           coverImage={coverImage}
           profileImage={profileImage}
           address={currentSellerAddress}
@@ -260,10 +268,11 @@ export default function Seller() {
               justifyContent="flex-end"
               $width="auto"
               margin="1.25rem 0 0 0"
+              gap="1rem"
             >
               <>
                 {sellerLens && useLens && (
-                  <FollowLens>
+                  <SellerButton>
                     <a
                       href={`https://lenster.xyz/u/${sellerLens?.handle}`}
                       target="_blank"
@@ -271,16 +280,16 @@ export default function Seller() {
                     >
                       Follow
                     </a>
-                  </FollowLens>
+                  </SellerButton>
                 )}
                 {isMySeller && (
-                  <div style={{ marginLeft: "1.5rem" }}>
-                    <EditProfile
-                      onClose={() => {
-                        refetch();
-                      }}
-                    />
-                  </div>
+                  <EditProfile
+                    onClose={() => {
+                      refetch();
+                    }}
+                  >
+                    <SellerButton>Edit profile</SellerButton>
+                  </EditProfile>
                 )}
                 <SellerSocial
                   seller={seller}

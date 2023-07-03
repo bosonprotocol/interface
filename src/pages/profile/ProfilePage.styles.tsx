@@ -71,6 +71,7 @@ export const BannerImageLayer = styled.div`
   }
 `;
 
+export const avatarHeight = "7.25rem";
 export const AvatarContainer = styled.div`
   display: flex;
   margin-top: 4.5rem;
@@ -82,7 +83,7 @@ export const AvatarContainer = styled.div`
   }
   > div {
     width: 7.25rem !important;
-    height: 7.25rem !important;
+    height: ${avatarHeight} !important;
     overflow: hidden;
     ${breakpoint.s} {
       top: 50%;

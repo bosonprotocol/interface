@@ -67,7 +67,16 @@ export function buildRegularProfileFromMetadata(
   metadata: SellerFieldsFragment["metadata"] | undefined | null
 ): CreateProfile {
   const profileImage = metadata?.images?.find((img) => img.tag === "profile");
-  const coverPicture = metadata?.images?.find((img) => img.tag === "cover");
+  const metadataCoverPicture = metadata?.images?.find(
+    (img) => img.tag === "cover"
+  );
+  const coverPicture = metadataCoverPicture
+    ? {
+        ...metadataCoverPicture,
+        fit: "contain",
+        position: "33px 44px"
+      }
+    : metadataCoverPicture;
   const profileDataFromMetadata: CreateProfile = {
     name: metadata?.name ?? "",
     description: metadata?.description ?? "",

@@ -6,9 +6,11 @@ import styled, { css } from "styled-components";
 
 import whiteImg from "../../../assets/white.jpeg";
 import { Switch } from "../../../components/form/Switch";
+import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
 import { breakpoint } from "../../../lib/styles/breakpoint";
+import { colors } from "../../../lib/styles/colors";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { AvatarContainer, ProfileSectionWrapper } from "../ProfilePage.styles";
 
@@ -37,7 +39,7 @@ const BannerImageLayer = styled.div`
 
 const WrapperWrapper = styled.div.attrs({ "data-wrapper-wrapper": true })`
   width: 100%;
-  border: 1px solid green;
+  border: 1px solid ${colors.lightGrey};
   display: flex;
   overflow: hidden;
   align-items: center;
@@ -51,16 +53,23 @@ const WrapperWrapper = styled.div.attrs({ "data-wrapper-wrapper": true })`
   }
 `;
 
-const StyledBannerImage = styled.img<{ $isObjectFitContain: boolean }>`
+const StyledBannerImage = styled.img<{
+  $isObjectFitContain: boolean;
+  $objectPosition: string;
+}>`
   pointer-events: auto;
   max-width: 100%;
   transform: none !important;
-  object-position: 0 0;
+  ${({ $objectPosition }) => {
+    return css`
+      object-position: ${$objectPosition};
+    `;
+  }};
+
   ${({ $isObjectFitContain }) => {
     if ($isObjectFitContain) {
       return css`
         object-fit: contain;
-        /* width: 100%; */
         max-height: 100%;
       `;
     }
@@ -68,7 +77,6 @@ const StyledBannerImage = styled.img<{ $isObjectFitContain: boolean }>`
       object-fit: cover;
       width: 100%;
       position: absolute;
-
       height: ${smallHeight};
       ${breakpoint.s} {
         height: ${bigHeight};
@@ -92,20 +100,29 @@ interface SellerImagesSectionProps {
   profileImage?: string;
   address: string;
   draggable?: boolean;
+  defaultPosition?: { x: number; y: number };
+  defaultIsObjectFitContain?: boolean;
 }
 
 const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
   coverImage,
   profileImage,
   address: currentSellerAddress,
-  draggable
+  draggable,
+  defaultPosition,
+  defaultIsObjectFitContain,
+  ...rest
 }) => {
   const { isLteXS } = useBreakpoints();
-  const [position, setPosition] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: 0
-  });
-  const [isObjectFitContain, setObjectFitContain] = useState<boolean>(true);
+  const [position, setPosition] = useState<{ x: number; y: number }>(
+    defaultPosition ?? {
+      x: 0,
+      y: 0
+    }
+  );
+  const [isObjectFitContain, setObjectFitContain] = useState<boolean>(
+    !!defaultIsObjectFitContain
+  );
   const imageRef = useRef<HTMLImageElement>(null);
 
   const handlePosition = ({ x, y }: { x: number; y: number }) => {
@@ -124,64 +141,63 @@ const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
     setObjectFitContain((prev) => !prev);
     handleReset();
   };
-
+  const disabled = !draggable;
+  const defaultObjectPosition =
+    defaultPosition || draggable
+      ? `${defaultPosition?.x || 0}px ${defaultPosition?.y || 0}px`
+      : "";
   return (
-    <Grid flexDirection="column">
-      <ButtonsContainer>
-        <Grid marginBottom="1rem" justifyContent="space-between" gap="1rem">
-          <Switch
-            onCheckedChange={() => {
-              handleChangeObjectFitContain();
-            }}
-            checked={!isObjectFitContain}
-            label={() => (
-              <div
-                style={{ cursor: "pointer" }}
-                onClick={() => handleChangeObjectFitContain()}
-              >
-                Fit: {isObjectFitContain ? "Contain" : "Cover"}
-              </div>
-            )}
-          />
-          <ArrowsClockwise
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              handleReset();
-            }}
-          />
-        </Grid>
-      </ButtonsContainer>
+    <Grid flexDirection="column" {...rest}>
+      {!disabled && (
+        <ButtonsContainer>
+          <Grid marginBottom="1rem" justifyContent="space-between" gap="1rem">
+            <Switch
+              onCheckedChange={() => {
+                handleChangeObjectFitContain();
+              }}
+              checked={!isObjectFitContain}
+              label={() => (
+                <div
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleChangeObjectFitContain()}
+                >
+                  Fit: {isObjectFitContain ? "Contain" : "Cover"}
+                </div>
+              )}
+            />
+            <Button
+              theme="outline"
+              onClick={() => {
+                handleReset();
+              }}
+            >
+              Reset
+              <ArrowsClockwise size={30} />
+            </Button>
+          </Grid>
+        </ButtonsContainer>
+      )}
       <ProfileSectionWrapper>
         <WrapperWrapper>
           <Draggable
-            // bounds="parent"
-            // key={"" + defaultPosition}
             position={position}
-            disabled={!draggable}
-            onStart={(e, data) => {
-              console.log("onStart", "data", data);
+            disabled={disabled}
+            onStart={(_, data) => {
               const { x, y } = handlePosition({ x: data.x, y: data.y });
               data.node.style.objectPosition = `${x}px ${y}px`;
             }}
-            onDrag={(e, data) => {
-              console.log("onDrag", "data", data);
+            onDrag={(_, data) => {
               const { x, y } = handlePosition({ x: data.x, y: data.y });
               data.node.style.objectPosition = `${x}px ${y}px`;
-              if (!isObjectFitContain) {
-                // data.node.style.clipPath = `polygon(0 ${data.y}px, 100% ${data.y}px, 100% 63%, 0 63%)`;
-              }
             }}
-            onStop={(e, data) => {
-              console.log("onStop", "data", data);
+            onStop={(_, data) => {
               const { x, y } = handlePosition({ x: data.x, y: data.y });
               data.node.style.objectPosition = `${x}px ${y}px`;
-              if (!isObjectFitContain) {
-                // data.node.style.clipPath = `polygon(0 ${data.y}px, 100% ${data.y}px, 100% 63%, 0 63%)`;
-              }
             }}
           >
             <StyledBannerImage
               ref={imageRef}
+              $objectPosition={defaultObjectPosition}
               src={
                 "https://lens.infura-ipfs.io/ipfs/QmSVKtWuurA7qqpDWnKtiKcHkHib2rbEZhGXuX8bAezumH" ||
                 // "https://ik.imagekit.io/lens/media-snapshot/b7c1682e55814fec77bedc631f7713a64ba56b3d05c0ed3c3078bfacae519750.webp?img-format=auto" ||
