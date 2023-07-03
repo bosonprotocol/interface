@@ -137,6 +137,9 @@ export const CONFIG = {
     LENS_PROFILES_CONTRACT_PARTIAL_ABI:
       config.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
+  },
+  walletConnect: {
+    projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
   }
 };
 

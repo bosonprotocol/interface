@@ -2,10 +2,10 @@ import { Provider, RevokeButton, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
+import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -50,7 +50,7 @@ export default function RevokeProduct({
   exchange,
   refetch
 }: Props) {
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();

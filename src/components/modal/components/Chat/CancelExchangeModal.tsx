@@ -4,11 +4,11 @@ import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { displayFloat } from "../../../../lib/utils/calcPrice";
+import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import useRefundData from "../../../../lib/utils/hooks/useRefundData";
@@ -115,7 +115,7 @@ export default function CancelExchangeModal({
 
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const { showModal, modalTypes } = useModal();
 
   const { currency, price, penalty, refund } = useRefundData(

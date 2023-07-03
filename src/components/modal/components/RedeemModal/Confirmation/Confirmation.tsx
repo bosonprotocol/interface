@@ -10,11 +10,11 @@ import { Warning } from "phosphor-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { useChatStatus } from "../../../../../lib/utils/hooks/chat/useChatStatus";
+import { useEthersSigner } from "../../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
@@ -73,7 +73,7 @@ export default function Confirmation({
     !!bosonXmtp &&
     ["INITIALIZED", "ALREADY_INITIALIZED"].includes(chatInitializationStatus);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { data: signer } = useSigner();
+  const signer = useEthersSigner();
   const [nameField] = useField(FormModel.formFields.name.name);
   const [streetNameAndNumberField] = useField(
     FormModel.formFields.streetNameAndNumber.name
