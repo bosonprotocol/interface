@@ -34,20 +34,12 @@ import ReadMore from "../common/ReadMore";
 import {
   AddressContainer,
   AvatarEmptySpace,
-  avatarHeight,
   BasicInfo,
   ProfileSectionWrapper
 } from "../ProfilePage.styles";
-import SellerImagesSection from "./SellerImagesSection";
+import { SellerImagesSectionView } from "./SellerImagesSectionView";
 import SellerSocial from "./SellerSocial";
 import Tabs from "./Tabs";
-
-const StyledSellerImagesSection = styled(SellerImagesSection)`
-  margin-bottom: calc(${avatarHeight} / 2);
-  ${breakpoint.s} {
-    margin-bottom: unset;
-  }
-`;
 
 const SellerCalculationContainer = styled.div`
   margin-bottom: 2rem;
@@ -139,11 +131,18 @@ export default function Seller() {
     (useLens ? sellerLens?.bio : metadata?.description) ??
     metadata?.description ??
     "";
-  const regularCoverImage = metadata?.images?.find(
+  const metadataCoverImage = metadata?.images?.find(
     (img) => img.tag === "cover"
-  )?.url;
-  const coverImage =
-    (useLens ? lensCoverImage : regularCoverImage) ?? regularCoverImage;
+  );
+  const coverImageUrl: string | undefined =
+    (useLens ? lensCoverImage : metadataCoverImage?.url) ??
+    metadataCoverImage?.url;
+  // the source of truth of the cover image is the one in the metadata if it exists
+  const metadataCoverImageToUse = useLens
+    ? metadataCoverImage
+      ? metadataCoverImage
+      : undefined
+    : metadataCoverImage;
   const regularProfileImage = metadata?.images?.find(
     (img) => img.tag === "profile"
   )?.url;
@@ -227,10 +226,11 @@ export default function Seller() {
   return (
     <>
       <BasicInfo>
-        <StyledSellerImagesSection
-          coverImage={coverImage}
+        <SellerImagesSectionView
+          coverImageUrl={coverImageUrl}
           profileImage={profileImage}
           address={currentSellerAddress}
+          metadataCoverImage={metadataCoverImageToUse}
         />
 
         <ProfileSectionWrapper>

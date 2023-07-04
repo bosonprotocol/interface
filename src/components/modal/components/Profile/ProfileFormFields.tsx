@@ -45,7 +45,15 @@ export function ProfileFormFields({
   const { address = "" } = useAccount();
   const { values } = useFormikContext<CreateProfile>();
   const profileImage = getIpfsGatewayUrl(values.logo?.[0]?.src ?? "");
-  const coverPicture = getIpfsGatewayUrl(values.coverPicture?.[0]?.src ?? "");
+  const coverPicture = values.coverPicture?.[0];
+  const defaultPositionArray = coverPicture?.position
+    ?.replaceAll("px", "")
+    .split(" ")
+    .map((n) => Number.parseFloat(n));
+  const defaultPosition = defaultPositionArray
+    ? { x: defaultPositionArray?.[0] ?? 0, y: defaultPositionArray?.[1] ?? 0 }
+    : undefined;
+  console.log("coverPicture", coverPicture);
   return (
     <>
       <GridContainer
@@ -90,7 +98,9 @@ export function ProfileFormFields({
             <SellerImagesSection
               address={address}
               profileImage={profileImage}
-              coverImage={coverPicture}
+              metadataCoverImage={coverPicture}
+              defaultIsObjectFitContain={coverPicture?.fit === "contain"}
+              defaultPosition={defaultPosition}
               draggable
             />
           </SellerImagesSectionContainer>

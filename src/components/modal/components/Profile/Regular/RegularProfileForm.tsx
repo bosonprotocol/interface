@@ -3,10 +3,12 @@ import { ReactElement, ReactNode } from "react";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { Spinner } from "../../../../loading/Spinner";
+import { CreateProfile } from "../../../../product/utils";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
+import { LensProfileType } from "../Lens/validationSchema";
 import { ProfileFormFields } from "../ProfileFormFields";
 
 type Props = {
@@ -21,7 +23,9 @@ export default function RegularProfileForm({
   forceDirty,
   switchButton: SwitchButton
 }: Props) {
-  const { nextIsDisabled, dirty, isSubmitting } = useCreateForm();
+  const { nextIsDisabled, dirty, isSubmitting, touched } = useCreateForm<
+    CreateProfile | LensProfileType
+  >();
   const navigate = useKeepQueryParamsNavigate();
 
   return (
@@ -60,7 +64,9 @@ export default function RegularProfileForm({
             type="submit"
             disabled={nextIsDisabled || isSubmitting}
           >
-            {dirty || forceDirty ? "Save & continue" : "Next"}
+            {dirty || forceDirty || touched.coverPicture
+              ? "Save & continue"
+              : "Next"}
             {isSubmitting && <Spinner size="20" />}
           </BosonButton>
         ) : (

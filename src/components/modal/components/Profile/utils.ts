@@ -67,16 +67,7 @@ export function buildRegularProfileFromMetadata(
   metadata: SellerFieldsFragment["metadata"] | undefined | null
 ): CreateProfile {
   const profileImage = metadata?.images?.find((img) => img.tag === "profile");
-  const metadataCoverPicture = metadata?.images?.find(
-    (img) => img.tag === "cover"
-  );
-  const coverPicture = metadataCoverPicture
-    ? {
-        ...metadataCoverPicture,
-        fit: "contain",
-        position: "33px 44px"
-      }
-    : metadataCoverPicture;
+  const coverPicture = metadata?.images?.find((img) => img.tag === "cover");
   const profileDataFromMetadata: CreateProfile = {
     name: metadata?.name ?? "",
     description: metadata?.description ?? "",
@@ -84,7 +75,14 @@ export function buildRegularProfileFromMetadata(
     legalTradingName: metadata?.legalTradingName ?? undefined,
     website: metadata?.website ?? "",
     coverPicture: coverPicture
-      ? [{ ...coverPicture, src: coverPicture.url }] ?? []
+      ? [
+          {
+            ...coverPicture,
+            fit: coverPicture.fit ?? undefined,
+            position: coverPicture.position ?? undefined,
+            src: coverPicture.url
+          }
+        ] ?? []
       : [],
     logo: profileImage
       ? [{ ...profileImage, src: profileImage.url }] ?? []
