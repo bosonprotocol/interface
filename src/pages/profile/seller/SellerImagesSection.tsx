@@ -23,7 +23,6 @@ const smallHeight = "9rem";
 const bigHeight = "11.875rem";
 
 const ProfileSectionWrapper = styled.div`
-  position: relative;
   max-width: 68.75rem;
   width: 100%;
   margin-left: auto;
@@ -39,18 +38,13 @@ const ProfileSectionWrapper = styled.div`
 
 const ButtonsContainer = styled.div`
   width: 100%;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  ${breakpoint.s} {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
   box-sizing: border-box;
 `;
 
 const BannerImageLayer = styled.div`
-  position: absolute;
-  top: 0;
+  pointer-events: none;
+  position: relative;
+  top: -50%;
   height: ${smallHeight};
   ${breakpoint.s} {
     height: ${bigHeight};
@@ -59,11 +53,10 @@ const BannerImageLayer = styled.div`
 
 const WrapperWrapper = styled.div.attrs({ "data-wrapper-wrapper": true })`
   width: 100%;
-  border: 1px solid ${colors.lightGrey};
+
   display: flex;
   overflow: hidden;
   align-items: center;
-  position: relative;
   height: ${smallHeight};
   ${breakpoint.s} {
     height: ${bigHeight};
@@ -79,8 +72,19 @@ const StyledBannerImage = styled.img<{
 }>`
   pointer-events: auto;
   max-width: 100%;
+  border: 1px solid ${colors.lightGrey};
   transform: none !important;
   height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  &.react-draggable {
+    cursor: grab;
+  }
+  &.react-draggable-dragging {
+    cursor: grabbing;
+  }
   ${({ $objectPosition }) => {
     return css`
       object-position: ${$objectPosition};
@@ -91,13 +95,16 @@ const StyledBannerImage = styled.img<{
     if ($isObjectFitContain) {
       return css`
         object-fit: contain;
-        max-height: 100%;
+        height: 100%;
+        max-height: ${smallHeight};
+        ${breakpoint.s} {
+          max-height: ${bigHeight};
+        }
       `;
     }
     return css`
       object-fit: cover;
-      width: 100%;
-      position: absolute;
+
       height: ${smallHeight};
       ${breakpoint.s} {
         height: ${bigHeight};
@@ -274,7 +281,10 @@ const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
             <StyledBannerImage
               ref={imageRef}
               $objectPosition={defaultObjectPosition}
-              src={coverImageUrl || whiteImg}
+              src={
+                // "https://lens.infura-ipfs.io/ipfs/QmSVKtWuurA7qqpDWnKtiKcHkHib2rbEZhGXuX8bAezumH" ||
+                coverImageUrl || whiteImg
+              }
               data-cover-img
               draggable={false}
               $isObjectFitContain={!!isObjectFitContain}

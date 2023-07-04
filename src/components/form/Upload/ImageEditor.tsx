@@ -10,6 +10,8 @@ const StyledCanvasWrapper = styled.div`
   > :first-child {
     max-width: 100%;
     object-fit: contain;
+    width: auto !important;
+    height: auto !important;
   }
 `;
 
@@ -29,7 +31,9 @@ export const ImageEditor = forwardRef<AvatarEditor, ImageEditorProps>(
     };
     const { data } = useIpfsImage({ url: url ?? "" }, { enabled: !!url });
     const image = data?.base64;
-    const w = borderRadius ? undefined : width;
+    const { width: imageWidth, height: imageHeight } = data || {};
+    const w = borderRadius ? undefined : width || imageWidth;
+    const h = height || imageHeight;
     return (
       <>
         {image && (
@@ -53,7 +57,7 @@ export const ImageEditor = forwardRef<AvatarEditor, ImageEditorProps>(
                     image={image}
                     ref={editorRef}
                     width={w}
-                    height={height}
+                    height={h}
                     scale={scale}
                     borderRadius={borderRadius}
                   />

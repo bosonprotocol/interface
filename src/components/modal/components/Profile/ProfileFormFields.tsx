@@ -1,11 +1,9 @@
 import { useFormikContext } from "formik";
 import { ReactNode } from "react";
-import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { getIpfsGatewayUrl } from "../../../../lib/utils/ipfs";
 import { websitePattern } from "../../../../lib/validation/regex/url";
-import SellerImagesSection from "../../../../pages/profile/seller/SellerImagesSection";
 import { FormField, Input, Select, Textarea, Upload } from "../../../form";
 import {
   CreateProfile,
@@ -13,13 +11,7 @@ import {
 } from "../../../product/utils";
 import Grid from "../../../ui/Grid";
 import GridContainer from "../../../ui/GridContainer";
-
-const SellerImagesSectionContainer = styled.div`
-  position: relative;
-  width: 100%;
-  margin-bottom: 4.5rem;
-  display: flex;
-`;
+import { ProfilePreview } from "./ProfilePreview";
 
 interface Props {
   onBlurName?: () => void;
@@ -53,7 +45,6 @@ export function ProfileFormFields({
   const defaultPosition = defaultPositionArray
     ? { x: defaultPositionArray?.[0] ?? 0, y: defaultPositionArray?.[1] ?? 0 }
     : undefined;
-  console.log("coverPicture", coverPicture);
   return (
     <>
       <GridContainer
@@ -86,25 +77,20 @@ export function ProfileFormFields({
             disabled={disableCover}
             withUpload
             withEditor
-            width={1531}
-            height={190}
             imgPreviewStyle={{ objectFit: "contain" }}
+            wrapperProps={{ style: { width: "100%" } }}
           />
         </FormField>
       </GridContainer>
-      <Grid>
-        <FormField title="Preview">
-          <SellerImagesSectionContainer>
-            <SellerImagesSection
-              address={address}
-              profileImage={profileImage}
-              metadataCoverImage={coverPicture}
-              defaultIsObjectFitContain={coverPicture?.fit === "contain"}
-              defaultPosition={defaultPosition}
-              draggable
-            />
-          </SellerImagesSectionContainer>
-        </FormField>
+      <Grid margin="1rem 0">
+        <ProfilePreview
+          address={address}
+          profileImage={profileImage}
+          metadataCoverImage={coverPicture}
+          defaultIsObjectFitContain={coverPicture?.fit === "contain"}
+          defaultPosition={defaultPosition}
+          draggable
+        />
       </Grid>
       <FormField title="Your brand / name" required>
         <Input

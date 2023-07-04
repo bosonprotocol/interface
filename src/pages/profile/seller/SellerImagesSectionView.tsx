@@ -61,7 +61,7 @@ const StyledImage = styled(Image)`
 
 interface SellerImagesSectionProps {
   coverImageUrl?: string;
-  metadataCoverImage?: subgraph.SellerMetadataMedia;
+  metadataCoverImage?: Pick<subgraph.SellerMetadataMedia, "fit" | "position">;
   profileImage?: string;
   address: string;
 }
