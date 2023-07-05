@@ -68,6 +68,8 @@ export function ProfileFormFields({
             withUpload
             withEditor
             borderRadius={100}
+            width={200}
+            height={200}
           />
         </FormField>
         <FormField title="Cover picture" subTitle={coverSubtitle} required>
