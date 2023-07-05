@@ -9,6 +9,9 @@ on:
       DEPLOY_TO_FLEEK:
         required: true
         type: boolean
+      IS_PREVIEW:
+        required: true
+        type: boolean
       UPDATE_COVERAGE:
         required: true
         type: boolean
@@ -106,6 +109,7 @@ jobs:
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID }}
       REACT_APP_RELEASE_TAG: ${{ inputs.REACT_APP_RELEASE_TAG }}
       REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}
+      REACT_APP_VIEW_MODE: "dapp"
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
@@ -174,3 +178,39 @@ jobs:
       - name: Get the output url
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
         run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+      - name: Build dapp for the preview
+        run: npm run build
+        if: ${{ inputs.IS_PREVIEW == true }}
+        env:
+          REACT_APP_VIEW_MODE: "dapp,dr_center"
+      - name: Build dapp to show the dr_center only
+        run: npm run build
+        if: ${{ inputs.IS_PREVIEW == false }}
+        env:
+          REACT_APP_VIEW_MODE: "dr_center"
+      - name: (if DR Center 'testing' env) Copy contents from .fleek_dr_center_testing.json to .fleek.json
+        if: ${{ inputs.ENV_NAME == 'testing' }}
+        run: mv .fleek_dr_center_testing.json .fleek.json
+      - name: (if DR Center 'staging' env) Copy contents from .fleek_dr_center_staging.json to .fleek.json
+        if: ${{ inputs.ENV_NAME == 'staging' }}
+        run: mv .fleek_dr_center_staging.json .fleek.json
+      - name: (if DR Center 'production' env) Copy contents from .fleek_dr_center_production.json to .fleek.json
+        if: ${{ inputs.ENV_NAME == 'production' }}
+        run: mv .fleek_dr_center_production.json .fleek.json
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+      - name: Deploy via fleek
+        if: ${{ inputs.DEPLOY_TO_FLEEK }}
+        id: deploy
+        uses: fleekhq/action-deploy@v1
+        with:
+          apiKey: ${{ secrets.FLEEK_API_KEY }}
+          workDir: ./public
+      - name: Get the output url
+        if: ${{ inputs.DEPLOY_TO_FLEEK }}
+        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+        
+
