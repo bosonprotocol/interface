@@ -42,6 +42,7 @@ jobs:
     with:
       REACT_APP_ENV_NAME: "testing"
       DEPLOY_TO_FLEEK: false
+      IS_PREVIEW: true
       ENV_NAME: "testing"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: false
@@ -66,6 +67,7 @@ jobs:
     with:
       REACT_APP_ENV_NAME: "testing"
       DEPLOY_TO_FLEEK: true
+      IS_PREVIEW: false
       ENV_NAME: "testing"
       UPDATE_COVERAGE: true
       REACT_APP_ENABLE_CURATION_LISTS: true
@@ -97,6 +99,7 @@ jobs:
     with:
       REACT_APP_ENV_NAME: "staging"
       DEPLOY_TO_FLEEK: true
+      IS_PREVIEW: false
       ENV_NAME: "staging"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: true
@@ -128,6 +131,7 @@ jobs:
     with:
       REACT_APP_ENV_NAME: "production"
       DEPLOY_TO_FLEEK: true
+      IS_PREVIEW: false
       ENV_NAME: "production"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: true
