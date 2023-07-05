@@ -207,6 +207,6 @@ jobs:
           workDir: ./public
       - name: Get the output url
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
-        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+        run: echo "Deploy url is ${{ steps.deploy_dr_center.outputs.deployUrl }}"
         
 
