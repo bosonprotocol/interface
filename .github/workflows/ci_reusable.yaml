@@ -179,11 +179,6 @@ jobs:
       - name: Get the output url
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
         run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
-      - name: Build dapp for the preview
-        run: npm run build
-        if: ${{ inputs.IS_PREVIEW == true && inputs.DEPLOY_TO_FLEEK }}
-        env:
-          REACT_APP_VIEW_MODE: "dapp,dr_center"
       - name: Build dapp to show the dr_center only
         run: npm run build
         if: ${{ inputs.IS_PREVIEW == false && inputs.DEPLOY_TO_FLEEK }}
