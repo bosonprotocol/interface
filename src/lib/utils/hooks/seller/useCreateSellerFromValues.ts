@@ -81,7 +81,11 @@ async function createSellerFromValues(
         tag: "cover",
         height: cover?.height ?? undefined,
         type: cover?.type,
-        width: cover?.width ?? undefined
+        width: cover?.width ?? undefined,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        fit: cover?.fit,
+        position: cover?.position
       }
     ]
   });
