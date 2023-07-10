@@ -6,7 +6,10 @@ import { ReactElement, useState } from "react";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { preAppendHttps } from "../../../../../lib/validation/regex/url";
 import SimpleError from "../../../../error/SimpleError";
-import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../../product/utils";
+import {
+  CreateProfile,
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
+} from "../../../../product/utils";
 import { LensStep } from "./const";
 import LensFormFields from "./LensFormFields";
 import {
@@ -20,9 +23,11 @@ interface Props {
     createValues: LensProfileType,
     opts: {
       dirtyFields: Record<keyof LensProfileType, boolean>;
+      coverImageTouched: boolean;
     }
   ) => Promise<void>;
   profile: Profile;
+  profileInitialData?: CreateProfile;
   seller: subgraph.SellerFieldsFragment | null;
   formValues: LensProfileType | null | undefined;
   onBackClick: () => void;
@@ -36,6 +41,7 @@ export default function LensForm({
   onSubmit,
   profile,
   seller,
+  profileInitialData,
   onBackClick,
   formValues,
   setStepBasedOnIndex,
@@ -56,6 +62,7 @@ export default function LensForm({
     website: false,
     contactPreference: false
   });
+  const [coverImageTouched, setCoverImageTouched] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const defaultInitialValues: LensProfileType = {
     logo: [],
@@ -75,11 +82,14 @@ export default function LensForm({
         try {
           setError(null);
           if (profile) {
-            await onSubmit(values, { dirtyFields: changedFields });
+            await onSubmit(values, {
+              dirtyFields: changedFields,
+              coverImageTouched
+            });
           } else {
             await onSubmit(
               { ...values, website: preAppendHttps(values.website) },
-              { dirtyFields: changedFields }
+              { dirtyFields: changedFields, coverImageTouched }
             );
           }
         } catch (err) {
@@ -90,10 +100,14 @@ export default function LensForm({
       }}
       validationSchema={viewLensProfileValidationSchema}
     >
-      {() => {
+      {({ touched }) => {
+        if (touched.coverPicture !== coverImageTouched) {
+          setCoverImageTouched(!!touched.coverPicture);
+        }
         return (
           <Form>
             <ViewOrEditLensProfile
+              profileInitialData={profileInitialData}
               profile={profile}
               seller={seller}
               onBackClick={onBackClick}

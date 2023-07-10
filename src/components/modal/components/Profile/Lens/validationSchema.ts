@@ -2,6 +2,7 @@ import * as Yup from "yup";
 
 import { CONFIG } from "../../../../../lib/config";
 import { validationMessage } from "../../../../../lib/const/validationMessage";
+import { FileProps } from "../../../../form/Upload/types";
 import { validationOfRequiredIpfsImage } from "../../../../product/utils/validationUtils";
 import { getCommonFieldsValidation } from "../valitationSchema";
 
@@ -20,7 +21,9 @@ const commonLensValidationSchema = {
 
 export const viewLensProfileValidationSchema = Yup.object({
   logo: validationOfRequiredIpfsImage(),
-  coverPicture: validationOfRequiredIpfsImage(),
+  coverPicture: validationOfRequiredIpfsImage<
+    FileProps & { fit?: string; position?: string }
+  >(),
   ...getCommonFieldsValidation({ withMaxLengthValidation: true }),
   ...commonLensValidationSchema
 });

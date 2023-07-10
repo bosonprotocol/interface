@@ -117,7 +117,9 @@ async function updateSellerMedatata(
                   tag: "cover",
                   height: cover?.height ?? undefined,
                   type: cover?.type,
-                  width: cover?.width ?? undefined
+                  width: cover?.width ?? undefined,
+                  fit: cover?.fit,
+                  position: cover?.position
                 }
               ]
             : [])
