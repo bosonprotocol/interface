@@ -69,6 +69,8 @@ const getSellersByIds = () => (sellerIds: string[], isSellerId: boolean) => {
                   type
                   width
                   height
+                  fit
+                  position
                 }
                 contactLinks {
                   id

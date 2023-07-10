@@ -212,12 +212,13 @@ const HeaderItems = styled.nav<{
     `;
   }}
 `;
-
+const logoXXSHeightPx = 24;
+const logoSHeightPx = 47;
 const LogoImg = styled.img`
-  height: 24px;
+  height: ${logoXXSHeightPx}px;
   cursor: pointer;
   ${breakpoint.s} {
-    height: 47px;
+    height: ${logoSHeightPx}px;
   }
 `;
 
@@ -360,6 +361,14 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                       src={logoUrl || logo}
                       alt="logo image"
                       data-testid="logo"
+                      width={logoUrl ? undefined : isLteXS ? 104 : 204}
+                      height={
+                        logoUrl
+                          ? undefined
+                          : isLteXS
+                          ? logoXXSHeightPx
+                          : logoSHeightPx
+                      }
                     />
                   </LinkWithQuery>
                   {isSideCrossVisible && (

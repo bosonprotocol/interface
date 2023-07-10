@@ -156,11 +156,11 @@ const CarouselCell = styled.div<{
   ${nthChilds}
   ${(props) =>
     props.$isCurrent
-      ? `
-  > div {
-    transform: scale(1.1);
-  }
-  `
+      ? css`
+          > div {
+            transform: scale(1.1);
+          }
+        `
       : ""};
   [data-testid="offer"] {
     box-shadow: none;
@@ -259,7 +259,11 @@ export default function Carousel() {
     trackMouse: true
   });
   if (isLoading) {
-    return <Loading />;
+    return (
+      <Scene style={{ justifyContent: "center" }}>
+        <Loading />
+      </Scene>
+    );
   }
   if (!uiOffers?.length) {
     return <></>;

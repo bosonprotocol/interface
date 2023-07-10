@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 
 import { fetchImageAsBase64 } from "../../base64";
+import { getImageMetadata } from "../../images";
 
 type UseIpfsImageProps = {
   url: string;
@@ -13,7 +14,12 @@ export function useIpfsImage(
   return useQuery(
     ["useIpfsImage", { url }],
     async () => {
-      return await fetchImageAsBase64(url);
+      const result = await fetchImageAsBase64(url);
+      const metadata = await getImageMetadata(result.base64);
+      return {
+        ...result,
+        ...metadata
+      };
     },
     {
       enabled: options.enabled
