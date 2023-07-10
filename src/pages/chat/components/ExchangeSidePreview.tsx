@@ -198,7 +198,9 @@ const getOfferDetailData = (
   const handleShowExchangePolicy = () => {
     showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
       title: "Exchange Policy Details",
-      offerId: offer.id
+      offerId: offer.id,
+      offerData: offer,
+      exchangePolicyCheckResult
     });
   };
 

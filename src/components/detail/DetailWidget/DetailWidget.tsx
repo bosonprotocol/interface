@@ -181,12 +181,12 @@ export const getOfferDetailData = (
 
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
-    const offerData = offer.id ? undefined : offer;
     if (modalTypes && showModal) {
       showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
         title: "Exchange Policy Details",
         offerId: offer.id,
-        offerData
+        offerData: offer,
+        exchangePolicyCheckResult
       });
     } else {
       console.error("modalTypes and/or showModal undefined");
