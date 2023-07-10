@@ -1,6 +1,9 @@
+import { CONFIG } from "../config";
+import { addViewModePrefixToPaths, ViewMode } from "../viewMode";
 import { UrlParameters } from "./parameters";
+const viewMode = CONFIG.viewMode;
 
-export const BosonRoutes = {
+export const BosonRoutes = addViewModePrefixToPaths(viewMode, ViewMode.DAPP, {
   Root: "/",
   Explore: `/explore`,
   Products: "/products",
@@ -26,7 +29,7 @@ export const BosonRoutes = {
   DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,
   Error404: "*",
   AboutPage: "/about"
-} as const;
+} as const);
 
 export const SellerCenterRoutes = {
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
@@ -48,16 +51,16 @@ export const DisputeResolverCenterRoutes = {
   DisputeResolverCenter: `${BosonRoutes.DRAdmin}/:${UrlParameters.disputeResolverPageId}`
 } as const;
 
-export const ProductRoutes = {
+export const ProductRoutes = addViewModePrefixToPaths(viewMode, ViewMode.DAPP, {
   Root: "/products",
   ProductDetail: `/products/:${UrlParameters.uuid}`
-} as const;
+} as const);
 
-export const OffersRoutes = {
+export const OffersRoutes = addViewModePrefixToPaths(viewMode, ViewMode.DAPP, {
   Root: "/offers",
   OfferDetail: `/offers/:${UrlParameters.offerId}`,
   OfferUuid: `/offer-uuid/:${UrlParameters.uuid}`
-} as const;
+} as const);
 
 export const SocialRoutes = {
   Discord: "https://discord.com/invite/QSdtKRaap6",

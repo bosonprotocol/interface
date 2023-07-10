@@ -1,10 +1,10 @@
 {
   "site": {
-    "id": "4c94e290-7fdd-4eb6-a4fb-a6d9b383ef0f",
+    "id": "11c88bcf-011d-46a8-bf8e-9a6a8fadead9",
     "team": "3fb24a6e-7168-438e-848a-8b706e8bb76a",
     "platform": "ipfs",
     "source": "ipfs",
-    "name": "interface-test"
+    "name": "drcenter-staging"
   },
   "build": {
     "baseDir": "",
