@@ -2,6 +2,7 @@ import {
   ButtonSize,
   CommitButton,
   exchanges,
+  offers,
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
@@ -15,7 +16,14 @@ import {
   ContractTransaction,
   ethers
 } from "ethers";
-import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
+import {
+  ArrowRight,
+  ArrowSquareOut,
+  Check,
+  CircleWavyQuestion,
+  Question,
+  ShieldWarning
+} from "phosphor-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -145,6 +153,7 @@ interface IDetailWidget {
   isPreview?: boolean;
   reload?: () => void;
   hasMultipleVariants?: boolean;
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
 }
 
 export const getOfferDetailData = (
@@ -153,7 +162,8 @@ export const getOfferDetailData = (
   isModal: boolean,
   modalTypes?: ModalTypes,
   showModal?: ShowModalFn,
-  isExchange?: boolean
+  isExchange?: boolean,
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult
 ) => {
   const redeemableFromDayJs = dayjs(
     Number(`${offer.voucherRedeemableFromDate}000`)
@@ -296,9 +306,29 @@ export const getOfferDetailData = (
           </Typography>
         </>
       ),
-      value: (
-        <Typography tag="p">
-          Fair Exchange Policy{" "}
+      value: exchangePolicyCheckResult ? (
+        exchangePolicyCheckResult.isValid ? (
+          <Typography tag="p">
+            Fair Exchange Policy{" "}
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          </Typography>
+        ) : (
+          <Typography tag="p" color="red">
+            <ShieldWarning size={20}></ShieldWarning> Non Standard{" "}
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          </Typography>
+        )
+      ) : (
+        <Typography tag="p" color="purple">
+          <CircleWavyQuestion size={20}></CircleWavyQuestion> Unknown{" "}
           <ArrowSquareOut
             size={20}
             onClick={() => handleShowExchangePolicy()}
@@ -333,7 +363,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   hasSellerEnoughFunds,
   isPreview = false,
   hasMultipleVariants,
-  reload
+  reload,
+  exchangePolicyCheckResult
 }) => {
   const [commitType, setCommitType] = useState<ActionName | undefined | null>(
     null
@@ -414,9 +445,17 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         false,
         modalTypes,
         showModal,
-        isExchange
+        isExchange,
+        exchangePolicyCheckResult
       ),
-    [offer, convertedPrice, modalTypes, showModal, isExchange]
+    [
+      offer,
+      convertedPrice,
+      modalTypes,
+      showModal,
+      isExchange,
+      exchangePolicyCheckResult
+    ]
   );
   const OFFER_DETAIL_DATA_MODAL = useMemo(
     () =>
@@ -426,9 +465,17 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         true,
         modalTypes,
         showModal,
-        isExchange
+        isExchange,
+        exchangePolicyCheckResult
       ),
-    [offer, convertedPrice, modalTypes, showModal, isExchange]
+    [
+      offer,
+      convertedPrice,
+      modalTypes,
+      showModal,
+      isExchange,
+      exchangePolicyCheckResult
+    ]
   );
 
   const quantity = useMemo<number>(

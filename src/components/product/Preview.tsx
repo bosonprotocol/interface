@@ -266,6 +266,11 @@ export default function Preview({
       })) ?? [])
     ]
   };
+  // offer is necessarily compliant because created with the dApp
+  const exchangePolicyCheckResult = {
+    isValid: true,
+    errors: []
+  };
   return (
     <PreviewWrapper>
       <PreviewWrapperContent>
@@ -317,6 +322,7 @@ export default function Preview({
                   image={offerImg}
                   hasSellerEnoughFunds={true}
                   hasMultipleVariants={hasMultipleVariants}
+                  exchangePolicyCheckResult={exchangePolicyCheckResult}
                 />
               </div>
             </MainDetailGrid>

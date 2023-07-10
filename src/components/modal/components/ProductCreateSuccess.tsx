@@ -123,6 +123,7 @@ export default function ProductCreateSuccess({
   });
 
   const OFFER_DETAIL_DATA = useMemo(
+    // TODO: get exchangePolicyCheckResult
     () => getOfferDetailData(offer, convertedPrice, false),
     [convertedPrice, offer]
   );
