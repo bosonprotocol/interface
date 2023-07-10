@@ -1,11 +1,12 @@
+import { Gear } from "phosphor-react";
 import React, { useState } from "react";
 import styled from "styled-components";
 
+import { colors } from "../../../../lib/styles/colors";
 import SellerImagesSection from "../../../../pages/profile/seller/SellerImagesSection";
 import { FormField } from "../../../form";
 import { FileProps } from "../../../form/Upload/types";
 import { LayoutRoot } from "../../../layout/Layout";
-import Button from "../../../ui/Button";
 import Modal from "../../Modal";
 import { useModal } from "../../useModal";
 const SellerImagesSectionContainer = styled.div`
@@ -51,8 +52,11 @@ export const ProfilePreview: React.FC<ProfilePreviewProps> = ({
   };
   return (
     <>
-      <Button
-        theme="secondary"
+      <Gear
+        size={24}
+        color={colors.secondary}
+        weight="light"
+        style={{ cursor: "pointer" }}
         onClick={() => {
           updateProps({
             ...store,
@@ -64,9 +68,7 @@ export const ProfilePreview: React.FC<ProfilePreviewProps> = ({
           });
           setShowModal(true);
         }}
-      >
-        Adjust cover picture
-      </Button>
+      />
       {showModal && (
         <Modal
           modalType="PROFILE_PREVIEW"

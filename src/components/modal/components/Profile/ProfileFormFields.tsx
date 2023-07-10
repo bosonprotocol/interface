@@ -9,7 +9,6 @@ import {
   CreateProfile,
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
 } from "../../../product/utils";
-import Grid from "../../../ui/Grid";
 import GridContainer from "../../../ui/GridContainer";
 import { ProfilePreview } from "./ProfilePreview";
 
@@ -72,7 +71,21 @@ export function ProfileFormFields({
             height={200}
           />
         </FormField>
-        <FormField title="Cover picture" subTitle={coverSubtitle} required>
+        <FormField
+          title="Cover picture"
+          titleIcon={
+            <ProfilePreview
+              address={address}
+              profileImage={profileImage}
+              metadataCoverImage={coverPicture}
+              defaultIsObjectFitContain={coverPicture?.fit === "contain"}
+              defaultPosition={defaultPosition}
+              draggable
+            />
+          }
+          subTitle={coverSubtitle}
+          required
+        >
           <Upload
             name="coverPicture"
             multiple={false}
@@ -84,16 +97,6 @@ export function ProfileFormFields({
           />
         </FormField>
       </GridContainer>
-      <Grid margin="1rem 0">
-        <ProfilePreview
-          address={address}
-          profileImage={profileImage}
-          metadataCoverImage={coverPicture}
-          defaultIsObjectFitContain={coverPicture?.fit === "contain"}
-          defaultPosition={defaultPosition}
-          draggable
-        />
-      </Grid>
       <FormField title="Your brand / name" required>
         <Input
           name="name"
