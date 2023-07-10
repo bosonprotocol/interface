@@ -3,11 +3,11 @@ import React from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { DrCenterRoutes } from "../../../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../../../lib/routing/parameters";
-import { BosonRoutes } from "../../../../lib/routing/routes";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
-import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { goToViewMode, ViewMode } from "../../../../lib/viewMode";
 import Typography from "../../../ui/Typography";
 
 const ModalContainer = styled.div<{ $exchangeId: boolean }>`
@@ -168,15 +168,14 @@ interface Props {
 }
 
 function DisputeModal({ exchangeId }: Props) {
-  const navigate = useKeepQueryParamsNavigate();
-
   const handleSubmitIssue = () => {
     if (exchangeId) {
-      navigate({
-        pathname: generatePath(BosonRoutes.DisputeId, {
+      return goToViewMode(
+        ViewMode.DR_CENTER,
+        generatePath(DrCenterRoutes.DisputeId, {
           [UrlParameters.exchangeId]: exchangeId
         })
-      });
+      );
     }
   };
   return (

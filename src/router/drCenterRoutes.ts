@@ -3,7 +3,12 @@ import { RouteProps } from "react-router";
 
 import { DrCenterRoutes } from "../lib/routing/drCenterRoutes";
 import DrCenterPage from "../pages/drcenter/DrCenterPage";
-
+const RaiseDisputePage = lazy(
+  () => import("../pages/dispute-centre/RaiseDisputePage")
+);
+const DisputeCenterPage = lazy(
+  () => import("../pages/dispute-centre/DisputeCenterPage")
+);
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 
 const baseAppProps = {
@@ -53,6 +58,18 @@ export default [
       ...base.app,
       withBosonStyles: false
     }
+  },
+  {
+    ...base,
+    path: `${DrCenterRoutes.DisputeId}/*`,
+    component: RaiseDisputePage,
+    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+  },
+  {
+    ...base,
+    path: DrCenterRoutes.DisputeCenter,
+    component: DisputeCenterPage,
+    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
   },
   {
     ...base,

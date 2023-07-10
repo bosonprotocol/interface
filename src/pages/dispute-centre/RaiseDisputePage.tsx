@@ -106,7 +106,14 @@ async function raiseDisputeWithMetaTx(
   });
 }
 
-function DisputeCentre() {
+const validationSchema = [
+  disputeCentreValidationSchemaGetStarted,
+  disputeCentreValidationSchemaTellUsMore,
+  disputeCentreValidationSchemaAdditionalInformation,
+  disputeCentreValidationSchemaMakeProposal,
+  disputeCentreValidationSchemaProposalSummary
+];
+function RaiseDisputePage() {
   const { bosonXmtp } = useChatContext();
   const { showModal, hideModal } = useModal();
   const { address } = useAccount();
@@ -144,14 +151,6 @@ function DisputeCentre() {
       setCurrentStep(val);
     }
   };
-
-  const validationSchema = [
-    disputeCentreValidationSchemaGetStarted,
-    disputeCentreValidationSchemaTellUsMore,
-    disputeCentreValidationSchemaAdditionalInformation,
-    disputeCentreValidationSchemaMakeProposal,
-    disputeCentreValidationSchemaProposalSummary
-  ];
 
   if (!exchange && isLoading) {
     return <p>Loading exchange info...</p>;
@@ -340,4 +339,4 @@ function DisputeCentre() {
   );
 }
 
-export default DisputeCentre;
+export default RaiseDisputePage;

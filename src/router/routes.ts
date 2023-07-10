@@ -42,7 +42,7 @@ export interface IRoutes extends RouteProps {
     fluidHeader?: boolean;
   };
 }
-const viewMode = CONFIG.viewMode;
+const viewMode = CONFIG.viewMode.current;
 
 const viewModeRoutes = {
   [ViewMode.DAPP]: dappRoutes,

@@ -1,3 +1,5 @@
+import { CONFIG } from "./config";
+
 export enum ViewMode {
   DAPP = "dapp",
   DR_CENTER = "dr_center",
@@ -18,4 +20,23 @@ export function addViewModePrefixToPaths<T extends Record<string, string>>(
     acum[key] = `/${viewModeToPrefix}${value === "*" ? "/*" : value}`;
     return acum;
   }, {} as T);
+}
+
+export function goToViewMode(
+  viewMode: ViewMode.DAPP | ViewMode.DR_CENTER,
+  path: string
+): void {
+  const dappViewModeUrl =
+    CONFIG.viewMode.dappViewModeUrl === "same_origin" ||
+    !CONFIG.viewMode.dappViewModeUrl
+      ? window.location.origin
+      : CONFIG.viewMode.dappViewModeUrl;
+  const drCenterViewModeUrl =
+    CONFIG.viewMode.drCenterViewModeUrl === "same_origin" ||
+    !CONFIG.viewMode.drCenterViewModeUrl
+      ? window.location.origin
+      : CONFIG.viewMode.drCenterViewModeUrl;
+  window.location.href = `${
+    viewMode === ViewMode.DAPP ? dappViewModeUrl : drCenterViewModeUrl
+  }/#${path}`;
 }

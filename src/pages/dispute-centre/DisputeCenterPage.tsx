@@ -57,7 +57,7 @@ const HowItWorksButton = styled(Button)`
   }
 `;
 
-function DisputeList() {
+function DisputeCenterPage() {
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, modalTypes } = useModal();
   const { isLteS } = useBreakpoints();
@@ -136,4 +136,4 @@ function DisputeList() {
   );
 }
 
-export default DisputeList;
+export default DisputeCenterPage;
