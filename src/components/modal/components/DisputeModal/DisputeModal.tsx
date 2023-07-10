@@ -9,7 +9,6 @@ import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Typography from "../../../ui/Typography";
-import { ModalProps } from "../../ModalContext";
 
 const ModalContainer = styled.div<{ $exchangeId: boolean }>`
   position: relative;
@@ -159,28 +158,16 @@ const SubmitStyledButton = styled.button`
   font-size: 1rem;
   border: none;
   margin-top: 1.25rem;
-  background-color: ${colors.orange};
+  background-color: ${colors.green};
   padding: 1rem 2rem 1rem 2rem;
   margin-left: 4.375rem;
 `;
 
-const BackStyledButton = styled.button`
-  font-family: "Plus Jakarta Sans";
-  font-weight: 600;
-  font-size: 1rem;
-  border: none;
-  margin-top: 1.25rem;
-  background: none;
-  padding: 1rem 2rem 1rem 2rem;
-  margin-right: 4.375rem;
-`;
-
 interface Props {
-  hideModal: NonNullable<ModalProps["hideModal"]>;
   exchangeId?: string;
 }
 
-function DisputeModal({ hideModal, exchangeId }: Props) {
+function DisputeModal({ exchangeId }: Props) {
   const navigate = useKeepQueryParamsNavigate();
 
   const handleSubmitIssue = () => {
@@ -212,8 +199,8 @@ function DisputeModal({ hideModal, exchangeId }: Props) {
               color={colors.darkGrey}
               fontWeight="400"
             >
-              Message the Seller about the issue. Most problems are resolved by
-              working with the Seller this way.
+              Message the seller about the issue. Most problems are resolved by
+              working with the seller this way.
             </Typography>
           </ModalGridColumns>
           <ModalGridColumns data-modal-columns>
@@ -224,7 +211,7 @@ function DisputeModal({ hideModal, exchangeId }: Props) {
               color={colors.black}
               fontWeight="600"
             >
-              Submit Dispute
+              Submit dispute
             </Typography>
             <Typography
               margin="0"
@@ -232,7 +219,7 @@ function DisputeModal({ hideModal, exchangeId }: Props) {
               color={colors.darkGrey}
               fontWeight="400"
             >
-              If you still need help or the Seller has not responded, you can
+              If you still need help or the seller has not responded, you can
               raise a dispute while the exchange is in the dispute period.
             </Typography>
           </ModalGridColumns>
@@ -257,7 +244,7 @@ function DisputeModal({ hideModal, exchangeId }: Props) {
               fontWeight="400"
             >
               Find a solution to your dispute with the seller. If you are unable
-              to reach a resolution with the Seller, you always have the option
+              to reach a resolution with the seller, you always have the option
               to escalate to a 3rd party dispute resolver.
             </Typography>
           </ModalGridColumns>
@@ -267,13 +254,6 @@ function DisputeModal({ hideModal, exchangeId }: Props) {
             <SubmitStyledButton onClick={handleSubmitIssue}>
               Submit an issue
             </SubmitStyledButton>
-            <BackStyledButton
-              onClick={() => {
-                hideModal();
-              }}
-            >
-              Back
-            </BackStyledButton>
           </ButtonContainer>
         )}
       </ModalContainer>

@@ -15,7 +15,7 @@ export function addViewModePrefixToPaths<T extends Record<string, string>>(
   return Object.entries(paths).reduce((acum, [key, value]) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    acum[key] = `/${viewModeToPrefix}${value}`;
+    acum[key] = `/${viewModeToPrefix}${value === "*" ? "/*" : value}`;
     return acum;
   }, {} as T);
 }
