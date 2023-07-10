@@ -42,6 +42,7 @@ import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { FileWithEncodedData } from "../../../lib/utils/files";
 import { useInfiniteThread } from "../../../lib/utils/hooks/chat/useInfiniteThread";
+import useCheckExchangePolicy from "../../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -383,6 +384,9 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
+  const exchangePolicyCheckResult = useCheckExchangePolicy({
+    offerId: exchange?.offer?.id
+  });
 
   const {
     data: thread,
@@ -1095,6 +1099,7 @@ const ChatConversation = ({
         refetchExchanges={refetchExchanges}
         disputeOpen={isExchangePreviewOpen}
         iAmTheBuyer={iAmTheBuyer}
+        exchangePolicyCheckResult={exchangePolicyCheckResult}
       />
     </Container>
   );

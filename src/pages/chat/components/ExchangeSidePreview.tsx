@@ -1,6 +1,10 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { offers, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { ArrowSquareOut } from "phosphor-react";
+import {
+  ArrowSquareOut,
+  CircleWavyQuestion,
+  ShieldWarning
+} from "phosphor-react";
 import { useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -186,7 +190,8 @@ const getOfferDetailData = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modalTypes: ModalTypes,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  showModal: ShowModalFn
+  showModal: ShowModalFn,
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult
 ) => {
   const { deposit, formatted } = calcPercentage(offer, "sellerDeposit");
 
@@ -233,9 +238,29 @@ const getOfferDetailData = (
           </Typography>
         </>
       ),
-      value: (
-        <Typography tag="p">
-          Fair Exchange Policy{" "}
+      value: exchangePolicyCheckResult ? (
+        exchangePolicyCheckResult.isValid ? (
+          <Typography tag="p">
+            Fair Exchange Policy{" "}
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          </Typography>
+        ) : (
+          <Typography tag="p" color="red">
+            <ShieldWarning size={20}></ShieldWarning> Non Standard{" "}
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          </Typography>
+        )
+      ) : (
+        <Typography tag="p" color="purple">
+          <CircleWavyQuestion size={20}></CircleWavyQuestion> Unknown{" "}
           <ArrowSquareOut
             size={20}
             onClick={() => handleShowExchangePolicy()}
@@ -257,12 +282,14 @@ interface Props {
   disputeOpen: boolean;
   iAmTheBuyer: boolean;
   refetchExchanges: () => void;
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
 }
 export default function ExchangeSidePreview({
   exchange,
   disputeOpen,
   iAmTheBuyer,
-  refetchExchanges
+  refetchExchanges,
+  exchangePolicyCheckResult
 }: Props) {
   const {
     data: disputes = [{} as subgraph.DisputeFieldsFragment],
@@ -281,8 +308,15 @@ export default function ExchangeSidePreview({
   const offer = exchange?.offer;
   const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
-    () => offer && getOfferDetailData(offer, modalTypes, showModal),
-    [offer, modalTypes, showModal]
+    () =>
+      offer &&
+      getOfferDetailData(
+        offer,
+        modalTypes,
+        showModal,
+        exchangePolicyCheckResult
+      ),
+    [offer, modalTypes, showModal, exchangePolicyCheckResult]
   );
   const navigate = useKeepQueryParamsNavigate();
 
