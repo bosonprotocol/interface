@@ -8,8 +8,8 @@ export const DrCenterRoutes = addViewModePrefixToPaths(
   ViewMode.DR_CENTER,
   {
     Root: "/",
+    Chat: "/chat",
     DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`,
-    DisputeCenter: "/dispute-center",
     Error404: "*"
   } as const
 );

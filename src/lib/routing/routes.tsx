@@ -22,7 +22,6 @@ export const BosonRoutes = addViewModePrefixToPaths(
     LearnMore: "https://www.bosonprotocol.io/technology",
     Chat: "/chat",
     ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
-    DisputeCenter: "/dispute-center",
     BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
     SellerPage: `/seller/:${UrlParameters.sellerId}`,
     License: `/license/:${UrlParameters.uuid}`,
