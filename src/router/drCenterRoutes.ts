@@ -1,25 +1,24 @@
-import React from "react";
+import React, { lazy } from "react";
 import { RouteProps } from "react-router";
 
-import { CONFIG } from "../lib/config";
-import { ViewMode } from "../lib/viewMode";
-import ViewModePage from "../pages/viewmode/ViewModePage";
-import dappRoutes from "./dappRoutes";
-import drCenterRoutes from "./drCenterRoutes";
+import { DrCenterRoutes } from "../lib/routing/drCenterRoutes";
+import DrCenterPage from "../pages/drcenter/DrCenterPage";
 
-export const baseAppProps = {
+const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
+
+const baseAppProps = {
   withLayout: true,
   withFooter: true,
   fluidHeader: false,
   withBosonStyles: true,
   withBanner: false
-} as const;
+};
 const base = {
   component: null,
   index: false,
   app: baseAppProps,
   role: []
-} as const;
+};
 
 export const UserRoles = {
   Guest: "Guest",
@@ -37,26 +36,32 @@ export interface IRoutes extends RouteProps {
   };
   app?: {
     withLayout?: boolean;
-    withFullLayout?: boolean;
     withFooter?: boolean;
     fluidHeader?: boolean;
+    withBosonStyles?: boolean;
+    withBanner?: boolean;
   };
 }
-const viewMode = CONFIG.viewMode;
 
-const viewModeRoutes = {
-  [ViewMode.DAPP]: dappRoutes,
-  [ViewMode.DR_CENTER]: drCenterRoutes,
-  [ViewMode.BOTH]: [
-    {
-      ...base,
-      index: true,
-      path: "/",
-      component: ViewModePage
+export default [
+  {
+    ...base,
+    index: true,
+    path: DrCenterRoutes.Root,
+    component: DrCenterPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
+  },
+  {
+    ...base,
+    exact: false,
+    path: DrCenterRoutes.Error404,
+    app: {
+      ...base.app,
+      withBosonStyles: false
     },
-    ...dappRoutes,
-    ...drCenterRoutes
-  ]
-} as const;
-
-export default viewModeRoutes[viewMode];
+    component: NotFoundPage
+  }
+] as IRoutes[];

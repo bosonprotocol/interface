@@ -6,6 +6,7 @@ import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-n
 import lensHubContractAbi from "../lib/utils/hooks/lens/abis/lens-hub-contract-abi.json";
 import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphery-data-provider.json";
 import { parseCurationList } from "./utils/curationList";
+import { ViewMode } from "./viewMode";
 
 const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
 export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
@@ -66,6 +67,11 @@ const availableOnNetwork = [80001, 137].includes(config.chainId);
 
 export const CONFIG = {
   ...config,
+  viewMode: Object.values(ViewMode).includes(
+    (process.env.REACT_APP_VIEW_MODE as ViewMode) || ""
+  )
+    ? (process.env.REACT_APP_VIEW_MODE as ViewMode)
+    : ViewMode.DAPP,
   enableSentryLogging: REACT_APP_ENABLE_SENTRY_LOGGING,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",
