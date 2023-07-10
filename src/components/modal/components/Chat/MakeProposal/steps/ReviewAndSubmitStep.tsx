@@ -114,7 +114,7 @@ export default function ReviewAndSubmitStep({
             isSubmitting
           }
         >
-          {isModal ? "Send Proposal" : "Raise Dispute"}
+          {isModal ? "Send proposal" : "Raise dispute"}
           {isSubmitting && <Spinner />}
         </StyledButtonsSection>
       </ButtonsSection>

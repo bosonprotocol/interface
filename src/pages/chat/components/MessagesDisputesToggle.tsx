@@ -6,13 +6,14 @@ import Grid from "../../../components/ui/Grid";
 import { colors } from "../../../lib/styles/colors";
 
 const StyledButton = styled(Button)<{ $isActive: boolean }>`
-  margin: 0.5rem;
   width: 100%;
   ${({ $isActive }) =>
     $isActive &&
     css`
-      border-color: transparent;
-      background-color: ${colors.lightGrey};
+      && {
+        border-color: transparent;
+        background-color: ${colors.lightGrey};
+      }
     `}
 `;
 
@@ -35,7 +36,7 @@ export function MessagesDisputesToggle({
     initiallySelected === "left"
   );
   return (
-    <Grid>
+    <Grid gap="1rem">
       <StyledButton
         theme="white"
         onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { ArrowSquareOut } from "phosphor-react";
 import { useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import DetailTable from "../../../components/detail/DetailTable";
 import { DetailDisputeResolver } from "../../../components/detail/DetailWidget/DetailDisputeResolver";
@@ -35,6 +35,7 @@ import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
 import ExchangeTimeline from "./ExchangeTimeline";
+import ProgressBar from "./ProgressBar";
 
 const Container = styled.div<{ $disputeOpen: boolean }>`
   display: flex;
@@ -89,33 +90,17 @@ const StyledImage = styled(Image)`
   }
 `;
 
-const sectionStyles = `
-border: 2px solid ${colors.border};
-border-top: none;
-padding: 1.625rem;
-${breakpoint.l} {
-  background: ${colors.white};
-}
-background: ${colors.lightGrey};
+const sectionStyles = css`
+  border: 2px solid ${colors.border};
+  border-top: none;
+  padding: 1.625rem;
+  ${breakpoint.l} {
+    background: ${colors.white};
+  }
+  background: ${colors.lightGrey};
 `;
 const Section = styled.div`
   ${sectionStyles};
-`;
-
-const InfoMessage = styled.div`
-  border: 2px solid ${colors.border};
-  color: ${colors.darkGrey};
-
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-align: center;
-  ${breakpoint.l} {
-    text-align: left;
-    background: ${colors.lightGrey};
-  }
-  && {
-    padding: 0.6875rem 1.5rem;
-  }
 `;
 
 const ExchangeInfo = styled(Section)`
@@ -387,9 +372,7 @@ export default function ExchangeSidePreview({
           onClick={handleExchangeImageOnClick}
         />
       )}
-      {isInDispute && (
-        <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
-      )}
+
       <ExchangeInfo>
         <Name tag="h3">{exchange.offer.metadata.name}</Name>
         <StyledPrice
@@ -401,8 +384,21 @@ export default function ExchangeSidePreview({
           convert
         />
       </ExchangeInfo>
+
       {(isInDispute || isResolved || isEscalated) && (
         <Section>
+          {isInDispute && (
+            <div style={{ marginBottom: "1rem" }}>
+              <ProgressBar
+                threshold={15}
+                progress={
+                  (100 * daysLeftToResolveDispute) / totalDaysToResolveDispute
+                }
+                text={`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}
+              />
+            </div>
+          )}
+
           <StyledMultiSteps
             data={[
               { name: "Describe Problem", steps: 1 },

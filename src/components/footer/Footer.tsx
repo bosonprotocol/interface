@@ -376,6 +376,18 @@ function FullFooter() {
     .map((nav) => {
       if (nav) {
         if (nav.url) {
+          if (nav.absolute) {
+            return (
+              <a
+                href={sanitizeUrl(nav.url)}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={`navigation_nav_${nav.name}`}
+              >
+                {nav.name}
+              </a>
+            );
+          }
           return (
             <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
               {nav.name}

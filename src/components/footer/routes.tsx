@@ -8,6 +8,7 @@ import {
 import { ReactElement } from "react";
 import { generatePath } from "react-router-dom";
 
+import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../lib/routing/parameters";
 import {
   BosonRoutes,
@@ -178,7 +179,8 @@ export const getHelpLinks = ({
       false
     ) && {
       name: "Dispute Center",
-      url: BosonRoutes.DisputeCenter
+      url: DrCenterRoutes.Root,
+      absolute: true
     },
     {
       name: "Email",

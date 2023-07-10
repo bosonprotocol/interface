@@ -24,6 +24,7 @@ import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import Grid from "../../components/ui/Grid";
 import { CONFIG } from "../../lib/config";
+import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
@@ -301,7 +302,7 @@ function RaiseDisputePage() {
                   ));
                   hideModal();
                   navigate({
-                    pathname: BosonRoutes.DisputeCenter
+                    pathname: DrCenterRoutes.Root
                   });
                 } catch (error) {
                   console.error(error);

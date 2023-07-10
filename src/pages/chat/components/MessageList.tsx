@@ -160,6 +160,7 @@ export default function MessageList({
   setChatListOpen,
   prevPath
 }: Props) {
+  const [showDisputesOnly, setShowDisputesOnly] = useState<boolean>(false);
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentExchange ? getMessageItemKey(currentExchange) : ""
   );
@@ -205,10 +206,10 @@ export default function MessageList({
           leftButtonText="Messages"
           rightButtonText="Disputes"
           onLeftButtonClick={() => {
-            //
+            setShowDisputesOnly(false);
           }}
           onRightButtonClick={() => {
-            //
+            setShowDisputesOnly(true);
           }}
           initiallySelected="left"
         />
@@ -216,6 +217,9 @@ export default function MessageList({
       <ExchangesThreads>
         {exchanges
           .filter((exchange) => exchange)
+          .filter((exchange) =>
+            showDisputesOnly ? !!exchange.disputedDate : !exchange.disputedDate
+          )
           .map((exchange) => {
             const messageKey = getMessageItemKey(exchange);
             const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
