@@ -1,7 +1,7 @@
 import { ArrowLeft } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { getSellerCenterPath } from "../../../components/seller/paths";
 import { sellerPageTypes } from "../../../components/seller/SellerPages";
@@ -16,6 +16,7 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { MessagesDisputesToggle } from "./MessagesDisputesToggle";
 
 const messageItemPadding = "1.5rem";
 
@@ -92,9 +93,9 @@ const MessageItem = styled.div<{ $active?: boolean }>`
   border-bottom: 1px solid ${colors.border};
   ${({ $active }) =>
     $active &&
-    `
-    background-color: ${colors.border};
-  `};
+    css`
+      background-color: ${colors.border};
+    `};
   :hover {
     background-color: ${colors.border};
   }
@@ -200,7 +201,17 @@ export default function MessageList({
             </div>
           </BackToSellerCenterButton>
         )}
-        Messages
+        <MessagesDisputesToggle
+          leftButtonText="Messages"
+          rightButtonText="Disputes"
+          onLeftButtonClick={() => {
+            //
+          }}
+          onRightButtonClick={() => {
+            //
+          }}
+          initiallySelected="left"
+        />
       </Header>
       <ExchangesThreads>
         {exchanges
