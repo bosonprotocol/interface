@@ -1,5 +1,11 @@
+import {
+  MessageData,
+  ProposalContent
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { Check, Info } from "phosphor-react";
 
+import { MakeProposalModalProps } from "../../../../components/modal/components/Chat/MakeProposal/MakeProposalModal";
+import { useModal } from "../../../../components/modal/useModal";
 import Button from "../../../../components/ui/Button";
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
@@ -7,18 +13,36 @@ import { colors } from "../../../../lib/styles/colors";
 import { getExchangeDisputeDates } from "../../../../lib/utils/exchange";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 
-type ProposalButtonsProps = {
-  onWriteMessage: () => void;
+export type ProposalButtonsProps = {
   exchange: Exchange;
+  proposal: MessageData;
+  sendProposal: MakeProposalModalProps["sendProposal"];
 };
 
 export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
-  onWriteMessage,
-  exchange
+  proposal,
+  exchange,
+  sendProposal
 }) => {
+  const { showModal } = useModal();
+
   const { daysLeftToResolveDispute } = getExchangeDisputeDates(exchange);
+  // const hideProposal = useMemo(() => {
+  //   const disputeState =
+  //     exchange?.dispute?.state || subgraph.DisputeState.Resolving;
+  //   const badStates = [
+  //     subgraph.DisputeState.Decided,
+  //     subgraph.DisputeState.Escalated,
+  //     subgraph.DisputeState.Decided,
+  //     subgraph.DisputeState.Refused
+  //   ];
+
+  //   return (
+  //     badStates?.includes(disputeState) || exchange?.finalizedDate !== null
+  //   );
+  // }, [exchange]);
   return (
-    <Grid flexDirection="column" padding="1rem" gap="1rem">
+    <Grid flexDirection="column" padding="1rem 1rem 0 1rem" gap="1rem">
       <Typography
         padding="1rem"
         background={colors.lightGrey}
@@ -46,15 +70,37 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
         </Grid>
       </Typography>
       <Grid gap="1rem" justifyContent="space-between" flex="1">
-        <Button theme="secondary">
+        <Button
+          theme="secondary"
+          onClick={() => {
+            const [proposalItem] = (proposal.data.content as ProposalContent)
+              .value.proposals;
+            if (proposalItem) {
+              showModal("RESOLVE_DISPUTE", {
+                title: "Resolve dispute",
+                exchange,
+                proposal: proposalItem
+              });
+            }
+          }}
+        >
           <span style={{ whiteSpace: "pre" }}>Accept proposal</span>{" "}
           <Check size={18} />
         </Button>
-        <Button theme="secondary">
+        <Button
+          theme="secondary"
+          onClick={() =>
+            showModal(
+              "MAKE_PROPOSAL",
+              {
+                exchange,
+                sendProposal
+              },
+              "m"
+            )
+          }
+        >
           <span style={{ whiteSpace: "pre" }}>Counterpropose</span>
-        </Button>
-        <Button theme="secondary" onClick={onWriteMessage}>
-          <span style={{ whiteSpace: "pre" }}>Write message</span>
         </Button>
       </Grid>
     </Grid>

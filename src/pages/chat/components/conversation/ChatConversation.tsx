@@ -262,7 +262,7 @@ const ChatConversation = ({
   textAreaValue,
   refetchExchanges
 }: ChatConversationProps) => {
-  const [hasValidProposal, setHasValidProposal] = useState<boolean>(false);
+  const { address } = useAccount();
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
@@ -294,8 +294,31 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
+  const [lastProposal, setLastProposal] = useState<MessageData | null>(null);
+  const onMessagesReceived = useCallback(
+    (messages: MessageData[]) => {
+      const proposal = messages
+        .sort((msgA, msgB) => {
+          return msgB.timestamp - msgA.timestamp;
+        })
+        .find((message) => {
+          const isAProposalForMyself =
+            message.sender.toLowerCase() === message.recipient.toLowerCase();
+          const isAProposalFromSomeoneElse =
+            message.recipient.toLowerCase() === address?.toLowerCase();
+          return (
+            message.data.contentType === "PROPOSAL" &&
+            (isAProposalForMyself || isAProposalFromSomeoneElse)
+          );
+        });
+      if (proposal) {
+        setLastProposal(proposal);
+      }
+    },
+    [address]
+  );
   const {
-    data: { thread, lastProposal },
+    data: thread,
     isLoading: areThreadsLoading,
     isBeginningOfTimes,
     isError: isErrorThread,
@@ -312,6 +335,7 @@ const ChatConversation = ({
     genesisDate: exchange?.committedDate
       ? new Date(Number(exchange?.committedDate) * 1000)
       : new Date("2022-08-25"),
+    onMessagesReceived,
     onFinishFetching: ({
       isBeginningOfTimes,
       isLoading: areThreadsLoading,
@@ -395,7 +419,6 @@ const ChatConversation = ({
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const navigate = useKeepQueryParamsNavigate();
-  const { address } = useAccount();
   const isMonitorOk = useMemo(() => {
     return (
       !!addMessage && !!bosonXmtp && !!destinationAddress && thread?.threadId
@@ -426,6 +449,7 @@ const ChatConversation = ({
           stopGenerator
         )) {
           await addMessage({ ...incomingMessage, isValid: true });
+          onMessagesReceived([incomingMessage]);
         }
       } catch (error) {
         console.error(error);
@@ -745,7 +769,7 @@ const ChatConversation = ({
             </InfiniteScroll>
           </Messages>
           <ChatConversationBottom
-            hasValidProposal={!!lastProposal}
+            proposal={lastProposal}
             disableInputs={disableInputs}
             exchange={exchange}
             threadId={threadId}

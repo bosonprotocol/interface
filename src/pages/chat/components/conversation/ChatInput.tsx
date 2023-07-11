@@ -17,6 +17,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 
+import { MakeProposalModalProps } from "../../../../components/modal/components/Chat/MakeProposal/MakeProposalModal";
 import { useModal } from "../../../../components/modal/useModal";
 import BosonButton from "../../../../components/ui/BosonButton";
 import Grid from "../../../../components/ui/Grid";
@@ -25,11 +26,12 @@ import { FileWithEncodedData } from "../../../../lib/utils/files";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useChatContext } from "../../ChatProvider/ChatContext";
 import { MessageDataWithInfo } from "../../types";
-import { sendFilesToChat, sendProposalToChat } from "../../utils/send";
+import { sendFilesToChat } from "../../utils/send";
 import ButtonProposal from "../ButtonProposal/ButtonProposal";
 
 const TypeMessage = styled.div`
   height: max-content;
+  gap: 1rem;
   width: 100%;
   display: flex;
   align-items: flex-start;
@@ -41,8 +43,6 @@ const InputWrapper = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-  margin-right: 0.875rem;
-  margin-left: 0.875rem;
 `;
 
 const Input = styled.div`
@@ -108,6 +108,7 @@ const SendButton = styled(BosonButton)`
 
 export interface ChatInputProps {
   exchange: Exchange;
+  showProposalButton: boolean;
   disableInputs: boolean;
   threadId: ThreadId | null;
   setHasError: Dispatch<SetStateAction<boolean>>;
@@ -120,10 +121,12 @@ export interface ChatInputProps {
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
   prevPath: string;
+  sendProposal: MakeProposalModalProps["sendProposal"];
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({
   exchange,
+  showProposalButton,
   disableInputs,
   threadId,
   setHasError,
@@ -133,7 +136,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   onSentMessage,
   onTextAreaChange,
   textAreaValue,
-  prevPath
+  prevPath,
+  sendProposal
 }) => {
   const { showModal } = useModal();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -146,6 +150,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   }, [prevPath, textAreaValue]);
   const { bosonXmtp } = useChatContext();
   const hideProposal = useMemo(() => {
+    if (!showProposalButton) {
+      return true;
+    }
     const disputeState =
       exchange?.dispute?.state || subgraph.DisputeState.Resolving;
     const badStates = [
@@ -158,7 +165,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     return (
       badStates?.includes(disputeState) || exchange?.finalizedDate !== null
     );
-  }, [exchange]);
+  }, [exchange, showProposalButton]);
 
   const handleSendingRegularMessage = useCallback(async () => {
     const value = textAreaValue?.trim() || "";
@@ -272,60 +279,18 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   );
   return (
     <TypeMessage>
-      {exchange.disputed && (
+      {exchange.disputed && !hideProposal && (
         <Grid
           alignItems="flex-start"
           $width="auto"
           justifyContent="flex-start"
           $height="100%"
         >
-          {!hideProposal && (
-            <ButtonProposal
-              exchange={exchange}
-              disabled={disableInputs}
-              onSendProposal={async (proposal, proposalFiles) => {
-                if (!threadId || !bosonXmtp) {
-                  return;
-                }
-                try {
-                  setHasError(false);
-                  await sendProposalToChat({
-                    bosonXmtp,
-                    proposal,
-                    files: proposalFiles,
-                    destinationAddress,
-                    threadId,
-                    callbackSendingMessage: async (newMessage, uuid) => {
-                      await addMessage({
-                        authorityId: "",
-                        timestamp: Date.now(),
-                        sender: address,
-                        recipient: destinationAddress,
-                        data: newMessage,
-                        isValid: false,
-                        isPending: true,
-                        uuid
-                      });
-                    },
-                    callback: async (messageData, uuid) => {
-                      onSentMessage(messageData, uuid);
-                    }
-                  });
-                } catch (error) {
-                  Sentry.captureException(error, {
-                    extra: {
-                      ...threadId,
-                      destinationAddress,
-                      action: "onSendProposal",
-                      location: "chat-conversation"
-                    }
-                  });
-                  console.error(error);
-                  setHasError(true);
-                }
-              }}
-            />
-          )}
+          <ButtonProposal
+            exchange={exchange}
+            disabled={disableInputs}
+            onSendProposal={sendProposal}
+          />
         </Grid>
       )}
       <InputWrapper>

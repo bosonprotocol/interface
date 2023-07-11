@@ -386,7 +386,7 @@ export default function ExchangeSidePreview({
           {isInDispute && !!totalDaysToResolveDispute && (
             <div style={{ marginBottom: "1rem" }}>
               <ProgressBar
-                threshold={15}
+                threshold={50}
                 progress={
                   (100 * daysLeftToResolveDispute) / totalDaysToResolveDispute
                 }

@@ -24,6 +24,7 @@ interface Props {
   counterParty: string;
   threadId: ThreadId | null | undefined;
   genesisDate: Date;
+  onMessagesReceived: (messages: MessageData[]) => void;
   onFinishFetching: (arg: {
     isLoading: boolean;
     isError: boolean;
@@ -40,12 +41,10 @@ export function useInfiniteThread({
   counterParty,
   threadId,
   genesisDate,
+  onMessagesReceived,
   onFinishFetching
 }: Props): {
-  data: {
-    thread: ThreadObjectWithInfo | null;
-    lastProposal: MessageData | null;
-  };
+  data: ThreadObjectWithInfo | null;
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
@@ -75,8 +74,7 @@ export function useInfiniteThread({
   );
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
-  const [lastProposal, setLastProposal] = useState<MessageData | null>(null);
-  console.log("threadXmtp", threadXmtp);
+
   useEffect(() => {
     if (
       !bosonXmtp ||
@@ -117,29 +115,13 @@ export function useInfiniteThread({
         now,
         genesisDate,
         onMessageReceived: async (threadObject) => {
+          // TODO: if a new proposal is received, the old ones of the same party get expired
           if (threadObject) {
             await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
-            if (!lastProposal) {
-              const proposal = threadObject.messages.find((message) => {
-                const isAProposalForMyself =
-                  message.sender.toLowerCase() ===
-                  message.recipient.toLowerCase();
-                const isAProposalFromSomeoneElse =
-                  message.recipient.toLowerCase() === address?.toLowerCase();
-                return (
-                  message.data.contentType === "PROPOSAL" &&
-                  (isAProposalForMyself || isAProposalFromSomeoneElse)
-                );
-              });
-              if (proposal) {
-                setLastProposal((prev) => {
-                  if (prev) {
-                    return prev;
-                  }
-                  return proposal;
-                });
-              }
-            }
+            const clonedThread = structuredClone(threadObject);
+            const clonedMessages = clonedThread.messages;
+            onMessagesReceived(clonedMessages);
+
             setThreadXmtp((prevThread) => {
               const mergedThreads = mergeThreads(
                 prevThread ? prevThread : null,
@@ -185,9 +167,17 @@ export function useInfiniteThread({
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId, address]);
+  }, [
+    bosonXmtp,
+    dateIndex,
+    counterParty,
+    dateStep,
+    threadId,
+    address,
+    onMessagesReceived
+  ]);
   return {
-    data: { thread: threadXmtp || null, lastProposal },
+    data: threadXmtp || null,
     isLoading: areThreadsLoading,
     isError: !!error,
     error,

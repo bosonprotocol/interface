@@ -12,7 +12,6 @@ import { NewProposal } from "../../../../../pages/chat/types";
 import { createProposal } from "../../../../../pages/chat/utils/create";
 import MultiSteps from "../../../../step/MultiSteps";
 import Grid from "../../../../ui/Grid";
-import { ModalProps } from "../../../ModalContext";
 import { useModal } from "../../../useModal";
 import ExchangePreview from "../components/ExchangePreview";
 import { FormModel, validationSchemaPerStep } from "./MakeProposalFormModel";
@@ -23,22 +22,19 @@ import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
 const StyledMultiSteps = styled(MultiSteps)`
   width: 100%;
 `;
-interface Props {
+export interface MakeProposalModalProps {
   exchange: Exchange;
   sendProposal: (
     proposal: NewProposal,
     proposalFiles: FileWithEncodedData[]
   ) => void;
-  // modal props
-  hideModal: NonNullable<ModalProps["hideModal"]>;
 }
 
 export default function MakeProposalModal({
   exchange,
-  hideModal,
   sendProposal
-}: Props) {
-  const { updateProps, store } = useModal();
+}: MakeProposalModalProps) {
+  const { updateProps, store, hideModal } = useModal();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const coreSDK = useCoreSDK();
