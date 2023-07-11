@@ -17,16 +17,16 @@ import React, {
 } from "react";
 import styled from "styled-components";
 
-import { useModal } from "../../../components/modal/useModal";
-import BosonButton from "../../../components/ui/BosonButton";
-import Grid from "../../../components/ui/Grid";
-import { colors } from "../../../lib/styles/colors";
-import { FileWithEncodedData } from "../../../lib/utils/files";
-import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { useChatContext } from "../ChatProvider/ChatContext";
-import { MessageDataWithInfo } from "../types";
-import { sendFilesToChat, sendProposalToChat } from "../utils/send";
-import ButtonProposal from "./ButtonProposal/ButtonProposal";
+import { useModal } from "../../../../components/modal/useModal";
+import BosonButton from "../../../../components/ui/BosonButton";
+import Grid from "../../../../components/ui/Grid";
+import { colors } from "../../../../lib/styles/colors";
+import { FileWithEncodedData } from "../../../../lib/utils/files";
+import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import { useChatContext } from "../../ChatProvider/ChatContext";
+import { MessageDataWithInfo } from "../../types";
+import { sendFilesToChat, sendProposalToChat } from "../../utils/send";
+import ButtonProposal from "../ButtonProposal/ButtonProposal";
 
 const TypeMessage = styled.div`
   height: max-content;
@@ -106,7 +106,7 @@ const SendButton = styled(BosonButton)`
   min-width: 3rem;
 `;
 
-interface ChatInputProps {
+export interface ChatInputProps {
   exchange: Exchange;
   disableInputs: boolean;
   threadId: ThreadId | null;

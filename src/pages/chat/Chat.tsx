@@ -16,7 +16,7 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import ChatConversation from "./components/ChatConversation";
+import ChatConversation from "./components/conversation/ChatConversation";
 import MessageList from "./components/MessageList";
 
 const GlobalStyle = createGlobalStyle`

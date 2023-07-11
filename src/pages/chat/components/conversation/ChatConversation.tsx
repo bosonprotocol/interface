@@ -21,25 +21,25 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { Spinner } from "../../../components/loading/Spinner";
-import InitializeChat from "../../../components/modal/components/Chat/components/InitializeChat";
-import Grid from "../../../components/ui/Grid";
-import SellerID from "../../../components/ui/SellerID";
-import Typography from "../../../components/ui/Typography";
-import { BosonRoutes } from "../../../lib/routing/routes";
-import { breakpoint } from "../../../lib/styles/breakpoint";
-import { colors } from "../../../lib/styles/colors";
-import { zIndex } from "../../../lib/styles/zIndex";
-import { useInfiniteThread } from "../../../lib/utils/hooks/chat/useInfiniteThread";
-import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
-import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useChatContext } from "../ChatProvider/ChatContext";
-import { BuyerOrSeller, MessageDataWithInfo } from "../types";
-import { ChatInput } from "./ChatInput";
-import ExchangeSidePreview from "./ExchangeSidePreview";
-import Message from "./Message";
-import MessageSeparator from "./MessageSeparator";
+import { Spinner } from "../../../../components/loading/Spinner";
+import InitializeChat from "../../../../components/modal/components/Chat/components/InitializeChat";
+import Grid from "../../../../components/ui/Grid";
+import SellerID from "../../../../components/ui/SellerID";
+import Typography from "../../../../components/ui/Typography";
+import { BosonRoutes } from "../../../../lib/routing/routes";
+import { breakpoint } from "../../../../lib/styles/breakpoint";
+import { colors } from "../../../../lib/styles/colors";
+import { zIndex } from "../../../../lib/styles/zIndex";
+import { useInfiniteThread } from "../../../../lib/utils/hooks/chat/useInfiniteThread";
+import { useBreakpoints } from "../../../../lib/utils/hooks/useBreakpoints";
+import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useChatContext } from "../../ChatProvider/ChatContext";
+import { BuyerOrSeller, MessageDataWithInfo } from "../../types";
+import ExchangeSidePreview from "../ExchangeSidePreview";
+import Message from "../Message";
+import MessageSeparator from "../MessageSeparator";
+import { ChatConversationBottom } from "./ChatConversationBottom";
 
 const Container = styled.div`
   display: flex;
@@ -240,7 +240,7 @@ const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
   return myAddress === sender;
 };
 
-interface Props {
+type ChatConversationProps = {
   myBuyerId: string;
   mySellerId: string;
   exchange: Exchange | undefined;
@@ -250,7 +250,7 @@ interface Props {
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
   refetchExchanges: () => void;
-}
+};
 const ChatConversation = ({
   myBuyerId,
   mySellerId,
@@ -261,7 +261,8 @@ const ChatConversation = ({
   onTextAreaChange,
   textAreaValue,
   refetchExchanges
-}: Props) => {
+}: ChatConversationProps) => {
+  const [hasValidProposal, setHasValidProposal] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
@@ -744,7 +745,8 @@ const ChatConversation = ({
               </>
             </InfiniteScroll>
           </Messages>
-          <ChatInput
+          <ChatConversationBottom
+            hasValidProposal={hasValidProposal}
             disableInputs={disableInputs}
             exchange={exchange}
             threadId={threadId}
