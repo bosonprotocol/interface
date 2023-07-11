@@ -14,7 +14,7 @@ import {
 } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
-import BosonButton from "../../../components/ui/BosonButton";
+import Button from "../../../components/ui/Button";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
 import Video from "../../../components/ui/Video";
@@ -199,7 +199,13 @@ const getOfferDetailData = (
         </>
       ),
       value: (
-        <Typography tag="p">
+        <Typography
+          tag="p"
+          style={{
+            wordBreak: "break-word",
+            whiteSpace: "break-spaces"
+          }}
+        >
           {formatted} {offer.exchangeToken.symbol}
           <small>({deposit}%)</small>
         </Typography>
@@ -299,8 +305,8 @@ export default function ExchangeSidePreview({
     }
     const isDisabled = iAmTheBuyer ? false : sellerRoles.isAssistant;
     return (
-      <BosonButton
-        variant="primaryFill"
+      <Button
+        theme="secondary"
         disabled={isDisabled}
         onClick={() =>
           showModal(
@@ -315,7 +321,7 @@ export default function ExchangeSidePreview({
         }
       >
         Complete exchange
-      </BosonButton>
+      </Button>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exchange, iAmTheBuyer, sellerRoles.isAssistant]);
@@ -387,7 +393,7 @@ export default function ExchangeSidePreview({
 
       {(isInDispute || isResolved || isEscalated) && (
         <Section>
-          {isInDispute && (
+          {isInDispute && !!totalDaysToResolveDispute && (
             <div style={{ marginBottom: "1rem" }}>
               <ProgressBar
                 threshold={15}
@@ -415,8 +421,8 @@ export default function ExchangeSidePreview({
       </Section>
       {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
-          <BosonButton
-            variant="accentInverted"
+          <Button
+            theme="secondary"
             onClick={() =>
               showModal(
                 "RETRACT_DISPUTE",
@@ -432,10 +438,9 @@ export default function ExchangeSidePreview({
             }
           >
             Retract
-          </BosonButton>
-          <BosonButton
-            variant="secondaryInverted"
-            showBorder={false}
+          </Button>
+          <Button
+            theme="secondary"
             onClick={() =>
               showModal(
                 "ESCALATE_MODAL",
@@ -449,13 +454,13 @@ export default function ExchangeSidePreview({
             }
           >
             Escalate
-          </BosonButton>
+          </Button>
           <CompleteExchangeButton />
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
-          <BosonButton
-            variant="primaryFill"
+          <Button
+            theme="secondary"
             disabled={hasDisputePeriodElapsed}
             onClick={() =>
               showModal(
@@ -475,7 +480,7 @@ export default function ExchangeSidePreview({
             }
           >
             Raise a dispute
-          </BosonButton>
+          </Button>
           <CompleteExchangeButton />
         </CTASection>
       ) : (

@@ -8,11 +8,10 @@ const Container = styled.div`
   display: flex;
   overflow: hidden;
 
-  height: 2rem;
+  height: 2.5rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-align: center;
-  padding: 0.6875rem 1.5rem;
 `;
 
 const commonStyles = css`
@@ -25,7 +24,7 @@ const commonStyles = css`
   right: 0;
   top: 0;
   bottom: 0;
-  border: 1px solid ${colors.white};
+  border: 1px solid ${colors.lightGrey};
 `;
 
 const Back = styled.div<{ $backgroundColor: CSSProperties["background"] }>`
