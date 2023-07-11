@@ -1,5 +1,4 @@
 import { subgraph } from "@bosonprotocol/react-kit";
-import dayjs from "dayjs";
 import { ArrowSquareOut } from "phosphor-react";
 import { useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -26,6 +25,7 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
 import { calcPercentage } from "../../../lib/utils/calcPrice";
 import {
+  getExchangeDisputeDates,
   getHasExchangeDisputeResolutionElapsed,
   isExchangeCompletableByBuyer,
   isExchangeCompletableBySeller
@@ -137,6 +137,7 @@ const Name = styled(Typography)`
 `;
 
 const StyledMultiSteps = styled(MultiSteps)`
+  align-items: flex-start;
   gap: 0;
   ${breakpoint.m} {
     padding-left: 6.25rem;
@@ -293,13 +294,12 @@ export default function ExchangeSidePreview({
     });
   }, [exchange, navigate]);
   const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
-  const CompleteExchangeButton = useCallback(() => {
-    if (!exchange) {
-      return null;
-    }
-    const isVisible = iAmTheBuyer
+  const isVisible = exchange
+    ? iAmTheBuyer
       ? isExchangeCompletableByBuyer(exchange)
-      : isExchangeCompletableBySeller(exchange);
+      : isExchangeCompletableBySeller(exchange)
+    : false;
+  const CompleteExchangeButton = useCallback(() => {
     if (!isVisible) {
       return null;
     }
@@ -310,7 +310,7 @@ export default function ExchangeSidePreview({
         disabled={isDisabled}
         onClick={() =>
           showModal(
-            modalTypes.COMPLETE_EXCHANGE,
+            "COMPLETE_EXCHANGE",
             {
               title: "Complete Confirmation",
               exchange: exchange,
@@ -324,7 +324,7 @@ export default function ExchangeSidePreview({
       </Button>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exchange, iAmTheBuyer, sellerRoles.isAssistant]);
+  }, [exchange, iAmTheBuyer, sellerRoles.isAssistant, isVisible]);
   if (!exchange || !offer) {
     return null;
   }
@@ -333,19 +333,9 @@ export default function ExchangeSidePreview({
   const isResolved = !!dispute.resolvedDate;
   const isEscalated = !!dispute.escalatedDate;
   const isRetracted = !!dispute.retractedDate;
-  const raisedDisputeAt = new Date(Number(dispute.disputedDate) * 1000);
-  const lastDayToResolveDispute = new Date(
-    raisedDisputeAt.getTime() +
-      Number(exchange.offer.resolutionPeriodDuration) * 1000
-  );
-  const totalDaysToResolveDispute = dayjs(lastDayToResolveDispute).diff(
-    raisedDisputeAt,
-    "day"
-  );
-  const daysLeftToResolveDispute = Math.max(
-    0,
-    dayjs(lastDayToResolveDispute).diff(new Date().getTime(), "day")
-  );
+  const { totalDaysToResolveDispute, daysLeftToResolveDispute } =
+    getExchangeDisputeDates(exchange);
+
   const hasDisputePeriodElapsed: boolean =
     getHasExchangeDisputeResolutionElapsed(exchange, offer);
   const animationUrl = exchange?.offer.metadata.animationUrl || "";
@@ -483,11 +473,11 @@ export default function ExchangeSidePreview({
           </Button>
           <CompleteExchangeButton />
         </CTASection>
-      ) : (
+      ) : isVisible ? (
         <CTASection>
           <CompleteExchangeButton />
         </CTASection>
-      )}
+      ) : null}
       <HistorySection>
         <ExchangeTimeline exchange={exchange} showDispute={true}>
           <h4>History</h4>

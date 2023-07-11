@@ -294,9 +294,8 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
-
   const {
-    data: thread,
+    data: { thread, lastProposal },
     isLoading: areThreadsLoading,
     isBeginningOfTimes,
     isError: isErrorThread,
@@ -746,7 +745,7 @@ const ChatConversation = ({
             </InfiniteScroll>
           </Messages>
           <ChatConversationBottom
-            hasValidProposal={hasValidProposal}
+            hasValidProposal={!!lastProposal}
             disableInputs={disableInputs}
             exchange={exchange}
             threadId={threadId}

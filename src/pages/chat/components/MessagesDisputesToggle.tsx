@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
 import Button from "../../../components/ui/Button";
@@ -23,6 +23,7 @@ interface Props {
   onLeftButtonClick: React.MouseEventHandler<HTMLButtonElement>;
   onRightButtonClick: React.MouseEventHandler<HTMLButtonElement>;
   initiallySelected?: "left" | "right";
+  isLeftActive?: boolean;
 }
 
 export function MessagesDisputesToggle({
@@ -30,11 +31,17 @@ export function MessagesDisputesToggle({
   rightButtonText,
   onLeftButtonClick,
   onRightButtonClick,
-  initiallySelected = "left"
+  initiallySelected = "left",
+  isLeftActive: outerLeftActive
 }: Props) {
   const [isLeftActive, setLeftActive] = useState<boolean>(
     initiallySelected === "left"
   );
+  useEffect(() => {
+    if (outerLeftActive || outerLeftActive === false) {
+      setLeftActive(outerLeftActive);
+    }
+  }, [outerLeftActive]);
   return (
     <Grid gap="1rem">
       <StyledButton

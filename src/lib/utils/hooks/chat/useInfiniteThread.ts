@@ -1,4 +1,5 @@
 import {
+  MessageData,
   ThreadId,
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
@@ -6,6 +7,7 @@ import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validator
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 import { utils } from "ethers";
 import { useCallback, useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
 import { ThreadObjectWithInfo } from "../../../../pages/chat/types";
@@ -40,7 +42,10 @@ export function useInfiniteThread({
   genesisDate,
   onFinishFetching
 }: Props): {
-  data: ThreadObjectWithInfo | null;
+  data: {
+    thread: ThreadObjectWithInfo | null;
+    lastProposal: MessageData | null;
+  };
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
@@ -59,7 +64,7 @@ export function useInfiniteThread({
     index: 0,
     trigger: true
   });
-
+  const { address } = useAccount();
   const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
   const [threadXmtp, setThreadXmtp] = useState<ThreadObjectWithInfo | null>(
@@ -70,7 +75,8 @@ export function useInfiniteThread({
   );
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
-
+  const [lastProposal, setLastProposal] = useState<MessageData | null>(null);
+  console.log("threadXmtp", threadXmtp);
   useEffect(() => {
     if (
       !bosonXmtp ||
@@ -113,7 +119,27 @@ export function useInfiniteThread({
         onMessageReceived: async (threadObject) => {
           if (threadObject) {
             await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
-
+            if (!lastProposal) {
+              const proposal = threadObject.messages.find((message) => {
+                const isAProposalForMyself =
+                  message.sender.toLowerCase() ===
+                  message.recipient.toLowerCase();
+                const isAProposalFromSomeoneElse =
+                  message.recipient.toLowerCase() === address?.toLowerCase();
+                return (
+                  message.data.contentType === "PROPOSAL" &&
+                  (isAProposalForMyself || isAProposalFromSomeoneElse)
+                );
+              });
+              if (proposal) {
+                setLastProposal((prev) => {
+                  if (prev) {
+                    return prev;
+                  }
+                  return proposal;
+                });
+              }
+            }
             setThreadXmtp((prevThread) => {
               const mergedThreads = mergeThreads(
                 prevThread ? prevThread : null,
@@ -159,9 +185,9 @@ export function useInfiniteThread({
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId]);
+  }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId, address]);
   return {
-    data: threadXmtp || null,
+    data: { thread: threadXmtp || null, lastProposal },
     isLoading: areThreadsLoading,
     isError: !!error,
     error,

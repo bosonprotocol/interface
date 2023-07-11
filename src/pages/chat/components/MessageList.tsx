@@ -160,7 +160,9 @@ export default function MessageList({
   setChatListOpen,
   prevPath
 }: Props) {
-  const [showDisputesOnly, setShowDisputesOnly] = useState<boolean>(false);
+  const [showDisputesOnly, setShowDisputesOnly] = useState<boolean>(
+    !!currentExchange?.disputedDate
+  );
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentExchange ? getMessageItemKey(currentExchange) : ""
   );
@@ -169,6 +171,7 @@ export default function MessageList({
   useEffect(() => {
     if (currentExchange) {
       setActiveMessageKey(getMessageItemKey(currentExchange));
+      setShowDisputesOnly(!!currentExchange?.disputedDate);
     }
   }, [currentExchange]);
   const comesFromSellerCenter = !!prevPath?.startsWith(`${BosonRoutes.Sell}/`);
@@ -211,7 +214,8 @@ export default function MessageList({
           onRightButtonClick={() => {
             setShowDisputesOnly(true);
           }}
-          initiallySelected="left"
+          initiallySelected={showDisputesOnly ? "right" : "left"}
+          isLeftActive={!showDisputesOnly}
         />
       </Header>
       <ExchangesThreads>
