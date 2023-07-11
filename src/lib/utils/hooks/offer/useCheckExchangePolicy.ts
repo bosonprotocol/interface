@@ -54,9 +54,7 @@ export default function useCheckExchangePolicy({
           rulesTemplate.yupSchema.properties.exchangeToken.properties.address.pattern =
             tokensList_pattern;
         }
-        console.log(rulesTemplate);
         const _result = await core.checkExchangePolicy(offerId, rulesTemplate);
-        console.log(_result);
         setResult(_result);
       } catch (e) {
         console.error(e);

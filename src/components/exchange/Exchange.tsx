@@ -118,7 +118,6 @@ export default function Exchange({ offer, exchange, reload }: Props) {
   });
 
   const OFFER_DETAIL_DATA_MODAL = useMemo(
-    //TODO: get exchangePolicyCheckResult
     () => getOfferDetailData(offer, convertedPrice, true),
     [offer, convertedPrice]
   );
