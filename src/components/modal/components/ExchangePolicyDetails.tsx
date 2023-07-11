@@ -24,6 +24,12 @@ export default function ExchangePolicyDetails({
   offerData,
   exchangePolicyCheckResult
 }: Props) {
+  const isExchangePolicyValid =
+    exchangePolicyCheckResult &&
+    (exchangePolicyCheckResult.isValid ||
+      !exchangePolicyCheckResult.errors.find(
+        (error) => error.path === "metadata.exchangePolicy.template"
+      ));
   const exchangePolicy = {
     name:
       (offerData?.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
@@ -46,7 +52,8 @@ export default function ExchangePolicyDetails({
         ?.returnPeriodInDays || "unspecified",
     contractualAgreement: {
       title: "Commerce Agreement",
-      version: "v1"
+      version: isExchangePolicyValid ? "v1" : "(Non Standard)",
+      color: isExchangePolicyValid ? undefined : "red"
     },
     rNFTLicense: {
       title: "License Agreement",
@@ -145,7 +152,7 @@ export default function ExchangePolicyDetails({
           }}
           style={{ cursor: "pointer" }}
         >
-          <Typography tag="p">
+          <Typography tag="p" color={exchangePolicy.contractualAgreement.color}>
             {exchangePolicy.contractualAgreement.title}{" "}
             {exchangePolicy.contractualAgreement.version}{" "}
           </Typography>

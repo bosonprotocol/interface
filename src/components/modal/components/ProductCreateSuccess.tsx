@@ -122,11 +122,23 @@ export default function ProductCreateSuccess({
     symbol: offer?.exchangeToken.symbol
   });
 
-  const OFFER_DETAIL_DATA = useMemo(
-    // TODO: get exchangePolicyCheckResult
-    () => getOfferDetailData(offer, convertedPrice, false),
-    [convertedPrice, offer]
-  );
+  const OFFER_DETAIL_DATA = useMemo(() => {
+    // offer is necessarily compliant because created with the dApp
+    const exchangePolicyCheckResult = {
+      isValid: true,
+      errors: []
+    };
+
+    return getOfferDetailData(
+      offer,
+      convertedPrice,
+      false,
+      undefined,
+      undefined,
+      undefined,
+      exchangePolicyCheckResult
+    );
+  }, [convertedPrice, offer]);
 
   const suggestedAmount = FixedNumber.fromString(
     formatUnits(

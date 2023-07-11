@@ -195,6 +195,11 @@ const getOfferDetailData = (
 ) => {
   const { deposit, formatted } = calcPercentage(offer, "sellerDeposit");
 
+  const exchangePolicyLabel = (
+    (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
+      ?.label || "Unspecified"
+  ).replace("fairExchangePolicy", "Fair Exchange Policy");
+
   const handleShowExchangePolicy = () => {
     showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
       title: "Exchange Policy Details",
@@ -243,7 +248,7 @@ const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            Fair Exchange Policy{" "}
+            {exchangePolicyLabel + " "}
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}

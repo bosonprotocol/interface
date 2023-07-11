@@ -179,6 +179,11 @@ export const getOfferDetailData = (
     "sellerDeposit"
   );
 
+  const exchangePolicyLabel = (
+    (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
+      ?.label || "Unspecified"
+  ).replace("fairExchangePolicy", "Fair Exchange Policy");
+
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
     if (modalTypes && showModal) {
@@ -309,31 +314,37 @@ export const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            Fair Exchange Policy{" "}
-            <ArrowSquareOut
-              size={20}
-              onClick={() => handleShowExchangePolicy()}
-              style={{ cursor: "pointer" }}
-            />
+            {exchangePolicyLabel + " "}
+            {modalTypes && showModal && (
+              <ArrowSquareOut
+                size={20}
+                onClick={() => handleShowExchangePolicy()}
+                style={{ cursor: "pointer" }}
+              />
+            )}
           </Typography>
         ) : (
           <Typography tag="p" color="red">
             <ShieldWarning size={20}></ShieldWarning> Non Standard{" "}
-            <ArrowSquareOut
-              size={20}
-              onClick={() => handleShowExchangePolicy()}
-              style={{ cursor: "pointer" }}
-            />
+            {modalTypes && showModal && (
+              <ArrowSquareOut
+                size={20}
+                onClick={() => handleShowExchangePolicy()}
+                style={{ cursor: "pointer" }}
+              />
+            )}
           </Typography>
         )
       ) : (
         <Typography tag="p" color="purple">
           <CircleWavyQuestion size={20}></CircleWavyQuestion> Unknown{" "}
-          <ArrowSquareOut
-            size={20}
-            onClick={() => handleShowExchangePolicy()}
-            style={{ cursor: "pointer" }}
-          />
+          {modalTypes && showModal && (
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          )}
         </Typography>
       )
     },

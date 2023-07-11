@@ -218,7 +218,9 @@ export default function Preview({
       },
       exchangePolicy: {
         sellerContactMethod: CONFIG.defaultSellerContactMethod,
-        disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
+        disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`,
+        template: values.termsOfExchange.exchangePolicy.value,
+        label: values.termsOfExchange.exchangePolicy.label
       },
       productV1Seller: {
         name: values.createYourProfile.name
