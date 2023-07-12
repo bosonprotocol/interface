@@ -1,5 +1,5 @@
 import { ArrowLeft } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -145,6 +145,7 @@ interface Props {
   isConversationOpened: boolean;
   setChatListOpen: (p: boolean) => void;
   prevPath: string;
+  selectExchange: Dispatch<SetStateAction<Exchange | undefined>>;
 }
 
 const getMessageItemKey = (exchange: Exchange) => exchange.id;
@@ -158,7 +159,8 @@ export default function MessageList({
   currentExchange,
   isConversationOpened,
   setChatListOpen,
-  prevPath
+  prevPath,
+  selectExchange
 }: Props) {
   const [showDisputesOnly, setShowDisputesOnly] = useState<boolean>(
     !!currentExchange?.disputedDate
@@ -210,9 +212,21 @@ export default function MessageList({
           rightButtonText="Disputes"
           onLeftButtonClick={() => {
             setShowDisputesOnly(false);
+            const firstExchangeWithNoDispute = exchanges
+              .filter((exchange) => exchange)
+              .find((exchange) => !exchange.disputedDate);
+            if (firstExchangeWithNoDispute) {
+              selectExchange(firstExchangeWithNoDispute);
+            }
           }}
           onRightButtonClick={() => {
             setShowDisputesOnly(true);
+            const firstDisputedExchange = exchanges
+              .filter((exchange) => exchange)
+              .find((exchange) => !!exchange.disputedDate);
+            if (firstDisputedExchange) {
+              selectExchange(firstDisputedExchange);
+            }
           }}
           initiallySelected={showDisputesOnly ? "right" : "left"}
           isLeftActive={!showDisputesOnly}

@@ -243,6 +243,7 @@ export default function Chat() {
               chatListOpen={chatListOpen}
               setChatListOpen={setChatListOpen}
               currentExchange={selectedExchange}
+              selectExchange={selectExchange}
             />
 
             {exchangeIdNotOwned ? (
