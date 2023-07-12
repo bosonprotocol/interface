@@ -4,8 +4,8 @@ import bytesToSize from "../../../lib/utils/bytesToSize";
 import { FileProps } from "../../form/Upload/types";
 import { SUPPORTED_FILE_FORMATS } from "./const";
 
-export const validationOfRequiredIpfsImage = () =>
-  Yup.mixed<FileProps[]>()
+export const validationOfRequiredIpfsImage = <T extends FileProps>() =>
+  Yup.mixed<T[]>()
     .test("fileUploaded", "You need to upload an image", function (value) {
       return !!(value && value?.[0]?.src);
     })

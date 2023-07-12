@@ -15,7 +15,8 @@ interface Props {
   onSubmit: (
     createValues: CreateProfile,
     dirty: boolean,
-    resetDirty?: () => void
+    resetDirty?: () => void,
+    coverImageTouched?: boolean
   ) => Promise<void>;
   isEdit: boolean;
   forceDirty: boolean;
@@ -31,6 +32,7 @@ export default function CreateYourRegularProfile({
 }: Props) {
   const [error, setError] = useState<Error | null>(null);
   const [dirty, setDirty] = useState<boolean>(false);
+  const [coverImageTouched, setCoverImageTouched] = useState<boolean>(false);
   return (
     <Formik<CreateProfile>
       validationSchema={createYourProfileSchema}
@@ -48,7 +50,12 @@ export default function CreateYourRegularProfile({
       onSubmit={async (values) => {
         try {
           setError(null);
-          await onSubmit(values, dirty, () => setDirty(true));
+          await onSubmit(
+            values,
+            dirty,
+            () => setDirty(true),
+            coverImageTouched
+          );
         } catch (err) {
           console.error(err);
           Sentry.captureException(error);
@@ -56,9 +63,12 @@ export default function CreateYourRegularProfile({
         }
       }}
     >
-      {({ dirty: formDirty }) => {
+      {({ dirty: formDirty, touched }) => {
         if (formDirty !== dirty) {
           setDirty(formDirty);
+        }
+        if (touched.coverPicture !== coverImageTouched) {
+          setCoverImageTouched(!!touched.coverPicture);
         }
         return (
           <Form>

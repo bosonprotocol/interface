@@ -10,6 +10,8 @@ const StyledCanvasWrapper = styled.div`
   > :first-child {
     max-width: 100%;
     object-fit: contain;
+    width: auto !important;
+    height: auto !important;
   }
 `;
 
@@ -29,31 +31,21 @@ export const ImageEditor = forwardRef<AvatarEditor, ImageEditorProps>(
     };
     const { data } = useIpfsImage({ url: url ?? "" }, { enabled: !!url });
     const image = data?.base64;
-    const w = borderRadius ? undefined : width;
+    const { width: imageWidth, height: imageHeight } = data || {};
+    const w = borderRadius ? width : width || imageWidth;
+    const h = borderRadius ? height : height || imageHeight;
     return (
       <>
         {image && (
           <div style={{ margin: "2rem 0", maxWidth: "100%" }}>
-            <Dropzone
-              data-dropzone
-              noClick
-              noKeyboard
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              style={{
-                // width: w ? w + "px" : "250px",
-                width: "100%",
-                // height: height ? height + "px" : "250px",
-                borderRadius: borderRadius ? `${borderRadius}%` : ""
-              }}
-            >
+            <Dropzone noClick noKeyboard>
               {({ getRootProps, getInputProps }) => (
                 <StyledCanvasWrapper {...getRootProps()}>
                   <AvatarEditor
                     image={image}
                     ref={editorRef}
                     width={w}
-                    height={height}
+                    height={h}
                     scale={scale}
                     borderRadius={borderRadius}
                   />

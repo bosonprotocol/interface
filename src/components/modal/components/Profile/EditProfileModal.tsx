@@ -78,6 +78,7 @@ export default function EditProfileModal() {
         authTokenType !== AuthTokenType.NONE);
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
+        profileDataFromMetadata={profileDataFromMetadata}
         onSubmit={async () => {
           hideModal();
         }}
