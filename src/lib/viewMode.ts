@@ -22,10 +22,10 @@ export function addViewModePrefixToPaths<T extends Record<string, string>>(
   }, {} as T);
 }
 
-export function goToViewMode(
+export function getViewModeUrl(
   viewMode: ViewMode.DAPP | ViewMode.DR_CENTER,
   path: string
-): void {
+): string {
   const dappViewModeUrl =
     CONFIG.viewMode.dappViewModeUrl === "same_origin" ||
     !CONFIG.viewMode.dappViewModeUrl
@@ -36,7 +36,15 @@ export function goToViewMode(
     !CONFIG.viewMode.drCenterViewModeUrl
       ? window.location.origin
       : CONFIG.viewMode.drCenterViewModeUrl;
-  window.location.href = `${
+  return `${
     viewMode === ViewMode.DAPP ? dappViewModeUrl : drCenterViewModeUrl
   }/#${path}`;
+}
+
+export function goToViewMode(
+  viewMode: ViewMode.DAPP | ViewMode.DR_CENTER,
+  path: string
+): void {
+  const url = getViewModeUrl(viewMode, path);
+  window.location.href = url;
 }

@@ -233,9 +233,9 @@ const Burger = ({ onClick }: { onClick: () => void }) => {
 };
 
 interface Props {
-  fluidHeader: boolean;
+  fluidHeader: boolean | undefined;
 }
-const HeaderComponent = forwardRef<HTMLElement, Props>(
+export const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false }, ref) => {
     const { address } = useAccount();
     const navigate = useKeepQueryParamsNavigate();

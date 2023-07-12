@@ -25,6 +25,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 0 1rem 0.0625rem 1rem;
   margin-bottom: 1.5625rem;
+  border: 1px solid ${colors.lightGrey};
 `;
 
 const OfferImage = styled.div`

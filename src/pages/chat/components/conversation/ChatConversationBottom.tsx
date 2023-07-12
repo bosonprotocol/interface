@@ -39,7 +39,7 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
       setShowProposal(true);
     }
   }, [proposal]);
-  console.log("proposal", proposal);
+
   const sendProposal = async (
     proposal: {
       title: string;

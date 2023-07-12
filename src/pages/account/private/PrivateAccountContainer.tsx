@@ -47,5 +47,5 @@ export default function PrivateAccountContainer() {
     return <NotFound />;
   }
 
-  return <Buyer manageFundsId={buyerId} />;
+  return <Buyer buyerId={buyerId} />;
 }

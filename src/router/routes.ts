@@ -50,6 +50,13 @@ const viewModeRoutes = {
   [ViewMode.BOTH]: [
     {
       ...base,
+      app: {
+        withLayout: true,
+        withFooter: false,
+        fluidHeader: false,
+        withBosonStyles: true,
+        withBanner: false
+      },
       index: true,
       path: "/",
       component: ViewModePage

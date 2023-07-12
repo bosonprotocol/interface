@@ -1,4 +1,4 @@
-import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
 import { useMemo } from "react";
@@ -13,7 +13,7 @@ import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import BosonButton from "../../../ui/BosonButton";
+import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
@@ -133,11 +133,23 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         </td>
         <td>
           <Grid justifyContent="flex-end" gap="1rem">
+            <Button
+              type="button"
+              theme="secondary"
+              onClick={() => {
+                navigate({
+                  pathname: generatePath(BosonRoutes.ChatMessage, {
+                    [UrlParameters.exchangeId]: exchange?.id
+                  })
+                });
+              }}
+            >
+              Open chat
+            </Button>
             {isNotEscalatedYet && status !== "Resolved" && (
-              <BosonButton
-                variant="secondaryInverted"
-                size={ButtonSize.Small}
-                showBorder={false}
+              <Button
+                type="button"
+                theme="secondary"
                 onClick={() => {
                   showModal(
                     "ESCALATE_MODAL",
@@ -151,22 +163,8 @@ function TableElement({ exchange }: { exchange: Exchange }) {
                 }}
               >
                 Escalate dispute
-              </BosonButton>
+              </Button>
             )}
-            <BosonButton
-              type="button"
-              variant="primaryFill"
-              size={ButtonSize.Small}
-              onClick={() => {
-                navigate({
-                  pathname: generatePath(BosonRoutes.ChatMessage, {
-                    [UrlParameters.exchangeId]: exchange?.id
-                  })
-                });
-              }}
-            >
-              Open chat
-            </BosonButton>
           </Grid>
         </td>
       </>

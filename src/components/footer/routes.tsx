@@ -16,6 +16,7 @@ import {
   SocialRoutes
 } from "../../lib/routing/routes";
 import { isTruthy } from "../../lib/types/helpers";
+import { getViewModeUrl, ViewMode } from "../../lib/viewMode";
 import { UserRoles } from "../../router/routes";
 import { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { getSellerCenterPath } from "../seller/paths";
@@ -179,7 +180,7 @@ export const getHelpLinks = ({
       false
     ) && {
       name: "Dispute Center",
-      url: DrCenterRoutes.Root,
+      url: getViewModeUrl(ViewMode.DR_CENTER, DrCenterRoutes.Root),
       absolute: true
     },
     {

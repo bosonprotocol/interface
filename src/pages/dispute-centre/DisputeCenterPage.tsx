@@ -1,13 +1,14 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import disputeResolutionBackground from "../../assets/background1.svg";
+import { LayoutRoot } from "../../components/layout/Layout";
 import DisputeListMobile from "../../components/modal/components/DisputeListMobile/DisputeListMobile";
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
 import { useModal } from "../../components/modal/useModal";
-import BosonButton from "../../components/ui/BosonButton";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
+import GridContainer from "../../components/ui/GridContainer";
 import Typography from "../../components/ui/Typography";
 import {
   AccountQueryParameters,
@@ -20,41 +21,21 @@ import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
-const DisputeListContainer = styled.div`
+const DisputeListHeader = styled.div`
   background: ${colors.lightGrey};
+  width: 100vw;
+  translate: -50%;
+  margin-left: 50%;
+`;
+
+const Image = styled.img`
+  align-self: center;
+  justify-self: flex-end;
+`;
+
+const DisputeListContainer = styled.div`
   min-height: calc(100vh - 489px);
   padding: 2rem 0;
-`;
-
-const DisputeListHeader = styled.div<{ isLteS: boolean }>`
-  max-width: 65.625rem;
-  margin: 0 auto;
-  padding-top: ${({ isLteS }) => (isLteS ? "2.5rem" : "3.125rem")};
-  padding-bottom: ${({ isLteS }) => (isLteS ? "1.5625rem" : "2rem")};
-  max-width: ${({ isLteS }) => (isLteS ? "100%" : "65.625rem")};
-  display: ${({ isLteS }) => isLteS && "block"};
-  background: ${({ isLteS }) => isLteS && colors.lightGrey};
-  :first-child {
-    max-width: ${({ isLteS }) => isLteS && "25rem"};
-    background: ${({ isLteS }) => isLteS && colors.white};
-    display: ${({ isLteS }) => isLteS && "block"};
-    margin: ${({ isLteS }) => isLteS && "0 auto"};
-    padding: ${({ isLteS }) => isLteS && "1.25rem"};
-  }
-`;
-
-const SubmitButton = styled(BosonButton)`
-  div {
-    font-weight: 600;
-  }
-`;
-
-const HowItWorksButton = styled(Button)`
-  border: 2px solid ${colors.secondary};
-  color: ${colors.secondary};
-  div {
-    font-weight: 600;
-  }
 `;
 
 function DisputeCenterPage() {
@@ -82,50 +63,84 @@ function DisputeCenterPage() {
   );
   return (
     <>
-      <DisputeListHeader isLteS={isLteS}>
-        <span>
-          <Typography $fontSize="2rem" color={colors.black} fontWeight="600">
-            Dispute resolution center
-          </Typography>
-          <Typography $fontSize="1.25rem" color={colors.darkGrey}>
-            Raise and resolve problems of your exchanges.
-          </Typography>
-          <Grid
-            $width="max-content"
-            gap="1rem"
-            justifyContent="flex-start"
-            alignItems="flex-start"
-            margin="1.875rem 0 0 0"
-          >
-            <SubmitButton
-              type="submit"
-              variant="primaryFill"
-              size={ButtonSize.Small}
-              onClick={() => {
-                navigate({
-                  pathname: BosonRoutes.YourAccount,
-                  search: `${AccountQueryParameters.tab}=${TabQueryParameters.exchange}`
-                });
-              }}
-            >
-              Submit an issue
-            </SubmitButton>
-            <HowItWorksButton
-              type="button"
-              theme="outline"
-              size="small"
-              onClick={() => {
-                showModal(modalTypes.RAISE_DISPUTE, {
-                  title: "Raise a dispute"
-                });
-              }}
-            >
-              How it works?
-            </HowItWorksButton>
-          </Grid>
-        </span>
+      <DisputeListHeader>
+        <LayoutRoot>
+          <GridContainer itemsPerRow={{ xs: 1, s: 2, m: 2, l: 2, xl: 2 }}>
+            <div style={{ padding: "3.5rem 0" }}>
+              <Typography
+                $fontSize="3.5rem"
+                color={colors.black}
+                fontWeight="600"
+              >
+                Boson Protocol
+              </Typography>
+              <Typography
+                $fontSize="3.5rem"
+                color={colors.black}
+                fontWeight="600"
+              >
+                Dispute Resolution Center
+              </Typography>
+              <Grid
+                $width="max-content"
+                gap="1rem"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                margin="1.875rem 0 0 0"
+              >
+                <Button
+                  type="submit"
+                  theme="primary"
+                  onClick={() => {
+                    navigate({
+                      pathname: BosonRoutes.YourAccount,
+                      search: `${AccountQueryParameters.tab}=${TabQueryParameters.exchange}`
+                    });
+                  }}
+                >
+                  Raise a dispute
+                </Button>
+                <Button
+                  type="button"
+                  theme="secondary"
+                  onClick={() => {
+                    showModal(modalTypes.RAISE_DISPUTE, {
+                      title: "Raise a dispute"
+                    });
+                  }}
+                >
+                  How it works?
+                </Button>
+              </Grid>
+            </div>
+            <Image src={disputeResolutionBackground} width={392} height={392} />
+          </GridContainer>
+        </LayoutRoot>
       </DisputeListHeader>
       <DisputeListContainer>
+        {
+          // TODO: buyer funds only?
+        }
+        {myBuyerId && (
+          <Grid justifyContent="flex-end" marginBottom="1rem">
+            <Button
+              theme="secondary"
+              onClick={() => {
+                showModal(
+                  "MANAGE_FUNDS_MODAL",
+                  {
+                    title: "Manage Funds",
+                    id: myBuyerId
+                  },
+                  "auto",
+                  "dark"
+                );
+              }}
+            >
+              Withdraw funds
+            </Button>
+          </Grid>
+        )}
         {isLteS ? (
           <DisputeListMobile exchanges={exchanges} />
         ) : (
