@@ -26,8 +26,6 @@ import InitializeChat from "../../../../components/modal/components/Chat/compone
 import Grid from "../../../../components/ui/Grid";
 import SellerID from "../../../../components/ui/SellerID";
 import Typography from "../../../../components/ui/Typography";
-import { DrCenterRoutes } from "../../../../lib/routing/drCenterRoutes";
-import { BosonRoutes } from "../../../../lib/routing/routes";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { zIndex } from "../../../../lib/styles/zIndex";
@@ -35,8 +33,8 @@ import { useInfiniteThread } from "../../../../lib/utils/hooks/chat/useInfiniteT
 import { useBreakpoints } from "../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getCurrentViewMode, ViewMode } from "../../../../lib/viewMode";
 import { useChatContext } from "../../ChatProvider/ChatContext";
+import { chatUrl } from "../../const";
 import { BuyerOrSeller, MessageDataWithInfo } from "../../types";
 import ExchangeSidePreview from "../ExchangeSidePreview";
 import Message from "../Message";
@@ -241,10 +239,6 @@ const SellerComponent = ({
 const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
   return myAddress === sender;
 };
-
-const currentViewMode = getCurrentViewMode();
-const chatUrl =
-  currentViewMode === ViewMode.DAPP ? BosonRoutes.Chat : DrCenterRoutes.Chat;
 
 type ChatConversationProps = {
   myBuyerId: string;

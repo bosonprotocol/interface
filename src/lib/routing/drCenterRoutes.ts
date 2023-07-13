@@ -9,6 +9,7 @@ export const DrCenterRoutes = addViewModePrefixToPaths(
   {
     Root: "/",
     Chat: "/chat",
+    ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
     DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`,
     Error404: "*"
   } as const

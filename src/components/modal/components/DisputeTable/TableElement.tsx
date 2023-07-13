@@ -5,8 +5,8 @@ import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { DrCenterRoutes } from "../../../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../../../lib/routing/parameters";
-import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
 import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
@@ -138,7 +138,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
               theme="secondary"
               onClick={() => {
                 navigate({
-                  pathname: generatePath(BosonRoutes.ChatMessage, {
+                  pathname: generatePath(DrCenterRoutes.ChatMessage, {
                     [UrlParameters.exchangeId]: exchange?.id
                   })
                 });
