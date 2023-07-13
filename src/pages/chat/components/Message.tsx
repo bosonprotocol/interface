@@ -1,13 +1,21 @@
 import {
+  AcceptProposalContent,
+  EscalateDisputeContent,
   FileContent,
   MessageData,
   MessageType,
   ProposalContent,
-  StringContent
+  StringContent,
+  StringIconContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { BigNumber, utils } from "ethers";
-import { Check, Clock } from "phosphor-react";
-import React, { forwardRef, ReactNode } from "react";
+import { Check, CheckCircle, Clock, Info } from "phosphor-react";
+import React, {
+  cloneElement,
+  forwardRef,
+  ReactElement,
+  ReactNode
+} from "react";
 import styled from "styled-components";
 
 import UploadedFile from "../../../components/form/Upload/UploadedFile";
@@ -176,6 +184,37 @@ const Message = forwardRef(
   }
 );
 
+const IconMessage = ({
+  icon,
+  heading,
+  body
+}: {
+  icon: ReactElement;
+  heading: string;
+  body: string;
+}) => {
+  return (
+    <Grid gap="1.5rem">
+      {cloneElement(icon, {
+        size: 20
+      })}
+      <Grid flexDirection="column" gap="1rem">
+        {heading && (
+          <Typography $fontSize="1.25rem" fontWeight="600">
+            {heading}
+          </Typography>
+        )}
+        {body && <Typography>{body}</Typography>}
+      </Grid>
+    </Grid>
+  );
+};
+
+const ICONS = {
+  info: <Info />,
+  checkCircle: <CheckCircle />
+} as const;
+
 type MessageContentProps = Pick<
   Props,
   | "message"
@@ -199,6 +238,13 @@ const MessageContent = ({
     messageContentType === MessageType.String;
   const isFileMessage = messageContentType === MessageType.File;
   const isProposalMessage = messageContentType === MessageType.Proposal;
+  const isCounterProposalMessage =
+    messageContentType === MessageType.CounterProposal;
+  const isAcceptProposalMessage =
+    messageContentType === MessageType.AcceptProposal;
+  const isEscalateDisputeMessage =
+    messageContentType === MessageType.EscalateDispute;
+  const isStringIconMessage = messageContentType === MessageType.StringIcon;
   const { isValid, isPending } = message;
 
   if (!isValid && !isPending) {
@@ -237,7 +283,7 @@ const MessageContent = ({
     );
   }
 
-  if (isProposalMessage) {
+  if (isProposalMessage || isCounterProposalMessage) {
     if (!exchange) {
       return (
         <p>
@@ -363,6 +409,84 @@ const MessageContent = ({
         ) : null}
       </>
     );
+  }
+
+  if (isAcceptProposalMessage) {
+    const acceptProposalContent = message.data.content as AcceptProposalContent;
+    const {
+      value: { icon: iconId, heading, body, title, proposal }
+    } = acceptProposalContent;
+    const icon = ICONS[iconId as keyof typeof ICONS];
+    return (
+      <Grid flexDirection="column">
+        <Typography tag="h4" margin="0">
+          {title}
+        </Typography>
+        <Typography
+          margin="1.5rem 0 0.5rem 0"
+          $fontSize="1rem"
+          fontWeight="600"
+        >
+          Resolution Summary
+        </Typography>
+        <ProposalTypeSummary
+          key={proposal.type}
+          exchange={exchange}
+          proposal={proposal}
+        />
+        <IconMessage icon={icon} heading={heading} body={body} />;
+      </Grid>
+    );
+  }
+  if (isEscalateDisputeMessage) {
+    const escalateDisputeContent = message.data
+      .content as EscalateDisputeContent;
+    const {
+      value: {
+        icon: iconId,
+        heading,
+        body,
+        title,
+        description,
+        disputeResolverInfo
+      }
+    } = escalateDisputeContent;
+    const icon = ICONS[iconId as keyof typeof ICONS];
+    return (
+      <Grid flexDirection="column">
+        <Typography tag="h4" margin="0">
+          {title}
+        </Typography>
+        <Typography tag="p" margin="1rem 0rem">
+          {description}
+        </Typography>
+        <Grid flexDirection="column">
+          <Typography fontWeight="600">
+            Dispute resolver contact information
+          </Typography>
+          {disputeResolverInfo.map(({ label, value }) => {
+            return (
+              <Grid key={`${label}-${value}`}>
+                <Check size={16} />
+                <Grid justifyContent="flex-start">
+                  {label}: {value}
+                </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+        <IconMessage icon={icon} heading={heading} body={body} />;
+      </Grid>
+    );
+  }
+
+  if (isStringIconMessage) {
+    const stringIconContent = message.data.content as StringIconContent;
+    const {
+      value: { icon: iconId, heading, body }
+    } = stringIconContent;
+    const icon = ICONS[iconId as keyof typeof ICONS];
+    return <IconMessage icon={icon} heading={heading} body={body} />;
   }
 
   return <>Unsupported message</>;

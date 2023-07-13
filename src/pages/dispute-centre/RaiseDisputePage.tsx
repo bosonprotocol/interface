@@ -1,3 +1,4 @@
+import { MessageType } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
@@ -254,7 +255,8 @@ function RaiseDisputePage() {
                         buyerId: exchange.buyer.id,
                         sellerId: exchange.seller.id,
                         exchangeId: exchange.id
-                      }
+                      },
+                      type: MessageType.Proposal
                     });
                   }
                   let tx: TransactionResponse;

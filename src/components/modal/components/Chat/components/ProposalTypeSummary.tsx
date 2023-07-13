@@ -43,6 +43,7 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
     decimals: offer.exchangeToken.decimals,
     symbol: offer.exchangeToken.symbol
   });
+  // TODO: calculate and show the buyer-seller split
   return (
     <Grid flexDirection="column" alignItems="flex-start">
       <div>
