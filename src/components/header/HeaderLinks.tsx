@@ -18,7 +18,7 @@ export const HEADER_HEIGHT = "5.4rem";
 const NavigationLinks = styled.div<{
   isMobile: boolean;
   isOpen: boolean;
-  $navigationBarPosition: string;
+  $navigationBarPosition?: string;
 }>`
   background-color: var(--headerBgColor);
   color: var(--headerTextColor);
@@ -40,7 +40,7 @@ const NavigationLinks = styled.div<{
           position: absolute;
           ${() => {
             return css`
-              top: calc(${HEADER_HEIGHT} + 2px);
+              top: calc(${HEADER_HEIGHT} + 1px);
             `;
           }}
           left: 0;
@@ -80,7 +80,7 @@ const NavigationLinks = styled.div<{
         `
       : css`
           ${() => {
-            if (["left", "right"].includes($navigationBarPosition)) {
+            if (["left", "right"].includes($navigationBarPosition ?? "")) {
               return css`
                 display: flex;
                 flex-direction: column;
@@ -123,27 +123,38 @@ const NavigationLinks = styled.div<{
         `};
 `;
 
-const Links = styled.div<{ isMobile: boolean; $navigationBarPosition: string }>`
+const Links = styled.div<{
+  isMobile: boolean;
+  $navigationBarPosition?: string;
+}>`
   display: flex;
   justify-content: end;
   gap: 1rem;
   flex-direction: ${({ isMobile, $navigationBarPosition }) =>
-    isMobile || ["left", "right"].includes($navigationBarPosition)
+    isMobile || ["left", "right"].includes($navigationBarPosition ?? "")
       ? "column"
       : "row"};
   align-items: ${({ $navigationBarPosition }) =>
-    ["left", "right"].includes($navigationBarPosition) ? "center" : ""};
+    ["left", "right"].includes($navigationBarPosition ?? "") ? "center" : ""};
 `;
 
 interface Props {
   isMobile: boolean;
   isOpen: boolean;
-  navigationBarPosition: string;
+  navigationBarPosition?: string;
+  withSearch?: boolean;
+  withExploreProducts?: boolean;
+  withMyItems?: boolean;
+  withDisputeAdmin?: boolean;
 }
 export default function HeaderLinks({
   isMobile,
   isOpen,
-  navigationBarPosition
+  navigationBarPosition,
+  withSearch = true,
+  withExploreProducts = true,
+  withMyItems = true,
+  withDisputeAdmin = true
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
   const { address } = useAccount();
@@ -169,12 +180,14 @@ export default function HeaderLinks({
       isOpen={isOpen}
       $navigationBarPosition={navigationBarPosition}
     >
-      <Search
-        isMobile={isMobile}
-        navigationBarPosition={navigationBarPosition}
-      />
+      {withSearch && (
+        <Search
+          isMobile={isMobile}
+          navigationBarPosition={navigationBarPosition}
+        />
+      )}
       <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
-        {!onlySeller && (
+        {!onlySeller && withExploreProducts && (
           <LinkWithQuery to={BosonRoutes.Explore}>
             Explore Products
           </LinkWithQuery>
@@ -182,10 +195,12 @@ export default function HeaderLinks({
         {isAccountBuyer &&
           !onlySeller &&
           address &&
+          withMyItems &&
           checkIfUserHaveRole(roles, [UserRoles.Buyer], false) && (
             <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
           )}
         {!!disputeResolverId &&
+          withDisputeAdmin &&
           checkIfUserHaveRole(roles, [UserRoles.DisputeResolver], true) && (
             <LinkWithQuery to={`${BosonRoutes.DRAdmin}/disputes`}>
               Dispute Admin
