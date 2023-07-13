@@ -117,10 +117,9 @@ export function useInfiniteThread({
         onMessageReceived: async (threadObject) => {
           // TODO: if a new proposal is received, the old ones of the same party get expired
           if (threadObject) {
+            console.log("threadObject", threadObject);
             await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
-            const clonedThread = structuredClone(threadObject);
-            const clonedMessages = clonedThread.messages;
-            onMessagesReceived(clonedMessages);
+            onMessagesReceived(structuredClone(threadObject).messages);
 
             setThreadXmtp((prevThread) => {
               const mergedThreads = mergeThreads(

@@ -1,18 +1,18 @@
 import {
   FileContent,
+  MessageData,
   MessageType,
   ProposalContent,
   StringContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { BigNumber, utils } from "ethers";
-import { ArrowRight, Check, Clock } from "phosphor-react";
+import { Check, Clock } from "phosphor-react";
 import React, { forwardRef, ReactNode } from "react";
 import styled from "styled-components";
 
 import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
 import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
-import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -86,6 +86,23 @@ const AvatarContainer = styled.div`
   }
 `;
 
+const ProposalStatus = styled.div`
+  display: flex;
+  align-items: center;
+  height: 1.875rem;
+  letter-spacing: 0.5px;
+  line-height: 16px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.1rem 1rem;
+  border-radius: 20px;
+  &:first-letter {
+    text-transform: uppercase;
+  }
+  background: ${colors.orange};
+  color: ${colors.white};
+`;
+
 const Bottom = styled.div<{ $isLeftAligned: boolean }>`
   position: absolute;
   bottom: 1rem;
@@ -98,14 +115,6 @@ const Bottom = styled.div<{ $isLeftAligned: boolean }>`
     color: ${({ $isLeftAligned }) =>
       $isLeftAligned ? colors.lightGrey : colors.darkGrey};
     font-size: 0.75rem;
-  }
-`;
-
-const StyledGrid = styled(Grid)`
-  cursor: pointer;
-  :hover * {
-    color: ${colors.secondary};
-    stroke: ${colors.secondary};
   }
 `;
 
@@ -133,11 +142,20 @@ interface Props {
   message: MessageDataWithInfo;
   children: ReactNode;
   isLeftAligned: boolean;
+  lastReceivedProposal: MessageData | null;
+  lastSentProposal: MessageData | null;
 }
 
 const Message = forwardRef(
   (
-    { message, children: Avatar, isLeftAligned, exchange }: Props,
+    {
+      message,
+      children: Avatar,
+      isLeftAligned,
+      exchange,
+      lastReceivedProposal,
+      lastSentProposal
+    }: Props,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
     return (
@@ -148,6 +166,8 @@ const Message = forwardRef(
             message={message}
             exchange={exchange}
             isLeftAligned={isLeftAligned}
+            lastReceivedProposal={lastReceivedProposal}
+            lastSentProposal={lastSentProposal}
           />
         </ErrorMessageBoundary>
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
@@ -156,18 +176,22 @@ const Message = forwardRef(
   }
 );
 
-interface MessageContentProps {
-  message: Props["message"];
-  isLeftAligned: Props["isLeftAligned"];
-  exchange: Props["exchange"];
-}
+type MessageContentProps = Pick<
+  Props,
+  | "message"
+  | "isLeftAligned"
+  | "exchange"
+  | "lastReceivedProposal"
+  | "lastSentProposal"
+>;
 
 const MessageContent = ({
   message,
   isLeftAligned,
-  exchange
+  exchange,
+  lastReceivedProposal,
+  lastSentProposal
 }: MessageContentProps) => {
-  const { showModal } = useModal();
   const messageContent = message.data.content;
   const messageContentType = message.data.contentType;
   const isRegularMessage =
@@ -222,16 +246,46 @@ const MessageContent = ({
         </p>
       );
     }
-    const proposalContent = message.data.content as unknown as ProposalContent;
+    const proposalContent = message.data.content as ProposalContent;
     const messageContent = proposalContent.value;
+    const proposals = messageContent.proposals;
+    let isLastProposal = false;
+    if (lastReceivedProposal || lastSentProposal) {
+      const lastReceivedProposalContent = lastReceivedProposal?.data
+        ?.content as ProposalContent | undefined;
+      const lastSentProposalContent = lastSentProposal?.data?.content as
+        | ProposalContent
+        | undefined;
+      const signatures = [
+        ...(lastReceivedProposalContent?.value?.proposals?.map((proposal) =>
+          proposal.signature.toLowerCase()
+        ) || []),
+        ...(lastSentProposalContent?.value?.proposals?.map((proposal) =>
+          proposal.signature.toLowerCase()
+        ) || [])
+      ];
+      isLastProposal = proposals.some((proposal) =>
+        signatures.includes(proposal.signature.toLowerCase())
+      );
+    }
     const isRaisingADispute = !!messageContent.disputeContext?.length;
     return (
       <>
-        <Typography tag="h4" margin="0">
-          {messageContent.title}
-        </Typography>
-        {isRaisingADispute && (
+        <Grid justifyContent="space-between" alignItems="flex-start">
+          <Typography tag="h4" margin="0">
+            {messageContent.title}
+          </Typography>
+          {!isLastProposal && !!proposals.length && (
+            <ProposalStatus>
+              <strong>Expired</strong>
+            </ProposalStatus>
+          )}
+        </Grid>
+        {isRaisingADispute ? (
           <>
+            <Typography tag="p" margin="1rem 0rem">
+              {messageContent.description}
+            </Typography>
             <Typography
               margin="1.5rem 0 0.5rem 0"
               $fontSize="1rem"
@@ -247,33 +301,18 @@ const MessageContent = ({
                 </Grid>
               );
             })}
-            <Typography
-              margin="1.5rem 0 0.5rem 0"
-              $fontSize="1rem"
-              fontWeight="600"
-            >
-              Additional information
-            </Typography>
           </>
+        ) : (
+          <Typography tag="p" margin="1rem 0rem">
+            {messageContent.description}
+          </Typography>
         )}
-        <Typography tag="p" margin="0.25rem 1rem 0rem 0rem">
-          {messageContent.description}
-        </Typography>
 
-        {messageContent.proposals.length ? (
+        {proposals.length ? (
           <Grid flexDirection="column" alignItems="flex-start">
             {isLeftAligned ? (
               <>
-                <Typography
-                  margin="1.5rem 0 0.5rem 0"
-                  $fontSize="1.25rem"
-                  fontWeight="600"
-                >
-                  {messageContent.proposals.length === 1
-                    ? "Proposal"
-                    : "Proposals"}
-                </Typography>
-                {messageContent.proposals.map((proposal) => {
+                {proposals.map((proposal) => {
                   const { offer } = exchange;
 
                   const refundAmount = BigNumber.from(offer.price)
@@ -292,26 +331,12 @@ const MessageContent = ({
                       rowGap="0.25rem"
                       alignItems="flex-start"
                     >
-                      <Typography margin="0">{proposal.type}</Typography>
-                      <StyledGrid
-                        justifyContent="space-between"
-                        onClick={() =>
-                          showModal("RESOLVE_DISPUTE", {
-                            title: "Resolve dispute",
-                            exchange,
-                            proposal
-                          })
-                        }
-                      >
-                        <Typography color={colors.primary} cursor="pointer">
-                          Proposed refund amount: {formattedRefundAmount}{" "}
-                          {offer.exchangeToken.symbol} (
-                          {Number(proposal.percentageAmount) /
-                            PERCENTAGE_FACTOR}
-                          %)
-                        </Typography>
-                        <ArrowRight color={colors.primary} />
-                      </StyledGrid>
+                      <Typography>
+                        Proposed refund amount: {formattedRefundAmount}{" "}
+                        {offer.exchangeToken.symbol} (
+                        {Number(proposal.percentageAmount) / PERCENTAGE_FACTOR}
+                        %)
+                      </Typography>
                     </Grid>
                   );
                 })}

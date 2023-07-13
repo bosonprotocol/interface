@@ -1,6 +1,7 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
 import {
   MessageData,
+  ProposalContent,
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
@@ -294,25 +295,54 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
-  const [lastProposal, setLastProposal] = useState<MessageData | null>(null);
+  const [lastReceivedProposal, setLastReceivedProposal] =
+    useState<MessageData | null>(null);
+  const [lastSentProposal, setLastSentProposal] = useState<MessageData | null>(
+    null
+  );
   const onMessagesReceived = useCallback(
     (messages: MessageData[]) => {
-      const proposal = messages
-        .sort((msgA, msgB) => {
-          return msgB.timestamp - msgA.timestamp;
-        })
+      const sortedMessages = messages.sort((msgA, msgB) => {
+        return msgB.timestamp - msgA.timestamp;
+      });
+      const filterProposals = (message: MessageData) =>
+        message.data.contentType === "PROPOSAL";
+      const tempLastReceivedProposal = sortedMessages
+        .filter(filterProposals)
         .find((message) => {
           const isAProposalForMyself =
             message.sender.toLowerCase() === message.recipient.toLowerCase();
           const isAProposalFromSomeoneElse =
             message.recipient.toLowerCase() === address?.toLowerCase();
+          const hasProposals = !!(message.data.content as ProposalContent)
+            ?.value.proposals?.length;
           return (
-            message.data.contentType === "PROPOSAL" &&
-            (isAProposalForMyself || isAProposalFromSomeoneElse)
+            hasProposals && (isAProposalForMyself || isAProposalFromSomeoneElse)
           );
         });
-      if (proposal) {
-        setLastProposal(proposal);
+      const tempLastSentProposal = sortedMessages
+        .filter(filterProposals)
+        .find((message) => {
+          const isMyProposal =
+            message.sender.toLowerCase() === address?.toLowerCase();
+          const hasProposals = !!(message.data.content as ProposalContent)
+            ?.value.proposals?.length;
+          console.log("message", message, "hasProposals", hasProposals);
+          return isMyProposal && hasProposals;
+        });
+      if (tempLastReceivedProposal) {
+        setLastReceivedProposal((prev) => {
+          return (prev?.timestamp || 0) > tempLastReceivedProposal.timestamp
+            ? prev
+            : tempLastReceivedProposal;
+        });
+      }
+      if (tempLastSentProposal) {
+        setLastSentProposal((prev) => {
+          return (prev?.timestamp || 0) > tempLastSentProposal.timestamp
+            ? prev
+            : tempLastSentProposal;
+        });
       }
     },
     [address]
@@ -752,6 +782,8 @@ const ChatConversation = ({
                           exchange={exchange}
                           message={message}
                           isLeftAligned={leftAligned}
+                          lastReceivedProposal={lastReceivedProposal}
+                          lastSentProposal={lastSentProposal}
                           ref={ref}
                         >
                           <SellerComponent
@@ -769,7 +801,7 @@ const ChatConversation = ({
             </InfiniteScroll>
           </Messages>
           <ChatConversationBottom
-            proposal={lastProposal}
+            proposal={lastReceivedProposal}
             disableInputs={disableInputs}
             exchange={exchange}
             threadId={threadId}
