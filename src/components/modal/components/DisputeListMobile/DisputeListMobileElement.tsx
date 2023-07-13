@@ -4,7 +4,7 @@ import { ClockClockwise } from "phosphor-react";
 import React, { useMemo } from "react";
 import styled from "styled-components";
 
-import { BosonRoutes } from "../../../../lib/routing/routes";
+import { DrCenterRoutes } from "../../../../lib/routing/drCenterRoutes";
 import { colors } from "../../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
 import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
@@ -19,12 +19,9 @@ import { useModal } from "../../useModal";
 
 const Container = styled.div`
   background: ${colors.white};
-  margin-bottom: 1.5625rem;
   max-width: 25rem;
   display: block;
-  margin: 0 auto;
   padding: 0 1rem 0.0625rem 1rem;
-  margin-bottom: 1.5625rem;
   border: 1px solid ${colors.lightGrey};
 `;
 
@@ -85,7 +82,6 @@ const DisputeEndDate = styled(ClockClockwise)`
 `;
 
 const StyledDisputeButton = styled(BosonButton)`
-  padding-left: 0;
   div {
     font-weight: 600;
     font-size: 0.875rem;
@@ -190,7 +186,7 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
           size={ButtonSize.Small}
           onClick={() => {
             navigate({
-              pathname: `${BosonRoutes.Chat}/${exchange.id}`
+              pathname: `${DrCenterRoutes.Chat}/${exchange.id}`
             });
           }}
         >

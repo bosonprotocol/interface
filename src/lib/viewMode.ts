@@ -27,15 +27,15 @@ export function getViewModeUrl(
   path: string
 ): string {
   const dappViewModeUrl =
-    CONFIG.viewMode.dappViewModeUrl === "same_origin" ||
-    !CONFIG.viewMode.dappViewModeUrl
+    CONFIG.envViewMode.dappViewModeUrl === "same_origin" ||
+    !CONFIG.envViewMode.dappViewModeUrl
       ? window.location.origin
-      : CONFIG.viewMode.dappViewModeUrl;
+      : CONFIG.envViewMode.dappViewModeUrl;
   const drCenterViewModeUrl =
-    CONFIG.viewMode.drCenterViewModeUrl === "same_origin" ||
-    !CONFIG.viewMode.drCenterViewModeUrl
+    CONFIG.envViewMode.drCenterViewModeUrl === "same_origin" ||
+    !CONFIG.envViewMode.drCenterViewModeUrl
       ? window.location.origin
-      : CONFIG.viewMode.drCenterViewModeUrl;
+      : CONFIG.envViewMode.drCenterViewModeUrl;
   return `${
     viewMode === ViewMode.DAPP ? dappViewModeUrl : drCenterViewModeUrl
   }/#${path}`;
@@ -47,4 +47,12 @@ export function goToViewMode(
 ): void {
   const url = getViewModeUrl(viewMode, path);
   window.location.href = url;
+}
+
+export function getCurrentViewMode() {
+  const isDapp =
+    CONFIG.envViewMode.current === ViewMode.DAPP ||
+    (CONFIG.envViewMode.current === ViewMode.BOTH &&
+      location.href.startsWith(`${location.origin}/#/${ViewMode.DAPP}`));
+  return isDapp ? ViewMode.DAPP : ViewMode.DR_CENTER;
 }

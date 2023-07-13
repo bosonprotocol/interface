@@ -1,7 +1,7 @@
 import { CONFIG } from "../config";
 import { addViewModePrefixToPaths, ViewMode } from "../viewMode";
 import { UrlParameters } from "./parameters";
-const viewMode = CONFIG.viewMode;
+const viewMode = CONFIG.envViewMode;
 
 export const DrCenterRoutes = addViewModePrefixToPaths(
   viewMode.current,

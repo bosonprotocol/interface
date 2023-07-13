@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 
-import { CONFIG } from "../../lib/config";
-import { ViewMode } from "../../lib/viewMode";
+import { getCurrentViewMode, ViewMode } from "../../lib/viewMode";
 import { DappView } from "./DappView";
 import { DrCenterView } from "./DrCenterView";
 import { Wrapper } from "./useWrapper";
@@ -23,12 +22,9 @@ export const AppView: React.FC<AppViewProps> = ({
   withFooter,
   withHeader
 }) => {
-  const isDapp =
-    CONFIG.viewMode.current === ViewMode.DAPP ||
-    (CONFIG.viewMode.current === ViewMode.BOTH &&
-      location.href.startsWith(`${location.origin}/#/${ViewMode.DAPP}`));
+  const currentViewMode = getCurrentViewMode();
 
-  return isDapp ? (
+  return currentViewMode === ViewMode.DAPP ? (
     <DappView
       wrapper={Wrapper}
       fluidHeader={fluidHeader}

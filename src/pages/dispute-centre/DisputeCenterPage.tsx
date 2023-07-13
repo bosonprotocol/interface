@@ -137,7 +137,7 @@ function DisputeCenterPage() {
                 );
               }}
             >
-              Withdraw funds
+              Withdraw buyer funds
             </Button>
           </Grid>
         )}
