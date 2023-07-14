@@ -1,9 +1,23 @@
+import {
+  MessageData,
+  MessageType,
+  ThreadId,
+  version
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useSignMessage } from "wagmi";
@@ -11,10 +25,17 @@ import * as Yup from "yup";
 
 import { CONFIG } from "../../../../../../../lib/config";
 import { colors } from "../../../../../../../lib/styles/colors";
+import {
+  ChatInitializationStatus,
+  useChatStatus
+} from "../../../../../../../lib/utils/hooks/chat/useChatStatus";
 import { useAddPendingTransaction } from "../../../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useDisputeResolvers } from "../../../../../../../lib/utils/hooks/useDisputeResolvers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
+import { useChatContext } from "../../../../../../../pages/chat/ChatProvider/ChatContext";
+import { ICON_KEYS } from "../../../../../../../pages/chat/components/conversation/const";
+import { MessageDataWithInfo } from "../../../../../../../pages/chat/types";
 import { poll } from "../../../../../../../pages/create-product/utils";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
@@ -22,12 +43,12 @@ import { FieldInput } from "../../../../../../form/Field.styles";
 import FormField from "../../../../../../form/FormField";
 import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
-import ErrorToast from "../../../../../../toasts/common/ErrorToast";
 import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../../../../ui/BosonButton";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 import { useModal } from "../../../../../useModal";
+import InitializeChatWithSuccess from "../../InitializeChatWithSuccess";
 
 const Container = styled.div`
   display: flex;
@@ -139,13 +160,34 @@ const validationSchemaPerStep = [
   Yup.object({})
 ];
 
-interface Props {
+export type EscalateChatProps = {
+  setHasError?: Dispatch<SetStateAction<boolean>>;
+  addMessage?: (
+    newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
+  ) => Promise<void>;
+  onSentMessage?: (messageData: MessageData, uuid: string) => Promise<void>;
+};
+
+type Props = EscalateChatProps & {
   exchange: Exchange;
   refetch: () => void;
-}
-function EscalateStepTwo({ exchange, refetch }: Props) {
+};
+function EscalateStepTwo({
+  exchange,
+  refetch,
+  addMessage,
+  onSentMessage,
+  setHasError
+}: Props) {
+  const { bosonXmtp } = useChatContext();
+  const { chatInitializationStatus } = useChatStatus();
+  console.log({
+    chatInitializationStatus,
+    bosonXmtp: !!bosonXmtp
+  });
   const { data } = useDisputeResolvers();
-  const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
+  const disputeResolver = data?.disputeResolvers[0];
+  const feeAmount = disputeResolver?.fees[0]?.feeAmount;
   const { hideModal, showModal } = useModal();
   const emailFormField =
     CONFIG.envName === "production"
@@ -166,6 +208,20 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     }
   });
 
+  const threadId = useMemo<ThreadId | null>(() => {
+    if (!exchange) {
+      return null;
+    }
+    return {
+      exchangeId: exchange.id,
+      buyerId: exchange.buyer.id,
+      sellerId: exchange.seller.id
+    };
+  }, [exchange]);
+  const destinationAddressLowerCase = exchange?.offer.seller.assistant;
+  const destinationAddress = destinationAddressLowerCase
+    ? utils.getAddress(destinationAddressLowerCase)
+    : "";
   const validationSchema = validationSchemaPerStep[activeStep];
   const initialValues = useMemo(
     () => ({
@@ -195,6 +251,75 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     }
   }, [activeStep]);
 
+  const handleSendingEscalateMessage = useCallback(async () => {
+    if (bosonXmtp && threadId && address) {
+      try {
+        setHasError?.(false);
+        const newMessage = {
+          threadId,
+          content: {
+            value: {
+              title: "Buyer has escalated the dispute",
+              description:
+                "The dispute has been escalated to the 3rd party dispute resolver. The dispute resolver will decide on the outcome of the dispute.",
+              disputeResolverInfo: [
+                { label: "Name", value: "Redeemeum UK" },
+                { label: "Email address", value: "disputes@redeemeum.com" }
+              ] as { label: string; value: string }[],
+              icon: ICON_KEYS.info,
+              heading: "Dispute has been escalated",
+              body: "The dispute resolver will contact you about the dispute via the email address provided in your profiile."
+            }
+          },
+          contentType: MessageType.EscalateDispute,
+          version
+        } as const;
+        const uuid = window.crypto.randomUUID();
+
+        await addMessage?.({
+          authorityId: "",
+          timestamp: Date.now(),
+          sender: address,
+          recipient: destinationAddress,
+          data: newMessage,
+          isValid: false,
+          isPending: true,
+          uuid
+        });
+
+        const messageData = await bosonXmtp.encodeAndSendMessage(
+          newMessage,
+          destinationAddress
+        );
+        if (!messageData) {
+          throw new Error(
+            "Something went wrong while sending a retract message"
+          );
+        }
+        onSentMessage?.(messageData, uuid);
+      } catch (error) {
+        console.error(error);
+        setHasError?.(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "handleSendingEscalateMessage",
+            location: "EscalateModal"
+          }
+        });
+      }
+    }
+  }, [
+    addMessage,
+    address,
+    bosonXmtp,
+    destinationAddress,
+    onSentMessage,
+    threadId,
+    setHasError
+  ]);
+
   const handleEscalate = useCallback(async () => {
     try {
       setLoading(true);
@@ -209,6 +334,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
           (exchangeTokenAddress !== ethers.constants.AddressZero ||
             BigNumber.from(buyerEscalationDeposit).eq(0))
       );
+      await handleSendingEscalateMessage();
       // in case buyerEscalationDeposit is > 0 and in native currency, meta-tx is not possible (because escalation requires a payment)
       if (isMetaTx) {
         tx = await escalateDisputeWithMetaTx(coreSDK, exchange.id);
@@ -249,22 +375,23 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
         />
       ));
       refetch();
+      hideModal();
     } catch (error) {
       console.error(error);
-      Sentry.captureException(error);
-      const message = (error as unknown as { message: string }).message;
-      toast((t) => (
-        <ErrorToast t={t}>
-          <Typography tag="p" color={colors.red}>
-            {message
-              ? message?.split("[")?.[0]
-              : "An error occured. Please try again."}
-          </Typography>
-        </ErrorToast>
-      ));
+      hideModal();
+      const hasUserRejectedTx =
+        "code" in (error as Error) &&
+        (error as unknown as { code: string }).code === "ACTION_REJECTED";
+      if (hasUserRejectedTx) {
+        showModal("TRANSACTION_FAILED");
+      } else {
+        Sentry.captureException(error);
+        showModal("TRANSACTION_FAILED", {
+          errorMessage: "Something went wrong"
+        });
+      }
       return false;
     } finally {
-      hideModal();
       setLoading(false);
     }
 
@@ -276,9 +403,12 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     hideModal,
     refetch,
     showModal,
-    addPendingTransaction
+    addPendingTransaction,
+    handleSendingEscalateMessage
   ]);
-
+  const showSuccessInitialization =
+    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
+    bosonXmtp;
   return (
     <Formik<typeof initialValues>
       initialValues={{ ...initialValues }}
@@ -454,12 +584,17 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     price, seller deposit and escalation deposit) between buyer
                     and seller
                   </Typography>
+                  <InitializeChatWithSuccess />
                   <BosonButton
                     variant="secondaryFill"
                     style={{ color: "black" }}
                     onClick={handleEscalate}
                     loading={loading}
-                    disabled={loading || values?.confirm !== true}
+                    disabled={
+                      loading ||
+                      values?.confirm !== true ||
+                      !showSuccessInitialization
+                    }
                   >
                     Escalate
                   </BosonButton>

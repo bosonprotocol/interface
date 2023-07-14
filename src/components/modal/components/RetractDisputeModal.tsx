@@ -13,6 +13,10 @@ import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
+import {
+  ChatInitializationStatus,
+  useChatStatus
+} from "../../../lib/utils/hooks/chat/useChatStatus";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -32,6 +36,7 @@ import Typography from "../../ui/Typography";
 import { ModalProps } from "../ModalContext";
 import { useModal } from "../useModal";
 import ExchangePreview from "./Chat/components/ExchangePreview";
+import InitializeChatWithSuccess from "./Chat/components/InitializeChatWithSuccess";
 
 interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
@@ -83,6 +88,7 @@ export default function RetractDisputeModal({
   exchange
 }: Props) {
   const { bosonXmtp } = useChatContext();
+  const { chatInitializationStatus } = useChatStatus();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
   const { showModal } = useModal();
@@ -152,6 +158,9 @@ export default function RetractDisputeModal({
     threadId,
     setHasError
   ]);
+  const showSuccessInitialization =
+    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
+    bosonXmtp;
   return (
     <Grid flexDirection="column" gap="5rem">
       <div>
@@ -166,8 +175,10 @@ export default function RetractDisputeModal({
         {retractDisputeError && <SimpleError />}
       </div>
       <Grid justifyContent="space-between">
+        <InitializeChatWithSuccess />
         <BosonButton
           variant="primaryFill"
+          disabled={!showSuccessInitialization}
           onClick={async () => {
             try {
               setRetractDisputeError(null);
@@ -193,7 +204,7 @@ export default function RetractDisputeModal({
                 }
               });
               await tx.wait();
-              handleSendingRetractMessage();
+              await handleSendingRetractMessage();
               await poll(
                 async () => {
                   const retractedDispute = await coreSDK.getDisputeById(

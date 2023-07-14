@@ -11,9 +11,15 @@ const StyledInfo = styled(Info)`
   }
 `;
 
+const StyledCheckedCircle = styled(CheckCircle)`
+  circle[stroke] {
+    stroke: ${colors.green};
+  }
+`;
+
 export const ICONS = {
   info: <StyledInfo color={colors.white} />,
-  checkCircle: <CheckCircle />
+  checkCircle: <StyledCheckedCircle color={colors.green} />
 } as const;
 
 export const ICON_KEYS = {

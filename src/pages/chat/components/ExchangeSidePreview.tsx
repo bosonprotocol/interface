@@ -460,7 +460,11 @@ export default function ExchangeSidePreview({
                 {
                   title: "Escalate",
                   exchange: exchange,
-                  refetch: refetchItAll
+                  refetch: refetchItAll,
+                  addMessage,
+                  setHasError,
+                  onSentMessage,
+                  destinationAddress
                 },
                 "l"
               )

@@ -454,21 +454,25 @@ const MessageContent = ({
     } = escalateDisputeContent;
     const icon = ICONS[iconId as keyof typeof ICONS];
     return (
-      <Grid flexDirection="column">
+      <Grid flexDirection="column" alignItems="flex-start">
         <Typography tag="h4" margin="0">
           {title}
         </Typography>
         <Typography tag="p" margin="1rem 0rem">
           {description}
         </Typography>
-        <Grid flexDirection="column">
+        <Grid
+          flexDirection="column"
+          alignItems="flex-start"
+          marginBottom="1rem"
+        >
           <Typography fontWeight="600">
             Dispute resolver contact information
           </Typography>
           {disputeResolverInfo.map(({ label, value }) => {
             return (
-              <Grid key={`${label}-${value}`}>
-                <Check size={16} />
+              <Grid key={`${label}-${value}`} gap="0.5rem">
+                <Check size={16} style={{ flex: "0 0 auto" }} />
                 <Grid justifyContent="flex-start">
                   {label}: {value}
                 </Grid>
@@ -476,7 +480,7 @@ const MessageContent = ({
             );
           })}
         </Grid>
-        <IconMessage icon={icon} heading={heading} body={body} />;
+        <IconMessage icon={icon} heading={heading} body={body} />
       </Grid>
     );
   }
