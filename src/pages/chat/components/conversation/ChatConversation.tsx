@@ -346,6 +346,7 @@ const ChatConversation = ({
     },
     [address]
   );
+  // TODO: load conversation until lastReceivedProposal is not null
   const {
     data: thread,
     isLoading: areThreadsLoading,
@@ -826,6 +827,11 @@ const ChatConversation = ({
         refetchExchanges={refetchExchanges}
         disputeOpen={isExchangePreviewOpen}
         iAmTheBuyer={iAmTheBuyer}
+        setHasError={setHasError}
+        addMessage={addMessage}
+        onSentMessage={onSentMessage}
+        threadId={threadId}
+        destinationAddress={destinationAddress}
       />
     </Container>
   );

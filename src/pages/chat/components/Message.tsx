@@ -9,7 +9,7 @@ import {
   StringIconContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { BigNumber, utils } from "ethers";
-import { Check, CheckCircle, Clock, Info } from "phosphor-react";
+import { Check, Clock } from "phosphor-react";
 import React, {
   cloneElement,
   forwardRef,
@@ -27,6 +27,7 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { MessageDataWithInfo } from "../types";
+import { ICONS } from "./conversation/const";
 import ErrorMessageBoundary from "./ErrorMessageBoundary";
 
 const width = "31.625rem";
@@ -196,9 +197,9 @@ const IconMessage = ({
   return (
     <Grid gap="1.5rem">
       {cloneElement(icon, {
-        size: 20
+        size: 50
       })}
-      <Grid flexDirection="column" gap="1rem">
+      <Grid flexDirection="column" gap="1rem" alignItems="flex-start">
         {heading && (
           <Typography $fontSize="1.25rem" fontWeight="600">
             {heading}
@@ -209,11 +210,6 @@ const IconMessage = ({
     </Grid>
   );
 };
-
-const ICONS = {
-  info: <Info />,
-  checkCircle: <CheckCircle />
-} as const;
 
 type MessageContentProps = Pick<
   Props,
@@ -310,9 +306,14 @@ const MessageContent = ({
           proposal.signature.toLowerCase()
         ) || [])
       ];
-      isLastProposal = proposals.some((proposal) =>
-        signatures.includes(proposal.signature.toLowerCase())
-      );
+      isLastProposal =
+        [
+          lastReceivedProposal?.timestamp || 0,
+          lastSentProposal?.timestamp || 0
+        ].includes(message.timestamp) &&
+        proposals.some((proposal) =>
+          signatures.includes(proposal.signature.toLowerCase())
+        );
     }
     const isRaisingADispute = !!messageContent.disputeContext?.length;
     return (
@@ -342,7 +343,7 @@ const MessageContent = ({
             {messageContent.disputeContext.map((reason) => {
               return (
                 <Grid justifyContent="flex-start" gap="0.5rem" key={reason}>
-                  <Check size={16} />
+                  <Check size={16} style={{ flex: "0 0 auto" }} />
                   <span>{reason}</span>
                 </Grid>
               );

@@ -353,6 +353,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
+  const isSeller = exchange?.seller.assistant === address?.toLowerCase();
   const isOffer = pageType === "offer";
   const isExchange = pageType === "exchange";
   const exchangeStatus = exchange
@@ -1016,7 +1017,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }
                 theme="blank"
                 style={{ fontSize: "0.875rem" }}
-                disabled={isChainUnsupported || !isBuyer}
+                disabled={isChainUnsupported || (!isBuyer && !isSeller)}
               >
                 Contact seller
                 <Question size={18} />

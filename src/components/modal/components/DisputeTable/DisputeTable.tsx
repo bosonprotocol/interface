@@ -41,6 +41,11 @@ const TableElementContainer = styled.tr`
 
 const TableHeaderFields = [
   {
+    label: "ID",
+    value: -1,
+    colspan: 1
+  },
+  {
     label: "Exchange",
     value: 0,
     colspan: 1

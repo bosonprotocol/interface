@@ -102,7 +102,17 @@ export default function ReviewAndSubmitStep({
           <InitializeChatWithSuccess />
         </>
       )}
-      {submitError && <SimpleError />}
+      {submitError && (
+        <SimpleError
+          errorMessage={
+            submitError &&
+            submitError.message === "message too big" &&
+            uploadField.value.length
+              ? "There has been an error, please reduce the number of images or send smaller ones"
+              : ""
+          }
+        />
+      )}
       <ButtonsSection>
         <StyledButtonsSection
           variant="primaryFill"

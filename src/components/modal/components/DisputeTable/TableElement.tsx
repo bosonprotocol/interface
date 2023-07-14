@@ -104,6 +104,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
   if (exchange) {
     return (
       <>
+        <td>{exchange.id}</td>
         <td>
           <Grid
             alignItems="center"

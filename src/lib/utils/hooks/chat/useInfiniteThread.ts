@@ -115,9 +115,7 @@ export function useInfiniteThread({
         now,
         genesisDate,
         onMessageReceived: async (threadObject) => {
-          // TODO: if a new proposal is received, the old ones of the same party get expired
           if (threadObject) {
-            console.log("threadObject", threadObject);
             await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
             onMessagesReceived(structuredClone(threadObject).messages);
 
@@ -175,6 +173,7 @@ export function useInfiniteThread({
     address,
     onMessagesReceived
   ]);
+  console.log("threadXmtp", threadXmtp);
   return {
     data: threadXmtp || null,
     isLoading: areThreadsLoading,

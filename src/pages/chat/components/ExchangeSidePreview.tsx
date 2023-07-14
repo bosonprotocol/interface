@@ -1,6 +1,10 @@
+import {
+  MessageData,
+  ThreadId
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { subgraph } from "@bosonprotocol/react-kit";
 import { ArrowSquareOut } from "phosphor-react";
-import { useCallback, useMemo } from "react";
+import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -34,6 +38,7 @@ import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
+import { MessageDataWithInfo } from "../types";
 import ExchangeTimeline from "./ExchangeTimeline";
 import ProgressBar from "./ProgressBar";
 
@@ -249,12 +254,24 @@ interface Props {
   disputeOpen: boolean;
   iAmTheBuyer: boolean;
   refetchExchanges: () => void;
+  setHasError: Dispatch<SetStateAction<boolean>>;
+  addMessage: (
+    newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
+  ) => Promise<void>;
+  onSentMessage: (messageData: MessageData, uuid: string) => Promise<void>;
+  destinationAddress: string;
+  threadId: ThreadId | null;
 }
 export default function ExchangeSidePreview({
   exchange,
   disputeOpen,
   iAmTheBuyer,
-  refetchExchanges
+  refetchExchanges,
+  addMessage,
+  setHasError,
+  threadId,
+  onSentMessage,
+  destinationAddress
 }: Props) {
   const {
     data: disputes = [{} as subgraph.DisputeFieldsFragment],
@@ -421,7 +438,13 @@ export default function ExchangeSidePreview({
                   exchangeId: exchange.id,
                   offerName: offer.metadata.name,
                   refetch: refetchItAll,
-                  disputeId: exchange.dispute?.id ?? ""
+                  disputeId: exchange.dispute?.id ?? "",
+                  addMessage,
+                  setHasError,
+                  threadId,
+                  onSentMessage,
+                  destinationAddress,
+                  exchange
                 },
                 "s"
               )
