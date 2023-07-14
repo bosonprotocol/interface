@@ -301,15 +301,16 @@ const ChatConversation = ({
   const [lastSentProposal, setLastSentProposal] = useState<MessageData | null>(
     null
   );
+  const filterProposals = (message: MessageData) =>
+    [MessageType.Proposal, MessageType.CounterProposal].includes(
+      message.data.contentType
+    );
   const onMessagesReceived = useCallback(
     (messages: MessageData[]) => {
       const sortedMessages = messages.sort((msgA, msgB) => {
         return msgB.timestamp - msgA.timestamp;
       });
-      const filterProposals = (message: MessageData) =>
-        [MessageType.Proposal, MessageType.CounterProposal].includes(
-          message.data.contentType
-        );
+
       const tempLastReceivedProposal = sortedMessages
         .filter(filterProposals)
         .find((message) => {
@@ -346,7 +347,6 @@ const ChatConversation = ({
     },
     [address]
   );
-  // TODO: load conversation until lastReceivedProposal is not null
   const {
     data: thread,
     isLoading: areThreadsLoading,
@@ -365,6 +365,23 @@ const ChatConversation = ({
     genesisDate: exchange?.committedDate
       ? new Date(Number(exchange?.committedDate) * 1000)
       : new Date("2022-08-25"),
+    checkCustomCondition: (mergedThread) => {
+      // load conversation until we receive a proposal
+
+      if (!mergedThread) {
+        return false;
+      }
+      const sortedProposals = [...mergedThread.messages]
+        .filter(filterProposals)
+        .sort((msgA, msgB) => {
+          return msgB.timestamp - msgA.timestamp;
+        });
+      return sortedProposals.some((message) => {
+        const isAProposalFromSomeoneElse =
+          message.sender.toLowerCase() !== address?.toLowerCase();
+        return isAProposalFromSomeoneElse;
+      });
+    },
     onMessagesReceived,
     onFinishFetching: ({
       isBeginningOfTimes,

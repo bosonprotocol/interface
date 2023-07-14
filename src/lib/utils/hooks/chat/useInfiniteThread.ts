@@ -31,6 +31,7 @@ interface Props {
     isBeginningOfTimes: boolean;
     lastData: ThreadObject | null;
   }) => void;
+  checkCustomCondition?: (mergedThread: ThreadObject | null) => boolean;
 }
 
 const createWorker = createWorkerFactory(() => import("./getThreadWorker"));
@@ -42,7 +43,8 @@ export function useInfiniteThread({
   threadId,
   genesisDate,
   onMessagesReceived,
-  onFinishFetching
+  onFinishFetching,
+  checkCustomCondition
 }: Props): {
   data: ThreadObjectWithInfo | null;
   isLoading: boolean;
@@ -114,6 +116,7 @@ export function useInfiniteThread({
         dateStepValue,
         now,
         genesisDate,
+        checkCustomCondition,
         onMessageReceived: async (threadObject) => {
           if (threadObject) {
             await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
@@ -173,7 +176,7 @@ export function useInfiniteThread({
     address,
     onMessagesReceived
   ]);
-  console.log("threadXmtp", threadXmtp);
+
   return {
     data: threadXmtp || null,
     isLoading: areThreadsLoading,
