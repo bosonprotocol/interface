@@ -296,7 +296,9 @@ export default function MessageList({
                   )}
 
                   <MessageInfo>
-                    <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
+                    <ExchangeName>
+                      {exchange.id} - {exchange?.offer.metadata.name}
+                    </ExchangeName>
                     <SellerID
                       offer={exchange?.offer}
                       buyerOrSeller={buyerOrSellerToShow}

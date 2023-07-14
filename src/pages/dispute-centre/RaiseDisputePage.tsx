@@ -278,7 +278,10 @@ function RaiseDisputePage() {
                       type: subgraph.EventType.DisputeRaised,
                       executedBy: address,
                       accountType: "Buyer",
-                      hash: tx.hash
+                      hash: tx.hash,
+                      exchange: {
+                        id: exchange.id
+                      }
                     })
                   );
 

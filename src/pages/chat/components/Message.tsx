@@ -356,7 +356,7 @@ const MessageContent = ({
         )}
 
         {proposals.length ? (
-          <Grid flexDirection="column" alignItems="flex-start">
+          <Grid flexDirection="column" alignItems="flex-start" marginTop="1rem">
             {isLeftAligned ? (
               <>
                 {proposals.map((proposal) => {
