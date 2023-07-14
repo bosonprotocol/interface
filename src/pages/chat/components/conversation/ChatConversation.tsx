@@ -1,6 +1,7 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
 import {
   MessageData,
+  MessageType,
   ProposalContent,
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
@@ -306,19 +307,17 @@ const ChatConversation = ({
         return msgB.timestamp - msgA.timestamp;
       });
       const filterProposals = (message: MessageData) =>
-        message.data.contentType === "PROPOSAL";
+        [MessageType.Proposal, MessageType.CounterProposal].includes(
+          message.data.contentType
+        );
       const tempLastReceivedProposal = sortedMessages
         .filter(filterProposals)
         .find((message) => {
-          const isAProposalForMyself =
-            message.sender.toLowerCase() === message.recipient.toLowerCase();
           const isAProposalFromSomeoneElse =
-            message.recipient.toLowerCase() === address?.toLowerCase();
+            message.sender.toLowerCase() !== address?.toLowerCase();
           const hasProposals = !!(message.data.content as ProposalContent)
             ?.value.proposals?.length;
-          return (
-            hasProposals && (isAProposalForMyself || isAProposalFromSomeoneElse)
-          );
+          return hasProposals && isAProposalFromSomeoneElse;
         });
       const tempLastSentProposal = sortedMessages
         .filter(filterProposals)
@@ -327,7 +326,7 @@ const ChatConversation = ({
             message.sender.toLowerCase() === address?.toLowerCase();
           const hasProposals = !!(message.data.content as ProposalContent)
             ?.value.proposals?.length;
-          console.log("message", message, "hasProposals", hasProposals);
+
           return isMyProposal && hasProposals;
         });
       if (tempLastReceivedProposal) {

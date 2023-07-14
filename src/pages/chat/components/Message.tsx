@@ -317,7 +317,7 @@ const MessageContent = ({
     const isRaisingADispute = !!messageContent.disputeContext?.length;
     return (
       <>
-        <Grid justifyContent="space-between" alignItems="flex-start">
+        <Grid justifyContent="space-between" alignItems="flex-start" gap="1rem">
           <Typography tag="h4" margin="0">
             {messageContent.title}
           </Typography>
