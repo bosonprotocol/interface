@@ -8,7 +8,6 @@ import {
   StringContent,
   StringIconContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { BigNumber, utils } from "ethers";
 import { Check, Clock } from "phosphor-react";
 import React, {
   cloneElement,
@@ -20,7 +19,6 @@ import styled from "styled-components";
 
 import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
-import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -360,17 +358,6 @@ const MessageContent = ({
             {isLeftAligned ? (
               <>
                 {proposals.map((proposal) => {
-                  const { offer } = exchange;
-
-                  const refundAmount = BigNumber.from(offer.price)
-                    .add(offer.sellerDeposit || "0")
-                    .div(BigNumber.from(100 * PERCENTAGE_FACTOR))
-                    .mul(BigNumber.from(Number(proposal.percentageAmount)));
-
-                  const formattedRefundAmount = utils.formatUnits(
-                    refundAmount,
-                    Number(offer.exchangeToken.decimals)
-                  );
                   return (
                     <Grid
                       key={proposal.type}
@@ -378,12 +365,18 @@ const MessageContent = ({
                       rowGap="0.25rem"
                       alignItems="flex-start"
                     >
-                      <Typography>
-                        Proposed refund amount: {formattedRefundAmount}{" "}
-                        {offer.exchangeToken.symbol} (
-                        {Number(proposal.percentageAmount) / PERCENTAGE_FACTOR}
-                        %)
+                      <Typography
+                        margin="1.5rem 0 0.5rem 0"
+                        $fontSize="1rem"
+                        fontWeight="600"
+                      >
+                        Proposal
                       </Typography>
+                      <ProposalTypeSummary
+                        key={proposal.type}
+                        exchange={exchange}
+                        proposal={proposal}
+                      />
                     </Grid>
                   );
                 })}
@@ -419,7 +412,7 @@ const MessageContent = ({
     } = acceptProposalContent;
     const icon = ICONS[iconId as keyof typeof ICONS];
     return (
-      <Grid flexDirection="column">
+      <Grid flexDirection="column" alignItems="flex-start">
         <Typography tag="h4" margin="0">
           {title}
         </Typography>
@@ -435,7 +428,9 @@ const MessageContent = ({
           exchange={exchange}
           proposal={proposal}
         />
-        <IconMessage icon={icon} heading={heading} body={body} />;
+        <div style={{ marginTop: "2rem" }}>
+          <IconMessage icon={icon} heading={heading} body={body} />
+        </div>
       </Grid>
     );
   }

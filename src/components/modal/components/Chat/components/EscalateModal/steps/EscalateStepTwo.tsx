@@ -181,10 +181,6 @@ function EscalateStepTwo({
 }: Props) {
   const { bosonXmtp } = useChatContext();
   const { chatInitializationStatus } = useChatStatus();
-  console.log({
-    chatInitializationStatus,
-    bosonXmtp: !!bosonXmtp
-  });
   const { data } = useDisputeResolvers();
   const disputeResolver = data?.disputeResolvers[0];
   const feeAmount = disputeResolver?.fees[0]?.feeAmount;

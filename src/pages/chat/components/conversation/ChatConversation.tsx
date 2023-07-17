@@ -830,6 +830,7 @@ const ChatConversation = ({
             onTextAreaChange={onTextAreaChange}
             textAreaValue={textAreaValue}
             prevPath={prevPath}
+            iAmTheBuyer={iAmTheBuyer}
           />
         </ContainerWithSellerHeader>
       ) : (

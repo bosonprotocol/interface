@@ -104,6 +104,9 @@ const UploadButtonWrapper = styled.button`
 const SendButton = styled(BosonButton)`
   padding: 0.75rem;
   min-width: 3rem;
+  rect {
+    stroke: none;
+  }
 `;
 
 export interface ChatInputProps {

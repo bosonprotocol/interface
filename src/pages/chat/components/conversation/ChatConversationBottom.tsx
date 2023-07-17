@@ -33,7 +33,8 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
   prevPath,
   setHasError,
   textAreaValue,
-  threadId
+  threadId,
+  iAmTheBuyer
 }) => {
   const { bosonXmtp } = useChatContext();
   const [showProposal, setShowProposal] = useState<boolean>(false);
@@ -102,6 +103,10 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
           exchange={exchange}
           proposal={proposal}
           sendProposal={sendProposal(MessageType.CounterProposal)}
+          iAmTheBuyer={iAmTheBuyer}
+          onSentMessage={onSentMessage}
+          setHasError={setHasError}
+          addMessage={addMessage}
         />
       )}
       <ChatInput

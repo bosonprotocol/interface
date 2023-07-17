@@ -55,7 +55,6 @@ const multiStepsData = [
 function EscalateModal({
   exchange,
   refetch,
-  threadId,
   addMessage,
   onSentMessage,
   setHasError
@@ -70,7 +69,6 @@ function EscalateModal({
           <EscalateStepTwo
             exchange={exchange}
             refetch={refetch}
-            threadId={threadId}
             addMessage={addMessage}
             onSentMessage={onSentMessage}
             setHasError={setHasError}

@@ -3,6 +3,7 @@ import {
   ProposalContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { Check, Info } from "phosphor-react";
+import { Dispatch, SetStateAction } from "react";
 
 import { MakeProposalModalProps } from "../../../../components/modal/components/Chat/MakeProposal/MakeProposalModal";
 import { useModal } from "../../../../components/modal/useModal";
@@ -12,17 +13,28 @@ import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
 import { getExchangeDisputeDates } from "../../../../lib/utils/exchange";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import { MessageDataWithInfo } from "../../types";
 
 export type ProposalButtonsProps = {
   exchange: Exchange;
   proposal: MessageData;
   sendProposal: MakeProposalModalProps["sendProposal"];
+  iAmTheBuyer: boolean;
+  setHasError: Dispatch<SetStateAction<boolean>>;
+  addMessage: (
+    newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
+  ) => Promise<void>;
+  onSentMessage: (messageData: MessageData, uuid: string) => Promise<void>;
 };
 
 export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
   proposal,
   exchange,
-  sendProposal
+  sendProposal,
+  iAmTheBuyer,
+  addMessage,
+  onSentMessage,
+  setHasError
 }) => {
   const { showModal } = useModal();
 
@@ -79,7 +91,11 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
               showModal("RESOLVE_DISPUTE", {
                 title: "Resolve dispute",
                 exchange,
-                proposal: proposalItem
+                proposal: proposalItem,
+                iAmTheBuyer,
+                setHasError,
+                addMessage,
+                onSentMessage
               });
             }
           }}
