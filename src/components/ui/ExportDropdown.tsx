@@ -11,58 +11,60 @@ import Button, { IButton } from "../ui/Button";
 import Loading from "./Loading";
 
 const ExportButton = styled(Button)`
-  color: ${colors.secondary};
-  border: none;
-  gap: 0.5rem;
-  border: 2px solid ${colors.secondary};
-  padding-right: 2.125rem;
-  padding-left: 0.75rem;
-  position: relative;
-  transition: all 300ms ease-in-out;
+  && {
+    color: ${colors.secondary};
+    border: none;
+    gap: 0.5rem;
+    border: 2px solid ${colors.secondary};
+    padding-right: 2.125rem;
+    padding-left: 0.75rem;
+    position: relative;
+    transition: all 300ms ease-in-out;
 
-  &:hover:not(:disabled) {
-    background: ${colors.secondary};
-    color: ${colors.white};
-    div,
-    button {
+    &:hover:not(:disabled) {
+      background: ${colors.secondary};
       color: ${colors.white};
+      div,
+      button {
+        color: ${colors.white};
+      }
+      :after {
+        background: ${colors.white};
+        opacity: 0.5;
+      }
+      :before {
+        opacity: 0.75;
+        border-top: 0.5rem solid ${colors.white};
+      }
+    }
+    > div {
+      gap: 0.625rem;
+    }
+    padding-right: 2rem;
+    position: relative;
+    :after,
+    :before {
+      position: absolute;
+      content: "";
     }
     :after {
-      background: ${colors.white};
-      opacity: 0.5;
+      top: 0;
+      bottom: 0;
+      right: 1.5rem;
+      background: ${colors.secondary};
+      width: 1px;
+      height: 100%;
     }
     :before {
-      opacity: 0.75;
-      border-top: 0.5rem solid ${colors.white};
+      width: 0;
+      height: 0;
+      border-left: 0.25rem solid transparent;
+      border-right: 0.25rem solid transparent;
+      border-top: 0.5rem solid ${colors.secondary};
+      top: 50%;
+      right: 0.5rem;
+      transform: translate(0, -50%);
     }
-  }
-  > div {
-    gap: 0.625rem;
-  }
-  padding-right: 2rem;
-  position: relative;
-  :after,
-  :before {
-    position: absolute;
-    content: "";
-  }
-  :after {
-    top: 0;
-    bottom: 0;
-    right: 1.5rem;
-    background: ${colors.secondary};
-    width: 1px;
-    height: 100%;
-  }
-  :before {
-    width: 0;
-    height: 0;
-    border-left: 0.25rem solid transparent;
-    border-right: 0.25rem solid transparent;
-    border-top: 0.5rem solid ${colors.secondary};
-    top: 50%;
-    right: 0.5rem;
-    transform: translate(0, -50%);
   }
 `;
 
