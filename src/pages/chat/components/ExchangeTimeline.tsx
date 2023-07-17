@@ -1,4 +1,8 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
+import {
+  MessageData,
+  MessageType
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import dayjs from "dayjs";
 import { ReactNode, useMemo } from "react";
 
@@ -19,12 +23,16 @@ interface Props {
   exchange: Exchange | any;
   children?: ReactNode;
   showDispute?: boolean;
+  lastReceivedProposal?: MessageData | null;
+  lastSentProposal?: MessageData | null;
 }
 
 export default function ExchangeTimeline({
   children,
   exchange,
-  showDispute = true
+  showDispute = true,
+  lastReceivedProposal,
+  lastSentProposal
 }: Props) {
   const { data: disputes = [] } = useDisputes(
     {
@@ -69,6 +77,40 @@ export default function ExchangeTimeline({
         timestamp: Number(revokedDate)
       });
     }
+    if (
+      lastReceivedProposal &&
+      [MessageType.Proposal, MessageType.CounterProposal].includes(
+        lastReceivedProposal.data.contentType
+      )
+    ) {
+      const timestamp = Number(lastReceivedProposal.timestamp) / 1000;
+      timesteps.push({
+        text: `Last ${
+          lastReceivedProposal.data.contentType === MessageType.Proposal
+            ? "proposal"
+            : "counterproposal"
+        } received`,
+        date: formatShortDate(timestamp.toString()),
+        timestamp
+      });
+    }
+    if (
+      lastSentProposal &&
+      [MessageType.Proposal, MessageType.CounterProposal].includes(
+        lastSentProposal.data.contentType
+      )
+    ) {
+      const timestamp = Number(lastSentProposal.timestamp) / 1000;
+      timesteps.push({
+        text: `Last ${
+          lastSentProposal.data.contentType === MessageType.Proposal
+            ? "proposal"
+            : "counterproposal"
+        } sent`,
+        date: formatShortDate(timestamp.toString()),
+        timestamp
+      });
+    }
     if (showDispute && dispute) {
       const {
         disputedDate,
@@ -81,42 +123,42 @@ export default function ExchangeTimeline({
 
       if (disputedDate) {
         timesteps.push({
-          text: "Dispute Raised",
+          text: "Dispute raised",
           date: formatShortDate(disputedDate),
           timestamp: Number(disputedDate)
         });
       }
       if (retractedDate) {
         timesteps.push({
-          text: "Dispute Retracted",
+          text: "Dispute retracted",
           date: formatShortDate(retractedDate),
           timestamp: Number(retractedDate)
         });
       }
       if (resolvedDate) {
         timesteps.push({
-          text: "Dispute Mutually Resolved",
+          text: "Dispute mutually resolved",
           date: formatShortDate(resolvedDate),
           timestamp: Number(resolvedDate)
         });
       }
       if (refusedDate) {
         timesteps.push({
-          text: "Dispute Refused",
+          text: "Dispute refused",
           date: formatShortDate(refusedDate),
           timestamp: Number(refusedDate)
         });
       }
       if (decidedDate) {
         timesteps.push({
-          text: "Dispute Decided",
+          text: "Dispute decided",
           date: formatShortDate(decidedDate),
           timestamp: Number(decidedDate)
         });
       }
       if (escalatedDate) {
         timesteps.push({
-          text: "Dispute Escalated",
+          text: "Dispute escalated",
           date: formatShortDate(escalatedDate),
           timestamp: Number(escalatedDate)
         });
@@ -124,7 +166,7 @@ export default function ExchangeTimeline({
     }
 
     return timesteps.sort((a, b) => a.timestamp - b.timestamp);
-  }, [exchange, dispute, showDispute]);
+  }, [exchange, lastReceivedProposal, lastSentProposal, showDispute, dispute]);
 
   return (
     <>

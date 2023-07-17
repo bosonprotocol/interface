@@ -64,8 +64,8 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
         <Grid gap="1rem">
           <div style={{ flex: "0" }}>
             <Info
-              size={18}
-              color={colors.secondary}
+              size={25}
+              color={colors.black}
               style={{ cursor: "pointer" }}
             />
           </div>

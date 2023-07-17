@@ -850,6 +850,8 @@ const ChatConversation = ({
         onSentMessage={onSentMessage}
         threadId={threadId}
         destinationAddress={destinationAddress}
+        lastReceivedProposal={lastReceivedProposal}
+        lastSentProposal={lastSentProposal}
       />
     </Container>
   );

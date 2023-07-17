@@ -265,6 +265,8 @@ interface Props {
   onSentMessage: (messageData: MessageData, uuid: string) => Promise<void>;
   destinationAddress: string;
   threadId: ThreadId | null;
+  lastReceivedProposal: MessageData | null;
+  lastSentProposal: MessageData | null;
 }
 export default function ExchangeSidePreview({
   exchange,
@@ -275,7 +277,9 @@ export default function ExchangeSidePreview({
   setHasError,
   threadId,
   onSentMessage,
-  destinationAddress
+  destinationAddress,
+  lastReceivedProposal,
+  lastSentProposal
 }: Props) {
   const {
     data: disputes = [{} as subgraph.DisputeFieldsFragment],
@@ -524,7 +528,12 @@ export default function ExchangeSidePreview({
         </CTASection>
       ) : null}
       <HistorySection>
-        <ExchangeTimeline exchange={exchange} showDispute={true}>
+        <ExchangeTimeline
+          exchange={exchange}
+          showDispute={true}
+          lastReceivedProposal={lastReceivedProposal}
+          lastSentProposal={lastSentProposal}
+        >
           <h4>History</h4>
         </ExchangeTimeline>
       </HistorySection>
