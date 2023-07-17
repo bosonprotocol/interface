@@ -197,7 +197,7 @@ const IconMessage = ({
   return (
     <Grid gap="1.5rem">
       {cloneElement(icon, {
-        size: 50
+        size: 75
       })}
       <Grid flexDirection="column" gap="1rem" alignItems="flex-start">
         {heading && (

@@ -43,7 +43,13 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
     decimals: offer.exchangeToken.decimals,
     symbol: offer.exchangeToken.symbol
   });
-  // TODO: calculate and show the buyer-seller split
+  const sellerPercentage = 100 - fixedPercentageAmount;
+  const sellerWillReceive = BigNumber.from(inEscrow).sub(refund).toString();
+  const sellerWillReceivePrice = useConvertedPrice({
+    value: sellerWillReceive.toString(),
+    decimals: exchange.offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
+  });
   return (
     <Grid flexDirection="column" alignItems="flex-start">
       <div>
@@ -51,25 +57,50 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
         <span>{proposal.type}</span>
       </div>
       {percentageAmount && percentageAmount !== "0" ? (
-        <Grid>
-          <CheckIcon size={16} />
-          <Grid justifyContent="flex-start">
-            <span>
-              {convertedRefund.price} {offer.exchangeToken.symbol}
-            </span>
-            {convertedRefund.converted && (
-              <>
-                <Line />
-                <span>
-                  {convertedRefund.currency?.symbol}{" "}
-                  {displayFloat(convertedRefund.converted, { fixed: 2 })}
-                </span>
-              </>
-            )}
-            <Line />
-            <span>{fixedPercentageAmount}%</span>
+        <>
+          <Grid>
+            <CheckIcon size={16} />
+            <Grid justifyContent="flex-start">
+              <span>
+                Buyer will receive: {convertedRefund.price}{" "}
+                {offer.exchangeToken.symbol}
+              </span>
+              {convertedRefund.converted && (
+                <>
+                  <Line />
+                  <span>
+                    {convertedRefund.currency?.symbol}{" "}
+                    {displayFloat(convertedRefund.converted, { fixed: 2 })}
+                  </span>
+                </>
+              )}
+              <Line />
+              <span>{fixedPercentageAmount}%</span>
+            </Grid>
           </Grid>
-        </Grid>
+          <Grid>
+            <CheckIcon size={16} />
+            <Grid justifyContent="flex-start">
+              <span>
+                Seller will receive: {sellerWillReceivePrice.price}{" "}
+                {offer.exchangeToken.symbol}
+              </span>
+              {sellerWillReceivePrice.converted && (
+                <>
+                  <Line />
+                  <span>
+                    {sellerWillReceivePrice.currency?.symbol}{" "}
+                    {displayFloat(sellerWillReceivePrice.converted, {
+                      fixed: 2
+                    })}
+                  </span>
+                </>
+              )}
+              <Line />
+              <span>{sellerPercentage}%</span>
+            </Grid>
+          </Grid>
+        </>
       ) : null}
     </Grid>
   );
