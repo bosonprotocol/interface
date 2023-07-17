@@ -105,7 +105,7 @@ function DisputeCenterPage() {
                   theme="secondary"
                   onClick={() => {
                     showModal(modalTypes.RAISE_DISPUTE, {
-                      title: "Raise a dispute"
+                      title: "Dispute process"
                     });
                   }}
                 >

@@ -1,4 +1,4 @@
-import { CheckCircle, FileText, HandsClapping } from "phosphor-react";
+import { Chats, FilePlus, Handshake } from "phosphor-react";
 import React from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -10,29 +10,9 @@ import { colors } from "../../../../lib/styles/colors";
 import { goToViewMode, ViewMode } from "../../../../lib/viewMode";
 import Typography from "../../../ui/Typography";
 
-const ModalContainer = styled.div<{ $exchangeId: boolean }>`
-  position: relative;
-  min-height: 31.25rem;
-  background: ${colors.white};
-  top: 50%;
-  padding-top: 2.5rem;
-  padding-bottom: 7.1875rem;
-  max-width: 92.5rem;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: -1.875rem;
-  margin-top: -3.125rem;
-  min-height: max-content;
-  padding-bottom: ${({ $exchangeId }) =>
-    $exchangeId ? "7.1875rem" : "1.35rem"};
-`;
-
 const ModalGrid = styled.div`
   display: grid;
   grid-gap: 1.5rem;
-  padding-left: 2.5rem;
-  padding-right: 4rem;
   grid-template-columns: 100%;
   ${breakpoint.m} {
     grid-template-columns: 32% 32% 32%;
@@ -180,82 +160,63 @@ function DisputeModal({ exchangeId }: Props) {
   };
   return (
     <>
-      <ModalContainer $exchangeId={!!exchangeId}>
-        <ModalGrid>
-          <ModalGridColumns>
-            <FileText size={24} color={colors.secondary} data-columns-icon />
-            <Typography
-              margin="0"
-              $fontSize="1.25rem"
-              color={colors.black}
-              fontWeight="600"
-            >
-              Explain your problem
-            </Typography>
-            <Typography
-              margin="0"
-              $fontSize="1rem"
-              color={colors.darkGrey}
-              fontWeight="400"
-            >
-              Message the seller about the issue. Most problems are resolved by
-              working with the seller this way.
-            </Typography>
-          </ModalGridColumns>
-          <ModalGridColumns data-modal-columns>
-            <CheckCircle size={24} color={colors.secondary} data-columns-icon />
-            <Typography
-              margin="0"
-              $fontSize="1.25rem"
-              color={colors.black}
-              fontWeight="600"
-            >
-              Submit dispute
-            </Typography>
-            <Typography
-              margin="0"
-              $fontSize="1rem"
-              color={colors.darkGrey}
-              fontWeight="400"
-            >
-              If you still need help or the seller has not responded, you can
-              raise a dispute while the exchange is in the dispute period.
-            </Typography>
-          </ModalGridColumns>
-          <ModalGridColumns data-modal-columns>
-            <HandsClapping
-              size={24}
-              color={colors.secondary}
-              data-columns-icon
-            />
-            <Typography
-              margin="0"
-              $fontSize="1.25rem"
-              color={colors.black}
-              fontWeight="600"
-            >
-              Take action
-            </Typography>
-            <Typography
-              margin="0"
-              $fontSize="1rem"
-              color={colors.darkGrey}
-              fontWeight="400"
-            >
-              Find a solution to your dispute with the seller. If you are unable
-              to reach a resolution with the seller, you always have the option
-              to escalate to a 3rd party dispute resolver.
-            </Typography>
-          </ModalGridColumns>
-        </ModalGrid>
-        {exchangeId && (
-          <ButtonContainer>
-            <SubmitStyledButton onClick={handleSubmitIssue}>
-              Submit an issue
-            </SubmitStyledButton>
-          </ButtonContainer>
-        )}
-      </ModalContainer>
+      <Typography fontWeight="600" $fontSize="1.25rem">
+        How does the dispute process work?
+      </Typography>
+      <Typography
+        $fontSize="1.25rem"
+        color={colors.darkGrey}
+        marginTop="0.5rem"
+        marginBottom="2rem"
+      >
+        When a buyer raises a dispute they can either create a proposal right
+        away or you can propose a solution to them. When an acceptable solution
+        for both parties is found the dispute will be resolved. If there is no
+        acceptable solution, the buyer can escalate and the dispute will be
+        resolved by a 3rd party.
+      </Typography>
+      <ModalGrid>
+        <ModalGridColumns>
+          <Chats size={24} color={colors.secondary} data-columns-icon />
+          <Typography
+            margin="0"
+            $fontSize="1.25rem"
+            color={colors.black}
+            fontWeight="600"
+          >
+            Dispute raised by the buyer
+          </Typography>
+        </ModalGridColumns>
+        <ModalGridColumns data-modal-columns>
+          <FilePlus size={24} color={colors.secondary} data-columns-icon />
+          <Typography
+            margin="0"
+            $fontSize="1.25rem"
+            color={colors.black}
+            fontWeight="600"
+          >
+            Proposal created and solution found
+          </Typography>
+        </ModalGridColumns>
+        <ModalGridColumns data-modal-columns>
+          <Handshake size={24} color={colors.secondary} data-columns-icon />
+          <Typography
+            margin="0"
+            $fontSize="1.25rem"
+            color={colors.black}
+            fontWeight="600"
+          >
+            Dispute resolved or escalated
+          </Typography>
+        </ModalGridColumns>
+      </ModalGrid>
+      {exchangeId && (
+        <ButtonContainer>
+          <SubmitStyledButton onClick={handleSubmitIssue}>
+            Submit an issue
+          </SubmitStyledButton>
+        </ButtonContainer>
+      )}
     </>
   );
 }
