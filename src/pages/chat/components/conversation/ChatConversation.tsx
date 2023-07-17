@@ -301,6 +301,9 @@ const ChatConversation = ({
   const [lastSentProposal, setLastSentProposal] = useState<MessageData | null>(
     null
   );
+  const [acceptedProposal, setAcceptedProposal] = useState<MessageData | null>(
+    null
+  );
   const filterProposals = (message: MessageData) =>
     [MessageType.Proposal, MessageType.CounterProposal].includes(
       message.data.contentType
@@ -310,7 +313,9 @@ const ChatConversation = ({
       const sortedMessages = messages.sort((msgA, msgB) => {
         return msgB.timestamp - msgA.timestamp;
       });
-
+      const tempAcceptedProposal = sortedMessages.find((message) => {
+        return message.data.contentType === MessageType.AcceptProposal;
+      });
       const tempLastReceivedProposal = sortedMessages
         .filter(filterProposals)
         .find((message) => {
@@ -342,6 +347,13 @@ const ChatConversation = ({
           return (prev?.timestamp || 0) > tempLastSentProposal.timestamp
             ? prev
             : tempLastSentProposal;
+        });
+      }
+      if (tempAcceptedProposal) {
+        setAcceptedProposal((prev) => {
+          return (prev?.timestamp || 0) > tempAcceptedProposal.timestamp
+            ? prev
+            : tempAcceptedProposal;
         });
       }
     },
@@ -831,6 +843,7 @@ const ChatConversation = ({
             textAreaValue={textAreaValue}
             prevPath={prevPath}
             iAmTheBuyer={iAmTheBuyer}
+            acceptedProposal={acceptedProposal}
           />
         </ContainerWithSellerHeader>
       ) : (

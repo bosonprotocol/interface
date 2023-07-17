@@ -29,7 +29,7 @@ export interface MakeProposalModalProps {
   sendProposal: (
     proposal: NewProposal,
     proposalFiles: FileWithEncodedData[]
-  ) => void;
+  ) => Promise<void>;
   isCounterProposal?: boolean;
 }
 

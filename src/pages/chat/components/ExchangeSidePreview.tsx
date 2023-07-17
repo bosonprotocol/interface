@@ -281,10 +281,7 @@ export default function ExchangeSidePreview({
   lastReceivedProposal,
   lastSentProposal
 }: Props) {
-  const {
-    data: disputes = [{} as subgraph.DisputeFieldsFragment],
-    refetch: refetchDisputes
-  } = useDisputes(
+  const { data: disputes, refetch: refetchDisputes } = useDisputes(
     {
       disputesFilter: {
         exchange: exchange?.id
@@ -292,9 +289,7 @@ export default function ExchangeSidePreview({
     },
     { enabled: !!exchange }
   );
-  const [dispute] = disputes.length
-    ? disputes
-    : [{} as subgraph.DisputeFieldsFragment];
+  const dispute = disputes?.[0];
   const offer = exchange?.offer;
   const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
@@ -354,10 +349,10 @@ export default function ExchangeSidePreview({
     return null;
   }
   const isInRedeemed = subgraph.ExchangeState.Redeemed === exchange.state;
-  const isInDispute = exchange.disputed && !dispute.finalizedDate;
-  const isResolved = !!dispute.resolvedDate;
-  const isEscalated = !!dispute.escalatedDate;
-  const isRetracted = !!dispute.retractedDate;
+  const isInDispute = exchange.disputed && !dispute?.finalizedDate;
+  const isResolved = !!dispute?.resolvedDate;
+  const isEscalated = !!dispute?.escalatedDate;
+  const isRetracted = !!dispute?.retractedDate;
   const { totalDaysToResolveDispute, daysLeftToResolveDispute } =
     getExchangeDisputeDates(exchange);
 

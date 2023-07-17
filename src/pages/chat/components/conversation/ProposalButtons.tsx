@@ -37,22 +37,8 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
   setHasError
 }) => {
   const { showModal } = useModal();
-
   const { daysLeftToResolveDispute } = getExchangeDisputeDates(exchange);
-  // const hideProposal = useMemo(() => {
-  //   const disputeState =
-  //     exchange?.dispute?.state || subgraph.DisputeState.Resolving;
-  //   const badStates = [
-  //     subgraph.DisputeState.Decided,
-  //     subgraph.DisputeState.Escalated,
-  //     subgraph.DisputeState.Decided,
-  //     subgraph.DisputeState.Refused
-  //   ];
 
-  //   return (
-  //     badStates?.includes(disputeState) || exchange?.finalizedDate !== null
-  //   );
-  // }, [exchange]);
   return (
     <Grid flexDirection="column" padding="1rem 1rem 0 1rem" gap="1rem">
       <Typography

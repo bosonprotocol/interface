@@ -10,14 +10,14 @@ import { FileWithEncodedData } from "../../../../lib/utils/files";
 import { useChatContext } from "../../ChatProvider/ChatContext";
 import { ProposalItem } from "../../types";
 import { sendProposalToChat } from "../../utils/send";
+import { ChatInfoBox, ChatInfoBoxProps } from "./ChatInfoBox";
 import { ChatInput, ChatInputProps } from "./ChatInput";
-import { ProposalButtons, ProposalButtonsProps } from "./ProposalButtons";
 
 type ChatConversationBottomProps = Omit<
   ChatInputProps,
   "sendProposal" | "showProposalButton"
 > &
-  Omit<ProposalButtonsProps, "proposal" | "sendProposal"> & {
+  Omit<ChatInfoBoxProps, "proposal" | "sendProposal" | "showProposal"> & {
     proposal: MessageData | null;
   };
 
@@ -34,7 +34,8 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
   setHasError,
   textAreaValue,
   threadId,
-  iAmTheBuyer
+  iAmTheBuyer,
+  acceptedProposal
 }) => {
   const { bosonXmtp } = useChatContext();
   const [showProposal, setShowProposal] = useState<boolean>(false);
@@ -98,17 +99,17 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
     };
   return (
     <Grid flexDirection="column">
-      {!!proposal && showProposal && (
-        <ProposalButtons
-          exchange={exchange}
-          proposal={proposal}
-          sendProposal={sendProposal(MessageType.CounterProposal)}
-          iAmTheBuyer={iAmTheBuyer}
-          onSentMessage={onSentMessage}
-          setHasError={setHasError}
-          addMessage={addMessage}
-        />
-      )}
+      <ChatInfoBox
+        exchange={exchange}
+        proposal={proposal}
+        sendProposal={sendProposal(MessageType.CounterProposal)}
+        iAmTheBuyer={iAmTheBuyer}
+        onSentMessage={onSentMessage}
+        setHasError={setHasError}
+        addMessage={addMessage}
+        showProposal={showProposal}
+        acceptedProposal={acceptedProposal}
+      />
       <ChatInput
         showProposalButton={!(!!proposal && showProposal)}
         exchange={exchange}
