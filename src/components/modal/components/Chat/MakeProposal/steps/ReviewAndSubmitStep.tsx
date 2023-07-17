@@ -40,13 +40,15 @@ interface Props {
   exchange: Exchange;
   submitError: Error | null;
   isModal?: boolean;
+  isCounterProposal?: boolean;
 }
 
 export default function ReviewAndSubmitStep({
   isValid,
   exchange,
   submitError,
-  isModal = false
+  isModal = false,
+  isCounterProposal
 }: Props) {
   const { bosonXmtp } = useChatContext();
   const { isSubmitting } = useFormikContext();
@@ -66,20 +68,23 @@ export default function ReviewAndSubmitStep({
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
-        Review & Submit
+        {isCounterProposal ? "Counterproposal overview" : "Review & Submit"}
       </Typography>
-      <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
-        Description
-      </Typography>
-      <Typography tag="p">{descriptionField.value}</Typography>
-      <UploadedFiles
-        files={uploadField.value}
-        handleRemoveFile={(index) => {
-          const files = uploadField.value.filter((_, idx) => idx !== index);
-          uploadFieldHelpers.setValue(files);
-        }}
-      />
-      <Typography $fontSize="1.25rem" color={colors.darkGrey}></Typography>
+      {!isCounterProposal && (
+        <>
+          <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+            Description
+          </Typography>
+          <Typography tag="p">{descriptionField.value}</Typography>
+          <UploadedFiles
+            files={uploadField.value}
+            handleRemoveFile={(index) => {
+              const files = uploadField.value.filter((_, idx) => idx !== index);
+              uploadFieldHelpers.setValue(files);
+            }}
+          />
+        </>
+      )}
       {proposalTypeField.value && (
         <>
           <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">

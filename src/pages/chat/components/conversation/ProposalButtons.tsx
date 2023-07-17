@@ -110,7 +110,8 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
               "MAKE_PROPOSAL",
               {
                 exchange,
-                sendProposal
+                sendProposal,
+                isCounterProposal: true
               },
               "m"
             )

@@ -144,6 +144,10 @@ const Name = styled(Typography)`
 const StyledMultiSteps = styled(MultiSteps)`
   align-items: flex-start;
   gap: 0;
+  p {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+  }
   ${breakpoint.m} {
     padding-left: 6.25rem;
     padding-right: 6.25rem;
@@ -411,16 +415,30 @@ export default function ExchangeSidePreview({
               />
             </div>
           )}
-
-          <StyledMultiSteps
-            data={[
-              { name: "Describe Problem", steps: 1 },
-              { name: "Raise dispute", steps: 1 },
-              { name: "Resolve or Escalate", steps: 1 }
-            ]}
-            active={isInDispute && !isEscalated ? 2 : 3}
-            hideArrows
-          />
+          {
+            // if both buyer and seller, then show seller
+          }
+          {!iAmTheBuyer ? (
+            <StyledMultiSteps
+              data={[
+                { name: "Review proposal", steps: 1 },
+                { name: "Accept or counterpropose", steps: 1 },
+                { name: "Resolve the dispute", steps: 1 }
+              ]}
+              active={isInDispute && !isEscalated ? 1 : 3}
+              hideArrows
+            />
+          ) : (
+            <StyledMultiSteps
+              data={[
+                { name: "Submit dispute", steps: 1 },
+                { name: "Discuss details (optional)", steps: 1 },
+                { name: "Resolve or escalate", steps: 1 }
+              ]}
+              active={isInDispute && !isEscalated ? 2 : 3}
+              hideArrows
+            />
+          )}
         </Section>
       )}
       <Section>
