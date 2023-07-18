@@ -1,4 +1,3 @@
-import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
 import { useMemo } from "react";
@@ -9,7 +8,6 @@ import { DrCenterRoutes } from "../../../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../../../lib/routing/parameters";
 import { colors } from "../../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
-import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -17,7 +15,6 @@ import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
-import { useModal } from "../../useModal";
 
 const OfferImage = styled.div`
   width: 3.75rem;
@@ -57,17 +54,7 @@ const DisputeEndDate = styled(ClockClockwise)`
 function TableElement({ exchange }: { exchange: Exchange }) {
   const { status } = useDisputeSubStatusInfo(exchange);
   const navigate = useKeepQueryParamsNavigate();
-  const { showModal } = useModal();
   const currentDate = dayjs();
-
-  const { refetch: refetchDisputes } = useDisputes(
-    {
-      disputesFilter: {
-        exchange: exchange?.id
-      }
-    },
-    { enabled: !!exchange }
-  );
 
   const parseDisputeDate = dayjs(getDateTimestamp(exchange.validUntilDate));
 
@@ -85,21 +72,6 @@ function TableElement({ exchange }: { exchange: Exchange }) {
       parseDisputeDate.diff(currentDate, "days") * -1
     } days ago`;
   }, [currentDate, parseDisputeDate]);
-
-  const { data: disputes = [{} as subgraph.DisputeFieldsFragment] } =
-    useDisputes(
-      {
-        disputesFilter: {
-          exchange: exchange?.id
-        }
-      },
-      { enabled: !!exchange }
-    );
-  const [dispute] = disputes.length
-    ? disputes
-    : [{} as subgraph.DisputeFieldsFragment];
-
-  const isNotEscalatedYet = dispute ? dispute?.escalatedDate === null : false;
 
   if (exchange) {
     return (
