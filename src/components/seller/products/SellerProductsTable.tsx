@@ -390,8 +390,7 @@ export default function SellerProductsTable({
           id: ProductsTableColumnId.salesChannels,
           Header: "Sales channels",
           accessor: "salesChannels",
-          disableSortBy: true,
-          width: 280
+          disableSortBy: true
         } as const,
         {
           id: ProductsTableColumnId.action,
@@ -716,7 +715,7 @@ export default function SellerProductsTable({
                 <Grid
                   gap="1rem"
                   justifyContent="flex-start"
-                  style={{ overflow: "auto" }}
+                  style={{ flexWrap: "wrap" }}
                 >
                   {salesChannels
                     .filter(
