@@ -174,8 +174,8 @@ export default function RetractDisputeModal({
         </Typography>
         {retractDisputeError && <SimpleError />}
       </div>
+      <InitializeChatWithSuccess />
       <Grid justifyContent="space-between">
-        <InitializeChatWithSuccess />
         <BosonButton
           variant="primaryFill"
           disabled={!showSuccessInitialization}

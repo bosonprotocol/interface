@@ -147,25 +147,6 @@ function TableElement({ exchange }: { exchange: Exchange }) {
             >
               Open chat
             </Button>
-            {isNotEscalatedYet && status !== "Resolved" && (
-              <Button
-                type="button"
-                theme="secondary"
-                onClick={() => {
-                  showModal(
-                    "ESCALATE_MODAL",
-                    {
-                      title: "Escalate",
-                      exchange: exchange,
-                      refetch: refetchDisputes
-                    },
-                    "l"
-                  );
-                }}
-              >
-                Escalate dispute
-              </Button>
-            )}
           </Grid>
         </td>
       </>

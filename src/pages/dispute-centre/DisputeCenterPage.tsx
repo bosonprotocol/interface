@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -17,7 +18,7 @@ import {
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useBuyers } from "../../lib/utils/hooks/useBuyers";
+import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
@@ -43,16 +44,11 @@ function DisputeCenterPage() {
   const { showModal, modalTypes } = useModal();
   const { isLteS } = useBreakpoints();
   const { address } = useAccount();
-  const { data: buyers = [] } = useBuyers(
-    {
-      wallet: address
-    },
-    {
-      enabled: !!address
-    }
-  );
-  const myBuyerId = buyers[0]?.id;
-  const { data: exchanges = [] } = useExchanges(
+  const { buyer, seller } = useBuyerSellerAccounts(address);
+  const myBuyerId = buyer.buyerId;
+  const mySellerId = seller.sellerId;
+  console.log({ myBuyerId, mySellerId });
+  const { data: buyerExchanges } = useExchanges(
     {
       disputed: true,
       buyerId: myBuyerId
@@ -61,6 +57,25 @@ function DisputeCenterPage() {
       enabled: !!myBuyerId
     }
   );
+  const { data: sellerExchanges } = useExchanges(
+    {
+      disputed: true,
+      sellerId: mySellerId
+    },
+    {
+      enabled: !!mySellerId
+    }
+  );
+  const exchanges = useMemo(() => {
+    return Array.from(
+      new Map(
+        [...(buyerExchanges || []), ...(sellerExchanges || [])].map((v) => [
+          v.id,
+          v
+        ])
+      ).values()
+    );
+  }, [buyerExchanges, sellerExchanges]);
   return (
     <>
       <DisputeListHeader>
@@ -91,6 +106,7 @@ function DisputeCenterPage() {
                 <Button
                   type="submit"
                   theme="primary"
+                  disabled={!myBuyerId}
                   onClick={() => {
                     navigate({
                       pathname: BosonRoutes.YourAccount,
@@ -118,11 +134,8 @@ function DisputeCenterPage() {
         </LayoutRoot>
       </DisputeListHeader>
       <DisputeListContainer>
-        {
-          // TODO: buyer funds only?
-        }
-        {myBuyerId && (
-          <Grid justifyContent="flex-end" marginBottom="1rem">
+        <Grid justifyContent="flex-end" gap="1rem" marginBottom="1rem">
+          {myBuyerId && (
             <Button
               theme="secondary"
               onClick={() => {
@@ -137,14 +150,38 @@ function DisputeCenterPage() {
                 );
               }}
             >
-              Withdraw buyer funds
+              Withdraw {mySellerId ? "buyer" : ""} funds
             </Button>
-          </Grid>
-        )}
-        {isLteS ? (
-          <DisputeListMobile exchanges={exchanges} />
+          )}
+          {mySellerId && (
+            <Button
+              theme="secondary"
+              onClick={() => {
+                showModal(
+                  "MANAGE_FUNDS_MODAL",
+                  {
+                    title: "Manage Funds",
+                    id: myBuyerId
+                  },
+                  "auto",
+                  "dark"
+                );
+              }}
+            >
+              Withdraw {myBuyerId ? "seller" : ""} funds
+            </Button>
+          )}
+        </Grid>
+        {exchanges.length ? (
+          <>
+            {isLteS ? (
+              <DisputeListMobile exchanges={exchanges} />
+            ) : (
+              <DisputeTable exchanges={exchanges} />
+            )}
+          </>
         ) : (
-          <DisputeTable exchanges={exchanges} />
+          <Typography>No disputes found</Typography>
         )}
       </DisputeListContainer>
     </>
