@@ -22,7 +22,7 @@ const CheckIcon = styled(CheckComponent)`
 `;
 interface Props {
   exchange: Exchange;
-  proposal: ProposalItem;
+  proposal: Pick<ProposalItem, "percentageAmount" | "type">;
 }
 
 export default function ProposalTypeSummary({ proposal, exchange }: Props) {
