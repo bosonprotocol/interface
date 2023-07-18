@@ -859,6 +859,7 @@ const ChatConversation = ({
         refetchExchanges={refetchExchanges}
         disputeOpen={isExchangePreviewOpen}
         iAmTheBuyer={iAmTheBuyer}
+        iAmTheSeller={iAmTheSeller}
         setHasError={setHasError}
         addMessage={addMessage}
         onSentMessage={onSentMessage}

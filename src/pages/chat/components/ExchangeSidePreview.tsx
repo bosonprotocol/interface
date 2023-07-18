@@ -257,6 +257,7 @@ interface Props {
   exchange: Exchange | undefined;
   disputeOpen: boolean;
   iAmTheBuyer: boolean;
+  iAmTheSeller: boolean;
   refetchExchanges: () => void;
   setHasError: Dispatch<SetStateAction<boolean>>;
   addMessage: (
@@ -272,6 +273,7 @@ export default function ExchangeSidePreview({
   exchange,
   disputeOpen,
   iAmTheBuyer,
+  iAmTheSeller,
   refetchExchanges,
   addMessage,
   setHasError,
@@ -540,10 +542,10 @@ export default function ExchangeSidePreview({
                 );
               }}
             >
-              Withdraw buyer funds
+              Withdraw {iAmTheSeller ? "buyer" : ""} funds
             </Button>
           )}
-          {!iAmTheBuyer && (
+          {iAmTheSeller && (
             <Button
               theme="secondary"
               onClick={() => {
@@ -558,7 +560,7 @@ export default function ExchangeSidePreview({
                 );
               }}
             >
-              Withdraw seller funds
+              Withdraw {iAmTheBuyer ? "seller" : ""} funds
             </Button>
           )}
         </CTASection>
