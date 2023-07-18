@@ -694,7 +694,7 @@ const ChatConversation = ({
     ]
   );
 
-  // const isConversationBeingLoaded = !thread && areThreadsLoading;
+  const isConversationBeingLoaded = !thread && areThreadsLoading;
   const disableInputs = isErrorThread;
 
   if (!exchange) {
@@ -831,6 +831,7 @@ const ChatConversation = ({
           </Messages>
           <ChatConversationBottom
             proposal={lastReceivedProposal}
+            isConversationBeingLoaded={isConversationBeingLoaded}
             disableInputs={disableInputs}
             exchange={exchange}
             threadId={threadId}

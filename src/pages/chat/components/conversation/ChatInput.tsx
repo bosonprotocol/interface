@@ -125,6 +125,7 @@ export interface ChatInputProps {
   textAreaValue: string | undefined;
   prevPath: string;
   sendProposal: MakeProposalModalProps["sendProposal"];
+  isConversationBeingLoaded: boolean;
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({
@@ -140,7 +141,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   onTextAreaChange,
   textAreaValue,
   prevPath,
-  sendProposal
+  sendProposal,
+  isConversationBeingLoaded
 }) => {
   const { showModal } = useModal();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -153,7 +155,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   }, [prevPath, textAreaValue]);
   const { bosonXmtp } = useChatContext();
   const hideProposal = useMemo(() => {
-    if (!showProposalButton) {
+    if (!showProposalButton || isConversationBeingLoaded) {
       return true;
     }
     const disputeState =
@@ -168,7 +170,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     return (
       badStates?.includes(disputeState) || exchange?.finalizedDate !== null
     );
-  }, [exchange, showProposalButton]);
+  }, [exchange, showProposalButton, isConversationBeingLoaded]);
 
   const handleSendingRegularMessage = useCallback(async () => {
     const value = textAreaValue?.trim() || "";

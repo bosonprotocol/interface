@@ -19,6 +19,7 @@ type ChatConversationBottomProps = Omit<
 > &
   Omit<ChatInfoBoxProps, "proposal" | "sendProposal" | "showProposal"> & {
     proposal: MessageData | null;
+    isConversationBeingLoaded: boolean;
   };
 
 export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
@@ -35,7 +36,8 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
   textAreaValue,
   threadId,
   iAmTheBuyer,
-  acceptedProposal
+  acceptedProposal,
+  isConversationBeingLoaded
 }) => {
   const { bosonXmtp } = useChatContext();
   const [showProposal, setShowProposal] = useState<boolean>(false);
@@ -120,6 +122,7 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
         setHasError={setHasError}
         threadId={threadId}
         disableInputs={disableInputs}
+        isConversationBeingLoaded={isConversationBeingLoaded}
         onTextAreaChange={onTextAreaChange}
         prevPath={prevPath}
         textAreaValue={textAreaValue}
