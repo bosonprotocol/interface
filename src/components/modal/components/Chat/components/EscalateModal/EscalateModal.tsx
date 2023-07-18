@@ -10,13 +10,12 @@ import BosonButton from "../../../../../ui/BosonButton";
 import Grid from "../../../../../ui/Grid";
 import ExchangePreview from "../ExchangePreview";
 import EscalateStepOne from "./steps/EscalateStepOne";
-import EscalateStepTwo from "./steps/EscalateStepTwo";
+import EscalateStepTwo, { EscalateChatProps } from "./steps/EscalateStepTwo";
 
-interface Props {
+type Props = EscalateChatProps & {
   exchange: Exchange;
-  hideModal: () => void;
   refetch: () => void;
-}
+};
 
 const Container = styled.div`
   background: ${colors.lightGrey};
@@ -53,14 +52,28 @@ const multiStepsData = [
   { steps: 1, name: "Escalate Dispute" }
 ];
 
-function EscalateModal({ exchange, refetch }: Props) {
+function EscalateModal({
+  exchange,
+  refetch,
+  addMessage,
+  onSentMessage,
+  setHasError
+}: Props) {
   const [activeStep, setActiveStep] = useState(0);
   const { isLteS } = useBreakpoints();
 
   const escalateSteps = (activeStep: number) => {
     switch (activeStep) {
       case 1:
-        return <EscalateStepTwo exchange={exchange} refetch={refetch} />;
+        return (
+          <EscalateStepTwo
+            exchange={exchange}
+            refetch={refetch}
+            addMessage={addMessage}
+            onSentMessage={onSentMessage}
+            setHasError={setHasError}
+          />
+        );
       default:
         return <EscalateStepOne exchange={exchange} />;
     }

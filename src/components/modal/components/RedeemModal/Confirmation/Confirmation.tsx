@@ -13,7 +13,10 @@ import styled from "styled-components";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
-import { useChatStatus } from "../../../../../lib/utils/hooks/chat/useChatStatus";
+import {
+  ChatInitializationStatus,
+  useChatStatus
+} from "../../../../../lib/utils/hooks/chat/useChatStatus";
 import { useEthersSigner } from "../../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
@@ -68,10 +71,14 @@ export default function Confirmation({
   const [redeemError, setRedeemError] = useState<Error | null>(null);
   const { chatInitializationStatus } = useChatStatus();
   const showSuccessInitialization =
-    chatInitializationStatus === "INITIALIZED" && bosonXmtp;
+    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
+    bosonXmtp;
   const isInitializationValid =
     !!bosonXmtp &&
-    ["INITIALIZED", "ALREADY_INITIALIZED"].includes(chatInitializationStatus);
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const signer = useEthersSigner();
   const [nameField] = useField(FormModel.formFields.name.name);

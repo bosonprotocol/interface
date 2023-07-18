@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy } from "react";
 import { RouteProps } from "react-router";
 
 import { CONFIG } from "../lib/config";
@@ -6,6 +6,7 @@ import { ViewMode } from "../lib/viewMode";
 import ViewModePage from "../pages/viewmode/ViewModePage";
 import dappRoutes from "./dappRoutes";
 import drCenterRoutes from "./drCenterRoutes";
+const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 
 export const baseAppProps = {
   withLayout: true,
@@ -42,7 +43,7 @@ export interface IRoutes extends RouteProps {
     fluidHeader?: boolean;
   };
 }
-const viewMode = CONFIG.viewMode;
+const viewMode = CONFIG.envViewMode.current;
 
 const viewModeRoutes = {
   [ViewMode.DAPP]: dappRoutes,
@@ -50,12 +51,29 @@ const viewModeRoutes = {
   [ViewMode.BOTH]: [
     {
       ...base,
+      app: {
+        withLayout: true,
+        withFooter: false,
+        fluidHeader: false,
+        withBosonStyles: true,
+        withBanner: false
+      },
       index: true,
       path: "/",
       component: ViewModePage
     },
     ...dappRoutes,
-    ...drCenterRoutes
+    ...drCenterRoutes,
+    {
+      ...base,
+      exact: false,
+      path: "*",
+      app: {
+        ...base.app,
+        withBosonStyles: false
+      },
+      component: NotFoundPage
+    }
   ]
 } as const;
 

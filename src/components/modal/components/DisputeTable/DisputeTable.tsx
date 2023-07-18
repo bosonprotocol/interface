@@ -6,8 +6,6 @@ import TableElement from "./TableElement";
 
 const Table = styled.table`
   width: 100%;
-  max-width: 65.625rem;
-  margin: 0 auto;
   td {
     padding-bottom: 1.25rem;
     padding-top: 1.25rem;
@@ -23,6 +21,9 @@ const TableHeader = styled.th`
   font-family: inherit;
   border-bottom: none;
   padding-bottom: 0;
+  :last-child {
+    text-align: right;
+  }
 `;
 
 const TableElementContainer = styled.tr`
@@ -33,20 +34,35 @@ const TableElementContainer = styled.tr`
     content: "";
     left: 0;
     bottom: 0;
-    width: calc(100% - 2.0625rem);
+    width: 100%;
     height: 0.125rem;
   }
 `;
 
 const TableHeaderFields = [
   {
-    label: "Product",
+    label: "ID",
+    value: -1,
+    colspan: 1
+  },
+  {
+    label: "Exchange",
     value: 0,
     colspan: 1
   },
   {
-    label: "State",
+    label: "Dispute status",
     value: 1,
+    colspan: 3
+  },
+  {
+    label: "Resolution summary",
+    value: 2,
+    colspan: 3
+  },
+  {
+    label: "Actions",
+    value: 3,
     colspan: 3
   }
 ];

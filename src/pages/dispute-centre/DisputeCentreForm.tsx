@@ -1,5 +1,5 @@
 import { Form } from "formik";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import GetStarted from "../../components/dispute/GetStarted";
 import TellUsMore from "../../components/dispute/TellUsMore";
@@ -7,25 +7,13 @@ import MakeProposalCore from "../../components/modal/components/Chat/components/
 import { useCreateForm } from "../../components/product/utils/useCreateForm";
 import { Exchange } from "../../lib/utils/hooks/useExchanges";
 
-function DisputeCentreForm({
-  setCurrentStep,
-  currentStep,
-  exchange,
-  submitError,
-  setIsRightArrowEnabled
-}: {
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  setIsRightArrowEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-  currentStep: number;
-  exchange: Exchange;
-  submitError: Error | null;
-}) {
-  const getStartedSteps = [
-    { label: "Item was not delivered or delivered late", id: 1 },
-    { label: "Item is not as described", id: 2 }
-  ];
+const getStartedSteps = [
+  { label: "Item was not delivered or delivered late", id: 1 },
+  { label: "Item is not as described", id: 2 }
+] as const;
 
-  const tellUsMoreSteps = [
+const tellUsMoreSteps = {
+  1: [
     {
       label: "The item received is a different colour, model, version, or size",
       id: 1
@@ -42,8 +30,32 @@ function DisputeCentreForm({
       id: 5
     },
     { label: "Other ...", id: 6 }
-  ];
+  ],
+  2: [
+    {
+      label: "The item was not delivered",
+      id: 1
+    },
+    { label: "The item was delivered late", id: 2 },
+    { label: "Other ...", id: 3 }
+  ]
+} as const;
 
+function DisputeCentreForm({
+  setCurrentStep,
+  currentStep,
+  exchange,
+  submitError,
+  setIsRightArrowEnabled
+}: {
+  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  setIsRightArrowEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  currentStep: number;
+  exchange: Exchange;
+  submitError: Error | null;
+}) {
+  const [tellUsMoreID, setTellUsMoreId] =
+    useState<keyof typeof tellUsMoreSteps>(1);
   const formValues = useCreateForm();
   const formErrors = Object.keys(formValues.errors).length === 0;
 
@@ -70,9 +82,11 @@ function DisputeCentreForm({
       case 0:
         return (
           <GetStarted
-            setCurrentStep={setCurrentStep}
-            currentStep={currentStep}
             getStartedSteps={getStartedSteps}
+            onClick={(step) => {
+              setCurrentStep(currentStep + 1);
+              setTellUsMoreId(step.id);
+            }}
           />
         );
       case 1:
@@ -80,7 +94,7 @@ function DisputeCentreForm({
           <TellUsMore
             setCurrentStep={setCurrentStep}
             currentStep={currentStep}
-            tellUsMoreSteps={tellUsMoreSteps}
+            tellUsMoreSteps={tellUsMoreSteps[tellUsMoreID]}
           />
         );
       case 2:

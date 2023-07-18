@@ -38,10 +38,12 @@ function TellUsMore({
 }: {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   currentStep: number;
-  tellUsMoreSteps: {
-    label: string;
-    id: number;
-  }[];
+  tellUsMoreSteps: Readonly<
+    {
+      label: string;
+      id: number;
+    }[]
+  >;
 }) {
   const formValues = useCreateForm();
 

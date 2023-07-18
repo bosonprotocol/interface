@@ -12,33 +12,33 @@ import { NewProposal } from "../../../../../pages/chat/types";
 import { createProposal } from "../../../../../pages/chat/utils/create";
 import MultiSteps from "../../../../step/MultiSteps";
 import Grid from "../../../../ui/Grid";
-import { ModalProps } from "../../../ModalContext";
 import { useModal } from "../../../useModal";
 import ExchangePreview from "../components/ExchangePreview";
 import { FormModel, validationSchemaPerStep } from "./MakeProposalFormModel";
 import DescribeProblemStep from "./steps/DescribeProblemStep";
-import MakeAProposalStep from "./steps/MakeAProposalStep/MakeAProposalStep";
+import MakeAProposalStep, {
+  proposals
+} from "./steps/MakeAProposalStep/MakeAProposalStep";
 import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
 
 const StyledMultiSteps = styled(MultiSteps)`
   width: 100%;
 `;
-interface Props {
+export interface MakeProposalModalProps {
   exchange: Exchange;
   sendProposal: (
     proposal: NewProposal,
     proposalFiles: FileWithEncodedData[]
-  ) => void;
-  // modal props
-  hideModal: NonNullable<ModalProps["hideModal"]>;
+  ) => Promise<void>;
+  isCounterProposal?: boolean;
 }
 
 export default function MakeProposalModal({
   exchange,
-  hideModal,
-  sendProposal
-}: Props) {
-  const { updateProps, store } = useModal();
+  sendProposal,
+  isCounterProposal
+}: MakeProposalModalProps) {
+  const { updateProps, store, hideModal } = useModal();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const coreSDK = useCoreSDK();
@@ -57,8 +57,22 @@ export default function MakeProposalModal({
   const sellerOrBuyerId = iAmTheSeller ? exchange.seller.id : exchange.buyer.id;
   const validationSchema = validationSchemaPerStep[activeStep];
 
-  const headerComponent = useMemo(
-    () => (
+  const headerComponent = useMemo(() => {
+    return isCounterProposal ? (
+      <Grid justifyContent="space-evently">
+        <StyledMultiSteps
+          data={[
+            { steps: 1, name: "Fill in counterproposal details" },
+            { steps: 1, name: "Review & Submit" }
+          ]}
+          callback={(step) => {
+            setActiveStep(step);
+          }}
+          active={activeStep}
+          disableInactiveSteps
+        />
+      </Grid>
+    ) : (
       <Grid justifyContent="space-evently">
         <StyledMultiSteps
           data={[
@@ -73,9 +87,8 @@ export default function MakeProposalModal({
           disableInactiveSteps
         />
       </Grid>
-    ),
-    [activeStep]
-  );
+    );
+  }, [activeStep, isCounterProposal]);
 
   useEffect(() => {
     updateProps<"MAKE_PROPOSAL">({
@@ -120,10 +133,7 @@ export default function MakeProposalModal({
         }}
         initialValues={{
           [FormModel.formFields.description.name]: "",
-          [FormModel.formFields.proposalType.name]: null as unknown as {
-            label: string;
-            value: string;
-          },
+          [FormModel.formFields.proposalType.name]: proposals[0],
           [FormModel.formFields.refundAmount.name]: "0",
           [FormModel.formFields.refundPercentage.name]: 0,
           [FormModel.formFields.upload.name]: [] as File[]
@@ -134,24 +144,27 @@ export default function MakeProposalModal({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           props: FormikProps<any>
         ) => {
-          const isDescribeProblemOK = Object.keys(props.errors).length === 0;
-
+          const isDescribeProblemOK = isCounterProposal
+            ? true
+            : Object.keys(props.errors).length === 0;
           return (
             <Form>
-              {activeStep === 0 ? (
+              {activeStep === 0 && !isCounterProposal ? (
                 <DescribeProblemStep
-                  onNextClick={() => setActiveStep(1)}
+                  onNextClick={() => setActiveStep((prev) => ++prev)}
                   isValid={isDescribeProblemOK}
                 />
-              ) : activeStep === 1 ? (
+              ) : (activeStep === 1 && !isCounterProposal) ||
+                (activeStep === 0 && isCounterProposal) ? (
                 <MakeAProposalStep
-                  onNextClick={() => setActiveStep(2)}
+                  onNextClick={() => setActiveStep((prev) => ++prev)}
                   isValid={isDescribeProblemOK}
                   exchange={exchange}
                   onSkip={() => {
-                    setActiveStep(2);
+                    setActiveStep((prev) => ++prev);
                   }}
                   isModal
+                  isCounterProposal={isCounterProposal}
                 />
               ) : (
                 <ReviewAndSubmitStep
@@ -159,6 +172,7 @@ export default function MakeProposalModal({
                   exchange={exchange}
                   submitError={submitError}
                   isModal
+                  isCounterProposal={isCounterProposal}
                 />
               )}
             </Form>

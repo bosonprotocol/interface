@@ -1,10 +1,9 @@
-import { Link } from "react-router-dom";
-
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { goToViewMode, ViewMode } from "../../lib/viewMode";
 
 export const ViewModePage = () => {
   return (
@@ -24,11 +23,21 @@ export const ViewModePage = () => {
         gap="1rem"
         margin="1rem"
       >
-        <Button theme="secondary">
-          <Link to={BosonRoutes.Root}>Go to the DAPP</Link>
+        <Button
+          theme="secondary"
+          onClick={() => {
+            goToViewMode(ViewMode.DAPP, BosonRoutes.Root);
+          }}
+        >
+          Go to the DAPP
         </Button>
-        <Button theme="secondary">
-          <Link to={DrCenterRoutes.Root}>Go to the DR Center</Link>
+        <Button
+          theme="secondary"
+          onClick={() => {
+            goToViewMode(ViewMode.DR_CENTER, DrCenterRoutes.Root);
+          }}
+        >
+          Go to the DR Center
         </Button>
       </Grid>
     </Grid>

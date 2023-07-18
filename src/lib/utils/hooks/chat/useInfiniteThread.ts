@@ -1,4 +1,5 @@
 import {
+  MessageData,
   ThreadId,
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
@@ -6,6 +7,7 @@ import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validator
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 import { utils } from "ethers";
 import { useCallback, useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
 import { ThreadObjectWithInfo } from "../../../../pages/chat/types";
@@ -22,12 +24,14 @@ interface Props {
   counterParty: string;
   threadId: ThreadId | null | undefined;
   genesisDate: Date;
+  onMessagesReceived: (messages: MessageData[]) => void;
   onFinishFetching: (arg: {
     isLoading: boolean;
     isError: boolean;
     isBeginningOfTimes: boolean;
     lastData: ThreadObject | null;
   }) => void;
+  checkCustomCondition?: (mergedThread: ThreadObject | null) => boolean;
 }
 
 const createWorker = createWorkerFactory(() => import("./getThreadWorker"));
@@ -38,7 +42,9 @@ export function useInfiniteThread({
   counterParty,
   threadId,
   genesisDate,
-  onFinishFetching
+  onMessagesReceived,
+  onFinishFetching,
+  checkCustomCondition
 }: Props): {
   data: ThreadObjectWithInfo | null;
   isLoading: boolean;
@@ -59,7 +65,7 @@ export function useInfiniteThread({
     index: 0,
     trigger: true
   });
-
+  const { address } = useAccount();
   const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
   const [threadXmtp, setThreadXmtp] = useState<ThreadObjectWithInfo | null>(
@@ -110,9 +116,11 @@ export function useInfiniteThread({
         dateStepValue,
         now,
         genesisDate,
+        checkCustomCondition,
         onMessageReceived: async (threadObject) => {
           if (threadObject) {
             await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
+            onMessagesReceived(structuredClone(threadObject).messages);
 
             setThreadXmtp((prevThread) => {
               const mergedThreads = mergeThreads(
@@ -159,7 +167,16 @@ export function useInfiniteThread({
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId]);
+  }, [
+    bosonXmtp,
+    dateIndex,
+    counterParty,
+    dateStep,
+    threadId,
+    address,
+    onMessagesReceived
+  ]);
+
   return {
     data: threadXmtp || null,
     isLoading: areThreadsLoading,

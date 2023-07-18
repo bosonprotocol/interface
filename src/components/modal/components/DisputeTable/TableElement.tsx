@@ -1,19 +1,19 @@
-import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { DrCenterRoutes } from "../../../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../../../lib/routing/parameters";
-import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
 import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import BosonButton from "../../../ui/BosonButton";
+import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
@@ -104,6 +104,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
   if (exchange) {
     return (
       <>
+        <td>{exchange.id}</td>
         <td>
           <Grid
             alignItems="center"
@@ -133,40 +134,19 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         </td>
         <td>
           <Grid justifyContent="flex-end" gap="1rem">
-            {isNotEscalatedYet && status !== "Resolved" && (
-              <BosonButton
-                variant="secondaryInverted"
-                size={ButtonSize.Small}
-                showBorder={false}
-                onClick={() => {
-                  showModal(
-                    "ESCALATE_MODAL",
-                    {
-                      title: "Escalate",
-                      exchange: exchange,
-                      refetch: refetchDisputes
-                    },
-                    "l"
-                  );
-                }}
-              >
-                Escalate dispute
-              </BosonButton>
-            )}
-            <BosonButton
+            <Button
               type="button"
-              variant="primaryFill"
-              size={ButtonSize.Small}
+              theme="secondary"
               onClick={() => {
                 navigate({
-                  pathname: generatePath(BosonRoutes.ChatMessage, {
+                  pathname: generatePath(DrCenterRoutes.ChatMessage, {
                     [UrlParameters.exchangeId]: exchange?.id
                   })
                 });
               }}
             >
               Open chat
-            </BosonButton>
+            </Button>
           </Grid>
         </td>
       </>

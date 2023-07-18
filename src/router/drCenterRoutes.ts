@@ -2,9 +2,15 @@ import React, { lazy } from "react";
 import { RouteProps } from "react-router";
 
 import { DrCenterRoutes } from "../lib/routing/drCenterRoutes";
-import DrCenterPage from "../pages/drcenter/DrCenterPage";
 
+const ChatPage = lazy(() => import("../pages/chat/Chat"));
+const DisputeCenterPage = lazy(
+  () => import("../pages/dispute-centre/DisputeCenterPage")
+);
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
+const RaiseDisputePage = lazy(
+  () => import("../pages/dispute-centre/RaiseDisputePage")
+);
 
 const baseAppProps = {
   withLayout: true,
@@ -48,11 +54,25 @@ export default [
     ...base,
     index: true,
     path: DrCenterRoutes.Root,
-    component: DrCenterPage,
+    component: DisputeCenterPage,
+    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+  },
+  {
+    ...base,
+    path: `${DrCenterRoutes.DisputeId}/*`,
+    component: RaiseDisputePage,
+    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+  },
+  {
+    ...base,
+    path: `${DrCenterRoutes.Chat}/*`,
+    component: ChatPage,
     app: {
       ...base.app,
-      withBosonStyles: false
-    }
+      withLayout: false,
+      withFooter: false
+    },
+    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
   },
   {
     ...base,

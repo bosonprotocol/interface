@@ -26,17 +26,19 @@ interface Props {
   exchange: Exchange;
   onSkip: () => void;
   isModal?: boolean;
+  isCounterProposal?: boolean;
 }
 
 export const RefundLabel = "Refund";
-const proposals = [{ label: RefundLabel, value: "refund" }];
+export const proposals = [{ label: RefundLabel, value: "refund" }];
 
 export default function MakeAProposalStep({
   exchange,
   onNextClick,
   isValid,
   onSkip,
-  isModal = false
+  isModal = false,
+  isCounterProposal
 }: Props) {
   const { address } = useAccount();
   const { data: buyers = [] } = useBuyers(
@@ -65,17 +67,19 @@ export default function MakeAProposalStep({
       setFieldValue(FormModel.formFields.refundPercentage.name, "0", true);
     }
   }, [proposalTypeField.value, setFieldValue]);
-
+  const proposalOrCounterProposal = isCounterProposal
+    ? "counterproposal"
+    : "proposal";
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
-        Make a proposal
+        Make a {proposalOrCounterProposal}
       </Typography>
       <Typography $fontSize="1.25rem" color={colors.darkGrey}>
-        Here you can make a proposal to the {counterPartyText} on how you would
-        like the issue to be resolved. Note that this proposal is binding and if
-        the &nbsp;{counterPartyText} agrees to it, the proposal will be
-        implemented automatically.
+        Here you can make a {proposalOrCounterProposal} to the{" "}
+        {counterPartyText} on how you would like the issue to be resolved. Note
+        that this proposal is binding and if the &nbsp;{counterPartyText} agrees
+        to it, the proposal will be implemented automatically.
       </Typography>
       <Grid flexDirection="column" margin="2rem 0 0 0" alignItems="flex-start">
         <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
@@ -100,6 +104,7 @@ export default function MakeAProposalStep({
       </Grid>
       <ButtonsSection>
         <BosonButton
+          type="button"
           variant="primaryFill"
           onClick={() => onNextClick()}
           disabled={!isValid}

@@ -55,4 +55,4 @@ export const validationSchemaPerStep = [
       .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
   }),
   Yup.object({})
-];
+] as const;

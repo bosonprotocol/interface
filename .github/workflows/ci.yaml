@@ -49,6 +49,8 @@ jobs:
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
+      REACT_APP_DAPP_VIEW_MODE: "same_origin"
+      REACT_APP_DR_CENTER_VIEW_MODE: "same_origin"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -76,6 +78,8 @@ jobs:
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
+      REACT_APP_DAPP_VIEW_MODE: "https://interface-test.on.fleek.co"
+      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-test.on.fleek.co"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -108,6 +112,8 @@ jobs:
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
+      REACT_APP_DAPP_VIEW_MODE: "https://interface-staging.on.fleek.co"
+      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-staging.on.fleek.co"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -140,6 +146,8 @@ jobs:
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://gray-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
+      REACT_APP_DAPP_VIEW_MODE: "https://bosonapp.io"
+      REACT_APP_DR_CENTER_VIEW_MODE: "https://disputes.bosonprotocol.io"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
