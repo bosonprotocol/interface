@@ -2,8 +2,8 @@ import {
   MessageData,
   ProposalContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { Check, Info } from "phosphor-react";
-import { Dispatch, SetStateAction } from "react";
+import { Check, Info, X } from "phosphor-react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import { MakeProposalModalProps } from "../../../../../components/modal/components/Chat/MakeProposal/MakeProposalModal";
 import { useModal } from "../../../../../components/modal/useModal";
@@ -38,40 +38,54 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
 }) => {
   const { showModal } = useModal();
   const { daysLeftToResolveDispute } = getExchangeDisputeDates(exchange);
-
+  const [showText, setShowText] = useState<boolean>(true);
   return (
     <Grid flexDirection="column" padding="1rem 1rem 0 1rem" gap="1rem">
-      <Typography
-        padding="1rem"
-        background={colors.lightGrey}
-        flexDirection="column"
-        style={{ width: "100%" }}
-      >
-        <Grid gap="1rem">
-          <div style={{ flex: "0" }}>
-            <Info
-              size={25}
-              color={colors.black}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                showModal("RAISE_DISPUTE", {
-                  title: "Dispute process"
-                });
-              }}
-            />
-          </div>
-          <div style={{ flex: "1" }}>
-            <p>
-              You can either accept their proposal, create a counterproposal or
-              first write a message about additional details if needed.
-            </p>
-            <p>
-              You have {daysLeftToResolveDispute} days left to resolve the
-              dispute directly with the buyer.
-            </p>
-          </div>
-        </Grid>
-      </Typography>
+      {showText && (
+        <Typography
+          padding="1rem"
+          background={colors.lightGrey}
+          flexDirection="column"
+          style={{ width: "100%", position: "relative" }}
+        >
+          <X
+            size={15}
+            style={{
+              position: "absolute",
+              top: "1rem",
+              right: "1rem",
+              cursor: "pointer"
+            }}
+            onClick={() => {
+              setShowText(false);
+            }}
+          />
+          <Grid gap="1rem">
+            <div style={{ flex: "0" }}>
+              <Info
+                size={25}
+                color={colors.black}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  showModal("RAISE_DISPUTE", {
+                    title: "Dispute process"
+                  });
+                }}
+              />
+            </div>
+            <div style={{ flex: "1" }}>
+              <p>
+                You can either accept their proposal, create a counterproposal
+                or first write a message about additional details if needed.
+              </p>
+              <p>
+                You have {daysLeftToResolveDispute} days left to resolve the
+                dispute directly with the buyer.
+              </p>
+            </div>
+          </Grid>
+        </Typography>
+      )}
       <Grid gap="1rem" justifyContent="space-between" flex="1">
         <Button
           theme="secondary"

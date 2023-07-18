@@ -3,7 +3,8 @@ import {
   ProposalContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { BigNumber } from "ethers";
-import { Info } from "phosphor-react";
+import { Info, X } from "phosphor-react";
+import { useState } from "react";
 
 import { PERCENTAGE_FACTOR } from "../../../../../components/modal/components/Chat/const";
 import { useModal } from "../../../../../components/modal/useModal";
@@ -47,14 +48,30 @@ export const DrHasDecided: React.FC<DrHasDecidedProps> = ({
     refundSellerWillReceive.toString(),
     exchange.offer.exchangeToken.decimals
   );
+  const [showText, setShowText] = useState<boolean>(true);
+  if (!showText) {
+    return <></>;
+  }
   return (
     <Grid flexDirection="column" padding="1rem 1rem 0 1rem" gap="1rem">
       <Typography
         padding="1rem"
         background={colors.lightGrey}
         flexDirection="column"
-        style={{ width: "100%" }}
+        style={{ width: "100%", position: "relative" }}
       >
+        <X
+          size={15}
+          style={{
+            position: "absolute",
+            top: "1rem",
+            right: "1rem",
+            cursor: "pointer"
+          }}
+          onClick={() => {
+            setShowText(false);
+          }}
+        />
         <Grid gap="1rem">
           <div style={{ flex: "0" }}>
             <Info
