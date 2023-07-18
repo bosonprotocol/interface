@@ -10,7 +10,7 @@ import { FileWithEncodedData } from "../../../../lib/utils/files";
 import { useChatContext } from "../../ChatProvider/ChatContext";
 import { ProposalItem } from "../../types";
 import { sendProposalToChat } from "../../utils/send";
-import { ChatInfoBox, ChatInfoBoxProps } from "./ChatInfoBox";
+import { ChatInfoBox, ChatInfoBoxProps } from "./ChatInfoBox/ChatInfoBox";
 import { ChatInput, ChatInputProps } from "./ChatInput";
 
 type ChatConversationBottomProps = Omit<

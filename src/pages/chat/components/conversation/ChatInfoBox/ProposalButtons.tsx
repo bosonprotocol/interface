@@ -5,15 +5,15 @@ import {
 import { Check, Info } from "phosphor-react";
 import { Dispatch, SetStateAction } from "react";
 
-import { MakeProposalModalProps } from "../../../../components/modal/components/Chat/MakeProposal/MakeProposalModal";
-import { useModal } from "../../../../components/modal/useModal";
-import Button from "../../../../components/ui/Button";
-import Grid from "../../../../components/ui/Grid";
-import Typography from "../../../../components/ui/Typography";
-import { colors } from "../../../../lib/styles/colors";
-import { getExchangeDisputeDates } from "../../../../lib/utils/exchange";
-import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
-import { MessageDataWithInfo } from "../../types";
+import { MakeProposalModalProps } from "../../../../../components/modal/components/Chat/MakeProposal/MakeProposalModal";
+import { useModal } from "../../../../../components/modal/useModal";
+import Button from "../../../../../components/ui/Button";
+import Grid from "../../../../../components/ui/Grid";
+import Typography from "../../../../../components/ui/Typography";
+import { colors } from "../../../../../lib/styles/colors";
+import { getExchangeDisputeDates } from "../../../../../lib/utils/exchange";
+import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
+import { MessageDataWithInfo } from "../../../types";
 
 export type ProposalButtonsProps = {
   exchange: Exchange;

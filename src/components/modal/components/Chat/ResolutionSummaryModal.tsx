@@ -1,4 +1,5 @@
 import { Info as InfoComponent } from "phosphor-react";
+import { ReactNode } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
@@ -12,6 +13,7 @@ import ProposalTypeSummary from "./components/ProposalTypeSummary";
 interface Props {
   exchange: Exchange;
   proposal: Pick<ProposalItem, "percentageAmount" | "type">;
+  message: ReactNode;
 }
 
 const ProposedSolution = styled.h4`
@@ -32,7 +34,7 @@ const InfoIcon = styled(InfoComponent)`
   margin-right: 1.1875rem;
 `;
 
-export function ResolutionSummaryModal({ exchange, proposal }: Props) {
+export function ResolutionSummaryModal({ exchange, proposal, message }: Props) {
   return (
     <>
       <Grid justifyContent="space-between" padding="0 0 2rem 0">
@@ -45,9 +47,7 @@ export function ResolutionSummaryModal({ exchange, proposal }: Props) {
       <DisputeSplit exchange={exchange} proposal={proposal} />
       <Info>
         <InfoIcon />
-        The third party dispute resolver has decided on the outcome of this
-        dispute. The dispute has been resolved and the exchange has been
-        finalised.
+        {message}
       </Info>
     </>
   );
