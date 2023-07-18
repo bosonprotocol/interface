@@ -353,6 +353,8 @@ export default function ExchangeSidePreview({
   const isResolved = !!dispute?.resolvedDate;
   const isEscalated = !!dispute?.escalatedDate;
   const isRetracted = !!dispute?.retractedDate;
+  const isFinalized = !!dispute?.finalizedDate;
+
   const { totalDaysToResolveDispute, daysLeftToResolveDispute } =
     getExchangeDisputeDates(exchange);
 
@@ -520,6 +522,45 @@ export default function ExchangeSidePreview({
       ) : isVisible ? (
         <CTASection>
           <CompleteExchangeButton />
+        </CTASection>
+      ) : isFinalized && threadId ? (
+        <CTASection>
+          {iAmTheBuyer && (
+            <Button
+              theme="secondary"
+              onClick={() => {
+                showModal(
+                  "MANAGE_FUNDS_MODAL",
+                  {
+                    title: "Manage Funds",
+                    id: threadId?.buyerId
+                  },
+                  "auto",
+                  "dark"
+                );
+              }}
+            >
+              Withdraw buyer funds
+            </Button>
+          )}
+          {!iAmTheBuyer && (
+            <Button
+              theme="secondary"
+              onClick={() => {
+                showModal(
+                  "MANAGE_FUNDS_MODAL",
+                  {
+                    title: "Manage Funds",
+                    id: threadId?.sellerId
+                  },
+                  "auto",
+                  "dark"
+                );
+              }}
+            >
+              Withdraw seller funds
+            </Button>
+          )}
         </CTASection>
       ) : null}
       <HistorySection>
