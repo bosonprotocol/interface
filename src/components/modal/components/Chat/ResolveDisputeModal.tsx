@@ -144,10 +144,10 @@ export default function ResolveDisputeModal({
     Number(proposal.percentageAmount) / PERCENTAGE_FACTOR;
   const refundBuyerWillReceive = Math.round(
     (Number(inEscrow) * Number(fixedPercentageAmount)) / 100
-  );
+  ).toString();
 
   const refundBuyerWillReceivePrice = useConvertedPrice({
-    value: refundBuyerWillReceive.toString(),
+    value: refundBuyerWillReceive,
     decimals: exchange.offer.exchangeToken.decimals,
     symbol: symbol
   });

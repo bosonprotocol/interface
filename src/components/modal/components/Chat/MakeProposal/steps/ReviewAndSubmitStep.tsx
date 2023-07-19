@@ -1,4 +1,5 @@
 import { useField, useFormikContext } from "formik";
+import { Check } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
@@ -10,6 +11,7 @@ import { Spinner } from "../../../../../loading/Spinner";
 import BosonButton from "../../../../../ui/BosonButton";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
+import { DisputeFormModel } from "../../../DisputeModal/DisputeModalFormModel";
 import InitializeChatWithSuccess from "../../components/InitializeChatWithSuccess";
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
 import { PERCENTAGE_FACTOR } from "../../const";
@@ -51,7 +53,7 @@ export default function ReviewAndSubmitStep({
   isCounterProposal
 }: Props) {
   const { bosonXmtp } = useChatContext();
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting, values } = useFormikContext();
   const [descriptionField] = useField<string>({
     name: FormModel.formFields.description.name
   });
@@ -65,11 +67,43 @@ export default function ReviewAndSubmitStep({
     name: FormModel.formFields.refundPercentage.name
   });
   const isChatInitialized = !!bosonXmtp;
+  const getStarted = (values as Record<string, unknown>)[
+    DisputeFormModel.formFields.getStarted.name
+  ] as string;
+  const tellUsMore = (values as Record<string, unknown>)[
+    DisputeFormModel.formFields.tellUsMore.name
+  ] as string;
+
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
         {isCounterProposal ? "Counterproposal overview" : "Review & Submit"}
       </Typography>
+      {(getStarted || tellUsMore) && (
+        <>
+          <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+            Dispute category
+          </Typography>
+          <Grid flexDirection="column" alignItems="flex-start">
+            {getStarted && (
+              <>
+                <div>
+                  <Check size={16} style={{ marginRight: "0.5rem" }} />
+                  <span>{getStarted}</span>
+                </div>
+              </>
+            )}
+            {tellUsMore && (
+              <>
+                <div>
+                  <Check size={16} style={{ marginRight: "0.5rem" }} />
+                  <span>{tellUsMore}</span>
+                </div>
+              </>
+            )}
+          </Grid>
+        </>
+      )}
       {!isCounterProposal && (
         <>
           <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
@@ -98,8 +132,7 @@ export default function ReviewAndSubmitStep({
                   type: RefundLabel,
                   percentageAmount: (
                     Number(refundPercentageField.value) * PERCENTAGE_FACTOR
-                  ).toString(),
-                  signature: ""
+                  ).toString()
                 }}
               />
             </Grid>

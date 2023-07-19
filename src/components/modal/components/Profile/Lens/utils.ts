@@ -34,7 +34,9 @@ export const getLensLegalTradingName = (profile: Profile): string => {
   );
 };
 
-export const getLensProfilePictureUrl = (profile: Profile): string => {
+export const getLensProfilePictureUrl = (
+  profile: Profile | undefined
+): string => {
   return (
     (profile?.picture as MediaSet)?.original?.url ||
     (profile?.picture as NftImage)?.uri ||

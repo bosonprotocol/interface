@@ -160,10 +160,6 @@ export default function MakeProposalModal({
                   onNextClick={() => setActiveStep((prev) => ++prev)}
                   isValid={isDescribeProblemOK}
                   exchange={exchange}
-                  onSkip={() => {
-                    setActiveStep((prev) => ++prev);
-                  }}
-                  isModal
                   isCounterProposal={isCounterProposal}
                 />
               ) : (

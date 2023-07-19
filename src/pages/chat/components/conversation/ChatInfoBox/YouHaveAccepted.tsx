@@ -69,17 +69,25 @@ export const YouHaveAccepted: React.FC<YouHaveAcceptedProps> = ({
               color={colors.black}
               style={{ cursor: "pointer" }}
               onClick={() => {
-                showModal("RESOLUTION_SUMMARY", {
-                  title: "Dispute Resolution Summary",
-                  exchange,
-                  proposal: {
-                    type:
-                      (proposal?.data?.content as ProposalContent)?.value
-                        ?.proposals?.[0]?.type || "Refund",
-                    percentageAmount: buyerPercent
+                showModal(
+                  "RESOLUTION_SUMMARY",
+                  {
+                    title: "Dispute Resolution Summary",
+                    exchange,
+                    proposal: {
+                      type:
+                        (proposal?.data?.content as ProposalContent)?.value
+                          ?.proposals?.[0]?.type || "Refund",
+                      percentageAmount: buyerPercent
+                    },
+                    message: youHaveAccepted
                   },
-                  message: youHaveAccepted
-                });
+                  "auto",
+                  undefined,
+                  {
+                    m: "600px"
+                  }
+                );
               }}
             />
           </div>

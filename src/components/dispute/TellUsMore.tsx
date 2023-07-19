@@ -30,6 +30,7 @@ const FormButton = styled.button`
 const TextContainer = styled.span`
   max-width: 31.25rem;
 `;
+const FieldArrayName = DisputeFormModel.formFields.tellUsMore.name;
 
 function TellUsMore({
   setCurrentStep,
@@ -46,8 +47,6 @@ function TellUsMore({
   >;
 }) {
   const formValues = useCreateForm();
-
-  const FieldArrayName = DisputeFormModel.formFields.tellUsMore.name;
 
   return (
     <>
