@@ -175,9 +175,9 @@ function RaiseDisputePage() {
 
   return (
     <>
-      <Grid alignItems="center" gap="2.5rem" flex="1 0">
+      <Grid alignItems="center" gap="2.5rem">
         {!isLteS && (
-          <Grid alignItems="center">
+          <Grid alignItems="center" style={{ flex: "1 1 0" }}>
             <ArrowLeft
               size={32}
               color={
@@ -193,7 +193,10 @@ function RaiseDisputePage() {
             />
           </Grid>
         )}
-        <Grid padding={isLteS ? "2.5rem 0" : "0.5rem 0"}>
+        <Grid
+          padding={isLteS ? "2.5rem 0" : "0.5rem 0"}
+          style={{ flex: "1 1 auto" }}
+        >
           <MultiSteps
             data={DISPUTE_STEPS}
             active={currentStep}
