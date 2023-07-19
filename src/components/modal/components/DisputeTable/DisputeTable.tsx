@@ -5,6 +5,7 @@ import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import TableElement from "./TableElement";
 
 const Table = styled.table`
+  min-width: 1300px;
   width: 100%;
   td {
     padding-bottom: 1.25rem;
@@ -14,7 +15,6 @@ const Table = styled.table`
 
 const TableHeader = styled.th`
   text-align: left;
-  padding-top: 1.5625rem;
   color: ${colors.darkGrey};
   font-size: 1.1rem;
   font-weight: 600;
