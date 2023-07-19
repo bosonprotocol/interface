@@ -146,14 +146,7 @@ export function useExchanges(
   const sellerIn = onlyCuratedSeller
     ? curationLists.sellerCurationList
     : undefined;
-  console.log(
-    "onlyCuratedSeller",
-    onlyCuratedSeller,
-    "curationLists.sellerCurationList",
-    curationLists.sellerCurationList,
-    "sellerIn",
-    sellerIn
-  );
+
   return useQuery(
     ["exchanges", props, sellerIn],
     async () => {
