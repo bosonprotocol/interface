@@ -21,7 +21,7 @@ import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { goToViewMode, ViewMode } from "../../lib/viewMode";
 
 const DisputeListHeader = styled.div`
   background: ${colors.lightGrey};
@@ -37,7 +37,8 @@ const Image = styled.img`
 
 const DisputeListContainer = styled.div`
   min-height: calc(100vh - 489px);
-  padding: 2rem 0;
+  margin-bottom: 2rem;
+  overflow: auto;
 `;
 
 const CustomGridContainer = styled.div`
@@ -82,7 +83,6 @@ const CustomGridContainer = styled.div`
 `;
 
 function DisputeCenterPage() {
-  const navigate = useKeepQueryParamsNavigate();
   const { showModal, modalTypes } = useModal();
   const { isLteS } = useBreakpoints();
   const { address } = useAccount();
@@ -116,7 +116,7 @@ function DisputeCenterPage() {
           v
         ])
       ).values()
-    );
+    ).sort((a, b) => Number(b.disputedDate) - Number(a.disputedDate));
   }, [buyerExchanges, sellerExchanges]);
   return (
     <>
@@ -150,10 +150,10 @@ function DisputeCenterPage() {
                   theme="primary"
                   disabled={!myBuyerId}
                   onClick={() => {
-                    navigate({
-                      pathname: BosonRoutes.YourAccount,
-                      search: `${AccountQueryParameters.tab}=${TabQueryParameters.exchange}`
-                    });
+                    goToViewMode(
+                      ViewMode.DAPP,
+                      `${BosonRoutes.YourAccount}?${AccountQueryParameters.tab}=${TabQueryParameters.exchange}`
+                    );
                   }}
                 >
                   Raise a dispute
@@ -183,45 +183,50 @@ function DisputeCenterPage() {
           </CustomGridContainer>
         </LayoutRoot>
       </DisputeListHeader>
+      <Grid
+        justifyContent="flex-end"
+        gap="1rem"
+        marginBottom="2rem"
+        marginTop="2rem"
+      >
+        {myBuyerId && (
+          <Button
+            theme="secondary"
+            onClick={() => {
+              showModal(
+                "MANAGE_FUNDS_MODAL",
+                {
+                  title: "Manage Funds",
+                  id: myBuyerId
+                },
+                "auto",
+                "dark"
+              );
+            }}
+          >
+            Withdraw {mySellerId ? "buyer" : ""} funds
+          </Button>
+        )}
+        {mySellerId && (
+          <Button
+            theme="secondary"
+            onClick={() => {
+              showModal(
+                "MANAGE_FUNDS_MODAL",
+                {
+                  title: "Manage Funds",
+                  id: myBuyerId
+                },
+                "auto",
+                "dark"
+              );
+            }}
+          >
+            Withdraw {myBuyerId ? "seller" : ""} funds
+          </Button>
+        )}
+      </Grid>
       <DisputeListContainer>
-        <Grid justifyContent="flex-end" gap="1rem" marginBottom="1rem">
-          {myBuyerId && (
-            <Button
-              theme="secondary"
-              onClick={() => {
-                showModal(
-                  "MANAGE_FUNDS_MODAL",
-                  {
-                    title: "Manage Funds",
-                    id: myBuyerId
-                  },
-                  "auto",
-                  "dark"
-                );
-              }}
-            >
-              Withdraw {mySellerId ? "buyer" : ""} funds
-            </Button>
-          )}
-          {mySellerId && (
-            <Button
-              theme="secondary"
-              onClick={() => {
-                showModal(
-                  "MANAGE_FUNDS_MODAL",
-                  {
-                    title: "Manage Funds",
-                    id: myBuyerId
-                  },
-                  "auto",
-                  "dark"
-                );
-              }}
-            >
-              Withdraw {myBuyerId ? "seller" : ""} funds
-            </Button>
-          )}
-        </Grid>
         {isBuyersLoading || isSellersLoading ? (
           <Loading />
         ) : (

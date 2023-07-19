@@ -38,6 +38,11 @@ import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
+import {
+  getCurrentViewMode,
+  goToViewMode,
+  ViewMode
+} from "../../../lib/viewMode";
 import { MessageDataWithInfo } from "../types";
 import ExchangeTimeline from "./ExchangeTimeline";
 import ProgressBar from "./ProgressBar";
@@ -309,11 +314,19 @@ export default function ExchangeSidePreview({
     if (!exchange) {
       return;
     }
-    navigate({
-      pathname: generatePath(BosonRoutes.Exchange, {
-        [UrlParameters.exchangeId]: exchange.id
-      })
-    });
+    const currentViewMode = getCurrentViewMode();
+    const path = generatePath(BosonRoutes.Exchange, {
+      [UrlParameters.exchangeId]: exchange.id
+    }) as `/${string}`;
+    if (currentViewMode === ViewMode.DAPP) {
+      navigate({
+        pathname: generatePath(BosonRoutes.Exchange, {
+          [UrlParameters.exchangeId]: exchange.id
+        })
+      });
+    } else {
+      goToViewMode(ViewMode.DAPP, path);
+    }
   }, [exchange, navigate]);
   const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
   const isVisible = exchange

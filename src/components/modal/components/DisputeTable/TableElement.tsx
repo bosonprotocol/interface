@@ -122,7 +122,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
               });
             }}
           >
-            Open chat
+            <span style={{ whiteSpace: "pre" }}>Open chat</span>
           </Button>
         </Grid>
       </td>
