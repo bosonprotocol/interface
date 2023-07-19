@@ -342,6 +342,7 @@ const ChatConversation = ({
             : tempLastReceivedProposal;
         });
       }
+
       if (tempLastSentProposal) {
         setLastSentProposal((prev) => {
           return (prev?.timestamp || 0) > tempLastSentProposal.timestamp
@@ -359,6 +360,7 @@ const ChatConversation = ({
     },
     [address]
   );
+
   const {
     data: thread,
     isLoading: areThreadsLoading,

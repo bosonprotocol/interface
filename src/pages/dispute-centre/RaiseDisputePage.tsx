@@ -241,7 +241,7 @@ function RaiseDisputePage() {
                         upload: values.upload,
                         proposalTypeName: values.proposalType?.label || "",
                         refundPercentage: values.refundPercentage,
-                        disputeContext: [values.getStarted, values.tellUsMore]
+                        disputeContext: [values.tellUsMore]
                       },
                       exchangeId: exchange.id,
                       coreSDK

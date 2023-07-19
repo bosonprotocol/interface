@@ -15,6 +15,14 @@ const getStartedSteps = [
 const tellUsMoreSteps = {
   1: [
     {
+      label: "The item was not delivered",
+      id: 1
+    },
+    { label: "The item was delivered late", id: 2 },
+    { label: "Other ...", id: 3 }
+  ],
+  2: [
+    {
       label: "The item received is a different colour, model, version, or size",
       id: 1
     },
@@ -30,14 +38,6 @@ const tellUsMoreSteps = {
       id: 5
     },
     { label: "Other ...", id: 6 }
-  ],
-  2: [
-    {
-      label: "The item was not delivered",
-      id: 1
-    },
-    { label: "The item was delivered late", id: 2 },
-    { label: "Other ...", id: 3 }
   ]
 } as const;
 
