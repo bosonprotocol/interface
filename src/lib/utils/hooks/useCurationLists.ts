@@ -18,7 +18,31 @@ export function useCurationLists() {
     : [];
   const offerCurationListFromUrl =
     useCustomStoreQueryParameter("offerCurationList");
-
+  const scl = CONFIG.enableCurationLists
+    ? sellerCurationListFromUrlParam
+      ? sellerCurationList.filter((sellerId) =>
+          sellerCurationListFromUrl?.includes(sellerId)
+        )
+      : sellerCurationList
+    : sellerCurationListFromUrlParam
+    ? sellerCurationListFromUrl
+    : undefined;
+  console.log(
+    "CONFIG.enableCurationLists",
+    CONFIG.enableCurationLists,
+    "sellerCurationListFromUrlParam",
+    sellerCurationListFromUrlParam,
+    "sellerCurationList",
+    sellerCurationList,
+    "sellerCurationList.filter",
+    sellerCurationList.filter((sellerId) =>
+      sellerCurationListFromUrl?.includes(sellerId)
+    ),
+    "sellerCurationListFromUrl",
+    sellerCurationListFromUrl,
+    "scl",
+    scl
+  );
   return {
     enableCurationLists: CONFIG.enableCurationLists,
     // if enableCurationLists and a custom curation list is defined,
@@ -29,15 +53,7 @@ export function useCurationLists() {
     // --> sellerCurationListFromUrl
     // if !enableCurationLists and no custom curation list
     // --> undefined (= no curation list = all sellers)
-    sellerCurationList: CONFIG.enableCurationLists
-      ? sellerCurationListFromUrlParam
-        ? sellerCurationList.filter((sellerId) =>
-            sellerCurationListFromUrl?.includes(sellerId)
-          )
-        : sellerCurationList
-      : sellerCurationListFromUrlParam
-      ? sellerCurationListFromUrl
-      : undefined,
+    sellerCurationList: scl,
     offerCurationList: offerCurationListFromUrl
       ? parseCurationList(offerCurationListFromUrl)
       : CONFIG.enableCurationLists
