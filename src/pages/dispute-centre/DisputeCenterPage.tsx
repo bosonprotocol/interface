@@ -9,7 +9,6 @@ import DisputeTable from "../../components/modal/components/DisputeTable/Dispute
 import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
-import GridContainer from "../../components/ui/GridContainer";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import {
@@ -17,6 +16,7 @@ import {
   TabQueryParameters
 } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
@@ -38,6 +38,47 @@ const Image = styled.img`
 const DisputeListContainer = styled.div`
   min-height: calc(100vh - 489px);
   padding: 2rem 0;
+`;
+
+const CustomGridContainer = styled.div`
+  display: grid;
+
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  img {
+    justify-self: center;
+  }
+  ${breakpoint.xs} {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-column-gap: 4rem;
+  }
+  ${breakpoint.s} {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-column-gap: 4rem;
+  }
+  ${breakpoint.m} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-column-gap: 4rem;
+    img {
+      justify-self: flex-end;
+    }
+  }
+  ${breakpoint.l} {
+    grid-template-columns: max-content minmax(0, 1fr);
+    grid-column-gap: 4rem;
+    img {
+      justify-self: flex-end;
+    }
+  }
+  ${breakpoint.xl} {
+    grid-template-columns: max-content minmax(0, 1fr);
+    grid-column-gap: 4rem;
+    img {
+      justify-self: flex-end;
+    }
+  }
 `;
 
 function DisputeCenterPage() {
@@ -81,7 +122,7 @@ function DisputeCenterPage() {
     <>
       <DisputeListHeader>
         <LayoutRoot>
-          <GridContainer itemsPerRow={{ xs: 1, s: 2, m: 2, l: 2, xl: 2 }}>
+          <CustomGridContainer>
             <div style={{ padding: "3.5rem 0" }}>
               <Typography
                 $fontSize="3.5rem"
@@ -139,7 +180,7 @@ function DisputeCenterPage() {
               </Grid>
             </div>
             <Image src={disputeResolutionBackground} width={392} height={392} />
-          </GridContainer>
+          </CustomGridContainer>
         </LayoutRoot>
       </DisputeListHeader>
       <DisputeListContainer>

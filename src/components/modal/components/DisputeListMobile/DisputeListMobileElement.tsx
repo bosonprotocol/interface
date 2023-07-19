@@ -16,7 +16,7 @@ import Typography from "../../../ui/Typography";
 
 const Container = styled.div`
   background: ${colors.white};
-  max-width: 25rem;
+  width: 25rem;
   display: block;
   padding: 0 1rem 0.0625rem 1rem;
   border: 1px solid ${colors.lightGrey};
