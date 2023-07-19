@@ -36,16 +36,16 @@ export const DrHasDecided: React.FC<DrHasDecidedProps> = ({
     Number(buyerPercent) / PERCENTAGE_FACTOR;
   const refundBuyerWillReceive = Math.round(
     (Number(inEscrow) * Number(fixedPercentageAmount)) / 100
-  );
-  const refundSellerWillReceive = BigNumber.from(inEscrow).sub(
-    refundBuyerWillReceive
-  );
+  ).toString();
+  const refundSellerWillReceive = BigNumber.from(inEscrow)
+    .sub(refundBuyerWillReceive)
+    .toString();
   const refundBuyerWillReceiveFormatted = calcPrice(
-    refundBuyerWillReceive.toString(),
+    refundBuyerWillReceive,
     exchange.offer.exchangeToken.decimals
   );
   const refundSellerWillReceiveFormatted = calcPrice(
-    refundSellerWillReceive.toString(),
+    refundSellerWillReceive,
     exchange.offer.exchangeToken.decimals
   );
   const [showText, setShowText] = useState<boolean>(true);
@@ -79,17 +79,25 @@ export const DrHasDecided: React.FC<DrHasDecidedProps> = ({
               color={colors.black}
               style={{ cursor: "pointer" }}
               onClick={() => {
-                showModal("RESOLUTION_SUMMARY", {
-                  title: "Dispute Resolution Summary",
-                  exchange,
-                  proposal: {
-                    type:
-                      (proposal?.data?.content as ProposalContent)?.value
-                        ?.proposals?.[0]?.type || "Refund",
-                    percentageAmount: buyerPercent
+                showModal(
+                  "RESOLUTION_SUMMARY",
+                  {
+                    title: "Dispute Resolution Summary",
+                    exchange,
+                    proposal: {
+                      type:
+                        (proposal?.data?.content as ProposalContent)?.value
+                          ?.proposals?.[0]?.type || "Refund",
+                      percentageAmount: buyerPercent
+                    },
+                    message
                   },
-                  message
-                });
+                  "auto",
+                  undefined,
+                  {
+                    m: "600px"
+                  }
+                );
               }}
             />
           </div>

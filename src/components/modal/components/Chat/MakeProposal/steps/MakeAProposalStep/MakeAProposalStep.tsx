@@ -8,7 +8,6 @@ import { useBuyers } from "../../../../../../../lib/utils/hooks/useBuyers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { Select } from "../../../../../../form";
 import BosonButton from "../../../../../../ui/BosonButton";
-import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 import { FormModel } from "../../MakeProposalFormModel";
@@ -24,8 +23,6 @@ interface Props {
   onNextClick: () => void;
   isValid: boolean;
   exchange: Exchange;
-  onSkip: () => void;
-  isModal?: boolean;
   isCounterProposal?: boolean;
 }
 
@@ -36,8 +33,6 @@ export default function MakeAProposalStep({
   exchange,
   onNextClick,
   isValid,
-  onSkip,
-  isModal = false,
   isCounterProposal
 }: Props) {
   const { address } = useAccount();
@@ -88,7 +83,7 @@ export default function MakeAProposalStep({
         <Select
           name={FormModel.formFields.proposalType.name}
           options={proposals}
-          isClearable
+          disabled
         />
         {typeof proposalTypeField.value !== "string" &&
           proposalTypeField.value?.label === "Refund" && (
@@ -111,17 +106,6 @@ export default function MakeAProposalStep({
         >
           Next
         </BosonButton>
-        {!isModal && (
-          <Button
-            theme="outline"
-            onClick={() => {
-              setFieldValue(FormModel.formFields.proposalType.name, null, true);
-              onSkip();
-            }}
-          >
-            Skip
-          </Button>
-        )}
       </ButtonsSection>
     </>
   );

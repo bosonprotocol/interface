@@ -93,15 +93,23 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
             const [proposalItem] = (proposal.data.content as ProposalContent)
               .value.proposals;
             if (proposalItem) {
-              showModal("RESOLVE_DISPUTE", {
-                title: "Resolve dispute",
-                exchange,
-                proposal: proposalItem,
-                iAmTheBuyer,
-                setHasError,
-                addMessage,
-                onSentMessage
-              });
+              showModal(
+                "RESOLVE_DISPUTE",
+                {
+                  title: "Resolve dispute",
+                  exchange,
+                  proposal: proposalItem,
+                  iAmTheBuyer,
+                  setHasError,
+                  addMessage,
+                  onSentMessage
+                },
+                "auto",
+                undefined,
+                {
+                  m: "600px"
+                }
+              );
             }
           }}
         >

@@ -21,10 +21,6 @@ export default function MakeProposalCore({
 
   const isDescribeProblemOK = Object.keys(formValues.errors).length === 0;
 
-  const onSkipMethod = () => {
-    setActiveStep(activeStep + 1);
-  };
-
   return (
     <>
       {activeStep === 2 ? (
@@ -39,9 +35,6 @@ export default function MakeProposalCore({
           }}
           isValid={isDescribeProblemOK}
           exchange={exchange}
-          onSkip={() => {
-            onSkipMethod();
-          }}
         />
       ) : (
         <ReviewAndSubmitStep

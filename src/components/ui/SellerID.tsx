@@ -106,7 +106,7 @@ const SellerID: React.FC<
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const lensProfilePicture = getLensProfilePictureUrl(lens);
   const productV1SellerProfileImage =
-    artist.images?.find((img) => img.tag === "profile")?.url ?? "";
+    artist?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const profilePicture =
     (useLens ? lensProfilePicture : regularProfilePicture) ??
     productV1SellerProfileImage;
