@@ -159,8 +159,11 @@ export default function RetractDisputeModal({
     setHasError
   ]);
   const showSuccessInitialization =
-    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
-    bosonXmtp;
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus) && bosonXmtp;
+
   return (
     <Grid flexDirection="column" gap="5rem">
       <div>

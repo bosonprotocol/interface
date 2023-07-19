@@ -16,7 +16,7 @@ const TableHeader = styled.th`
   text-align: left;
   padding-top: 1.5625rem;
   color: ${colors.darkGrey};
-  font-size: 0.75rem;
+  font-size: 1.1rem;
   font-weight: 600;
   font-family: inherit;
   border-bottom: none;
@@ -56,13 +56,18 @@ const TableHeaderFields = [
     colspan: 3
   },
   {
-    label: "Resolution summary",
+    label: "Days left to resolve dispute",
     value: 2,
     colspan: 3
   },
   {
-    label: "Actions",
+    label: "Resolution summary",
     value: 3,
+    colspan: 3
+  },
+  {
+    label: "Actions",
+    value: 4,
     colspan: 3
   }
 ];

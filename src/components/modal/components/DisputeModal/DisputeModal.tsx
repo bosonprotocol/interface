@@ -121,17 +121,6 @@ const ModalGridColumns = styled.div`
   }
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-  border-top: 0.0625rem solid ${colors.lightGrey};
-  position: absolute;
-  width: 100%;
-  left: -2rem;
-  width: calc(100% + 3.875rem);
-`;
-
 const SubmitStyledButton = styled.button`
   font-family: "Plus Jakarta Sans";
   font-weight: 600;
@@ -140,7 +129,6 @@ const SubmitStyledButton = styled.button`
   margin-top: 1.25rem;
   background-color: ${colors.green};
   padding: 1rem 2rem 1rem 2rem;
-  margin-left: 4.375rem;
 `;
 
 interface Props {
@@ -211,11 +199,9 @@ function DisputeModal({ exchangeId }: Props) {
         </ModalGridColumns>
       </ModalGrid>
       {exchangeId && (
-        <ButtonContainer>
-          <SubmitStyledButton onClick={handleSubmitIssue}>
-            Submit an issue
-          </SubmitStyledButton>
-        </ButtonContainer>
+        <SubmitStyledButton onClick={handleSubmitIssue}>
+          Submit an issue
+        </SubmitStyledButton>
       )}
     </>
   );

@@ -79,7 +79,7 @@ export default function ExchangeTimeline({
     }
     if (
       lastReceivedProposal &&
-      [MessageType.Proposal, MessageType.CounterProposal].includes(
+      [MessageType.CounterProposal].includes(
         lastReceivedProposal.data.contentType
       )
     ) {
@@ -96,9 +96,7 @@ export default function ExchangeTimeline({
     }
     if (
       lastSentProposal &&
-      [MessageType.Proposal, MessageType.CounterProposal].includes(
-        lastSentProposal.data.contentType
-      )
+      [MessageType.CounterProposal].includes(lastSentProposal.data.contentType)
     ) {
       const timestamp = Number(lastSentProposal.timestamp) / 1000;
       timesteps.push({

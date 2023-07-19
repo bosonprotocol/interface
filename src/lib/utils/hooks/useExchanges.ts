@@ -85,6 +85,7 @@ const getExchangesFunction = async (props: Props) => {
         }) {
         dispute {
           id
+          buyerPercent
           state
           escalatedDate
         }

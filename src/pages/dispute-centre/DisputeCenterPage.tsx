@@ -10,6 +10,7 @@ import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import GridContainer from "../../components/ui/GridContainer";
+import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import {
   AccountQueryParameters,
@@ -47,8 +48,8 @@ function DisputeCenterPage() {
   const { buyer, seller } = useBuyerSellerAccounts(address);
   const myBuyerId = buyer.buyerId;
   const mySellerId = seller.sellerId;
-  console.log({ myBuyerId, mySellerId });
-  const { data: buyerExchanges } = useExchanges(
+
+  const { data: buyerExchanges, isLoading: isBuyersLoading } = useExchanges(
     {
       disputed: true,
       buyerId: myBuyerId
@@ -57,7 +58,7 @@ function DisputeCenterPage() {
       enabled: !!myBuyerId
     }
   );
-  const { data: sellerExchanges } = useExchanges(
+  const { data: sellerExchanges, isLoading: isSellersLoading } = useExchanges(
     {
       disputed: true,
       sellerId: mySellerId
@@ -120,9 +121,17 @@ function DisputeCenterPage() {
                   type="button"
                   theme="secondary"
                   onClick={() => {
-                    showModal(modalTypes.RAISE_DISPUTE, {
-                      title: "Dispute process"
-                    });
+                    showModal(
+                      modalTypes.RAISE_DISPUTE,
+                      {
+                        title: "Dispute process"
+                      },
+                      "auto",
+                      undefined,
+                      {
+                        l: "1000px"
+                      }
+                    );
                   }}
                 >
                   How it works?
@@ -172,16 +181,22 @@ function DisputeCenterPage() {
             </Button>
           )}
         </Grid>
-        {exchanges.length ? (
+        {isBuyersLoading || isSellersLoading ? (
+          <Loading />
+        ) : (
           <>
-            {isLteS ? (
-              <DisputeListMobile exchanges={exchanges} />
+            {exchanges.length ? (
+              <>
+                {isLteS ? (
+                  <DisputeListMobile exchanges={exchanges} />
+                ) : (
+                  <DisputeTable exchanges={exchanges} />
+                )}
+              </>
             ) : (
-              <DisputeTable exchanges={exchanges} />
+              <Typography>No disputes found</Typography>
             )}
           </>
-        ) : (
-          <Typography>No disputes found</Typography>
         )}
       </DisputeListContainer>
     </>
