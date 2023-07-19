@@ -37,9 +37,9 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
 
   const refund = Math.round(
     (Number(inEscrow) * Number(fixedPercentageAmount)) / 100
-  );
+  ).toString();
   const convertedRefund = useConvertedPrice({
-    value: refund.toString(),
+    value: refund,
     decimals: offer.exchangeToken.decimals,
     symbol: offer.exchangeToken.symbol
   });
