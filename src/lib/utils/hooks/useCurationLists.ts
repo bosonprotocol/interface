@@ -27,22 +27,7 @@ export function useCurationLists() {
     : sellerCurationListFromUrlParam
     ? sellerCurationListFromUrl
     : undefined;
-  console.log(
-    "CONFIG.enableCurationLists",
-    CONFIG.enableCurationLists,
-    "sellerCurationListFromUrlParam",
-    sellerCurationListFromUrlParam,
-    "sellerCurationList",
-    sellerCurationList,
-    "sellerCurationList.filter",
-    sellerCurationList.filter((sellerId) =>
-      sellerCurationListFromUrl?.includes(sellerId)
-    ),
-    "sellerCurationListFromUrl",
-    sellerCurationListFromUrl,
-    "scl",
-    scl
-  );
+
   return {
     enableCurationLists: CONFIG.enableCurationLists,
     // if enableCurationLists and a custom curation list is defined,

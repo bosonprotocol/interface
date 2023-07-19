@@ -99,6 +99,7 @@ export default [
     component: ChatPage,
     app: {
       ...base.app,
+      fluidHeader: true,
       withLayout: false,
       withFooter: false
     },
