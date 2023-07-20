@@ -18,20 +18,23 @@ type YouHaveAcceptedProps = {
   proposal: MessageData | null;
   buyerPercent: string;
   acceptedProposal: MessageData;
+  iAmTheBuyer: boolean;
 };
 
 export const YouHaveAccepted: React.FC<YouHaveAcceptedProps> = ({
   exchange,
   proposal,
   buyerPercent,
-  acceptedProposal
+  acceptedProposal,
+  iAmTheBuyer
 }) => {
   const { showModal } = useModal();
   const acceptedProposalContent = acceptedProposal.data
     .content as AcceptProposalContent;
   const youHaveAccepted = (
     <p>
-      You've accepted the buyer's proposal to refund{" "}
+      {iAmTheBuyer ? "The seller accepted your" : "You've accepted the buyer's"}{" "}
+      proposal to refund{" "}
       {Number(acceptedProposalContent?.value.proposal.percentageAmount) /
         PERCENTAGE_FACTOR}
       % of the total amount in escrow. The dispute has been resolved and the

@@ -53,6 +53,7 @@ export const ChatInfoBox: React.FC<ChatInfoBoxProps> = ({
         />
       ) : isResolved && acceptedProposal && buyerPercent ? (
         <YouHaveAccepted
+          iAmTheBuyer={iAmTheBuyer}
           acceptedProposal={acceptedProposal}
           buyerPercent={buyerPercent}
           exchange={exchange}
