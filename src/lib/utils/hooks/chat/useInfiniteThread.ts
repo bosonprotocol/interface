@@ -1,5 +1,4 @@
 import {
-  MessageData,
   ThreadId,
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
@@ -24,7 +23,6 @@ interface Props {
   counterParty: string;
   threadId: ThreadId | null | undefined;
   genesisDate: Date;
-  onMessagesReceived: (messages: MessageData[]) => void;
   onFinishFetching: (arg: {
     isLoading: boolean;
     isError: boolean;
@@ -42,7 +40,6 @@ export function useInfiniteThread({
   counterParty,
   threadId,
   genesisDate,
-  onMessagesReceived,
   onFinishFetching,
   checkCustomCondition
 }: Props): {
@@ -120,7 +117,6 @@ export function useInfiniteThread({
         onMessageReceived: async (threadObject) => {
           if (threadObject) {
             await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
-            onMessagesReceived(structuredClone(threadObject).messages);
 
             setThreadXmtp((prevThread) => {
               const mergedThreads = mergeThreads(
@@ -167,15 +163,7 @@ export function useInfiniteThread({
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    bosonXmtp,
-    dateIndex,
-    counterParty,
-    dateStep,
-    threadId,
-    address,
-    onMessagesReceived
-  ]);
+  }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId, address]);
 
   return {
     data: threadXmtp || null,
