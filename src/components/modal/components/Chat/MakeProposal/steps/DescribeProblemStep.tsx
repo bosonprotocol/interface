@@ -29,17 +29,21 @@ export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
-        Describe Problem
+        Add documents to support your case
       </Typography>
       <Typography $fontSize="1.25rem" color={colors.darkGrey}>
-        You may provide any information or attach any files that can support
-        your case.
+        You may provide any information or attach any files that support your
+        case.
       </Typography>
       <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
         <Typography fontWeight="600" tag="p">
           Message*
         </Typography>
-        <TextArea name={FormModel.formFields.description.name} rows={5} />
+        <TextArea
+          name={FormModel.formFields.description.name}
+          rows={5}
+          placeholder="Provide additional information about the problem you faced with your order"
+        />
       </Grid>
       <UploadForm />
       <ButtonsSection>
