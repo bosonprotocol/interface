@@ -36,7 +36,7 @@ jobs:
         id: name
 
   call-reusable-workflow-PR:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: ./.github/workflows/ci_reusable.yaml
     if: github.event_name == 'pull_request'
     needs: prejob
     with:
@@ -61,7 +61,7 @@ jobs:
       REACT_APP_CAROUSEL_PROMOTED_SELLER_ID: ${{ secrets.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_TESTING }}
 
   call-reusable-workflow-testing:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: ./.github/workflows/ci_reusable.yaml
     if: github.event_name == 'push'
     needs: prejob
     with:
@@ -93,7 +93,7 @@ jobs:
       REACT_APP_CAROUSEL_PROMOTED_SELLER_ID: ${{ secrets.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_TESTING }}
 
   call-reusable-workflow-staging:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: ./.github/workflows/ci_reusable.yaml
     if: github.event_name == 'release' && github.event.action == 'created'
     needs: prejob
     with:
@@ -125,7 +125,7 @@ jobs:
       REACT_APP_CAROUSEL_PROMOTED_SELLER_ID: ${{ secrets.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_STAGING }}
 
   call-reusable-workflow-production:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: ./.github/workflows/ci_reusable.yaml
     if: github.event_name == 'workflow_dispatch'
     needs: prejob
     with:
