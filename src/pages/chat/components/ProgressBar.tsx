@@ -8,7 +8,6 @@ const Container = styled.div`
   display: flex;
   overflow: hidden;
 
-  height: 2.5rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-align: center;
@@ -36,6 +35,7 @@ const Back = styled.div<{ $backgroundColor: CSSProperties["background"] }>`
 
 const Front = styled.div<{ $progress: number }>`
   ${commonStyles};
+  padding: 0.5rem;
   color: ${colors.black};
   background: ${colors.lightGrey};
   clip-path: inset(0 0 0 ${({ $progress }) => $progress}%);
@@ -58,6 +58,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     <Container>
       <Back $backgroundColor={background}>{text}</Back>
       <Front $progress={progress}>{text}</Front>
+      <Front $progress={progress} style={{ position: "relative" }}>
+        {text}
+      </Front>
     </Container>
   );
 };
