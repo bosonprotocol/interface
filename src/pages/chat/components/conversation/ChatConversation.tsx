@@ -396,7 +396,6 @@ const ChatConversation = ({
         return isAProposalFromSomeoneElse;
       });
     },
-    onMessagesReceived,
     onFinishFetching: ({
       isBeginningOfTimes,
       isLoading: areThreadsLoading,
@@ -412,6 +411,12 @@ const ChatConversation = ({
       }
     }
   });
+  useEffect(() => {
+    if (thread?.messages) {
+      onMessagesReceived(structuredClone(thread.messages));
+    }
+  }, [thread?.messages, onMessagesReceived]);
+
   useEffect(() => {
     setHasError(isErrorThread);
   }, [isErrorThread]);
