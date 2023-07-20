@@ -69,6 +69,8 @@ on:
         required: true
       REACT_APP_WALLET_CONNECT_PROJECT_ID:
         required: true
+      REACT_APP_CAROUSEL_PROMOTED_SELLER_ID:
+        required: true
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
