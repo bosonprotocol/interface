@@ -58,6 +58,7 @@ jobs:
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_TESTING }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_TESTING }}
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_TESTING }}
+      REACT_APP_CAROUSEL_PROMOTED_SELLER_ID: ${{ secrets.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_TESTING }}
 
   call-reusable-workflow-testing:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
@@ -89,6 +90,7 @@ jobs:
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_TESTING }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_TESTING }}
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_TESTING }}
+      REACT_APP_CAROUSEL_PROMOTED_SELLER_ID: ${{ secrets.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_TESTING }}
 
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
@@ -120,6 +122,7 @@ jobs:
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_STAGING }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_STAGING }}
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_STAGING }}
+      REACT_APP_CAROUSEL_PROMOTED_SELLER_ID: ${{ secrets.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_STAGING }}
 
   call-reusable-workflow-production:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
@@ -151,6 +154,7 @@ jobs:
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_PRODUCTION }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_PRODUCTION }}
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_PRODUCTION }}
+      REACT_APP_CAROUSEL_PROMOTED_SELLER_ID: ${{ secrets.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_PRODUCTION }}
 
   job-summary:
     name: Create Job Summary

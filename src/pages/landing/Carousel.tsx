@@ -7,6 +7,7 @@ import styled, { css } from "styled-components";
 
 import ProductCard from "../../components/productCard/ProductCard";
 import Loading from "../../components/ui/Loading";
+import { CONFIG } from "../../lib/config";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
@@ -198,7 +199,8 @@ export default function Carousel() {
     voided: false,
     valid: true,
     first: numCells,
-    quantityAvailable_gte: 1
+    quantityAvailable_gte: 1,
+    sellerId: CONFIG.carouselPromotedSellerId
   });
 
   const uiOffers = useMemo(() => {
