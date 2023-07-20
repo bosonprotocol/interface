@@ -142,7 +142,7 @@ function DisputeModal({ exchangeId }: Props) {
         ViewMode.DR_CENTER,
         generatePath(DrCenterRoutes.DisputeId, {
           [UrlParameters.exchangeId]: exchangeId
-        })
+        }) as `/${string}`
       );
     }
   };
@@ -157,11 +157,11 @@ function DisputeModal({ exchangeId }: Props) {
         marginTop="0.5rem"
         marginBottom="2rem"
       >
-        When a buyer raises a dispute they can either create a proposal right
-        away or you can propose a solution to them. When an acceptable solution
-        for both parties is found the dispute will be resolved. If there is no
-        acceptable solution, the buyer can escalate and the dispute will be
-        resolved by a 3rd party.
+        When a buyer raises a dispute they can create a resolution proposal,
+        which sellers can either accept or provide a counterproposal solution
+        to. When an acceptable solution for both parties is found, the dispute
+        will be resolved. If there is no acceptable solution, the buyer can
+        escalate the dispute and it will be resolved by a 3rd party.
       </Typography>
       <ModalGrid>
         <ModalGridColumns>

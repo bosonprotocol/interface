@@ -13,9 +13,6 @@ export const FormModel = {
     proposalType: {
       name: "proposalType"
     },
-    escrow: {
-      name: "escrow"
-    },
     refundAmount: {
       name: "refundAmount"
     },

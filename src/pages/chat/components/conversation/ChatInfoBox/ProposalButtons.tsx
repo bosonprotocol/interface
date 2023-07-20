@@ -67,9 +67,17 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
                 color={colors.black}
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  showModal("RAISE_DISPUTE", {
-                    title: "Dispute process"
-                  });
+                  showModal(
+                    "RAISE_DISPUTE",
+                    {
+                      title: "Dispute process"
+                    },
+                    "auto",
+                    undefined,
+                    {
+                      l: "1000px"
+                    }
+                  );
                 }}
               />
             </div>

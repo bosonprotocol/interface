@@ -94,7 +94,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         ) : (
           <Grid alignItems="center" $width="max-content">
             <DisputeEndDate size={17} fontWeight="light" color={colors.black} />
-            {deadlineTimeLeft}
+            {deadlineTimeLeft} days left
           </Grid>
         )}
       </td>
