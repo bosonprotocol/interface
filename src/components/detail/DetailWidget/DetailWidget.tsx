@@ -1050,10 +1050,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   {!exchange?.disputed && (
                     <RaiseProblemButton
                       onClick={() => {
-                        showModal(modalTypes.RAISE_DISPUTE, {
-                          title: "Raise a dispute",
-                          exchangeId: exchange?.id || ""
-                        });
+                        showModal(
+                          modalTypes.RAISE_DISPUTE,
+                          {
+                            title: "Raise a dispute",
+                            exchangeId: exchange?.id || ""
+                          },
+                          "auto",
+                          undefined,
+                          { m: "1000px" }
+                        );
                       }}
                       theme="blank"
                       style={{ fontSize: "0.875rem" }}

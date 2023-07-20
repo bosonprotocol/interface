@@ -480,7 +480,9 @@ export default function ExchangeSidePreview({
                   destinationAddress,
                   exchange
                 },
-                "s"
+                "auto",
+                undefined,
+                { m: "700px" }
               )
             }
           >

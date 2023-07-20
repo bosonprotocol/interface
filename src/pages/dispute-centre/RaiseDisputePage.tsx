@@ -38,6 +38,7 @@ import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
+import { goToViewMode, ViewMode } from "../../lib/viewMode";
 import { useChatContext } from "../chat/ChatProvider/ChatContext";
 import { createProposal } from "../chat/utils/create";
 import { sendProposalToChat } from "../chat/utils/send";
@@ -184,11 +185,12 @@ function RaiseDisputePage() {
                 currentStep === 0 ? colors.lightArrowColor : colors.darkGrey
               }
               onClick={() => {
-                navigate({
-                  pathname: generatePath(BosonRoutes.Exchange, {
+                goToViewMode(
+                  ViewMode.DAPP,
+                  generatePath(BosonRoutes.Exchange, {
                     [UrlParameters.exchangeId]: exchangeId as string
-                  })
-                });
+                  }) as `/${string}`
+                );
               }}
             />
           </Grid>
