@@ -6,6 +6,7 @@ import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-n
 import lensHubContractAbi from "../lib/utils/hooks/lens/abis/lens-hub-contract-abi.json";
 import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphery-data-provider.json";
 import { parseCurationList } from "./utils/curationList";
+import { ViewMode } from "./viewMode";
 
 const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
 export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
@@ -142,7 +143,16 @@ export const CONFIG = {
     projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
   },
   carouselPromotedSellerId:
-    process.env.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID || undefined
+    process.env.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID || undefined,
+  envViewMode: {
+    current: Object.values(ViewMode).includes(
+      (process.env.REACT_APP_VIEW_MODE as ViewMode) || ""
+    )
+      ? (process.env.REACT_APP_VIEW_MODE as ViewMode)
+      : ViewMode.DAPP,
+    dappViewModeUrl: process.env.REACT_APP_DAPP_VIEW_MODE || "",
+    drCenterViewModeUrl: process.env.REACT_APP_DR_CENTER_VIEW_MODE || ""
+  }
 };
 
 function stringToBoolean(value: unknown | undefined, defaultValue: boolean) {

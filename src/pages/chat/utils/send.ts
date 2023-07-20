@@ -68,7 +68,8 @@ export const sendProposalToChat = async ({
   destinationAddress,
   threadId,
   callbackSendingMessage,
-  callback
+  callback,
+  type
 }: {
   bosonXmtp: BosonXmtpClient;
   proposal: ProposalContent["value"];
@@ -80,6 +81,7 @@ export const sendProposalToChat = async ({
     uuid: string
   ) => Promise<unknown>;
   callback?: (messageData: MessageData, uuid: string) => Promise<unknown>;
+  type: MessageType.Proposal | MessageType.CounterProposal;
 }) => {
   const destinationAddressFormatted = utils.getAddress(destinationAddress);
   const proposalContent: ProposalContent = {
@@ -88,7 +90,7 @@ export const sendProposalToChat = async ({
   const newMessage = {
     threadId,
     content: proposalContent,
-    contentType: MessageType.Proposal,
+    contentType: type,
     version
   } as const;
   const uuid = window.crypto.randomUUID();

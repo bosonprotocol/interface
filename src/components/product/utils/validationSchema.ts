@@ -6,6 +6,7 @@ import { fixformattedString } from "../../../lib/utils/number";
 import Yup from "../../../lib/validation/index";
 import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
+import { FileProps } from "../../form/Upload/types";
 import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
@@ -28,7 +29,9 @@ import {
 export const regularProfileValidationSchema = Yup.object({
   createYourProfile: Yup.object({
     logo: validationOfRequiredIpfsImage(),
-    coverPicture: validationOfRequiredIpfsImage(),
+    coverPicture: validationOfRequiredIpfsImage<
+      FileProps & { fit?: string; position?: string }
+    >(),
     ...getCommonFieldsValidation({ withMaxLengthValidation: false })
   })
 });

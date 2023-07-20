@@ -144,10 +144,18 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     switch (status) {
       case "REDEEMED": {
         const handleDispute = () => {
-          showModal(modalTypes.RAISE_DISPUTE, {
-            title: "Raise a dispute",
-            exchangeId: exchange?.id || ""
-          });
+          showModal(
+            modalTypes.RAISE_DISPUTE,
+            {
+              title: "Dispute process",
+              exchangeId: exchange?.id || ""
+            },
+            "auto",
+            undefined,
+            {
+              l: "1000px"
+            }
+          );
         };
         return {
           status: "REDEEMED" as Extract<ExchangeCardStatus, "REDEEMED">,

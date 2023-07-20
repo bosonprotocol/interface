@@ -8,6 +8,7 @@ import {
 import { ReactElement } from "react";
 import { generatePath } from "react-router-dom";
 
+import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../lib/routing/parameters";
 import {
   BosonRoutes,
@@ -15,6 +16,7 @@ import {
   SocialRoutes
 } from "../../lib/routing/routes";
 import { isTruthy } from "../../lib/types/helpers";
+import { getViewModeUrl, ViewMode } from "../../lib/viewMode";
 import { UserRoles } from "../../router/routes";
 import { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { getSellerCenterPath } from "../seller/paths";
@@ -178,7 +180,8 @@ export const getHelpLinks = ({
       false
     ) && {
       name: "Dispute Center",
-      url: BosonRoutes.DisputeCenter
+      url: getViewModeUrl(ViewMode.DR_CENTER, DrCenterRoutes.Root),
+      absolute: true
     },
     {
       name: "Email",

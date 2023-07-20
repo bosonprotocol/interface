@@ -30,21 +30,21 @@ const TextContainer = styled.span`
   max-width: 31.25rem;
 `;
 
+const FieldArrayName = DisputeFormModel.formFields.getStarted.name;
+
 function GetStarted({
-  setCurrentStep,
-  currentStep,
+  onClick,
   getStartedSteps
 }: {
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  currentStep: number;
-  getStartedSteps: {
-    label: string;
-    id: number;
-  }[];
+  onClick: (clickedStep: { label: string; id: 1 | 2 }) => void;
+  getStartedSteps: Readonly<
+    {
+      label: string;
+      id: 1 | 2;
+    }[]
+  >;
 }) {
   const formValues = useCreateForm();
-
-  const FieldArrayName = DisputeFormModel.formFields.getStarted.name;
 
   return (
     <>
@@ -66,7 +66,7 @@ function GetStarted({
                   type="submit"
                   onClick={() => {
                     formValues.setFieldValue(FieldArrayName, step.label);
-                    setCurrentStep(currentStep + 1);
+                    onClick(step);
                   }}
                 >
                   <TextContainer>{step.label}</TextContainer>{" "}

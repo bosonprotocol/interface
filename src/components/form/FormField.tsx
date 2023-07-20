@@ -8,11 +8,12 @@ import { colors } from "../../lib/styles/colors";
 import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
-import { CopyButton, FormFieldWrapper } from "./Field.styles";
+import { FormFieldWrapper } from "./Field.styles";
 import type { FormFieldProps } from "./types";
 
 export default function FormField({
   title,
+  titleIcon,
   subTitle = false,
   required = false,
   tooltip,
@@ -32,13 +33,19 @@ export default function FormField({
       theme={theme}
       {...rest}
     >
-      <Grid justifyContent="flex-start" margin="0 0 0.375rem 0">
-        <Typography data-header tag="p">
-          {title}
-          {"  "}
-          {required && "*"}
+      <Grid justifyContent="space-between" margin="0 0 0.375rem 0" gap="0.5rem">
+        <Grid justifyContent="flex-start">
+          <Typography data-header tag="p" style={{ whiteSpace: "pre" }}>
+            {title}
+            {"  "}
+            {required && "*"}
+          </Typography>
           {valueToCopy && (
-            <CopyButton
+            <Copy
+              size={24}
+              color={colors.secondary}
+              style={{ cursor: "pointer" }}
+              weight="light"
               onClick={() => {
                 try {
                   const isItObject = isObject(valueToCopy);
@@ -59,11 +66,12 @@ export default function FormField({
                   return false;
                 }
               }}
-            >
-              <Copy size={24} color={colors.secondary} weight="light" />
-            </CopyButton>
+            />
           )}
-        </Typography>
+        </Grid>
+
+        {titleIcon}
+
         {tooltip && <Tooltip content={tooltip} size={16} />}
       </Grid>
       {subTitle && (

@@ -1,0 +1,15 @@
+{
+  "site": {
+    "id": "825cd316-d483-4e1c-a046-7278295e529b",
+    "team": "3fb24a6e-7168-438e-848a-8b706e8bb76a",
+    "platform": "ipfs",
+    "source": "ipfs",
+    "name": "drcenter-production"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "build",
+    "command": "npm run build",
+    "rootDir": ""
+  }
+}

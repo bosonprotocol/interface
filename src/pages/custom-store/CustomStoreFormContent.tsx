@@ -563,6 +563,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 width={1531}
                 height={190}
                 imgPreviewStyle={{ objectFit: "contain" }}
+                wrapperProps={{ style: { width: "100%" } }}
               />
             </Grid>
             <Grid flexDirection="column" alignItems="flex-start">
@@ -585,6 +586,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 width={947}
                 height={218}
                 imgPreviewStyle={{ objectFit: "contain" }}
+                wrapperProps={{ style: { width: "100%" } }}
               />
             </Grid>
           </Grid>

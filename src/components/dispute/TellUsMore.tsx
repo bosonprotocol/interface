@@ -30,6 +30,7 @@ const FormButton = styled.button`
 const TextContainer = styled.span`
   max-width: 31.25rem;
 `;
+const FieldArrayName = DisputeFormModel.formFields.tellUsMore.name;
 
 function TellUsMore({
   setCurrentStep,
@@ -38,14 +39,14 @@ function TellUsMore({
 }: {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   currentStep: number;
-  tellUsMoreSteps: {
-    label: string;
-    id: number;
-  }[];
+  tellUsMoreSteps: Readonly<
+    {
+      label: string;
+      id: number;
+    }[]
+  >;
 }) {
   const formValues = useCreateForm();
-
-  const FieldArrayName = DisputeFormModel.formFields.tellUsMore.name;
 
   return (
     <>

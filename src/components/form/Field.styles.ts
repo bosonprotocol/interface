@@ -88,8 +88,8 @@ export const FileUploadWrapper = styled.div.attrs(
   flex-direction: column;
 
   padding: 0.5rem;
-
-  width: 8rem;
+  width: 100%;
+  min-width: 8rem;
   height: 8rem;
 
   img {
@@ -137,6 +137,8 @@ export const FileUploadWrapper = styled.div.attrs(
 export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
   position: relative;
   display: inline-block;
+  width: 8rem;
+  height: 8rem;
   ${({ $disabled }) =>
     $disabled
       ? css`
@@ -145,7 +147,6 @@ export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
       : css`
           cursor: pointer;
         `}
-  width: 100%;
   :hover {
     [data-remove] {
       display: flex;
@@ -155,10 +156,10 @@ export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
     display: none;
     align-items: center;
     justify-content: center;
-    width: 8rem;
-    height: 8rem;
     position: absolute;
     top: 0;
+    width: 100%;
+    height: 100%;
     /* top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); */

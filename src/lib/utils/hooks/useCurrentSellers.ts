@@ -69,6 +69,8 @@ const getSellersByIds = () => (sellerIds: string[], isSellerId: boolean) => {
                   type
                   width
                   height
+                  fit
+                  position
                 }
                 contactLinks {
                   id
@@ -323,7 +325,7 @@ export function useCurrentSellers({
       enabled: enableResultLens
     }
   );
-  const lens: Profile[] = useMemo(() => {
+  const lens: (Profile | undefined)[] = useMemo(() => {
     return (resultLens?.data?.items as Profile[]) ?? [];
   }, [resultLens?.data]);
   const sellerIds = useMemo(() => {

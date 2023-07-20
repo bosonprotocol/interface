@@ -599,28 +599,32 @@ export const CommitAndRedeemButton = styled(Typography)`
 `;
 
 export const RaiseProblemButton = styled(Button)`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  padding: 0.75rem 1rem;
+  && {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0.75rem 1rem;
 
-  font-weight: 600;
-  color: ${colors.orange};
-  cursor: pointer;
-  transition: all 150ms ease-in-out;
-  &:hover:not(:disabled) {
-    color: ${colors.red};
-    background: ${colors.lightGrey};
-  }
-  svg {
-    margin-left: 1rem;
+    font-weight: 600;
+    color: ${colors.orange};
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+    &:hover:not(:disabled) {
+      color: ${colors.red};
+      background: ${colors.lightGrey};
+    }
+    svg {
+      margin-left: 1rem;
+    }
   }
 `;
 export const StyledCancelButton = RaiseProblemButton;
 export const ContactSellerButton = styled(RaiseProblemButton)`
-  color: ${colors.secondary};
+  && {
+    color: ${colors.secondary};
+  }
 `;
 
 export const Break = styled.span`

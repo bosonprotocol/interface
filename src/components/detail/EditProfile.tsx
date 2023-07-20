@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { useModal } from "../modal/useModal";
@@ -6,7 +6,8 @@ import Button from "../ui/Button";
 
 export const EditProfile: React.FC<{
   onClose?: () => void | Promise<void>;
-}> = ({ onClose }) => {
+  children?: ReactNode;
+}> = ({ onClose, children }) => {
   const { showModal } = useModal();
 
   const openEditModal = () => {
@@ -25,6 +26,9 @@ export const EditProfile: React.FC<{
       }
     );
   };
+  if (children) {
+    return <div onClick={() => openEditModal()}>{children}</div>;
+  }
   return (
     <Button onClick={() => openEditModal()} theme="secondary">
       Edit profile

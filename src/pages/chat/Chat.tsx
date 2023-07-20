@@ -9,15 +9,15 @@ import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import ChatConversation from "./components/ChatConversation";
+import ChatConversation from "./components/conversation/ChatConversation";
 import MessageList from "./components/MessageList";
+import { chatUrl } from "./const";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
@@ -191,7 +191,7 @@ export default function Chat() {
       }
       selectExchange(exchange);
       navigate({
-        pathname: `${BosonRoutes.Chat}/${exchange.id}`
+        pathname: `${chatUrl}/${exchange.id}`
       });
     },
     [chatListOpen, isS, isXS, isXXS, navigate]
@@ -236,19 +236,20 @@ export default function Chat() {
               exchanges={exchanges}
               prevPath={previousPath}
               isConversationOpened={
-                location.pathname !== `${BosonRoutes.Chat}/` &&
-                location.pathname !== `${BosonRoutes.Chat}`
+                location.pathname !== `${chatUrl}/` &&
+                location.pathname !== `${chatUrl}`
               }
               onChangeConversation={onChangeConversation}
               chatListOpen={chatListOpen}
               setChatListOpen={setChatListOpen}
               currentExchange={selectedExchange}
+              selectExchange={selectExchange}
             />
 
             {exchangeIdNotOwned ? (
               <>
-                {(location.pathname === `${BosonRoutes.Chat}/` ||
-                  location.pathname === `${BosonRoutes.Chat}` ||
+                {(location.pathname === `${chatUrl}/` ||
+                  location.pathname === `${chatUrl}` ||
                   !isSellerOrBuyer) && (
                   <SelectMessageContainer>
                     <SimpleMessage>

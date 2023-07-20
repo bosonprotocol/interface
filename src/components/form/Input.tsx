@@ -26,4 +26,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
+export const InputError = ({ name }: Pick<InputProps, "name">) => {
+  const { status } = useFormikContext();
+  const [, meta] = useField(name);
+  const errorText = meta.error || status?.[name];
+  const errorMessage = errorText && meta.touched ? errorText : "";
+  const displayError =
+    typeof errorMessage === typeof "string" && errorMessage !== "";
+
+  return <Error display={displayError} message={errorMessage} />;
+};
+
 export default Input;

@@ -33,7 +33,8 @@ export interface ErrorProps {
 
 export interface FormFieldProps {
   title: string;
-  subTitle?: string | ReactNode | false;
+  titleIcon?: ReactNode;
+  subTitle?: ReactNode | false;
   required?: boolean;
   tooltip?: string;
   children: React.ReactNode | string;

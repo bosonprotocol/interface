@@ -37,7 +37,7 @@ import {
   BasicInfo,
   ProfileSectionWrapper
 } from "../ProfilePage.styles";
-import SellerImagesSection from "./SellerImagesSection";
+import { SellerImagesSectionView } from "./SellerImagesSectionView";
 import SellerSocial from "./SellerSocial";
 import Tabs from "./Tabs";
 
@@ -56,7 +56,7 @@ const LensTitle = styled(Typography)`
   }
 `;
 
-const FollowLens = styled.div`
+const SellerButton = styled.div`
   margin-left: 0.75rem;
   padding: 0.25rem 1rem;
   border: 2px solid ${colors.secondary};
@@ -131,11 +131,18 @@ export default function Seller() {
     (useLens ? sellerLens?.bio : metadata?.description) ??
     metadata?.description ??
     "";
-  const regularCoverImage = metadata?.images?.find(
+  const metadataCoverImage = metadata?.images?.find(
     (img) => img.tag === "cover"
-  )?.url;
-  const coverImage =
-    (useLens ? lensCoverImage : regularCoverImage) ?? regularCoverImage;
+  );
+  const coverImageUrl: string | undefined =
+    (useLens ? lensCoverImage : metadataCoverImage?.url) ??
+    metadataCoverImage?.url;
+  // the source of truth of the cover image is the one in the metadata if it exists
+  const metadataCoverImageToUse = useLens
+    ? metadataCoverImage
+      ? metadataCoverImage
+      : undefined
+    : metadataCoverImage;
   const regularProfileImage = metadata?.images?.find(
     (img) => img.tag === "profile"
   )?.url;
@@ -219,10 +226,11 @@ export default function Seller() {
   return (
     <>
       <BasicInfo>
-        <SellerImagesSection
-          coverImage={coverImage}
+        <SellerImagesSectionView
+          coverImageUrl={coverImageUrl}
           profileImage={profileImage}
           address={currentSellerAddress}
+          metadataCoverImage={metadataCoverImageToUse}
         />
 
         <ProfileSectionWrapper>
@@ -260,10 +268,11 @@ export default function Seller() {
               justifyContent="flex-end"
               $width="auto"
               margin="1.25rem 0 0 0"
+              gap="1rem"
             >
               <>
                 {sellerLens && useLens && (
-                  <FollowLens>
+                  <SellerButton>
                     <a
                       href={`https://lenster.xyz/u/${sellerLens?.handle}`}
                       target="_blank"
@@ -271,16 +280,16 @@ export default function Seller() {
                     >
                       Follow
                     </a>
-                  </FollowLens>
+                  </SellerButton>
                 )}
                 {isMySeller && (
-                  <div style={{ marginLeft: "1.5rem" }}>
-                    <EditProfile
-                      onClose={() => {
-                        refetch();
-                      }}
-                    />
-                  </div>
+                  <EditProfile
+                    onClose={() => {
+                      refetch();
+                    }}
+                  >
+                    <SellerButton>Edit profile</SellerButton>
+                  </EditProfile>
                 )}
                 <SellerSocial
                   seller={seller}
