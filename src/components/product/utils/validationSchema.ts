@@ -54,7 +54,8 @@ function testPrice(price: number | null | undefined) {
   if (!this.parent.currency?.value) {
     return true;
   }
-  if (!price || price < 1e-100) {
+  const _price = price as number;
+  if (_price === null || isNaN(_price) || (_price > 0 && _price < 1e-100)) {
     return false;
   }
   try {
@@ -64,7 +65,7 @@ function testPrice(price: number | null | undefined) {
     );
     const decimals = exchangeToken?.decimals || 18;
     const priceWithoutEnotation =
-      price < 0.1 ? fixformattedString(price) : price.toString();
+      _price < 0.1 ? fixformattedString(_price) : _price.toString();
     parseUnits(priceWithoutEnotation, decimals);
     return true;
   } catch (error) {
@@ -300,7 +301,7 @@ export const termsOfExchangeValidationSchema = Yup.object({
     }),
     sellerDeposit: Yup.string().required(validationMessage.required),
     sellerDepositUnit: Yup.object({
-      value: Yup.string(),
+      value: Yup.string().required(validationMessage.required),
       label: Yup.string()
     }),
     disputeResolver: Yup.object({
