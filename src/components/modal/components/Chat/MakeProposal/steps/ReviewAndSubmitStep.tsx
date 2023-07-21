@@ -93,21 +93,21 @@ export default function ReviewAndSubmitStep({
           </Grid>
         </>
       )}
-      {!isCounterProposal && (
-        <>
-          <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
-            Description
-          </Typography>
-          <Typography tag="p">{descriptionField.value}</Typography>
-          <UploadedFiles
-            files={uploadField.value}
-            handleRemoveFile={(index) => {
-              const files = uploadField.value.filter((_, idx) => idx !== index);
-              uploadFieldHelpers.setValue(files);
-            }}
-          />
-        </>
-      )}
+
+      <>
+        <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+          Description
+        </Typography>
+        <Typography tag="p">{descriptionField.value}</Typography>
+        <UploadedFiles
+          files={uploadField.value}
+          handleRemoveFile={(index) => {
+            const files = uploadField.value.filter((_, idx) => idx !== index);
+            uploadFieldHelpers.setValue(files);
+          }}
+        />
+      </>
+
       {proposalTypeField.value && (
         <>
           <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">

@@ -5,6 +5,7 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { Info, X } from "phosphor-react";
 import { useState } from "react";
+import { useAccount } from "wagmi";
 
 import { PERCENTAGE_FACTOR } from "../../../../../components/modal/components/Chat/const";
 import { useModal } from "../../../../../components/modal/useModal";
@@ -29,11 +30,16 @@ export const YouHaveAccepted: React.FC<YouHaveAcceptedProps> = ({
   iAmTheBuyer
 }) => {
   const { showModal } = useModal();
+  const { address } = useAccount();
+  const proposalAcceptedByYou =
+    acceptedProposal.sender.toLowerCase() === address?.toLowerCase();
   const acceptedProposalContent = acceptedProposal.data
     .content as AcceptProposalContent;
   const youHaveAccepted = (
     <p>
-      {iAmTheBuyer ? "The seller accepted your" : "You've accepted the buyer's"}{" "}
+      {proposalAcceptedByYou
+        ? `You've accepted ${iAmTheBuyer ? "the seller's" : "the buyer's"}`
+        : `${iAmTheBuyer ? "The seller" : "The buyer"} accepted your`}{" "}
       proposal to refund{" "}
       {Number(acceptedProposalContent?.value.proposal.percentageAmount) /
         PERCENTAGE_FACTOR}
