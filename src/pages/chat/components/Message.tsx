@@ -328,9 +328,6 @@ const MessageContent = ({
         </Grid>
         {isRaisingADispute ? (
           <>
-            <Typography tag="p" margin="1rem 0rem">
-              {messageContent.description}
-            </Typography>
             <Typography
               margin="1.5rem 0 0.5rem 0"
               $fontSize="1rem"
@@ -346,6 +343,12 @@ const MessageContent = ({
                 </Grid>
               );
             })}
+            <Typography margin="1.5rem 0 0 0" $fontSize="1rem" fontWeight="600">
+              Additional Information
+            </Typography>
+            <Typography tag="p" margin="1rem 0rem">
+              {messageContent.description}
+            </Typography>
           </>
         ) : (
           <Typography tag="p" margin="1rem 0rem">
@@ -366,7 +369,7 @@ const MessageContent = ({
                       alignItems="flex-start"
                     >
                       <Typography
-                        margin="1.5rem 0 0.5rem 0"
+                        margin="0 0 0.5rem 0"
                         $fontSize="1rem"
                         fontWeight="600"
                       >
@@ -384,7 +387,7 @@ const MessageContent = ({
             ) : (
               <>
                 <Typography
-                  margin="1.5rem 0 0.5rem 0"
+                  margin="0 0 0.5rem 0"
                   $fontSize="1rem"
                   fontWeight="600"
                 >

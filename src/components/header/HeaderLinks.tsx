@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
+import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
@@ -146,6 +147,7 @@ interface Props {
   withExploreProducts?: boolean;
   withMyItems?: boolean;
   withDisputeAdmin?: boolean;
+  withResolutionCenter?: boolean;
 }
 export default function HeaderLinks({
   isMobile,
@@ -154,7 +156,8 @@ export default function HeaderLinks({
   withSearch = true,
   withExploreProducts = true,
   withMyItems = true,
-  withDisputeAdmin = true
+  withDisputeAdmin = true,
+  withResolutionCenter
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
   const { address } = useAccount();
@@ -190,6 +193,11 @@ export default function HeaderLinks({
         {!onlySeller && withExploreProducts && (
           <LinkWithQuery to={BosonRoutes.Explore}>
             Explore Products
+          </LinkWithQuery>
+        )}
+        {withResolutionCenter && (
+          <LinkWithQuery to={DrCenterRoutes.Root}>
+            Resolution Center
           </LinkWithQuery>
         )}
         {isAccountBuyer &&

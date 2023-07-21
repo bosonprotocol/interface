@@ -132,6 +132,7 @@ export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
                   withExploreProducts={false}
                   withMyItems
                   withDisputeAdmin={false}
+                  withResolutionCenter
                 />
                 {!burgerMenuBreakpoint && (
                   <>

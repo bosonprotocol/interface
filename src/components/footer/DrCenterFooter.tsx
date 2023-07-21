@@ -115,7 +115,7 @@ export const DrCenterFooter: React.FC = () => {
             style={{ width: "fit-content" }}
           >
             <AbsoluteAnchor href="https://www.bosonprotocol.io/">
-              <Typography tag="h5">Home</Typography>
+              Boson Protocol
             </AbsoluteAnchor>
             <AbsoluteAnchor
               href={getViewModeUrl(ViewMode.DAPP, BosonRoutes.Root)}
@@ -145,7 +145,9 @@ export const DrCenterFooter: React.FC = () => {
             xl: 3
           }}
         >
-          <Typography $fontSize="0.8rem">© ${year} Bosonapp.io</Typography>
+          <Typography $fontSize="0.8rem">
+            Copyright © ${year} Boson Protocol. All rights reserved.
+          </Typography>
           <Socials />
           <NavigationLinks style={{ flex: "1" }}>
             {ADDITIONAL_LINKS.map((footerLink, index) => {
