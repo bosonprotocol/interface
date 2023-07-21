@@ -37,6 +37,8 @@ export const ChatInfoBox: React.FC<ChatInfoBoxProps> = ({
 
   const isInDispute = exchange.disputed && !dispute?.finalizedDate;
   const isResolved = !!dispute?.resolvedDate;
+  const isEscalated = !!dispute?.escalatedDate;
+  const isRetracted = !!dispute?.retractedDate;
   const isDecided = dispute?.state === subgraph.DisputeState.Decided;
 
   const buyerPercent = dispute?.buyerPercent;
@@ -47,7 +49,10 @@ export const ChatInfoBox: React.FC<ChatInfoBoxProps> = ({
 
   return (
     <>
-      {lessThanHalfDaysToResolve && isInDispute && iAmTheBuyer ? (
+      {lessThanHalfDaysToResolve &&
+      isInDispute &&
+      iAmTheBuyer &&
+      !isEscalated ? (
         <DaysLeftToResolve
           daysLeftToResolveDispute={daysLeftToResolveDispute}
           exchange={exchange}
@@ -57,7 +62,11 @@ export const ChatInfoBox: React.FC<ChatInfoBoxProps> = ({
           setHasError={setHasError}
           addMessage={addMessage}
         />
-      ) : isInDispute && !!proposal && showProposal ? (
+      ) : isInDispute &&
+        !isEscalated &&
+        !isRetracted &&
+        !!proposal &&
+        showProposal ? (
         <ProposalButtons
           exchange={exchange}
           proposal={proposal}

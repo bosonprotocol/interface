@@ -88,7 +88,8 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
               </p>
               <p>
                 You have {daysLeftToResolveDispute} days left to resolve the
-                dispute directly with the {iAmTheBuyer ? "seller" : "buyer"}.
+                dispute directly with the{" "}
+                {iAmTheBuyer ? "seller or you can escalate it" : "buyer"}.
               </p>
             </div>
           </Grid>

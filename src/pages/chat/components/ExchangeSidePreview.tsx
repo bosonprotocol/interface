@@ -424,17 +424,20 @@ export default function ExchangeSidePreview({
 
       {(isInDispute || isResolved || isEscalated) && (
         <Section>
-          {isInDispute && !!totalDaysToResolveDispute && (
-            <div style={{ marginBottom: "1rem" }}>
-              <ProgressBar
-                threshold={50}
-                progress={
-                  (100 * daysLeftToResolveDispute) / totalDaysToResolveDispute
-                }
-                text={`${daysLeftToResolveDispute} out of ${totalDaysToResolveDispute} days left to mutually resolve the dispute or escalate`}
-              />
-            </div>
-          )}
+          {isInDispute &&
+            !isResolved &&
+            !isEscalated &&
+            !!totalDaysToResolveDispute && (
+              <div style={{ marginBottom: "1rem" }}>
+                <ProgressBar
+                  threshold={50}
+                  progress={
+                    (100 * daysLeftToResolveDispute) / totalDaysToResolveDispute
+                  }
+                  text={`${daysLeftToResolveDispute} out of ${totalDaysToResolveDispute} days left to mutually resolve the dispute or escalate`}
+                />
+              </div>
+            )}
           {
             // if both buyer and seller, then show seller
           }
