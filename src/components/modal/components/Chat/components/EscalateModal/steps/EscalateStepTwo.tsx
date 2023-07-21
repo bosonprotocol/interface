@@ -403,8 +403,10 @@ function EscalateStepTwo({
     handleSendingEscalateMessage
   ]);
   const showSuccessInitialization =
-    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
-    bosonXmtp;
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus) && bosonXmtp;
   return (
     <Formik<typeof initialValues>
       initialValues={{ ...initialValues }}
