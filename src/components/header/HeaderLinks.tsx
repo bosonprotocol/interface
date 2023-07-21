@@ -1,17 +1,17 @@
-import { useMemo } from "react";
 import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentDisputeResolverId } from "../../lib/utils/hooks/useCurrentDisputeResolverId";
+import { ViewMode } from "../../lib/viewMode";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
-import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
+import { getSellerCenterPath } from "../seller/paths";
 import ViewTxButton from "../transactions/ViewTxButton";
+import { ViewModeLink } from "../viewMode/ViewMode";
 import Search from "./Search";
 
 export const HEADER_HEIGHT = "5.4rem";
@@ -148,6 +148,7 @@ interface Props {
   withMyItems?: boolean;
   withDisputeAdmin?: boolean;
   withResolutionCenter?: boolean;
+  withSellerHub?: boolean;
 }
 export default function HeaderLinks({
   isMobile,
@@ -157,7 +158,8 @@ export default function HeaderLinks({
   withExploreProducts = true,
   withMyItems = true,
   withDisputeAdmin = true,
-  withResolutionCenter
+  withResolutionCenter,
+  withSellerHub
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
   const { address } = useAccount();
@@ -165,11 +167,6 @@ export default function HeaderLinks({
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });
 
-  const {
-    buyer: { buyerId }
-  } = useBuyerSellerAccounts(address || "");
-
-  const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
   const { disputeResolverId } = useCurrentDisputeResolverId();
 
   const onlySeller =
@@ -191,28 +188,52 @@ export default function HeaderLinks({
       )}
       <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
         {!onlySeller && withExploreProducts && (
-          <LinkWithQuery to={BosonRoutes.Explore}>
+          <ViewModeLink
+            href={BosonRoutes.Explore}
+            destinationViewMode={ViewMode.DAPP}
+          >
             Explore Products
-          </LinkWithQuery>
+          </ViewModeLink>
         )}
         {withResolutionCenter && (
-          <LinkWithQuery to={DrCenterRoutes.Root}>
+          <ViewModeLink
+            href={DrCenterRoutes.Root}
+            destinationViewMode={ViewMode.DR_CENTER}
+          >
             Resolution Center
-          </LinkWithQuery>
+          </ViewModeLink>
         )}
-        {isAccountBuyer &&
-          !onlySeller &&
+        {address &&
+          withSellerHub &&
+          checkIfUserHaveRole(roles, [UserRoles.Seller], false) && (
+            <ViewModeLink
+              rel="noopener noreferrer"
+              href={getSellerCenterPath("Dashboard")}
+              destinationViewMode={ViewMode.DAPP}
+            >
+              Seller Hub
+            </ViewModeLink>
+          )}
+        {!onlySeller &&
           address &&
           withMyItems &&
           checkIfUserHaveRole(roles, [UserRoles.Buyer], false) && (
-            <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
+            <ViewModeLink
+              href={BosonRoutes.YourAccount}
+              destinationViewMode={ViewMode.DAPP}
+            >
+              My Items
+            </ViewModeLink>
           )}
         {!!disputeResolverId &&
           withDisputeAdmin &&
           checkIfUserHaveRole(roles, [UserRoles.DisputeResolver], true) && (
-            <LinkWithQuery to={`${BosonRoutes.DRAdmin}/disputes`}>
+            <ViewModeLink
+              href={`${BosonRoutes.DRAdmin}/disputes`}
+              destinationViewMode={ViewMode.DAPP}
+            >
               Dispute Admin
-            </LinkWithQuery>
+            </ViewModeLink>
           )}
         {address && <ViewTxButton />}
       </Links>

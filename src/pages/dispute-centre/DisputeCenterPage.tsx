@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import disputeResolutionBackground from "../../assets/background1.svg";
+import ConnectButton from "../../components/header/ConnectButton";
 import { LayoutRoot } from "../../components/layout/Layout";
 import DisputeListMobile from "../../components/modal/components/DisputeListMobile/DisputeListMobile";
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
@@ -118,6 +119,7 @@ function DisputeCenterPage() {
       ).values()
     ).sort((a, b) => Number(b.disputedDate) - Number(a.disputedDate));
   }, [buyerExchanges, sellerExchanges]);
+
   return (
     <>
       <DisputeListHeader>
@@ -183,68 +185,84 @@ function DisputeCenterPage() {
           </CustomGridContainer>
         </LayoutRoot>
       </DisputeListHeader>
-      <Grid
-        justifyContent="flex-end"
-        gap="1rem"
-        marginBottom="2rem"
-        marginTop="2rem"
-      >
-        {myBuyerId && (
-          <Button
-            theme="secondary"
-            onClick={() => {
-              showModal(
-                "MANAGE_FUNDS_MODAL",
-                {
-                  title: "Manage Funds",
-                  id: myBuyerId
-                },
-                "auto",
-                "dark"
-              );
-            }}
+      {address ? (
+        <>
+          <Grid
+            justifyContent="flex-end"
+            gap="1rem"
+            marginBottom="2rem"
+            marginTop="2rem"
           >
-            Withdraw {mySellerId ? "buyer" : ""} funds
-          </Button>
-        )}
-        {mySellerId && (
-          <Button
-            theme="secondary"
-            onClick={() => {
-              showModal(
-                "MANAGE_FUNDS_MODAL",
-                {
-                  title: "Manage Funds",
-                  id: myBuyerId
-                },
-                "auto",
-                "dark"
-              );
-            }}
-          >
-            Withdraw {myBuyerId ? "seller" : ""} funds
-          </Button>
-        )}
-      </Grid>
-      <DisputeListContainer>
-        {isBuyersLoading || isSellersLoading ? (
-          <Loading />
-        ) : (
-          <>
-            {exchanges.length ? (
+            {myBuyerId && (
+              <Button
+                theme="secondary"
+                onClick={() => {
+                  showModal(
+                    "MANAGE_FUNDS_MODAL",
+                    {
+                      title: "Manage Funds",
+                      id: myBuyerId
+                    },
+                    "auto",
+                    "dark"
+                  );
+                }}
+              >
+                Withdraw {mySellerId ? "buyer" : ""} funds
+              </Button>
+            )}
+            {mySellerId && (
+              <Button
+                theme="secondary"
+                onClick={() => {
+                  showModal(
+                    "MANAGE_FUNDS_MODAL",
+                    {
+                      title: "Manage Funds",
+                      id: myBuyerId
+                    },
+                    "auto",
+                    "dark"
+                  );
+                }}
+              >
+                Withdraw {myBuyerId ? "seller" : ""} funds
+              </Button>
+            )}
+          </Grid>
+          <DisputeListContainer>
+            {isBuyersLoading || isSellersLoading ? (
+              <Loading />
+            ) : (
               <>
-                {isLteS ? (
-                  <DisputeListMobile exchanges={exchanges} />
+                {exchanges.length ? (
+                  <>
+                    {isLteS ? (
+                      <DisputeListMobile exchanges={exchanges} />
+                    ) : (
+                      <DisputeTable exchanges={exchanges} />
+                    )}
+                  </>
                 ) : (
-                  <DisputeTable exchanges={exchanges} />
+                  <Typography>No disputes found</Typography>
                 )}
               </>
-            ) : (
-              <Typography>No disputes found</Typography>
             )}
-          </>
-        )}
-      </DisputeListContainer>
+          </DisputeListContainer>
+        </>
+      ) : (
+        <Grid flexDirection="column" gap="1rem">
+          <Typography
+            marginTop="1rem"
+            justifyContent="center"
+            alignItems="center"
+            $fontSize="2rem"
+          >
+            Please connect your wallet to display your disputes
+          </Typography>
+          <ConnectButton />
+        </Grid>
+      )}
     </>
   );
 }
