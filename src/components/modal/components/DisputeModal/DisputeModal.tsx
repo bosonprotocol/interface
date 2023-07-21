@@ -200,7 +200,7 @@ function DisputeModal({ exchangeId }: Props) {
       </ModalGrid>
       {exchangeId && (
         <SubmitStyledButton onClick={handleSubmitIssue}>
-          Submit an issue
+          Raise a dispute
         </SubmitStyledButton>
       )}
     </>
