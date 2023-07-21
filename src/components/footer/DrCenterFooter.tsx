@@ -6,13 +6,14 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { getViewModeUrl, ViewMode } from "../../lib/viewMode";
+import { ViewMode } from "../../lib/viewMode";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../layout/Layout";
 import { getSellerCenterPath } from "../seller/paths";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
 import Typography from "../ui/Typography";
+import { ViewModeLink } from "../viewMode/ViewMode";
 import { ADDITIONAL_LINKS, SOCIAL_ROUTES } from "./routes";
 
 const Footer = styled.footer<{ padding?: CSSProperties["padding"] }>`
@@ -74,10 +75,11 @@ const LogoImg = styled.img`
   cursor: pointer;
 `;
 
-const AbsoluteAnchor = styled.a.attrs({
+const anchorProps = {
   target: "_blank",
   rel: "noopener noreferrer"
-})``;
+} as const;
+const AbsoluteAnchor = styled.a.attrs(anchorProps)``;
 
 function Socials() {
   const { isXXS, isLteS } = useBreakpoints();
@@ -117,19 +119,20 @@ export const DrCenterFooter: React.FC = () => {
             <AbsoluteAnchor href="https://www.bosonprotocol.io/">
               Boson Protocol
             </AbsoluteAnchor>
-            <AbsoluteAnchor
-              href={getViewModeUrl(ViewMode.DAPP, BosonRoutes.Root)}
+            <ViewModeLink
+              {...anchorProps}
+              href={BosonRoutes.Root}
+              destinationViewMode={ViewMode.DAPP}
             >
               Boson App
-            </AbsoluteAnchor>
-            <AbsoluteAnchor
-              href={getViewModeUrl(
-                ViewMode.DAPP,
-                getSellerCenterPath("Dashboard")
-              )}
+            </ViewModeLink>
+            <ViewModeLink
+              {...anchorProps}
+              href={getSellerCenterPath("Dashboard")}
+              destinationViewMode={ViewMode.DAPP}
             >
               Seller Hub
-            </AbsoluteAnchor>
+            </ViewModeLink>
             <AbsoluteAnchor href="mailto:info@bosonapp.io">Help</AbsoluteAnchor>
           </NavigationLinks>
         </LogoGrid>

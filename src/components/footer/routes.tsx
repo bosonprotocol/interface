@@ -179,7 +179,7 @@ export const getHelpLinks = ({
       [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver],
       false
     ) && {
-      name: "Dispute Center",
+      name: "Resolution Center",
       url: getViewModeUrl(ViewMode.DR_CENTER, DrCenterRoutes.Root),
       absolute: true
     },

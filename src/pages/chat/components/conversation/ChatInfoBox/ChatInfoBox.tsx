@@ -1,7 +1,9 @@
 import { MessageData } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { subgraph } from "@bosonprotocol/react-kit";
 
+import { getExchangeDisputeDates } from "../../../../../lib/utils/exchange";
 import { useDisputes } from "../../../../../lib/utils/hooks/useDisputes";
+import { DaysLeftToResolve } from "./DaysLeftToResolve";
 import { DrHasDecided } from "./DrHasDecided";
 import { ProposalButtons, ProposalButtonsProps } from "./ProposalButtons";
 import { YouHaveAccepted } from "./YouHaveAccepted";
@@ -38,10 +40,24 @@ export const ChatInfoBox: React.FC<ChatInfoBoxProps> = ({
   const isDecided = dispute?.state === subgraph.DisputeState.Decided;
 
   const buyerPercent = dispute?.buyerPercent;
+  const { daysLeftToResolveDispute, totalDaysToResolveDispute } =
+    getExchangeDisputeDates(exchange);
+  const lessThanHalfDaysToResolve =
+    daysLeftToResolveDispute / totalDaysToResolveDispute < 0.5;
 
   return (
     <>
-      {isInDispute && !!proposal && showProposal ? (
+      {lessThanHalfDaysToResolve && isInDispute && iAmTheBuyer ? (
+        <DaysLeftToResolve
+          daysLeftToResolveDispute={daysLeftToResolveDispute}
+          exchange={exchange}
+          proposal={proposal}
+          sendProposal={sendProposal}
+          onSentMessage={onSentMessage}
+          setHasError={setHasError}
+          addMessage={addMessage}
+        />
+      ) : isInDispute && !!proposal && showProposal ? (
         <ProposalButtons
           exchange={exchange}
           proposal={proposal}
