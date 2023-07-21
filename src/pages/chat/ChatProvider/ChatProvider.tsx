@@ -1,6 +1,7 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import * as Sentry from "@sentry/browser";
 import { ReactNode, useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
 import { config } from "../../../lib/config";
 import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
@@ -38,6 +39,12 @@ export default function ChatProvider({ children }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signer, initialize]);
+  const signerAddress = useQuery(["signer-address", signer], () => {
+    return signer?.getAddress();
+  });
+  useEffect(() => {
+    setBosonXmtp(undefined);
+  }, [signerAddress.data]);
   return (
     <Context.Provider
       value={{
