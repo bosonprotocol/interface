@@ -71,8 +71,10 @@ export default function Confirmation({
   const [redeemError, setRedeemError] = useState<Error | null>(null);
   const { chatInitializationStatus } = useChatStatus();
   const showSuccessInitialization =
-    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
-    bosonXmtp;
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus) && bosonXmtp;
   const isInitializationValid =
     !!bosonXmtp &&
     [
