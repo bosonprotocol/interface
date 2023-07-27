@@ -22,7 +22,7 @@ import {
   Check,
   CircleWavyQuestion,
   Question,
-  ShieldWarning
+  WarningCircle
 } from "phosphor-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -324,8 +324,8 @@ export const getOfferDetailData = (
             )}
           </Typography>
         ) : (
-          <Typography tag="p" color="red">
-            <ShieldWarning size={20}></ShieldWarning> Non Standard{" "}
+          <Typography tag="p" color={colors.orange}>
+            <WarningCircle size={20}></WarningCircle> Non-standard{" "}
             {modalTypes && showModal && (
               <ArrowSquareOut
                 size={20}

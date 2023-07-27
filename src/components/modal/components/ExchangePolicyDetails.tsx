@@ -3,10 +3,11 @@ import {
   CaretDown,
   CaretUp,
   CircleWavyQuestion,
-  ShieldWarning
+  WarningCircle
 } from "phosphor-react";
 import { useState } from "react";
 
+import { colors } from "../../../lib/styles/colors";
 import ContractualAgreement from "../../contractualAgreement/ContractualAgreement";
 import DetailTable from "../../detail/DetailTable";
 import License from "../../license/License";
@@ -52,8 +53,8 @@ export default function ExchangePolicyDetails({
         ?.returnPeriodInDays || "unspecified",
     contractualAgreement: {
       title: "Commerce Agreement",
-      version: isExchangePolicyValid ? "v1" : "(Non Standard)",
-      color: isExchangePolicyValid ? undefined : "red"
+      version: isExchangePolicyValid ? "v1" : "(Non-standard)",
+      color: isExchangePolicyValid ? undefined : colors.orange
     },
     rNFTLicense: {
       title: "License Agreement",
@@ -80,10 +81,9 @@ export default function ExchangePolicyDetails({
           {" days"}
         </Typography>
       ) : (
-        <Typography tag="p" color="red">
-          <ShieldWarning size={20}></ShieldWarning>
-          {periodValue}
-          {" days"}
+        <Typography tag="p" color={colors.orange}>
+          <WarningCircle size={20}></WarningCircle>
+          {" " + periodValue + " days"}
         </Typography>
       )
     ) : (

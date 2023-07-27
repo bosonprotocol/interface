@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import {
   ArrowSquareOut,
   CircleWavyQuestion,
-  ShieldWarning
+  WarningCircle
 } from "phosphor-react";
 import { useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -256,8 +256,8 @@ const getOfferDetailData = (
             />
           </Typography>
         ) : (
-          <Typography tag="p" color="red">
-            <ShieldWarning size={20}></ShieldWarning> Non Standard{" "}
+          <Typography tag="p" color={colors.orange}>
+            <WarningCircle size={20}></WarningCircle> Non-standard{" "}
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}
