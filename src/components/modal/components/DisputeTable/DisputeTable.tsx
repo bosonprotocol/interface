@@ -5,9 +5,8 @@ import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import TableElement from "./TableElement";
 
 const Table = styled.table`
+  min-width: 1300px;
   width: 100%;
-  max-width: 65.625rem;
-  margin: 0 auto;
   td {
     padding-bottom: 1.25rem;
     padding-top: 1.25rem;
@@ -16,13 +15,15 @@ const Table = styled.table`
 
 const TableHeader = styled.th`
   text-align: left;
-  padding-top: 1.5625rem;
   color: ${colors.darkGrey};
-  font-size: 0.75rem;
+  font-size: 1.1rem;
   font-weight: 600;
   font-family: inherit;
   border-bottom: none;
   padding-bottom: 0;
+  :last-child {
+    text-align: right;
+  }
 `;
 
 const TableElementContainer = styled.tr`
@@ -33,20 +34,40 @@ const TableElementContainer = styled.tr`
     content: "";
     left: 0;
     bottom: 0;
-    width: calc(100% - 2.0625rem);
+    width: 100%;
     height: 0.125rem;
   }
 `;
 
 const TableHeaderFields = [
   {
-    label: "Product",
+    label: "ID",
+    value: -1,
+    colspan: 1
+  },
+  {
+    label: "Exchange",
     value: 0,
     colspan: 1
   },
   {
-    label: "State",
+    label: "Dispute status",
     value: 1,
+    colspan: 3
+  },
+  {
+    label: "Days left to resolve dispute",
+    value: 2,
+    colspan: 3
+  },
+  {
+    label: "Resolution summary",
+    value: 3,
+    colspan: 3
+  },
+  {
+    label: "Actions",
+    value: 4,
     colspan: 3
   }
 ];

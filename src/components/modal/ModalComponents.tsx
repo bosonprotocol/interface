@@ -2,6 +2,7 @@
 import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
 import EscalateModal from "./components/Chat/components/EscalateModal/EscalateModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
+import { ResolutionSummaryModal } from "./components/Chat/ResolutionSummaryModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CompleteExchange from "./components/CompleteExchange";
 import { ConfirmationModal } from "./components/Confirmation/ConfirmationModal";
@@ -85,7 +86,8 @@ export const MODAL_TYPES = {
   VARIABLE_STEPS_EXPLAINER: "VARIABLE_STEPS_EXPLAINER",
   PREPARING_TRANSACTION: "PREPARING_TRANSACTION",
   CONFIRMATION: "CONFIRMATION",
-  PROFILE_PREVIEW: "PROFILE_PREVIEW"
+  PROFILE_PREVIEW: "PROFILE_PREVIEW",
+  RESOLUTION_SUMMARY: "RESOLUTION_SUMMARY"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -113,6 +115,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.REDEEM_SUCCESS]: RedeemSuccessModal,
   [MODAL_TYPES.REDEEM]: RedeemModal,
   [MODAL_TYPES.RESOLVE_DISPUTE]: ResolveDisputeModal,
+  [MODAL_TYPES.RESOLUTION_SUMMARY]: ResolutionSummaryModal,
   [MODAL_TYPES.RETRACT_DISPUTE]: RetractDisputeModal,
   [MODAL_TYPES.REVOKE_PRODUCT]: RevokeProduct,
   [MODAL_TYPES.TRANSACTION_SUBMITTED]: TransactionSubmittedModal,

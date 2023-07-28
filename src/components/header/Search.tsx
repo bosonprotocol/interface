@@ -11,7 +11,7 @@ import Grid from "../ui/Grid";
 
 const InputWrapper = styled(Grid)<{
   isMobile: boolean;
-  $navigationBarPosition: string;
+  $navigationBarPosition?: string;
 }>`
   flex: 1;
   gap: 1rem;
@@ -25,7 +25,7 @@ const InputWrapper = styled(Grid)<{
   ${({ isMobile, $navigationBarPosition }) =>
     isMobile
       ? ""
-      : ["left", "right"].includes($navigationBarPosition)
+      : ["left", "right"].includes($navigationBarPosition ?? "")
       ? css`
           border-bottom: none;
           padding: 0.25rem 1rem;
@@ -61,7 +61,7 @@ const Input = styled.input`
 
 interface Props {
   isMobile: boolean;
-  navigationBarPosition: string;
+  navigationBarPosition?: string;
 }
 
 export default function Search({ isMobile, navigationBarPosition }: Props) {

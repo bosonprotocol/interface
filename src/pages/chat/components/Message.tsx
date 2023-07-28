@@ -1,24 +1,32 @@
 import {
+  AcceptProposalContent,
+  EscalateDisputeContent,
   FileContent,
+  MessageData,
   MessageType,
   ProposalContent,
-  StringContent
+  StringContent,
+  StringIconContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { BigNumber, utils } from "ethers";
-import { ArrowRight, Check, Clock } from "phosphor-react";
-import React, { forwardRef, ReactNode } from "react";
+import { subgraph } from "@bosonprotocol/react-kit";
+import { Check, Clock } from "phosphor-react";
+import React, {
+  cloneElement,
+  forwardRef,
+  ReactElement,
+  ReactNode
+} from "react";
 import styled from "styled-components";
 
 import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
-import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
-import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { MessageDataWithInfo } from "../types";
+import { ICONS } from "./conversation/const";
 import ErrorMessageBoundary from "./ErrorMessageBoundary";
 
 const width = "31.625rem";
@@ -86,6 +94,23 @@ const AvatarContainer = styled.div`
   }
 `;
 
+const ProposalStatus = styled.div`
+  display: flex;
+  align-items: center;
+  height: 1.875rem;
+  letter-spacing: 0.5px;
+  line-height: 16px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.1rem 1rem;
+  border-radius: 20px;
+  &:first-letter {
+    text-transform: uppercase;
+  }
+  background: ${colors.orange};
+  color: ${colors.white};
+`;
+
 const Bottom = styled.div<{ $isLeftAligned: boolean }>`
   position: absolute;
   bottom: 1rem;
@@ -98,14 +123,6 @@ const Bottom = styled.div<{ $isLeftAligned: boolean }>`
     color: ${({ $isLeftAligned }) =>
       $isLeftAligned ? colors.lightGrey : colors.darkGrey};
     font-size: 0.75rem;
-  }
-`;
-
-const StyledGrid = styled(Grid)`
-  cursor: pointer;
-  :hover * {
-    color: ${colors.secondary};
-    stroke: ${colors.secondary};
   }
 `;
 
@@ -130,14 +147,25 @@ const BottomDateStamp = ({
 
 interface Props {
   exchange: Exchange;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
   message: MessageDataWithInfo;
   children: ReactNode;
   isLeftAligned: boolean;
+  lastReceivedProposal: MessageData | null;
+  lastSentProposal: MessageData | null;
 }
 
 const Message = forwardRef(
   (
-    { message, children: Avatar, isLeftAligned, exchange }: Props,
+    {
+      message,
+      children: Avatar,
+      isLeftAligned,
+      exchange,
+      dispute,
+      lastReceivedProposal,
+      lastSentProposal
+    }: Props,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
     return (
@@ -145,9 +173,12 @@ const Message = forwardRef(
         <AvatarContainer>{Avatar}</AvatarContainer>
         <ErrorMessageBoundary>
           <MessageContent
+            dispute={dispute}
             message={message}
             exchange={exchange}
             isLeftAligned={isLeftAligned}
+            lastReceivedProposal={lastReceivedProposal}
+            lastSentProposal={lastSentProposal}
           />
         </ErrorMessageBoundary>
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
@@ -156,18 +187,52 @@ const Message = forwardRef(
   }
 );
 
-interface MessageContentProps {
-  message: Props["message"];
-  isLeftAligned: Props["isLeftAligned"];
-  exchange: Props["exchange"];
-}
+const IconMessage = ({
+  icon,
+  heading,
+  body
+}: {
+  icon: ReactElement;
+  heading: string;
+  body: string;
+}) => {
+  return (
+    <Grid gap="1.5rem">
+      {cloneElement(icon, {
+        size: 75
+      })}
+      <Grid flexDirection="column" gap="1rem" alignItems="flex-start">
+        {heading && (
+          <Typography $fontSize="1.25rem" fontWeight="600">
+            {heading}
+          </Typography>
+        )}
+        {body && <Typography>{body}</Typography>}
+      </Grid>
+    </Grid>
+  );
+};
+
+type MessageContentProps = Pick<
+  Props,
+  | "message"
+  | "isLeftAligned"
+  | "exchange"
+  | "dispute"
+  | "lastReceivedProposal"
+  | "lastSentProposal"
+>;
 
 const MessageContent = ({
   message,
   isLeftAligned,
-  exchange
+  exchange,
+  dispute,
+  lastReceivedProposal,
+  lastSentProposal
 }: MessageContentProps) => {
-  const { showModal } = useModal();
+  const isEscalated = !!dispute?.escalatedDate;
+
   const messageContent = message.data.content;
   const messageContentType = message.data.contentType;
   const isRegularMessage =
@@ -175,6 +240,13 @@ const MessageContent = ({
     messageContentType === MessageType.String;
   const isFileMessage = messageContentType === MessageType.File;
   const isProposalMessage = messageContentType === MessageType.Proposal;
+  const isCounterProposalMessage =
+    messageContentType === MessageType.CounterProposal;
+  const isAcceptProposalMessage =
+    messageContentType === MessageType.AcceptProposal;
+  const isEscalateDisputeMessage =
+    messageContentType === MessageType.EscalateDispute;
+  const isStringIconMessage = messageContentType === MessageType.StringIcon;
   const { isValid, isPending } = message;
 
   if (!isValid && !isPending) {
@@ -213,7 +285,7 @@ const MessageContent = ({
     );
   }
 
-  if (isProposalMessage) {
+  if (isProposalMessage || isCounterProposalMessage) {
     if (!exchange) {
       return (
         <p>
@@ -222,15 +294,47 @@ const MessageContent = ({
         </p>
       );
     }
-    const proposalContent = message.data.content as unknown as ProposalContent;
+    const proposalContent = message.data.content as ProposalContent;
     const messageContent = proposalContent.value;
+    const proposals = messageContent.proposals;
+    let isLastProposal = false;
+    if (lastReceivedProposal || lastSentProposal) {
+      const lastReceivedProposalContent = lastReceivedProposal?.data
+        ?.content as ProposalContent | undefined;
+      const lastSentProposalContent = lastSentProposal?.data?.content as
+        | ProposalContent
+        | undefined;
+      const signatures = [
+        ...(lastReceivedProposalContent?.value?.proposals?.map((proposal) =>
+          proposal.signature.toLowerCase()
+        ) || []),
+        ...(lastSentProposalContent?.value?.proposals?.map((proposal) =>
+          proposal.signature.toLowerCase()
+        ) || [])
+      ];
+      isLastProposal =
+        [
+          lastReceivedProposal?.timestamp || 0,
+          lastSentProposal?.timestamp || 0
+        ].includes(message.timestamp) &&
+        proposals.some((proposal) =>
+          signatures.includes(proposal.signature.toLowerCase())
+        );
+    }
     const isRaisingADispute = !!messageContent.disputeContext?.length;
     return (
       <>
-        <Typography tag="h4" margin="0">
-          {messageContent.title}
-        </Typography>
-        {isRaisingADispute && (
+        <Grid justifyContent="space-between" alignItems="flex-start" gap="1rem">
+          <Typography tag="h4" margin="0">
+            {messageContent.title}
+          </Typography>
+          {!!proposals.length && (isEscalated || !isLastProposal) && (
+            <ProposalStatus>
+              <strong>Expired</strong>
+            </ProposalStatus>
+          )}
+        </Grid>
+        {isRaisingADispute ? (
           <>
             <Typography
               margin="1.5rem 0 0.5rem 0"
@@ -242,49 +346,29 @@ const MessageContent = ({
             {messageContent.disputeContext.map((reason) => {
               return (
                 <Grid justifyContent="flex-start" gap="0.5rem" key={reason}>
-                  <Check size={16} />
+                  <Check size={16} style={{ flex: "0 0 auto" }} />
                   <span>{reason}</span>
                 </Grid>
               );
             })}
-            <Typography
-              margin="1.5rem 0 0.5rem 0"
-              $fontSize="1rem"
-              fontWeight="600"
-            >
-              Additional information
+            <Typography margin="1.5rem 0 0 0" $fontSize="1rem" fontWeight="600">
+              Additional Information
+            </Typography>
+            <Typography tag="p" margin="1rem 0rem">
+              {messageContent.description}
             </Typography>
           </>
+        ) : (
+          <Typography tag="p" margin="1rem 0rem">
+            {messageContent.description}
+          </Typography>
         )}
-        <Typography tag="p" margin="0.25rem 1rem 0rem 0rem">
-          {messageContent.description}
-        </Typography>
 
-        {messageContent.proposals.length ? (
-          <Grid flexDirection="column" alignItems="flex-start">
+        {proposals.length ? (
+          <Grid flexDirection="column" alignItems="flex-start" marginTop="1rem">
             {isLeftAligned ? (
               <>
-                <Typography
-                  margin="1.5rem 0 0.5rem 0"
-                  $fontSize="1.25rem"
-                  fontWeight="600"
-                >
-                  {messageContent.proposals.length === 1
-                    ? "Proposal"
-                    : "Proposals"}
-                </Typography>
-                {messageContent.proposals.map((proposal) => {
-                  const { offer } = exchange;
-
-                  const refundAmount = BigNumber.from(offer.price)
-                    .add(offer.sellerDeposit || "0")
-                    .div(BigNumber.from(100 * PERCENTAGE_FACTOR))
-                    .mul(BigNumber.from(Number(proposal.percentageAmount)));
-
-                  const formattedRefundAmount = utils.formatUnits(
-                    refundAmount,
-                    Number(offer.exchangeToken.decimals)
-                  );
+                {proposals.map((proposal) => {
                   return (
                     <Grid
                       key={proposal.type}
@@ -292,26 +376,18 @@ const MessageContent = ({
                       rowGap="0.25rem"
                       alignItems="flex-start"
                     >
-                      <Typography margin="0">{proposal.type}</Typography>
-                      <StyledGrid
-                        justifyContent="space-between"
-                        onClick={() =>
-                          showModal("RESOLVE_DISPUTE", {
-                            title: "Resolve dispute",
-                            exchange,
-                            proposal
-                          })
-                        }
+                      <Typography
+                        margin="0 0 0.5rem 0"
+                        $fontSize="1rem"
+                        fontWeight="600"
                       >
-                        <Typography color={colors.primary} cursor="pointer">
-                          Proposed refund amount: {formattedRefundAmount}{" "}
-                          {offer.exchangeToken.symbol} (
-                          {Number(proposal.percentageAmount) /
-                            PERCENTAGE_FACTOR}
-                          %)
-                        </Typography>
-                        <ArrowRight color={colors.primary} />
-                      </StyledGrid>
+                        Proposal
+                      </Typography>
+                      <ProposalTypeSummary
+                        key={proposal.type}
+                        exchange={exchange}
+                        proposal={proposal}
+                      />
                     </Grid>
                   );
                 })}
@@ -319,7 +395,7 @@ const MessageContent = ({
             ) : (
               <>
                 <Typography
-                  margin="1.5rem 0 0.5rem 0"
+                  margin="0 0 0.5rem 0"
                   $fontSize="1rem"
                   fontWeight="600"
                 >
@@ -338,6 +414,90 @@ const MessageContent = ({
         ) : null}
       </>
     );
+  }
+
+  if (isAcceptProposalMessage) {
+    const acceptProposalContent = message.data.content as AcceptProposalContent;
+    const {
+      value: { icon: iconId, heading, body, title, proposal }
+    } = acceptProposalContent;
+    const icon = ICONS[iconId as keyof typeof ICONS];
+    return (
+      <Grid flexDirection="column" alignItems="flex-start">
+        <Typography tag="h4" margin="0">
+          {title}
+        </Typography>
+        <Typography
+          margin="1.5rem 0 0.5rem 0"
+          $fontSize="1rem"
+          fontWeight="600"
+        >
+          Resolution Summary
+        </Typography>
+        <ProposalTypeSummary
+          key={proposal.type}
+          exchange={exchange}
+          proposal={proposal}
+        />
+        <div style={{ marginTop: "2rem" }}>
+          <IconMessage icon={icon} heading={heading} body={body} />
+        </div>
+      </Grid>
+    );
+  }
+  if (isEscalateDisputeMessage) {
+    const escalateDisputeContent = message.data
+      .content as EscalateDisputeContent;
+    const {
+      value: {
+        icon: iconId,
+        heading,
+        body,
+        title,
+        description,
+        disputeResolverInfo
+      }
+    } = escalateDisputeContent;
+    const icon = ICONS[iconId as keyof typeof ICONS];
+    return (
+      <Grid flexDirection="column" alignItems="flex-start">
+        <Typography tag="h4" margin="0">
+          {title}
+        </Typography>
+        <Typography tag="p" margin="1rem 0rem">
+          {description}
+        </Typography>
+        <Grid
+          flexDirection="column"
+          alignItems="flex-start"
+          marginBottom="1rem"
+        >
+          <Typography fontWeight="600">
+            Dispute resolver contact information
+          </Typography>
+          {disputeResolverInfo.map(({ label, value }) => {
+            return (
+              <Grid key={`${label}-${value}`} gap="0.5rem">
+                <Check size={16} style={{ flex: "0 0 auto" }} />
+                <Grid justifyContent="flex-start">
+                  {label}: {value}
+                </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+        <IconMessage icon={icon} heading={heading} body={body} />
+      </Grid>
+    );
+  }
+
+  if (isStringIconMessage) {
+    const stringIconContent = message.data.content as StringIconContent;
+    const {
+      value: { icon: iconId, heading, body }
+    } = stringIconContent;
+    const icon = ICONS[iconId as keyof typeof ICONS];
+    return <IconMessage icon={icon} heading={heading} body={body} />;
   }
 
   return <>Unsupported message</>;

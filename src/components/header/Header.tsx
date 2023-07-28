@@ -22,6 +22,7 @@ import { Spinner } from "../loading/Spinner";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
+import { BurgerButton } from "./BurgerButton";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
 
@@ -138,25 +139,6 @@ const Header = styled.header<{
   z-index: ${zIndex.Header};
 `;
 
-const BurgerButton = styled.button`
-  all: unset;
-  cursor: pointer;
-
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin: 0.5rem;
-  padding: 0.5rem;
-  > div {
-    width: 1.25rem;
-    height: 2px;
-    border-radius: 5px;
-    background: var(--accent);
-  }
-`;
-
 const HeaderContainer = styled(Layout)<{
   fluidHeader?: boolean;
   $navigationBarPosition: string;
@@ -222,20 +204,10 @@ const LogoImg = styled.img`
   }
 `;
 
-const Burger = ({ onClick }: { onClick: () => void }) => {
-  return (
-    <BurgerButton theme="blank" onClick={onClick}>
-      <div />
-      <div />
-      <div />
-    </BurgerButton>
-  );
-};
-
 interface Props {
-  fluidHeader: boolean;
+  fluidHeader: boolean | undefined;
 }
-const HeaderComponent = forwardRef<HTMLElement, Props>(
+export const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false }, ref) => {
     const { address } = useAccount();
     const navigate = useKeepQueryParamsNavigate();
@@ -348,7 +320,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
           >
             {isSideBurgerVisible ? (
               <Grid justifyContent="center">
-                <Burger onClick={toggleMenu} />
+                <BurgerButton onClick={toggleMenu} />
               </Grid>
             ) : (
               <>
@@ -388,7 +360,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                     <>
                       <CTA />
                       <ConnectButton showAddress={!address} />
-                      <Burger onClick={toggleMenu} />
+                      <BurgerButton onClick={toggleMenu} />
                     </>
                   )}
                   <HeaderLinks

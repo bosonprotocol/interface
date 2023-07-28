@@ -67,3 +67,25 @@ export const getExchangeTokenId = (
   // Since v2.2.1, tokenId = exchangeId | offerId << 128
   return BigNumber.from(exchange.offer.id).shl(128).add(exchange.id).toString();
 };
+
+export const getExchangeDisputeDates = (exchange: Exchange) => {
+  const raisedDisputeAt = new Date(Number(exchange.disputedDate) * 1000);
+  const lastDayToResolveDispute = new Date(
+    raisedDisputeAt.getTime() +
+      Number(exchange.offer.resolutionPeriodDuration) * 1000
+  );
+  const totalDaysToResolveDispute = dayjs(lastDayToResolveDispute).diff(
+    raisedDisputeAt,
+    "day"
+  );
+  const daysLeftToResolveDispute = Math.max(
+    0,
+    dayjs(lastDayToResolveDispute).diff(new Date().getTime(), "day")
+  );
+  return {
+    raisedDisputeAt,
+    lastDayToResolveDispute,
+    totalDaysToResolveDispute,
+    daysLeftToResolveDispute
+  };
+};

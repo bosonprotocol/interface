@@ -30,6 +30,9 @@ export default function useTransactionHistory({ exchangeId, tense }: Props) {
   const [dispute] = disputes;
   const [exchange] = exchanges;
   const timesteps = useMemo(() => {
+    if (!exchange) {
+      return [];
+    }
     const { committedDate, redeemedDate, cancelledDate, revokedDate } =
       exchange;
     const timesteps: { text: string; date: string; timestamp: number }[] = [];

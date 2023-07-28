@@ -1,5 +1,6 @@
 import { CONFIG } from "../../../lib/config";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
+import { proposals } from "../../modal/components/Chat/MakeProposal/steps/MakeAProposalStep/MakeAProposalStep";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
@@ -161,10 +162,7 @@ export const disputeCentreInitialValues = {
   [DisputeFormModel.formFields.getStarted.name]: "",
   [DisputeFormModel.formFields.tellUsMore.name]: "",
   [FormModel.formFields.description.name]: "",
-  [FormModel.formFields.proposalType.name]: null as unknown as {
-    value: string;
-    label: string;
-  },
+  [FormModel.formFields.proposalType.name]: proposals[0],
   [FormModel.formFields.refundAmount.name]: "0",
   [FormModel.formFields.refundPercentage.name]: 0,
   [FormModel.formFields.upload.name]: [] as File[]

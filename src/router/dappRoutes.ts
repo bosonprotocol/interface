@@ -25,12 +25,6 @@ const CustomStorePage = lazy(
 const ManageStoreFrontsPage = lazy(
   () => import("../pages/custom-store/manage/ManageStoreFrontsPage")
 );
-const DisputeCentrePage = lazy(
-  () => import("../pages/dispute-centre/DisputeCentre")
-);
-const DisputeListPage = lazy(
-  () => import("../pages/dispute-centre/DisputeList")
-);
 const ExchangePage = lazy(() => import("../pages/exchange/Exchange"));
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 const OfferDetailPage = lazy(() => import("../pages/offers/OfferDetail"));
@@ -105,6 +99,7 @@ export default [
     component: ChatPage,
     app: {
       ...base.app,
+      fluidHeader: true,
       withLayout: false,
       withFooter: false
     },
@@ -253,18 +248,6 @@ export default [
       withBosonStyles: false
     },
     role: [UserRoles.Buyer]
-  },
-  {
-    ...base,
-    path: `${BosonRoutes.DisputeId}/*`,
-    component: DisputeCentrePage,
-    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
-  },
-  {
-    ...base,
-    path: BosonRoutes.DisputeCenter,
-    component: DisputeListPage,
-    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
   },
   {
     ...base,

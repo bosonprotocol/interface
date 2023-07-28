@@ -1,13 +1,22 @@
+import {
+  MessageData,
+  ThreadId
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
-import dayjs from "dayjs";
 import {
   ArrowSquareOut,
   CircleWavyQuestion,
   WarningCircle
 } from "phosphor-react";
-import { useCallback, useMemo } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useMemo
+} from "react";
 import { generatePath } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import DetailTable from "../../../components/detail/DetailTable";
 import { DetailDisputeResolver } from "../../../components/detail/DetailWidget/DetailDisputeResolver";
@@ -18,10 +27,11 @@ import {
 } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
-import BosonButton from "../../../components/ui/BosonButton";
+import Button from "../../../components/ui/Button";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
 import Video from "../../../components/ui/Video";
+import { ViewModeLink } from "../../../components/viewMode/ViewMode";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -30,15 +40,18 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
 import { calcPercentage } from "../../../lib/utils/calcPrice";
 import {
+  getExchangeDisputeDates,
   getHasExchangeDisputeResolutionElapsed,
   isExchangeCompletableByBuyer,
   isExchangeCompletableBySeller
 } from "../../../lib/utils/exchange";
 import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
+import { ViewMode } from "../../../lib/viewMode";
+import { MessageDataWithInfo } from "../types";
 import ExchangeTimeline from "./ExchangeTimeline";
+import ProgressBar from "./ProgressBar";
 
 const Container = styled.div<{ $disputeOpen: boolean }>`
   display: flex;
@@ -93,33 +106,17 @@ const StyledImage = styled(Image)`
   }
 `;
 
-const sectionStyles = `
-border: 2px solid ${colors.border};
-border-top: none;
-padding: 1.625rem;
-${breakpoint.l} {
-  background: ${colors.white};
-}
-background: ${colors.lightGrey};
+const sectionStyles = css`
+  border: 2px solid ${colors.border};
+  border-top: none;
+  padding: 1.625rem;
+  ${breakpoint.l} {
+    background: ${colors.white};
+  }
+  background: ${colors.lightGrey};
 `;
 const Section = styled.div`
   ${sectionStyles};
-`;
-
-const InfoMessage = styled.div`
-  border: 2px solid ${colors.border};
-  color: ${colors.darkGrey};
-
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-align: center;
-  ${breakpoint.l} {
-    text-align: left;
-    background: ${colors.lightGrey};
-  }
-  && {
-    padding: 0.6875rem 1.5rem;
-  }
 `;
 
 const ExchangeInfo = styled(Section)`
@@ -156,7 +153,12 @@ const Name = styled(Typography)`
 `;
 
 const StyledMultiSteps = styled(MultiSteps)`
+  align-items: flex-start;
   gap: 0;
+  p {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+  }
   ${breakpoint.m} {
     padding-left: 6.25rem;
     padding-right: 6.25rem;
@@ -226,7 +228,13 @@ const getOfferDetailData = (
         </>
       ),
       value: (
-        <Typography tag="p">
+        <Typography
+          tag="p"
+          style={{
+            wordBreak: "break-word",
+            whiteSpace: "break-spaces"
+          }}
+        >
           {formatted} {offer.exchangeToken.symbol}
           <small>({deposit}%)</small>
         </Typography>
@@ -283,25 +291,72 @@ const getOfferDetailData = (
     }
   ];
 };
-
+const ExchangeMedia = ({
+  exchange,
+  children
+}: {
+  exchange: Exchange | undefined;
+  children: ReactNode;
+}) => (
+  <>
+    {exchange ? (
+      <ViewModeLink
+        destinationViewMode={ViewMode.DAPP}
+        href={
+          generatePath(BosonRoutes.Exchange, {
+            [UrlParameters.exchangeId]: exchange.id
+          }) as `/${string}`
+        }
+      >
+        {children}
+      </ViewModeLink>
+    ) : (
+      <></>
+    )}
+  </>
+);
+const ExchangeImage = ({ exchange }: { exchange: Exchange | undefined }) => (
+  <ExchangeMedia exchange={exchange}>
+    <StyledImage
+      src={exchange?.offer.metadata.imageUrl ?? ""}
+      alt="exchange image"
+      dataTestId="exchange-image"
+    />
+  </ExchangeMedia>
+);
 interface Props {
   exchange: Exchange | undefined;
   disputeOpen: boolean;
   iAmTheBuyer: boolean;
+  iAmTheSeller: boolean;
   refetchExchanges: () => void;
   exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
+  setHasError: Dispatch<SetStateAction<boolean>>;
+  addMessage: (
+    newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
+  ) => Promise<void>;
+  onSentMessage: (messageData: MessageData, uuid: string) => Promise<void>;
+  destinationAddress: string;
+  threadId: ThreadId | null;
+  lastReceivedProposal: MessageData | null;
+  lastSentProposal: MessageData | null;
 }
 export default function ExchangeSidePreview({
   exchange,
   disputeOpen,
   iAmTheBuyer,
+  exchangePolicyCheckResult,
+  iAmTheSeller,
   refetchExchanges,
-  exchangePolicyCheckResult
+  addMessage,
+  setHasError,
+  threadId,
+  onSentMessage,
+  destinationAddress,
+  lastReceivedProposal,
+  lastSentProposal
 }: Props) {
-  const {
-    data: disputes = [{} as subgraph.DisputeFieldsFragment],
-    refetch: refetchDisputes
-  } = useDisputes(
+  const { data: disputes, refetch: refetchDisputes } = useDisputes(
     {
       disputesFilter: {
         exchange: exchange?.id
@@ -309,9 +364,7 @@ export default function ExchangeSidePreview({
     },
     { enabled: !!exchange }
   );
-  const [dispute] = disputes.length
-    ? disputes
-    : [{} as subgraph.DisputeFieldsFragment];
+  const dispute = disputes?.[0];
   const offer = exchange?.offer;
   const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
@@ -325,42 +378,30 @@ export default function ExchangeSidePreview({
       ),
     [offer, modalTypes, showModal, exchangePolicyCheckResult]
   );
-  const navigate = useKeepQueryParamsNavigate();
 
   const refetchItAll = useCallback(() => {
     refetchExchanges();
     refetchDisputes();
   }, [refetchExchanges, refetchDisputes]);
 
-  const handleExchangeImageOnClick = useCallback(() => {
-    if (!exchange) {
-      return;
-    }
-    navigate({
-      pathname: generatePath(BosonRoutes.Exchange, {
-        [UrlParameters.exchangeId]: exchange.id
-      })
-    });
-  }, [exchange, navigate]);
   const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
-  const CompleteExchangeButton = useCallback(() => {
-    if (!exchange) {
-      return null;
-    }
-    const isVisible = iAmTheBuyer
+  const isVisible = exchange
+    ? iAmTheBuyer
       ? isExchangeCompletableByBuyer(exchange)
-      : isExchangeCompletableBySeller(exchange);
+      : isExchangeCompletableBySeller(exchange)
+    : false;
+  const CompleteExchangeButton = useCallback(() => {
     if (!isVisible) {
       return null;
     }
     const isDisabled = iAmTheBuyer ? false : sellerRoles.isAssistant;
     return (
-      <BosonButton
-        variant="primaryFill"
+      <Button
+        theme="secondary"
         disabled={isDisabled}
         onClick={() =>
           showModal(
-            modalTypes.COMPLETE_EXCHANGE,
+            "COMPLETE_EXCHANGE",
             {
               title: "Complete Confirmation",
               exchange: exchange,
@@ -371,66 +412,45 @@ export default function ExchangeSidePreview({
         }
       >
         Complete exchange
-      </BosonButton>
+      </Button>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exchange, iAmTheBuyer, sellerRoles.isAssistant]);
+  }, [exchange, iAmTheBuyer, sellerRoles.isAssistant, isVisible]);
   if (!exchange || !offer) {
     return null;
   }
   const isInRedeemed = subgraph.ExchangeState.Redeemed === exchange.state;
-  const isInDispute = exchange.disputed && !dispute.finalizedDate;
-  const isResolved = !!dispute.resolvedDate;
-  const isEscalated = !!dispute.escalatedDate;
-  const isRetracted = !!dispute.retractedDate;
-  const raisedDisputeAt = new Date(Number(dispute.disputedDate) * 1000);
-  const lastDayToResolveDispute = new Date(
-    raisedDisputeAt.getTime() +
-      Number(exchange.offer.resolutionPeriodDuration) * 1000
-  );
-  const totalDaysToResolveDispute = dayjs(lastDayToResolveDispute).diff(
-    raisedDisputeAt,
-    "day"
-  );
-  const daysLeftToResolveDispute = Math.max(
-    0,
-    dayjs(lastDayToResolveDispute).diff(new Date().getTime(), "day")
-  );
+  const isInDispute = exchange.disputed && !dispute?.finalizedDate;
+  const isResolved = !!dispute?.resolvedDate;
+  const isEscalated = !!dispute?.escalatedDate;
+  const isRetracted = !!dispute?.retractedDate;
+  const isFinalized = !!dispute?.finalizedDate;
+
+  const { totalDaysToResolveDispute, daysLeftToResolveDispute } =
+    getExchangeDisputeDates(exchange);
+
   const hasDisputePeriodElapsed: boolean =
     getHasExchangeDisputeResolutionElapsed(exchange, offer);
   const animationUrl = exchange?.offer.metadata.animationUrl || "";
   return (
     <Container $disputeOpen={disputeOpen}>
       {animationUrl ? (
-        <Video
-          src={animationUrl}
-          dataTestId="exchangeAnimationUrl"
-          onClick={handleExchangeImageOnClick}
-          videoProps={{
-            muted: true,
-            loop: true,
-            autoPlay: true
-          }}
-          componentWhileLoading={() => (
-            <StyledImage
-              src={exchange?.offer.metadata.imageUrl}
-              alt="exchange image"
-              dataTestId="exchange-image"
-              onClick={handleExchangeImageOnClick}
-            />
-          )}
-        />
+        <ExchangeMedia exchange={exchange}>
+          <Video
+            src={animationUrl}
+            dataTestId="exchangeAnimationUrl"
+            videoProps={{
+              muted: true,
+              loop: true,
+              autoPlay: true
+            }}
+            componentWhileLoading={() => <ExchangeImage exchange={exchange} />}
+          />
+        </ExchangeMedia>
       ) : (
-        <StyledImage
-          src={exchange?.offer.metadata.imageUrl}
-          alt="exchange image"
-          dataTestId="exchange-image"
-          onClick={handleExchangeImageOnClick}
-        />
+        <ExchangeImage exchange={exchange} />
       )}
-      {isInDispute && (
-        <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
-      )}
+
       <ExchangeInfo>
         <Name tag="h3">{exchange.offer.metadata.name}</Name>
         <StyledPrice
@@ -442,17 +462,47 @@ export default function ExchangeSidePreview({
           convert
         />
       </ExchangeInfo>
+
       {(isInDispute || isResolved || isEscalated) && (
         <Section>
-          <StyledMultiSteps
-            data={[
-              { name: "Describe Problem", steps: 1 },
-              { name: "Raise dispute", steps: 1 },
-              { name: "Resolve or Escalate", steps: 1 }
-            ]}
-            active={isInDispute && !isEscalated ? 2 : 3}
-            hideArrows
-          />
+          {isInDispute &&
+            !isResolved &&
+            !isEscalated &&
+            !!totalDaysToResolveDispute && (
+              <div style={{ marginBottom: "1rem" }}>
+                <ProgressBar
+                  threshold={50}
+                  progress={
+                    (100 * daysLeftToResolveDispute) / totalDaysToResolveDispute
+                  }
+                  text={`${daysLeftToResolveDispute} out of ${totalDaysToResolveDispute} days left to mutually resolve the dispute or escalate`}
+                />
+              </div>
+            )}
+          {
+            // if both buyer and seller, then show seller
+          }
+          {!iAmTheBuyer ? (
+            <StyledMultiSteps
+              data={[
+                { name: "Review proposal", steps: 1 },
+                { name: "Accept or counterpropose", steps: 1 },
+                { name: "Resolve the dispute", steps: 1 }
+              ]}
+              active={isInDispute && !isEscalated ? 1 : 3}
+              hideArrows
+            />
+          ) : (
+            <StyledMultiSteps
+              data={[
+                { name: "Submit dispute", steps: 1 },
+                { name: "Discuss details (optional)", steps: 1 },
+                { name: "Resolve or escalate", steps: 1 }
+              ]}
+              active={isInDispute && !isEscalated ? 2 : 3}
+              hideArrows
+            />
+          )}
         </Section>
       )}
       <Section>
@@ -460,8 +510,8 @@ export default function ExchangeSidePreview({
       </Section>
       {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
-          <BosonButton
-            variant="accentInverted"
+          <Button
+            theme="secondary"
             onClick={() =>
               showModal(
                 "RETRACT_DISPUTE",
@@ -470,37 +520,48 @@ export default function ExchangeSidePreview({
                   exchangeId: exchange.id,
                   offerName: offer.metadata.name,
                   refetch: refetchItAll,
-                  disputeId: exchange.dispute?.id ?? ""
+                  disputeId: exchange.dispute?.id ?? "",
+                  addMessage,
+                  setHasError,
+                  threadId,
+                  onSentMessage,
+                  destinationAddress,
+                  exchange
                 },
-                "s"
+                "auto",
+                undefined,
+                { m: "700px" }
               )
             }
           >
             Retract
-          </BosonButton>
-          <BosonButton
-            variant="secondaryInverted"
-            showBorder={false}
+          </Button>
+          <Button
+            theme="secondary"
             onClick={() =>
               showModal(
                 "ESCALATE_MODAL",
                 {
                   title: "Escalate",
                   exchange: exchange,
-                  refetch: refetchItAll
+                  refetch: refetchItAll,
+                  addMessage,
+                  setHasError,
+                  onSentMessage,
+                  destinationAddress
                 },
                 "l"
               )
             }
           >
             Escalate
-          </BosonButton>
+          </Button>
           <CompleteExchangeButton />
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
-          <BosonButton
-            variant="primaryFill"
+          <Button
+            theme="secondary"
             disabled={hasDisputePeriodElapsed}
             onClick={() =>
               showModal(
@@ -520,16 +581,60 @@ export default function ExchangeSidePreview({
             }
           >
             Raise a dispute
-          </BosonButton>
+          </Button>
           <CompleteExchangeButton />
         </CTASection>
-      ) : (
+      ) : isVisible ? (
         <CTASection>
           <CompleteExchangeButton />
         </CTASection>
-      )}
+      ) : isFinalized && threadId ? (
+        <CTASection>
+          {iAmTheBuyer && (
+            <Button
+              theme="secondary"
+              onClick={() => {
+                showModal(
+                  "MANAGE_FUNDS_MODAL",
+                  {
+                    title: "Manage Funds",
+                    id: threadId?.buyerId
+                  },
+                  "auto",
+                  "dark"
+                );
+              }}
+            >
+              Withdraw {iAmTheSeller ? "buyer" : ""} funds
+            </Button>
+          )}
+          {iAmTheSeller && (
+            <Button
+              theme="secondary"
+              onClick={() => {
+                showModal(
+                  "MANAGE_FUNDS_MODAL",
+                  {
+                    title: "Manage Funds",
+                    id: threadId?.sellerId
+                  },
+                  "auto",
+                  "dark"
+                );
+              }}
+            >
+              Withdraw {iAmTheBuyer ? "seller" : ""} funds
+            </Button>
+          )}
+        </CTASection>
+      ) : null}
       <HistorySection>
-        <ExchangeTimeline exchange={exchange} showDispute={true}>
+        <ExchangeTimeline
+          exchange={exchange}
+          showDispute={true}
+          lastReceivedProposal={lastReceivedProposal}
+          lastSentProposal={lastSentProposal}
+        >
           <h4>History</h4>
         </ExchangeTimeline>
       </HistorySection>

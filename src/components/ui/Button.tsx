@@ -265,7 +265,8 @@ export interface IButton {
   step?: number;
   isLoading?: boolean;
   tooltip?: string;
-  [x: string]: unknown;
+  disabled?: boolean;
+  // [x: string]: unknown;
   withBosonStyle?: boolean;
 }
 

@@ -6,20 +6,20 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 const GlobalStyle = createGlobalStyle<{
-  $withBosonStyles: boolean;
-  $headerBgColor: string;
-  $headerTextColor: string;
-  $primaryBgColor: string;
-  $secondaryBgColor: string;
-  $accentColor: string;
-  $textColor: string;
-  $footerBgColor: string;
-  $footerTextColor: string;
-  $fontFamily: string;
-  $buttonBgColor: string;
-  $buttonTextColor: string;
-  $upperCardBgColor: string;
-  $lowerCardBgColor: string;
+  $withBosonStyles?: boolean;
+  $headerBgColor?: string;
+  $headerTextColor?: string;
+  $primaryBgColor?: string;
+  $secondaryBgColor?: string;
+  $accentColor?: string;
+  $textColor?: string;
+  $footerBgColor?: string;
+  $footerTextColor?: string;
+  $fontFamily?: string;
+  $buttonBgColor?: string;
+  $buttonTextColor?: string;
+  $upperCardBgColor?: string;
+  $lowerCardBgColor?: string;
 }>`
   img {
     pointer-events: none;

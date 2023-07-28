@@ -7,3 +7,5 @@ export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 type Falsy = false | 0 | "" | null | undefined;
 
 export const isTruthy = <T>(x: T | Falsy): x is T => !!x;
+
+export type Nullable<T> = T | null;

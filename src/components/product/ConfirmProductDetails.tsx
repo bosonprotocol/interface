@@ -95,10 +95,15 @@ export default function ConfirmProductDetails({
   const { address } = useAccount();
 
   const showSuccessInitialization =
-    chatInitializationStatus === "INITIALIZED" && bosonXmtp;
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus) && bosonXmtp;
   const showInitializeChat =
-    (chatInitializationStatus === "NOT_INITIALIZED" && address && !bosonXmtp) ||
-    chatInitializationStatus === "ERROR";
+    (chatInitializationStatus === ChatInitializationStatus.NOT_INITIALIZED &&
+      address &&
+      !bosonXmtp) ||
+    chatInitializationStatus === ChatInitializationStatus.ERROR;
 
   const handleOpenPreview = () => {
     togglePreview(true);
@@ -504,7 +509,9 @@ export default function ConfirmProductDetails({
       {showInitializeChat && (
         <InitializeChatContainer>
           <InitializeChat
-            isError={chatInitializationStatus === "ERROR"}
+            isError={
+              chatInitializationStatus === ChatInitializationStatus.ERROR
+            }
             message="To proceed, first initialize your chat client to enable two way communication with buyers and to receive delivery details."
           />
         </InitializeChatContainer>
@@ -529,12 +536,14 @@ export default function ConfirmProductDetails({
           variant="primaryFill"
           type="submit"
           disabled={
-            !["INITIALIZED", "ALREADY_INITIALIZED"].includes(
-              chatInitializationStatus
-            )
+            ![
+              ChatInitializationStatus.INITIALIZED,
+              ChatInitializationStatus.ALREADY_INITIALIZED
+            ].includes(chatInitializationStatus)
           }
         >
-          {chatInitializationStatus === "NOT_INITIALIZED" && bosonXmtp ? (
+          {chatInitializationStatus ===
+            ChatInitializationStatus.NOT_INITIALIZED && bosonXmtp ? (
             <Spinner size={20} />
           ) : (
             "Confirm"
@@ -545,9 +554,10 @@ export default function ConfirmProductDetails({
           type="button"
           onClick={handleOpenPreview}
           disabled={
-            !["INITIALIZED", "ALREADY_INITIALIZED"].includes(
-              chatInitializationStatus
-            )
+            ![
+              ChatInitializationStatus.INITIALIZED,
+              ChatInitializationStatus.ALREADY_INITIALIZED
+            ].includes(chatInitializationStatus)
           }
         >
           Preview product detail page

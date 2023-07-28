@@ -85,6 +85,7 @@ const getExchangesFunction = async (props: Props) => {
         }) {
         dispute {
           id
+          buyerPercent
           state
           escalatedDate
         }
@@ -142,15 +143,17 @@ export function useExchanges(
   const curationLists = useCurationLists();
   const onlyCuratedSeller =
     options.onlyCuratedSeller === undefined || options.onlyCuratedSeller;
+  const sellerIn = onlyCuratedSeller
+    ? curationLists.sellerCurationList
+    : undefined;
+
   return useQuery(
-    ["exchanges", props],
+    ["exchanges", props, sellerIn],
     async () => {
       const result = await getExchangesFunction({
         ...props,
         first: OFFERS_PER_PAGE,
-        seller_in: onlyCuratedSeller
-          ? curationLists.sellerCurationList
-          : undefined
+        seller_in: sellerIn
       });
       const data = result?.exchanges;
       let loop = data?.length === OFFERS_PER_PAGE;
@@ -160,9 +163,7 @@ export function useExchanges(
           ...props,
           first: OFFERS_PER_PAGE,
           skip: productsSkip,
-          seller_in: onlyCuratedSeller
-            ? curationLists.sellerCurationList
-            : undefined
+          seller_in: sellerIn
         });
         const dataToAdd = newResults?.exchanges || [];
         data.push(...dataToAdd);
