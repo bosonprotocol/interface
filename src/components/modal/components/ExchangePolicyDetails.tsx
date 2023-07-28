@@ -52,7 +52,14 @@ export default function ExchangePolicyDetails({
       (offerData?.metadata as subgraph.ProductV1MetadataEntity)?.shipping
         ?.returnPeriodInDays || "unspecified",
     contractualAgreement: {
-      title: "Commerce Agreement",
+      title: isExchangePolicyValid ? (
+        "Commerce Agreement"
+      ) : (
+        <>
+          <WarningCircle size={20}></WarningCircle>
+          <span style={{ margin: "0 0 0 0.2rem" }}>{"Commerce Agreement"}</span>
+        </>
+      ),
       version: isExchangePolicyValid ? "v1" : "(Non-standard)",
       color: isExchangePolicyValid ? undefined : colors.orange
     },
