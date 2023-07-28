@@ -2,8 +2,12 @@ import {
   MessageData,
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { subgraph } from "@bosonprotocol/react-kit";
-import { ArrowSquareOut } from "phosphor-react";
+import { offers, subgraph } from "@bosonprotocol/react-kit";
+import {
+  ArrowSquareOut,
+  CircleWavyQuestion,
+  WarningCircle
+} from "phosphor-react";
 import {
   Dispatch,
   ReactNode,
@@ -188,14 +192,22 @@ const getOfferDetailData = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modalTypes: ModalTypes,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  showModal: ShowModalFn
+  showModal: ShowModalFn,
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult
 ) => {
   const { deposit, formatted } = calcPercentage(offer, "sellerDeposit");
+
+  const exchangePolicyLabel = (
+    (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
+      ?.label || "Unspecified"
+  ).replace("fairExchangePolicy", "Fair Exchange Policy");
 
   const handleShowExchangePolicy = () => {
     showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
       title: "Exchange Policy Details",
-      offerId: offer.id
+      offerId: offer.id,
+      offerData: offer,
+      exchangePolicyCheckResult
     });
   };
 
@@ -241,9 +253,29 @@ const getOfferDetailData = (
           </Typography>
         </>
       ),
-      value: (
-        <Typography tag="p">
-          Fair Exchange Policy{" "}
+      value: exchangePolicyCheckResult ? (
+        exchangePolicyCheckResult.isValid ? (
+          <Typography tag="p">
+            {exchangePolicyLabel + " "}
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          </Typography>
+        ) : (
+          <Typography tag="p" color={colors.orange}>
+            <WarningCircle size={20}></WarningCircle> Non-standard{" "}
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          </Typography>
+        )
+      ) : (
+        <Typography tag="p" color="purple">
+          <CircleWavyQuestion size={20}></CircleWavyQuestion> Unknown{" "}
           <ArrowSquareOut
             size={20}
             onClick={() => handleShowExchangePolicy()}
@@ -298,6 +330,7 @@ interface Props {
   iAmTheBuyer: boolean;
   iAmTheSeller: boolean;
   refetchExchanges: () => void;
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
   setHasError: Dispatch<SetStateAction<boolean>>;
   addMessage: (
     newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
@@ -312,6 +345,7 @@ export default function ExchangeSidePreview({
   exchange,
   disputeOpen,
   iAmTheBuyer,
+  exchangePolicyCheckResult,
   iAmTheSeller,
   refetchExchanges,
   addMessage,
@@ -334,8 +368,15 @@ export default function ExchangeSidePreview({
   const offer = exchange?.offer;
   const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
-    () => offer && getOfferDetailData(offer, modalTypes, showModal),
-    [offer, modalTypes, showModal]
+    () =>
+      offer &&
+      getOfferDetailData(
+        offer,
+        modalTypes,
+        showModal,
+        exchangePolicyCheckResult
+      ),
+    [offer, modalTypes, showModal, exchangePolicyCheckResult]
   );
 
   const refetchItAll = useCallback(() => {

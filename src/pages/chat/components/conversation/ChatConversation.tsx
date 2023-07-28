@@ -32,6 +32,7 @@ import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { zIndex } from "../../../../lib/styles/zIndex";
 import { useInfiniteThread } from "../../../../lib/utils/hooks/chat/useInfiniteThread";
+import useCheckExchangePolicy from "../../../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import { useBreakpoints } from "../../../../lib/utils/hooks/useBreakpoints";
 import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
@@ -306,6 +307,9 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
+  const exchangePolicyCheckResult = useCheckExchangePolicy({
+    offerId: exchange?.offer?.id
+  });
   const [lastReceivedProposal, setLastReceivedProposal] =
     useState<MessageData | null>(null);
   const [lastSentProposal, setLastSentProposal] = useState<MessageData | null>(
@@ -877,6 +881,7 @@ const ChatConversation = ({
         refetchExchanges={refetchExchanges}
         disputeOpen={isExchangePreviewOpen}
         iAmTheBuyer={iAmTheBuyer}
+        exchangePolicyCheckResult={exchangePolicyCheckResult}
         iAmTheSeller={iAmTheSeller}
         setHasError={setHasError}
         addMessage={addMessage}
