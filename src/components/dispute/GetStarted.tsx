@@ -53,7 +53,7 @@ function GetStarted({
           Get started
         </Typography>
         <Typography $fontSize="1.25rem" color={colors.darkGrey}>
-          First, choose the issue you're facing with your redemption.
+          First, choose the issue you're facing with your exchange.
         </Typography>
       </div>
       <FieldArray

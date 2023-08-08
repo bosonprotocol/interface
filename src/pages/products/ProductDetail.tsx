@@ -26,6 +26,7 @@ import {
   getOfferAnimationUrl,
   getOfferDetails
 } from "../../lib/utils/getOfferDetails";
+import useCheckExchangePolicy from "../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
@@ -60,6 +61,10 @@ export default function ProductDetail() {
     defaultVariant
   );
   const selectedOffer = selectedVariant?.offer;
+
+  const exchangePolicyCheckResult = useCheckExchangePolicy({
+    offerId: selectedOffer?.id
+  });
 
   const animationUrl = useMemo(
     () => getOfferAnimationUrl(selectedOffer),
@@ -152,6 +157,7 @@ export default function ProductDetail() {
     artistDescription,
     images
   } = getOfferDetails(selectedOffer);
+
   return (
     <DetailWrapper>
       <LightBackground>
@@ -204,6 +210,7 @@ export default function ProductDetail() {
               name={name}
               image={offerImg}
               hasSellerEnoughFunds={hasSellerEnoughFunds}
+              exchangePolicyCheckResult={exchangePolicyCheckResult}
             />
           </div>
           <DetailShare />

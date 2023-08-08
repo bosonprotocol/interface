@@ -218,7 +218,9 @@ export default function Preview({
       },
       exchangePolicy: {
         sellerContactMethod: CONFIG.defaultSellerContactMethod,
-        disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
+        disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`,
+        template: values.termsOfExchange.exchangePolicy.value,
+        label: values.termsOfExchange.exchangePolicy.label
       },
       productV1Seller: {
         name: values.createYourProfile.name
@@ -265,6 +267,11 @@ export default function Preview({
         type: "Size" as const
       })) ?? [])
     ]
+  };
+  // offer is necessarily compliant because created with the dApp
+  const exchangePolicyCheckResult = {
+    isValid: true,
+    errors: []
   };
   return (
     <PreviewWrapper>
@@ -317,6 +324,7 @@ export default function Preview({
                   image={offerImg}
                   hasSellerEnoughFunds={true}
                   hasMultipleVariants={hasMultipleVariants}
+                  exchangePolicyCheckResult={exchangePolicyCheckResult}
                 />
               </div>
             </MainDetailGrid>

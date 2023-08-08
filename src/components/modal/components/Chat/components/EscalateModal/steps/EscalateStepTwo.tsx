@@ -43,8 +43,10 @@ import { FieldInput } from "../../../../../../form/Field.styles";
 import FormField from "../../../../../../form/FormField";
 import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
+import { Spinner } from "../../../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../../../../ui/BosonButton";
+import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 import { useModal } from "../../../../../useModal";
@@ -403,8 +405,10 @@ function EscalateStepTwo({
     handleSendingEscalateMessage
   ]);
   const showSuccessInitialization =
-    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
-    bosonXmtp;
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus) && bosonXmtp;
   return (
     <Formik<typeof initialValues>
       initialValues={{ ...initialValues }}
@@ -581,19 +585,17 @@ function EscalateStepTwo({
                     and seller
                   </Typography>
                   <InitializeChatWithSuccess />
-                  <BosonButton
-                    variant="secondaryFill"
-                    style={{ color: "black" }}
+                  <Button
+                    theme="secondary"
                     onClick={handleEscalate}
-                    loading={loading}
                     disabled={
                       loading ||
                       values?.confirm !== true ||
                       !showSuccessInitialization
                     }
                   >
-                    Escalate
-                  </BosonButton>
+                    Escalate {loading && <Spinner size={20} />}
+                  </Button>
                 </Grid>
               </Collapse>
             </Container>

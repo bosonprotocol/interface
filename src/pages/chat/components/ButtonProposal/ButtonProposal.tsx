@@ -35,7 +35,7 @@ interface Props {
   onSendProposal: (
     proposal: NewProposal,
     proposalFiles: FileWithEncodedData[]
-  ) => void;
+  ) => Promise<void>;
   disabled?: boolean;
 }
 

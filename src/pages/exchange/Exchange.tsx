@@ -26,6 +26,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
+import useCheckExchangePolicy from "../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
   useSellerCurationListFn,
@@ -97,6 +98,10 @@ export default function Exchange() {
     offerRequiredDeposit > 0
       ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
       : true;
+
+  const exchangePolicyCheckResult = useCheckExchangePolicy({
+    offerId: offer?.id
+  });
 
   if (isLoading) {
     return <Loading />;
@@ -194,6 +199,7 @@ export default function Exchange() {
                 image={offerImg}
                 hasSellerEnoughFunds={hasSellerEnoughFunds}
                 reload={reload}
+                exchangePolicyCheckResult={exchangePolicyCheckResult}
               />
             </div>
             <DetailShare />

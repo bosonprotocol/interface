@@ -62,6 +62,7 @@ export default function MakeProposalModal({
       <Grid justifyContent="space-evently">
         <StyledMultiSteps
           data={[
+            { steps: 1, name: "Describe Problem" },
             { steps: 1, name: "Fill in counterproposal details" },
             { steps: 1, name: "Review & Submit" }
           ]}
@@ -144,18 +145,15 @@ export default function MakeProposalModal({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           props: FormikProps<any>
         ) => {
-          const isDescribeProblemOK = isCounterProposal
-            ? true
-            : Object.keys(props.errors).length === 0;
+          const isDescribeProblemOK = Object.keys(props.errors).length === 0;
           return (
             <Form>
-              {activeStep === 0 && !isCounterProposal ? (
+              {activeStep === 0 ? (
                 <DescribeProblemStep
                   onNextClick={() => setActiveStep((prev) => ++prev)}
                   isValid={isDescribeProblemOK}
                 />
-              ) : (activeStep === 1 && !isCounterProposal) ||
-                (activeStep === 0 && isCounterProposal) ? (
+              ) : activeStep === 1 ? (
                 <MakeAProposalStep
                   onNextClick={() => setActiveStep((prev) => ++prev)}
                   isValid={isDescribeProblemOK}

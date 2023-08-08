@@ -32,7 +32,9 @@ import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { zIndex } from "../../../../lib/styles/zIndex";
 import { useInfiniteThread } from "../../../../lib/utils/hooks/chat/useInfiniteThread";
+import useCheckExchangePolicy from "../../../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import { useBreakpoints } from "../../../../lib/utils/hooks/useBreakpoints";
+import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../../ChatProvider/ChatContext";
@@ -264,6 +266,15 @@ const ChatConversation = ({
   textAreaValue,
   refetchExchanges
 }: ChatConversationProps) => {
+  const { data: disputes } = useDisputes(
+    {
+      disputesFilter: {
+        exchange: exchange?.id
+      }
+    },
+    { enabled: !!exchange }
+  );
+  const dispute = disputes?.[0];
   const { address } = useAccount();
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
@@ -296,6 +307,9 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
+  const exchangePolicyCheckResult = useCheckExchangePolicy({
+    offerId: exchange?.offer?.id
+  });
   const [lastReceivedProposal, setLastReceivedProposal] =
     useState<MessageData | null>(null);
   const [lastSentProposal, setLastSentProposal] = useState<MessageData | null>(
@@ -816,6 +830,7 @@ const ChatConversation = ({
                         )}
                         <Message
                           exchange={exchange}
+                          dispute={dispute}
                           message={message}
                           isLeftAligned={leftAligned}
                           lastReceivedProposal={lastReceivedProposal}
@@ -866,6 +881,7 @@ const ChatConversation = ({
         refetchExchanges={refetchExchanges}
         disputeOpen={isExchangePreviewOpen}
         iAmTheBuyer={iAmTheBuyer}
+        exchangePolicyCheckResult={exchangePolicyCheckResult}
         iAmTheSeller={iAmTheSeller}
         setHasError={setHasError}
         addMessage={addMessage}

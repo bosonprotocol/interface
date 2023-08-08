@@ -488,7 +488,11 @@ function CreateProductInner({
           seller: offerInfo.seller,
           exchangeToken: offerInfo.exchangeToken,
           metadata: {
-            animationUrl: values.productAnimation?.[0]?.src
+            animationUrl: values.productAnimation?.[0]?.src,
+            exchangePolicy: {
+              label: OPTIONS_EXCHANGE_POLICY[0].label,
+              template: OPTIONS_EXCHANGE_POLICY[0].value
+            }
           },
           condition: offerInfo.condition ?? null
         },
