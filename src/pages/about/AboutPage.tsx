@@ -156,6 +156,10 @@ function AboutPage() {
           {CONFIG.ipfsImageGateway}
         </a>
       </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Carousel Promoted SellerId:</span>
+        <span>{CONFIG.carouselPromotedSellerId || "-"}</span>
+      </Text>
     </Wrapper>
   );
 }

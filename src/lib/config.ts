@@ -143,6 +143,8 @@ export const CONFIG = {
   walletConnect: {
     projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
   },
+  carouselPromotedSellerId:
+    process.env.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID || undefined,
   envViewMode: {
     current: Object.values(ViewMode).includes(
       (process.env.REACT_APP_VIEW_MODE as ViewMode) || ""
