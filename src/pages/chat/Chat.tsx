@@ -291,7 +291,11 @@ export default function Chat() {
             flexDirection="column"
             gap="1rem"
           >
-            <Typography $fontSize="2rem">You have no exchanges yet</Typography>
+            <Typography $fontSize="2rem">
+              {address
+                ? "You have no exchanges yet"
+                : "Please connect your wallet to display your messages"}
+            </Typography>
 
             <img src={frame} alt="no exchanges images" />
           </Grid>

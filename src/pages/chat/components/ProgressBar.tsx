@@ -8,7 +8,6 @@ const Container = styled.div`
   display: flex;
   overflow: hidden;
 
-  height: 2.5rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-align: center;
@@ -25,6 +24,7 @@ const commonStyles = css`
   top: 0;
   bottom: 0;
   border: 1px solid ${colors.lightGrey};
+  padding: 0.5rem;
 `;
 
 const Back = styled.div<{ $backgroundColor: CSSProperties["background"] }>`
@@ -58,6 +58,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     <Container>
       <Back $backgroundColor={background}>{text}</Back>
       <Front $progress={progress}>{text}</Front>
+      <Front $progress={progress} style={{ position: "relative" }}>
+        {text}
+      </Front>
     </Container>
   );
 };

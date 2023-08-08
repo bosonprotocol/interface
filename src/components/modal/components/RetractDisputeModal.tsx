@@ -30,7 +30,6 @@ import { poll } from "../../../pages/create-product/utils";
 import SimpleError from "../../error/SimpleError";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import BosonButton from "../../ui/BosonButton";
-import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 import { ModalProps } from "../ModalContext";
@@ -166,7 +165,7 @@ export default function RetractDisputeModal({
 
   return (
     <Grid flexDirection="column" gap="5rem">
-      <div>
+      <Grid flexDirection="column" alignItems="flex-start">
         <Grid marginTop="2rem" marginBottom="2rem">
           <ExchangePreview exchange={exchange} />
         </Grid>
@@ -176,7 +175,7 @@ export default function RetractDisputeModal({
           originally intended.
         </Typography>
         {retractDisputeError && <SimpleError />}
-      </div>
+      </Grid>
       <InitializeChatWithSuccess />
       <Grid justifyContent="space-between">
         <BosonButton
@@ -248,9 +247,6 @@ export default function RetractDisputeModal({
         >
           Confirm Retract
         </BosonButton>
-        <Button theme="blank" onClick={hideModal}>
-          Back
-        </Button>
       </Grid>
     </Grid>
   );

@@ -110,6 +110,10 @@ function AboutPage() {
         <span>Link to rNFT License Template:</span>
         <span>{CONFIG.rNFTLicenseTemplate || "-"}</span>
       </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Link to Fair Exchange Policy Rules:</span>
+        <span>{CONFIG.fairExchangePolicyRules || "-"}</span>
+      </Text>
       <Grid margin="0 0 0.5rem 0">
         <>
           <Text>
@@ -151,6 +155,10 @@ function AboutPage() {
         >
           {CONFIG.ipfsImageGateway}
         </a>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Carousel Promoted SellerId:</span>
+        <span>{CONFIG.carouselPromotedSellerId || "-"}</span>
       </Text>
     </Wrapper>
   );

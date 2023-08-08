@@ -2,9 +2,19 @@ import {
   MessageData,
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { subgraph } from "@bosonprotocol/react-kit";
-import { ArrowSquareOut } from "phosphor-react";
-import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
+import { offers, subgraph } from "@bosonprotocol/react-kit";
+import {
+  ArrowSquareOut,
+  CircleWavyQuestion,
+  WarningCircle
+} from "phosphor-react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useMemo
+} from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -21,6 +31,7 @@ import Button from "../../../components/ui/Button";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
 import Video from "../../../components/ui/Video";
+import { ViewModeLink } from "../../../components/viewMode/ViewMode";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -36,13 +47,8 @@ import {
 } from "../../../lib/utils/exchange";
 import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
-import {
-  getCurrentViewMode,
-  goToViewMode,
-  ViewMode
-} from "../../../lib/viewMode";
+import { ViewMode } from "../../../lib/viewMode";
 import { MessageDataWithInfo } from "../types";
 import ExchangeTimeline from "./ExchangeTimeline";
 import ProgressBar from "./ProgressBar";
@@ -186,14 +192,22 @@ const getOfferDetailData = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modalTypes: ModalTypes,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  showModal: ShowModalFn
+  showModal: ShowModalFn,
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult
 ) => {
   const { deposit, formatted } = calcPercentage(offer, "sellerDeposit");
+
+  const exchangePolicyLabel = (
+    (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
+      ?.label || "Unspecified"
+  ).replace("fairExchangePolicy", "Fair Exchange Policy");
 
   const handleShowExchangePolicy = () => {
     showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
       title: "Exchange Policy Details",
-      offerId: offer.id
+      offerId: offer.id,
+      offerData: offer,
+      exchangePolicyCheckResult
     });
   };
 
@@ -239,9 +253,29 @@ const getOfferDetailData = (
           </Typography>
         </>
       ),
-      value: (
-        <Typography tag="p">
-          Fair Exchange Policy{" "}
+      value: exchangePolicyCheckResult ? (
+        exchangePolicyCheckResult.isValid ? (
+          <Typography tag="p">
+            {exchangePolicyLabel + " "}
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          </Typography>
+        ) : (
+          <Typography tag="p" color={colors.orange}>
+            <WarningCircle size={20}></WarningCircle> Non-standard{" "}
+            <ArrowSquareOut
+              size={20}
+              onClick={() => handleShowExchangePolicy()}
+              style={{ cursor: "pointer" }}
+            />
+          </Typography>
+        )
+      ) : (
+        <Typography tag="p" color="purple">
+          <CircleWavyQuestion size={20}></CircleWavyQuestion> Unknown{" "}
           <ArrowSquareOut
             size={20}
             onClick={() => handleShowExchangePolicy()}
@@ -257,13 +291,46 @@ const getOfferDetailData = (
     }
   ];
 };
-
+const ExchangeMedia = ({
+  exchange,
+  children
+}: {
+  exchange: Exchange | undefined;
+  children: ReactNode;
+}) => (
+  <>
+    {exchange ? (
+      <ViewModeLink
+        destinationViewMode={ViewMode.DAPP}
+        href={
+          generatePath(BosonRoutes.Exchange, {
+            [UrlParameters.exchangeId]: exchange.id
+          }) as `/${string}`
+        }
+      >
+        {children}
+      </ViewModeLink>
+    ) : (
+      <></>
+    )}
+  </>
+);
+const ExchangeImage = ({ exchange }: { exchange: Exchange | undefined }) => (
+  <ExchangeMedia exchange={exchange}>
+    <StyledImage
+      src={exchange?.offer.metadata.imageUrl ?? ""}
+      alt="exchange image"
+      dataTestId="exchange-image"
+    />
+  </ExchangeMedia>
+);
 interface Props {
   exchange: Exchange | undefined;
   disputeOpen: boolean;
   iAmTheBuyer: boolean;
   iAmTheSeller: boolean;
   refetchExchanges: () => void;
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
   setHasError: Dispatch<SetStateAction<boolean>>;
   addMessage: (
     newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
@@ -278,6 +345,7 @@ export default function ExchangeSidePreview({
   exchange,
   disputeOpen,
   iAmTheBuyer,
+  exchangePolicyCheckResult,
   iAmTheSeller,
   refetchExchanges,
   addMessage,
@@ -300,34 +368,22 @@ export default function ExchangeSidePreview({
   const offer = exchange?.offer;
   const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
-    () => offer && getOfferDetailData(offer, modalTypes, showModal),
-    [offer, modalTypes, showModal]
+    () =>
+      offer &&
+      getOfferDetailData(
+        offer,
+        modalTypes,
+        showModal,
+        exchangePolicyCheckResult
+      ),
+    [offer, modalTypes, showModal, exchangePolicyCheckResult]
   );
-  const navigate = useKeepQueryParamsNavigate();
 
   const refetchItAll = useCallback(() => {
     refetchExchanges();
     refetchDisputes();
   }, [refetchExchanges, refetchDisputes]);
 
-  const handleExchangeImageOnClick = useCallback(() => {
-    if (!exchange) {
-      return;
-    }
-    const currentViewMode = getCurrentViewMode();
-    const path = generatePath(BosonRoutes.Exchange, {
-      [UrlParameters.exchangeId]: exchange.id
-    }) as `/${string}`;
-    if (currentViewMode === ViewMode.DAPP) {
-      navigate({
-        pathname: generatePath(BosonRoutes.Exchange, {
-          [UrlParameters.exchangeId]: exchange.id
-        })
-      });
-    } else {
-      goToViewMode(ViewMode.DAPP, path);
-    }
-  }, [exchange, navigate]);
   const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
   const isVisible = exchange
     ? iAmTheBuyer
@@ -379,31 +435,20 @@ export default function ExchangeSidePreview({
   return (
     <Container $disputeOpen={disputeOpen}>
       {animationUrl ? (
-        <Video
-          src={animationUrl}
-          dataTestId="exchangeAnimationUrl"
-          onClick={handleExchangeImageOnClick}
-          videoProps={{
-            muted: true,
-            loop: true,
-            autoPlay: true
-          }}
-          componentWhileLoading={() => (
-            <StyledImage
-              src={exchange?.offer.metadata.imageUrl}
-              alt="exchange image"
-              dataTestId="exchange-image"
-              onClick={handleExchangeImageOnClick}
-            />
-          )}
-        />
+        <ExchangeMedia exchange={exchange}>
+          <Video
+            src={animationUrl}
+            dataTestId="exchangeAnimationUrl"
+            videoProps={{
+              muted: true,
+              loop: true,
+              autoPlay: true
+            }}
+            componentWhileLoading={() => <ExchangeImage exchange={exchange} />}
+          />
+        </ExchangeMedia>
       ) : (
-        <StyledImage
-          src={exchange?.offer.metadata.imageUrl}
-          alt="exchange image"
-          dataTestId="exchange-image"
-          onClick={handleExchangeImageOnClick}
-        />
+        <ExchangeImage exchange={exchange} />
       )}
 
       <ExchangeInfo>
@@ -420,17 +465,20 @@ export default function ExchangeSidePreview({
 
       {(isInDispute || isResolved || isEscalated) && (
         <Section>
-          {isInDispute && !!totalDaysToResolveDispute && (
-            <div style={{ marginBottom: "1rem" }}>
-              <ProgressBar
-                threshold={50}
-                progress={
-                  (100 * daysLeftToResolveDispute) / totalDaysToResolveDispute
-                }
-                text={`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}
-              />
-            </div>
-          )}
+          {isInDispute &&
+            !isResolved &&
+            !isEscalated &&
+            !!totalDaysToResolveDispute && (
+              <div style={{ marginBottom: "1rem" }}>
+                <ProgressBar
+                  threshold={50}
+                  progress={
+                    (100 * daysLeftToResolveDispute) / totalDaysToResolveDispute
+                  }
+                  text={`${daysLeftToResolveDispute} out of ${totalDaysToResolveDispute} days left to mutually resolve the dispute or escalate`}
+                />
+              </div>
+            )}
           {
             // if both buyer and seller, then show seller
           }
@@ -480,7 +528,9 @@ export default function ExchangeSidePreview({
                   destinationAddress,
                   exchange
                 },
-                "s"
+                "auto",
+                undefined,
+                { m: "700px" }
               )
             }
           >

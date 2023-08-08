@@ -8,6 +8,7 @@ import {
   StringContent,
   StringIconContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { Check, Clock } from "phosphor-react";
 import React, {
   cloneElement,
@@ -146,6 +147,7 @@ const BottomDateStamp = ({
 
 interface Props {
   exchange: Exchange;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
   message: MessageDataWithInfo;
   children: ReactNode;
   isLeftAligned: boolean;
@@ -160,6 +162,7 @@ const Message = forwardRef(
       children: Avatar,
       isLeftAligned,
       exchange,
+      dispute,
       lastReceivedProposal,
       lastSentProposal
     }: Props,
@@ -170,6 +173,7 @@ const Message = forwardRef(
         <AvatarContainer>{Avatar}</AvatarContainer>
         <ErrorMessageBoundary>
           <MessageContent
+            dispute={dispute}
             message={message}
             exchange={exchange}
             isLeftAligned={isLeftAligned}
@@ -214,6 +218,7 @@ type MessageContentProps = Pick<
   | "message"
   | "isLeftAligned"
   | "exchange"
+  | "dispute"
   | "lastReceivedProposal"
   | "lastSentProposal"
 >;
@@ -222,9 +227,12 @@ const MessageContent = ({
   message,
   isLeftAligned,
   exchange,
+  dispute,
   lastReceivedProposal,
   lastSentProposal
 }: MessageContentProps) => {
+  const isEscalated = !!dispute?.escalatedDate;
+
   const messageContent = message.data.content;
   const messageContentType = message.data.contentType;
   const isRegularMessage =
@@ -320,7 +328,7 @@ const MessageContent = ({
           <Typography tag="h4" margin="0">
             {messageContent.title}
           </Typography>
-          {!isLastProposal && !!proposals.length && (
+          {!!proposals.length && (isEscalated || !isLastProposal) && (
             <ProposalStatus>
               <strong>Expired</strong>
             </ProposalStatus>
@@ -328,9 +336,6 @@ const MessageContent = ({
         </Grid>
         {isRaisingADispute ? (
           <>
-            <Typography tag="p" margin="1rem 0rem">
-              {messageContent.description}
-            </Typography>
             <Typography
               margin="1.5rem 0 0.5rem 0"
               $fontSize="1rem"
@@ -346,6 +351,12 @@ const MessageContent = ({
                 </Grid>
               );
             })}
+            <Typography margin="1.5rem 0 0 0" $fontSize="1rem" fontWeight="600">
+              Additional Information
+            </Typography>
+            <Typography tag="p" margin="1rem 0rem">
+              {messageContent.description}
+            </Typography>
           </>
         ) : (
           <Typography tag="p" margin="1rem 0rem">
@@ -366,7 +377,7 @@ const MessageContent = ({
                       alignItems="flex-start"
                     >
                       <Typography
-                        margin="1.5rem 0 0.5rem 0"
+                        margin="0 0 0.5rem 0"
                         $fontSize="1rem"
                         fontWeight="600"
                       >
@@ -384,7 +395,7 @@ const MessageContent = ({
             ) : (
               <>
                 <Typography
-                  margin="1.5rem 0 0.5rem 0"
+                  margin="0 0 0.5rem 0"
                   $fontSize="1rem"
                   fontWeight="600"
                 >

@@ -11,33 +11,31 @@ import Button from "../../../../../components/ui/Button";
 import Grid from "../../../../../components/ui/Grid";
 import Typography from "../../../../../components/ui/Typography";
 import { colors } from "../../../../../lib/styles/colors";
-import { getExchangeDisputeDates } from "../../../../../lib/utils/exchange";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { MessageDataWithInfo } from "../../../types";
 
-export type ProposalButtonsProps = {
+type DaysLeftToResolveProps = {
   exchange: Exchange;
-  proposal: MessageData;
-  sendProposal: MakeProposalModalProps["sendProposal"];
-  iAmTheBuyer: boolean;
+  daysLeftToResolveDispute: number;
+  proposal: MessageData | null;
   setHasError: Dispatch<SetStateAction<boolean>>;
   addMessage: (
     newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
   ) => Promise<void>;
   onSentMessage: (messageData: MessageData, uuid: string) => Promise<void>;
+  sendProposal: MakeProposalModalProps["sendProposal"];
 };
 
-export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
+export const DaysLeftToResolve: React.FC<DaysLeftToResolveProps> = ({
+  daysLeftToResolveDispute,
   proposal,
-  exchange,
-  sendProposal,
-  iAmTheBuyer,
   addMessage,
   onSentMessage,
-  setHasError
+  setHasError,
+  exchange,
+  sendProposal
 }) => {
   const { showModal } = useModal();
-  const { daysLeftToResolveDispute } = getExchangeDisputeDates(exchange);
   const [showText, setShowText] = useState<boolean>(true);
   return (
     <Grid flexDirection="column" padding="1rem 1rem 0 1rem" gap="1rem">
@@ -83,48 +81,49 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
             </div>
             <div style={{ flex: "1" }}>
               <p>
-                You can either accept their proposal, create a counterproposal
-                or first write a message about additional details if needed.
+                Your dispute has not yet been resolved directly with the seller.
               </p>
               <p>
                 You have {daysLeftToResolveDispute} days left to resolve the
-                dispute directly with the{" "}
-                {iAmTheBuyer ? "seller or you can escalate it" : "buyer"}.
+                dispute directly with the seller or escalate to a 3rd party
+                resolver.
               </p>
             </div>
           </Grid>
         </Typography>
       )}
       <Grid gap="1rem" justifyContent="space-between" flex="1">
-        <Button
-          theme="secondary"
-          onClick={() => {
-            const [proposalItem] = (proposal.data.content as ProposalContent)
-              .value.proposals;
-            if (proposalItem) {
-              showModal(
-                "RESOLVE_DISPUTE",
-                {
-                  title: "Resolve dispute",
-                  exchange,
-                  proposal: proposalItem,
-                  iAmTheBuyer,
-                  setHasError,
-                  addMessage,
-                  onSentMessage
-                },
-                "auto",
-                undefined,
-                {
-                  m: "600px"
-                }
-              );
-            }
-          }}
-        >
-          <span style={{ whiteSpace: "pre" }}>Accept proposal</span>{" "}
-          <Check size={18} />
-        </Button>
+        {proposal && (
+          <Button
+            theme="secondary"
+            onClick={() => {
+              const [proposalItem] = (proposal.data.content as ProposalContent)
+                .value.proposals;
+              if (proposalItem) {
+                showModal(
+                  "RESOLVE_DISPUTE",
+                  {
+                    title: "Resolve dispute",
+                    exchange,
+                    proposal: proposalItem,
+                    iAmTheBuyer: true,
+                    setHasError,
+                    addMessage,
+                    onSentMessage
+                  },
+                  "auto",
+                  undefined,
+                  {
+                    m: "600px"
+                  }
+                );
+              }
+            }}
+          >
+            <span style={{ whiteSpace: "pre" }}>Accept proposal</span>{" "}
+            <Check size={18} />
+          </Button>
+        )}
         <Button
           theme="secondary"
           onClick={() =>
@@ -133,13 +132,15 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
               {
                 exchange,
                 sendProposal,
-                isCounterProposal: true
+                isCounterProposal: !!proposal
               },
               "m"
             )
           }
         >
-          <span style={{ whiteSpace: "pre" }}>Counterpropose</span>
+          <span style={{ whiteSpace: "pre" }}>
+            {proposal ? "Counterpropose" : "Submit another proposal"}
+          </span>
         </Button>
       </Grid>
     </Grid>

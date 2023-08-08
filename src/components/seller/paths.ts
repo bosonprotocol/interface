@@ -11,5 +11,5 @@ export const getSellerCenterPath = (
 ) => {
   return generatePath(SellerCenterRoutes.SellerCenter, {
     [UrlParameters.sellerPage]: SellerCenterSubRoutes[path]
-  });
+  }) as `/${string}`;
 };

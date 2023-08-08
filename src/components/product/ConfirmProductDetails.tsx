@@ -95,8 +95,10 @@ export default function ConfirmProductDetails({
   const { address } = useAccount();
 
   const showSuccessInitialization =
-    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
-    bosonXmtp;
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus) && bosonXmtp;
   const showInitializeChat =
     (chatInitializationStatus === ChatInitializationStatus.NOT_INITIALIZED &&
       address &&

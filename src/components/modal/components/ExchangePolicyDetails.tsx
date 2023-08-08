@@ -1,8 +1,13 @@
-import { subgraph } from "@bosonprotocol/react-kit";
-import { CaretDown, CaretUp } from "phosphor-react";
+import { offers, subgraph } from "@bosonprotocol/react-kit";
+import {
+  CaretDown,
+  CaretUp,
+  CircleWavyQuestion,
+  WarningCircle
+} from "phosphor-react";
 import { useState } from "react";
 
-import { CONFIG } from "../../../lib/config";
+import { colors } from "../../../lib/styles/colors";
 import ContractualAgreement from "../../contractualAgreement/ContractualAgreement";
 import DetailTable from "../../detail/DetailTable";
 import License from "../../license/License";
@@ -12,17 +17,51 @@ import Typography from "../../ui/Typography";
 interface Props {
   offerId?: string;
   offerData?: subgraph.OfferFieldsFragment;
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
 }
 
-export default function ExchangePolicyDetails({ offerId, offerData }: Props) {
+export default function ExchangePolicyDetails({
+  offerId,
+  offerData,
+  exchangePolicyCheckResult
+}: Props) {
+  const isExchangePolicyValid =
+    exchangePolicyCheckResult &&
+    (exchangePolicyCheckResult.isValid ||
+      !exchangePolicyCheckResult.errors.find(
+        (error) => error.path === "metadata.exchangePolicy.template"
+      ));
   const exchangePolicy = {
-    name: "Fair Exchange Policy",
-    version: "v1.0",
-    disputePeriod: 30,
-    escalationPeriod: CONFIG.defaultDisputeResolutionPeriodDays,
+    name:
+      (offerData?.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
+        ?.label || "unspecified",
+    version: (offerData?.metadata as subgraph.ProductV1MetadataEntity)
+      ?.exchangePolicy?.version
+      ? "v" +
+        (
+          offerData?.metadata as subgraph.ProductV1MetadataEntity
+        )?.exchangePolicy?.version?.toString()
+      : "",
+    disputePeriod: offerData?.disputePeriodDuration
+      ? parseInt(offerData?.disputePeriodDuration) / (3600 * 24)
+      : "unspecified",
+    escalationPeriod: offerData?.resolutionPeriodDuration
+      ? parseInt(offerData?.resolutionPeriodDuration) / (3600 * 24)
+      : "unspecified",
+    returnPeriod:
+      (offerData?.metadata as subgraph.ProductV1MetadataEntity)?.shipping
+        ?.returnPeriodInDays || "unspecified",
     contractualAgreement: {
-      title: "Commerce Agreement",
-      version: "v1"
+      title: isExchangePolicyValid ? (
+        "Commerce Agreement"
+      ) : (
+        <>
+          <WarningCircle size={20}></WarningCircle>
+          <span style={{ margin: "0 0 0 0.2rem" }}>{"Commerce Agreement"}</span>
+        </>
+      ),
+      version: isExchangePolicyValid ? "v1" : "(Non-standard)",
+      color: isExchangePolicyValid ? undefined : colors.orange
     },
     rNFTLicense: {
       title: "License Agreement",
@@ -32,6 +71,34 @@ export default function ExchangePolicyDetails({ offerId, offerData }: Props) {
   const [contractualAgreementVisible, setContractualAgreementVisible] =
     useState(false);
   const [licenseVisible, setLicenseVisible] = useState(false);
+
+  const period = (
+    periodValue: string | number,
+    path: string,
+    exchangePolicyCheckResult?: offers.CheckExchangePolicyResult
+  ) => {
+    const isValid =
+      exchangePolicyCheckResult &&
+      (exchangePolicyCheckResult.isValid ||
+        !exchangePolicyCheckResult.errors.find((error) => error.path === path));
+    return exchangePolicyCheckResult ? (
+      isValid ? (
+        <Typography tag="p">
+          {periodValue}
+          {" days"}
+        </Typography>
+      ) : (
+        <Typography tag="p" color={colors.orange}>
+          <WarningCircle size={20}></WarningCircle>
+          {" " + periodValue + " days"}
+        </Typography>
+      )
+    ) : (
+      <Typography tag="p" color="purple">
+        <CircleWavyQuestion size={20}></CircleWavyQuestion> Unknown
+      </Typography>
+    );
+  };
 
   const tableDetails = [
     {
@@ -46,23 +113,28 @@ export default function ExchangePolicyDetails({ offerId, offerData }: Props) {
     {
       name: "Dispute Period",
       info: undefined,
-      value: (
-        <Typography tag="p">
-          {"Min. "}
-          {exchangePolicy.disputePeriod}
-          {" days"}
-        </Typography>
+      value: period(
+        exchangePolicy.disputePeriod,
+        "disputePeriodDuration",
+        exchangePolicyCheckResult
       )
     },
     {
       name: "Escalation Period",
       info: undefined,
-      value: (
-        <Typography tag="p">
-          {"Min. "}
-          {exchangePolicy.escalationPeriod}
-          {" days"}
-        </Typography>
+      value: period(
+        exchangePolicy.escalationPeriod,
+        "resolutionPeriodDuration",
+        exchangePolicyCheckResult
+      )
+    },
+    {
+      name: "Return Period",
+      info: undefined,
+      value: period(
+        exchangePolicy.returnPeriod,
+        "metadata.shipping.returnPeriodInDays",
+        exchangePolicyCheckResult
       )
     }
   ];
@@ -87,7 +159,7 @@ export default function ExchangePolicyDetails({ offerId, offerData }: Props) {
           }}
           style={{ cursor: "pointer" }}
         >
-          <Typography tag="p">
+          <Typography tag="p" color={exchangePolicy.contractualAgreement.color}>
             {exchangePolicy.contractualAgreement.title}{" "}
             {exchangePolicy.contractualAgreement.version}{" "}
           </Typography>

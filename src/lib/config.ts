@@ -101,6 +101,7 @@ export const CONFIG = {
   rNFTLicenseTemplate: process.env.REACT_APP_RNFT_LICENSE_TEMPLATE,
   buyerSellerAgreementTemplate:
     process.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE,
+  fairExchangePolicyRules: process.env.REACT_APP_FAIR_EXCHANGE_POLICY_RULES,
   enableCurationLists: stringToBoolean(
     process.env.REACT_APP_ENABLE_CURATION_LISTS,
     true
@@ -142,6 +143,8 @@ export const CONFIG = {
   walletConnect: {
     projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
   },
+  carouselPromotedSellerId:
+    process.env.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID || undefined,
   envViewMode: {
     current: Object.values(ViewMode).includes(
       (process.env.REACT_APP_VIEW_MODE as ViewMode) || ""

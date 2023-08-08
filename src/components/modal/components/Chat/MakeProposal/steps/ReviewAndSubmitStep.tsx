@@ -67,9 +67,6 @@ export default function ReviewAndSubmitStep({
     name: FormModel.formFields.refundPercentage.name
   });
   const isChatInitialized = !!bosonXmtp;
-  const getStarted = (values as Record<string, unknown>)[
-    DisputeFormModel.formFields.getStarted.name
-  ] as string;
   const tellUsMore = (values as Record<string, unknown>)[
     DisputeFormModel.formFields.tellUsMore.name
   ] as string;
@@ -79,20 +76,12 @@ export default function ReviewAndSubmitStep({
       <Typography $fontSize="2rem" fontWeight="600">
         {isCounterProposal ? "Counterproposal overview" : "Review & Submit"}
       </Typography>
-      {(getStarted || tellUsMore) && (
+      {tellUsMore && (
         <>
           <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
             Dispute category
           </Typography>
           <Grid flexDirection="column" alignItems="flex-start">
-            {getStarted && (
-              <>
-                <div>
-                  <Check size={16} style={{ marginRight: "0.5rem" }} />
-                  <span>{getStarted}</span>
-                </div>
-              </>
-            )}
             {tellUsMore && (
               <>
                 <div>
@@ -104,21 +93,21 @@ export default function ReviewAndSubmitStep({
           </Grid>
         </>
       )}
-      {!isCounterProposal && (
-        <>
-          <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
-            Description
-          </Typography>
-          <Typography tag="p">{descriptionField.value}</Typography>
-          <UploadedFiles
-            files={uploadField.value}
-            handleRemoveFile={(index) => {
-              const files = uploadField.value.filter((_, idx) => idx !== index);
-              uploadFieldHelpers.setValue(files);
-            }}
-          />
-        </>
-      )}
+
+      <>
+        <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+          Description
+        </Typography>
+        <Typography tag="p">{descriptionField.value}</Typography>
+        <UploadedFiles
+          files={uploadField.value}
+          handleRemoveFile={(index) => {
+            const files = uploadField.value.filter((_, idx) => idx !== index);
+            uploadFieldHelpers.setValue(files);
+          }}
+        />
+      </>
+
       {proposalTypeField.value && (
         <>
           <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
