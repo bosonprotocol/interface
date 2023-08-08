@@ -155,6 +155,10 @@ function RaiseDisputePage() {
     }
   };
 
+  if (!address) {
+    return <p>Please connect your wallet</p>;
+  }
+
   if (!exchange && isLoading) {
     return <p>Loading exchange info...</p>;
   }
