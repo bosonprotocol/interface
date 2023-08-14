@@ -58,7 +58,7 @@ const GlobalStyle = createGlobalStyle<{
     --accent: ${(props) =>
       props.$accentColor && !props.$withBosonStyles
         ? props.$accentColor
-        : colors.secondary};
+        : colors.accent};
     --accentNoDefault : ${(props) =>
       props.$accentColor && !props.$withBosonStyles ? props.$accentColor : ""};
     --accentDark: ${(props) =>

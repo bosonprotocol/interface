@@ -27,10 +27,8 @@ import {
   getLensImageUrl
 } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
-import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useModal } from "../modal/useModal";
-import { useConvertedPrice } from "../price/useConvertedPrice";
 
 interface Props {
   offer: Offer;
@@ -66,7 +64,7 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   }};
 `;
 
-export default function Exchange({ offer, exchange, reload }: Props) {
+export default function Exchange({ offer, exchange }: Props) {
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
@@ -111,35 +109,6 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     });
   };
 
-  const convertedPrice = useConvertedPrice({
-    value: offer.price,
-    decimals: offer.exchangeToken.decimals,
-    symbol: offer.exchangeToken.symbol
-  });
-
-  const OFFER_DETAIL_DATA_MODAL = useMemo(
-    () => getOfferDetailData(offer, convertedPrice, true),
-    [offer, convertedPrice]
-  );
-
-  const BASE_MODAL_DATA = useMemo(
-    () => ({
-      data: OFFER_DETAIL_DATA_MODAL,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      exchange: exchange!,
-      animationUrl: offer.metadata.animationUrl || "",
-      image: offer.metadata.imageUrl,
-      name: offer.metadata.name
-    }),
-    [
-      OFFER_DETAIL_DATA_MODAL,
-      exchange,
-      offer.metadata.imageUrl,
-      offer.metadata.name,
-      offer.metadata.animationUrl
-    ]
-  );
-
   const createSpecificCardConfig = () => {
     switch (status) {
       case "REDEEMED": {
@@ -173,42 +142,21 @@ export default function Exchange({ offer, exchange, reload }: Props) {
           isCTAVisible: isBuyer
         };
       case "COMMITTED": {
-        const handleRedeem = () => {
-          showModal(
-            modalTypes.REDEEM,
-            {
-              title: "Redeem your item",
-              exchangeId: exchange?.id || "",
-              offerName: offer.metadata.name,
-              offerId: offer.id,
-              buyerId: exchange?.buyer.id || "",
-              sellerId: exchange?.seller.id || "",
-              sellerAddress: exchange?.seller.assistant || "",
-              reload
-            },
-            "s"
-          );
-        };
-        const handleCancel = () => {
-          if (!exchange) {
-            return;
-          }
-          showModal(modalTypes.CANCEL_EXCHANGE, {
-            title: "Cancel exchange",
-            exchange,
-            BASE_MODAL_DATA,
-            reload
-          });
-        };
         return {
           status: "COMMITTED" as Extract<ExchangeCardStatus, "COMMITTED">,
           isCTAVisible: isBuyer,
           bottomText: handleText,
           redeemButtonConfig: {
-            onClick: handleRedeem
+            // button id must start with "boson-redeem" to handle the redeem widget
+            id: `boson-redeem-redeem-${exchange?.id}`,
+            "data-exchange-id": exchange?.id,
+            "data-bypass-mode": "REDEEM"
           },
           cancelButtonConfig: {
-            onClick: handleCancel
+            // button id must start with "boson-redeem" to handle the redeem widget
+            id: `boson-redeem-cancel-${exchange?.id}`,
+            "data-exchange-id": exchange?.id,
+            "data-bypass-mode": "CANCEL"
           }
         };
       }
