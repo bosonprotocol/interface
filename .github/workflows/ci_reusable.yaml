@@ -185,14 +185,10 @@ jobs:
           path: playwright-report/
       - name: Deploy via fleek
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
-        id: deploy
-        uses: fleekhq/action-deploy@v1
-        with:
-          apiKey: ${{ secrets.FLEEK_API_KEY }}
-          workDir: ./public
-      - name: Get the output url
-        if: ${{ inputs.DEPLOY_TO_FLEEK }}
-        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+        id: Deploy
+        run: npx @fleekhq/fleek-cli site:deploy
+        env:
+          FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
       - name: Build dapp to show the dr_center only
         run: npm run build
         if: ${{ inputs.IS_PREVIEW == false && inputs.DEPLOY_TO_FLEEK }}
