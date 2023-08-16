@@ -68,7 +68,7 @@ export const DaysLeftToResolve: React.FC<DaysLeftToResolveProps> = ({
                   showModal(
                     "RAISE_DISPUTE",
                     {
-                      title: "Dispute process"
+                      title: "Dispute mutual resolution process"
                     },
                     "auto",
                     undefined,

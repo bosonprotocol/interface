@@ -147,7 +147,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
           showModal(
             modalTypes.RAISE_DISPUTE,
             {
-              title: "Dispute process",
+              title: "Dispute mutual resolution process",
               exchangeId: exchange?.id || ""
             },
             "auto",

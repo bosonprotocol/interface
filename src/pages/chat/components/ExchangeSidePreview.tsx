@@ -475,7 +475,7 @@ export default function ExchangeSidePreview({
                   progress={
                     (100 * daysLeftToResolveDispute) / totalDaysToResolveDispute
                   }
-                  text={`${daysLeftToResolveDispute} out of ${totalDaysToResolveDispute} days left to mutually resolve the dispute or escalate`}
+                  text={`${daysLeftToResolveDispute} out of ${totalDaysToResolveDispute} days left to mutually resolve the dispute or for the buyer to escalate`}
                 />
               </div>
             )}
