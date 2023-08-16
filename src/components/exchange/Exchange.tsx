@@ -5,6 +5,7 @@ import {
   exchanges,
   subgraph
 } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -34,7 +35,6 @@ interface Props {
   offer: Offer;
   exchange: IExchange;
   isPrivateProfile?: boolean;
-  reload?: () => void;
 }
 
 const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
@@ -152,6 +152,7 @@ export default function Exchange({ offer, exchange }: Props) {
             });
           } catch (e) {
             console.error(e);
+            Sentry.captureException(e);
           }
         };
         const handleCancel = () => {
@@ -164,6 +165,7 @@ export default function Exchange({ offer, exchange }: Props) {
             });
           } catch (e) {
             console.error(e);
+            Sentry.captureException(e);
           }
         };
         return {

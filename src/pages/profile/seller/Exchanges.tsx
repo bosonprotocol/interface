@@ -19,8 +19,7 @@ export default function Exchanges({ sellerId }: Props) {
   const {
     data: exchangesSeller,
     isLoading,
-    isError,
-    refetch
+    isError
   } = useExchanges(
     { ...orderProps, disputed: null, sellerId },
     { enabled: !!sellerId }
@@ -61,7 +60,6 @@ export default function Exchanges({ sellerId }: Props) {
           key={exchange.id}
           {...exchange}
           exchange={exchange as IExchange}
-          reload={refetch}
         />
       ))}
     </ProductGridContainer>

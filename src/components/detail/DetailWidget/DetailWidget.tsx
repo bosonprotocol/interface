@@ -151,7 +151,6 @@ interface IDetailWidget {
   image?: string;
   hasSellerEnoughFunds: boolean;
   isPreview?: boolean;
-  reload?: () => void;
   hasMultipleVariants?: boolean;
   exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
 }
@@ -844,6 +843,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         window.bosonWidgetReload();
       } catch (e) {
         console.error(e);
+        Sentry.captureException(e);
       }
     }
   }, [isExchange, exchange]);
