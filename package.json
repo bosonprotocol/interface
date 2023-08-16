@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "build:nomaps": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "analyze": "cross-env ANALYZE_BUNDLE=true react-app-rewired build",
     "eject": "react-app-rewired eject",
     "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --fix",
