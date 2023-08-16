@@ -142,21 +142,39 @@ export default function Exchange({ offer, exchange }: Props) {
           isCTAVisible: isBuyer
         };
       case "COMMITTED": {
+        const handleRedeem = () => {
+          try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            window.bosonWidgetShowRedeem({
+              exchangeId: exchange?.id || "",
+              bypassMode: "REDEEM"
+            });
+          } catch (e) {
+            console.error(e);
+          }
+        };
+        const handleCancel = () => {
+          try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            window.bosonWidgetShowRedeem({
+              exchangeId: exchange?.id || "",
+              bypassMode: "CANCEL"
+            });
+          } catch (e) {
+            console.error(e);
+          }
+        };
         return {
           status: "COMMITTED" as Extract<ExchangeCardStatus, "COMMITTED">,
           isCTAVisible: isBuyer,
           bottomText: handleText,
           redeemButtonConfig: {
-            // button id must start with "boson-redeem" to handle the redeem widget
-            id: `boson-redeem-redeem-${exchange?.id}`,
-            "data-exchange-id": exchange?.id,
-            "data-bypass-mode": "REDEEM"
+            onClick: handleRedeem
           },
           cancelButtonConfig: {
-            // button id must start with "boson-redeem" to handle the redeem widget
-            id: `boson-redeem-cancel-${exchange?.id}`,
-            "data-exchange-id": exchange?.id,
-            "data-bypass-mode": "CANCEL"
+            onClick: handleCancel
           }
         };
       }

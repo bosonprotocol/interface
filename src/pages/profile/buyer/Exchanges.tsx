@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import Exchange from "../../../components/exchange/Exchange";
 import { Spinner } from "../../../components/loading/Spinner";
 import {
@@ -27,18 +25,6 @@ export default function Exchanges({ buyerId }: Props) {
     { ...orderProps, disputed: null, buyerId },
     { enabled: !!buyerId }
   );
-
-  useEffect(() => {
-    // Reload the widget script after rendering the component
-    console.log("call window.bosonWidgetReload() from Exchanges component");
-    try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
-      window.bosonWidgetReload();
-    } catch (e) {
-      console.error(e);
-    }
-  }, [exchangesSeller]);
 
   if (isLoading) {
     return (
