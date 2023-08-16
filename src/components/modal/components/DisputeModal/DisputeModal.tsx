@@ -160,8 +160,9 @@ function DisputeModal({ exchangeId }: Props) {
         When a buyer raises a dispute they can create a resolution proposal,
         which sellers can either accept or provide a counterproposal solution
         to. When an acceptable solution for both parties is found, the dispute
-        will be resolved. If there is no acceptable solution, the buyer can
-        escalate the dispute and it will be resolved by a 3rd party.
+        will be resolved. If there is no acceptable solution found directly
+        between both parties, the buyer can escalate the dispute and it will be
+        resolved by a 3rd party.
       </Typography>
       <ModalGrid>
         <ModalGridColumns>
@@ -183,7 +184,7 @@ function DisputeModal({ exchangeId }: Props) {
             color={colors.black}
             fontWeight="600"
           >
-            Proposal created and solution found
+            Mutual resolution in progress with seller
           </Typography>
         </ModalGridColumns>
         <ModalGridColumns data-modal-columns>

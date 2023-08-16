@@ -73,7 +73,7 @@ export default function RefundRequest({ exchange }: Props) {
             fontWeight="400"
             margin={isLteS ? "0.625rem auto 0.625rem 0" : "0"}
           >
-            Item price + seller diposit
+            Item price + seller deposit
           </Typography>
           <InEscrowPriceWrapper>
             <InEscrowInput
