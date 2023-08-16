@@ -211,12 +211,8 @@ jobs:
       - name: Deploy via fleek
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
         id: deploy_dr_center
-        uses: fleekhq/action-deploy@v1
-        with:
-          apiKey: ${{ secrets.FLEEK_API_KEY }}
-          workDir: ./public
-      - name: Get the output url
-        if: ${{ inputs.DEPLOY_TO_FLEEK }}
-        run: echo "Deploy url is ${{ steps.deploy_dr_center.outputs.deployUrl }}"
+        run: npx @fleekhq/fleek-cli site:deploy
+        env:
+          FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
         
 
