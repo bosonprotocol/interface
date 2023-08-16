@@ -59,7 +59,7 @@ export const SellerResolveDisputeButton = ({
   if (!exchange || status !== "Resolving") {
     return (
       <BosonButton
-        variant="accentInverted"
+        variant="accentInvertedNoBorder"
         showBorder={false}
         size={ButtonSize.Small}
         onClick={() => {
@@ -112,7 +112,7 @@ export const SellerActionButton = ({
   return (
     <>
       <BosonButton
-        variant="accentInverted"
+        variant="accentInvertedNoBorder"
         showBorder={false}
         size={ButtonSize.Small}
         onClick={() => {
@@ -125,7 +125,7 @@ export const SellerActionButton = ({
       </BosonButton>
       {status === subgraph.ExchangeState.Committed && (
         <StyledBosonButton
-          variant="accentInverted"
+          variant="accentInvertedNoBorder"
           showBorder={false}
           size={ButtonSize.Small}
           disabled={!sellerRoles?.isAssistant}

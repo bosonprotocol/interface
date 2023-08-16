@@ -5,6 +5,7 @@ import {
   exchanges,
   subgraph
 } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -27,16 +28,13 @@ import {
   getLensImageUrl
 } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
-import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useModal } from "../modal/useModal";
-import { useConvertedPrice } from "../price/useConvertedPrice";
 
 interface Props {
   offer: Offer;
   exchange: IExchange;
   isPrivateProfile?: boolean;
-  reload?: () => void;
 }
 
 const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
@@ -66,7 +64,7 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   }};
 `;
 
-export default function Exchange({ offer, exchange, reload }: Props) {
+export default function Exchange({ offer, exchange }: Props) {
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
@@ -111,35 +109,6 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     });
   };
 
-  const convertedPrice = useConvertedPrice({
-    value: offer.price,
-    decimals: offer.exchangeToken.decimals,
-    symbol: offer.exchangeToken.symbol
-  });
-
-  const OFFER_DETAIL_DATA_MODAL = useMemo(
-    () => getOfferDetailData(offer, convertedPrice, true),
-    [offer, convertedPrice]
-  );
-
-  const BASE_MODAL_DATA = useMemo(
-    () => ({
-      data: OFFER_DETAIL_DATA_MODAL,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      exchange: exchange!,
-      animationUrl: offer.metadata.animationUrl || "",
-      image: offer.metadata.imageUrl,
-      name: offer.metadata.name
-    }),
-    [
-      OFFER_DETAIL_DATA_MODAL,
-      exchange,
-      offer.metadata.imageUrl,
-      offer.metadata.name,
-      offer.metadata.animationUrl
-    ]
-  );
-
   const createSpecificCardConfig = () => {
     switch (status) {
       case "REDEEMED": {
@@ -174,31 +143,30 @@ export default function Exchange({ offer, exchange, reload }: Props) {
         };
       case "COMMITTED": {
         const handleRedeem = () => {
-          showModal(
-            modalTypes.REDEEM,
-            {
-              title: "Redeem your item",
+          try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            window.bosonWidgetShowRedeem({
               exchangeId: exchange?.id || "",
-              offerName: offer.metadata.name,
-              offerId: offer.id,
-              buyerId: exchange?.buyer.id || "",
-              sellerId: exchange?.seller.id || "",
-              sellerAddress: exchange?.seller.assistant || "",
-              reload
-            },
-            "s"
-          );
+              bypassMode: "REDEEM"
+            });
+          } catch (e) {
+            console.error(e);
+            Sentry.captureException(e);
+          }
         };
         const handleCancel = () => {
-          if (!exchange) {
-            return;
+          try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            window.bosonWidgetShowRedeem({
+              exchangeId: exchange?.id || "",
+              bypassMode: "CANCEL"
+            });
+          } catch (e) {
+            console.error(e);
+            Sentry.captureException(e);
           }
-          showModal(modalTypes.CANCEL_EXCHANGE, {
-            title: "Cancel exchange",
-            exchange,
-            BASE_MODAL_DATA,
-            reload
-          });
         };
         return {
           status: "COMMITTED" as Extract<ExchangeCardStatus, "COMMITTED">,

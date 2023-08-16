@@ -169,7 +169,7 @@ export default function DisputesTable({ disputes }: Props) {
               {emailAddress && (
                 <BosonButton
                   type="button"
-                  variant="accentInverted"
+                  variant="accentInvertedNoBorder"
                   showBorder={false}
                   size={ButtonSize.Small}
                   style={{

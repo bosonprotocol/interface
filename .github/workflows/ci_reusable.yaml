@@ -45,6 +45,9 @@ on:
       REACT_APP_DR_CENTER_VIEW_MODE:
         required: true
         type: string
+      REACT_APP_WIDGETS_URL:
+        required: true
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -124,6 +127,7 @@ jobs:
       REACT_APP_VIEW_MODE: "dapp"
       REACT_APP_DAPP_VIEW_MODE: ${{ inputs.REACT_APP_DAPP_VIEW_MODE }}
       REACT_APP_DR_CENTER_VIEW_MODE: ${{ inputs.REACT_APP_DR_CENTER_VIEW_MODE }}
+      REACT_APP_WIDGETS_URL: ${{ inputs.REACT_APP_WIDGETS_URL }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}

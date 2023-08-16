@@ -19,8 +19,7 @@ export default function Exchanges({ buyerId }: Props) {
   const {
     data: exchangesSeller,
     isLoading,
-    isError,
-    refetch
+    isError
   } = useExchanges(
     { ...orderProps, disputed: null, buyerId },
     { enabled: !!buyerId }
@@ -62,7 +61,6 @@ export default function Exchanges({ buyerId }: Props) {
             key={exchange.id}
             {...exchange}
             exchange={exchange as IExchange}
-            reload={refetch}
           />
         );
       })}

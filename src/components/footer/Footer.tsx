@@ -4,6 +4,7 @@ import styled from "styled-components";
 import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
@@ -105,7 +106,7 @@ const NavigationLinks = styled.nav<INavigationLinks>`
     color: var(--footerTextColor);
   }
   a:hover {
-    color: var(--accent);
+    color: ${colors.accent};
   }
 
   ${breakpoint.xs} {

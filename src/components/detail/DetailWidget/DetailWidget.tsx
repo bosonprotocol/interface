@@ -24,7 +24,7 @@ import {
   Question,
   WarningCircle
 } from "phosphor-react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useBalance } from "wagmi";
@@ -151,7 +151,6 @@ interface IDetailWidget {
   image?: string;
   hasSellerEnoughFunds: boolean;
   isPreview?: boolean;
-  reload?: () => void;
   hasMultipleVariants?: boolean;
   exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
 }
@@ -374,7 +373,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   hasSellerEnoughFunds,
   isPreview = false,
   hasMultipleVariants,
-  reload,
   exchangePolicyCheckResult
 }) => {
   const [commitType, setCommitType] = useState<ActionName | undefined | null>(
@@ -562,17 +560,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     },
     [address, isChainUnsupported, isCommittingFromNotConnectedWallet]
   );
-
-  const handleCancel = () => {
-    if (!exchange) {
-      return;
-    }
-    showModal(modalTypes.CANCEL_EXCHANGE, {
-      title: "Cancel exchange",
-      exchange,
-      BASE_MODAL_DATA
-    });
-  };
 
   const userCommittedOffers = useMemo(
     () => offer.exchanges?.filter((elem) => elem?.buyer?.id === buyerId),
@@ -844,6 +831,23 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     );
   };
 
+  useEffect(() => {
+    if (isExchange) {
+      // Reload the widget script after rendering the component
+      console.log(
+        "call window.bosonWidgetReload() from DetailWidget component"
+      );
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        window.bosonWidgetReload();
+      } catch (e) {
+        console.error(e);
+        Sentry.captureException(e);
+      }
+    }
+  }, [isExchange, exchange]);
+
   return (
     <>
       <Widget>
@@ -978,23 +982,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   isPreview ||
                   !isBuyer
                 }
-                onClick={() => {
-                  showModal(
-                    modalTypes.REDEEM,
-                    {
-                      title: "Redeem your item",
-                      offerName: offer.metadata.name,
-                      offerId: offer.id,
-                      exchangeId: exchange?.id || "",
-                      buyerId: exchange?.buyer.id || "",
-                      sellerId: exchange?.seller.id || "",
-                      sellerAddress: exchange?.seller.assistant || "",
-                      setIsLoading: setIsLoading,
-                      reload
-                    },
-                    "s"
-                  );
-                }}
+                id="boson-redeem-redeem"
+                data-exchange-id={exchange?.id}
+                data-bypass-mode="REDEEM"
               >
                 <span>Redeem</span>
                 <Typography
@@ -1093,10 +1083,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       | subgraph.ExchangeState
                   ) && (
                     <StyledCancelButton
-                      onClick={handleCancel}
                       theme="blank"
                       style={{ fontSize: "0.875rem" }}
                       disabled={isChainUnsupported || !isBuyer}
+                      id="boson-redeem-cancel"
+                      data-exchange-id={exchange?.id}
+                      data-bypass-mode="CANCEL"
                     >
                       Cancel
                       <Question size={18} />

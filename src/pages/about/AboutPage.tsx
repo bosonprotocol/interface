@@ -160,6 +160,18 @@ function AboutPage() {
         <span>Carousel Promoted SellerId:</span>
         <span>{CONFIG.carouselPromotedSellerId || "-"}</span>
       </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>dApp View Mode Url:</span>
+        <span>{CONFIG.envViewMode?.dappViewModeUrl || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>DR Center View Mode Url:</span>
+        <span>{CONFIG.envViewMode?.drCenterViewModeUrl || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Widgets Url:</span>
+        <span>{process.env.REACT_APP_WIDGETS_URL || "-"}</span>
+      </Text>
     </Wrapper>
   );
 }

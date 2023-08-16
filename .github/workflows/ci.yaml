@@ -51,6 +51,7 @@ jobs:
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
       REACT_APP_DAPP_VIEW_MODE: "same_origin"
       REACT_APP_DR_CENTER_VIEW_MODE: "same_origin"
+      REACT_APP_WIDGETS_URL: "https://widgets-test.on.fleek.co"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -82,6 +83,7 @@ jobs:
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
       REACT_APP_DAPP_VIEW_MODE: "https://interface-test.on.fleek.co"
       REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-test.on.fleek.co"
+      REACT_APP_WIDGETS_URL: "https://widgets-test.on.fleek.co"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -118,6 +120,7 @@ jobs:
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
       REACT_APP_DAPP_VIEW_MODE: "https://interface-staging.on.fleek.co"
       REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-staging.on.fleek.co"
+      REACT_APP_WIDGETS_URL: "https://widgets-staging.on.fleek.co"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -154,6 +157,7 @@ jobs:
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
       REACT_APP_DAPP_VIEW_MODE: "https://bosonapp.io"
       REACT_APP_DR_CENTER_VIEW_MODE: "https://disputes.bosonprotocol.io"
+      REACT_APP_WIDGETS_URL: "https://widgets.bosonprotocol.io"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
