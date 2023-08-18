@@ -133,7 +133,7 @@ export default function TermsAndConditionsDrCenter() {
         RESOLUTION CENTER (“the <b>DR Center</b>”), INCLUDING:
         <Break />
         <Grid flexDirection="column" gap="0.5rem">
-          <div>• ACCESSING OR USING THE BOSON DR CENTER;</div>
+          <div>• ACCESSING OR USING THE BOSON DR CENTER; OR</div>
           <div>
             • BUYING, SELLING OR RECEIVING ANY NFT THAT WAS CREATED ON THE DR
             CENTER; OR
