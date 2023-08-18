@@ -125,7 +125,7 @@ export default function TermsAndConditions() {
       </Text>
       <Title>BOSON DAPP TERMS AND CONDITIONS </Title>
       <Typography color={colors.grey} tag="p" fontWeight="400" margin="0">
-        Last updated on 31 October 2022
+        Last updated on 18 August 2023
       </Typography>
       <Margin />
       <Text>
@@ -152,13 +152,22 @@ export default function TermsAndConditions() {
       </Text>
       <Text>
         For any matters which are not expressly governed by these terms, please
-        refer to the following:
+        refer to the following, which shall be incorporated by reference into
+        these Terms:
       </Text>
       <Text>
         a) The dApp Privacy Policy:{" "}
         <LinkWithQuery to={BosonRoutes.PrivacyPolicy}>
           <>
             {window.location.origin}/#{BosonRoutes.PrivacyPolicy}
+          </>
+        </LinkWithQuery>
+      </Text>
+      <Text>
+        b) The dApp Community Rules:{" "}
+        <LinkWithQuery to={BosonRoutes.CommunityRules}>
+          <>
+            {window.location.origin}/#{BosonRoutes.CommunityRules}
           </>
         </LinkWithQuery>
       </Text>
@@ -199,8 +208,8 @@ export default function TermsAndConditions() {
             infringements.
           </Text>
           <Text>
-            <b>“Item”</b> means the thing being sold or a set of things being
-            sold together in a single Offer.
+            <b>“Item”</b> means the good or service being sold or a set of the
+            good or service being sold together in a single Offer.
           </Text>
           <Text>
             <b>“NFTs”</b> means Ethereum-based tokens complying with the ERC-721
@@ -217,6 +226,11 @@ export default function TermsAndConditions() {
             important to note that an rNFT is a voucher that can be redeemed for
             a Digital and/or Physical good and it is subject to the rNFTs T&Cs.
             It is NOT a digital representation of said good.
+          </Text>
+          <Text>
+            <b>“Services”</b> means access or use of the Boson dApp, our website
+            https://www.bosonapp.io, or any other apps, software or services we
+            provide (collectively, the Services).
           </Text>
         </li>
         <li>
@@ -279,14 +293,12 @@ export default function TermsAndConditions() {
           </Text>
           <Text>
             <b>Privacy Policy.</b> To access the dApp, you must explicitly
-            consent to the Company’s privacy and data security practices, which
-            can be found by visiting our privacy policy at&nbsp;
-            <LinkWithQuery to={BosonRoutes.PrivacyPolicy}>
-              <>
-                {window.location.origin}/#{BosonRoutes.PrivacyPolicy}
-              </>
-            </LinkWithQuery>
-            .
+            consent to the Company's privacy and data security practices.
+          </Text>
+          <Text>
+            <b>Community Rules.</b> A breach of any of Community Rules is a
+            breach of the Terms and the seller's Items will not be displayed on
+            the dApp's interface.
           </Text>
         </li>
         <li>
@@ -296,6 +308,10 @@ export default function TermsAndConditions() {
             <b>Nature of dApp.</b> The dApp is a public software utility that
             communicates with blockchain, which is accessible through any
             compatible Ethereum “wallet” application.{" "}
+          </Text>
+          <Text>
+            <b>Seller Information.</b> The information you input to create a
+            seller profile on the dApp will be public and accessible via IPFS.{" "}
           </Text>
           <Text>
             <b>License to Use the dApp.</b> You, subject to and conditioned upon
@@ -345,7 +361,7 @@ export default function TermsAndConditions() {
             the Company, or any member of the Community;
             <b>(c)</b> violate, breach or fail to comply with any applicable
             provision of these Terms or any other terms of service, privacy
-            policy, trading policy or other contract governing the use of any
+            policy, Community Rules or other contract governing the use of any
             the activities on the dApp or any relevant NFTs; <b>(d)</b> use the
             dApp by or on behalf of a competitor of the Company or competing
             platform or service for the purpose of interfering with the dApp to

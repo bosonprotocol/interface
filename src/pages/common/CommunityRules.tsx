@@ -119,50 +119,48 @@ export default function CommunityRules() {
       <Text>The following activities are prohibited:</Text>
       <List>
         <li>
-          <strong>Child exploitation:</strong>You may not offer goods or
-          services, or post or upload Materials that exploit or abuse children,
-          including but not limited to images or depictions of child abuse or
-          sexual abuse, or that present children in a sexual manner.
+          <b>Child exploitation:</b>You may not offer goods or services, or post
+          or upload Materials that exploit or abuse children, including but not
+          limited to images or depictions of child abuse or sexual abuse, or
+          that present children in a sexual manner.
         </li>
         <li>
-          <strong>Harassment, bullying, defamation and threats:</strong> You may
-          not offer goods or services, or post or upload Materials, that harass,
-          bully, defame or threaten a specific individual.
+          <b>Harassment, bullying, defamation and threats:</b> You may not offer
+          goods or services, or post or upload Materials, that harass, bully,
+          defame or threaten a specific individual.
         </li>
         <li>
-          <strong>Hateful content:</strong> You may not use the dApp to promote
-          or condone hate or violence against people based on race, ethnicity,
-          color, national origin, religion, age, sex, gender, sexual
-          orientation, disability, medical condition, veteran status or other
-          forms of discriminatory intolerance. You may not use the dApp to
-          promote or support organizations, platforms or people that: (i)
-          promote or condone such hate; or (ii) threaten or condone violence to
-          further a cause.
+          <b>Hateful content:</b> You may not use the dApp to promote or condone
+          hate or violence against people based on race, ethnicity, color,
+          national origin, religion, age, sex, gender, sexual orientation,
+          disability, medical condition, veteran status or other forms of
+          discriminatory intolerance. You may not use the dApp to promote or
+          support organizations, platforms or people that: (i) promote or
+          condone such hate; or (ii) threaten or condone violence to further a
+          cause.
         </li>
         <li>
-          <strong>Illegal activities:</strong> You may not offer goods or
-          services, or post or upload Materials, that contravene or that
-          facilitate or promote activities that contravene, the laws of the
-          jurisdictions in which you operate and/or do business with.
+          <b>Illegal activities:</b> You may not offer goods or services, or
+          post or upload Materials, that contravene or that facilitate or
+          promote activities that contravene, the laws of the jurisdictions in
+          which you operate and/or do business with.
         </li>
         <li>
-          <strong>Intellectual property:</strong> You may not offer goods or
-          services, or post or upload Materials, that infringe on the copyright
-          or trademarks of others.
+          <b>Intellectual property:</b> You may not offer goods or services, or
+          post or upload Materials, that infringe on the copyright or trademarks
+          of others.
         </li>
         <li>
-          <strong>Malicious and deceptive practices:</strong> You may not use
-          the dApp to transmit malware or host phishing pages. You may not
-          perform activities or upload or distribute Materials that harm or
-          disrupt the operation of the dApp or other Boson infrastructure or
-          others. You may not use the dApp for deceptive commercial practices or
-          any other illegal or deceptive activities.
+          <b>Malicious and deceptive practices:</b> You may not use the dApp to
+          transmit malware or host phishing pages. You may not perform
+          activities or upload or distribute Materials that harm or disrupt the
+          operation of the dApp or other Boson infrastructure or others. You may
+          not use the dApp for deceptive commercial practices or any other
+          illegal or deceptive activities.
         </li>
         <li>
-          <strong>
-            Personal, confidential, and protected health information:
-          </strong>{" "}
-          You may not post or upload any Materials that contain personally
+          <b>Personal, confidential, and protected health information:</b> You
+          may not post or upload any Materials that contain personally
           identifiable information, sensitive personal information, or
           confidential information, such as credit card numbers, confidential
           national ID numbers, or account passwords unless you have consent from
@@ -174,18 +172,18 @@ export default function CommunityRules() {
           information.
         </li>
         <li>
-          <strong>Self-harm:</strong> You may not offer goods or services, or
-          post or upload Materials, that promote self-harm.
+          <b>Self-harm:</b> You may not offer goods or services, or post or
+          upload Materials, that promote self-harm.
         </li>
         <li>
-          <strong>Spam:</strong> You may not use the Services to transmit
-          unsolicited commercial electronic messages or upload spam offers
-          without intention to offer any goods and services for sale.
+          <b>Spam:</b> You may not use the Services to transmit unsolicited
+          commercial electronic messages or upload spam offers without intention
+          to offer any goods and services for sale.
         </li>
         <li>
-          <strong>Terrorist organizations:</strong> You may not offer goods or
-          services, or post or upload Materials, that imply or promote support
-          or funding of, or membership in, a terrorist organization.
+          <b>Terrorist organizations:</b> You may not offer goods or services,
+          or post or upload Materials, that imply or promote support or funding
+          of, or membership in, a terrorist organization.
         </li>
       </List>
       <Text>
@@ -197,7 +195,7 @@ export default function CommunityRules() {
       <Text>
         Materials and your use of the dApp may be monitored at any time for
         compliance with the Rules and our Terms & Conditions (collectively, the
-        <strong>“Terms”</strong>).
+        <b>“Terms”</b>).
       </Text>
       <Text>
         The Rules may be modified at any time by posting a revised version. By
@@ -218,10 +216,10 @@ export default function CommunityRules() {
         <SubTitle>Definitions:</SubTitle>
       </Text>
       <Text>
-        <strong>“Materials”</strong> means any photo, image, video, graphic,
-        written content, audio file, code, information, data or other content
-        uploaded, collected, generated, stored, displayed, distributed,
-        transmitted or exhibited on or in connection with your Account.
+        <b>“Materials”</b> means any photo, image, video, graphic, written
+        content, audio file, code, information, data or other content uploaded,
+        collected, generated, stored, displayed, distributed, transmitted or
+        exhibited on or in connection with your Account.
       </Text>
       <Break />
     </Wrapper>
