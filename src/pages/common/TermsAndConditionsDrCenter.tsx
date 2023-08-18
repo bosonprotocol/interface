@@ -271,11 +271,6 @@ export default function TermsAndConditionsDrCenter() {
             <b>Privacy Policy.</b> To access the DR Center, you must explicitly
             consent to the Company's privacy and data security practices.
           </Text>
-          <Text>
-            <b>Community Rules.</b> A breach of any of Community Rules is a
-            breach of the Terms and the seller's Items will not be displayed on
-            the DR Center's interface.
-          </Text>
         </li>
         <li>
           <SubTitle>The DR Center</SubTitle>
