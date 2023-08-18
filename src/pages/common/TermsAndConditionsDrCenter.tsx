@@ -204,13 +204,6 @@ export default function TermsAndConditionsDrCenter() {
             standard.{" "}
           </Text>
           <Text>
-            <b>“Redeemable NFT (rNFT / NFT Voucher)”</b> means a voucher using
-            NFT technology, representing the right to redeem an Item. It is
-            important to note that an rNFT is a voucher that can be redeemed for
-            a Digital and/or Physical good and it is subject to the rNFTs T&Cs.
-            It is NOT a digital representation of said good.
-          </Text>
-          <Text>
             <b>“Services”</b> means access or use of the Boson DR Center, our
             website https://disputes.bosonprotocol.io, or any other apps,
             software or services we provide (collectively, the Services).
