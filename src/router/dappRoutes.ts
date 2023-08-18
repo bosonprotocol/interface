@@ -8,8 +8,6 @@ import {
   SellerCenterRoutes
 } from "../lib/routing/routes";
 import CommunityRules from "../pages/common/CommunityRules";
-import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
-import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
 import CreateProductPage from "../pages/create-product/CreateProduct";
 import { DCLPage } from "../pages/dcl/DCLPage";
 import ExplorePage from "../pages/explore/Explore";
@@ -44,6 +42,10 @@ const ContractualAgreementPage = lazy(
 
 const DisputeResolverPage = lazy(
   () => import("../pages/dispute-resolver/DisputeResolver")
+);
+const PrivacyPolicyPage = lazy(() => import("../pages/common/PrivacyPolicy"));
+const TermsAndConditionsPage = lazy(
+  () => import("../pages/common/TermsAndConditions")
 );
 
 export const baseAppProps = {

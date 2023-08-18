@@ -14,7 +14,7 @@ import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
 import Typography from "../ui/Typography";
 import { ViewModeLink } from "../viewMode/ViewMode";
-import { ADDITIONAL_LINKS, SOCIAL_ROUTES } from "./routes";
+import { ADDITIONAL_LINKS_DR_CENTER, SOCIAL_ROUTES } from "./routes";
 
 const Footer = styled.footer<{ padding?: CSSProperties["padding"] }>`
   width: 100%;
@@ -153,7 +153,7 @@ export const DrCenterFooter: React.FC = () => {
           </Typography>
           <Socials />
           <NavigationLinks style={{ flex: "1" }}>
-            {ADDITIONAL_LINKS.map((footerLink, index) => {
+            {ADDITIONAL_LINKS_DR_CENTER.map((footerLink, index) => {
               return (
                 <LinkWithQuery
                   to={footerLink.value}

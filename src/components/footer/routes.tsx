@@ -65,6 +65,20 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
   }
 ];
 
+export const ADDITIONAL_LINKS_DR_CENTER: Array<{
+  label: string;
+  value: string;
+}> = [
+  {
+    label: "Privacy Policy",
+    value: DrCenterRoutes.PrivacyPolicy
+  },
+  {
+    label: "Terms & Conditions",
+    value: DrCenterRoutes.TermsAndConditions
+  }
+];
+
 export const getShopRoutes = ({
   roles,
   isSupportFunctionalityDefined,
