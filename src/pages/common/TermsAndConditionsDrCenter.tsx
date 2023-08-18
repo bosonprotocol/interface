@@ -205,8 +205,8 @@ export default function TermsAndConditionsDrCenter() {
           </Text>
           <Text>
             <b>“Services”</b> means access or use of the Boson DR Center, our
-            website https://disputes.bosonprotocol.io, or any other apps,
-            software or services we provide (collectively, the Services).
+            website disputes.bosonprotocol.io, or any other apps, software or
+            services we provide (collectively, the Services).
           </Text>
         </li>
         <li>
