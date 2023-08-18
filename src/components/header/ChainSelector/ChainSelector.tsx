@@ -8,7 +8,9 @@ import {
   Warning as AlertTriangle
 } from "phosphor-react";
 import { useCallback, useMemo, useRef, useState } from "react";
+import styled from "styled-components";
 
+import { colors } from "../../../lib/styles/colors";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import Tooltip from "../../tooltip/Tooltip";
 // import * as styles from "./ChainSelector.css";
@@ -31,6 +33,12 @@ import { useOnClickOutside } from "./hooks/useOnClickOutside";
 import useSelectChain from "./hooks/useSelectChain";
 import useSyncChainQuery from "./hooks/useSyncChainQuery";
 import { getSupportedChainIdsFromWalletConnectSession } from "./utils/getSupportedChainIdsFromWalletConnectSession";
+
+const IconAndChevron = styled.div`
+  &:hover {
+    background: ${colors.lightGrey} !important;
+  }
+`;
 
 const NETWORK_SELECTOR_CHAINS = [...L1_CHAIN_IDS, ...L2_CHAIN_IDS];
 
@@ -57,9 +65,6 @@ function useWalletSupportedChains(): ChainId[] {
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { chainId } = useWeb3React();
-  console.log({
-    chainId
-  });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
 
@@ -122,7 +127,10 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
       right={leftAlign ? "auto" : "0"}
       ref={modalRef}
     >
-      <div data-testid="chain-selector-options">
+      <div
+        data-testid="chain-selector-options"
+        style={{ paddingLeft: "8px", paddingRight: "8px" }}
+      >
         {supportedChains.map((selectorChain) => (
           <ChainSelectorRow
             disabled={!walletSupportsChain.includes(selectorChain)}
@@ -156,16 +164,18 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
         content={`Your wallet's current network is unsupported.`}
         disabled={isSupported}
       >
-        <div
+        <IconAndChevron
           data-testid="chain-selector"
           style={{
             display: "flex",
             alignItems: "center",
             height: "40px",
             gap: "8px",
-            flexDirection: "row"
+            flexDirection: "row",
+            background: isOpen ? colors.lightGrey : "none",
+            borderRadius: "8px",
+            padding: "1px 6px"
           }}
-          // background={isOpen ? "accentActiveSoft" : "none"}
           onClick={() => setIsOpen(!isOpen)}
         >
           {!isSupported ? (
@@ -186,7 +196,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
           ) : (
             <ChevronDown {...chevronProps} />
           )}
-        </div>
+        </IconAndChevron>
       </Tooltip>
       {isOpen && (isMobile ? <Portal>{dropdown}</Portal> : <>{dropdown}</>)}
     </div>

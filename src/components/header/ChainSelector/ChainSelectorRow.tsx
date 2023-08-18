@@ -3,6 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
 
 import { breakpointNumbers } from "../../../lib/styles/breakpoint";
+import { colors } from "../../../lib/styles/colors";
 import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import { getChainInfo } from "./constants/chainInfo";
 import { CheckMarkIcon } from "./icons";
@@ -32,8 +33,8 @@ const Container = styled.button<{ disabled: boolean }>`
   }
 
   &:hover {
-    /* background-color: ${({ disabled, theme }) =>
-      disabled ? "none" : theme.backgroundOutline}; */
+    background-color: ${({ disabled }) =>
+      disabled ? "none" : colors.lightGrey};
   }
 `;
 

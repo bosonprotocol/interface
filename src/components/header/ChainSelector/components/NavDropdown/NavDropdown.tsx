@@ -2,7 +2,6 @@ import { ForwardedRef, forwardRef } from "react";
 
 import { zIndex } from "../../../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../../../lib/utils/hooks/useBreakpoints";
-// import * as styles from "./NavDropdown.css";
 
 const stylesDesktopNavDropdown = {
   position: "absolute",
@@ -38,8 +37,8 @@ export const NavDropdown = forwardRef(
           right: props.right,
           background: "white",
 
-          paddingBottom: "8",
-          paddingTop: "8",
+          paddingBottom: "8px",
+          paddingTop: "8px",
           ...(isMobile ? stylesMobileNavDropdown : stylesDesktopNavDropdown)
         }}
       >
