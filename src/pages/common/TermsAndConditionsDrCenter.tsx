@@ -316,7 +316,7 @@ export default function TermsAndConditionsDrCenter() {
           <Text>
             <b>Acceptable Uses.</b> The DR Center and other activities are
             reserved exclusively for lawful consumer entertainment and artistic
-            purposes (the “Permitted Uses”).{" "}
+            purposes (the <b>“Permitted Uses”</b>).{" "}
           </Text>
           <Text>
             <b>Prohibited Uses.</b> You must not, directly or indirectly:{" "}
