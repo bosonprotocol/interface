@@ -157,7 +157,7 @@ export default function PrivacyPolicyDrCenter() {
                       href="https://disputes.bosonprotocol.io/"
                       target="_blank"
                     >
-                      https://disputes.bosonprotocol.io/
+                      disputes.bosonprotocol.io
                     </a>
                     , or any other apps, software or services we provide
                     (collectively the <b>Services</b>); and/or
