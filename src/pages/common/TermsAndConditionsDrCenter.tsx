@@ -182,9 +182,7 @@ export default function TermsAndConditionsDrCenter() {
             redeemable NFTs.{" "}
           </Text>
           <Text>
-            <b>“Boson DR Center”</b> / “the DR Center” means a generic interface
-            to Boson Protocol v2, that enables users to exchange physical
-            products as redeemable NFTs.{" "}
+            <b>“Boson DR Center”</b> / “the DR Center” means XXX
           </Text>
           <Text>
             <b>“Polygon Blockchain”</b> / “Polygon” means Ethereum Virtual
@@ -221,8 +219,8 @@ export default function TermsAndConditionsDrCenter() {
           </Text>
           <Text>
             <b>“Services”</b> means access or use of the Boson DR Center, our
-            website https://www.bosonapp.io, or any other apps, software or
-            services we provide (collectively, the Services).
+            website https://disputes.bosonprotocol.io, or any other apps,
+            software or services we provide (collectively, the Services).
           </Text>
         </li>
         <li>
