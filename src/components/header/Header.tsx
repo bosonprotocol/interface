@@ -23,6 +23,7 @@ import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import { BurgerButton } from "./BurgerButton";
+import { ChainSelector } from "./ChainSelector/ChainSelector";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
 
@@ -360,6 +361,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                     <>
                       <CTA />
                       <ConnectButton showAddress={!address} />
+                      <ChainSelector />
                       <BurgerButton onClick={toggleMenu} />
                     </>
                   )}
@@ -375,6 +377,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                         navigationBarPosition={navigationBarPosition}
                         showAddress={!address}
                       />
+                      <ChainSelector />
                     </>
                   )}
                 </HeaderItems>
