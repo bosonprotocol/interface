@@ -182,10 +182,11 @@ export default function TermsAndConditionsDrCenter() {
             redeemable NFTs.{" "}
           </Text>
           <Text>
-            <b>“Boson DR Center” / “the DR Center”</b> means XXX{" "}
+            <b>“Boson DR Center” / “the DR Center”</b> means a mutual resolution
+            center where users can mutually resolve disputes.{" "}
           </Text>
           <Text>
-            <b>“Polygon Blockchain”</b> / “Polygon” means Ethereum Virtual
+            <b>“Polygon Blockchain” / “Polygon” </b>means Ethereum Virtual
             Machine compatible validation mechanism.{" "}
           </Text>
           <Text>

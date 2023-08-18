@@ -1175,24 +1175,6 @@ export default function PrivacyPolicyDrCenter() {
                 </li>
                 <li>
                   <Text>
-                    <b>Lens Protocol</b> (
-                    <a href="https://lens.xyz/" target="_blank">
-                      https://lens.xyz/
-                    </a>
-                    ) Lens Protocol provides a social graph for web3. Lens is
-                    integrated into the Boson Dispute Resolver Center to provide
-                    user profiles to buyers and sellers. We do not store any
-                    data collected by them. Lens' privacy policy is available at{" "}
-                    <a
-                      href="https://claim.lens.xyz/pdf_privacy.pdf"
-                      target="_blank"
-                    >
-                      https://claim.lens.xyz/pdf_privacy.pdf
-                    </a>
-                  </Text>
-                </li>
-                <li>
-                  <Text>
                     <b>XMTP</b> (website link) is a secure messaging protocol
                     and decentralized communication network for web3. XMTP is
                     integrated into the Boson Dispute Resolver Center to allow
