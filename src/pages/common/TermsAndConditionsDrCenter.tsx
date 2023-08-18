@@ -83,7 +83,7 @@ const SubTitle = styled.h4`
 `;
 const Text = styled.p`
   font-family: "Plus Jakarta Sans";
-  display: inline-block;
+  display: block;
   margin: 0;
   + p {
     margin-top: 0.5rem;
