@@ -115,12 +115,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   }
 
   const isSupported = !!info;
-  console.log(
-    "supportedChains",
-    supportedChains,
-    "unsupportedChains",
-    unsupportedChains
-  );
+
   const dropdown = (
     <NavDropdown
       left={leftAlign ? "0" : "auto"}

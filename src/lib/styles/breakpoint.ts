@@ -5,7 +5,7 @@ export const breakpointNumbers = {
   m: 981,
   l: 1200,
   xl: 1500
-};
+} as const;
 
 export const breakpoint = {
   xxs: `@media (max-width: ${breakpointNumbers.xs - 1}px)`,
