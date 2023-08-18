@@ -129,8 +129,8 @@ export default function TermsAndConditionsDrCenter() {
       </Typography>
       <Margin />
       <Text>
-        PLEASE FIND BELOW THE TERMS AND CONDITIONS GOVERNING THE BOSON DR CENTER
-        (“the <b>DR Center</b>”), INCLUDING:
+        PLEASE FIND BELOW THE TERMS AND CONDITIONS GOVERNING THE BOSON DISPUTE
+        RESOLUTION CENTER (“the <b>DR Center</b>”), INCLUDING:
         <Break />
         <Grid flexDirection="column" gap="0.5rem">
           <div>• ACCESSING OR USING THE BOSON DR CENTER;</div>
