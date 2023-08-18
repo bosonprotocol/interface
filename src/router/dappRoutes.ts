@@ -7,7 +7,6 @@ import {
   ProductRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
-import CommunityRules from "../pages/common/CommunityRules";
 import CreateProductPage from "../pages/create-product/CreateProduct";
 import { DCLPage } from "../pages/dcl/DCLPage";
 import ExplorePage from "../pages/explore/Explore";
@@ -47,6 +46,7 @@ const PrivacyPolicyPage = lazy(() => import("../pages/common/PrivacyPolicy"));
 const TermsAndConditionsPage = lazy(
   () => import("../pages/common/TermsAndConditions")
 );
+const CommunityRules = lazy(() => import("../pages/common/CommunityRules"));
 
 export const baseAppProps = {
   withLayout: true,
