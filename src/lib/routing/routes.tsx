@@ -19,6 +19,7 @@ export const BosonRoutes = addViewModePrefixToPaths(
     ManageStorefronts: "/custom-store/manage",
     PrivacyPolicy: "/privacy-policy",
     TermsAndConditions: "/terms-and-conditions",
+    CommunityRules: "/community-rules",
     LearnMore: "https://www.bosonprotocol.io/technology",
     Chat: "/chat",
     ChatMessage: `/chat/:${UrlParameters.exchangeId}`,

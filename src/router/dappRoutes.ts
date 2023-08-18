@@ -7,6 +7,7 @@ import {
   ProductRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
+import CommunityRules from "../pages/common/CommunityRules";
 import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
 import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
 import CreateProductPage from "../pages/create-product/CreateProduct";
@@ -329,6 +330,14 @@ export default [
       ...base.app
     },
     component: TermsAndConditionsPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.CommunityRules,
+    app: {
+      ...base.app
+    },
+    component: CommunityRules
   },
   {
     ...base,

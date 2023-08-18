@@ -58,6 +58,10 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
   {
     label: "Terms & Conditions",
     value: BosonRoutes.TermsAndConditions
+  },
+  {
+    label: "Community Guidelines",
+    value: BosonRoutes.CommunityRules
   }
 ];
 
