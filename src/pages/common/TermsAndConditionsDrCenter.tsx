@@ -23,9 +23,6 @@ const Wrapper = styled(Grid)`
 
   ol[type] > li {
     margin: 0.25rem 0;
-    > p {
-      display: inline;
-    }
   }
 `;
 const List = styled.ol`
