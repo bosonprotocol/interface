@@ -281,11 +281,6 @@ export default function TermsAndConditionsDrCenter() {
             through any compatible Ethereum “wallet” application.{" "}
           </Text>
           <Text>
-            <b>Seller Information.</b> The information you input to create a
-            seller profile on the DR Center will be public and accessible via
-            IPFS.{" "}
-          </Text>
-          <Text>
             <b>License to Use the DR Center.</b> You, subject to and conditioned
             upon such your acceptance of and adherence to these Terms, are
             hereby granted a nontransferable, non-exclusive, personal, non-sub
