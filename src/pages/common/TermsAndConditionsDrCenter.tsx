@@ -123,7 +123,7 @@ export default function TermsAndConditionsDrCenter() {
           ACTION LAWSUIT OR A JURY TRIAL.
         </b>
       </Text>
-      <Title>BOSON DR CENTER TERMS AND CONDITIONS </Title>
+      <Title>BOSON DISPUTE RESOLUTION CENTER TERMS AND CONDITIONS</Title>
       <Typography color={colors.grey} tag="p" fontWeight="400" margin="0">
         Last updated on 18 August 2023
       </Typography>
@@ -182,7 +182,7 @@ export default function TermsAndConditionsDrCenter() {
             redeemable NFTs.{" "}
           </Text>
           <Text>
-            <b>“Boson DR Center”</b> / “the DR Center” means XXX{" "}
+            <b>“Boson DR Center” / “the DR Center”</b> means XXX{" "}
           </Text>
           <Text>
             <b>“Polygon Blockchain”</b> / “Polygon” means Ethereum Virtual
