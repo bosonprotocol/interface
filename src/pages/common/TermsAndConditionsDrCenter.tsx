@@ -199,17 +199,9 @@ export default function TermsAndConditionsDrCenter() {
             infringements.
           </Text>
           <Text>
-            <b>“Item”</b> means the good or service being sold or a set of the
-            good or service being sold together in a single Offer.
-          </Text>
-          <Text>
             <b>“NFTs”</b> means Ethereum-based tokens complying with the ERC-721
             standard, ERC-1155 standard or other similar “non-fungible” token
             standard.{" "}
-          </Text>
-          <Text>
-            <b>“Offer”</b> means an expression of readiness by the seller to
-            sell an Item.{" "}
           </Text>
           <Text>
             <b>“Redeemable NFT (rNFT / NFT Voucher)”</b> means a voucher using
