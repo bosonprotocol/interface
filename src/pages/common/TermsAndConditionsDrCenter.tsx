@@ -325,18 +325,18 @@ export default function TermsAndConditionsDrCenter() {
             the Company, or any member of the Community;
             <b>(c)</b> violate, breach or fail to comply with any applicable
             provision of these Terms or any other terms of service, privacy
-            policy, Community Rules or other contract governing the use of any
-            the activities on the DR Center or any relevant NFTs; <b>(d)</b> use
-            the DR Center by or on behalf of a competitor of the Company or
-            competing platform or service for the purpose of interfering with
-            the DR Center to obtain a competitive advantage; <b>(e)</b> engage
-            or attempt to engage in or assist any hack of or attack on the DR
-            Center, or any member of the Community, including any “sybil
-            attack”, “DoS attack” or “griefing attack” or theft of NFTs, or
-            funds, or upload files that contain viruses, Trojan horses, worms,
-            time bombs, cancelbots, corrupted files, or any other similar
-            software or programs that may damage the operation of another’s
-            computer or property or interfere with the DR Center; <b>(f)</b>
+            policy or other contract governing the use of any the activities on
+            the DR Center or any relevant NFTs; <b>(d)</b> use the DR Center by
+            or on behalf of a competitor of the Company or competing platform or
+            service for the purpose of interfering with the DR Center to obtain
+            a competitive advantage; <b>(e)</b> engage or attempt to engage in
+            or assist any hack of or attack on the DR Center, or any member of
+            the Community, including any “sybil attack”, “DoS attack” or
+            “griefing attack” or theft of NFTs, or funds, or upload files that
+            contain viruses, Trojan horses, worms, time bombs, cancelbots,
+            corrupted files, or any other similar software or programs that may
+            damage the operation of another’s computer or property or interfere
+            with the DR Center; <b>(f)</b>
             buy, sell or use any NFTs that infringes or in a manner infringing
             the copyright, trademark, patent, trade secret or other Intellectual
             Property Rights or other proprietary rights of others, or upload, or
@@ -786,6 +786,15 @@ export default function TermsAndConditionsDrCenter() {
                     <a href="mailto:info@bosonapp.io">info@bosonapp.io</a> so
                     that we can attempt to resolve it without resorting to
                     formal dispute resolution.
+                  </Text>
+                </li>
+                <li>
+                  <Text>
+                    If we are not able to reach an informal resolution within 60
+                    days of your email, then you and we may bring proceedings
+                    either in binding arbitration, if clause 7.2(d) applies to
+                    you, or in the courts of England and Wales, if clause 7.2(d)
+                    does not apply to you.
                   </Text>
                 </li>
                 <li>
