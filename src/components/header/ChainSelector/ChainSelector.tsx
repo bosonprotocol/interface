@@ -1,6 +1,5 @@
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
-// import { MouseoverTooltip } from "components/Tooltip";
 import { useAtomValue } from "jotai";
 import {
   CaretDown as ChevronDown,
@@ -10,29 +9,28 @@ import {
 import { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { colors } from "../../../lib/styles/colors";
-import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
-import Tooltip from "../../tooltip/Tooltip";
-// import * as styles from "./ChainSelector.css";
-import ChainSelectorRow from "./ChainSelectorRow";
-import { showTestnetsAtom } from "./components/AccountDrawer/TestnetsToggle";
-import { NavDropdown } from "./components/NavDropdown/NavDropdown";
-import { Portal } from "./components/Portal/Portal";
-import { getConnection } from "./connection";
-import { ConnectionType } from "./connection/types";
-import { WalletConnectV2 } from "./connection/WalletConnectV2";
-import { getChainInfo } from "./constants/chainInfo";
+import { getConnection } from "../../../lib/connection";
+import { ConnectionType } from "../../../lib/connection/types";
+import { WalletConnectV2 } from "../../../lib/connection/WalletConnectV2";
+import { getChainInfo } from "../../../lib/constants/chainInfo";
 import {
   getChainPriority,
   L1_CHAIN_IDS,
   L2_CHAIN_IDS,
   TESTNET_CHAIN_IDS,
   UniWalletSupportedChains
-} from "./constants/chains";
-import { useOnClickOutside } from "./hooks/useOnClickOutside";
-import useSelectChain from "./hooks/useSelectChain";
-import useSyncChainQuery from "./hooks/useSyncChainQuery";
-import { getSupportedChainIdsFromWalletConnectSession } from "./utils/getSupportedChainIdsFromWalletConnectSession";
+} from "../../../lib/constants/chains";
+import { colors } from "../../../lib/styles/colors";
+import { getSupportedChainIdsFromWalletConnectSession } from "../../../lib/utils/getSupportedChainIdsFromWalletConnectSession";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
+import { useOnClickOutside } from "../../../lib/utils/hooks/useOnClickOutside";
+import useSelectChain from "../../../lib/utils/hooks/useSelectChain";
+import useSyncChainQuery from "../../../lib/utils/hooks/useSyncChainQuery";
+import { Portal } from "../../portal/Portal";
+import Tooltip from "../../tooltip/Tooltip";
+import { showTestnetsAtom } from "../accountDrawer/TestnetsToggle";
+import { NavDropdown } from "../navDropdown/NavDropdown";
+import ChainSelectorRow from "./ChainSelectorRow";
 
 const IconAndChevron = styled.div`
   &:hover {

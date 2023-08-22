@@ -1,13 +1,13 @@
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
+import { Check } from "phosphor-react";
 import styled from "styled-components";
 
+import { getChainInfo } from "../../../lib/constants/chainInfo";
 import { breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
-import { getChainInfo } from "./constants/chainInfo";
-import { CheckMarkIcon } from "./icons";
-import Loader from "./Icons/LoadingSpinner";
+import { Spinner } from "../../loading/Spinner";
 
 const LOGO_SIZE = 20;
 
@@ -16,7 +16,7 @@ const Container = styled.button<{ disabled: boolean }>`
   background: none;
   border: none;
   border-radius: 12px;
-  /* color: ${({ theme }) => theme.textPrimary}; */
+  /* color: ${({ theme }) => colors.white}; */
   cursor: ${({ disabled }) => (disabled ? "auto" : "pointer")};
   display: grid;
   grid-template-columns: min-content 1fr min-content;
@@ -96,14 +96,10 @@ export default function ChainSelectorRow({
       {isPending && <CaptionText>Approve in wallet</CaptionText>}
       <Status>
         {active && (
-          <CheckMarkIcon
-            width={LOGO_SIZE}
-            height={LOGO_SIZE}
-            color={accentColor}
-          />
+          <Check width={LOGO_SIZE} height={LOGO_SIZE} color={accentColor} />
         )}
         {!active && isPending && (
-          <Loader width={LOGO_SIZE} height={LOGO_SIZE} />
+          <Spinner width={LOGO_SIZE} height={LOGO_SIZE} />
         )}
       </Status>
     </Container>

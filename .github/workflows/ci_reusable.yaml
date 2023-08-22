@@ -218,5 +218,3 @@ jobs:
         run: npx @fleekhq/fleek-cli site:deploy
         env:
           FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
-        
-

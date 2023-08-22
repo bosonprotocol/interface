@@ -5,10 +5,10 @@ import {
   walletConnectWallet
 } from "@rainbow-me/rainbowkit/wallets";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
+import ethIcon from "assets/ethereum-chain-icon.svg";
 import { configureChains, createConfig } from "wagmi";
 import { polygon, polygonMumbai } from "wagmi/chains";
 
-import ethIcon from "./assets/ethereum-chain-icon.svg";
 import { CONFIG } from "./config";
 
 const chainPerEnviromnent: Record<EnvironmentType, Chain> = {

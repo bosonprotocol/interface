@@ -23,9 +23,10 @@ import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import { BurgerButton } from "./BurgerButton";
-import { ChainSelector } from "./ChainSelector/ChainSelector";
+import { ChainSelector } from "./chainSelector/ChainSelector";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
+import Web3Status from "./web3Status";
 
 const smallWidth = "180px";
 const mediumWidth = "225px";
@@ -362,6 +363,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                       <CTA />
                       <ConnectButton showAddress={!address} />
                       <ChainSelector />
+                      <Web3Status />
                       <BurgerButton onClick={toggleMenu} />
                     </>
                   )}
@@ -378,6 +380,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                         showAddress={!address}
                       />
                       <ChainSelector />
+                      <Web3Status />
                     </>
                   )}
                 </HeaderItems>

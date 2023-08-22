@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 import ConvertionRateProvider from "./components/convertion-rate/ConvertionRateProvider";
-import Web3Provider from "./components/header/ChainSelector/components/Web3Provider";
+import Web3Provider from "./components/header/web3Provider";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import reportWebVitals from "./reportWebVitals";
 import AppRouter from "./router/AppRouter";
