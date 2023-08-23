@@ -17,18 +17,14 @@ import PrefetchBalancesWrapper from "../accountDrawer/PrefetchBalancesWrapper";
 import StatusIcon from "../identicon/StatusIcon";
 import { flexColumnNoWrap, flexRowNoWrap } from "../styles";
 
-// https://stackoverflow.com/a/31617326
-const FULL_BORDER_RADIUS = 9999;
-
 const Web3StatusGeneric = styled.button`
   ${flexRowNoWrap};
   width: 100%;
   align-items: center;
   padding: 0.5rem;
-  border-radius: ${FULL_BORDER_RADIUS}px;
   cursor: pointer;
   user-select: none;
-  height: 36px;
+  height: 45px;
   margin-right: 2px;
   margin-left: 2px;
   :focus {
@@ -149,9 +145,7 @@ function Web3StatusInner() {
         size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
         variant="primaryFill"
         style={{
-          whiteSpace: "pre",
-
-          borderRadius: `${FULL_BORDER_RADIUS}px`
+          whiteSpace: "pre"
         }}
       >
         Connect Wallet
