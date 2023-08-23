@@ -33,15 +33,14 @@ const Nav = styled(Grid)`
 
 const NavItem = styled(Typography)<{ active?: boolean }>`
   align-items: center;
-  color: ${({ theme, active }) => (active ? colors.white : theme.textTertiary)};
+  color: ${({ active }) => (active ? colors.white : colors.lightGrey)};
   cursor: pointer;
   display: flex;
   justify-content: space-between;
-  transition: ${({ theme }) =>
-    `${theme.transition.duration.medium} ${theme.transition.timing.ease} color`};
+  transition: 250ms ease color;
 
   &:hover {
-    ${({ theme, active }) => !active && `color: ${theme.textSecondary}`};
+    ${({ active }) => !active && `color: ${colors.lightGrey}`};
   }
 `;
 

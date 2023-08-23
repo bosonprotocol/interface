@@ -1,3 +1,4 @@
+import { colors } from "lib/styles/colors";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -28,9 +29,9 @@ const EmptyWalletSubtitle = styled(Typography)`
 `;
 
 const ActionButton = styled.button`
-  background-color: ${({ theme }) => theme.accentAction};
+  background-color: ${colors.secondary};
   padding: 10px 24px;
-  color: ${({ theme }) => theme.white};
+  color: ${colors.white};
   width: min-content;
   border: none;
   outline: none;

@@ -1,5 +1,6 @@
 import { ChainId } from "@uniswap/sdk-core";
 import { getChainInfo } from "lib/constants/chainInfo";
+import { colors } from "lib/styles/colors";
 import useTokenLogoSource from "lib/utils/hooks/useAssetLogoSource";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -7,8 +8,8 @@ import styled from "styled-components";
 export const MissingImageLogo = styled.div<{ size?: string }>`
   --size: ${({ size }) => size};
   border-radius: 100px;
-  color: ${({ theme }) => theme.textPrimary};
-  background-color: ${({ theme }) => theme.backgroundInteractive};
+  color: ${colors.black};
+  background-color: ${colors.lightGrey};
   font-size: calc(var(--size) / 3);
   font-weight: 500;
   height: ${({ size }) => size ?? "24px"};
@@ -22,9 +23,7 @@ export const MissingImageLogo = styled.div<{ size?: string }>`
 
 const LogoImage = styled.img<{ size: string; imgLoaded?: boolean }>`
   opacity: ${({ imgLoaded }) => (imgLoaded ? 1 : 0)};
-  transition: opacity
-    ${({ theme }) =>
-      `${theme.transition.duration.medium} ${theme.transition.timing.in}`};
+  transition: opacity 250ms ease-in;
   width: ${({ size }) => size};
   height: ${({ size }) => size};
   border-radius: 50%;
@@ -33,11 +32,8 @@ const LogoImage = styled.img<{ size: string; imgLoaded?: boolean }>`
 const LogoImageWrapper = styled.div<{ size: string; imgLoaded?: boolean }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
-  background: ${({ theme, imgLoaded }) =>
-    imgLoaded ? "none" : theme.backgroundInteractive};
-  transition: background-color
-    ${({ theme }) =>
-      `${theme.transition.duration.medium} ${theme.transition.timing.in}`};
+  background: ${({ imgLoaded }) => (imgLoaded ? "none" : colors.lightGrey)};
+  transition: background-color 250ms ease-in;
   box-shadow: 0 0 1px white;
   border-radius: 50%;
 `;

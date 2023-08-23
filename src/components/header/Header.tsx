@@ -1,7 +1,12 @@
+import { ApolloProvider } from "@apollo/client";
 import { ButtonSize } from "@bosonprotocol/react-kit";
+import { apolloClient } from "graphql/data/apollo";
+import { BlockNumberProvider } from "lib/utils/hooks/useBlockNumber";
 import { X } from "phosphor-react";
 import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
+import { Provider } from "react-redux";
 import { generatePath, useLocation } from "react-router-dom";
+import store from "state";
 import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -310,85 +315,93 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
     ]);
 
     return (
-      <>
-        <Header
-          $navigationBarPosition={navigationBarPosition}
-          $isSideBarOpen={isOpen}
-          ref={ref}
-        >
-          <HeaderContainer
-            fluidHeader={fluidHeader}
-            $navigationBarPosition={navigationBarPosition}
-          >
-            {isSideBurgerVisible ? (
-              <Grid justifyContent="center">
-                <BurgerButton onClick={toggleMenu} />
-              </Grid>
-            ) : (
-              <>
-                <Grid flexDirection="row" alignItems="center" $width="initial">
-                  <LinkWithQuery
-                    to={BosonRoutes.Root}
-                    style={{ display: "flex" }}
-                  >
-                    <LogoImg
-                      src={logoUrl || logo}
-                      alt="logo image"
-                      data-testid="logo"
-                      width={logoUrl ? undefined : isLteXS ? 104 : 204}
-                      height={
-                        logoUrl
-                          ? undefined
-                          : isLteXS
-                          ? logoXXSHeightPx
-                          : logoSHeightPx
-                      }
-                    />
-                  </LinkWithQuery>
-                  {isSideCrossVisible && (
-                    <X
-                      color={colors.secondary}
-                      onClick={toggleMenu}
-                      style={{ cursor: "pointer" }}
-                      size="24"
-                    />
-                  )}
-                </Grid>
-                <HeaderItems
-                  fluidHeader={fluidHeader}
-                  $navigationBarPosition={navigationBarPosition}
-                >
-                  {burgerMenuBreakpoint && (
-                    <>
-                      <CTA />
-                      <ConnectButton showAddress={!address} />
-                      <ChainSelector />
-                      <Web3Status />
-                      <BurgerButton onClick={toggleMenu} />
-                    </>
-                  )}
-                  <HeaderLinks
-                    isMobile={burgerMenuBreakpoint}
-                    isOpen={isOpen}
-                    navigationBarPosition={navigationBarPosition}
-                  />
-                  {!burgerMenuBreakpoint && (
-                    <>
-                      <CTA />
-                      <ConnectButton
+      <Provider store={store}>
+        <ApolloProvider client={apolloClient}>
+          <BlockNumberProvider>
+            <Header
+              $navigationBarPosition={navigationBarPosition}
+              $isSideBarOpen={isOpen}
+              ref={ref}
+            >
+              <HeaderContainer
+                fluidHeader={fluidHeader}
+                $navigationBarPosition={navigationBarPosition}
+              >
+                {isSideBurgerVisible ? (
+                  <Grid justifyContent="center">
+                    <BurgerButton onClick={toggleMenu} />
+                  </Grid>
+                ) : (
+                  <>
+                    <Grid
+                      flexDirection="row"
+                      alignItems="center"
+                      $width="initial"
+                    >
+                      <LinkWithQuery
+                        to={BosonRoutes.Root}
+                        style={{ display: "flex" }}
+                      >
+                        <LogoImg
+                          src={logoUrl || logo}
+                          alt="logo image"
+                          data-testid="logo"
+                          width={logoUrl ? undefined : isLteXS ? 104 : 204}
+                          height={
+                            logoUrl
+                              ? undefined
+                              : isLteXS
+                              ? logoXXSHeightPx
+                              : logoSHeightPx
+                          }
+                        />
+                      </LinkWithQuery>
+                      {isSideCrossVisible && (
+                        <X
+                          color={colors.secondary}
+                          onClick={toggleMenu}
+                          style={{ cursor: "pointer" }}
+                          size="24"
+                        />
+                      )}
+                    </Grid>
+                    <HeaderItems
+                      fluidHeader={fluidHeader}
+                      $navigationBarPosition={navigationBarPosition}
+                    >
+                      {burgerMenuBreakpoint && (
+                        <>
+                          <CTA />
+                          <ConnectButton showAddress={!address} />
+                          <ChainSelector />
+                          <Web3Status />
+                          <BurgerButton onClick={toggleMenu} />
+                        </>
+                      )}
+                      <HeaderLinks
+                        isMobile={burgerMenuBreakpoint}
+                        isOpen={isOpen}
                         navigationBarPosition={navigationBarPosition}
-                        showAddress={!address}
                       />
-                      <ChainSelector />
-                      <Web3Status />
-                    </>
-                  )}
-                </HeaderItems>
-              </>
-            )}
-          </HeaderContainer>
-        </Header>
-      </>
+                      {!burgerMenuBreakpoint && (
+                        <>
+                          <CTA />
+                          <ConnectButton
+                            navigationBarPosition={navigationBarPosition}
+                            showAddress={!address}
+                          />
+                          <ChainSelector />
+                          <Web3Status />
+                        </>
+                      )}
+                    </HeaderItems>
+                  </>
+                )}
+              </HeaderContainer>
+            </Header>
+          </BlockNumberProvider>
+        </ApolloProvider>
+      </Provider>
     );
   }
 );

@@ -31,6 +31,7 @@ import Column from "../../ui/column";
 import Grid from "../../ui/Grid";
 import { LoadingBubble } from "../../ui/LoadingBubble";
 import Typography from "../../ui/Typography";
+import StatusIcon from "../identicon/StatusIcon";
 import { useToggleAccountDrawer } from ".";
 import { IconWithConfirmTextButton } from "./IconButton";
 import MiniPortfolio from "./miniPortfolio";
@@ -80,7 +81,7 @@ const IconContainer = styled.div`
 `;
 const FiatOnrampNotAvailableText = styled(Typography)`
   align-items: center;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${colors.lightGrey};
   display: flex;
   justify-content: center;
 `;
@@ -222,7 +223,7 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
     <AuthenticatedHeaderWrapper>
       <HeaderWrapper>
         <StatusWrapper>
-          {/* TODO: <StatusIcon account={account} connection={connection} size={40} /> */}
+          <StatusIcon account={account} connection={connection} size={40} />
           {account && (
             <AccountNamesWrapper>
               <Typography>

@@ -1,4 +1,5 @@
 import Grid from "components/ui/Grid";
+import { colors } from "lib/styles/colors";
 import { Icon } from "phosphor-react";
 import React, {
   forwardRef,
@@ -11,7 +12,7 @@ import styled, { css } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
 export const IconHoverText = styled.span`
-  color: ${({ theme }) => colors.white};
+  color: ${colors.white};
   position: absolute;
   top: 28px;
   border-radius: 8px;
@@ -25,7 +26,7 @@ export const IconHoverText = styled.span`
 const getWidthTransition = () => `width ease-in-out 125ms`;
 
 const IconStyles = css<{ hideHorizontal?: boolean }>`
-  background-color: ${({ theme }) => theme.backgroundInteractive};
+  background-color: ${colors.lightGrey};
   transition: ${getWidthTransition};
   border-radius: 12px;
   display: flex;
@@ -35,9 +36,9 @@ const IconStyles = css<{ hideHorizontal?: boolean }>`
   overflow: hidden;
   height: 32px;
   width: ${({ hideHorizontal }) => (hideHorizontal ? "0px" : "32px")};
-  color: ${({ theme }) => colors.white};
+  color: ${colors.white};
   :hover {
-    background-color: ${({ theme }) => theme.hoverState};
+    background-color: ${colors.bosonSkyBlue};
     transition: 125ms background-color ease-in, ${getWidthTransition};
 
     ${IconHoverText} {
@@ -45,7 +46,7 @@ const IconStyles = css<{ hideHorizontal?: boolean }>`
     }
   }
   :active {
-    background-color: ${({ theme }) => theme.backgroundSurface};
+    background-color: ${colors.lightGrey};
     transition: background-color 125ms linear, ${getWidthTransition};
   }
 `;

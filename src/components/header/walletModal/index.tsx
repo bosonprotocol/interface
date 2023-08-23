@@ -1,4 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
+import { breakpoint } from "lib/styles/breakpoint";
+import { colors } from "lib/styles/colors";
 import { useEffect } from "react";
 import styled from "styled-components";
 
@@ -13,7 +15,7 @@ import ConnectionErrorView from "./ConnectionErrorView";
 import Option from "./Option";
 
 const Wrapper = styled.div`
-  background-color: ${({ theme }) => theme.backgroundSurface};
+  background-color: ${colors.lightGrey};
   width: 100%;
   padding: 14px 16px 16px;
   flex: 1;
@@ -24,9 +26,9 @@ const OptionGrid = styled.div`
   grid-gap: 2px;
   border-radius: 12px;
   overflow: hidden;
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+  ${breakpoint.m} {
     grid-template-columns: 1fr;
-  `};
+  } ;
 `;
 
 export default function WalletModal() {

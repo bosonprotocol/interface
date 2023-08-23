@@ -1,20 +1,23 @@
 import { useWeb3React } from "@web3-react/core";
+import { getConnection } from "lib/connection";
 import { useCallback } from "react";
+import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 import { useEnsName } from "wagmi";
 
-import { breakpointNumbers } from "../../../lib/styles/breakpoint";
+import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { formatAddress } from "../../../lib/utils/address";
 import { Portal } from "../../portal/Portal";
-import BosonButton from "../../ui/BosonButton";
 import PortfolioDrawer, { useAccountDrawer } from "../accountDrawer";
+import PrefetchBalancesWrapper from "../accountDrawer/PrefetchBalancesWrapper";
+import StatusIcon from "../identicon/StatusIcon";
 import { flexColumnNoWrap, flexRowNoWrap } from "../styles";
 
 // https://stackoverflow.com/a/31617326
 const FULL_BORDER_RADIUS = 9999;
 
-const Web3StatusGeneric = styled(BosonButton)`
+const Web3StatusGeneric = styled.button`
   ${flexRowNoWrap};
   width: 100%;
   align-items: center;
@@ -33,16 +36,16 @@ const Web3StatusGeneric = styled(BosonButton)`
 const Web3StatusConnectWrapper = styled.div`
   ${flexRowNoWrap};
   align-items: center;
-  /* background-color: ${({ theme }) => theme.accentActionSoft}; */
+  background-color: ${colors.blue};
   border-radius: ${FULL_BORDER_RADIUS}px;
   border: none;
   padding: 0;
   height: 40px;
 
-  color: ${({ theme }) => theme.accentAction};
+  color: ${colors.secondary};
   :hover {
-    color: ${({ theme }) => theme.accentActionSoft};
-    stroke: ${({ theme }) => theme.accentActionSoft};
+    color: ${colors.blue};
+    stroke: ${colors.blue};
   }
 
   transition: 125ms color ease-in;
@@ -59,20 +62,19 @@ export const IconWrapper = styled.div<{ size?: number }>`
     height: ${({ size }) => (size ? size + "px" : "32px")};
     width: ${({ size }) => (size ? size + "px" : "32px")};
   }
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+  ${breakpoint.m} {
     align-items: flex-end;
-  `};
+  } ;
 `;
 
 const Web3StatusConnected = styled(Web3StatusGeneric)<{
   isClaimAvailable?: boolean;
+  pending?: boolean;
 }>`
-  background-color: ${({ pending, theme }) =>
-    pending ? theme.accentAction : theme.deprecated_bg1};
+  background-color: ${({ pending }) =>
+    pending ? colors.secondary : colors.lightGrey};
   border: 1px solid
-    ${({ pending, theme }) =>
-      pending ? theme.accentAction : theme.deprecated_bg1};
-  color: ${({ pending, theme }) => (pending ? theme.white : colors.white)};
+    ${({ pending }) => (pending ? colors.secondary : colors.lightGrey)};
   font-weight: 500;
   border: ${({ isClaimAvailable }) =>
     isClaimAvailable && `1px solid ${colors.secondary}`};
@@ -121,19 +123,20 @@ const StyledConnectButton = styled.button`
 `;
 
 function Web3StatusInner() {
-  const switchingChain = false; // TODO:
-  // const switchingChain = useAppSelector(
-  //   (state) => state.wallets.switchingChain
-  // );
+  // const switchingChain = false; // TODO:
+  const switchingChain = useAppSelector(
+    (state) => state.wallets.switchingChain
+  );
   // const ignoreWhileSwitchingChain = useCallback(
   //   () => !switchingChain,
   //   [switchingChain]
   // );
-  const { account } = useWeb3React();
+  const { account, connector } = useWeb3React();
   // const { account, connector } = useLast(
   //   useWeb3React(),
   //   ignoreWhileSwitchingChain
   // );
+  const connection = getConnection(connector);
   const { data: ENSName } = useEnsName({ address: account as `0x${string}` });
 
   const [, toggleAccountDrawer] = useAccountDrawer();
@@ -149,6 +152,13 @@ function Web3StatusInner() {
         onClick={handleWalletDropdownClick}
         isClaimAvailable={false}
       >
+        <StatusIcon
+          account={account}
+          size={24}
+          connection={connection}
+          showMiniIcons={false}
+        />
+
         <AddressAndChevronContainer>
           <Text>{ENSName || formatAddress(account)}</Text>
         </AddressAndChevronContainer>
@@ -172,13 +182,11 @@ function Web3StatusInner() {
 export default function Web3Status() {
   const [isDrawerOpen] = useAccountDrawer();
   return (
-    <>
-      {/* <PrefetchBalancesWrapper shouldFetchOnAccountUpdate={isDrawerOpen}> */}
+    <PrefetchBalancesWrapper shouldFetchOnAccountUpdate={isDrawerOpen}>
       <Web3StatusInner />
       <Portal>
         <PortfolioDrawer />
       </Portal>
-      {/* </PrefetchBalancesWrapper> */}
-    </>
+    </PrefetchBalancesWrapper>
   );
 }

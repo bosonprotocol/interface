@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { colors } from "lib/styles/colors";
 import { CaretDoubleRight } from "phosphor-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGesture } from "react-use-gesture";
@@ -49,15 +50,14 @@ const ScrimBackground = styled.div<{ open: boolean }>`
   position: fixed;
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.backgroundScrim};
+  background-color: ${colors.darkGrey};
 
   opacity: 0;
   pointer-events: none;
   @media only screen and (max-width: ${breakpointNumbers.s}px) {
     opacity: ${({ open }) => (open ? 1 : 0)};
     pointer-events: ${({ open }) => (open ? "auto" : "none")};
-    transition: opacity ${({ theme }) => theme.transition.duration.medium}
-      ease-in-out;
+    transition: opacity 250ms ease-in-out;
   }
 `;
 export const Scrim = ({
@@ -129,7 +129,7 @@ const AccountDrawerWrapper = styled.div<{ open: boolean }>`
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
     box-shadow: unset;
-    transition: top ${({ theme }) => theme.transition.duration.medium};
+    transition: top 250ms;
   }
 
   @media screen and (min-width: 1440px) {
@@ -140,15 +140,16 @@ const AccountDrawerWrapper = styled.div<{ open: boolean }>`
   border-radius: 12px;
   width: ${DRAWER_WIDTH};
   font-size: 16px;
-  background-color: ${({ theme }) => theme.backgroundSurface};
-  border: ${({ theme }) => `1px solid ${colors.lightGrey}`};
+  background-color: ${colors.lightGrey};
+  border: ${`1px solid ${colors.lightGrey}`};
 
-  box-shadow: ${({ theme }) => theme.deepShadow};
-  transition: margin-right ${({ theme }) => theme.transition.duration.medium};
+  box-shadow: 12px 16px 24px rgba(0, 0, 0, 0.24),
+    12px 8px 12px rgba(0, 0, 0, 0.24), 4px 4px 8px rgba(0, 0, 0, 0.32);
+  transition: margin-right 250ms;
 `;
 
 const CloseIcon = styled(CaretDoubleRight).attrs({ size: 24 })`
-  stroke: ${({ theme }) => theme.textSecondary};
+  stroke: ${colors.lightGrey};
 `;
 
 const CloseDrawer = styled.div`
@@ -158,12 +159,11 @@ const CloseDrawer = styled.div`
   // When the drawer is not hovered, the icon should be 18px from the edge of the sidebar.
   padding: 24px calc(18px + ${DRAWER_OFFSET}) 24px 14px;
   border-radius: 20px 0 0 20px;
-  transition: ${({ theme }) =>
-    `${theme.transition.duration.medium} ${theme.transition.timing.ease} background-color, ${theme.transition.duration.medium} ${theme.transition.timing.ease} margin`};
+  transition: 250ms ease background-color, 250ms ease margin;
   &:hover {
     z-index: -1;
     margin: 0 -8px 0 0;
-    background-color: ${({ theme }) => theme.stateOverlayHover};
+    background-color: ${colors.lightGrey};
   }
   @media only screen and (max-width: ${breakpointNumbers.s}px) {
     display: none;

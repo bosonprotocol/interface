@@ -5,13 +5,14 @@ import { Spinner } from "components/loading/Spinner";
 import { MissingImageLogo } from "components/logo/AssetLogo";
 import { Unicon } from "components/unicon";
 import { getChainInfo } from "lib/constants/chainInfo";
+import { colors } from "lib/styles/colors";
 import useTokenLogoSource from "lib/utils/hooks/useAssetLogoSource";
 import useENSAvatar from "lib/utils/hooks/useENSAvatar";
 import React from "react";
 import styled from "styled-components";
 
 const UnknownContract = styled(UnknownStatus)`
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${colors.lightGrey};
 `;
 
 const DoubleLogoContainer = styled.div`
@@ -65,14 +66,14 @@ const CircleLogoImage = styled.img<{ size: string }>`
 `;
 
 const L2LogoContainer = styled.div<{ hasSquareLogo?: boolean }>`
-  background-color: ${({ theme, hasSquareLogo }) =>
-    hasSquareLogo ? theme.backgroundSurface : colors.white};
+  background-color: ${({ hasSquareLogo }) =>
+    hasSquareLogo ? colors.lightGrey : colors.white};
   border-radius: 2px;
   height: 16px;
   left: 60%;
   position: absolute;
   top: 60%;
-  outline: 2px solid ${({ theme }) => theme.backgroundSurface};
+  outline: 2px solid ${colors.lightGrey};
   width: 16px;
   display: flex;
   align-items: center;

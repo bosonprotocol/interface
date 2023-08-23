@@ -1,3 +1,4 @@
+import { colors } from "lib/styles/colors";
 import { CaretDoubleDown } from "phosphor-react";
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
@@ -6,14 +7,14 @@ import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 
 const ExpandIcon = styled(CaretDoubleDown)<{ $expanded: boolean }>`
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${colors.lightGrey};
   transform: ${({ $expanded }) =>
     $expanded ? "rotate(180deg)" : "rotate(0deg)"};
   transition: transform 250ms;
 `;
 
 const ToggleButton = styled(Grid)`
-  /* background-color: ${({ theme }) => theme.backgroundInteractive}; */
+  background-color: ${colors.lightGrey};
   border-radius: 12px;
   padding: 4px 8px 4px 12px;
   height: 100%;
@@ -30,8 +31,7 @@ const Wrapper = styled.div<{ numItems: number; isExpanded: boolean }>`
   justify-content: flex-start;
   height: ${({ numItems, isExpanded }) =>
     isExpanded ? numItems * 68 + "px" : 0};
-  transition: ${({ theme }) =>
-    `height ${theme.transition.duration.medium} ease-in-out`};
+  transition: height 250ms ease-in-out;
   overflow: hidden;
   align-items: center;
 `;

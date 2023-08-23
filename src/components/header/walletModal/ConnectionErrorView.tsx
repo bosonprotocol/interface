@@ -1,3 +1,4 @@
+import { colors } from "lib/styles/colors";
 import { Warning } from "phosphor-react";
 import styled from "styled-components";
 
@@ -22,7 +23,7 @@ const AlertTriangleIcon = styled(Warning)`
   height: 90px;
   stroke-width: 1;
   margin: 36px;
-  /* color: ${({ theme }) => theme.accentCritical}; */
+  color: ${colors.red};
 `;
 
 // TODO(cartcrom): move this to a top level modal, rather than inline in the drawer

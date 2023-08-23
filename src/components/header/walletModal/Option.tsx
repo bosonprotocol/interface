@@ -1,4 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
+import { breakpoint } from "lib/styles/breakpoint";
+import { colors } from "lib/styles/colors";
 import styled from "styled-components";
 
 import {
@@ -35,9 +37,7 @@ const HeaderText = styled.div`
   align-items: center;
   justify-content: center;
   color: ${(props) =>
-    props.color === "blue"
-      ? ({ theme }) => theme.accentAction
-      : ({ theme }) => colors.white};
+    props.color === "blue" ? colors.secondary : colors.white};
   font-size: 16px;
   font-weight: 600;
   padding: 0 8px;
@@ -47,8 +47,7 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   img {
-    ${({ theme }) =>
-      !theme.darkMode && `border: 1px solid ${colors.lightGrey}`};
+    border: 1px solid ${colors.lightGrey};
     border-radius: 12px;
   }
   & > img,
@@ -56,9 +55,9 @@ const IconWrapper = styled.div`
     height: 40px;
     width: 40px;
   }
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+  ${breakpoint.m} {
     align-items: flex-end;
-  `};
+  } ;
 `;
 
 const Wrapper = styled.div<{ disabled: boolean }>`
@@ -69,14 +68,14 @@ const Wrapper = styled.div<{ disabled: boolean }>`
   position: relative;
   width: 100%;
 
-  background-color: ${({ theme }) => theme.backgroundModule};
+  background-color: ${colors.darkGrey};
 
   &:hover {
     cursor: ${({ disabled }) => !disabled && "pointer"};
-    background-color: ${({ theme, disabled }) => !disabled && theme.hoverState};
+    background-color: ${({ disabled }) => !disabled && colors.bosonSkyBlue};
   }
   &:focus {
-    background-color: ${({ theme, disabled }) => !disabled && theme.hoverState};
+    background-color: ${({ disabled }) => !disabled && colors.bosonSkyBlue};
   }
 `;
 

@@ -16,7 +16,7 @@ const Container = styled.button<{ disabled: boolean }>`
   background: none;
   border: none;
   border-radius: 12px;
-  /* color: ${({ theme }) => colors.white}; */
+  /* color: ${colors.white}; */
   cursor: ${({ disabled }) => (disabled ? "auto" : "pointer")};
   display: grid;
   grid-template-columns: min-content 1fr min-content;
@@ -53,7 +53,7 @@ const Status = styled.div`
 `;
 
 const CaptionText = styled.div`
-  /* color: ${({ theme }) => theme.textSecondary}; */
+  /* color: ${colors.lightGrey}; */
   font-size: 12px;
   grid-column: 2;
   grid-row: 2;
