@@ -46,9 +46,7 @@ export default function Tokens({ account }: { account: string }) {
 
   if (tokenBalances?.length === 0) {
     // TODO: consider launching moonpay here instead of just closing the drawer
-    return (
-      <EmptyWalletModule type="token" onNavigateClick={toggleWalletDrawer} />
-    );
+    return <EmptyWalletModule type="token" />;
   }
 
   const toggleHiddenTokens = () =>

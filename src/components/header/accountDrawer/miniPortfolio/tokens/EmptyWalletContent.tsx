@@ -1,6 +1,4 @@
 import { colors } from "lib/styles/colors";
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import Typography from "../../../../ui/Typography";
@@ -48,7 +46,6 @@ type EmptyWalletContent = {
   title: React.ReactNode;
   subtitle: React.ReactNode;
   actionText?: React.ReactNode;
-  urlPath?: string;
   icon: React.ReactNode;
 };
 type EmptyWalletContentType = "token";
@@ -58,31 +55,16 @@ const EMPTY_WALLET_CONTENT: {
   token: {
     title: "No tokens yet",
     subtitle: "Buy or transfer tokens to this wallet to get started.",
-    actionText: "Explore tokens",
-    urlPath: "/tokens",
     icon: <EmptyTokensIcon />
   }
 };
 
 interface EmptyWalletContentProps {
   type?: EmptyWalletContentType;
-  onNavigateClick?: () => void;
 }
 
-const EmptyWalletContent = ({
-  type = "token",
-  onNavigateClick
-}: EmptyWalletContentProps) => {
-  const navigate = useNavigate();
-
+const EmptyWalletContent = ({ type = "token" }: EmptyWalletContentProps) => {
   const content = EMPTY_WALLET_CONTENT[type];
-
-  const actionButtonClick = useCallback(() => {
-    if (content.urlPath) {
-      onNavigateClick?.();
-      navigate(content.urlPath);
-    }
-  }, [content.urlPath, navigate, onNavigateClick]);
 
   return (
     <>
@@ -91,14 +73,6 @@ const EmptyWalletContent = ({
       <EmptyWalletSubtitle color="textSecondary">
         {content.subtitle}
       </EmptyWalletSubtitle>
-      {content.actionText && (
-        <ActionButton
-          data-testid="nft-explore-nfts-button"
-          onClick={actionButtonClick}
-        >
-          {content.actionText}
-        </ActionButton>
-      )}
     </>
   );
 };
