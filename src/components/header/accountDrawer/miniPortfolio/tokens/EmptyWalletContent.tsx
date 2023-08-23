@@ -18,28 +18,24 @@ const EmptyWalletText = styled(Typography)`
   white-space: normal;
   margin-top: 12px;
   text-align: center;
+  color: ${colors.black};
+  box-sizing: border-box;
+  margin: 0;
+  min-width: 0;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
 `;
 
 const EmptyWalletSubtitle = styled(Typography)`
   white-space: normal;
   text-align: center;
   margin-top: 8px;
-`;
-
-const ActionButton = styled.button`
-  background-color: ${colors.secondary};
-  padding: 10px 24px;
-  color: ${colors.white};
-  width: min-content;
-  border: none;
-  outline: none;
-  border-radius: 12px;
-  white-space: nowrap;
-  cursor: pointer;
-  margin-top: 20px;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
+  box-sizing: border-box;
+  margin: 0;
+  min-width: 0;
+  font-weight: 400;
+  font-size: 14px;
 `;
 
 type EmptyWalletContent = {
