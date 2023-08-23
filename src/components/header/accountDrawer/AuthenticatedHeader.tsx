@@ -33,6 +33,7 @@ import { LoadingBubble } from "../../ui/LoadingBubble";
 import Typography from "../../ui/Typography";
 import StatusIcon from "../identicon/StatusIcon";
 import { useToggleAccountDrawer } from ".";
+import FiatOnrampModal from "./fiatOnrampModal";
 import { IconWithConfirmTextButton } from "./IconButton";
 import MiniPortfolio from "./miniPortfolio";
 import { portfolioFadeInAnimation } from "./miniPortfolio/PortfolioRow";
@@ -81,7 +82,6 @@ const IconContainer = styled.div`
 `;
 const FiatOnrampNotAvailableText = styled(Typography)`
   align-items: center;
-  color: ${colors.lightGrey};
   display: flex;
   justify-content: center;
 `;
@@ -221,6 +221,7 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
 
   return (
     <AuthenticatedHeaderWrapper>
+      <FiatOnrampModal />
       <HeaderWrapper>
         <StatusWrapper>
           <StatusIcon account={account} connection={connection} size={40} />

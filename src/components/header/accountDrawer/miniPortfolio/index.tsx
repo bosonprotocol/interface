@@ -33,7 +33,6 @@ const Nav = styled(Grid)`
 
 const NavItem = styled(Typography)<{ active?: boolean }>`
   align-items: center;
-  color: ${({ active }) => (active ? colors.white : colors.lightGrey)};
   cursor: pointer;
   display: flex;
   justify-content: space-between;

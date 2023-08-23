@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
-import styled, { css } from "styled-components";
+import styled, { css, CSSProperties } from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
@@ -242,6 +242,7 @@ interface Props {
   theme: NonNullable<Store["theme"]>;
   hidden?: boolean;
   closable?: boolean;
+  style?: CSSProperties | undefined;
 }
 
 export default function Modal({
@@ -254,7 +255,8 @@ export default function Modal({
   theme,
   closable = true,
   hidden,
-  modalType
+  modalType,
+  style
 }: Props) {
   const handleOnClose = () => {
     if (closable) {
@@ -268,6 +270,7 @@ export default function Modal({
         $modalType={modalType}
         $theme={theme}
         $maxWidths={maxWidths}
+        style={style}
       >
         {HeaderComponent ? (
           <ModalHeader
