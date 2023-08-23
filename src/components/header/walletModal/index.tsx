@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import { AutoColumn } from "components/ui/column";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
 import { useEffect } from "react";
@@ -11,10 +12,12 @@ import {
 } from "../../../lib/connection/activate";
 import { isSupportedChain } from "../../../lib/constants/chains";
 import Grid from "../../ui/Grid";
+import { flexColumnNoWrap } from "../styles";
 import ConnectionErrorView from "./ConnectionErrorView";
 import Option from "./Option";
 
 const Wrapper = styled.div`
+  ${flexColumnNoWrap};
   background-color: ${colors.lightGrey};
   width: 100%;
   padding: 14px 16px 16px;
@@ -22,6 +25,7 @@ const Wrapper = styled.div`
 `;
 
 const OptionGrid = styled.div`
+  width: 100%;
   display: grid;
   grid-gap: 2px;
   border-radius: 12px;
@@ -55,7 +59,7 @@ export default function WalletModal() {
       {activationState.status === ActivationStatus.ERROR ? (
         <ConnectionErrorView />
       ) : (
-        <Grid gap="16px" flexDirection="column">
+        <AutoColumn gap="16px">
           <OptionGrid data-testid="option-grid">
             {connections
               .filter((connection) => connection.shouldDisplay())
@@ -63,7 +67,7 @@ export default function WalletModal() {
                 <Option key={connection.getName()} connection={connection} />
               ))}
           </OptionGrid>
-        </Grid>
+        </AutoColumn>
       )}
     </Wrapper>
   );

@@ -43,7 +43,7 @@ const HeaderText = styled.div`
   padding: 0 8px;
 `;
 const IconWrapper = styled.div`
-  /* ${flexColumnNoWrap}; */
+  ${flexColumnNoWrap};
   align-items: center;
   justify-content: center;
   img {

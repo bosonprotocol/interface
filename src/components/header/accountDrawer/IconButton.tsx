@@ -12,7 +12,6 @@ import styled, { css } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
 export const IconHoverText = styled.span`
-  color: ${colors.white};
   position: absolute;
   top: 28px;
   border-radius: 8px;
@@ -36,7 +35,6 @@ const IconStyles = css<{ hideHorizontal?: boolean }>`
   overflow: hidden;
   height: 32px;
   width: ${({ hideHorizontal }) => (hideHorizontal ? "0px" : "32px")};
-  color: ${colors.white};
   :hover {
     background-color: ${colors.bosonSkyBlue};
     transition: 125ms background-color ease-in, ${getWidthTransition};

@@ -1,5 +1,8 @@
+import { Button, ButtonSize } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { getConnection } from "lib/connection";
+import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
+import { useLast } from "lib/utils/hooks/useLast";
 import { useCallback } from "react";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
@@ -31,24 +34,6 @@ const Web3StatusGeneric = styled.button`
   :focus {
     outline: none;
   }
-`;
-
-const Web3StatusConnectWrapper = styled.div`
-  ${flexRowNoWrap};
-  align-items: center;
-  background-color: ${colors.blue};
-  border-radius: ${FULL_BORDER_RADIUS}px;
-  border: none;
-  padding: 0;
-  height: 40px;
-
-  color: ${colors.secondary};
-  :hover {
-    color: ${colors.blue};
-    stroke: ${colors.blue};
-  }
-
-  transition: 125ms color ease-in;
 `;
 
 export const IconWrapper = styled.div<{ size?: number }>`
@@ -110,32 +95,23 @@ const Text = styled.p`
   font-weight: 500;
 `;
 
-const StyledConnectButton = styled.button`
-  background-color: transparent;
-  border: none;
-  border-top-left-radius: ${FULL_BORDER_RADIUS}px;
-  border-bottom-left-radius: ${FULL_BORDER_RADIUS}px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 16px;
-  padding: 10px 12px;
-  color: inherit;
+const StyledConnectButton = styled(Button)`
+  color: ${colors.darkGrey};
 `;
 
 function Web3StatusInner() {
-  // const switchingChain = false; // TODO:
+  const { isLteXS } = useBreakpoints();
   const switchingChain = useAppSelector(
     (state) => state.wallets.switchingChain
   );
-  // const ignoreWhileSwitchingChain = useCallback(
-  //   () => !switchingChain,
-  //   [switchingChain]
-  // );
-  const { account, connector } = useWeb3React();
-  // const { account, connector } = useLast(
-  //   useWeb3React(),
-  //   ignoreWhileSwitchingChain
-  // );
+  const ignoreWhileSwitchingChain = useCallback(
+    () => !switchingChain,
+    [switchingChain]
+  );
+  const { account, connector } = useLast(
+    useWeb3React(),
+    ignoreWhileSwitchingChain
+  );
   const connection = getConnection(connector);
   const { data: ENSName } = useEnsName({ address: account as `0x${string}` });
 
@@ -166,15 +142,20 @@ function Web3StatusInner() {
     );
   } else {
     return (
-      <Web3StatusConnectWrapper
+      <StyledConnectButton
         tabIndex={0}
-        onKeyPress={(e) => e.key === "Enter" && handleWalletDropdownClick()}
         onClick={handleWalletDropdownClick}
+        data-testid="navbar-connect-wallet"
+        size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
+        variant="primaryFill"
+        style={{
+          whiteSpace: "pre",
+
+          borderRadius: `${FULL_BORDER_RADIUS}px`
+        }}
       >
-        <StyledConnectButton tabIndex={-1} data-testid="navbar-connect-wallet">
-          Connect
-        </StyledConnectButton>
-      </Web3StatusConnectWrapper>
+        Connect Wallet
+      </StyledConnectButton>
     );
   }
 }
