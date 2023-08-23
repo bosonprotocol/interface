@@ -65,7 +65,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{
     isClaimAvailable && `1px solid ${colors.secondary}`};
   :hover,
   :focus {
-    border: 1px solid black;
+    border: 1px solid ${colors.darkGrey};
   }
 
   @media only screen and (max-width: ${breakpointNumbers.l}px) {

@@ -6,7 +6,6 @@ import styled from "styled-components";
 import { getChainInfo } from "../../../lib/constants/chainInfo";
 import { breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
-import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import { Spinner } from "../../loading/Spinner";
 
 const LOGO_SIZE = 20;
@@ -81,7 +80,6 @@ export default function ChainSelectorRow({
   const chainInfo = getChainInfo(targetChain);
   const label = chainInfo?.label;
   const logoUrl = chainInfo?.logoUrl;
-  const accentColor = useCustomStoreQueryParameter("accentColor");
 
   return (
     <Container
@@ -96,7 +94,11 @@ export default function ChainSelectorRow({
       {isPending && <CaptionText>Approve in wallet</CaptionText>}
       <Status>
         {active && (
-          <Check width={LOGO_SIZE} height={LOGO_SIZE} color={accentColor} />
+          <Check
+            width={LOGO_SIZE}
+            height={LOGO_SIZE}
+            color={colors.secondary}
+          />
         )}
         {!active && isPending && (
           <Spinner width={LOGO_SIZE} height={LOGO_SIZE} />
