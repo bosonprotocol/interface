@@ -1,6 +1,6 @@
-import { nativeOnChain } from "../constants/tokens";
 import { Chain } from "../../graphql/data/__generated__/types-and-hooks";
 import { supportedChainIdFromGQLChain } from "../../graphql/data/util";
+import { nativeOnChain } from "../constants/tokens";
 
 export function getNativeTokenDBAddress(chain: Chain): string | undefined {
   const pageChainId = supportedChainIdFromGQLChain(chain);
