@@ -50,7 +50,7 @@ export default function FinanceWithdraw({
   reload,
   availableAmount
 }: Props) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const [amountToWithdrawTouched, setAmountToDepositTouched] =
     useState<boolean>(false);
   const [amountToWithdraw, setAmountToWithdraw] = useState<string>("0");

@@ -13,7 +13,7 @@ export function useInfiniteOffers(
     refetchOnMount?: boolean;
   } = {}
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const curationLists = useCurationLists();
 
   props = {

@@ -113,7 +113,7 @@ export function useCurrentSellers({
   sellerId,
   lensTokenId
 }: Props = {}) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const coreSDK = useCoreSDK();
   const fetchSellers = getSellersByIds(config.envConfig.subgraphUrl);
   const { address: loggedInUserAddress } = useAccount();

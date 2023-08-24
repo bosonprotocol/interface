@@ -13,7 +13,7 @@ export function useSellerCalculations(
     enabled?: boolean;
   } = {}
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   return useQuery(
     ["offers", "exchanges", props],
     async () => {

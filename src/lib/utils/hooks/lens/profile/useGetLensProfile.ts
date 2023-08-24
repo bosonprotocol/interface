@@ -18,7 +18,7 @@ export default function useGetLensProfile(
     enabled?: boolean;
   }
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const lensApiLink = config.lens.apiLink || "";
   const { enabled } = options;
   return useQuery(

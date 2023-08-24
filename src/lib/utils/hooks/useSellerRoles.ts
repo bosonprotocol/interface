@@ -18,7 +18,7 @@ export interface SellerRolesProps {
   isTreasury: boolean;
 }
 export function useSellerRoles(id: string) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { address } = useAccount();
 
   const { data } = useQuery(

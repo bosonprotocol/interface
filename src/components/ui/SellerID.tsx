@@ -84,7 +84,7 @@ const SellerID: React.FC<
   withBosonStyles = false,
   ...rest
 }) => {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { address } = useAccount();
   const { lens: lensProfiles, sellers } = useCurrentSellers({
     sellerId: offer?.seller?.id

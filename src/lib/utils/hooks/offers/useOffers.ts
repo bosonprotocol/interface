@@ -12,7 +12,7 @@ export function useOffers(
     enabled?: boolean;
   } = {}
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const curationLists = useCurationLists();
   const convertPrice = useConvertedPriceFunction();
 

@@ -80,7 +80,7 @@ const SellerButton = styled.div`
 `;
 
 export default function Seller() {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { address: currentWalletAddress = "" } = useAccount();
   let { [UrlParameters.sellerId]: sellerId = "" } = useParams();
   let lensHandle: string | null = null;

@@ -78,7 +78,7 @@ const buildQuery = (queryString: string, name: string) => {
 };
 
 export const GetActiveEscalatedDisputes = () => {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { address: admin } = useAccount();
   const props = { admin };
 
@@ -106,7 +106,7 @@ export const GetActiveEscalatedDisputes = () => {
 };
 
 export const GetPastEscalatedDisputesWithDecisions = () => {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { address: admin } = useAccount();
   const props = { admin };
 
@@ -134,7 +134,7 @@ export const GetPastEscalatedDisputesWithDecisions = () => {
 };
 
 export const GetPastEscalatedDisputesWithRefusals = () => {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { address: admin } = useAccount();
   const props = { admin };
 

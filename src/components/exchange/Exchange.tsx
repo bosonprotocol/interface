@@ -66,7 +66,7 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
 `;
 
 export default function Exchange({ offer, exchange }: Props) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });

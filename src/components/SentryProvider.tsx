@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
+import { CONFIG } from "lib/config";
 import React, { useEffect } from "react";
 import {
   createRoutesFromChildren,
@@ -26,12 +27,12 @@ interface Props {
   children: JSX.Element;
 }
 export default function SentryProvider({ children }: Props) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   useEffect(() => {
     // TODO: verify this
     Sentry.init({
       debug: config.enableSentryLogging,
-      dsn: config.sentryDSNUrl,
+      dsn: CONFIG.sentryDSNUrl,
       enabled: true,
       integrations: [
         new BrowserTracing({

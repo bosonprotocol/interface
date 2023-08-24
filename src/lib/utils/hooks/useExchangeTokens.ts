@@ -18,7 +18,7 @@ export interface ExchangeTokensProps {
   offers: Array<Offer>;
 }
 export function useExchangeTokens(props: Props, { enabled }: Options = {}) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   return useQuery(
     ["exchangeTokens", props],
     async () => {

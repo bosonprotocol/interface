@@ -1,5 +1,7 @@
+import { envConfigs } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -10,6 +12,7 @@ import { CHAIN_IDS_TO_NAMES, isSupportedChain } from "../../constants/chains";
 import { useSwitchChain } from "./useSwitchChain";
 
 export default function useSelectChain() {
+  const { setEnvConfig } = useConfigContext();
   // const dispatch = useAppDispatch();
   const { connector } = useWeb3React();
   const switchChain = useSwitchChain();
@@ -29,6 +32,11 @@ export default function useSelectChain() {
             CHAIN_IDS_TO_NAMES[targetChain as keyof typeof CHAIN_IDS_TO_NAMES]
           );
           setSearchParams(searchParams);
+          // TODO: wrong envConfigs
+          const targetEnvConfig = Object.values(envConfigs)
+            .flat()
+            .find((config) => config.chainId === targetChain);
+          targetEnvConfig && setEnvConfig(targetEnvConfig);
         }
       } catch (error) {
         if (

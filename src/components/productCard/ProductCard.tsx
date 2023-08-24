@@ -98,7 +98,7 @@ export default function ProductCard({
   isHoverDisabled = false,
   filterOptions
 }: Props) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const isTokenGated = !!offer.condition?.id;
 
   const { lens: lensProfiles } = useCurrentSellers({

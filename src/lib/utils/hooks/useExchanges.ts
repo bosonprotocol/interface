@@ -142,7 +142,7 @@ export function useExchanges(
     onlyCuratedSeller?: boolean;
   } = {}
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const fetchExchanges = getExchangesFunction(config.envConfig.subgraphUrl);
   const curationLists = useCurationLists();
   const onlyCuratedSeller =

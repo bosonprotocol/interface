@@ -7,7 +7,7 @@ import { fetchSubgraph } from "../../core-components/subgraph";
 export default function useOfferByUuid(uuid: string | undefined): {
   offerId: string | undefined;
 } {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const props = { uuid };
 
   const result = useQuery(["useOfferByUuid", props], async () => {

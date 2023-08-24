@@ -38,7 +38,7 @@ export default function FinanceDeposit({
   tokenDecimals,
   reload
 }: Props) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const [amountToDepositTouched, setAmountToDepositTouched] =
     useState<boolean>(false);
   const [amountToDeposit, setAmountToDeposit] = useState<string>("0");

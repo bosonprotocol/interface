@@ -1,4 +1,8 @@
-import { EnvironmentType, ProtocolConfig } from "@bosonprotocol/react-kit";
+import {
+  EnvironmentType,
+  getEnvConfigs,
+  ProtocolConfig
+} from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 
 import { Token } from "../components/convertion-rate/ConvertionRateContext";
@@ -59,7 +63,7 @@ function getMetaTxApiIds(protocolAddress: string) {
   }
   return apiIds;
 }
-
+export const envConfigs = getEnvConfigs(envName);
 export const CONFIG = {
   envName,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",

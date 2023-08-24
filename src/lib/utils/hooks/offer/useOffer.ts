@@ -11,7 +11,7 @@ export default function useOffer(
     enabled?: boolean;
   } = {}
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const curationLists = useCurationLists();
 
   props = {

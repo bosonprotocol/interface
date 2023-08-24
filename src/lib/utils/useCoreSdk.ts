@@ -6,7 +6,7 @@ import { useEthersSigner } from "./hooks/ethers/useEthersSigner";
 
 export function useCoreSDK() {
   const signer = useEthersSigner();
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   return hooks.useCoreSdk({
     ...config.envConfig,
     web3Provider: signer?.provider as providers.Web3Provider

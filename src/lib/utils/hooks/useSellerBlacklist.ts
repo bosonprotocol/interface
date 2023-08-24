@@ -19,7 +19,7 @@ export function useSellerBlacklist(
   isError: boolean;
   curatedSellerIds: string[] | undefined;
 } {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const currentSeller = useCurrentSellers();
   const allSellers = useQuery(
     ["all-sellers", props],

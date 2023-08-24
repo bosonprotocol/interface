@@ -41,7 +41,7 @@ export function useSellers(
     enabled: boolean;
   }
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const curationLists = useCurationLists();
   const filter = {
     ...(props.admin && { admin: props.admin }),

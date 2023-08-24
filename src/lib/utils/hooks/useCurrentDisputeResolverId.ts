@@ -6,7 +6,7 @@ import { useAccount } from "wagmi";
 import { fetchSubgraph } from "../core-components/subgraph";
 
 export function useCurrentDisputeResolverId() {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { address: admin } = useAccount();
   const props = { admin };
 

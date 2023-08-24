@@ -32,7 +32,7 @@ export function useSellerDeposit(
     enabled?: boolean;
   } = {}
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   return useQuery(
     ["sellerDeposit", props],
     async () => {

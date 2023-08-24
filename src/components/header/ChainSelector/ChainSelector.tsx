@@ -1,3 +1,4 @@
+import { ConfigId, envConfigs, ProtocolConfig } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useAtomValue } from "jotai";
@@ -15,8 +16,6 @@ import { WalletConnectV2 } from "../../../lib/connection/WalletConnectV2";
 import { getChainInfo } from "../../../lib/constants/chainInfo";
 import {
   getChainPriority,
-  L1_CHAIN_IDS,
-  L2_CHAIN_IDS,
   TESTNET_CHAIN_IDS,
   UniWalletSupportedChains
 } from "../../../lib/constants/chains";
@@ -37,8 +36,11 @@ const IconAndChevron = styled.div`
     background: ${colors.lightGrey} !important;
   }
 `;
-
-const NETWORK_SELECTOR_CHAINS = [...L1_CHAIN_IDS, ...L2_CHAIN_IDS];
+// TODO: wrong envConfigs
+const NETWORK_SELECTOR_CHAINS = Object.values(envConfigs).flat();
+const NETWORK_SELECTOR_CHAINS_IDS = NETWORK_SELECTOR_CHAINS.map(
+  (config) => config.chainId as ChainId
+);
 
 interface ChainSelectorProps {
   leftAlign?: boolean;
@@ -57,7 +59,7 @@ function useWalletSupportedChains(): ChainId[] {
     case ConnectionType.UNISWAP_WALLET_V2:
       return UniWalletSupportedChains;
     default:
-      return NETWORK_SELECTOR_CHAINS;
+      return NETWORK_SELECTOR_CHAINS_IDS;
   }
 }
 
@@ -69,25 +71,25 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const showTestnets = useAtomValue(showTestnetsAtom);
   const walletSupportsChain = useWalletSupportedChains();
 
-  const [supportedChains, unsupportedChains] = useMemo(() => {
-    const { supported, unsupported } = NETWORK_SELECTOR_CHAINS.filter(
-      (chain: number) => {
-        return showTestnets || !TESTNET_CHAIN_IDS.includes(chain);
-      }
-    )
-      .sort((a, b) => getChainPriority(a) - getChainPriority(b))
+  const [supportedConfigs] = useMemo(() => {
+    const { supported } = NETWORK_SELECTOR_CHAINS.filter((config) => {
+      return showTestnets || !TESTNET_CHAIN_IDS.includes(config.chainId as any);
+    })
+      .sort(
+        ({ chainId: a }, { chainId: b }) =>
+          getChainPriority(a as ChainId) - getChainPriority(b as ChainId)
+      )
       .reduce(
-        (acc, chain) => {
-          if (walletSupportsChain.includes(chain)) {
-            acc.supported.push(chain);
-          } else {
-            acc.unsupported.push(chain);
+        (acc, config) => {
+          const { chainId: chain } = config;
+          if (walletSupportsChain.includes(chain as ChainId)) {
+            acc.supported.push(config);
           }
           return acc;
         },
-        { supported: [], unsupported: [] } as Record<string, ChainId[]>
+        { supported: [] } as Record<string, ProtocolConfig[]>
       );
-    return [supported, unsupported];
+    return [supported];
   }, [showTestnets, walletSupportsChain]);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -99,15 +101,15 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const selectChain = useSelectChain();
   useSyncChainQuery();
 
-  const [pendingChainId, setPendingChainId] = useState<ChainId | undefined>(
-    undefined
-  );
-
+  const [pendingConfigId, setPendingConfigId] = useState<ConfigId>();
+  const [activeConfigId, setActiveConfigId] = useState<ConfigId>();
   const onSelectChain = useCallback(
-    async (targetChainId: ChainId) => {
-      setPendingChainId(targetChainId);
+    async (config: ProtocolConfig) => {
+      const targetChainId = config.chainId as ChainId;
+      setPendingConfigId(config.configId);
       await selectChain(targetChainId);
-      setPendingChainId(undefined);
+      setActiveConfigId(config.configId);
+      setPendingConfigId(undefined);
       setIsOpen(false);
     },
     [selectChain, setIsOpen]
@@ -129,22 +131,15 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
         data-testid="chain-selector-options"
         style={{ paddingLeft: "8px", paddingRight: "8px" }}
       >
-        {supportedChains.map((selectorChain) => (
+        {supportedConfigs.map((config) => (
           <ChainSelectorRow
-            disabled={!walletSupportsChain.includes(selectorChain)}
-            onSelectChain={onSelectChain}
-            targetChain={selectorChain}
-            key={selectorChain}
-            isPending={selectorChain === pendingChainId}
-          />
-        ))}
-        {unsupportedChains.map((selectorChain) => (
-          <ChainSelectorRow
-            disabled
-            onSelectChain={() => undefined}
-            targetChain={selectorChain}
-            key={selectorChain}
-            isPending={false}
+            disabled={!walletSupportsChain.includes(config.chainId as ChainId)}
+            onSelectChain={() => onSelectChain(config)}
+            targetChain={config.chainId as ChainId}
+            label={config.envName}
+            key={config.configId}
+            active={config.configId === activeConfigId}
+            isPending={config.configId === pendingConfigId}
           />
         ))}
       </div>

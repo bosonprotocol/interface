@@ -19,7 +19,7 @@ interface Props {
 }
 
 export function useDisputeResolvers() {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   return useQuery(["disputeResolvers"], async () => {
     const result = await fetchSubgraph<Props>(
       config.envConfig.subgraphUrl,

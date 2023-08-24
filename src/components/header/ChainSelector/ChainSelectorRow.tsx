@@ -1,5 +1,4 @@
 import { ChainId } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { Check } from "phosphor-react";
 import styled from "styled-components";
 
@@ -66,30 +65,33 @@ const Logo = styled.img`
 interface ChainSelectorRowProps {
   disabled?: boolean;
   targetChain: ChainId;
-  onSelectChain: (targetChain: number) => void;
+  onSelectChain: () => void;
+  label: string;
   isPending: boolean;
+  active: boolean;
 }
 export default function ChainSelectorRow({
   disabled,
   targetChain,
   onSelectChain,
-  isPending
+  label,
+  isPending,
+  active
 }: ChainSelectorRowProps) {
-  const { chainId } = useWeb3React();
-  const active = chainId === targetChain;
   const chainInfo = getChainInfo(targetChain);
-  const label = chainInfo?.label;
+  const name = chainInfo?.label;
+  const nameAndLabel = name ? `${name} (${label})` : label;
   const logoUrl = chainInfo?.logoUrl;
 
   return (
     <Container
       disabled={!!disabled}
       onClick={() => {
-        if (!disabled) onSelectChain(targetChain);
+        if (!disabled) onSelectChain();
       }}
     >
-      {logoUrl && <Logo src={logoUrl} alt={label} />}
-      {label && <Label>{label}</Label>}
+      {logoUrl && <Logo src={logoUrl} alt={nameAndLabel} />}
+      {nameAndLabel && <Label>{nameAndLabel}</Label>}
       {disabled && <CaptionText>Unsupported by your wallet</CaptionText>}
       {isPending && <CaptionText>Approve in wallet</CaptionText>}
       <Status>

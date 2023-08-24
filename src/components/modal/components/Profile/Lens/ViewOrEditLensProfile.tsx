@@ -57,7 +57,7 @@ export default function ViewOrEditLensProfile({
   isEdit,
   forceDirty
 }: Props) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const {
     setValues,
     setTouched,

@@ -42,7 +42,7 @@ export default function useProducts(
     withNumExchanges?: boolean;
   }
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const curationLists = useCurationLists();
   const now = Math.floor(Date.now() / 1000);
   const validityFilter = props.onlyValid

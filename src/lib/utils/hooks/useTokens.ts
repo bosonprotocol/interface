@@ -10,7 +10,7 @@ export function useTokens(
     enabled?: boolean;
   } = {}
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   return useQuery(
     "tokens",
     async () => {

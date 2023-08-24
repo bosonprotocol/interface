@@ -23,7 +23,7 @@ const getTemplate = (
 };
 
 export default function ContractualAgreement({ offerId, offerData }: Props) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const { data: offerFetched, isFetching } = useOffer(
     {
       offerId: offerId || ""

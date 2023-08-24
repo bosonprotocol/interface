@@ -14,7 +14,7 @@ export function useBuyers(
     enabled: boolean;
   }
 ) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   return useQuery(
     ["buyers", props],
     async () => {

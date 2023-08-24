@@ -30,7 +30,7 @@ interface Props {
 }
 
 export function useDisputeResolver(id: string) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const props = { id };
 
   const result = useQuery(["disputeResolver", props], async () => {

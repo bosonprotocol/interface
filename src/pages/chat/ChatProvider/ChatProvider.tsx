@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function ChatProvider({ children }: Props) {
-  const config = useConfigContext();
+  const { config } = useConfigContext();
   const signer = useEthersSigner();
   const [initialize, setInitialized] = useState<number>(0);
   const [isLoading, setLoading] = useState<boolean>(false);
