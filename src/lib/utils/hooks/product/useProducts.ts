@@ -1,4 +1,5 @@
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import groupBy from "lodash/groupBy";
 import omit from "lodash/omit";
@@ -41,6 +42,7 @@ export default function useProducts(
     withNumExchanges?: boolean;
   }
 ) {
+  const config = useConfigContext();
   const curationLists = useCurationLists();
   const now = Math.floor(Date.now() / 1000);
   const validityFilter = props.onlyValid
@@ -260,6 +262,7 @@ export default function useProducts(
             };
           }[];
         }>(
+          config.envConfig.subgraphUrl,
           gql`
             query GetSellersExchanges(
               $sellerIds: [String]

@@ -1,12 +1,12 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
 import { useAccount, useBalance } from "wagmi";
 
-import { CONFIG, config } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
@@ -50,6 +50,7 @@ export default function FinanceWithdraw({
   reload,
   availableAmount
 }: Props) {
+  const config = useConfigContext();
   const [amountToWithdrawTouched, setAmountToDepositTouched] =
     useState<boolean>(false);
   const [amountToWithdraw, setAmountToWithdraw] = useState<string>("0");
@@ -151,9 +152,10 @@ export default function FinanceWithdraw({
             }
           ]}
           envName={config.envName}
+          configId={config.envConfig.configId}
           disabled={isBeingWithdrawn || isWithdrawInvalid}
           web3Provider={signer?.provider as Provider}
-          metaTx={CONFIG.metaTx}
+          metaTx={config.metaTx}
           onPendingSignature={() => {
             setWithdrawError(null);
             setIsBeingWithdrawn(true);

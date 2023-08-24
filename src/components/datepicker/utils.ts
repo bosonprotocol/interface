@@ -1,6 +1,5 @@
 import type { Dayjs } from "dayjs";
-
-import { CONFIG } from "../../lib/config";
+import { CONFIG } from "lib/config";
 
 export interface ICalendarCell {
   text: string;

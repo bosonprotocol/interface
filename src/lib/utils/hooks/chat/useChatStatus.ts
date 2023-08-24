@@ -1,9 +1,9 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { envName } from "lib/config";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
-import { config } from "../../../config";
 
 export enum ChatInitializationStatus {
   PENDING = "PENDING",
@@ -21,7 +21,7 @@ export const useChatStatus = (): {
   const [error, setError] = useState<Error | null>(null);
   const [chatInitializationStatus, setChatInitializationStatus] =
     useState<ChatInitializationStatus>(ChatInitializationStatus.PENDING);
-  const { bosonXmtp, envName } = useChatContext();
+  const { bosonXmtp, chatEnvName } = useChatContext();
   const { address } = useAccount();
 
   useEffect(() => {
@@ -38,8 +38,8 @@ export const useChatStatus = (): {
 
       BosonXmtpClient.isXmtpEnabled(
         address,
-        config.envName === "production" ? "production" : "dev",
-        envName
+        envName === "production" ? "production" : "dev",
+        chatEnvName
       )
         .then((isEnabled) => {
           if (isEnabled) {
@@ -55,7 +55,7 @@ export const useChatStatus = (): {
           setChatInitializationStatus(ChatInitializationStatus.ERROR);
         });
     }
-  }, [address, bosonXmtp, chatInitializationStatus, envName]);
+  }, [address, bosonXmtp, chatInitializationStatus, chatEnvName]);
   return {
     chatInitializationStatus,
     error,

@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -13,6 +14,7 @@ export function useBuyers(
     enabled: boolean;
   }
 ) {
+  const config = useConfigContext();
   return useQuery(
     ["buyers", props],
     async () => {
@@ -23,6 +25,7 @@ export function useBuyers(
           active: boolean;
         }[];
       }>(
+        config.envConfig.subgraphUrl,
         gql`
           query GetBuyers(
             $orderBy: String

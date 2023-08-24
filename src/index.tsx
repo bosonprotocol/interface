@@ -1,3 +1,4 @@
+import { ConfigProvider } from "components/config/ConfigProvider";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
@@ -37,7 +38,7 @@ const StrictMode = ({
 
 root.render(
   <StrictMode enable={true}>
-    <>
+    <ConfigProvider>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -60,7 +61,7 @@ root.render(
           </QueryClientProvider>
         </WalletConnectionProvider>
       </Web3Provider>
-    </>
+    </ConfigProvider>
   </StrictMode>
 );
 

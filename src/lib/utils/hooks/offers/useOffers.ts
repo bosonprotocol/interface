@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { useQuery } from "react-query";
 
 import { useConvertedPriceFunction } from "../../../../components/price/useConvertedPriceFunction";
@@ -11,6 +12,7 @@ export function useOffers(
     enabled?: boolean;
   } = {}
 ) {
+  const config = useConfigContext();
   const curationLists = useCurationLists();
   const convertPrice = useConvertedPriceFunction();
 
@@ -21,7 +23,7 @@ export function useOffers(
   return useQuery(
     ["offers", props],
     async () => {
-      const offersList = await getOffers(props);
+      const offersList = await getOffers(config.envConfig.subgraphUrl, props);
 
       // sort the offers by price
       const orderedOffers = offersList.sort((a, b) => {

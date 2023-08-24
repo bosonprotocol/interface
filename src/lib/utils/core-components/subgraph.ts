@@ -1,25 +1,16 @@
 import * as Sentry from "@sentry/browser";
 import { request } from "graphql-request";
 
-import { CONFIG } from "../../../lib/config";
-
 export async function fetchSubgraph<T>(
+  subgraphUrl: string,
   query: string,
-  variables?: Record<string, unknown>,
-  options?: {
-    subgraphUrl: string;
-  }
+  variables?: Record<string, unknown>
 ): Promise<T> {
   try {
-    const data = await request(
-      options?.subgraphUrl || CONFIG.subgraphUrl,
-      query,
-      variables,
-      {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    );
+    const data = await request(subgraphUrl, query, variables, {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    });
     return data as T;
   } catch (error) {
     console.error(error);

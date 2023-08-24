@@ -1,5 +1,6 @@
 import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
+import { useConfigContext } from "components/config/ConfigContext";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
@@ -83,6 +84,7 @@ const SellerID: React.FC<
   withBosonStyles = false,
   ...rest
 }) => {
+  const config = useConfigContext();
   const { address } = useAccount();
   const { lens: lensProfiles, sellers } = useCurrentSellers({
     sellerId: offer?.seller?.id
@@ -110,9 +112,10 @@ const SellerID: React.FC<
   const profilePicture =
     (useLens ? lensProfilePicture : regularProfilePicture) ??
     productV1SellerProfileImage;
-  const profilePictureToShow = useLens
-    ? getLensImageUrl(profilePicture)
-    : regularProfilePicture;
+  const profilePictureToShow =
+    useLens && config.lens.ipfsGateway
+      ? getLensImageUrl(profilePicture, config.lens.ipfsGateway)
+      : regularProfilePicture;
   const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name;
   return (
     <AddressContainer {...rest} data-address-container>

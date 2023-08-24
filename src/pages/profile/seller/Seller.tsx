@@ -1,4 +1,5 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -79,6 +80,7 @@ const SellerButton = styled.div`
 `;
 
 export default function Seller() {
+  const config = useConfigContext();
   const { address: currentWalletAddress = "" } = useAccount();
   let { [UrlParameters.sellerId]: sellerId = "" } = useParams();
   let lensHandle: string | null = null;
@@ -122,8 +124,20 @@ export default function Seller() {
   const [sellerLens] = sellersLens;
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
   sellerId = sellersData?.length ? sellersData[0].id : sellerId;
-  const lensCoverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
-  const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
+  const lensCoverImage =
+    config.lens.ipfsGateway && sellerLens
+      ? getLensImageUrl(
+          getLensCoverPictureUrl(sellerLens),
+          config.lens.ipfsGateway
+        )
+      : null;
+  const avatar =
+    config.lens.ipfsGateway && sellerLens
+      ? getLensImageUrl(
+          getLensProfilePictureUrl(sellerLens),
+          config.lens.ipfsGateway
+        )
+      : null;
 
   const name =
     (useLens ? sellerLens?.name : metadata?.name) ?? metadata?.name ?? "";

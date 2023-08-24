@@ -1,4 +1,3 @@
-import { Trans } from "@lingui/macro";
 import {
   ChainId,
   Currency,
@@ -7,8 +6,13 @@ import {
   TradeType
 } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
-import useAutoSlippageTolerance from "hooks/useAutoSlippageTolerance";
-import { useDebouncedTrade } from "hooks/useDebouncedTrade";
+import { TOKEN_SHORTHANDS } from "lib/constants/tokens";
+import { isAddress } from "lib/utils/address";
+import { useCurrency } from "lib/utils/hooks/Tokens";
+import useAutoSlippageTolerance from "lib/utils/hooks/useAutoSlippageTolerance";
+import { useDebouncedTrade } from "lib/utils/hooks/useDebouncedTrade";
+import useENS from "lib/utils/hooks/useENS";
+import useParsedQueryString from "lib/utils/hooks/useParsedQueryString";
 import tryParseCurrencyAmount from "lib/utils/tryParseCurrencyAmount";
 import { ParsedQs } from "qs";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
@@ -18,11 +22,6 @@ import { InterfaceTrade, TradeState } from "state/routing/types";
 import { isClassicTrade, isUniswapXTrade } from "state/routing/utils";
 import { useUserSlippageToleranceWithDefault } from "state/user/hooks";
 
-import { TOKEN_SHORTHANDS } from "../../constants/tokens";
-import { useCurrency } from "../../hooks/Tokens";
-import useENS from "../../hooks/useENS";
-import useParsedQueryString from "../../hooks/useParsedQueryString";
-import { isAddress } from "../../utils";
 import { useCurrencyBalances } from "../connection/hooks";
 import {
   Field,
@@ -212,23 +211,23 @@ export function useDerivedSwapInfo(
     let inputError: ReactNode | undefined;
 
     if (!account) {
-      inputError = <Trans>Connect Wallet</Trans>;
+      inputError = <>Connect Wallet</>;
     }
 
     if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-      inputError = inputError ?? <Trans>Select a token</Trans>;
+      inputError = inputError ?? <>Select a token</>;
     }
 
     if (!parsedAmount) {
-      inputError = inputError ?? <Trans>Enter an amount</Trans>;
+      inputError = inputError ?? <>Enter an amount</>;
     }
 
     const formattedTo = isAddress(to);
     if (!to || !formattedTo) {
-      inputError = inputError ?? <Trans>Enter a recipient</Trans>;
+      inputError = inputError ?? <>Enter a recipient</>;
     } else {
       if (BAD_RECIPIENT_ADDRESSES[formattedTo]) {
-        inputError = inputError ?? <Trans>Invalid recipient</Trans>;
+        inputError = inputError ?? <>Invalid recipient</>;
       }
     }
 
@@ -239,9 +238,7 @@ export function useDerivedSwapInfo(
     ];
 
     if (balanceIn && maxAmountIn && balanceIn.lessThan(maxAmountIn)) {
-      inputError = (
-        <Trans>Insufficient {balanceIn.currency.symbol} balance</Trans>
-      );
+      inputError = <>Insufficient {balanceIn.currency.symbol} balance</>;
     }
 
     return inputError;

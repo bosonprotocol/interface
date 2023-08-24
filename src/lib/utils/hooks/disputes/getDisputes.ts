@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
@@ -77,6 +78,7 @@ const buildQuery = (queryString: string, name: string) => {
 };
 
 export const GetActiveEscalatedDisputes = () => {
+  const config = useConfigContext();
   const { address: admin } = useAccount();
   const props = { admin };
 
@@ -84,6 +86,7 @@ export const GetActiveEscalatedDisputes = () => {
     const result = await fetchSubgraph<{
       disputes: Disputes[];
     }>(
+      config.envConfig.subgraphUrl,
       buildQuery(
         `escalatedDate_not: null
          retractedDate: null
@@ -103,6 +106,7 @@ export const GetActiveEscalatedDisputes = () => {
 };
 
 export const GetPastEscalatedDisputesWithDecisions = () => {
+  const config = useConfigContext();
   const { address: admin } = useAccount();
   const props = { admin };
 
@@ -112,6 +116,7 @@ export const GetPastEscalatedDisputesWithDecisions = () => {
       const result = await fetchSubgraph<{
         disputes: Disputes[];
       }>(
+        config.envConfig.subgraphUrl,
         buildQuery(
           `escalatedDate_not: null, decidedDate_not: null`,
           `getPastEscalatedDisputesWithDecisions`
@@ -129,6 +134,7 @@ export const GetPastEscalatedDisputesWithDecisions = () => {
 };
 
 export const GetPastEscalatedDisputesWithRefusals = () => {
+  const config = useConfigContext();
   const { address: admin } = useAccount();
   const props = { admin };
 
@@ -138,6 +144,7 @@ export const GetPastEscalatedDisputesWithRefusals = () => {
       const result = await fetchSubgraph<{
         disputes: Disputes[];
       }>(
+        config.envConfig.subgraphUrl,
         buildQuery(
           `escalatedDate_not: null, refusedDate_not: null`,
           `getPastEscalatedDisputesWithDecisions`

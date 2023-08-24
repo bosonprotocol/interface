@@ -6,6 +6,7 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -65,11 +66,14 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
 `;
 
 export default function Exchange({ offer, exchange }: Props) {
+  const config = useConfigContext();
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const avatar = getLensImageUrl(getLensProfilePictureUrl(lens));
+  const avatar = config.lens.ipfsGateway
+    ? getLensImageUrl(getLensProfilePictureUrl(lens), config.lens.ipfsGateway)
+    : null;
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();

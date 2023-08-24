@@ -1,6 +1,7 @@
 import { subgraph } from "@bosonprotocol/core-sdk";
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
@@ -21,82 +22,84 @@ interface Props {
   lensTokenId?: string;
 }
 
-const getSellersByIds = () => (sellerIds: string[], isSellerId: boolean) => {
-  const resultSellerByIds = useQuery(
-    ["seller-by-ids", { sellerIds }],
-    async () => {
-      const result = await fetchSubgraph<{
-        sellers: {
-          authTokenId: string;
-          authTokenType: number;
-          admin: string;
-          clerk: string;
-          treasury: string;
-          assistant: string;
-          id: string;
-          voucherCloneAddress: string;
-          active: boolean;
-          sellerId: string;
-          metadata: SellerFieldsFragment["metadata"];
-        }[];
-      }>(
-        gql`
-          query GetSellerBySellerId($sellerIds: [String]) {
-            sellers(where: { sellerId_in: $sellerIds }) {
-              authTokenId
-              authTokenType
-              admin
-              clerk
-              treasury
-              assistant
-              id
-              voucherCloneAddress
-              active
-              sellerId
-              metadata {
+const getSellersByIds =
+  (subgraphUrl: string) => (sellerIds: string[], isSellerId: boolean) => {
+    const resultSellerByIds = useQuery(
+      ["seller-by-ids", { sellerIds }],
+      async () => {
+        const result = await fetchSubgraph<{
+          sellers: {
+            authTokenId: string;
+            authTokenType: number;
+            admin: string;
+            clerk: string;
+            treasury: string;
+            assistant: string;
+            id: string;
+            voucherCloneAddress: string;
+            active: boolean;
+            sellerId: string;
+            metadata: SellerFieldsFragment["metadata"];
+          }[];
+        }>(
+          subgraphUrl,
+          gql`
+            query GetSellerBySellerId($sellerIds: [String]) {
+              sellers(where: { sellerId_in: $sellerIds }) {
+                authTokenId
+                authTokenType
+                admin
+                clerk
+                treasury
+                assistant
                 id
-                type
-                createdAt
-                name
-                description
-                legalTradingName
-                kind
-                website
-                images {
+                voucherCloneAddress
+                active
+                sellerId
+                metadata {
                   id
-                  url
-                  tag
                   type
-                  width
-                  height
-                  fit
-                  position
-                }
-                contactLinks {
-                  id
-                  url
-                  tag
-                }
-                contactPreference
-                socialLinks {
-                  id
-                  url
-                  tag
+                  createdAt
+                  name
+                  description
+                  legalTradingName
+                  kind
+                  website
+                  images {
+                    id
+                    url
+                    tag
+                    type
+                    width
+                    height
+                    fit
+                    position
+                  }
+                  contactLinks {
+                    id
+                    url
+                    tag
+                  }
+                  contactPreference
+                  socialLinks {
+                    id
+                    url
+                    tag
+                  }
                 }
               }
             }
-          }
-        `,
-        { sellerIds }
-      );
-      return result.sellers;
-    },
-    {
-      enabled: isSellerId
-    }
-  );
-  return resultSellerByIds;
-};
+          `,
+          { sellerIds }
+        );
+        return result.sellers;
+      },
+      {
+        enabled: isSellerId
+      }
+    );
+    return resultSellerByIds;
+  };
 
 /**
  * This hook returns the current seller or sellers in a list. It will return more than one
@@ -110,8 +113,9 @@ export function useCurrentSellers({
   sellerId,
   lensTokenId
 }: Props = {}) {
+  const config = useConfigContext();
   const coreSDK = useCoreSDK();
-  const fetchSellers = getSellersByIds();
+  const fetchSellers = getSellersByIds(config.envConfig.subgraphUrl);
   const { address: loggedInUserAddress } = useAccount();
   const sellerAddress =
     address || sellerId || lensTokenId || loggedInUserAddress || null;
@@ -216,6 +220,7 @@ export function useCurrentSellers({
           treasury: string;
         }[];
       }>(
+        config.envConfig.subgraphUrl,
         gql`
           query GetSellerByLensId($authTokenId: String, $authTokenType: Int) {
             sellers(

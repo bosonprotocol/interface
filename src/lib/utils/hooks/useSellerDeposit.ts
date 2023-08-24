@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -31,12 +32,14 @@ export function useSellerDeposit(
     enabled?: boolean;
   } = {}
 ) {
+  const config = useConfigContext();
   return useQuery(
     ["sellerDeposit", props],
     async () => {
       const result = await fetchSubgraph<{
         seller: SellerProps;
       }>(
+        config.envConfig.subgraphUrl,
         gql`
           query GetSellerDeposit($sellerId: String) {
             seller(id: $sellerId) {

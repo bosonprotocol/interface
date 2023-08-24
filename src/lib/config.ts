@@ -1,4 +1,4 @@
-import { EnvironmentType, getDefaultConfig } from "@bosonprotocol/react-kit";
+import { EnvironmentType, ProtocolConfig } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 
 import { Token } from "../components/convertion-rate/ConvertionRateContext";
@@ -8,13 +8,10 @@ import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphe
 import { parseCurationList } from "./utils/curationList";
 import { ViewMode } from "./viewMode";
 
-const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
-export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
-
-const REACT_APP_ENABLE_SENTRY_LOGGING =
-  process.env.NODE_ENV === "development"
-    ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING, false)
-    : ["local", "testing"].includes(config.envName);
+export const envName = process.env.REACT_APP_ENV_NAME as EnvironmentType;
+if (!envName) {
+  throw new Error("REACT_APP_ENV_NAME is not defined");
+}
 
 export function getDefaultTokens(): Token[] {
   let tokens: Token[] = [];
@@ -63,11 +60,8 @@ function getMetaTxApiIds(protocolAddress: string) {
   return apiIds;
 }
 
-const availableOnNetwork = [80001, 137].includes(config.chainId);
-
 export const CONFIG = {
-  ...config,
-  enableSentryLogging: REACT_APP_ENABLE_SENTRY_LOGGING,
+  envName,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
@@ -78,22 +72,8 @@ export const CONFIG = {
   },
   releaseTag: process.env.REACT_APP_RELEASE_TAG,
   releaseName: process.env.REACT_APP_RELEASE_NAME,
-  envName: REACT_APP_ENV_NAME as EnvironmentType,
-  theGraphIpfsUrl:
-    process.env.REACT_APP_THE_GRAPH_IPFS_URL || config.theGraphIpfsUrl,
-  ipfsMetadataStorageUrl:
-    process.env.REACT_APP_IPFS_METADATA_URL || config.ipfsMetadataUrl,
-  ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
-    process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
-    process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
-  ),
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
-  metaTx: {
-    ...config.metaTx,
-    apiKey: process.env.REACT_APP_META_TX_API_KEY,
-    apiIds: getMetaTxApiIds(config.contracts.protocolDiamond)
-  },
   sellerBlacklistUrl: process.env.REACT_APP_SELLER_BLACKLIST_URL,
   offerCurationList: parseCurationList(
     process.env.REACT_APP_OFFER_CURATION_LIST
@@ -126,20 +106,6 @@ export const CONFIG = {
     process.env.REACT_APP_IPFS_IMAGE_GATEWAY ||
     process.env.REACT_APP_IPFS_GATEWAY ||
     "https://ipfs.io/ipfs",
-  lens: {
-    lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
-    availableOnNetwork,
-    apiLink: config.lens.apiLink,
-    ipfsGateway: config.lens.ipfsGateway,
-    LENS_HUB_CONTRACT: config.lens.LENS_HUB_CONTRACT,
-    LENS_PERIPHERY_CONTRACT: config.lens.LENS_PERIPHERY_CONTRACT,
-    LENS_PROFILES_CONTRACT_ADDRESS: config.lens.LENS_PROFILES_CONTRACT_ADDRESS,
-    LENS_HUB_ABI: lensHubContractAbi,
-    LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
-    LENS_PROFILES_CONTRACT_PARTIAL_ABI:
-      config.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
-    LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
-  },
   walletConnect: {
     projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
   },
@@ -155,6 +121,48 @@ export const CONFIG = {
     drCenterViewModeUrl: process.env.REACT_APP_DR_CENTER_VIEW_MODE || ""
   }
 };
+
+export const lensHandleMaxLength = Math.max(
+  ...[".lens", ".test"].map((ext) => ext.length)
+);
+
+export type DappConfig = ReturnType<typeof getDappConfig>;
+export const getDappConfig = (envConfig: ProtocolConfig) => ({
+  envConfig,
+  enableSentryLogging:
+    process.env.NODE_ENV === "development"
+      ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING, false)
+      : ["local", "testing"].includes(envConfig.envName),
+  envName,
+  theGraphIpfsUrl:
+    process.env.REACT_APP_THE_GRAPH_IPFS_URL || envConfig.theGraphIpfsUrl,
+  ipfsMetadataStorageUrl:
+    process.env.REACT_APP_IPFS_METADATA_URL || envConfig.ipfsMetadataUrl,
+  ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
+    process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
+    process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
+  ),
+  metaTx: {
+    ...envConfig.metaTx,
+    apiKey: process.env.REACT_APP_META_TX_API_KEY,
+    apiIds: getMetaTxApiIds(envConfig.contracts.protocolDiamond)
+  },
+  lens: {
+    lensHandleExtension: envConfig.chainId === 137 ? ".lens" : ".test",
+    availableOnNetwork: [80001, 137].includes(envConfig.chainId),
+    apiLink: envConfig.lens.apiLink,
+    ipfsGateway: envConfig.lens.ipfsGateway,
+    LENS_HUB_CONTRACT: envConfig.lens.LENS_HUB_CONTRACT,
+    LENS_PERIPHERY_CONTRACT: envConfig.lens.LENS_PERIPHERY_CONTRACT,
+    LENS_PROFILES_CONTRACT_ADDRESS:
+      envConfig.lens.LENS_PROFILES_CONTRACT_ADDRESS,
+    LENS_HUB_ABI: lensHubContractAbi,
+    LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
+    LENS_PROFILES_CONTRACT_PARTIAL_ABI:
+      envConfig.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
+    LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
+  }
+});
 
 function stringToBoolean(value: unknown | undefined, defaultValue: boolean) {
   if (value === undefined || value === null) {

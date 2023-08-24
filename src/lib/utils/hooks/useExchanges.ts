@@ -1,4 +1,5 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -30,7 +31,7 @@ interface Props {
   seller_in?: string[];
 }
 
-const getExchangesFunction = async (props: Props) => {
+const getExchangesFunction = (subgraphUrl: string) => async (props: Props) => {
   const {
     disputed,
     sellerId,
@@ -49,6 +50,7 @@ const getExchangesFunction = async (props: Props) => {
   return await fetchSubgraph<{
     exchanges: Exchange[];
   }>(
+    subgraphUrl,
     gql`
     query GetExchanges(
       $disputed: Boolean
@@ -140,6 +142,8 @@ export function useExchanges(
     onlyCuratedSeller?: boolean;
   } = {}
 ) {
+  const config = useConfigContext();
+  const fetchExchanges = getExchangesFunction(config.envConfig.subgraphUrl);
   const curationLists = useCurationLists();
   const onlyCuratedSeller =
     options.onlyCuratedSeller === undefined || options.onlyCuratedSeller;
@@ -150,7 +154,7 @@ export function useExchanges(
   return useQuery(
     ["exchanges", props, sellerIn],
     async () => {
-      const result = await getExchangesFunction({
+      const result = await fetchExchanges({
         ...props,
         first: OFFERS_PER_PAGE,
         seller_in: sellerIn
@@ -159,7 +163,7 @@ export function useExchanges(
       let loop = data?.length === OFFERS_PER_PAGE;
       let productsSkip = OFFERS_PER_PAGE;
       while (loop) {
-        const newResults = await getExchangesFunction({
+        const newResults = await fetchExchanges({
           ...props,
           first: OFFERS_PER_PAGE,
           skip: productsSkip,

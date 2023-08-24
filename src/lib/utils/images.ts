@@ -34,8 +34,8 @@ export function getImageUrl(
   return `${ipfsGatewayUrl}?${optsToQueryParams(optimizationOpts)}`;
 }
 
-export function getLensImageUrl(uri: string) {
-  return getIpfsGatewayUrl(uri, { gateway: CONFIG.lens.ipfsGateway });
+export function getLensImageUrl(uri: string, lensIpfsGateway: string) {
+  return getIpfsGatewayUrl(uri, { gateway: lensIpfsGateway });
 }
 
 export function getFallbackImageUrl(

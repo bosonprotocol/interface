@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { useInfiniteQuery } from "react-query";
 
 import { useCurationLists } from "../useCurationLists";
@@ -12,6 +13,7 @@ export function useInfiniteOffers(
     refetchOnMount?: boolean;
   } = {}
 ) {
+  const config = useConfigContext();
   const curationLists = useCurationLists();
 
   props = {
@@ -23,7 +25,7 @@ export function useInfiniteOffers(
     ["offers", "infinite", props.sellerId],
     async (context) => {
       const skip = context.pageParam || 0;
-      return getOffers({
+      return getOffers(config.envConfig.subgraphUrl, {
         ...props,
         skip
       });

@@ -9,6 +9,7 @@ import {
 const memoizedMergeAndSortOffers = memoMergeAndSortOffers();
 
 export async function getOfferById(
+  subgraphUrl: string,
   id: string,
   props: Omit<UseOfferProps, "offerId">
 ) {
@@ -43,6 +44,7 @@ export async function getOfferById(
   };
 
   const [offer] = await fetchCurationListOffers(
+    subgraphUrl,
     props,
     getOffersQueryArgs,
     variables,
@@ -53,6 +55,7 @@ export async function getOfferById(
 }
 
 async function fetchCurationListOffers(
+  subgraphUrl: string,
   props: UseOffersProps,
   getOffersQueryArgs: Omit<
     Parameters<typeof buildGetOffersQuery>[0],
@@ -82,10 +85,12 @@ async function fetchCurationListOffers(
   const [sellerCurationListResult, offerCurationListResult] = await Promise.all(
     [
       fetchSubgraph<CurationListGetOffersResult>(
+        subgraphUrl,
         getSellerCurationListOffersQuery,
         queryVars
       ),
       fetchSubgraph<CurationListGetOffersResult>(
+        subgraphUrl,
         getOfferCurationListOffersQuery,
         queryVars
       )

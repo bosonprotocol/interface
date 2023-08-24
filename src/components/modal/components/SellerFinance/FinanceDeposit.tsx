@@ -1,11 +1,11 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 
-import { CONFIG, config } from "../../../../lib/config";
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
@@ -38,6 +38,7 @@ export default function FinanceDeposit({
   tokenDecimals,
   reload
 }: Props) {
+  const config = useConfigContext();
   const [amountToDepositTouched, setAmountToDepositTouched] =
     useState<boolean>(false);
   const [amountToDeposit, setAmountToDeposit] = useState<string>("0");
@@ -130,9 +131,10 @@ export default function FinanceDeposit({
                 )
           }
           envName={config.envName}
+          configId={config.envConfig.configId}
           disabled={isBeingDeposit || isDepositInvalid}
           web3Provider={signer?.provider as Provider}
-          metaTx={CONFIG.metaTx}
+          metaTx={config.metaTx}
           onPendingSignature={() => {
             setDepositError(null);
             setIsBeingDeposit(true);

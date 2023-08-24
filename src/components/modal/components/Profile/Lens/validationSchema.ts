@@ -1,13 +1,13 @@
 import * as Yup from "yup";
 
-import { CONFIG } from "../../../../../lib/config";
+import { lensHandleMaxLength } from "../../../../../lib/config";
 import { validationMessage } from "../../../../../lib/const/validationMessage";
 import { FileProps } from "../../../../form/Upload/types";
 import { validationOfRequiredIpfsImage } from "../../../../product/utils/validationUtils";
 import { getCommonFieldsValidation } from "../valitationSchema";
 
 // const MAX_LOGO_SIZE = 300 * 1024; // 300 KB
-const maxLensHandleLength = 31 - CONFIG.lens.lensHandleExtension.length;
+const maxLensHandleLength = 31 - lensHandleMaxLength;
 
 const commonLensValidationSchema = {
   handle: Yup.string()

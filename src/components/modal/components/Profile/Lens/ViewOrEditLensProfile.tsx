@@ -1,9 +1,9 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useFormikContext } from "formik";
 import { ReactNode, useEffect, useMemo } from "react";
 
-import { CONFIG } from "../../../../../lib/config";
 import {
   blobToBase64,
   dataURItoBlob,
@@ -57,6 +57,7 @@ export default function ViewOrEditLensProfile({
   isEdit,
   forceDirty
 }: Props) {
+  const config = useConfigContext();
   const {
     setValues,
     setTouched,
@@ -65,13 +66,14 @@ export default function ViewOrEditLensProfile({
     initialValues,
     touched
   } = useFormikContext<LensProfileType>();
+  const lensIpfsGateway = config.lens.ipfsGateway || "";
   const profilePictureUrl =
     profileInitialData?.logo?.[0]?.src ??
-    getLensImageUrl(getLensProfilePictureUrl(profile));
+    getLensImageUrl(getLensProfilePictureUrl(profile), lensIpfsGateway);
   const coverPictureMetadata = profileInitialData?.coverPicture?.[0];
   const coverPictureUrl =
     coverPictureMetadata?.src ??
-    getLensImageUrl(getLensCoverPictureUrl(profile));
+    getLensImageUrl(getLensCoverPictureUrl(profile), lensIpfsGateway);
   const metadata = seller?.metadata;
   const { updateProps, store } = useModal();
   const hasMetadata = !!seller?.metadata;
@@ -227,10 +229,10 @@ export default function ViewOrEditLensProfile({
                   profile.handle?.substring(
                     0,
                     profile.handle.lastIndexOf(
-                      CONFIG.lens.lensHandleExtension
+                      config.lens.lensHandleExtension
                     ) < 0
                       ? profile.handle.lastIndexOf(
-                          CONFIG.lens.lensHandleExtension
+                          config.lens.lensHandleExtension
                         )
                       : profile.handle.lastIndexOf(".")
                   ) || "",
@@ -274,7 +276,8 @@ export default function ViewOrEditLensProfile({
     metadata?.website,
     metadata?.legalTradingName,
     coverPictureMetadata?.fit,
-    coverPictureMetadata?.position
+    coverPictureMetadata?.position,
+    config.lens.lensHandleExtension
   ]);
   return (
     <div>

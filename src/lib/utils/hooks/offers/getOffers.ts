@@ -1,15 +1,11 @@
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { buildGetOffersQuery } from "./graphql";
 import { memoMergeAndSortOffers } from "./memo";
-import {
-  CurationListGetOffersResult,
-  UseOfferProps,
-  UseOffersProps
-} from "./types";
+import { CurationListGetOffersResult, UseOffersProps } from "./types";
 
 const memoizedMergeAndSortOffers = memoMergeAndSortOffers();
 
-export const getOffers = async (props: UseOffersProps) => {
+export const getOffers = async (subgraphUrl: string, props: UseOffersProps) => {
   const dateNow = Date.now();
   const now = Math.floor(dateNow / 1000);
 
@@ -61,53 +57,16 @@ export const getOffers = async (props: UseOffersProps) => {
     voided: props.voided === true || props.voided === false
   };
 
-  return fetchCurationListOffers(props, getOffersQueryArgs, variables);
-};
-
-export async function getOfferById(
-  id: string,
-  props: Omit<UseOfferProps, "offerId">
-) {
-  const now = Math.floor(Date.now() / 1000);
-  const validFromDate_lte = props.valid ? now + "" : null;
-  const validUntilDate_gte = props.valid ? now + "" : null;
-
-  const variables = {
-    offer: id,
-    validFromDate_lte: validFromDate_lte,
-    validUntilDate_gte: validUntilDate_gte,
-    name_contains_nocase: props.name || "",
-    exchangeToken: props.exchangeTokenAddress,
-    sellerId: props.sellerId,
-    sellerCurationList: props.sellerCurationList || [],
-    offerCurationList: props.offerCurationList || [],
-    voided: props.voided
-  };
-
-  const getOffersQueryArgs = {
-    exchangeToken: !!props.exchangeTokenAddress,
-    sellerId: !!props.sellerId,
-    validFromDate_lte: !!validFromDate_lte,
-    validFromDate_gte: false,
-    validUntilDate_lte: false,
-    validUntilDate_gte: !!validUntilDate_gte,
-    skip: false,
-    quantityAvailable_lte: false,
-    quantityAvailable_gte: false,
-    offer: true,
-    voided: props.voided === true || props.voided === false
-  };
-
-  const [offer] = await fetchCurationListOffers(
+  return fetchCurationListOffers(
+    subgraphUrl,
     props,
     getOffersQueryArgs,
-    variables,
-    id
+    variables
   );
-  return offer;
-}
+};
 
 async function fetchCurationListOffers(
+  subgraphUrl: string,
   props: UseOffersProps,
   getOffersQueryArgs: Omit<
     Parameters<typeof buildGetOffersQuery>[0],
@@ -139,10 +98,12 @@ async function fetchCurationListOffers(
   const [sellerCurationListResult, offerCurationListResult] = await Promise.all(
     [
       fetchSubgraph<CurationListGetOffersResult>(
+        subgraphUrl,
         getSellerCurationListOffersQuery,
         queryVars
       ),
       fetchSubgraph<CurationListGetOffersResult>(
+        subgraphUrl,
         getOfferCurationListOffersQuery,
         queryVars
       )

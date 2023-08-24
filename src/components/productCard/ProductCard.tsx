@@ -3,6 +3,7 @@ import {
   Currencies,
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { CameraSlash, Lock } from "phosphor-react";
 import { useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
@@ -97,6 +98,7 @@ export default function ProductCard({
   isHoverDisabled = false,
   filterOptions
 }: Props) {
+  const config = useConfigContext();
   const isTokenGated = !!offer.condition?.id;
 
   const { lens: lensProfiles } = useCurrentSellers({
@@ -109,8 +111,8 @@ export default function ProductCard({
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const [lens] = lensProfiles;
   const avatar =
-    (useLens
-      ? getLensImageUrl(getLensProfilePictureUrl(lens))
+    (useLens && config.lens.ipfsGateway
+      ? getLensImageUrl(getLensProfilePictureUrl(lens), config.lens.ipfsGateway)
       : regularProfilePicture) ?? regularProfilePicture;
   const [avatarObj, setAvatarObj] = useState<{
     avatarUrl: string | null | undefined;
@@ -123,9 +125,10 @@ export default function ProductCard({
     offer.additional?.product?.productV1Seller?.images?.find(
       (img) => img.tag === "profile"
     )?.url;
-  const fallbackSellerAvatarUrl = fallbackSellerAvatar
-    ? getLensImageUrl(fallbackSellerAvatar)
-    : fallbackSellerAvatar;
+  const fallbackSellerAvatarUrl =
+    fallbackSellerAvatar && config.lens.ipfsGateway
+      ? getLensImageUrl(fallbackSellerAvatar, config.lens.ipfsGateway)
+      : fallbackSellerAvatar;
   const imageSrc = getImageUrl(
     offer?.metadata?.image || offer?.metadata?.imageUrl,
     { height: 500 }

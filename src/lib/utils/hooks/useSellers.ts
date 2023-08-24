@@ -1,8 +1,8 @@
 import { accounts, subgraph } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useCallback } from "react";
 import { useQuery } from "react-query";
 
-import { CONFIG } from "../../../lib/config";
 import { useCurationLists } from "./useCurationLists";
 
 interface Props {
@@ -41,6 +41,7 @@ export function useSellers(
     enabled: boolean;
   }
 ) {
+  const config = useConfigContext();
   const curationLists = useCurationLists();
   const filter = {
     ...(props.admin && { admin: props.admin }),
@@ -53,7 +54,7 @@ export function useSellers(
   return useQuery(
     ["sellers", props],
     async () => {
-      return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
+      return accounts.subgraph.getSellers(config.envConfig.subgraphUrl, {
         sellersFilter: {
           ...filter,
           id_in: curationLists.sellerCurationList

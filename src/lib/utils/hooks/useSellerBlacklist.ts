@@ -1,8 +1,8 @@
 import { accounts, subgraph } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 
-import { CONFIG } from "../../config";
 import { fetchTextFile } from "../textFile";
 import { useCurrentSellers } from "./useCurrentSellers";
 
@@ -19,25 +19,32 @@ export function useSellerBlacklist(
   isError: boolean;
   curatedSellerIds: string[] | undefined;
 } {
+  const config = useConfigContext();
   const currentSeller = useCurrentSellers();
   const allSellers = useQuery(
     ["all-sellers", props],
     async () => {
       const maxSellerPerReq = 1000;
-      const fetched = await accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
-        sellersFirst: maxSellerPerReq,
-        sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-        sellersOrderDirection: subgraph.OrderDirection.Asc
-      });
+      const fetched = await accounts.subgraph.getSellers(
+        config.envConfig.subgraphUrl,
+        {
+          sellersFirst: maxSellerPerReq,
+          sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
+          sellersOrderDirection: subgraph.OrderDirection.Asc
+        }
+      );
       let loop = fetched.length === maxSellerPerReq;
       let sellersSkip = maxSellerPerReq;
       while (loop) {
-        const toAdd = await accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
-          sellersFirst: maxSellerPerReq,
-          sellersSkip,
-          sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-          sellersOrderDirection: subgraph.OrderDirection.Asc
-        });
+        const toAdd = await accounts.subgraph.getSellers(
+          config.envConfig.subgraphUrl,
+          {
+            sellersFirst: maxSellerPerReq,
+            sellersSkip,
+            sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
+            sellersOrderDirection: subgraph.OrderDirection.Asc
+          }
+        );
         fetched.push(...toAdd);
         loop = toAdd.length === maxSellerPerReq;
         sellersSkip += maxSellerPerReq;

@@ -1,6 +1,9 @@
 import { getVersionUpgrade, VersionUpgrade } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
-import { DEFAULT_LIST_OF_LISTS, UNSUPPORTED_LIST_URLS } from "constants/lists";
+import {
+  DEFAULT_LIST_OF_LISTS,
+  UNSUPPORTED_LIST_URLS
+} from "lib/constants/lists";
 import useInterval from "lib/hooks/useInterval";
 import ms from "ms";
 import { useCallback, useEffect } from "react";

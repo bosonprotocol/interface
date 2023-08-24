@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
@@ -17,6 +18,7 @@ export interface SellerRolesProps {
   isTreasury: boolean;
 }
 export function useSellerRoles(id: string) {
+  const config = useConfigContext();
   const { address } = useAccount();
 
   const { data } = useQuery(
@@ -32,6 +34,7 @@ export function useSellerRoles(id: string) {
           active: boolean;
         }[];
       }>(
+        config.envConfig.subgraphUrl,
         gql`
           query GetSellerByID(
             $id: String
