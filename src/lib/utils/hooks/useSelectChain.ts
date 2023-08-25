@@ -21,7 +21,7 @@ export default function useSelectChain() {
   return useCallback(
     async (newConfigId: ConfigId) => {
       if (!connector) return;
-      console.log("selectChain with configId=", newConfigId);
+
       const connection = getConnection(connector);
 
       try {

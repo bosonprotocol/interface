@@ -67,7 +67,7 @@ function useWalletSupportedChains(): ChainId[] {
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
-  const { address } = useAccount();
+  const { address, ...rest } = useAccount();
   const { chainId, account } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
@@ -99,7 +99,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => setIsOpen(false), [modalRef]);
-
   const info = getChainInfo(chainId);
   // TODO: remove
   console.log(
@@ -168,13 +167,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
 
   return (
     <div style={{ position: "relative", display: "flex" }} ref={ref}>
-      <button
-        onClick={() => {
-          console.log({ account, address });
-        }}
-      >
-        log
-      </button>
       <Tooltip
         content={`Your wallet's current network is unsupported.`}
         disabled={isSupported}

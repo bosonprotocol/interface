@@ -21,33 +21,40 @@ function getChainForEnvironment(chainId: number): Array<Chain> {
   return [chain];
 }
 
+export function getConnectors(chainId: number) {
+  const { publicClient, chains } = configureChains(
+    getChainForEnvironment(chainId),
+    [
+      jsonRpcProvider({
+        rpc: (chain: Chain) => {
+          return {
+            http: chain.rpcUrls.default.http[0],
+            webSocket: chain.rpcUrls.default.webSocket?.[0]
+          };
+        }
+      })
+    ]
+  );
+
+  const projectId = CONFIG.walletConnect.projectId;
+  const connectors = connectorsForWallets([
+    {
+      groupName: "Popular",
+      wallets: [
+        metaMaskWallet({ chains, projectId }),
+        walletConnectWallet({ chains, projectId })
+      ]
+    }
+  ]);
+  return { connectors, publicClient };
+}
+
 export const useWagmiConfig = () => {
   const { config } = useConfigContext();
   const wagmiConfig = useMemo(() => {
-    const { publicClient, chains } = configureChains(
-      getChainForEnvironment(config.envConfig.chainId),
-      [
-        jsonRpcProvider({
-          rpc: (chain: Chain) => {
-            return {
-              http: chain.rpcUrls.default.http[0],
-              webSocket: chain.rpcUrls.default.webSocket?.[0]
-            };
-          }
-        })
-      ]
+    const { connectors, publicClient } = getConnectors(
+      config.envConfig.chainId
     );
-
-    const projectId = CONFIG.walletConnect.projectId;
-    const connectors = connectorsForWallets([
-      {
-        groupName: "Popular",
-        wallets: [
-          metaMaskWallet({ chains, projectId }),
-          walletConnectWallet({ chains, projectId })
-        ]
-      }
-    ]);
     const wagmiConfig = createConfig({
       autoConnect: true,
       connectors,
