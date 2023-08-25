@@ -167,6 +167,13 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
 
   return (
     <div style={{ position: "relative", display: "flex" }} ref={ref}>
+      <button
+        onClick={() => {
+          console.log({ account, address, ...rest });
+        }}
+      >
+        log
+      </button>
       <Tooltip
         content={`Your wallet's current network is unsupported.`}
         disabled={isSupported}
