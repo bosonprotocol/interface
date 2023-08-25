@@ -1,5 +1,5 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
-import { envName } from "lib/config";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -22,6 +22,7 @@ export const useChatStatus = (): {
   const [chatInitializationStatus, setChatInitializationStatus] =
     useState<ChatInitializationStatus>(ChatInitializationStatus.PENDING);
   const { bosonXmtp, chatEnvName } = useChatContext();
+  const { config } = useConfigContext();
   const { address } = useAccount();
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export const useChatStatus = (): {
 
       BosonXmtpClient.isXmtpEnabled(
         address,
-        envName === "production" ? "production" : "dev",
+        config.envConfig.envName === "production" ? "production" : "dev",
         chatEnvName
       )
         .then((isEnabled) => {
@@ -55,7 +56,13 @@ export const useChatStatus = (): {
           setChatInitializationStatus(ChatInitializationStatus.ERROR);
         });
     }
-  }, [address, bosonXmtp, chatInitializationStatus, chatEnvName]);
+  }, [
+    address,
+    bosonXmtp,
+    chatInitializationStatus,
+    chatEnvName,
+    config.envConfig.envName
+  ]);
   return {
     chatInitializationStatus,
     error,

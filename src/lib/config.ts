@@ -133,7 +133,7 @@ export const getDappConfig = (envConfig: ProtocolConfig) => ({
     process.env.NODE_ENV === "development"
       ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING, false)
       : ["local", "testing"].includes(envConfig.envName),
-  envName,
+  envName: envConfig.envName,
   theGraphIpfsUrl:
     process.env.REACT_APP_THE_GRAPH_IPFS_URL || envConfig.theGraphIpfsUrl,
   ipfsMetadataStorageUrl:

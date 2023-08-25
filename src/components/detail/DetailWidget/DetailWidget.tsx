@@ -7,6 +7,7 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useAccountDrawer } from "components/header/accountDrawer";
 import dayjs from "dayjs";
@@ -28,7 +29,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount, useBalance } from "wagmi";
+import { useBalance } from "wagmi";
 
 import { ReactComponent as Logo } from "../../../assets/logo-white.svg";
 import { CONFIG } from "../../../lib/config";
@@ -93,12 +94,19 @@ const StyledPrice = styled(Price)`
     font-size: 1rem;
   }
 `;
-const CommitButtonWrapper = styled.div<{ $pointerEvents: string }>`
+// const CommitButtonWrapper = styled.div<{ $pointerEvents: string }>`
+//   width: 100%;
+//   cursor: pointer;
+//   > button {
+//     width: 100%;
+//     pointer-events: ${({ $pointerEvents }) => $pointerEvents};
+//   }
+// `;
+const CommitButtonWrapper = styled.div<{ pointerEvents: string }>`
   width: 100%;
-  cursor: pointer;
   > button {
     width: 100%;
-    pointer-events: ${({ $pointerEvents }) => $pointerEvents};
+    pointer-events: ${({ pointerEvents }) => pointerEvents};
   }
 `;
 
@@ -394,7 +402,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isSeller = exchange?.seller.assistant === address?.toLowerCase();
   const isOffer = pageType === "offer";
@@ -411,10 +419,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { data: dataBalance } = useBalance(
     offer.exchangeToken.address !== ethers.constants.AddressZero
       ? {
-          address: address,
+          address: address as `0x${string}`,
           token: offer.exchangeToken.address as `0x${string}`
         }
-      : { address: address }
+      : { address: address as `0x${string}` }
   );
 
   const {
@@ -941,9 +949,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             {isOffer && (
               <CommitButtonWrapper
                 role="button"
-                $pointerEvents={!address ? "none" : "all"}
+                pointerEvents={!address ? "none" : "all"}
                 onClick={() => {
-                  if (!address && openConnectModal) {
+                  if (!address) {
                     saveItemInStorage("isConnectWalletFromCommit", true);
                     setIsCommittingFromNotConnectedWallet(true);
                     openConnectModal();

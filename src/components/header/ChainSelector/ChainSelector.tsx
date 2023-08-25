@@ -10,6 +10,7 @@ import {
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { getConnection } from "../../../lib/connection";
 import { ConnectionType } from "../../../lib/connection/types";
@@ -66,7 +67,8 @@ function useWalletSupportedChains(): ChainId[] {
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
-  const { chainId } = useWeb3React();
+  const { address } = useAccount();
+  const { chainId, account } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
 
@@ -99,6 +101,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   useOnClickOutside(ref, () => setIsOpen(false), [modalRef]);
 
   const info = getChainInfo(chainId);
+  // TODO: remove
   console.log(
     "chainId",
     chainId,
@@ -165,6 +168,13 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
 
   return (
     <div style={{ position: "relative", display: "flex" }} ref={ref}>
+      <button
+        onClick={() => {
+          console.log({ account, address });
+        }}
+      >
+        log
+      </button>
       <Tooltip
         content={`Your wallet's current network is unsupported.`}
         disabled={isSupported}

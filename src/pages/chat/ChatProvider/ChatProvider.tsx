@@ -1,7 +1,6 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { envName } from "lib/config";
 import { ReactNode, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
@@ -26,7 +25,7 @@ export default function ChatProvider({ children }: Props) {
       setLoading(true);
       BosonXmtpClient.initialise(
         signer,
-        envName === "production" ? "production" : "dev",
+        config.envConfig.envName === "production" ? "production" : "dev",
         chatEnvName
       )
         .then((bosonClient) => {
@@ -41,7 +40,7 @@ export default function ChatProvider({ children }: Props) {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signer, initialize, chatEnvName]);
+  }, [signer, initialize, chatEnvName, config.envConfig.envName]);
   const signerAddress = useQuery(["signer-address", signer], () => {
     return signer?.getAddress();
   });
