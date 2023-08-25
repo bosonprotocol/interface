@@ -1,6 +1,7 @@
 import { ThemedButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { colors } from "lib/styles/colors";
+import useENSName from "lib/utils/hooks/useENSName";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -19,7 +20,6 @@ import { ApplicationModal } from "state/application/reducer";
 import { useAppDispatch } from "state/hooks";
 import { updateSelectedWallet } from "state/user/reducer";
 import styled from "styled-components";
-import { useEnsName } from "wagmi";
 
 import { getConnection } from "../../../lib/connection";
 import { formatAddress } from "../../../lib/utils/address";
@@ -151,7 +151,7 @@ export function PortfolioArrow({
 
 export default function AuthenticatedHeader({ account }: { account: string }) {
   const { connector } = useWeb3React();
-  const { data: ENSName } = useEnsName({ address: account as `0x${string}` });
+  const { ENSName } = useENSName(account);
   const dispatch = useAppDispatch();
   // const navigate = useNavigate();
   // const closeModal = useCloseModal();

@@ -58,7 +58,6 @@
     "@radix-ui/react-switch": "^1.0.2",
     "@radix-ui/react-toast": "^1.0.0",
     "@radix-ui/react-tooltip": "^1.0.0",
-    "@rainbow-me/rainbowkit": "^1.0.4",
     "@sentry/react": "^7.18.0",
     "@sentry/tracing": "^7.18.0",
     "@shopify/react-web-worker": "^5.0.5",

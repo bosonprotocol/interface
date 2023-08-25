@@ -1,2 +1,2 @@
-import { ConnectButton } from "@bosonprotocol/react-kit";
-export default ConnectButton;
+import Web3Status from "./web3Status";
+export default Web3Status;

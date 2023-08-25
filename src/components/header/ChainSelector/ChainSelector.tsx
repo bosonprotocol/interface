@@ -99,6 +99,13 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   useOnClickOutside(ref, () => setIsOpen(false), [modalRef]);
 
   const info = getChainInfo(chainId);
+  console.log(
+    "chainId",
+    chainId,
+    "config.envConfig.chainId",
+    config.envConfig.chainId,
+    config.envConfig.configId
+  );
   const [activeConfigId, setActiveConfigId] = useState<ConfigId>(
     config.envConfig.configId
   );

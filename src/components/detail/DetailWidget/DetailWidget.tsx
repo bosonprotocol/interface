@@ -6,8 +6,9 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { useAccountDrawer } from "components/header/accountDrawer";
 import dayjs from "dayjs";
 import {
   BigNumber,
@@ -92,11 +93,12 @@ const StyledPrice = styled(Price)`
     font-size: 1rem;
   }
 `;
-const CommitButtonWrapper = styled.div<{ pointerEvents: string }>`
+const CommitButtonWrapper = styled.div<{ $pointerEvents: string }>`
   width: 100%;
+  cursor: pointer;
   > button {
     width: 100%;
-    pointer-events: ${({ pointerEvents }) => pointerEvents};
+    pointer-events: ${({ $pointerEvents }) => $pointerEvents};
   }
 `;
 
@@ -375,10 +377,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   hasMultipleVariants,
   exchangePolicyCheckResult
 }) => {
+  const { config } = useConfigContext();
   const [commitType, setCommitType] = useState<ActionName | undefined | null>(
     null
   );
-  const { openConnectModal } = useConnectModal();
+  const [, openConnectModal] = useAccountDrawer();
   const [
     isCommittingFromNotConnectedWallet,
     setIsCommittingFromNotConnectedWallet
@@ -938,7 +941,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             {isOffer && (
               <CommitButtonWrapper
                 role="button"
-                pointerEvents={!address && openConnectModal ? "none" : "all"}
+                $pointerEvents={!address ? "none" : "all"}
                 onClick={() => {
                   if (!address && openConnectModal) {
                     saveItemInStorage("isConnectWalletFromCommit", true);
@@ -959,14 +962,15 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     offerId={offer.id}
                     exchangeToken={offer.exchangeToken.address}
                     price={offer.price}
-                    envName={CONFIG.envName}
+                    envName={config.envName}
+                    configId={config.envConfig.configId}
                     onError={onCommitError}
                     onPendingSignature={onCommitPendingSignature}
                     onPendingTransaction={onCommitPendingTransaction}
                     onSuccess={onCommitSuccess}
                     extraInfo="Step 1/2"
                     web3Provider={signer?.provider as Provider}
-                    metaTx={CONFIG.metaTx}
+                    metaTx={config.metaTx}
                   />
                 )}
               </CommitButtonWrapper>

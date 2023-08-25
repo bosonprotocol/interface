@@ -2,11 +2,11 @@ import { Button, ButtonSize } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { getConnection } from "lib/connection";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
+import useENSName from "lib/utils/hooks/useENSName";
 import { useLast } from "lib/utils/hooks/useLast";
 import { useCallback } from "react";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
-import { useEnsName } from "wagmi";
 
 import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -109,7 +109,7 @@ function Web3StatusInner() {
     ignoreWhileSwitchingChain
   );
   const connection = getConnection(connector);
-  const { data: ENSName } = useEnsName({ address: account as `0x${string}` });
+  const { ENSName } = useENSName(account);
 
   const [, toggleAccountDrawer] = useAccountDrawer();
   const handleWalletDropdownClick = useCallback(() => {

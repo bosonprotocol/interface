@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
+import { useAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -126,7 +125,7 @@ export default function ProductType({
   showInvalidRoleModal,
   isDraftModalClosed
 }: Props) {
-  const { openConnectModal } = useConnectModal();
+  const [connectModalOpen, openConnectModal] = useAccountDrawer();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
   const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
@@ -345,24 +344,16 @@ export default function ProductType({
       setWasConnectModalOpen(true);
     }
   }, [address, openConnectModal]);
+
   if (!address) {
-    return (
-      <>
-        <Typography>Please connect your wallet</Typography>
-        <RainbowConnectButton.Custom>
-          {({ connectModalOpen }) => {
-            if (wasConnectModalOpen && !connectModalOpen) {
-              if (prevPath && prevPath !== "/sell/create-product") {
-                reactRouterNavigate(-1);
-              } else {
-                return <Navigate to={{ pathname: BosonRoutes.Root }} />;
-              }
-            }
-            return <></>;
-          }}
-        </RainbowConnectButton.Custom>
-      </>
-    );
+    if (wasConnectModalOpen && !connectModalOpen) {
+      if (prevPath && prevPath !== "/sell/create-product") {
+        reactRouterNavigate(-1);
+      } else {
+        return <Navigate to={{ pathname: BosonRoutes.Root }} />;
+      }
+    }
+    return <Typography>Please connect your wallet</Typography>;
   }
   return (
     <ContainerProductPage>

@@ -65,7 +65,6 @@ function getMetaTxApiIds(protocolAddress: string) {
 }
 export const envConfigs = getEnvConfigs(envName);
 export const CONFIG = {
-  envName,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
