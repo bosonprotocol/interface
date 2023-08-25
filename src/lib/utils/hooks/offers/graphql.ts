@@ -1,7 +1,5 @@
 import { gql } from "graphql-request";
 
-import { CONFIG } from "../../../config";
-
 export const offerGraphQl = gql`
   {
     id
@@ -161,39 +159,41 @@ export const offerGraphQl = gql`
   }
 `;
 
-export function buildGetOffersQuery({
-  exchangeToken,
-  sellerId,
-  validFromDate_lte,
-  validFromDate_gte,
-  validUntilDate_lte,
-  validUntilDate_gte,
-  skip,
-  offer,
-  quantityAvailable_lte,
-  quantityAvailable_gte,
-  sellerCurationList,
-  offerCurationList,
-  voided
-}: {
-  exchangeToken: boolean;
-  sellerId: boolean;
-  validFromDate_lte: boolean;
-  validFromDate_gte: boolean;
-  validUntilDate_lte: boolean;
-  validUntilDate_gte: boolean;
-  skip: boolean;
-  offer: boolean;
-  quantityAvailable_lte: boolean;
-  quantityAvailable_gte: boolean;
-  sellerCurationList: boolean;
-  offerCurationList: boolean;
-  voided: boolean;
-}) {
-  // TODO: BP421 - Config dispute resolver value
-  const disputeResolverId = CONFIG.defaultDisputeResolverId;
+export const getBuildGetOffersQuery =
+  (defaultDisputeResolverId: string) =>
+  ({
+    exchangeToken,
+    sellerId,
+    validFromDate_lte,
+    validFromDate_gte,
+    validUntilDate_lte,
+    validUntilDate_gte,
+    skip,
+    offer,
+    quantityAvailable_lte,
+    quantityAvailable_gte,
+    sellerCurationList,
+    offerCurationList,
+    voided
+  }: {
+    exchangeToken: boolean;
+    sellerId: boolean;
+    validFromDate_lte: boolean;
+    validFromDate_gte: boolean;
+    validUntilDate_lte: boolean;
+    validUntilDate_gte: boolean;
+    skip: boolean;
+    offer: boolean;
+    quantityAvailable_lte: boolean;
+    quantityAvailable_gte: boolean;
+    sellerCurationList: boolean;
+    offerCurationList: boolean;
+    voided: boolean;
+  }) => {
+    // TODO: BP421 - Config dispute resolver value
+    const disputeResolverId = defaultDisputeResolverId;
 
-  return gql`
+    return gql`
   query GetOffers(
     $first: Int
     ${skip ? "$skip: Int" : ""}
@@ -249,4 +249,4 @@ export function buildGetOffersQuery({
     }
   }
 `;
-}
+  };

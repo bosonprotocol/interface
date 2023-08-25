@@ -12,6 +12,8 @@ export default function useOffer(
   } = {}
 ) {
   const { config } = useConfigContext();
+  const { subgraphUrl, defaultDisputeResolverId } = config.envConfig;
+
   const curationLists = useCurationLists();
 
   props = {
@@ -20,9 +22,14 @@ export default function useOffer(
   };
 
   return useQuery(
-    ["offer", props.offerId],
+    ["offer", props.offerId, subgraphUrl, defaultDisputeResolverId],
     async () => {
-      return getOfferById(config.envConfig.subgraphUrl, props.offerId, props);
+      return getOfferById(
+        subgraphUrl,
+        defaultDisputeResolverId,
+        props.offerId,
+        props
+      );
     },
     {
       ...options

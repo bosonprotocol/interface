@@ -20,9 +20,11 @@ interface Props {
 
 export function useDisputeResolvers() {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   return useQuery(["disputeResolvers"], async () => {
     const result = await fetchSubgraph<Props>(
-      config.envConfig.subgraphUrl,
+      subgraphUrl,
       gql`
         query GetDisputeResolvers {
           disputeResolvers {

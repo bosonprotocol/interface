@@ -11,13 +11,15 @@ export function useTokens(
   } = {}
 ) {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   return useQuery(
-    "tokens",
+    ["tokens", subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         exchangeTokens: Pick<Offer["exchangeToken"], "address" | "symbol">[];
       }>(
-        config.envConfig.subgraphUrl,
+        subgraphUrl,
         gql`
           {
             exchangeTokens(orderBy: "symbol", orderDirection: asc) {

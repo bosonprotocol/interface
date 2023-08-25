@@ -42,6 +42,8 @@ export function useSellers(
   }
 ) {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   const curationLists = useCurationLists();
   const filter = {
     ...(props.admin && { admin: props.admin }),
@@ -52,9 +54,9 @@ export function useSellers(
     ...(props.id && { id: props.id })
   };
   return useQuery(
-    ["sellers", props],
+    ["sellers", props, subgraphUrl],
     async () => {
-      return accounts.subgraph.getSellers(config.envConfig.subgraphUrl, {
+      return accounts.subgraph.getSellers(subgraphUrl, {
         sellersFilter: {
           ...filter,
           id_in: curationLists.sellerCurationList

@@ -20,31 +20,27 @@ export function useSellerBlacklist(
   curatedSellerIds: string[] | undefined;
 } {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   const currentSeller = useCurrentSellers();
   const allSellers = useQuery(
-    ["all-sellers", props],
+    ["all-sellers", props, subgraphUrl],
     async () => {
       const maxSellerPerReq = 1000;
-      const fetched = await accounts.subgraph.getSellers(
-        config.envConfig.subgraphUrl,
-        {
-          sellersFirst: maxSellerPerReq,
-          sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-          sellersOrderDirection: subgraph.OrderDirection.Asc
-        }
-      );
+      const fetched = await accounts.subgraph.getSellers(subgraphUrl, {
+        sellersFirst: maxSellerPerReq,
+        sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
+        sellersOrderDirection: subgraph.OrderDirection.Asc
+      });
       let loop = fetched.length === maxSellerPerReq;
       let sellersSkip = maxSellerPerReq;
       while (loop) {
-        const toAdd = await accounts.subgraph.getSellers(
-          config.envConfig.subgraphUrl,
-          {
-            sellersFirst: maxSellerPerReq,
-            sellersSkip,
-            sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-            sellersOrderDirection: subgraph.OrderDirection.Asc
-          }
-        );
+        const toAdd = await accounts.subgraph.getSellers(subgraphUrl, {
+          sellersFirst: maxSellerPerReq,
+          sellersSkip,
+          sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
+          sellersOrderDirection: subgraph.OrderDirection.Asc
+        });
         fetched.push(...toAdd);
         loop = toAdd.length === maxSellerPerReq;
         sellersSkip += maxSellerPerReq;

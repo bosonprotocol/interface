@@ -19,6 +19,8 @@ export interface SellerRolesProps {
 }
 export function useSellerRoles(id: string) {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   const { address } = useAccount();
 
   const { data } = useQuery(
@@ -34,7 +36,7 @@ export function useSellerRoles(id: string) {
           active: boolean;
         }[];
       }>(
-        config.envConfig.subgraphUrl,
+        subgraphUrl,
         gql`
           query GetSellerByID(
             $id: String

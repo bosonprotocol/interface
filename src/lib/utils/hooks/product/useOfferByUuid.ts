@@ -8,9 +8,11 @@ export default function useOfferByUuid(uuid: string | undefined): {
   offerId: string | undefined;
 } {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   const props = { uuid };
 
-  const result = useQuery(["useOfferByUuid", props], async () => {
+  const result = useQuery(["useOfferByUuid", props, subgraphUrl], async () => {
     const result = await fetchSubgraph<{
       productV1MetadataEntities: {
         offer: {
@@ -18,7 +20,7 @@ export default function useOfferByUuid(uuid: string | undefined): {
         };
       }[];
     }>(
-      config.envConfig.subgraphUrl,
+      subgraphUrl,
       gql`
         query GeEtOfferIdFromUuid($uuid: String) {
           productV1MetadataEntities(where: { uuid: $uuid }) {

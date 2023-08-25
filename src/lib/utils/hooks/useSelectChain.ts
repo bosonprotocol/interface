@@ -1,4 +1,4 @@
-import { envConfigs } from "@bosonprotocol/react-kit";
+import { ConfigId, envConfigs } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 
 import { getConnection } from "../../connection";
 import { didUserReject } from "../../connection/utils";
-import { CHAIN_IDS_TO_NAMES, isSupportedChain } from "../../constants/chains";
+import { isSupportedChain } from "../../constants/chains";
 // import { useAppDispatch } from "state/hooks";
 import { useSwitchChain } from "./useSwitchChain";
 
@@ -19,24 +19,27 @@ export default function useSelectChain() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   return useCallback(
-    async (targetChain: ChainId) => {
+    async (newConfigId: ConfigId) => {
       if (!connector) return;
-
+      console.log("selectChain with configId=", newConfigId);
       const connection = getConnection(connector);
 
       try {
+        // const newConfig = getEnvConfigById(envName, newConfigId);
+        // TODO: wrong envConfigs
+        const newConfig = Object.values(envConfigs)
+          .flat()
+          .find((config) => config.configId === newConfigId);
+        if (!newConfig) {
+          return;
+        }
+        const targetChain = newConfig.chainId as ChainId;
         await switchChain(connector, targetChain);
         if (isSupportedChain(targetChain)) {
-          searchParams.set(
-            "chain",
-            CHAIN_IDS_TO_NAMES[targetChain as keyof typeof CHAIN_IDS_TO_NAMES]
-          );
+          searchParams.set("configId", newConfigId);
           setSearchParams(searchParams);
-          // TODO: wrong envConfigs
-          const targetEnvConfig = Object.values(envConfigs)
-            .flat()
-            .find((config) => config.chainId === targetChain);
-          targetEnvConfig && setEnvConfig(targetEnvConfig);
+
+          setEnvConfig(newConfig);
         }
       } catch (error) {
         if (
@@ -59,6 +62,7 @@ export default function useSelectChain() {
     },
     [
       connector,
+      setEnvConfig,
       // TODO: comment out?
       // dispatch,
       searchParams,

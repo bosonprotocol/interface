@@ -1,8 +1,9 @@
 import { ConfigProvider } from "components/config/ConfigProvider";
+import { queryClient, rootElement } from "queryClient";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 import ConvertionRateProvider from "./components/convertion-rate/ConvertionRateProvider";
@@ -11,16 +12,17 @@ import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import reportWebVitals from "./reportWebVitals";
 import AppRouter from "./router/AppRouter";
 
-const rootElement = document.getElementById("root");
-if (!rootElement) throw new Error("Unable to find the root element");
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false
-    }
-  }
-});
+// const rootElement = document.getElementById("root");
+// if (!rootElement) throw new Error("Unable to find the root element");
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       refetchOnWindowFocus: false
+//     }
+//   }
+// });
 
+if (!rootElement) throw new Error("Unable to find the root element");
 const root = createRoot(rootElement);
 
 const StrictMode = ({
@@ -37,7 +39,7 @@ const StrictMode = ({
 };
 
 root.render(
-  <StrictMode enable={true}>
+  <StrictMode enable={false}>
     <ConfigProvider>
       <Toaster
         position="top-right"

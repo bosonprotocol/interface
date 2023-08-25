@@ -13,6 +13,8 @@ export function useOffers(
   } = {}
 ) {
   const { config } = useConfigContext();
+  const { subgraphUrl, defaultDisputeResolverId } = config.envConfig;
+
   const curationLists = useCurationLists();
   const convertPrice = useConvertedPriceFunction();
 
@@ -21,9 +23,13 @@ export function useOffers(
     ...curationLists
   };
   return useQuery(
-    ["offers", props],
+    ["offers", props, subgraphUrl, defaultDisputeResolverId],
     async () => {
-      const offersList = await getOffers(config.envConfig.subgraphUrl, props);
+      const offersList = await getOffers(
+        subgraphUrl,
+        defaultDisputeResolverId,
+        props
+      );
 
       // sort the offers by price
       const orderedOffers = offersList.sort((a, b) => {

@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { ReactNode, useState } from "react";
 import styled, { css } from "styled-components";
 
@@ -82,6 +83,7 @@ const Div = ({ children }: { children: ReactNode }) => {
   return <div>{children}</div>;
 };
 export default function Landing() {
+  const { config } = useConfigContext();
   const { isLteS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
@@ -177,7 +179,7 @@ export default function Landing() {
                 </ExploreProductsButton>
               </ExploreContainer>
             </GridWithZindex>
-            <Carousel />
+            <Carousel key={config.envConfig.configId} />
           </Grid>
           <Grid
             alignItems="flex-start"

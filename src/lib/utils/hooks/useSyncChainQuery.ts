@@ -1,40 +1,38 @@
+import { ConfigId } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { ParsedQs } from "qs";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { CHAIN_IDS_TO_NAMES, isSupportedChain } from "../../constants/chains";
+import { isSupportedChain } from "../../constants/chains";
 import useParsedQueryString from "./useParsedQueryString";
 import useSelectChain from "./useSelectChain";
 
-function getChainIdFromName(name: string) {
-  const entry = Object.entries(CHAIN_IDS_TO_NAMES).find(([, n]) => n === name);
-  const chainId = entry?.[0];
-  return chainId ? parseInt(chainId) : undefined;
-}
+function getParsedConfigId(parsedQs?: ParsedQs) {
+  const configId = parsedQs?.configId;
+  if (!configId || typeof configId !== "string") return;
 
-function getParsedChainId(parsedQs?: ParsedQs) {
-  const chain = parsedQs?.chain;
-  if (!chain || typeof chain !== "string") return;
-
-  return getChainIdFromName(chain);
+  return configId;
 }
 
 export default function useSyncChainQuery() {
   const { chainId, isActive, account } = useWeb3React();
+  const { config } = useConfigContext();
+  const currentConfigId = config.envConfig.configId;
+
   const parsedQs = useParsedQueryString();
-  const chainIdRef = useRef(chainId);
+  const configIdRef = useRef(currentConfigId);
   const accountRef = useRef(account);
 
   useEffect(() => {
-    // Update chainIdRef when the account is retrieved from Web3React
     if (account && account !== accountRef.current) {
-      chainIdRef.current = chainId;
+      configIdRef.current = currentConfigId;
       accountRef.current = account;
     }
-  }, [account, chainId]);
+  }, [account, currentConfigId]);
 
-  const urlChainId = getParsedChainId(parsedQs);
+  const urlConfigId = getParsedConfigId(parsedQs);
 
   const selectChain = useSelectChain();
 
@@ -44,34 +42,33 @@ export default function useSyncChainQuery() {
     // Change a user's chain on pageload if the connected chainId does not match the query param chain
     if (
       isActive &&
-      urlChainId &&
-      chainIdRef.current === chainId &&
-      chainId !== urlChainId
+      urlConfigId &&
+      configIdRef.current === currentConfigId &&
+      currentConfigId !== urlConfigId
     ) {
-      selectChain(urlChainId);
+      selectChain(urlConfigId as ConfigId);
     }
     // If a user has a connected wallet and has manually changed their chain, update the query parameter if it's supported
     else if (
+      urlConfigId &&
       account &&
-      chainIdRef.current !== chainId &&
-      chainId !== urlChainId
+      configIdRef.current !== currentConfigId &&
+      currentConfigId !== urlConfigId
     ) {
       if (isSupportedChain(chainId)) {
-        searchParams.set(
-          "chain",
-          CHAIN_IDS_TO_NAMES[chainId as keyof typeof CHAIN_IDS_TO_NAMES]
-        );
+        searchParams.set("configId", urlConfigId);
       } else {
-        searchParams.delete("chain");
+        searchParams.delete("configId");
       }
       setSearchParams(searchParams);
     }
-    // If a user has a connected wallet and the chainId matches the query param chain, update the chainIdRef
-    else if (isActive && chainId === urlChainId) {
-      chainIdRef.current = urlChainId;
+    // If a user has a connected wallet and the chainId matches the query param chain, update the configIdRef
+    else if (urlConfigId && isActive && currentConfigId === urlConfigId) {
+      configIdRef.current = urlConfigId;
     }
   }, [
-    urlChainId,
+    currentConfigId,
+    urlConfigId,
     selectChain,
     searchParams,
     isActive,

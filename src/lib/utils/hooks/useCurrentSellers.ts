@@ -114,8 +114,9 @@ export function useCurrentSellers({
   lensTokenId
 }: Props = {}) {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
   const coreSDK = useCoreSDK();
-  const fetchSellers = getSellersByIds(config.envConfig.subgraphUrl);
+  const fetchSellers = getSellersByIds(subgraphUrl);
   const { address: loggedInUserAddress } = useAccount();
   const sellerAddress =
     address || sellerId || lensTokenId || loggedInUserAddress || null;
@@ -208,7 +209,8 @@ export function useCurrentSellers({
   const resultByLensId = useQuery(
     [
       "current-seller-data-by-lens-id",
-      { authTokenId: decimalLensTokenId, authTokenType: AuthTokenType.LENS }
+      { authTokenId: decimalLensTokenId, authTokenType: AuthTokenType.LENS },
+      subgraphUrl
     ],
     async () => {
       const result = await fetchSubgraph<{
@@ -220,7 +222,7 @@ export function useCurrentSellers({
           treasury: string;
         }[];
       }>(
-        config.envConfig.subgraphUrl,
+        subgraphUrl,
         gql`
           query GetSellerByLensId($authTokenId: String, $authTokenType: Int) {
             sellers(

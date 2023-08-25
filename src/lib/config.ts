@@ -78,7 +78,6 @@ export const CONFIG = {
   releaseName: process.env.REACT_APP_RELEASE_NAME,
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
-  sellerBlacklistUrl: process.env.REACT_APP_SELLER_BLACKLIST_URL,
   offerCurationList: parseCurationList(
     process.env.REACT_APP_OFFER_CURATION_LIST
   ),
@@ -92,8 +91,6 @@ export const CONFIG = {
   ),
   defaultTokens: getDefaultTokens(),
   mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID,
-  defaultDisputeResolverId:
-    process.env.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID || "1",
   defaultDisputeResolutionPeriodDays:
     process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
   defaultSellerContactMethod: "Chat App in the dApp",

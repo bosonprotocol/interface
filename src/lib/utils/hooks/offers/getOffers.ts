@@ -1,11 +1,15 @@
 import { fetchSubgraph } from "../../core-components/subgraph";
-import { buildGetOffersQuery } from "./graphql";
+import { getBuildGetOffersQuery } from "./graphql";
 import { memoMergeAndSortOffers } from "./memo";
 import { CurationListGetOffersResult, UseOffersProps } from "./types";
 
 const memoizedMergeAndSortOffers = memoMergeAndSortOffers();
 
-export const getOffers = async (subgraphUrl: string, props: UseOffersProps) => {
+export const getOffers = async (
+  subgraphUrl: string,
+  disputeResolverId: string,
+  props: UseOffersProps
+) => {
   const dateNow = Date.now();
   const now = Math.floor(dateNow / 1000);
 
@@ -59,6 +63,7 @@ export const getOffers = async (subgraphUrl: string, props: UseOffersProps) => {
 
   return fetchCurationListOffers(
     subgraphUrl,
+    disputeResolverId,
     props,
     getOffersQueryArgs,
     variables
@@ -67,6 +72,7 @@ export const getOffers = async (subgraphUrl: string, props: UseOffersProps) => {
 
 async function fetchCurationListOffers(
   subgraphUrl: string,
+  disputeResolverId: string,
   props: UseOffersProps,
   getOffersQueryArgs: Omit<
     Parameters<typeof buildGetOffersQuery>[0],
@@ -75,6 +81,7 @@ async function fetchCurationListOffers(
   queryVars: Record<string, unknown>,
   offerId?: string
 ) {
+  const buildGetOffersQuery = getBuildGetOffersQuery(disputeResolverId);
   const sellerCurationList = props.enableCurationLists
     ? props.sellerCurationList || []
     : null;

@@ -14,8 +14,10 @@ export function useSellerCalculations(
   } = {}
 ) {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   return useQuery(
-    ["offers", "exchanges", props],
+    ["offers", "exchanges", props, subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         offers: {
@@ -28,7 +30,7 @@ export function useSellerCalculations(
           };
         }[];
       }>(
-        config.envConfig.subgraphUrl,
+        subgraphUrl,
         gql`
           query GetSellerCalculations($sellerId: String) {
             offers(where: { sellerId: $sellerId }) {

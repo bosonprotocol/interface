@@ -1,13 +1,14 @@
 import { ConfigId, envConfigs, ProtocolConfig } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useAtomValue } from "jotai";
 import {
   CaretDown as ChevronDown,
   CaretUp as ChevronUp,
   Warning as AlertTriangle
 } from "phosphor-react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { getConnection } from "../../../lib/connection";
@@ -64,6 +65,7 @@ function useWalletSupportedChains(): ChainId[] {
 }
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
+  const { config } = useConfigContext();
   const { chainId } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
@@ -97,17 +99,20 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   useOnClickOutside(ref, () => setIsOpen(false), [modalRef]);
 
   const info = getChainInfo(chainId);
-
+  const [activeConfigId, setActiveConfigId] = useState<ConfigId>(
+    config.envConfig.configId
+  );
+  useEffect(() => {
+    setActiveConfigId(config.envConfig.configId);
+  }, [config.envConfig.configId]);
   const selectChain = useSelectChain();
   useSyncChainQuery();
 
   const [pendingConfigId, setPendingConfigId] = useState<ConfigId>();
-  const [activeConfigId, setActiveConfigId] = useState<ConfigId>();
   const onSelectChain = useCallback(
     async (config: ProtocolConfig) => {
-      const targetChainId = config.chainId as ChainId;
       setPendingConfigId(config.configId);
-      await selectChain(targetChainId);
+      await selectChain(config.configId);
       setActiveConfigId(config.configId);
       setPendingConfigId(undefined);
       setIsOpen(false);

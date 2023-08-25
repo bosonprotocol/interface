@@ -143,7 +143,9 @@ export function useExchanges(
   } = {}
 ) {
   const { config } = useConfigContext();
-  const fetchExchanges = getExchangesFunction(config.envConfig.subgraphUrl);
+  const { subgraphUrl } = config.envConfig;
+
+  const fetchExchanges = getExchangesFunction(subgraphUrl);
   const curationLists = useCurationLists();
   const onlyCuratedSeller =
     options.onlyCuratedSeller === undefined || options.onlyCuratedSeller;
@@ -152,7 +154,7 @@ export function useExchanges(
     : undefined;
 
   return useQuery(
-    ["exchanges", props, sellerIn],
+    ["exchanges", props, sellerIn, subgraphUrl],
     async () => {
       const result = await fetchExchanges({
         ...props,

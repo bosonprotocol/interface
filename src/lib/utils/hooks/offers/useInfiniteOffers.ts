@@ -14,6 +14,8 @@ export function useInfiniteOffers(
   } = {}
 ) {
   const { config } = useConfigContext();
+  const { subgraphUrl, defaultDisputeResolverId } = config.envConfig;
+
   const curationLists = useCurationLists();
 
   props = {
@@ -22,13 +24,23 @@ export function useInfiniteOffers(
   };
 
   return useInfiniteQuery(
-    ["offers", "infinite", props.sellerId],
+    [
+      "offers",
+      "infinite",
+      props.sellerId,
+      subgraphUrl,
+      defaultDisputeResolverId
+    ],
     async (context) => {
       const skip = context.pageParam || 0;
-      return getOffers(config.envConfig.subgraphUrl, {
-        ...props,
-        skip
-      });
+      return getOffers(
+        config.envConfig.subgraphUrl,
+        config.envConfig.defaultDisputeResolverId,
+        {
+          ...props,
+          skip
+        }
+      );
     },
     {
       ...options,

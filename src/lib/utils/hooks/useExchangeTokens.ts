@@ -19,13 +19,15 @@ export interface ExchangeTokensProps {
 }
 export function useExchangeTokens(props: Props, { enabled }: Options = {}) {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   return useQuery(
-    ["exchangeTokens", props],
+    ["exchangeTokens", props, subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         exchangeTokens: ExchangeTokensProps[];
       }>(
-        config.envConfig.subgraphUrl,
+        subgraphUrl,
         gql`
           query GetExchangesTokens($sellerId: String) {
             exchangeTokens {

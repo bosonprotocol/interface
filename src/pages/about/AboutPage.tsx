@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { CheckCircle, XCircle } from "phosphor-react";
 import styled from "styled-components";
 
@@ -38,6 +39,7 @@ const Text = styled(Typography)`
 `;
 
 function AboutPage() {
+  const { config } = useConfigContext();
   const curationLists = useCurationLists();
   return (
     <Wrapper
@@ -138,7 +140,7 @@ function AboutPage() {
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Default Dispute Resolver ID:</span>
-        <span>{CONFIG.defaultDisputeResolverId || "-"}</span>
+        <span>{config.envConfig.defaultDisputeResolverId || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>IPFS GATEWAY:</span>

@@ -43,6 +43,8 @@ export default function useProducts(
   }
 ) {
   const { config } = useConfigContext();
+  const { subgraphUrl, defaultDisputeResolverId } = config.envConfig;
+
   const curationLists = useCurationLists();
   const now = Math.floor(Date.now() / 1000);
   const validityFilter = props.onlyValid
@@ -57,21 +59,22 @@ export default function useProducts(
       productsFirst: OFFERS_PER_PAGE,
       productsFilter: {
         uuid_in: props?.productsIds || undefined,
-        disputeResolverId: CONFIG.defaultDisputeResolverId,
+        disputeResolverId: defaultDisputeResolverId,
         sellerId_in: options.enableCurationList
           ? curationLists.sellerCurationList
           : undefined,
         ...props.productsFilter
       }
     }),
-    [props, options, curationLists]
+    [props, options, curationLists, defaultDisputeResolverId]
   );
 
   const coreSDK = useCoreSDK();
+
   const { store } = useContext(ConvertionRateContext);
 
   const productsVariants = useQuery(
-    ["get-all-products-variants", baseProps],
+    ["get-all-products-variants", baseProps, coreSDK],
     async () => {
       const newProps = {
         ...baseProps,
@@ -244,7 +247,7 @@ export default function useProducts(
   );
 
   const exchangesBySellers = useQuery(
-    ["get-all-exchanges-from-sellers", props],
+    ["get-all-exchanges-from-sellers", props, subgraphUrl],
     async () => {
       const numItemsPerRequest = 1000;
       let skip = 0;
@@ -262,7 +265,7 @@ export default function useProducts(
             };
           }[];
         }>(
-          config.envConfig.subgraphUrl,
+          subgraphUrl,
           gql`
             query GetSellersExchanges(
               $sellerIds: [String]

@@ -15,8 +15,9 @@ export function useBuyers(
   }
 ) {
   const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
   return useQuery(
-    ["buyers", props],
+    ["buyers", props, subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         buyers: {
@@ -25,7 +26,7 @@ export function useBuyers(
           active: boolean;
         }[];
       }>(
-        config.envConfig.subgraphUrl,
+        subgraphUrl,
         gql`
           query GetBuyers(
             $orderBy: String
