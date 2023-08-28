@@ -442,7 +442,7 @@ function CreateProductInner({
   const assistantLens: Profile | null =
     lensProfiles.find((lensProfile) => {
       return (
-        getLensTokenIdDecimal(lensProfile.id).toString() ===
+        getLensTokenIdDecimal(lensProfile?.id).toString() ===
         currentAssistant?.authTokenId
       );
     }) || null;

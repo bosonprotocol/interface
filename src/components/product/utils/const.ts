@@ -1,3 +1,5 @@
+import { ProtocolConfig } from "@bosonprotocol/react-kit";
+
 import { CONFIG } from "../../../lib/config";
 import countries from "../../../lib/const/countries.json";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
@@ -62,19 +64,20 @@ export const CATEGORY_OPTIONS = [
   }
 ];
 
-export const OPTIONS_CURRENCIES = CONFIG.defaultTokens?.length
-  ? [
-      ...(CONFIG.defaultTokens?.map((token: Token) => ({
-        value: token?.symbol || "",
-        label: token?.symbol || ""
-      })) || [])
-    ]
-  : [
-      {
-        value: CONFIG.nativeCoin?.symbol || "",
-        label: CONFIG.nativeCoin?.symbol || ""
-      }
-    ];
+export const getOptionsCurrencies = (envConfig: ProtocolConfig) =>
+  CONFIG.defaultTokens?.length
+    ? [
+        ...(CONFIG.defaultTokens?.map((token: Token) => ({
+          value: token?.symbol || "",
+          label: token?.symbol || ""
+        })) || [])
+      ]
+    : [
+        {
+          value: envConfig.nativeCoin?.symbol || "",
+          label: envConfig.nativeCoin?.symbol || ""
+        }
+      ];
 export const OPTIONS_TOKEN_GATED = [
   {
     value: "false",

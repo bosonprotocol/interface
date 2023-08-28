@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
@@ -42,6 +43,7 @@ import {
   CreateProductForm,
   CreateProfile,
   CreateYourProfile,
+  getOptionsCurrencies,
   initialValues
 } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
@@ -125,6 +127,7 @@ export default function ProductType({
   showInvalidRoleModal,
   isDraftModalClosed
 }: Props) {
+  const { config } = useConfigContext();
   const [connectModalOpen, openConnectModal] = useAccountDrawer();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -186,7 +189,7 @@ export default function ProductType({
     !!currentSellers.some((seller, index) => {
       return (
         seller.authTokenType === authTokenTypes.LENS &&
-        seller.authTokenId === getLensTokenIdDecimal(lens[index].id).toString()
+        seller.authTokenId === getLensTokenIdDecimal(lens[index]?.id).toString()
       );
     });
 
@@ -212,6 +215,10 @@ export default function ProductType({
       );
       const newValues: CreateProductForm = {
         ...initialValues,
+        coreTermsOfSale: {
+          ...initialValues.coreTermsOfSale,
+          currency: getOptionsCurrencies(config.envConfig)
+        },
         ...currentValues,
         createYourProfile: regularProfile
       };

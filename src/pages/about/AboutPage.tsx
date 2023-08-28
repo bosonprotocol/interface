@@ -50,7 +50,7 @@ function AboutPage() {
     >
       <Text margin="0 0 0.5rem 0">
         <span>Environment name:</span>
-        <span>{CONFIG.envName || "-"}</span>
+        <span>{config.envName || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Release version:</span>

@@ -2,6 +2,7 @@ import { MessageType } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/defini
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
 import { ArrowLeft } from "phosphor-react";
@@ -24,7 +25,6 @@ import {
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import Grid from "../../components/ui/Grid";
-import { CONFIG } from "../../lib/config";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -117,6 +117,7 @@ const validationSchema = [
   disputeCentreValidationSchemaProposalSummary
 ];
 function RaiseDisputePage() {
+  const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { showModal, hideModal } = useModal();
   const { address } = useAccount();
@@ -311,7 +312,7 @@ function RaiseDisputePage() {
                     <SuccessTransactionToast
                       t={t}
                       action={`Raised dispute: ${exchange.offer.metadata.name}`}
-                      url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                      url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
                     />
                   ));
                   hideModal();

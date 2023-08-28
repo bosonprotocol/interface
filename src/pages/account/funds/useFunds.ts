@@ -1,10 +1,10 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { subgraph } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useReducer, useState } from "react";
 
 import { Token } from "../../../components/convertion-rate/ConvertionRateContext";
-import { CONFIG } from "../../../lib/config";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 
@@ -17,6 +17,7 @@ export default function useFunds(
   accountId: string,
   tokens?: Token[] | null
 ): FundsProps {
+  const { config } = useConfigContext();
   const coreSdk = useCoreSDK();
   const [numRequests, reload] = useReducer((state) => state + 1, 0);
   const [funds, setFunds] = useState<Array<subgraph.FundsEntityFieldsFragment>>(
@@ -25,13 +26,13 @@ export default function useFunds(
   const [fundStatus, setFundStatus] = useState<ProgressStatus>(
     ProgressStatus.IDLE
   );
-
+  const nativeCoin = config.envConfig.nativeCoin;
   const handleFunds = useCallback(
     (funds: Array<subgraph.FundsEntityFieldsFragment>) => {
       const mergeTokens: any[] = [
         ...funds,
         ...(tokens || []),
-        ...(CONFIG.nativeCoin ? [CONFIG.nativeCoin] : [])
+        ...(nativeCoin ? [nativeCoin] : [])
       ];
 
       const allTokensParsed =
@@ -71,7 +72,7 @@ export default function useFunds(
       setFundStatus(ProgressStatus.SUCCESS);
       setFunds(allTokensParsed);
     },
-    [tokens, accountId]
+    [tokens, accountId, nativeCoin]
   );
 
   const getFunds = useCallback(() => {

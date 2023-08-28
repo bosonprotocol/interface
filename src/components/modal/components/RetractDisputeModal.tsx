@@ -7,12 +7,12 @@ import {
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
-import { CONFIG } from "../../../lib/config";
 import {
   ChatInitializationStatus,
   useChatStatus
@@ -86,6 +86,7 @@ export default function RetractDisputeModal({
   destinationAddress,
   exchange
 }: Props) {
+  const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { chatInitializationStatus } = useChatStatus();
   const coreSDK = useCoreSDK();
@@ -223,7 +224,7 @@ export default function RetractDisputeModal({
                 <SuccessTransactionToast
                   t={t}
                   action={`Retracted dispute: ${offerName}`}
-                  url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                  url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
               hideModal();

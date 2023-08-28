@@ -1,9 +1,10 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
+import { useConfigContext } from "components/config/ConfigContext";
 import { Check, X } from "phosphor-react";
 import { CSSProperties, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
+import { DappConfig } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
@@ -46,27 +47,58 @@ interface TokenInfo {
   symbol: string;
 }
 
-const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
-  const { method, tokenType, tokenId, tokenAddress, threshold } = condition;
+const getBuildMessage =
+  (config: DappConfig) => (condition: Condition, tokenInfo: TokenInfo) => {
+    const { method, tokenType, tokenId, tokenAddress, threshold } = condition;
 
-  if (tokenType === TokenType.FungibleToken) {
-    return (
-      <>
-        {tokenInfo.convertedValue.price} {tokenInfo.symbol} tokens (
-        <a href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)} target="_blank">
-          {tokenAddress.slice(0, 10)}...
-        </a>
-        )
-      </>
-    );
-  }
-  if (tokenType === TokenType.NonFungibleToken) {
-    if (method === EvaluationMethod.Threshold) {
+    if (tokenType === TokenType.FungibleToken) {
       return (
         <>
-          {threshold} tokens from{" "}
+          {tokenInfo.convertedValue.price} {tokenInfo.symbol} tokens (
           <a
-            href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)}
+            href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
+            target="_blank"
+          >
+            {tokenAddress.slice(0, 10)}...
+          </a>
+          )
+        </>
+      );
+    }
+    if (tokenType === TokenType.NonFungibleToken) {
+      if (method === EvaluationMethod.Threshold) {
+        return (
+          <>
+            {threshold} tokens from{" "}
+            <a
+              href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
+              target="_blank"
+            >
+              {tokenAddress.slice(0, 10)}...
+            </a>
+          </>
+        );
+      }
+      if (method === EvaluationMethod.SpecificToken) {
+        return (
+          <>
+            Token ID: {tokenId} from{" "}
+            <a
+              href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
+              target="_blank"
+            >
+              {tokenAddress.slice(0, 15)}...
+            </a>
+          </>
+        );
+      }
+    }
+    if (tokenType === TokenType.MultiToken) {
+      return (
+        <>
+          {threshold} x token(s) with id: {tokenId} from{" "}
+          <a
+            href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
             target="_blank"
           >
             {tokenAddress.slice(0, 10)}...
@@ -74,32 +106,8 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
         </>
       );
     }
-    if (method === EvaluationMethod.SpecificToken) {
-      return (
-        <>
-          Token ID: {tokenId} from{" "}
-          <a
-            href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)}
-            target="_blank"
-          >
-            {tokenAddress.slice(0, 15)}...
-          </a>
-        </>
-      );
-    }
-  }
-  if (tokenType === TokenType.MultiToken) {
-    return (
-      <>
-        {threshold} x token(s) with id: {tokenId} from{" "}
-        <a href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)} target="_blank">
-          {tokenAddress.slice(0, 10)}...
-        </a>
-      </>
-    );
-  }
-  return "";
-};
+    return "";
+  };
 
 const TokenGated = ({
   offer,
@@ -108,6 +116,8 @@ const TokenGated = ({
   isConditionMet,
   style
 }: Props) => {
+  const { config } = useConfigContext();
+  const buildMessage = getBuildMessage(config);
   const { condition } = offer;
   const core = useCoreSDK();
   const [tokenInfo, setTokenInfo] = useState({
