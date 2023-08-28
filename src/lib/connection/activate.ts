@@ -1,14 +1,10 @@
-// import {
-//   InterfaceEventName,
-//   WalletConnectionResult
-// } from "@uniswap/analytics-events";
 import { ChainId } from "@uniswap/sdk-core";
 import { atom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useAppDispatch } from "state/hooks";
+import { updateSelectedWallet } from "state/user/reducer";
 
-// import { useAppDispatch } from "state/hooks";
 import { Connection } from "./types";
 import { didUserReject } from "./utils";
 
@@ -36,10 +32,8 @@ type ActivationState =
 const activationStateAtom = atom<ActivationState>(IDLE_ACTIVATION_STATE);
 
 function useTryActivation() {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const setActivationState = useUpdateAtom(activationStateAtom);
-  const { pathname } = useLocation();
-  // const currentPage = getCurrentPageFromLocation(pathname);
 
   return useCallback(
     async (
@@ -55,11 +49,11 @@ function useTryActivation() {
         setActivationState({ status: ActivationStatus.PENDING, connection });
 
         console.debug(`Connection activating: ${connection.getName()}`);
-        // dispatch(updateSelectedWallet({ wallet: undefined })); // TODO: comment out?
+        dispatch(updateSelectedWallet({ wallet: undefined }));
         await connection.connector.activate();
 
         console.debug(`Connection activated: ${connection.getName()}`);
-        // dispatch(updateSelectedWallet({ wallet: connection.type })); // TODO: comment out?
+        dispatch(updateSelectedWallet({ wallet: connection.type }));
 
         // Clears pending connection state
         setActivationState(IDLE_ACTIVATION_STATE);
@@ -76,12 +70,6 @@ function useTryActivation() {
         console.debug(`Connection failed: ${connection.getName()}`);
         console.error(error);
 
-        // Failed Connection events are logged here, while successful ones are logged by Web3Provider
-        // sendAnalyticsEvent(InterfaceEventName.WALLET_CONNECT_TXN_COMPLETED, {
-        //   result: WalletConnectionResult.FAILED,
-        //   wallet_type: connection.getName(),
-        //   page: currentPage
-        // });
         setActivationState({
           status: ActivationStatus.ERROR,
           connection,
@@ -89,13 +77,7 @@ function useTryActivation() {
         });
       }
     },
-    [
-      // TODO: comment out?
-      // currentPage,
-      // TODO: comment out?
-      // dispatch,
-      setActivationState
-    ]
+    [dispatch, setActivationState]
   );
 }
 

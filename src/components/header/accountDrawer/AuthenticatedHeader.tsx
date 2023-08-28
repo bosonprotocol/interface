@@ -1,10 +1,13 @@
 import { ThemedButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import { CopyButton } from "components/form/Field.styles";
 import { colors } from "lib/styles/colors";
+import copyToClipboard from "lib/utils/copyToClipboard";
 import useENSName from "lib/utils/hooks/useENSName";
 import {
   ArrowDownRight,
   ArrowUpRight,
+  Copy,
   CreditCard,
   IconProps,
   Info,
@@ -13,8 +16,7 @@ import {
 import { useCallback, useState } from "react";
 import {
   useFiatOnrampAvailability,
-  useOpenModal,
-  useToggleModal
+  useOpenModal
 } from "state/application/hooks";
 import { ApplicationModal } from "state/application/reducer";
 import { useAppDispatch } from "state/hooks";
@@ -124,11 +126,6 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
   align-items: flex-start;
 `;
-// TODO:
-const CopyText = styled.div.attrs({
-  iconSize: 14,
-  iconPosition: "right"
-})``;
 
 const FadeInColumn = styled(Column)`
   ${portfolioFadeInAnimation}
@@ -153,11 +150,8 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
   const { connector } = useWeb3React();
   const { ENSName } = useENSName(account);
   const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
-  // const closeModal = useCloseModal();
 
   const connection = getConnection(connector);
-  const openClaimModal = useToggleModal(ApplicationModal.ADDRESS_CLAIM);
 
   const disconnect = useCallback(() => {
     if (connector && connector.deactivate) {
@@ -227,17 +221,27 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
           <StatusIcon account={account} connection={connection} size={40} />
           {account && (
             <AccountNamesWrapper>
-              <Typography>
-                <CopyText /*TODO:toCopy={ENSName ?? account}*/>
-                  {ENSName ?? formatAddress(account)}
-                </CopyText>
+              <Typography gap="0.5rem">
+                {ENSName ?? formatAddress(account)}
+                <CopyButton
+                  onClick={async () => {
+                    await copyToClipboard(ENSName ?? account);
+                  }}
+                >
+                  <Copy size={14} />
+                </CopyButton>
               </Typography>
               {/* Displays smaller view of account if ENS name was rendered above */}
               {ENSName && (
-                <Typography color="textTertiary">
-                  <CopyText /*TODO:toCopy={account}*/>
-                    {formatAddress(account)}
-                  </CopyText>
+                <Typography>
+                  {formatAddress(account)}
+                  <CopyButton
+                    onClick={async () => {
+                      await copyToClipboard(account);
+                    }}
+                  >
+                    <Copy size={14} />
+                  </CopyButton>
                 </Typography>
               )}
             </AccountNamesWrapper>
@@ -280,8 +284,6 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
           </Column>
         )}
         <HeaderButton
-          // TODO: size={ButtonSize.medium}
-          // TODO: emphasis={ButtonEmphasis.medium}
           onClick={handleBuyCryptoClick}
           disabled={disableBuyCryptoButton}
           data-testid="wallet-buy-crypto"

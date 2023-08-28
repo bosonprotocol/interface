@@ -2,22 +2,24 @@ import { ConfigId } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
+import ErrorToast from "components/toasts/common/ErrorToast";
+import Typography from "components/ui/Typography";
 import { envConfigsFilteredByEnv } from "lib/config";
 import { configQueryParameters } from "lib/routing/parameters";
+import { colors } from "lib/styles/colors";
 import { useCallback } from "react";
+import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 
 import { getConnection } from "../../connection";
 import { didUserReject } from "../../connection/utils";
 import { isSupportedChain } from "../../constants/chains";
-// import { useAppDispatch } from "state/hooks";
 import { useSwitchChain } from "./useSwitchChain";
 
 export default function useSelectChain(
   { throwErrors }: { throwErrors: boolean } = { throwErrors: false }
 ) {
   const { setEnvConfig } = useConfigContext();
-  // const dispatch = useAppDispatch();
   const { connector } = useWeb3React();
   const switchChain = useSwitchChain();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,19 +48,18 @@ export default function useSelectChain(
       } catch (error) {
         if (
           !didUserReject(connection, error) &&
-          (error as any).code !== -32002 /* request already pending */
+          (error as { code: number }).code !==
+            -32002 /* request already pending */
         ) {
           console.error("Failed to switch networks", error);
-          // TODO: comment out?
-          // dispatch(
-          //   addPopup({
-          //     content: {
-          //       failedSwitchNetwork: targetChain,
-          //       type: PopupType.FailedSwitchNetwork
-          //     },
-          //     key: "failed-network-switch"
-          //   })
-          // );
+          toast((t) => (
+            <ErrorToast t={t}>
+              <Typography tag="p" color={colors.red}>
+                Failed to switch networks. Try switching the network in your
+                wallet's settings.
+              </Typography>
+            </ErrorToast>
+          ));
         }
         if (throwErrors) {
           throw error;
@@ -68,8 +69,6 @@ export default function useSelectChain(
     [
       connector,
       setEnvConfig,
-      // TODO: comment out?
-      // dispatch,
       searchParams,
       setSearchParams,
       switchChain,

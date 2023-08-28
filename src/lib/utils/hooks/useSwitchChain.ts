@@ -1,9 +1,9 @@
 import { ChainId, SupportedChainsType } from "@uniswap/sdk-core";
 import { Connector } from "@web3-react/types";
 import { useCallback } from "react";
+import { useAppDispatch } from "state/hooks";
+import { endSwitchingChain, startSwitchingChain } from "state/wallets/reducer";
 
-// import { useAppDispatch } from "state/hooks";
-// import { endSwitchingChain } from "state/wallets/reducer";
 import {
   networkConnection,
   uniwalletWCV2ConnectConnection,
@@ -23,14 +23,12 @@ function getRpcUrl(chainId: SupportedChainsType): string {
     // MetaMask allows switching to any publicly reachable URL, but for novel chains, it will display a warning if it is not on the "Safe" list.
     // See the definition of FALLBACK_URLS for more details.
     default:
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       return FALLBACK_URLS[chainId][0];
   }
 }
 
 export function useSwitchChain() {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   return useCallback(
     async (connector: Connector, chainId: ChainId) => {
@@ -39,8 +37,7 @@ export function useSwitchChain() {
           `Chain ${chainId} not supported for connector (${typeof connector})`
         );
       } else {
-        // TODO: comment out?
-        // dispatch(startSwitchingChain(chainId));
+        dispatch(startSwitchingChain(chainId));
         try {
           if (
             [
@@ -72,14 +69,10 @@ export function useSwitchChain() {
           }
           throw error;
         } finally {
-          // TODO: comment out?
-          // dispatch(endSwitchingChain());
+          dispatch(endSwitchingChain());
         }
       }
     },
-    [
-      // TODO: comment out?
-      // dispatch
-    ]
+    [dispatch]
   );
 }
