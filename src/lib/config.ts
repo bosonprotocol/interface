@@ -67,7 +67,10 @@ function getMetaTxApiIds(protocolAddress: string) {
 export const envConfigsFilteredByEnv: ProtocolConfig[] =
   envName === "production"
     ? getEnvConfigs(envName)
-    : Object.values(envConfigs).flat();
+    : Object.entries(envConfigs)
+        .filter(([env]) => env !== "local")
+        .map(([, value]) => value)
+        .flat();
 export const defaultEnvConfig: ProtocolConfig = envConfigsFilteredByEnv[0];
 
 export const CONFIG = {
