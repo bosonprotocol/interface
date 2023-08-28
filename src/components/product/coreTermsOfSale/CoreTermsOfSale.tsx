@@ -28,8 +28,9 @@ interface Props {
 
 export default function CoreTermsOfSale({ isMultiVariant }: Props) {
   const { config } = useConfigContext();
-  const { nextIsDisabled } = useCreateForm();
   const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
+
+  const { nextIsDisabled } = useCreateForm();
 
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
 
