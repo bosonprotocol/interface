@@ -1,4 +1,5 @@
 import { ButtonSize } from "@bosonprotocol/react-kit";
+import { Portal } from "components/portal/Portal";
 import { X } from "phosphor-react";
 import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
@@ -21,6 +22,7 @@ import { Spinner } from "../loading/Spinner";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
+import { AccountDrawer } from "./accountDrawer";
 import { BurgerButton } from "./BurgerButton";
 import { ChainSelector } from "./chainSelector/ChainSelector";
 import ConnectButton from "./ConnectButton";
@@ -378,6 +380,9 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
             </>
           )}
         </HeaderContainer>
+        <Portal>
+          <AccountDrawer />
+        </Portal>
       </Header>
     );
   }

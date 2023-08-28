@@ -11,8 +11,7 @@ import styled from "styled-components";
 import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { formatAddress } from "../../../lib/utils/address";
-import { Portal } from "../../portal/Portal";
-import PortfolioDrawer, { useAccountDrawer } from "../accountDrawer";
+import { useAccountDrawer } from "../accountDrawer";
 import PrefetchBalancesWrapper from "../accountDrawer/PrefetchBalancesWrapper";
 import StatusIcon from "../identicon/StatusIcon";
 import { flexColumnNoWrap, flexRowNoWrap } from "../styles";
@@ -159,9 +158,6 @@ export default function Web3Status() {
   return (
     <PrefetchBalancesWrapper shouldFetchOnAccountUpdate={isDrawerOpen}>
       <Web3StatusInner />
-      <Portal>
-        <PortfolioDrawer />
-      </Portal>
     </PrefetchBalancesWrapper>
   );
 }

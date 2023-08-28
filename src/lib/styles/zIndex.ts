@@ -13,6 +13,7 @@ export const zIndex = {
   Header: 1000,
   Notification: 1001,
   Modal: 2000,
-  Popper: 2001,
-  Cookie: 2001
+  ConnectWallet: 2050,
+  Popper: 2100,
+  Cookie: 2100
 };

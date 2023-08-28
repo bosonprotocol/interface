@@ -111,7 +111,8 @@ const Container = styled.div`
     width: 100%;
     overflow: visible;
   }
-`; /* z-index: ${Z_INDEX.fixed}; */
+  z-index: ${zIndex.ConnectWallet};
+`;
 
 const AccountDrawerWrapper = styled.div<{ open: boolean }>`
   margin-right: ${({ open }) => (open ? 0 : "-" + DRAWER_WIDTH)};
@@ -173,7 +174,7 @@ const CloseDrawer = styled.div`
   }
 `;
 
-function AccountDrawer() {
+export function AccountDrawer() {
   const { isLteS: isMobile } = useBreakpoints();
   const [walletDrawerOpen, toggleWalletDrawer] = useAccountDrawer();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -279,5 +280,3 @@ function AccountDrawer() {
     </Container>
   );
 }
-
-export default AccountDrawer;
