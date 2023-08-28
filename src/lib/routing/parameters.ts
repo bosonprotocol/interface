@@ -37,3 +37,7 @@ export const SellerLandingPageParameters = {
   sltitle: "sltitle",
   sltokenGated: "sltokenGated"
 };
+
+export const configQueryParameters = {
+  configId: "configId"
+};

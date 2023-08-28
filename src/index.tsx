@@ -1,4 +1,7 @@
+import { ApolloProvider } from "@apollo/client";
 import { ConfigProvider } from "components/config/ConfigProvider";
+import { apolloClient } from "graphql/data/apollo";
+import { BlockNumberProvider } from "lib/utils/hooks/useBlockNumber";
 import { queryClient, rootElement } from "queryClient";
 import React from "react";
 import { createRoot } from "react-dom/client";
@@ -41,31 +44,36 @@ const StrictMode = ({
 };
 
 root.render(
-  <StrictMode enable={false}>
+  <StrictMode enable={true}>
     <ConfigProvider>
       <Provider store={store}>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 5000,
-            style: {
-              minWidth: "455px",
-              padding: "24px",
-              boxShadow:
-                "0 3px 10px rgb(0 0 0 / 40%), 0 3px 3px rgb(0 0 0 / 5%)",
-              borderRadius: 0
-            }
-          }}
-        />
         <Web3Provider>
-          <WalletConnectionProvider>
-            <QueryClientProvider client={queryClient}>
-              <ConvertionRateProvider>
-                <AppRouter />
-              </ConvertionRateProvider>
-              <ReactQueryDevtools initialIsOpen={false} />
-            </QueryClientProvider>
-          </WalletConnectionProvider>
+          <ApolloProvider client={apolloClient}>
+            <BlockNumberProvider>
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 5000,
+                  style: {
+                    minWidth: "455px",
+                    padding: "24px",
+                    boxShadow:
+                      "0 3px 10px rgb(0 0 0 / 40%), 0 3px 3px rgb(0 0 0 / 5%)",
+                    borderRadius: 0
+                  }
+                }}
+              />
+
+              <WalletConnectionProvider>
+                <QueryClientProvider client={queryClient}>
+                  <ConvertionRateProvider>
+                    <AppRouter />
+                  </ConvertionRateProvider>
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </QueryClientProvider>
+              </WalletConnectionProvider>
+            </BlockNumberProvider>
+          </ApolloProvider>
         </Web3Provider>
       </Provider>
     </ConfigProvider>

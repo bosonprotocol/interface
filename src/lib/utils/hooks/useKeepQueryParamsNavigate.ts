@@ -7,7 +7,10 @@ import {
 } from "react-router-dom";
 
 import { storeFields } from "../../../pages/custom-store/store-fields";
-import { SellerLandingPageParameters } from "../../routing/parameters";
+import {
+  configQueryParameters,
+  SellerLandingPageParameters
+} from "../../routing/parameters";
 
 const deleteNonEssentialQueryParams = (
   urlParams: URLSearchParams,
@@ -20,9 +23,14 @@ const deleteNonEssentialQueryParams = (
       !!SellerLandingPageParameters[
         queryParamKey as keyof typeof SellerLandingPageParameters
       ];
+    const isConfigQueryParam =
+      !!configQueryParameters[
+        queryParamKey as keyof typeof configQueryParameters
+      ];
     if (
       !isStoreField &&
-      (!isSellerLandingQueryParam || options.removeSellerLandingQueryParams)
+      (!isSellerLandingQueryParam || options.removeSellerLandingQueryParams) &&
+      !isConfigQueryParam
     ) {
       urlParams.delete(queryParamKey);
     }
@@ -44,7 +52,7 @@ const addNewParams = (
   );
 };
 
-export const getKeepStoreFieldsQueryParams = (
+export const getKeptQueryParams = (
   location: ReturnType<typeof useLocation>,
   toSearch: ConstructorParameters<typeof URLSearchParams>[0],
   options: { removeSellerLandingQueryParams?: boolean } = {}
@@ -59,7 +67,7 @@ export const getKeepStoreFieldsQueryParams = (
 };
 
 export type To = Omit<Partial<Path>, "search"> & {
-  search?: Parameters<typeof getKeepStoreFieldsQueryParams>[1];
+  search?: Parameters<typeof getKeptQueryParams>[1];
 };
 export function useKeepQueryParamsNavigate() {
   const navigate = useNavigate();
@@ -70,14 +78,9 @@ export function useKeepQueryParamsNavigate() {
       to: To,
       options?: NavigateOptions & { removeSellerLandingQueryParams?: boolean }
     ) => {
-      const search = getKeepStoreFieldsQueryParams(
-        locationRef.current,
-        to.search,
-        {
-          removeSellerLandingQueryParams:
-            options?.removeSellerLandingQueryParams
-        }
-      );
+      const search = getKeptQueryParams(locationRef.current, to.search, {
+        removeSellerLandingQueryParams: options?.removeSellerLandingQueryParams
+      });
       navigate(
         {
           ...to,

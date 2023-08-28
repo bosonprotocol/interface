@@ -1,13 +1,13 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { getKeepStoreFieldsQueryParams } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getKeptQueryParams } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 export type LinkWithQueryProps = {
   children: ReactNode;
   to: string;
   state?: Record<string, unknown>;
-  search?: Parameters<typeof getKeepStoreFieldsQueryParams>[1];
+  search?: Parameters<typeof getKeptQueryParams>[1];
 } & Parameters<typeof Link>[0];
 export const LinkWithQuery = ({
   children,
@@ -17,12 +17,12 @@ export const LinkWithQuery = ({
   ...props
 }: LinkWithQueryProps) => {
   const location = useLocation();
-  const searchWithStoreFields = getKeepStoreFieldsQueryParams(location, search);
+  const searchWithKeptQueryParams = getKeptQueryParams(location, search);
   return (
     <Link
       to={{
         pathname: to,
-        search: searchWithStoreFields
+        search: searchWithKeptQueryParams
       }}
       state={{ ...state, prevPath: location.pathname }}
       {...props}
