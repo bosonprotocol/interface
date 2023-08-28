@@ -1,4 +1,5 @@
 import {
+  envConfigs,
   EnvironmentType,
   getEnvConfigs,
   ProtocolConfig
@@ -63,7 +64,12 @@ function getMetaTxApiIds(protocolAddress: string) {
   }
   return apiIds;
 }
-export const envConfigs = getEnvConfigs(envName);
+export const envConfigsFilteredByEnv: ProtocolConfig[] =
+  envName === "production"
+    ? getEnvConfigs(envName)
+    : Object.values(envConfigs).flat();
+export const defaultEnvConfig: ProtocolConfig = envConfigsFilteredByEnv[0];
+
 export const CONFIG = {
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",

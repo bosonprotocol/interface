@@ -1,7 +1,8 @@
-import { ConfigId, envConfigs } from "@bosonprotocol/react-kit";
+import { ConfigId } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
+import { envConfigsFilteredByEnv } from "lib/config";
 import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -25,11 +26,9 @@ export default function useSelectChain() {
       const connection = getConnection(connector);
 
       try {
-        // const newConfig = getEnvConfigById(envName, newConfigId);
-        // TODO: wrong envConfigs
-        const newConfig = Object.values(envConfigs)
-          .flat()
-          .find((config) => config.configId === newConfigId);
+        const newConfig = envConfigsFilteredByEnv.find(
+          (config) => config.configId === newConfigId
+        );
         if (!newConfig) {
           return;
         }

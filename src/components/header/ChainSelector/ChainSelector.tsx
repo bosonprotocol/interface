@@ -1,8 +1,9 @@
-import { ConfigId, envConfigs, ProtocolConfig } from "@bosonprotocol/react-kit";
+import { ConfigId, ProtocolConfig } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useAtomValue } from "jotai";
+import { envConfigsFilteredByEnv } from "lib/config";
 import {
   CaretDown as ChevronDown,
   CaretUp as ChevronUp,
@@ -10,7 +11,6 @@ import {
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { getConnection } from "../../../lib/connection";
 import { ConnectionType } from "../../../lib/connection/types";
@@ -38,8 +38,8 @@ const IconAndChevron = styled.div`
     background: ${colors.lightGrey} !important;
   }
 `;
-// TODO: wrong envConfigs
-const NETWORK_SELECTOR_CHAINS = Object.values(envConfigs).flat();
+
+const NETWORK_SELECTOR_CHAINS = envConfigsFilteredByEnv;
 const NETWORK_SELECTOR_CHAINS_IDS = NETWORK_SELECTOR_CHAINS.map(
   (config) => config.chainId as ChainId
 );
@@ -67,8 +67,7 @@ function useWalletSupportedChains(): ChainId[] {
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
-  const { address, ...rest } = useAccount();
-  const { chainId, account } = useWeb3React();
+  const { chainId } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
 
@@ -167,13 +166,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
 
   return (
     <div style={{ position: "relative", display: "flex" }} ref={ref}>
-      <button
-        onClick={() => {
-          console.log({ account, address, ...rest });
-        }}
-      >
-        log
-      </button>
       <Tooltip
         content={`Your wallet's current network is unsupported.`}
         disabled={isSupported}

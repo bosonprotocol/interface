@@ -1,5 +1,5 @@
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
-import { envConfigs, getDappConfig } from "lib/config";
+import { defaultEnvConfig, getDappConfig } from "lib/config";
 import { ReactNode, useState } from "react";
 
 import { Context } from "./ConfigContext";
@@ -8,7 +8,6 @@ export type ConfigProviderProps = {
   children: ReactNode;
 };
 
-const [defaultEnvConfig] = envConfigs;
 export function ConfigProvider({ children }: ConfigProviderProps) {
   const [envConfig, setEnvConfig] = useState<ProtocolConfig>(defaultEnvConfig);
   const dappConfig = getDappConfig(envConfig || defaultEnvConfig);

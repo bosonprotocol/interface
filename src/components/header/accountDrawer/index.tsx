@@ -154,6 +154,8 @@ const CloseIcon = styled(CaretDoubleRight).attrs({ size: 24 })`
 
 const CloseDrawer = styled.div`
   ${ClickableStyle}
+  opacity: 0.6;
+  background-color: ${colors.lightGrey};
   cursor: pointer;
   height: 100%;
   // When the drawer is not hovered, the icon should be 18px from the edge of the sidebar.
@@ -164,6 +166,7 @@ const CloseDrawer = styled.div`
     z-index: -1;
     margin: 0 -8px 0 0;
     background-color: ${colors.lightGrey};
+    filter: brightness(0.85);
   }
   @media only screen and (max-width: ${breakpointNumbers.s}px) {
     display: none;
