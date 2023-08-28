@@ -113,17 +113,20 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   useEffect(() => {
     setActiveConfigId(config.envConfig.configId);
   }, [config.envConfig.configId]);
-  const selectChain = useSelectChain();
+  const selectChain = useSelectChain({ throwErrors: true });
   useSyncChainQuery();
 
   const [pendingConfigId, setPendingConfigId] = useState<ConfigId>();
   const onSelectChain = useCallback(
     async (config: ProtocolConfig) => {
-      setPendingConfigId(config.configId);
-      await selectChain(config.configId);
-      setActiveConfigId(config.configId);
-      setPendingConfigId(undefined);
-      setIsOpen(false);
+      try {
+        setPendingConfigId(config.configId);
+        await selectChain(config.configId);
+        setActiveConfigId(config.configId);
+      } finally {
+        setPendingConfigId(undefined);
+        setIsOpen(false);
+      }
     },
     [selectChain, setIsOpen]
   );

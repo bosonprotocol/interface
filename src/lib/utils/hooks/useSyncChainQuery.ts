@@ -1,6 +1,7 @@
 import { ConfigId } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
+import { configQueryParameters } from "lib/routing/parameters";
 import { ParsedQs } from "qs";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -39,7 +40,7 @@ export default function useSyncChainQuery() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    // Change a user's chain on pageload if the connected chainId does not match the query param chain
+    // if the connected chainId does not match the query param configId, change the user's chain on pageload
     if (
       isActive &&
       urlConfigId &&
@@ -50,20 +51,19 @@ export default function useSyncChainQuery() {
     }
     // If a user has a connected wallet and has manually changed their chain, update the query parameter if it's supported
     else if (
-      urlConfigId &&
       account &&
       configIdRef.current !== currentConfigId &&
       currentConfigId !== urlConfigId
     ) {
       if (isSupportedChain(chainId)) {
-        searchParams.set("configId", urlConfigId);
+        searchParams.set(configQueryParameters.configId, currentConfigId);
       } else {
-        searchParams.delete("configId");
+        searchParams.delete(configQueryParameters.configId);
       }
       setSearchParams(searchParams);
     }
-    // If a user has a connected wallet and the chainId matches the query param chain, update the configIdRef
-    else if (urlConfigId && isActive && currentConfigId === urlConfigId) {
+    // If a user has a connected wallet and the currentConfigId matches the query param chain, update the configIdRef
+    else if (isActive && currentConfigId === urlConfigId) {
       configIdRef.current = urlConfigId;
     }
   }, [

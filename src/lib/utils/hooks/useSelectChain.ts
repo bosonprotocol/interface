@@ -3,6 +3,7 @@ import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { envConfigsFilteredByEnv } from "lib/config";
+import { configQueryParameters } from "lib/routing/parameters";
 import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -12,7 +13,9 @@ import { isSupportedChain } from "../../constants/chains";
 // import { useAppDispatch } from "state/hooks";
 import { useSwitchChain } from "./useSwitchChain";
 
-export default function useSelectChain() {
+export default function useSelectChain(
+  { throwErrors }: { throwErrors: boolean } = { throwErrors: false }
+) {
   const { setEnvConfig } = useConfigContext();
   // const dispatch = useAppDispatch();
   const { connector } = useWeb3React();
@@ -35,7 +38,7 @@ export default function useSelectChain() {
         const targetChain = newConfig.chainId as ChainId;
         await switchChain(connector, targetChain);
         if (isSupportedChain(targetChain)) {
-          searchParams.set("configId", newConfigId);
+          searchParams.set(configQueryParameters.configId, newConfigId);
           setSearchParams(searchParams);
 
           setEnvConfig(newConfig);
@@ -57,6 +60,9 @@ export default function useSelectChain() {
           //   })
           // );
         }
+        if (throwErrors) {
+          throw error;
+        }
       }
     },
     [
@@ -66,7 +72,8 @@ export default function useSelectChain() {
       // dispatch,
       searchParams,
       setSearchParams,
-      switchChain
+      switchChain,
+      throwErrors
     ]
   );
 }

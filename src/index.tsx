@@ -45,9 +45,9 @@ const StrictMode = ({
 
 root.render(
   <StrictMode enable={true}>
-    <ConfigProvider>
-      <Provider store={store}>
-        <Web3Provider>
+    <Provider store={store}>
+      <Web3Provider>
+        <ConfigProvider>
           <ApolloProvider client={apolloClient}>
             <BlockNumberProvider>
               <Toaster
@@ -74,9 +74,9 @@ root.render(
               </WalletConnectionProvider>
             </BlockNumberProvider>
           </ApolloProvider>
-        </Web3Provider>
-      </Provider>
-    </ConfigProvider>
+        </ConfigProvider>
+      </Web3Provider>
+    </Provider>
   </StrictMode>
 );
 
