@@ -1,11 +1,11 @@
 import { useWeb3React } from "@web3-react/core";
+import Column from "components/ui/column";
 import styled from "styled-components";
 
-import Grid from "../../ui/Grid";
 import WalletModal from "../walletModal";
 import AuthenticatedHeader from "./AuthenticatedHeader";
 
-const DefaultMenuWrap = styled(Grid).attrs({ flexDirection: "column" })`
+const DefaultMenuWrap = styled(Column)`
   width: 100%;
   height: 100%;
 `;

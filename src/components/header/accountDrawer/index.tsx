@@ -159,13 +159,14 @@ const CloseDrawer = styled.div`
   background-color: ${colors.lightGrey};
   cursor: pointer;
   height: 100%;
+  margin: 0 -8px 0 0;
   // When the drawer is not hovered, the icon should be 18px from the edge of the sidebar.
   padding: 24px calc(18px + ${DRAWER_OFFSET}) 24px 14px;
   border-radius: 20px 0 0 20px;
   transition: 250ms ease background-color, 250ms ease margin;
   &:hover {
     z-index: -1;
-    margin: 0 -8px 0 0;
+    margin: 0 -16px 0 0;
     background-color: ${colors.lightGrey};
     filter: brightness(0.85);
   }
