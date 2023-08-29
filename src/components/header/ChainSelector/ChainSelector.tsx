@@ -11,6 +11,7 @@ import {
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { getConnection } from "../../../lib/connection";
 import { ConnectionType } from "../../../lib/connection/types";
@@ -67,7 +68,8 @@ function useWalletSupportedChains(): ChainId[] {
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
-  const { chainId } = useWeb3React();
+  const { address } = useAccount();
+  const { chainId, account } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
 
@@ -105,7 +107,8 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
     chainId,
     "config.envConfig.chainId",
     config.envConfig.chainId,
-    config.envConfig.configId
+    config.envConfig.configId,
+    { account, address }
   );
   const [activeConfigId, setActiveConfigId] = useState<ConfigId>(
     config.envConfig.configId
