@@ -1,5 +1,5 @@
+import { useWeb3React } from "@web3-react/core";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -165,7 +165,7 @@ export default function HeaderLinks({
   withSellerHub
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });

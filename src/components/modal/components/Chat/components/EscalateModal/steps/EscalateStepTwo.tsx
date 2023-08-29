@@ -7,6 +7,7 @@ import {
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
@@ -21,7 +22,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount, useSignMessage } from "wagmi";
+import { useSignMessage } from "wagmi";
 import * as Yup from "yup";
 
 import { colors } from "../../../../../../../lib/styles/colors";
@@ -199,7 +200,7 @@ function EscalateStepTwo({
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { isLoading, signMessage } = useSignMessage({
     onSuccess(data) {
       setActiveStep(1);

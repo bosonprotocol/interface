@@ -68,7 +68,6 @@ function useWalletSupportedChains(): ChainId[] {
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
-  const { address } = useAccount();
   const { chainId, account } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
@@ -108,7 +107,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
     "config.envConfig.chainId",
     config.envConfig.chainId,
     config.envConfig.configId,
-    { account, address }
+    { account, address: useAccount()["address"] }
   );
   const [activeConfigId, setActiveConfigId] = useState<ConfigId>(
     config.envConfig.configId

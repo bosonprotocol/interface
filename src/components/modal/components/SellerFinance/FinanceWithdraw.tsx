@@ -1,11 +1,12 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
-import { useAccount, useBalance } from "wagmi";
+import { useBalance } from "wagmi";
 
 import { colors } from "../../../../lib/styles/colors";
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
@@ -59,16 +60,16 @@ export default function FinanceWithdraw({
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
   const signer = useEthersSigner();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const addPendingTransaction = useAddPendingTransaction();
 
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {
-          address: address,
+          address: address as `0x${string}`,
           token: exchangeToken as `0x${string}`
         }
-      : { address: address }
+      : { address: address as `0x${string}` }
   );
   const { showModal, hideModal } = useModal();
 

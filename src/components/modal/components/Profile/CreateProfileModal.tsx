@@ -1,7 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
@@ -63,7 +63,7 @@ export default function CreateProfileModal({
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
-  const { address = "" } = useAccount();
+  const { account: address = "" } = useWeb3React();
 
   const {
     data: lensData,

@@ -1,9 +1,9 @@
 import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import Grid, { IGrid } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -85,7 +85,7 @@ const SellerID: React.FC<
   ...rest
 }) => {
   const { config } = useConfigContext();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { lens: lensProfiles, sellers } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });

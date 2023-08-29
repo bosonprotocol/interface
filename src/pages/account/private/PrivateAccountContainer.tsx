@@ -1,5 +1,5 @@
+import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { Spinner } from "../../../components/loading/Spinner";
 import { BosonRoutes } from "../../../lib/routing/routes";
@@ -16,8 +16,7 @@ const SpinnerWrapper = styled.div`
 `;
 
 export default function PrivateAccountContainer() {
-  const { address, isConnecting, isReconnecting, isDisconnected } =
-    useAccount();
+  const { account: address, isActivating } = useWeb3React();
 
   const navigate = useKeepQueryParamsNavigate();
   const { data: buyers, isLoading } = useBuyers(
@@ -31,7 +30,7 @@ export default function PrivateAccountContainer() {
 
   const buyerId = buyers?.[0]?.id || "";
 
-  if (isConnecting || isReconnecting || isLoading) {
+  if (isActivating || isLoading) {
     return (
       <SpinnerWrapper>
         <Spinner size={42} />
@@ -39,7 +38,7 @@ export default function PrivateAccountContainer() {
     );
   }
 
-  if (!address || isDisconnected) {
+  if (!address) {
     navigate({ pathname: BosonRoutes.Root });
     return <div>Please connect your wallet</div>;
   }

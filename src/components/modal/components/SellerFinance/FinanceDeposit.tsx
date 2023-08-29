@@ -1,10 +1,11 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useBalance } from "wagmi";
 
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
@@ -47,7 +48,7 @@ export default function FinanceDeposit({
   const [depositError, setDepositError] = useState<unknown>(null);
 
   const signer = useEthersSigner();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {

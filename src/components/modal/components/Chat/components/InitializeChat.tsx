@@ -1,6 +1,6 @@
+import { useWeb3React } from "@web3-react/core";
 import { ChatDots, Warning } from "phosphor-react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { colors } from "../../../../../lib/styles/colors";
 import { useEthersSigner } from "../../../../../lib/utils/hooks/ethers/useEthersSigner";
@@ -36,7 +36,7 @@ interface Props {
 export default function InitializeChat({ isError = false, message }: Props) {
   const signer = useEthersSigner();
   const { initialize, bosonXmtp, isInitializing } = useChatContext();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
 
   const isInitializeButtonVisible =
     (address && !bosonXmtp) || (isError && address && !bosonXmtp);

@@ -1,7 +1,7 @@
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { useCallback } from "react";
-import { useAccount } from "wagmi";
 import create from "zustand";
 
 import { EventLog } from "../../transactions";
@@ -38,7 +38,8 @@ export function createPendingTx(
 }
 
 export function useAddPendingTransaction() {
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
+
   const { addPendingTransaction } = usePendingTransactionsStore();
 
   const addPendingTx = useCallback(

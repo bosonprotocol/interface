@@ -1,9 +1,9 @@
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 import * as Yup from "yup";
 
 import ConnectButton from "../../components/header/ConnectButton";
@@ -42,7 +42,7 @@ const Root = styled(Layout)`
 
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
-  const { isConnected } = useAccount();
+  const { account: address } = useWeb3React();
   const [searchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const removeLandingQueryParams = useRemoveLandingQueryParams();
@@ -57,7 +57,7 @@ export default function CustomStore() {
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
   const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
 
-  if (!isConnected) {
+  if (!address) {
     return (
       <Grid justifyContent="flex-start" alignItems="center" gap="1rem">
         <ConnectButton /> Please connect your wallet

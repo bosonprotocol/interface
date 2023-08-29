@@ -31,8 +31,8 @@ import {
   useSearchParams
 } from "react-router-dom";
 import uuid from "react-uuid";
-import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, ethers } from "ethers";
 import { useEffect } from "react";
@@ -430,7 +430,7 @@ function CreateProductInner({
     navigate({ pathname });
   };
   const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
   const { mutateAsync: createOffers } = useCreateOffers();

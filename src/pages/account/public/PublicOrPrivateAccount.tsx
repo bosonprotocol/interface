@@ -1,5 +1,5 @@
+import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
-import { useAccount } from "wagmi";
 
 import Loading from "../../../components/ui/Loading";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -10,11 +10,11 @@ export default function PublicOrPrivateAccount() {
   const { [UrlParameters.accountId]: accountParameter } = useParams();
   const address = accountParameter || "";
 
-  const { address: account, isConnecting, isReconnecting } = useAccount();
+  const { account, isActivating } = useWeb3React();
 
   const connectedAddress = account || "";
 
-  if (isConnecting || isReconnecting) {
+  if (isActivating) {
     return <Loading />;
   }
 

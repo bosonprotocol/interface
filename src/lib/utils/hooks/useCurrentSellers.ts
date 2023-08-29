@@ -1,11 +1,11 @@
 import { subgraph } from "@bosonprotocol/core-sdk";
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import {
   getLensTokenIdDecimal,
@@ -117,7 +117,7 @@ export function useCurrentSellers({
   const { subgraphUrl } = config.envConfig;
   const coreSDK = useCoreSDK();
   const fetchSellers = getSellersByIds(subgraphUrl);
-  const { address: loggedInUserAddress } = useAccount();
+  const { account: loggedInUserAddress } = useWeb3React();
   const sellerAddress =
     address || sellerId || lensTokenId || loggedInUserAddress || null;
   const sellerAddressType = useMemo(() => {

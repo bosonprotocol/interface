@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { Form, Formik, FormikProps } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { FileWithEncodedData } from "../../../../../lib/utils/files";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
@@ -42,7 +42,7 @@ export default function MakeProposalModal({
   const [activeStep, setActiveStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const coreSDK = useCoreSDK();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { data: sellers = [] } = useSellers(
     {
       assistant: address

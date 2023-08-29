@@ -7,6 +7,7 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useAccountDrawer } from "components/header/accountDrawer";
 import dayjs from "dayjs";
@@ -28,7 +29,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount, useBalance } from "wagmi";
+import { useBalance } from "wagmi";
 
 import { ReactComponent as Logo } from "../../../assets/logo-white.svg";
 import { CONFIG } from "../../../lib/config";
@@ -395,7 +396,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isSeller = exchange?.seller.assistant === address?.toLowerCase();
   const isOffer = pageType === "offer";

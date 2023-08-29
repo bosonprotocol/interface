@@ -1,7 +1,7 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType, OfferOrSellerMetadata } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import { useMutation } from "react-query";
-import { useAccount } from "wagmi";
 
 import {
   ContactPreference,
@@ -26,7 +26,7 @@ type StoreSellerMetadataFn = ReturnType<
 
 export default function useUpdateSellerMetadata() {
   const { sellers: currentSellers } = useCurrentSellers();
-  const { address = "" } = useAccount();
+  const { account: address = "" } = useWeb3React();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
   const sellerId = seller?.id;
   const { refetch: refetchSeller } = useSellers(

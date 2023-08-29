@@ -1,14 +1,14 @@
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { fetchSubgraph } from "../core-components/subgraph";
 
 export function useCurrentDisputeResolverId() {
   const { config } = useConfigContext();
   const { subgraphUrl } = config.envConfig;
-  const { address: admin } = useAccount();
+  const { account: admin } = useWeb3React();
   const props = { admin };
 
   const result = useQuery(["disputeResolver", props, subgraphUrl], async () => {

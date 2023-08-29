@@ -1,10 +1,10 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { EditProfile } from "../../../components/detail/EditProfile";
 import {
@@ -81,7 +81,7 @@ const SellerButton = styled.div`
 
 export default function Seller() {
   const { config } = useConfigContext();
-  const { address: currentWalletAddress = "" } = useAccount();
+  const { account: currentWalletAddress = "" } = useWeb3React();
   let { [UrlParameters.sellerId]: sellerId = "" } = useParams();
   let lensHandle: string | null = null;
   if (isMatchingLensHandle(sellerId)) {

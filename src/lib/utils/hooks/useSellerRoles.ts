@@ -1,8 +1,8 @@
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { fetchSubgraph } from "../core-components/subgraph";
 
@@ -21,7 +21,7 @@ export function useSellerRoles(id: string) {
   const { config } = useConfigContext();
   const { subgraphUrl } = config.envConfig;
 
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
 
   const { data } = useQuery(
     ["seller-roles", { id }],

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
@@ -130,7 +130,7 @@ export default function ProductType({
   const { config } = useConfigContext();
   const [connectModalOpen, openConnectModal] = useAccountDrawer();
   const navigate = useKeepQueryParamsNavigate();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
     useCreateForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
