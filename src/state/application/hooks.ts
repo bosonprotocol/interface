@@ -1,3 +1,5 @@
+import { useConfigContext } from "components/config/ConfigContext";
+import { DappConfig } from "lib/config";
 import { DEFAULT_TXN_DISMISS_MS } from "lib/constants/misc";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "state/hooks";
@@ -27,17 +29,19 @@ interface MoonpayIPAddressesResponse {
   isSellAllowed?: boolean;
 }
 
-async function getMoonpayAvailability(): Promise<boolean> {
-  const moonpayPublishableKey = process.env.REACT_APP_MOONPAY_PUBLISHABLE_KEY;
-  if (!moonpayPublishableKey) {
-    throw new Error("Must provide a publishable key for moonpay.");
+async function getMoonpayAvailability(
+  moonpay: DappConfig["moonpay"]
+): Promise<boolean> {
+  const moonpayApiKey = moonpay.apiKey;
+  if (!moonpayApiKey) {
+    throw new Error("Must provide an api key for moonpay.");
   }
-  const moonpayApiURI = process.env.REACT_APP_MOONPAY_API;
+  const moonpayApiURI = moonpay.api;
   if (!moonpayApiURI) {
     throw new Error("Must provide an api endpoint for moonpay.");
   }
   const res = await fetch(
-    `${moonpayApiURI}/v4/ip_address?apiKey=${moonpayPublishableKey}`
+    `${moonpayApiURI}/v4/ip_address?apiKey=${moonpayApiKey}`
   );
   const data = await (res.json() as Promise<MoonpayIPAddressesResponse>);
   return data.isBuyAllowed ?? false;
@@ -47,6 +51,8 @@ export function useFiatOnrampAvailability(
   shouldCheck: boolean,
   callback?: () => void
 ) {
+  const { config } = useConfigContext();
+  const { moonpay } = config;
   const dispatch = useAppDispatch();
   const { available, availabilityChecked } = useAppSelector(
     (state: AppState) => state.application.fiatOnramp
@@ -59,7 +65,7 @@ export function useFiatOnrampAvailability(
       setError(null);
       setLoading(true);
       try {
-        const result = await getMoonpayAvailability();
+        const result = await getMoonpayAvailability(moonpay);
         if (stale) return;
         dispatch(setFiatOnrampAvailability(result));
         if (result && callback) {
@@ -83,7 +89,7 @@ export function useFiatOnrampAvailability(
     return () => {
       stale = true;
     };
-  }, [availabilityChecked, callback, dispatch, shouldCheck]);
+  }, [availabilityChecked, callback, dispatch, shouldCheck, moonpay]);
 
   return { available, availabilityChecked, loading, error };
 }

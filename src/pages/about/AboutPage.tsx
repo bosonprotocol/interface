@@ -160,7 +160,7 @@ function AboutPage() {
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Carousel Promoted SellerId:</span>
-        <span>{CONFIG.carouselPromotedSellerId || "-"}</span>
+        <span>{config.carouselPromotedSellerId || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>dApp View Mode Url:</span>
@@ -172,7 +172,7 @@ function AboutPage() {
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Widgets Url:</span>
-        <span>{process.env.REACT_APP_WIDGETS_URL || "-"}</span>
+        <span>{config.widgetsUrl || "-"}</span>
       </Text>
     </Wrapper>
   );

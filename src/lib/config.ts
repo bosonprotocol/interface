@@ -64,11 +64,35 @@ function getMetaTxApiIds(protocolAddress: string) {
   }
   return apiIds;
 }
+
+function getCarouselPromotedSellerId(
+  envConfig: ProtocolConfig
+): string | undefined {
+  let carouselPromotedSellerId: string | undefined;
+  const sellerMap = process.env.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_MAP;
+  if (sellerMap) {
+    try {
+      const carouselPromotedSellerIdMap = JSON.parse(sellerMap || "{}");
+      carouselPromotedSellerId =
+        carouselPromotedSellerIdMap[envConfig.configId];
+    } catch (error) {
+      console.error(error);
+      Sentry.captureException(error);
+    }
+  }
+
+  return carouselPromotedSellerId;
+}
+
 export const envConfigsFilteredByEnv: ProtocolConfig[] =
   envName === "production"
     ? getEnvConfigs(envName)
     : Object.entries(envConfigs)
-        .filter(([env]) => env !== "local")
+        .filter(([_env]) => {
+          const env = _env as EnvironmentType;
+          // if we are in staging, only show staging configs, otherwise all but local
+          return envName === "testing" ? env !== "local" : env === "staging";
+        })
         .map(([, value]) => value)
         .flat();
 export const defaultEnvConfig: ProtocolConfig = envConfigsFilteredByEnv[0];
@@ -118,8 +142,6 @@ export const CONFIG = {
   walletConnect: {
     projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
   },
-  carouselPromotedSellerId:
-    process.env.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID || undefined,
   envViewMode: {
     current: Object.values(ViewMode).includes(
       (process.env.REACT_APP_VIEW_MODE as ViewMode) || ""
@@ -128,13 +150,15 @@ export const CONFIG = {
       : ViewMode.DAPP,
     dappViewModeUrl: process.env.REACT_APP_DAPP_VIEW_MODE || "",
     drCenterViewModeUrl: process.env.REACT_APP_DR_CENTER_VIEW_MODE || ""
-  }
+  },
+  awsApiEndpoint: process.env.REACT_APP_AWS_API_ENDPOINT as string,
+  uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
+  infuraKey: process.env.REACT_APP_INFURA_KEY as string
 };
 
 export const lensHandleMaxLength = Math.max(
   ...[".lens", ".test"].map((ext) => ext.length)
 );
-
 export type DappConfig = ReturnType<typeof getDappConfig>;
 export const getDappConfig = (envConfig: ProtocolConfig) => ({
   envConfig,
@@ -170,7 +194,14 @@ export const getDappConfig = (envConfig: ProtocolConfig) => ({
     LENS_PROFILES_CONTRACT_PARTIAL_ABI:
       envConfig.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
-  }
+  },
+  moonpay: {
+    api: process.env.REACT_APP_MOONPAY_API || "",
+    apiKey: process.env.REACT_APP_MOONPAY_API_KEY || "",
+    link: process.env.REACT_APP_MOONPAY_LINK || ""
+  },
+  widgetsUrl: process.env.REACT_APP_WIDGETS_URL,
+  carouselPromotedSellerId: getCarouselPromotedSellerId(envConfig)
 });
 
 function stringToBoolean(value: unknown | undefined, defaultValue: boolean) {

@@ -1,6 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
+import { envName } from "lib/config";
 import multicall from "lib/state/multicall";
-import { isDevelopmentEnv } from "lib/utils/env";
 import localForage from "localforage";
 import { PersistConfig, persistReducer } from "redux-persist";
 
@@ -55,7 +55,7 @@ const persistConfig: PersistConfig<AppState> = {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   deserialize: false,
-  debug: isDevelopmentEnv()
+  debug: envName === "testing"
 };
 
 const persistedReducer = persistReducer(persistConfig, appReducer);

@@ -4,6 +4,7 @@ import {
   WalletConnect,
   WalletConnectConstructorArgs
 } from "@web3-react/walletconnect-v2";
+import { CONFIG } from "lib/config";
 
 // import { sendAnalyticsEvent } from "analytics";
 import { L1_CHAIN_IDS, L2_CHAIN_IDS } from "../constants/chains";
@@ -35,7 +36,7 @@ export class WalletConnectV2 extends WalletConnect {
     super({
       actions,
       options: {
-        projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID as string,
+        projectId: CONFIG.walletConnect.projectId,
         chains: [defaultChainId],
         optionalChains: [...L1_CHAIN_IDS, ...L2_CHAIN_IDS],
         showQrModal: qrcode,

@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Protocol } from "@uniswap/router-sdk";
 import { TradeType } from "@uniswap/sdk-core";
+import { CONFIG } from "lib/config";
 import { isUniswapXSupportedChain } from "lib/constants/chains";
 import { getClientSideQuote } from "lib/utils/hooks/routing/clientSideSmartOrderRouter";
 import ms from "ms";
@@ -23,7 +24,7 @@ import {
   transformRoutesToTrade
 } from "./utils";
 
-const UNISWAP_API_URL = process.env.REACT_APP_UNISWAP_API_URL;
+const UNISWAP_API_URL = CONFIG.uniswapApiUrl;
 if (UNISWAP_API_URL === undefined) {
   throw new Error(`UNISWAP_API_URL must be a defined environment variable`);
 }

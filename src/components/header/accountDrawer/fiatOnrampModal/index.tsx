@@ -1,10 +1,13 @@
 import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { Spinner } from "components/loading/Spinner";
 import Modal from "components/modal/Modal";
 import Typography from "components/ui/Typography";
+import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
+import { BosonRoutes } from "lib/routing/routes";
 import { colors } from "lib/styles/colors";
+import { getCurrentViewMode, getViewModeUrl, ViewMode } from "lib/viewMode";
 import { useCallback, useEffect, useState } from "react";
-import { useHref } from "react-router-dom";
 import { useCloseModal, useModalIsOpen } from "state/application/hooks";
 import { ApplicationModal } from "state/application/reducer";
 import styled from "styled-components";
@@ -64,6 +67,8 @@ const MOONPAY_SUPPORTED_CURRENCY_CODES = [
 ];
 
 export default function FiatOnrampModal() {
+  const { config } = useConfigContext();
+  const moonpayLink = config.moonpay.link;
   const { account } = useWeb3React();
   const closeModal = useCloseModal();
   const fiatOnrampModalOpen = useModalIsOpen(ApplicationModal.FIAT_ONRAMP);
@@ -71,9 +76,11 @@ export default function FiatOnrampModal() {
   const [signedIframeUrl, setSignedIframeUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const swapUrl = useHref("/swap");
-
+  const currentViewMode = getCurrentViewMode();
+  const rootUrl = getViewModeUrl(
+    currentViewMode,
+    currentViewMode === ViewMode.DAPP ? BosonRoutes.Root : DrCenterRoutes.Root
+  );
   const fetchSignedIframeUrl = useCallback(async () => {
     if (!account) {
       setError("Please connect an account before making a purchase.");
@@ -82,8 +89,7 @@ export default function FiatOnrampModal() {
     setLoading(true);
     setError(null);
     try {
-      const signedIframeUrlFetchEndpoint = process.env
-        .REACT_APP_MOONPAY_LINK as string;
+      const signedIframeUrlFetchEndpoint = moonpayLink;
       const res = await fetch(signedIframeUrlFetchEndpoint, {
         headers: {
           Accept: "application/json",
@@ -94,7 +100,7 @@ export default function FiatOnrampModal() {
           theme: "light",
           colorCode: colors.blue,
           defaultCurrencyCode: "eth",
-          redirectUrl: swapUrl,
+          redirectUrl: rootUrl,
           walletAddresses: JSON.stringify(
             MOONPAY_SUPPORTED_CURRENCY_CODES.reduce(
               (acc, currencyCode) => ({
@@ -114,7 +120,7 @@ export default function FiatOnrampModal() {
     } finally {
       setLoading(false);
     }
-  }, [account, swapUrl]);
+  }, [account, rootUrl, moonpayLink]);
 
   useEffect(() => {
     fetchSignedIframeUrl();
