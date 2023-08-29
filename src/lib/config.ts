@@ -18,30 +18,14 @@ if (!envName) {
   throw new Error("REACT_APP_ENV_NAME is not defined");
 }
 
-export function getDefaultTokens(): Token[] {
-  let tokens: Token[] = [];
-  try {
-    tokens = JSON.parse(
-      process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING ||
-        process.env.REACT_APP_DEFAULT_TOKENS_LIST_STAGING ||
-        process.env.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION ||
-        "[]"
-    );
-  } catch (error) {
-    console.error(error);
-    Sentry.captureException(error);
-  }
-  return tokens;
-}
-
-function getMetaTxApiIds(protocolAddress: string) {
+function getMetaTxApiIds(protocolAddress: string, defaultTokens: Token[]) {
   const apiIds: Record<string, Record<string, string>> = {};
   try {
     const apiIdsInput = JSON.parse(
       process.env.REACT_APP_META_TX_API_IDS || "[]"
     );
     const method = "executeMetaTransaction"; // At the moment, both protocol and tokens have the same method
-    const tokens = getDefaultTokens();
+    const tokens = defaultTokens;
     Object.keys(apiIdsInput).forEach((key) => {
       if (key.toLowerCase() === "protocol") {
         apiIds[protocolAddress.toLowerCase()] = {};
@@ -90,8 +74,9 @@ export const envConfigsFilteredByEnv: ProtocolConfig[] =
     : Object.entries(envConfigs)
         .filter(([_env]) => {
           const env = _env as EnvironmentType;
-          // if we are in staging, only show staging configs, otherwise all but local
+          // TODO: temporary, if we are in staging, only show staging configs, otherwise all but local
           return envName === "testing" ? env !== "local" : env === "staging";
+          // TODO: return envName === env;
         })
         .map(([, value]) => value)
         .flat();
@@ -121,7 +106,6 @@ export const CONFIG = {
     process.env.REACT_APP_ENABLE_CURATION_LISTS,
     true
   ),
-  defaultTokens: getDefaultTokens(),
   mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID,
   defaultDisputeResolutionPeriodDays:
     process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
@@ -160,49 +144,54 @@ export const lensHandleMaxLength = Math.max(
   ...[".lens", ".test"].map((ext) => ext.length)
 );
 export type DappConfig = ReturnType<typeof getDappConfig>;
-export const getDappConfig = (envConfig: ProtocolConfig) => ({
-  envConfig,
-  enableSentryLogging:
-    process.env.NODE_ENV === "development"
-      ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING, false)
-      : ["local", "testing"].includes(envConfig.envName),
-  envName: envConfig.envName,
-  theGraphIpfsUrl:
-    process.env.REACT_APP_THE_GRAPH_IPFS_URL || envConfig.theGraphIpfsUrl,
-  ipfsMetadataStorageUrl:
-    process.env.REACT_APP_IPFS_METADATA_URL || envConfig.ipfsMetadataUrl,
-  ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
-    process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
-    process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
-  ),
-  metaTx: {
-    ...envConfig.metaTx,
-    apiKey: process.env.REACT_APP_META_TX_API_KEY,
-    apiIds: getMetaTxApiIds(envConfig.contracts.protocolDiamond)
-  },
-  lens: {
-    lensHandleExtension: envConfig.chainId === 137 ? ".lens" : ".test",
-    availableOnNetwork: [80001, 137].includes(envConfig.chainId),
-    apiLink: envConfig.lens.apiLink,
-    ipfsGateway: envConfig.lens.ipfsGateway,
-    LENS_HUB_CONTRACT: envConfig.lens.LENS_HUB_CONTRACT,
-    LENS_PERIPHERY_CONTRACT: envConfig.lens.LENS_PERIPHERY_CONTRACT,
-    LENS_PROFILES_CONTRACT_ADDRESS:
-      envConfig.lens.LENS_PROFILES_CONTRACT_ADDRESS,
-    LENS_HUB_ABI: lensHubContractAbi,
-    LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
-    LENS_PROFILES_CONTRACT_PARTIAL_ABI:
-      envConfig.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
-    LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
-  },
-  moonpay: {
-    api: process.env.REACT_APP_MOONPAY_API || "",
-    apiKey: process.env.REACT_APP_MOONPAY_API_KEY || "",
-    link: process.env.REACT_APP_MOONPAY_LINK || ""
-  },
-  widgetsUrl: process.env.REACT_APP_WIDGETS_URL,
-  carouselPromotedSellerId: getCarouselPromotedSellerId(envConfig)
-});
+export const getDappConfig = (envConfig: ProtocolConfig) => {
+  return {
+    envConfig,
+    enableSentryLogging:
+      process.env.NODE_ENV === "development"
+        ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING, false)
+        : ["local", "testing"].includes(envConfig.envName),
+    envName: envConfig.envName,
+    theGraphIpfsUrl:
+      process.env.REACT_APP_THE_GRAPH_IPFS_URL || envConfig.theGraphIpfsUrl,
+    ipfsMetadataStorageUrl:
+      process.env.REACT_APP_IPFS_METADATA_URL || envConfig.ipfsMetadataUrl,
+    ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
+      process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
+      process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
+    ),
+    metaTx: {
+      ...envConfig.metaTx,
+      apiKey: process.env.REACT_APP_META_TX_API_KEY,
+      apiIds: getMetaTxApiIds(
+        envConfig.contracts.protocolDiamond,
+        envConfig.defaultTokens || []
+      )
+    },
+    lens: {
+      lensHandleExtension: envConfig.chainId === 137 ? ".lens" : ".test",
+      availableOnNetwork: [80001, 137].includes(envConfig.chainId),
+      apiLink: envConfig.lens.apiLink,
+      ipfsGateway: envConfig.lens.ipfsGateway,
+      LENS_HUB_CONTRACT: envConfig.lens.LENS_HUB_CONTRACT,
+      LENS_PERIPHERY_CONTRACT: envConfig.lens.LENS_PERIPHERY_CONTRACT,
+      LENS_PROFILES_CONTRACT_ADDRESS:
+        envConfig.lens.LENS_PROFILES_CONTRACT_ADDRESS,
+      LENS_HUB_ABI: lensHubContractAbi,
+      LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
+      LENS_PROFILES_CONTRACT_PARTIAL_ABI:
+        envConfig.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
+      LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
+    },
+    moonpay: {
+      api: process.env.REACT_APP_MOONPAY_API || "",
+      apiKey: process.env.REACT_APP_MOONPAY_API_KEY || "",
+      link: process.env.REACT_APP_MOONPAY_LINK || ""
+    },
+    widgetsUrl: process.env.REACT_APP_WIDGETS_URL,
+    carouselPromotedSellerId: getCarouselPromotedSellerId(envConfig)
+  };
+};
 
 function stringToBoolean(value: unknown | undefined, defaultValue: boolean) {
   if (value === undefined || value === null) {

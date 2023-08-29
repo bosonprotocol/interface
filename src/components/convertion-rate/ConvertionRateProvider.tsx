@@ -1,6 +1,6 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { getDefaultTokens } from "../../lib/config";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { useTokens } from "../../lib/utils/hooks/useTokens";
 import { useUniswapPools } from "../../lib/utils/hooks/useUniswapPools";
@@ -16,7 +16,11 @@ interface Props {
   children: React.ReactNode;
 }
 export default function ConvertionRateProvider({ children }: Props) {
-  const defaultTokens = getDefaultTokens();
+  const { config } = useConfigContext();
+  const defaultTokens = useMemo(
+    () => config.envConfig.defaultTokens || [],
+    [config.envConfig.defaultTokens]
+  );
   const [store, setStore] = useState(initalState.store);
   const { data: tokens, isLoading: isTokensLoading } = useTokens({
     enabled: defaultTokens.length > 0

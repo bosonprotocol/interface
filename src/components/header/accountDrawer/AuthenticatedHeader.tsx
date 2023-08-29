@@ -260,7 +260,11 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
       <PortfolioDrawerContainer>
         {totalBalance !== undefined ? (
           <FadeInColumn gap="xs">
-            <Typography fontWeight={500} data-testid="portfolio-total-balance">
+            <Typography
+              fontWeight={500}
+              $fontSize="36px"
+              data-testid="portfolio-total-balance"
+            >
               {formatNumber(totalBalance, NumberType.PortfolioBalance)}
             </Typography>
             <Grid marginBottom="20px">
@@ -279,7 +283,6 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
           </FadeInColumn>
         ) : (
           <Column gap="xs">
-            <LoadingBubble height="44px" width="170px" />
             <LoadingBubble height="16px" width="100px" margin="4px 0 20px 0" />
           </Column>
         )}
