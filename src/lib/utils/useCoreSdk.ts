@@ -8,7 +8,17 @@ export function useCoreSDK() {
   const signer = useEthersSigner();
   const { config } = useConfigContext();
   return hooks.useCoreSdk({
-    ...config.envConfig,
+    ipfsMetadataStorageHeaders: config.ipfsMetadataStorageHeaders,
+    configId: config.envConfig.configId,
+    envName: config.envName,
+    ipfsMetadataStorageUrl: config.ipfsMetadataStorageUrl,
+    jsonRpcUrl: config.envConfig.jsonRpcUrl,
+    lensContracts: config.lens,
+    metaTx: config.metaTx,
+    protocolDiamond: config.envConfig.contracts.protocolDiamond,
+    subgraphUrl: config.envConfig.subgraphUrl,
+    theGraphIpfsStorageHeaders: undefined,
+    theGraphIpfsUrl: config.envConfig.theGraphIpfsUrl,
     web3Provider: signer?.provider as providers.Web3Provider
   });
 }
