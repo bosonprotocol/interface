@@ -21,6 +21,7 @@ export default function useSyncChainQuery() {
   const { chainId, isActive, account } = useWeb3React();
   const { config } = useConfigContext();
   const currentConfigId = config.envConfig.configId;
+  const configChainId = config.envConfig.chainId;
 
   const parsedQs = useParsedQueryString();
   const configIdRef = useRef(currentConfigId);
@@ -48,8 +49,6 @@ export default function useSyncChainQuery() {
       currentConfigId !== urlConfigId
     ) {
       selectChain(urlConfigId as ConfigId);
-    } else if (isActive && chainId !== config.envConfig.chainId) {
-      selectChain(config.envConfig.configId);
     }
     // If a user has a connected wallet and has manually changed their chain, update the query parameter if it's supported
     else if (
