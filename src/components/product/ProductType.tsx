@@ -217,7 +217,7 @@ export default function ProductType({
         ...initialValues,
         coreTermsOfSale: {
           ...initialValues.coreTermsOfSale,
-          currency: getOptionsCurrencies(config.envConfig)
+          currency: getOptionsCurrencies(config.envConfig)[0]
         },
         ...currentValues,
         createYourProfile: regularProfile

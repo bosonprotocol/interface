@@ -95,7 +95,7 @@ export const productImagesInitialValues = {
 export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {
   coreTermsOfSale: {
     price: null as unknown as number,
-    currency: null, //OPTIONS_CURRENCIES[0],
+    currency: null,
     quantity: 1,
     redemptionPeriod: [],
     offerValidityPeriod: []
