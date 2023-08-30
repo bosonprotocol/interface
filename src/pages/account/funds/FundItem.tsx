@@ -1,4 +1,4 @@
-import { ButtonSize, CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { BigNumber, constants, utils } from "ethers";
 import { CircleNotch } from "phosphor-react";
@@ -313,7 +313,7 @@ export default function FundItem({
             }
           }}
           variant="primaryFill"
-          size={ButtonSize.Small}
+          size="small"
           disabled={isBeingWithdrawn || isWithdrawInvalid}
         >
           Withdraw
@@ -359,7 +359,7 @@ export default function FundItem({
               }
             }}
             variant="primaryFill"
-            size={ButtonSize.Small}
+            size="small"
             disabled={isBeingDeposit || isDepositInvalid}
           >
             Deposit

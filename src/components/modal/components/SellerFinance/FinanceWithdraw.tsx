@@ -152,11 +152,13 @@ export default function FinanceWithdraw({
                     )
             }
           ]}
-          envName={config.envName}
-          configId={config.envConfig.configId}
+          coreSdkConfig={{
+            envName: config.envName,
+            configId: config.envConfig.configId,
+            web3Provider: signer?.provider as Provider,
+            metaTx: config.metaTx
+          }}
           disabled={isBeingWithdrawn || isWithdrawInvalid}
-          web3Provider={signer?.provider as Provider}
-          metaTx={config.metaTx}
           onPendingSignature={() => {
             setWithdrawError(null);
             setIsBeingWithdrawn(true);

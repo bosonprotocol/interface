@@ -334,9 +334,13 @@ export default function VoidProduct({
           <VoidButtonWrapper>
             <VoidButton
               variant="accentInverted"
+              coreSdkConfig={{
+                envName: config.envName,
+                configId: config.envConfig.configId,
+                web3Provider: signer?.provider as Provider,
+                metaTx: config.metaTx
+              }}
               offerId={offerId || 0}
-              envName={config.envName}
-              configId={config.envConfig.configId}
               onError={(error) => {
                 console.error("onError", error);
                 const hasUserRejectedTx =
@@ -371,8 +375,6 @@ export default function VoidProduct({
                 });
               }}
               onSuccess={handleSuccess}
-              web3Provider={signer?.provider as Provider}
-              metaTx={config.envConfig.metaTx}
             />
           </VoidButtonWrapper>
         </Grid>

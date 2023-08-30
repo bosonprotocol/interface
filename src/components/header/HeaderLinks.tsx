@@ -32,7 +32,7 @@ const NavigationLinks = styled.div<{
     color: var(--headerTextColor, ${colors.black});
     :hover {
       background-color: ${colors.border};
-      color: ${colors.white};
+      color: ${colors.black};
     }
   }
   ${({ isMobile, isOpen, $navigationBarPosition }) =>

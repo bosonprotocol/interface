@@ -1,5 +1,4 @@
 import Grid from "components/ui/Grid";
-import { colors } from "lib/styles/colors";
 import { Icon } from "phosphor-react";
 import React, {
   forwardRef,
@@ -25,7 +24,7 @@ export const IconHoverText = styled.span`
 const getWidthTransition = () => `width ease-in-out 125ms`;
 
 const IconStyles = css<{ hideHorizontal?: boolean }>`
-  background-color: ${colors.lightGrey};
+  background-color: var(--buttonBgColor);
   transition: ${getWidthTransition};
   border-radius: 12px;
   display: flex;
@@ -36,7 +35,7 @@ const IconStyles = css<{ hideHorizontal?: boolean }>`
   height: 32px;
   width: ${({ hideHorizontal }) => (hideHorizontal ? "0px" : "32px")};
   :hover {
-    background-color: ${colors.bosonSkyBlue};
+    background-color: color-mix(in srgb, var(--buttonBgColor) 90%, black);
     transition: 125ms background-color ease-in, ${getWidthTransition};
 
     ${IconHoverText} {
@@ -44,7 +43,7 @@ const IconStyles = css<{ hideHorizontal?: boolean }>`
     }
   }
   :active {
-    background-color: ${colors.lightGrey};
+    background-color: var(--buttonBgColor);
     transition: background-color 125ms linear, ${getWidthTransition};
   }
 `;

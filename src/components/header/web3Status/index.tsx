@@ -1,4 +1,4 @@
-import { Button, ButtonSize } from "@bosonprotocol/react-kit";
+import { Button } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { getConnection } from "lib/connection";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
@@ -83,6 +83,7 @@ const Text = styled.p`
 `;
 
 const StyledConnectButton = styled(Button)`
+  background-color: var(--buttonBgColor);
   color: inherit;
 `;
 
@@ -132,7 +133,7 @@ function Web3StatusInner() {
       tabIndex={0}
       onClick={handleWalletDropdownClick}
       data-testid="navbar-connect-wallet"
-      size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
+      size={isLteXS ? "small" : "regular"}
       variant="primaryFill"
       style={{
         whiteSpace: "pre"

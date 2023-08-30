@@ -1,4 +1,3 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
 import { ClockClockwise } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
@@ -142,7 +141,7 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
         <StyledChatButton
           type="button"
           variant="primaryFill"
-          size={ButtonSize.Small}
+          size="small"
           onClick={() => {
             navigate({
               pathname: `${DrCenterRoutes.Chat}/${exchange.id}`

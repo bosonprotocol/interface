@@ -52,10 +52,10 @@ export default function FinanceDeposit({
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {
-          address: address,
+          address: address as `0x${string}`,
           token: exchangeToken as `0x${string}`
         }
-      : { address: address }
+      : { address: address as `0x${string}` }
   );
 
   const { showModal, hideModal } = useModal();
@@ -131,11 +131,13 @@ export default function FinanceDeposit({
                   getNumberWithoutDecimals(amountToDeposit, tokenDecimals)
                 )
           }
-          envName={config.envName}
-          configId={config.envConfig.configId}
+          coreSdkConfig={{
+            envName: config.envName,
+            configId: config.envConfig.configId,
+            web3Provider: signer?.provider as Provider,
+            metaTx: config.metaTx
+          }}
           disabled={isBeingDeposit || isDepositInvalid}
-          web3Provider={signer?.provider as Provider}
-          metaTx={config.metaTx}
           onPendingSignature={() => {
             setDepositError(null);
             setIsBeingDeposit(true);

@@ -1,4 +1,3 @@
-import { ThemedButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { CopyButton } from "components/form/Field.styles";
 import { colors } from "lib/styles/colors";
@@ -48,13 +47,31 @@ const AuthenticatedHeaderWrapper = styled.div`
   flex: 1;
 `;
 
-const HeaderButton = styled(ThemedButton)`
+const HeaderButton = styled.button`
+  background-color: var(--buttonBgColor);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
   border-color: transparent;
   border-radius: 12px;
   border-style: solid;
   border-width: 1px;
   height: 40px;
   margin-top: 8px;
+
+  position: relative;
+  z-index: 1;
+  letter-spacing: 0.5px;
+  font-style: normal;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 24px;
+
+  :hover {
+    background-color: color-mix(in srgb, var(--buttonBgColor) 90%, black);
+    transition: 125ms background-color ease-in;
+  }
 `;
 const IconHoverText = styled.span`
   color: ${colors.white};

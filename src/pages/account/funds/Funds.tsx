@@ -1,4 +1,4 @@
-import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { ethers } from "ethers";
@@ -265,7 +265,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
             <CustomButton
               onClick={addNew}
               variant="primaryFill"
-              size={ButtonSize.Small}
+              size="small"
               disabled={!newTokenAddress.length}
             >
               Add
@@ -282,7 +282,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
               <CustomButton
                 onClick={withdrawAll}
                 variant="primaryFill"
-                size={ButtonSize.Small}
+                size="small"
               >
                 Withdraw All Funds
               </CustomButton>
@@ -297,7 +297,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
               <CustomButton
                 onClick={withdrawAll}
                 variant="primaryFill"
-                size={ButtonSize.Small}
+                size="small"
               >
                 Withdraw All Funds
               </CustomButton>

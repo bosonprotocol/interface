@@ -1,4 +1,3 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
 import logo from "assets/logo.svg";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { ChainSelector } from "components/header/chainSelector/ChainSelector";
@@ -281,7 +280,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                     whiteSpace: "pre",
                     marginLeft: isLteXS ? "1rem" : ""
                   }}
-                  size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
+                  size={isLteXS ? "small" : "regular"}
                   onClick={() => {
                     navigate({ pathname: sellUrl });
                   }}

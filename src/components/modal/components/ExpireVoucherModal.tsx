@@ -180,8 +180,12 @@ export default function ExpireVoucherModal({ exchange }: Props) {
           <ExpireButton
             variant="primaryFill"
             exchangeId={exchange.id}
-            envName={config.envName}
-            configId={config.envConfig.configId}
+            coreSdkConfig={{
+              envName: config.envName,
+              configId: config.envConfig.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: config.metaTx
+            }}
             disabled={isLoading}
             onError={(error) => {
               console.error(error);
@@ -243,8 +247,6 @@ export default function ExpireVoucherModal({ exchange }: Props) {
                 })
               });
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={config.envConfig.metaTx}
           >
             <Grid gap="0.5rem">
               Expire Voucher

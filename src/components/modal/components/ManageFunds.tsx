@@ -1,5 +1,4 @@
 import {
-  ButtonSize,
   Currencies,
   CurrencyDisplay,
   subgraph
@@ -121,7 +120,7 @@ export default function ManageFunds({ id }: Props) {
               <AmountWrapper>{withdrawable}</AmountWrapper>
               <WithdrawButton
                 variant="primaryFill"
-                size={ButtonSize.Small}
+                size="small"
                 onClick={() => {
                   showModal(
                     modalTypes.FINANCE_WITHDRAW_MODAL,

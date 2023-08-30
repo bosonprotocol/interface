@@ -1,5 +1,4 @@
 import {
-  ButtonSize,
   CommitButton,
   exchanges,
   offers,
@@ -830,6 +829,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         disabled={disabled}
         data-commit-proxy-address
         style={{ height: "3.5rem" }}
+        withBosonStyle
       >
         Commit <small>Step 1/2</small>
       </BosonButton>
@@ -956,6 +956,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   <CommitProxyButton />
                 ) : (
                   <CommitButton
+                    coreSdkConfig={{
+                      envName: config.envName,
+                      configId: config.envConfig.configId,
+                      web3Provider: signer?.provider as Provider,
+                      metaTx: config.metaTx
+                    }}
                     variant="primaryFill"
                     isPauseCommitting={!address}
                     buttonRef={commitButtonRef}
@@ -964,15 +970,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     offerId={offer.id}
                     exchangeToken={offer.exchangeToken.address}
                     price={offer.price}
-                    envName={config.envName}
-                    configId={config.envConfig.configId}
                     onError={onCommitError}
                     onPendingSignature={onCommitPendingSignature}
                     onPendingTransaction={onCommitPendingTransaction}
                     onSuccess={onCommitSuccess}
                     extraInfo="Step 1/2"
-                    web3Provider={signer?.provider as Provider}
-                    metaTx={config.metaTx}
+                    withBosonStyle
                   />
                 )}
               </CommitButtonWrapper>
@@ -980,7 +983,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             {isToRedeem && (
               <RedeemButton
                 variant="primaryFill"
-                size={ButtonSize.Large}
+                size="large"
                 disabled={
                   isChainUnsupported ||
                   isLoading ||
@@ -991,6 +994,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 id="boson-redeem-redeem"
                 data-exchange-id={exchange?.id}
                 data-bypass-mode="REDEEM"
+                withBosonStyle
               >
                 <span>Redeem</span>
                 <Typography

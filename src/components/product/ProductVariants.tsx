@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ButtonSize } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useField } from "formik";
 import { useCallback, useEffect } from "react";
@@ -345,7 +344,7 @@ export default function ProductVariants() {
                     <Grid justifyContent="center">
                       <BosonButton
                         variant="secondaryInverted"
-                        size={ButtonSize.Small}
+                        size="small"
                         onClick={() => {
                           deleteTagsIfNoVariants(
                             variant,
