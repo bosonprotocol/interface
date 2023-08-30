@@ -33,14 +33,9 @@ const Nav = styled(Grid)`
 
 const NavItem = styled(Typography)<{ active?: boolean }>`
   align-items: center;
-  cursor: pointer;
   display: flex;
   justify-content: space-between;
   transition: 250ms ease color;
-
-  &:hover {
-    ${({ active }) => !active && `color: ${colors.lightGrey}`};
-  }
 `;
 
 const PageWrapper = styled.div`

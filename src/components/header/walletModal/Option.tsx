@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import {
   ActivationStatus,
@@ -36,8 +36,7 @@ const HeaderText = styled.div`
   ${flexRowNoWrap};
   align-items: center;
   justify-content: center;
-  color: ${(props) =>
-    props.color === "blue" ? colors.secondary : colors.white};
+  color: var(--textColor);
   font-size: 16px;
   font-weight: 600;
   padding: 0 8px;
@@ -47,7 +46,7 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   img {
-    border: 1px solid ${colors.lightGrey};
+    border: 1px solid ${colors.border};
     border-radius: 12px;
   }
   & > img,
@@ -68,14 +67,16 @@ const Wrapper = styled.div<{ disabled: boolean }>`
   position: relative;
   width: 100%;
 
-  background-color: ${colors.darkGrey};
+  background-color: var(--secondaryBgColor);
 
   &:hover {
     cursor: ${({ disabled }) => !disabled && "pointer"};
-    background-color: ${({ disabled }) => !disabled && colors.bosonSkyBlue};
+    background-color: ${({ disabled }) =>
+      !disabled && css`color-mix(in srgb, var(--secondaryBgColor) 90%, black)`};
   }
   &:focus {
-    background-color: ${({ disabled }) => !disabled && colors.bosonSkyBlue};
+    background-color: ${({ disabled }) =>
+      !disabled && css`color-mix(in srgb, var(--secondaryBgColor) 90%, black)`};
   }
 `;
 

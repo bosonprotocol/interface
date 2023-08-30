@@ -157,7 +157,8 @@ const CloseIcon = styled(CaretDoubleRight).attrs({ size: 24 })`
 const CloseDrawer = styled.div`
   ${ClickableStyle}
   opacity: 0.6;
-  background-color: var(--primaryBgColor);
+  z-index: -1;
+  background-color: color-mix(in srgb, var(--primaryBgColor) 90%, black);
   cursor: pointer;
   height: 100%;
   margin: 0 -8px 0 0;
@@ -166,9 +167,7 @@ const CloseDrawer = styled.div`
   border-radius: 20px 0 0 20px;
   transition: 250ms ease background-color, 250ms ease margin;
   &:hover {
-    z-index: -1;
     margin: 0 -16px 0 0;
-    background-color: var(--primaryBgColor);
     filter: brightness(0.85);
   }
   @media only screen and (max-width: ${breakpointNumbers.s}px) {
