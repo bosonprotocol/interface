@@ -14,7 +14,7 @@ const Container = styled.button<{ disabled: boolean }>`
   background: none;
   border: none;
   border-radius: 12px;
-  /* color: ${colors.white}; */
+  color: ${colors.black};
   cursor: ${({ disabled }) => (disabled ? "auto" : "pointer")};
   display: grid;
   grid-template-columns: min-content 1fr min-content;

@@ -9,7 +9,6 @@ import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
 import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
-import { colors } from "../../../lib/styles/colors";
 import { formatAddress } from "../../../lib/utils/address";
 import { useAccountDrawer } from "../accountDrawer";
 import PrefetchBalancesWrapper from "../accountDrawer/PrefetchBalancesWrapper";
@@ -47,20 +46,13 @@ export const IconWrapper = styled.div<{ size?: number }>`
   } ;
 `;
 
-const Web3StatusConnected = styled(Web3StatusGeneric)<{
-  isClaimAvailable?: boolean;
-  pending?: boolean;
-}>`
-  background-color: ${({ pending }) =>
-    pending ? colors.secondary : colors.lightGrey};
-  border: 1px solid
-    ${({ pending }) => (pending ? colors.secondary : colors.lightGrey)};
+const Web3StatusConnected = styled(Web3StatusGeneric)`
+  background-color: var(--buttonBgColor);
+  border: 1px solid var(--buttonBgColor);
   font-weight: 500;
-  border: ${({ isClaimAvailable }) =>
-    isClaimAvailable && `1px solid ${colors.secondary}`};
   :hover,
   :focus {
-    border: 1px solid ${colors.darkGrey};
+    border: 1px solid color-mix(in srgb, var(--buttonBgColor) 90%, black);
   }
 
   @media only screen and (max-width: ${breakpointNumbers.l}px) {
@@ -91,7 +83,7 @@ const Text = styled.p`
 `;
 
 const StyledConnectButton = styled(Button)`
-  color: ${colors.darkGrey};
+  color: inherit;
 `;
 
 function Web3StatusInner() {
@@ -121,7 +113,6 @@ function Web3StatusInner() {
         disabled={Boolean(switchingChain)}
         data-testid="web3-status-connected"
         onClick={handleWalletDropdownClick}
-        isClaimAvailable={false}
       >
         <StatusIcon
           account={account}
@@ -135,22 +126,21 @@ function Web3StatusInner() {
         </AddressAndChevronContainer>
       </Web3StatusConnected>
     );
-  } else {
-    return (
-      <StyledConnectButton
-        tabIndex={0}
-        onClick={handleWalletDropdownClick}
-        data-testid="navbar-connect-wallet"
-        size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
-        variant="primaryFill"
-        style={{
-          whiteSpace: "pre"
-        }}
-      >
-        Connect Wallet
-      </StyledConnectButton>
-    );
   }
+  return (
+    <StyledConnectButton
+      tabIndex={0}
+      onClick={handleWalletDropdownClick}
+      data-testid="navbar-connect-wallet"
+      size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
+      variant="primaryFill"
+      style={{
+        whiteSpace: "pre"
+      }}
+    >
+      Connect Wallet
+    </StyledConnectButton>
+  );
 }
 
 export default function Web3Status() {

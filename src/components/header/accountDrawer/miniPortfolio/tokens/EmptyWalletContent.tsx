@@ -1,4 +1,3 @@
-import { colors } from "lib/styles/colors";
 import styled from "styled-components";
 
 import Typography from "../../../../ui/Typography";
@@ -18,7 +17,6 @@ const EmptyWalletText = styled(Typography)`
   white-space: normal;
   margin-top: 12px;
   text-align: center;
-  color: ${colors.black};
   box-sizing: border-box;
   margin: 0;
   min-width: 0;

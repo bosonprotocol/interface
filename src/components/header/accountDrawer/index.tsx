@@ -141,8 +141,9 @@ const AccountDrawerWrapper = styled.div<{ open: boolean }>`
   border-radius: 12px;
   width: ${DRAWER_WIDTH};
   font-size: 16px;
-  background-color: ${colors.lightGrey};
-  border: ${`1px solid ${colors.lightGrey}`};
+  background-color: var(--primaryBgColor);
+
+  border: 1px solid var(--primaryBgColor);
 
   box-shadow: 12px 16px 24px rgba(0, 0, 0, 0.24),
     12px 8px 12px rgba(0, 0, 0, 0.24), 4px 4px 8px rgba(0, 0, 0, 0.32);
@@ -150,13 +151,13 @@ const AccountDrawerWrapper = styled.div<{ open: boolean }>`
 `;
 
 const CloseIcon = styled(CaretDoubleRight).attrs({ size: 24 })`
-  stroke: ${colors.lightGrey};
+  stroke: var(--primaryBgColor);
 `;
 
 const CloseDrawer = styled.div`
   ${ClickableStyle}
   opacity: 0.6;
-  background-color: ${colors.lightGrey};
+  background-color: var(--primaryBgColor);
   cursor: pointer;
   height: 100%;
   margin: 0 -8px 0 0;
@@ -167,7 +168,7 @@ const CloseDrawer = styled.div`
   &:hover {
     z-index: -1;
     margin: 0 -16px 0 0;
-    background-color: ${colors.lightGrey};
+    background-color: var(--primaryBgColor);
     filter: brightness(0.85);
   }
   @media only screen and (max-width: ${breakpointNumbers.s}px) {

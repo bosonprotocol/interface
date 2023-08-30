@@ -10,7 +10,7 @@ import {
   Warning as AlertTriangle
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
 import { getConnection } from "../../../lib/connection";
@@ -22,7 +22,6 @@ import {
   TESTNET_CHAIN_IDS,
   UniWalletSupportedChains
 } from "../../../lib/constants/chains";
-import { colors } from "../../../lib/styles/colors";
 import { getSupportedChainIdsFromWalletConnectSession } from "../../../lib/utils/getSupportedChainIdsFromWalletConnectSession";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useOnClickOutside } from "../../../lib/utils/hooks/useOnClickOutside";
@@ -34,9 +33,20 @@ import { showTestnetsAtom } from "../accountDrawer/TestnetsToggle";
 import { NavDropdown } from "../navDropdown/NavDropdown";
 import ChainSelectorRow from "./ChainSelectorRow";
 
-const IconAndChevron = styled.div`
+const IconAndChevron = styled.div<{ $isOpen: boolean }>`
+  display: flex;
+  align-items: center;
+  height: 40px;
+  gap: 8px;
+  flex-direction: row;
+  ${({ $isOpen }) =>
+    css`
+      background: ${$isOpen ? css`var(--buttonBgColor)` : "none"};
+    `}
+  border-radius: 8px;
+  padding: 1px 6px;
   &:hover {
-    background: ${colors.lightGrey} !important;
+    background: color-mix(in srgb, var(--buttonBgColor) 90%, black);
   }
 `;
 
@@ -176,17 +186,8 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
         disabled={isSupported}
       >
         <IconAndChevron
+          $isOpen={isOpen}
           data-testid="chain-selector"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            height: "40px",
-            gap: "8px",
-            flexDirection: "row",
-            background: isOpen ? colors.lightGrey : "none",
-            borderRadius: "8px",
-            padding: "1px 6px"
-          }}
           onClick={() => setIsOpen(!isOpen)}
         >
           {!isSupported ? (

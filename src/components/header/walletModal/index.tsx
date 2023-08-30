@@ -1,7 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { AutoColumn } from "components/ui/column";
 import { breakpoint } from "lib/styles/breakpoint";
-import { colors } from "lib/styles/colors";
 import { useEffect } from "react";
 import styled from "styled-components";
 
@@ -18,7 +17,6 @@ import Option from "./Option";
 
 const Wrapper = styled.div`
   ${flexColumnNoWrap};
-  background-color: ${colors.lightGrey};
   width: 100%;
   padding: 14px 16px 16px;
   flex: 1;
