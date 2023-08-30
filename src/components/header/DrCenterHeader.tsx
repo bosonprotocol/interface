@@ -13,7 +13,7 @@ import Layout from "../layout/Layout";
 import Grid from "../ui/Grid";
 import { AccountDrawer } from "./accountDrawer";
 import { BurgerButton } from "./BurgerButton";
-import { Selector } from "./chainSelector/Selector";
+import Selector from "./chainSelector/Selector";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
 

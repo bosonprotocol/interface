@@ -1,6 +1,6 @@
 import logo from "assets/logo.svg";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
-import { Selector } from "components/header/chainSelector/Selector";
+import Selector from "components/header/chainSelector/Selector";
 import Layout from "components/layout/Layout";
 import { Spinner } from "components/loading/Spinner";
 import { Portal } from "components/portal/Portal";
