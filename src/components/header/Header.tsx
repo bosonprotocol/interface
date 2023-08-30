@@ -1,6 +1,6 @@
 import logo from "assets/logo.svg";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
-import { ChainSelector } from "components/header/chainSelector/ChainSelector";
+import { Selector } from "components/header/chainSelector/Selector";
 import Layout from "components/layout/Layout";
 import { Spinner } from "components/loading/Spinner";
 import { Portal } from "components/portal/Portal";
@@ -358,7 +358,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                 {burgerMenuBreakpoint && (
                   <>
                     <CTA />
-                    <ChainSelector />
+                    <Selector />
                     <ConnectButton />
                     <BurgerButton onClick={toggleMenu} />
                   </>
@@ -371,7 +371,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                 {!burgerMenuBreakpoint && (
                   <>
                     <CTA />
-                    <ChainSelector />
+                    <Selector />
                     <ConnectButton />
                   </>
                 )}

@@ -76,7 +76,7 @@ function useWalletSupportedChains(): ChainId[] {
   }
 }
 
-export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
+export const Selector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
   const { chainId, account } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);

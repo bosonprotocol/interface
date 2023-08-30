@@ -13,7 +13,7 @@ import Layout from "../layout/Layout";
 import Grid from "../ui/Grid";
 import { AccountDrawer } from "./accountDrawer";
 import { BurgerButton } from "./BurgerButton";
-import { ChainSelector } from "./chainSelector/ChainSelector";
+import { Selector } from "./chainSelector/Selector";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
 
@@ -122,7 +122,7 @@ export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
               <HeaderItems fluidHeader={fluidHeader}>
                 {burgerMenuBreakpoint && (
                   <>
-                    <ChainSelector />
+                    <Selector />
                     <ConnectButton />
                     <BurgerButton onClick={toggleMenu} />
                   </>
@@ -139,7 +139,7 @@ export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
                 />
                 {!burgerMenuBreakpoint && (
                   <>
-                    <ChainSelector />
+                    <Selector />
                     <ConnectButton />
                   </>
                 )}
