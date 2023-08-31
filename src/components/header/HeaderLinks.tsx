@@ -139,6 +139,11 @@ const ItemsList = styled.div<{
   > * {
     padding: 2rem;
   }
+  ${({ isMobile }) =>
+    !isMobile &&
+    css`
+      gap: 1rem;
+    `}
 `;
 
 interface Props {

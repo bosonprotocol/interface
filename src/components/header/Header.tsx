@@ -368,10 +368,12 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   isOpen={isOpen}
                   navigationBarPosition={navigationBarPosition}
                 >
-                  <Grid justifyContent="flex-start">
-                    <ChainSelector />
-                    <ConnectButton />
-                  </Grid>
+                  {burgerMenuBreakpoint && (
+                    <Grid justifyContent="flex-start">
+                      <ChainSelector />
+                      <ConnectButton />
+                    </Grid>
+                  )}
                 </HeaderLinks>
                 {!burgerMenuBreakpoint && (
                   <>
