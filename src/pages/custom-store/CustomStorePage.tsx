@@ -1,6 +1,8 @@
 import * as Sentry from "@sentry/browser";
 import { useWeb3React } from "@web3-react/core";
 import { Form, Formik } from "formik";
+import { BosonRoutes } from "lib/routing/routes";
+import { getViewModeUrl, ViewMode } from "lib/viewMode";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
@@ -111,6 +113,7 @@ export default function CustomStore() {
         onSubmit={async (values) => {
           setHasSubmitError(false);
           try {
+            const dappOrigin = getViewModeUrl(ViewMode.DAPP, BosonRoutes.Root);
             const queryParams = new URLSearchParams(
               formValuesWithOneLogoUrl(values as unknown as StoreFormFields)
             ).toString();
@@ -136,7 +139,7 @@ export default function CustomStore() {
               }
             </style>
             <iframe
-              src="${window.location.origin}/#/?${queryParams}"
+              src="${dappOrigin}?${queryParams}"
               width="100%"
               height="100%"/>
       </body>
