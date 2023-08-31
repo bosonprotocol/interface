@@ -1,7 +1,6 @@
-import Column from "components/Column";
 import UniswapXBrandMark from "components/Logo/UniswapXBrandMark";
 import { Arrow } from "components/Popover";
-import UniswapXRouterLabel from "components/RouterLabel/UniswapXRouterLabel";
+import UniswapXRouterLabel from "components/routerLabel/UniswapXRouterLabel";
 import {
   SwapMustache,
   SwapMustacheShadow,
@@ -11,6 +10,7 @@ import {
   UniswapXOptInLargeContainerPositioner,
   UniswapXShine
 } from "components/swap/styled";
+import Column from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { X } from "phosphor-react";

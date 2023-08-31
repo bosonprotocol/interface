@@ -17,7 +17,7 @@ import {
 
 import { Separator, ThemedText } from "../../theme";
 import Column from "../Column";
-import RouterLabel from "../RouterLabel";
+import RouterLabel from "../routerLabel";
 import { RowBetween, RowFixed } from "../Row";
 import { MouseoverTooltip, TooltipSize } from "../Tooltip";
 import { GasBreakdownTooltip } from "./GasBreakdownTooltip";

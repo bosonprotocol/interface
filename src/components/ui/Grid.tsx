@@ -93,7 +93,7 @@ const Container = styled.div<IGrid>`
   ${({ alignSelf }) => (alignSelf ? `align-self:${alignSelf};` : "")}
   ${({ justifySelf }) => (justifySelf ? `justify-self:${justifySelf};` : "")}
 `;
-type Props = {
+export type GridProps = {
   children: React.ReactNode;
   as?: React.ElementType;
   src?: string;
@@ -101,7 +101,7 @@ type Props = {
 } & IGrid &
   React.HTMLAttributes<HTMLDivElement>;
 
-const Grid = forwardRef<HTMLDivElement, Props>(
+const Grid = forwardRef<HTMLDivElement, GridProps>(
   ({ children, ...props }, ref) => {
     return (
       <Container {...props} ref={ref}>

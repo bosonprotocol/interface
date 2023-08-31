@@ -2,11 +2,15 @@ import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
 import { useWeb3React } from "@web3-react/core";
 import { ReactComponent as DropDown } from "assets/images/dropdown.svg";
-import { flexColumnNoWrap } from "components/header/styles";
+import { flexColumnNoWrap, flexRowNoWrap } from "components/header/styles";
 import {
   LoadingOpacityContainer,
   loadingOpacityMixin
 } from "components/loader/styled";
+import CurrencyLogo from "components/Logo/CurrencyLogo";
+import Button from "components/ui/Button";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
 import { isSupportedChain } from "lib/constants/chains";
 import { formatCurrencyAmount } from "lib/utils/formatCurrencyAmount";
 import { darken } from "polished";
@@ -14,7 +18,6 @@ import { ReactNode, useCallback, useState } from "react";
 import { useCurrencyBalance } from "state/connection/hooks";
 import styled, { useTheme } from "styled-components";
 
-import { ButtonGray } from "../Button";
 import DoubleCurrencyLogo from "../logo/DoubleCurrencyLogo";
 import { Input as NumericalInput } from "../NumericalInput";
 import CurrencySearchModal from "../SearchModal/CurrencySearchModal";
@@ -47,7 +50,7 @@ const Container = styled.div<{ hideInput: boolean; disabled: boolean }>`
   `}
 `;
 
-const CurrencySelect = styled(ButtonGray)<{
+const CurrencySelect = styled(Button)<{
   visible: boolean;
   selected: boolean;
   hideInput?: boolean;
@@ -252,7 +255,7 @@ export default function CurrencyInputPanel({
                 pointerEvents={!onCurrencySelect ? "none" : undefined}
               >
                 <Aligner>
-                  <RowFixed>
+                  <Grid>
                     {pair ? (
                       <span style={{ marginRight: "0.5rem" }}>
                         <DoubleCurrencyLogo
@@ -289,27 +292,27 @@ export default function CurrencyInputPanel({
                               currency.symbol.length - 5,
                               currency.symbol.length
                             )
-                          : currency?.symbol) || <Trans>Select a token</Trans>}
+                          : currency?.symbol) || <>Select a token</>}
                       </StyledTokenName>
                     )}
-                  </RowFixed>
+                  </Grid>
                   {onCurrencySelect && <StyledDropDown selected={!!currency} />}
                 </Aligner>
               </CurrencySelect>
             </InputRow>
             {Boolean(!hideInput && !hideBalance && currency) && (
               <FiatRow>
-                <RowBetween>
+                <Grid>
                   <LoadingOpacityContainer $loading={loading}>
                     {fiatValue && <FiatValue fiatValue={fiatValue} />}
                   </LoadingOpacityContainer>
                   {account && (
-                    <RowFixed style={{ height: "17px" }}>
-                      <ThemedText.DeprecatedBody
+                    <Grid style={{ height: "17px" }}>
+                      <Typography
                         onClick={onMax}
-                        color={theme.textTertiary}
+                        // color={theme.textTertiary}
                         fontWeight={500}
-                        fontSize={14}
+                        $fontSize={14}
                         style={{ display: "inline", cursor: "pointer" }}
                       >
                         {Boolean(
@@ -318,26 +321,20 @@ export default function CurrencyInputPanel({
                           (renderBalance?.(
                             selectedCurrencyBalance as CurrencyAmount<Currency>
                           ) || (
-                            <Trans>
+                            <>
                               Balance:{" "}
                               {formatCurrencyAmount(selectedCurrencyBalance, 4)}
-                            </Trans>
+                            </>
                           ))}
-                      </ThemedText.DeprecatedBody>
+                      </Typography>
                       {Boolean(showMaxButton && selectedCurrencyBalance) && (
-                        <TraceEvent
-                          events={[BrowserEvent.onClick]}
-                          name={SwapEventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
-                          element={InterfaceElementName.MAX_TOKEN_AMOUNT_BUTTON}
-                        >
-                          <StyledBalanceMax onClick={onMax}>
-                            <Trans>MAX</Trans>
-                          </StyledBalanceMax>
-                        </TraceEvent>
+                        <StyledBalanceMax onClick={onMax}>
+                          <>MAX</>
+                        </StyledBalanceMax>
                       )}
-                    </RowFixed>
+                    </Grid>
                   )}
-                </RowBetween>
+                </Grid>
               </FiatRow>
             )}
           </Container>

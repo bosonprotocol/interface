@@ -539,7 +539,7 @@ export function Swap({
       console.error("Could not wrap/unwrap", error);
       setSwapState((currentState) => ({
         ...currentState,
-        swapError: error,
+        swapError: error as Error,
         txHash: undefined
       }));
     }

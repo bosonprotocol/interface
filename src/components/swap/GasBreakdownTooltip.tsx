@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { AutoColumn } from "components/Column";
 import UniswapXRouterLabel, {
   UniswapXGradient
-} from "components/RouterLabel/UniswapXRouterLabel";
+} from "components/routerLabel/UniswapXRouterLabel";
 import Row from "components/Row";
 import { ReactNode } from "react";
 import { InterfaceTrade } from "state/routing/types";

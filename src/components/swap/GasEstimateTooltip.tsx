@@ -2,7 +2,7 @@ import { InterfaceElementName, SwapEventName } from "@uniswap/analytics-events";
 import { useWeb3React } from "@web3-react/core";
 import { sendAnalyticsEvent } from "analytics";
 import { LoadingOpacityContainer } from "components/loader/styled";
-import { UniswapXRouterIcon } from "components/RouterLabel/UniswapXRouterLabel";
+import { UniswapXRouterIcon } from "components/routerLabel/UniswapXRouterLabel";
 import Row, { RowFixed } from "components/Row";
 import { MouseoverTooltip, TooltipSize } from "components/Tooltip";
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "constants/chains";
