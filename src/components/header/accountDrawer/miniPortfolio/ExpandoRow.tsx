@@ -1,4 +1,3 @@
-import { colors } from "lib/styles/colors";
 import { CaretDoubleDown } from "phosphor-react";
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
@@ -7,14 +6,12 @@ import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 
 const ExpandIcon = styled(CaretDoubleDown)<{ $expanded: boolean }>`
-  color: ${colors.lightGrey};
   transform: ${({ $expanded }) =>
     $expanded ? "rotate(180deg)" : "rotate(0deg)"};
   transition: transform 250ms;
 `;
 
 const ToggleButton = styled(Grid)`
-  background-color: ${colors.lightGrey};
   border-radius: 12px;
   padding: 4px 8px 4px 12px;
   height: 100%;

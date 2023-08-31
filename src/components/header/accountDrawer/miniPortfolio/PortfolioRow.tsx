@@ -4,18 +4,12 @@ import Column, { AutoColumn } from "../../../ui/column";
 import Grid from "../../../ui/Grid";
 import { LoadingBubble } from "../../../ui/LoadingBubble";
 
-export const PortfolioRowWrapper = styled(Grid)<{ onClick?: any }>`
+export const PortfolioRowWrapper = styled(Grid)`
   gap: 12px;
   height: 68px;
   padding: 0 16px;
 
   transition: 250ms ease background-color;
-
-  ${({ onClick }) => onClick && "cursor: pointer"};
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 const EndColumn = styled(Column)`
@@ -27,8 +21,7 @@ export default function PortfolioRow({
   left,
   title,
   descriptor,
-  right,
-  onClick
+  right
 }: {
   "data-testid"?: string;
   left: React.ReactNode;
@@ -36,10 +29,9 @@ export default function PortfolioRow({
   descriptor?: React.ReactNode;
   right?: React.ReactNode;
   setIsHover?: (b: boolean) => void;
-  onClick?: () => void;
 }) {
   return (
-    <PortfolioRowWrapper data-testid={testId} onClick={onClick}>
+    <PortfolioRowWrapper data-testid={testId}>
       {left}
       <AutoColumn grow>
         {title}

@@ -2,11 +2,9 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { breakpointNumbers } from "../../../../lib/styles/breakpoint";
-import { colors } from "../../../../lib/styles/colors";
 import Column from "../../../ui/column";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
-import { PortfolioRowWrapper } from "./PortfolioRow";
 import Tokens from "./tokens";
 
 const Wrapper = styled(Column)`
@@ -18,12 +16,6 @@ const Wrapper = styled(Column)`
 
   @media screen and (max-width: ${breakpointNumbers.s}px) {
     margin-bottom: 48px;
-  }
-
-  ${PortfolioRowWrapper} {
-    &:hover {
-      background: ${colors.lightGrey};
-    }
   }
 `;
 

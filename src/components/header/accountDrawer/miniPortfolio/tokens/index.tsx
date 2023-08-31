@@ -4,18 +4,15 @@ import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { TokenBalance } from "graphql/data/__generated__/types-and-hooks";
 import {
-  getTokenDetailsURL,
   gqlToCurrency,
   logSentryErrorForUnsupportedChain
 } from "graphql/data/util";
 import { formatDelta } from "lib/utils/formatDelta";
 import { formatNumber, NumberType } from "lib/utils/formatNumbers";
 import { splitHiddenTokens } from "lib/utils/splitHiddenTokens";
-import { useCallback, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 
-import { useToggleAccountDrawer } from "../..";
 import { PortfolioArrow } from "../../AuthenticatedHeader";
 import { ExpandoRow } from "../ExpandoRow";
 import { PortfolioLogo } from "../PortfolioLogo";
@@ -26,7 +23,6 @@ import PortfolioRow, {
 import { EmptyWalletModule } from "./EmptyWalletContent";
 
 export default function Tokens({ account }: { account: string }) {
-  const toggleWalletDrawer = useToggleAccountDrawer();
   const [showHiddenTokens, setShowHiddenTokens] = useState(false);
 
   const { data } = useCachedPortfolioBalancesQuery({ account });
@@ -101,13 +97,6 @@ function TokenRow({
 }: TokenBalance & { token: PortfolioToken }) {
   const percentChange = tokenProjectMarket?.pricePercentChange?.value ?? 0;
 
-  const navigate = useNavigate();
-  const toggleWalletDrawer = useToggleAccountDrawer();
-  const navigateToTokenDetails = useCallback(async () => {
-    navigate(getTokenDetailsURL(token));
-    toggleWalletDrawer();
-  }, [navigate, token, toggleWalletDrawer]);
-
   const currency = gqlToCurrency(token);
   if (!currency) {
     logSentryErrorForUnsupportedChain({
@@ -132,7 +121,6 @@ function TokenRow({
           {formatNumber(quantity, NumberType.TokenNonTx)} {token?.symbol}
         </TokenBalanceText>
       }
-      onClick={navigateToTokenDetails}
       right={
         denominatedValue && (
           <>
