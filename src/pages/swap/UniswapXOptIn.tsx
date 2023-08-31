@@ -1,10 +1,7 @@
-import { Trans } from "@lingui/macro";
-import { sendAnalyticsEvent, Trace } from "analytics";
 import Column from "components/Column";
 import UniswapXBrandMark from "components/Logo/UniswapXBrandMark";
 import { Arrow } from "components/Popover";
 import UniswapXRouterLabel from "components/RouterLabel/UniswapXRouterLabel";
-import Row from "components/Row";
 import {
   SwapMustache,
   SwapMustacheShadow,
@@ -14,10 +11,10 @@ import {
   UniswapXOptInLargeContainerPositioner,
   UniswapXShine
 } from "components/swap/styled";
-import { formatCommonPropertiesForTrade } from "lib/utils/analytics";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
+import { X } from "phosphor-react";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { X } from "react-feather";
-import { Text } from "rebass";
 import { useAppDispatch } from "state/hooks";
 import { RouterPreference } from "state/routing/types";
 import { isClassicTrade } from "state/routing/utils";
@@ -25,15 +22,13 @@ import { SwapInfo } from "state/swap/hooks";
 import { useRouterPreference, useUserDisabledUniswapX } from "state/user/hooks";
 import { updateDisabledUniswapX } from "state/user/reducer";
 import styled from "styled-components";
-import { ThemedText } from "theme";
 
 export const UniswapXOptIn = (props: {
   swapInfo: SwapInfo;
   isSmall: boolean;
 }) => {
   const {
-    trade: { trade },
-    allowedSlippage
+    trade: { trade }
   } = props.swapInfo;
   const userDisabledUniswapX = useUserDisabledUniswapX();
   const isOnClassic = Boolean(
@@ -53,19 +48,7 @@ export const UniswapXOptIn = (props: {
     return null;
   }
 
-  return (
-    <Trace
-      shouldLogImpression
-      name="UniswapX Opt In Impression"
-      properties={
-        trade
-          ? formatCommonPropertiesForTrade(trade, allowedSlippage)
-          : undefined
-      }
-    >
-      <OptInContents isOnClassic={isOnClassic} {...props} />
-    </Trace>
-  );
+  return <OptInContents isOnClassic={isOnClassic} {...props} />;
 };
 
 const OptInContents = ({
@@ -97,9 +80,9 @@ const OptInContents = ({
   }, [isVisible, shouldAnimate]);
 
   const tryItNowElement = (
-    <ThemedText.BodySecondary
+    <Typography
       color="accentAction"
-      fontSize={14}
+      $fontSize={14}
       fontWeight="500"
       onClick={() => {
         // slight delay before hiding
@@ -111,10 +94,7 @@ const OptInContents = ({
         }, 200);
 
         if (!trade) return;
-        sendAnalyticsEvent("UniswapX Opt In Toggled", {
-          ...formatCommonPropertiesForTrade(trade, allowedSlippage),
-          new_preference: RouterPreference.X
-        });
+
         setRouterPreference(RouterPreference.X);
       }}
       style={{
@@ -122,7 +102,7 @@ const OptInContents = ({
       }}
     >
       Try it now
-    </ThemedText.BodySecondary>
+    </Typography>
   );
 
   const containerRef = useRef<HTMLDivElement>();
@@ -137,18 +117,22 @@ const OptInContents = ({
         <SwapMustache>
           <UniswapXShine />
           <SwapMustacheShadow />
-          <Row justify="space-between" align="center" flexWrap="wrap">
-            <Text fontSize={14} fontWeight={400} lineHeight="20px">
-              <Trans>Try gas free swaps with the</Trans>
+          <Grid
+            justifyContent="space-between"
+            alignItems="center"
+            flexWrap="wrap"
+          >
+            <Typography $fontSize={14} fontWeight={400} lineHeight="20px">
+              <>Try gas free swaps with the</>
               <br />
               <UniswapXBrandMark
                 fontWeight="bold"
                 style={{ transform: `translateY(1px)`, margin: "0 2px" }}
               />{" "}
-              <Trans>Beta</Trans>
-            </Text>
+              <>Beta</>
+            </Typography>
             {tryItNowElement}
-          </Row>
+          </Grid>
         </SwapMustache>
       </SwapOptInSmallContainer>
     );
@@ -162,23 +146,20 @@ const OptInContents = ({
           size={18}
           onClick={() => {
             if (!trade) return;
-            sendAnalyticsEvent("UniswapX Opt In Toggled", {
-              ...formatCommonPropertiesForTrade(trade, allowedSlippage),
-              new_preference: RouterPreference.API
-            });
+
             setRouterPreference(RouterPreference.API);
             dispatch(updateDisabledUniswapX({ disabledUniswapX: true }));
           }}
         />
 
         <Column>
-          <Text fontSize={14} fontWeight={400} lineHeight="20px">
-            <Trans>Try the</Trans>{" "}
+          <Typography $fontSize={14} fontWeight={400} lineHeight="20px">
+            <>Try the</>{" "}
             <UniswapXBrandMark
               fontWeight="bold"
               style={{ transform: `translateY(2px)`, margin: "0 1px" }}
             />{" "}
-            <Trans>Beta</Trans>
+            <>Beta</>
             <ul
               style={{
                 margin: "5px 0 12px 24px",
@@ -187,16 +168,16 @@ const OptInContents = ({
               }}
             >
               <li>
-                <Trans>Gas free swaps</Trans>
+                <>Gas free swaps</>
               </li>
               <li>
-                <Trans>MEV protection</Trans>
+                <>MEV protection</>
               </li>
               <li>
-                <Trans>Better prices and more liquidity</Trans>
+                <>Better prices and more liquidity</>
               </li>
             </ul>
-          </Text>
+          </Typography>
         </Column>
 
         {tryItNowElement}
@@ -205,14 +186,14 @@ const OptInContents = ({
       {/* second popover: you're in! */}
       <UniswapXOptInPopover visible={showYoureIn}>
         <UniswapXRouterLabel disableTextGradient>
-          <Text fontSize={14} fontWeight={500} lineHeight="20px">
-            <Trans>You&apos;re in!</Trans>
-          </Text>
+          <Typography $fontSize={14} fontWeight={500} lineHeight="20px">
+            <>You&apos;re in!</>
+          </Typography>
         </UniswapXRouterLabel>
 
-        <ThemedText.BodySecondary style={{ marginTop: 8 }} fontSize={14}>
-          <Trans>You can turn it off at anytime in settings</Trans>
-        </ThemedText.BodySecondary>
+        <Typography style={{ marginTop: 8 }} $fontSize={14}>
+          <>You can turn it off at anytime in settings</>
+        </Typography>
       </UniswapXOptInPopover>
     </>
   );
@@ -245,7 +226,7 @@ const UniswapXOptInPopover = (
 };
 
 const CloseIcon = styled(X)`
-  color: ${({ theme }) => theme.textTertiary};
+  /* color: ${({ theme }) => theme.textTertiary}; */
   cursor: pointer;
   position: absolute;
   top: 14px;

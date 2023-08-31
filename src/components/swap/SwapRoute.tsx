@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Column from "components/Column";
-import { LoadingRows } from "components/Loader/styled";
+import { LoadingRows } from "components/loader/styled";
 import RoutingDiagram from "components/RoutingDiagram/RoutingDiagram";
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "constants/chains";
 import useAutoRouterSupported from "hooks/useAutoRouterSupported";

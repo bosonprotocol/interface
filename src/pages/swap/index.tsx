@@ -7,15 +7,11 @@ import {
 } from "@uniswap/sdk-core";
 import { UNIVERSAL_ROUTER_ADDRESS } from "@uniswap/universal-router-sdk";
 import { useWeb3React } from "@web3-react/core";
-import { Trace, useTrace } from "analytics";
-import { useToggleAccountDrawer } from "components/AccountDrawer";
-import AddressInputPanel from "components/AddressInputPanel";
-import { ButtonError, ButtonLight, ButtonPrimary } from "components/Button";
-import { GrayCard } from "components/Card";
-import { AutoColumn } from "components/Column";
-import SwapCurrencyInputPanel from "components/CurrencyInputPanel/SwapCurrencyInputPanel";
-import { NetworkAlert } from "components/NetworkAlert/NetworkAlert";
-import { AutoRow } from "components/Row";
+import AddressInputPanel from "components/addressInputPanel";
+import { GrayCard } from "components/card";
+import SwapCurrencyInputPanel from "components/currencyInputPanel/SwapCurrencyInputPanel";
+import { useToggleAccountDrawer } from "components/header/accountDrawer";
+import { NetworkAlert } from "components/networkAlert/NetworkAlert";
 import confirmPriceImpactWithoutFee from "components/swap/confirmPriceImpactWithoutFee";
 import ConfirmSwapModal from "components/swap/ConfirmSwapModal";
 import PriceImpactModal from "components/swap/PriceImpactModal";
@@ -23,24 +19,36 @@ import PriceImpactWarning from "components/swap/PriceImpactWarning";
 import { ArrowWrapper, PageWrapper, SwapWrapper } from "components/swap/styled";
 import SwapDetailsDropdown from "components/swap/SwapDetailsDropdown";
 import SwapHeader from "components/swap/SwapHeader";
-import { SwitchLocaleLink } from "components/SwitchLocaleLink";
-import TokenSafetyModal from "components/TokenSafety/TokenSafetyModal";
-import { getChainInfo } from "constants/chainInfo";
-import { asSupportedChain, isSupportedChain } from "constants/chains";
-import { getSwapCurrencyId, TOKEN_SHORTHANDS } from "constants/tokens";
-import { useCurrency, useDefaultActiveTokens } from "hooks/Tokens";
-import { useIsSwapUnsupported } from "hooks/useIsSwapUnsupported";
-import { useMaxAmountIn } from "hooks/useMaxAmountIn";
-import usePermit2Allowance, { AllowanceState } from "hooks/usePermit2Allowance";
-import usePrevious from "hooks/usePrevious";
-import { SwapResult, useSwapCallback } from "hooks/useSwapCallback";
-import { useSwitchChain } from "hooks/useSwitchChain";
-import { useUSDPrice } from "hooks/useUSDPrice";
+import TokenSafetyModal from "components/tokenSafety/TokenSafetyModal";
+import Button from "components/ui/Button";
+import { AutoColumn } from "components/ui/column";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
+import JSBI from "jsbi";
+import { getChainInfo } from "lib/constants/chainInfo";
+import { asSupportedChain, isSupportedChain } from "lib/constants/chains";
+import { getSwapCurrencyId, TOKEN_SHORTHANDS } from "lib/constants/tokens";
+import { computeFiatValuePriceImpact } from "lib/utils/computeFiatValuePriceImpact";
+import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
+import { useCurrency, useDefaultActiveTokens } from "lib/utils/hooks/Tokens";
+import { useIsSwapUnsupported } from "lib/utils/hooks/useIsSwapUnsupported";
+import { useMaxAmountIn } from "lib/utils/hooks/useMaxAmountIn";
+import usePermit2Allowance, {
+  AllowanceState
+} from "lib/utils/hooks/usePermit2Allowance";
+import { usePrevious } from "lib/utils/hooks/usePrevious";
+import { useScreenSize } from "lib/utils/hooks/useScreenSize";
+import { SwapResult, useSwapCallback } from "lib/utils/hooks/useSwapCallback";
+import { useSwitchChain } from "lib/utils/hooks/useSwitchChain";
+import { useUSDPrice } from "lib/utils/hooks/useUSDPrice";
 import useWrapCallback, {
   WrapErrorText,
   WrapType
-} from "hooks/useWrapCallback";
-import JSBI from "jsbi";
+} from "lib/utils/hooks/useWrapCallback";
+import { maxAmountSpend } from "lib/utils/maxAmountSpend";
+import { computeRealizedPriceImpact, warningSeverity } from "lib/utils/prices";
+import { didUserReject } from "lib/utils/swapErrorToUserReadableMessage";
+import { ArrowDown } from "phosphor-react";
 import {
   ReactNode,
   useCallback,
@@ -49,9 +57,7 @@ import {
   useReducer,
   useState
 } from "react";
-import { ArrowDown } from "react-feather";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Text } from "rebass";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
 import { InterfaceTrade, TradeState } from "state/routing/types";
 import { isClassicTrade, isUniswapXTrade } from "state/routing/utils";
@@ -65,15 +71,8 @@ import swapReducer, {
   initialState as initialSwapState,
   SwapState
 } from "state/swap/reducer";
-import styled, { useTheme } from "styled-components";
-import { LinkStyledButton, ThemedText } from "theme";
-import { computeFiatValuePriceImpact } from "utils/computeFiatValuePriceImpact";
-import { formatCurrencyAmount, NumberType } from "utils/formatNumbers";
-import { maxAmountSpend } from "utils/maxAmountSpend";
-import { computeRealizedPriceImpact, warningSeverity } from "utils/prices";
-import { didUserReject } from "utils/swapErrorToUserReadableMessage";
+import styled from "styled-components";
 
-import { useScreenSize } from "../../hooks/useScreenSize";
 import { UniswapXOptIn } from "./UniswapXOptIn";
 
 export const ArrowContainer = styled.div`
@@ -148,12 +147,10 @@ export default function SwapPage({ className }: { className?: string }) {
   const { chainId: connectedChainId } = useWeb3React();
   const loadedUrlParams = useDefaultsFromURLSearch();
 
-  const location = useLocation();
-
   const supportedChainId = asSupportedChain(connectedChainId);
 
   return (
-    <Trace page={InterfacePageName.SWAP_PAGE} shouldLogImpression>
+    <>
       <PageWrapper>
         <Swap
           className={className}
@@ -170,8 +167,7 @@ export default function SwapPage({ className }: { className?: string }) {
         />
         <NetworkAlert />
       </PageWrapper>
-      {location.pathname === "/swap" && <SwitchLocaleLink />}
-    </Trace>
+    </>
   );
 }
 
@@ -198,7 +194,6 @@ export function Swap({
   disableTokenInputs?: boolean;
 }) {
   const { account, chainId: connectedChainId, connector } = useWeb3React();
-  const trace = useTrace();
 
   // token warning stuff
   const prefilledInputCurrency = useCurrency(
@@ -260,8 +255,6 @@ export function Swap({
     [chainId, defaultTokens, urlLoadedTokens]
   );
 
-  const theme = useTheme();
-
   // toggle wallet when disconnected
   const toggleWalletDrawer = useToggleAccountDrawer();
 
@@ -313,7 +306,7 @@ export function Swap({
 
   const swapInfo = useDerivedSwapInfo(state, chainId);
   const {
-    trade: { state: tradeState, trade, swapQuoteLatency },
+    trade: { state: tradeState, trade },
     allowedSlippage,
     autoSlippage,
     currencyBalances,
@@ -685,7 +678,7 @@ export function Swap({
             onCurrencySelect={handleInputSelect}
             otherCurrency={currencies[Field.OUTPUT]}
             showCommonBases
-            id={InterfaceSectionName.CURRENCY_INPUT_PANEL}
+            id={"CURRENCY_INPUT_PANEL"}
             loading={independentField === Field.OUTPUT && routeIsSyncing}
           />
         </SwapSection>
@@ -719,24 +712,27 @@ export function Swap({
               onCurrencySelect={handleOutputSelect}
               otherCurrency={currencies[Field.INPUT]}
               showCommonBases
-              id={InterfaceSectionName.CURRENCY_OUTPUT_PANEL}
+              id={"CURRENCY_OUTPUT_PANEL"}
               loading={independentField === Field.INPUT && routeIsSyncing}
             />
             {recipient !== null && !showWrap ? (
               <>
-                <AutoRow justify="space-between" style={{ padding: "0 1rem" }}>
+                <Grid
+                  justifyContent="space-between"
+                  style={{ padding: "0 1rem" }}
+                >
                   <ArrowWrapper clickable={false}>
                     <ArrowDown
                       size="16" //color={theme.textSecondary}
                     />
                   </ArrowWrapper>
-                  <LinkStyledButton
+                  <Button
                     id="remove-recipient-button"
                     onClick={() => onChangeRecipient(null)}
                   >
                     <>- Remove recipient</>
-                  </LinkStyledButton>
-                </AutoRow>
+                  </Button>
+                </Grid>
                 <AddressInputPanel
                   id="recipient"
                   value={recipient}
@@ -759,26 +755,22 @@ export function Swap({
         )}
         <div>
           {swapIsUnsupported ? (
-            <ButtonPrimary $borderRadius="16px" disabled={true}>
-              <ThemedText.DeprecatedMain mb="4px">
+            <Button disabled={true}>
+              <Typography //mb="4px"
+              >
                 <>Unsupported Asset</>
-              </ThemedText.DeprecatedMain>
-            </ButtonPrimary>
+              </Typography>
+            </Button>
           ) : switchingChain ? (
-            <ButtonPrimary $borderRadius="16px" disabled={true}>
+            <Button disabled={true}>
               <>Connecting to {getChainInfo(switchingChain)?.label}</>
-            </ButtonPrimary>
+            </Button>
           ) : !account ? (
-            <ButtonLight
-              onClick={toggleWalletDrawer}
-              fontWeight={600}
-              $borderRadius="16px"
-            >
-              <>Connect Wallet</>
-            </ButtonLight>
+            <Button onClick={toggleWalletDrawer}>
+              <Typography fontWeight={600}>Connect Wallet</Typography>
+            </Button>
           ) : chainId && chainId !== connectedChainId ? (
-            <ButtonPrimary
-              $borderRadius="16px"
+            <Button
               onClick={async () => {
                 try {
                   await switchChain(connector, chainId);
@@ -793,34 +785,34 @@ export function Swap({
               }}
             >
               Connect to {getChainInfo(chainId)?.label}
-            </ButtonPrimary>
+            </Button>
           ) : showWrap ? (
-            <ButtonPrimary
-              $borderRadius="16px"
+            <Button
               disabled={Boolean(wrapInputError)}
               onClick={handleOnWrap}
-              fontWeight={600}
               data-testid="wrap-button"
             >
-              {wrapInputError ? (
-                <WrapErrorText wrapInputError={wrapInputError} />
-              ) : wrapType === WrapType.WRAP ? (
-                <>Wrap</>
-              ) : wrapType === WrapType.UNWRAP ? (
-                <>Unwrap</>
-              ) : null}
-            </ButtonPrimary>
+              <Typography fontWeight={600}>
+                {wrapInputError ? (
+                  <WrapErrorText wrapInputError={wrapInputError} />
+                ) : wrapType === WrapType.WRAP ? (
+                  <>Wrap</>
+                ) : wrapType === WrapType.UNWRAP ? (
+                  <>Unwrap</>
+                ) : null}
+              </Typography>
+            </Button>
           ) : routeNotFound &&
             userHasSpecifiedInputOutput &&
             !routeIsLoading &&
             !routeIsSyncing ? (
             <GrayCard style={{ textAlign: "center" }}>
-              <ThemedText.DeprecatedMain mb="4px">
+              <Typography marginBottom="4px">
                 <>Insufficient liquidity for this trade.</>
-              </ThemedText.DeprecatedMain>
+              </Typography>
             </GrayCard>
           ) : (
-            <ButtonError
+            <Button
               onClick={() => {
                 showPriceImpactWarning
                   ? setShowPriceImpactModal(true)
@@ -829,13 +821,13 @@ export function Swap({
               id="swap-button"
               data-testid="swap-button"
               disabled={!getIsValidSwapQuote(trade, tradeState, swapInputError)}
-              error={
-                !swapInputError &&
-                priceImpactSeverity > 2 &&
-                allowance.state === AllowanceState.ALLOWED
-              }
+              // error={
+              //   !swapInputError &&
+              //   priceImpactSeverity > 2 &&
+              //   allowance.state === AllowanceState.ALLOWED
+              // }
             >
-              <Text fontSize={20} fontWeight={600}>
+              <Typography $fontSize={20} fontWeight={600}>
                 {swapInputError ? (
                   swapInputError
                 ) : routeIsSyncing || routeIsLoading ? (
@@ -845,8 +837,8 @@ export function Swap({
                 ) : (
                   <>Swap</>
                 )}
-              </Text>
-            </ButtonError>
+              </Typography>
+            </Button>
           )}
         </div>
       </AutoColumn>

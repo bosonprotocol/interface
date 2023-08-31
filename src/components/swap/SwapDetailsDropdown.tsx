@@ -8,7 +8,7 @@ import { Percent } from "@uniswap/sdk-core";
 import { TraceEvent, useTrace } from "analytics";
 import AnimatedDropdown from "components/AnimatedDropdown";
 import Column from "components/Column";
-import { LoadingOpacityContainer } from "components/Loader/styled";
+import { LoadingOpacityContainer } from "components/loader/styled";
 import { RowBetween, RowFixed } from "components/Row";
 import { formatCommonPropertiesForTrade } from "lib/utils/analytics";
 import { useState } from "react";

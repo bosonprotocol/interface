@@ -238,8 +238,8 @@ interface Props {
   modalType: ModalType;
   headerComponent?: ReactNode;
   size: NonNullable<Store["modalSize"]>;
-  maxWidths: Store["modalMaxWidth"];
-  theme: NonNullable<Store["theme"]>;
+  maxWidths?: Store["modalMaxWidth"];
+  theme?: NonNullable<Store["theme"]>;
   hidden?: boolean;
   closable?: boolean;
   style?: CSSProperties | undefined;
@@ -252,7 +252,7 @@ export default function Modal({
   headerComponent: HeaderComponent,
   size,
   maxWidths,
-  theme,
+  theme = "light",
   closable = true,
   hidden,
   modalType,

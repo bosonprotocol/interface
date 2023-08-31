@@ -3,7 +3,7 @@ import { InterfaceElementName, SwapEventName } from "@uniswap/analytics-events";
 import { Percent, TradeType } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { sendAnalyticsEvent } from "analytics";
-import { LoadingRows } from "components/Loader/styled";
+import { LoadingRows } from "components/loader/styled";
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "constants/chains";
 import useNativeCurrency from "lib/hooks/useNativeCurrency";
 import { InterfaceTrade } from "state/routing/types";

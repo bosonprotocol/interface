@@ -1,7 +1,7 @@
 import { InterfaceElementName, SwapEventName } from "@uniswap/analytics-events";
 import { useWeb3React } from "@web3-react/core";
 import { sendAnalyticsEvent } from "analytics";
-import { LoadingOpacityContainer } from "components/Loader/styled";
+import { LoadingOpacityContainer } from "components/loader/styled";
 import { UniswapXRouterIcon } from "components/RouterLabel/UniswapXRouterLabel";
 import Row, { RowFixed } from "components/Row";
 import { MouseoverTooltip, TooltipSize } from "components/Tooltip";

@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { Currency } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { ButtonEmpty } from "components/Button";
-import Card, { OutlineCard } from "components/Card";
+import Card, { OutlineCard } from "components/card";
 import { AutoColumn } from "components/Column";
 import CurrencyLogo from "components/Logo/CurrencyLogo";
 import Modal from "components/Modal";
