@@ -85,10 +85,14 @@ export default ({ leftAlign }: ChainSelectorProps) => {
   const showTestnets = useAtomValue(showTestnetsAtom);
   const walletSupportsChain = useWalletSupportedChains();
 
-  const [supportedConfigs] = useMemo(() => {
-    const { supported } = NETWORK_SELECTOR_CHAINS.filter((config) => {
-      return showTestnets || !TESTNET_CHAIN_IDS.includes(config.chainId as any);
-    })
+  const [supportedConfigs, unsupportedChains] = useMemo(() => {
+    const { supported, unsupported } = NETWORK_SELECTOR_CHAINS.filter(
+      (config) => {
+        return (
+          showTestnets || !TESTNET_CHAIN_IDS.includes(config.chainId as any)
+        );
+      }
+    )
       .sort(
         ({ chainId: a }, { chainId: b }) =>
           getChainPriority(a as ChainId) - getChainPriority(b as ChainId)
@@ -98,12 +102,14 @@ export default ({ leftAlign }: ChainSelectorProps) => {
           const { chainId: chain } = config;
           if (walletSupportsChain.includes(chain as ChainId)) {
             acc.supported.push(config);
+          } else {
+            acc.unsupported.push(config);
           }
           return acc;
         },
-        { supported: [] } as Record<string, ProtocolConfig[]>
+        { supported: [], unsupported: [] } as Record<string, ProtocolConfig[]>
       );
-    return [supported];
+    return [supported, unsupported];
   }, [showTestnets, walletSupportsChain]);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -168,6 +174,17 @@ export default ({ leftAlign }: ChainSelectorProps) => {
             key={config.configId}
             active={config.configId === activeConfigId}
             isPending={config.configId === pendingConfigId}
+          />
+        ))}
+        {unsupportedChains.map((config) => (
+          <ChainSelectorRow
+            disabled
+            onSelectChain={() => undefined}
+            targetChain={config.chainId as ChainId}
+            key={config.configId}
+            isPending={false}
+            label={config.envName}
+            active={config.configId === activeConfigId}
           />
         ))}
       </div>
