@@ -11,9 +11,7 @@ import useENSAvatar from "lib/utils/hooks/useENSAvatar";
 import React from "react";
 import styled from "styled-components";
 
-const UnknownContract = styled(UnknownStatus)`
-  color: ${colors.lightGrey};
-`;
+const UnknownContract = styled(UnknownStatus)``;
 
 const DoubleLogoContainer = styled.div`
   display: flex;
