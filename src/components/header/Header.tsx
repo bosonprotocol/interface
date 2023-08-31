@@ -280,7 +280,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                     whiteSpace: "pre",
                     marginLeft: isLteXS ? "1rem" : ""
                   }}
-                  size={isLteXS ? "small" : "regular"}
+                  size={"regular"}
                   onClick={() => {
                     navigate({ pathname: sellUrl });
                   }}
@@ -358,8 +358,8 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                 {burgerMenuBreakpoint && (
                   <>
                     <CTA />
-                    <ChainSelector />
-                    <ConnectButton />
+                    {!isLteXS && <ChainSelector />}
+                    <ConnectButton showOnlyIcon />
                     <BurgerButton onClick={toggleMenu} />
                   </>
                 )}
@@ -367,7 +367,14 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   isMobile={burgerMenuBreakpoint}
                   isOpen={isOpen}
                   navigationBarPosition={navigationBarPosition}
-                />
+                >
+                  {burgerMenuBreakpoint && (
+                    <Grid justifyContent="flex-start">
+                      <ChainSelector />
+                      <ConnectButton />
+                    </Grid>
+                  )}
+                </HeaderLinks>
                 {!burgerMenuBreakpoint && (
                   <>
                     <CTA />
