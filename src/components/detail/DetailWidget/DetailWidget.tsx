@@ -800,7 +800,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
           buyerAddress,
           offer.id,
-          offer.condition.tokenId,
+          offer.condition.minTokenId,
           {
             value:
               offer.exchangeToken.address === constants.AddressZero
@@ -960,6 +960,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     exchangeToken={offer.exchangeToken.address}
                     price={offer.price}
                     envName={CONFIG.envName}
+                    configId={CONFIG.configId}
                     onError={onCommitError}
                     onPendingSignature={onCommitPendingSignature}
                     onPendingTransaction={onCommitPendingTransaction}

@@ -47,7 +47,6 @@ const offerGraphQl = gql`
     seller {
       id
       admin
-      clerk
       treasury
       assistant
       active

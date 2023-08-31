@@ -104,7 +104,6 @@ const getExchangesFunction = async (props: Props) => {
           id
           assistant
           admin
-          clerk
           treasury
           authTokenId
           authTokenType

@@ -196,6 +196,7 @@ export default function CancelExchangeModal({
             variant="accentInverted"
             exchangeId={exchange.id}
             envName={CONFIG.envName}
+            configId={CONFIG.configId}
             disabled={isLoading}
             onError={(error) => {
               console.error(error);

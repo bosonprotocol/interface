@@ -1,4 +1,4 @@
-import { EnvironmentType, getDefaultConfig } from "@bosonprotocol/react-kit";
+import { EnvironmentType, getEnvConfigs } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 
 import { Token } from "../components/convertion-rate/ConvertionRateContext";
@@ -9,7 +9,7 @@ import { parseCurationList } from "./utils/curationList";
 import { ViewMode } from "./viewMode";
 
 const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
-export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
+export const config = getEnvConfigs(REACT_APP_ENV_NAME as EnvironmentType)[0];
 
 const REACT_APP_ENABLE_SENTRY_LOGGING =
   process.env.NODE_ENV === "development"
@@ -83,10 +83,13 @@ export const CONFIG = {
     process.env.REACT_APP_THE_GRAPH_IPFS_URL || config.theGraphIpfsUrl,
   ipfsMetadataStorageUrl:
     process.env.REACT_APP_IPFS_METADATA_URL || config.ipfsMetadataUrl,
-  ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
-    process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
-    process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
-  ),
+  ipfsMetadataStorageHeaders:
+    config.envName === "local"
+      ? { "Access-Control-Allow-Origin": "*" }
+      : getIpfsMetadataStorageHeaders(
+          process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
+          process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
+        ),
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
   metaTx: {

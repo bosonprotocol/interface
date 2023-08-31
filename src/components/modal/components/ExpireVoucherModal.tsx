@@ -180,6 +180,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
             variant="primaryFill"
             exchangeId={exchange.id}
             envName={CONFIG.envName}
+            configId={CONFIG.configId}
             disabled={isLoading}
             onError={(error) => {
               console.error(error);

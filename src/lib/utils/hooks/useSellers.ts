@@ -9,7 +9,6 @@ interface Props {
   admin?: string;
   admin_in?: string[];
   assistant?: string;
-  clerk?: string;
   treasury?: string;
   id?: string;
   includeFunds?: boolean;
@@ -46,7 +45,6 @@ export function useSellers(
     ...(props.admin && { admin: props.admin }),
     ...(props.admin_in && { admin_in: props.admin_in }),
     ...(props.assistant && { assistant: props.assistant }),
-    ...(props.clerk && { clerk: props.clerk }),
     ...(props.treasury && { treasury: props.treasury }),
     ...(props.id && { id: props.id })
   };

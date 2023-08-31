@@ -466,7 +466,6 @@ export default function CreateBosonLensAccountSummary({
           updateSellerAccount={async () =>
             updateSeller({
               admin: address || "",
-              clerk: seller?.clerk || "",
               assistant: seller?.assistant || "",
               treasury: seller?.treasury || "",
               authTokenId: profile?.id,

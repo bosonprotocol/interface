@@ -135,6 +135,7 @@ export default function RevokeProduct({
             variant="accentInverted"
             exchangeId={exchangeId || 0}
             envName={CONFIG.envName}
+            configId={CONFIG.configId}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =

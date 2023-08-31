@@ -335,6 +335,7 @@ export default function VoidProduct({
               variant="accentInverted"
               offerId={offerId || 0}
               envName={CONFIG.envName}
+              configId={CONFIG.configId}
               onError={(error) => {
                 console.error("onError", error);
                 const hasUserRejectedTx =

@@ -217,6 +217,7 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
             disabled={isLoading || !isInitializationValid}
             exchangeId={exchangeId}
             envName={CONFIG.envName}
+            configId={CONFIG.configId}
             onError={(error) => {
               console.error("Error while redeeming", error);
               setRedeemError(error);

@@ -30,7 +30,6 @@ const getSellersByIds = () => (sellerIds: string[], isSellerId: boolean) => {
           authTokenId: string;
           authTokenType: number;
           admin: string;
-          clerk: string;
           treasury: string;
           assistant: string;
           id: string;
@@ -46,7 +45,6 @@ const getSellersByIds = () => (sellerIds: string[], isSellerId: boolean) => {
               authTokenId
               authTokenType
               admin
-              clerk
               treasury
               assistant
               id
@@ -144,7 +142,6 @@ export function useCurrentSellers({
       const rolesWithSameAddress = sellers
         .flatMap((seller) => [
           { admin: seller.admin },
-          { clerk: seller.clerk },
           { treasury: seller.treasury },
           { assistant: seller.assistant }
         ])
@@ -155,8 +152,7 @@ export function useCurrentSellers({
           );
         })
         .map(
-          (role) =>
-            Object.keys(role)[0] as "admin" | "clerk" | "treasury" | "assistant"
+          (role) => Object.keys(role)[0] as "admin" | "treasury" | "assistant"
         );
       const isLensSeller = sellers.find(
         (seller) => seller.authTokenType === AuthTokenType.LENS
@@ -183,7 +179,6 @@ export function useCurrentSellers({
     async () => {
       const allProps = {
         admin: sellers?.[0]?.admin || null,
-        clerk: sellers?.[0]?.clerk || null,
         assistant: sellers?.[0]?.assistant || null,
         treasury: sellers?.[0]?.treasury || null
       };
@@ -211,7 +206,6 @@ export function useCurrentSellers({
         sellers: {
           sellerId: string;
           admin: string;
-          clerk: string;
           assistant: string;
           treasury: string;
         }[];
@@ -226,7 +220,6 @@ export function useCurrentSellers({
             ) {
               sellerId
               admin
-              clerk
               assistant
               treasury
             }
@@ -237,7 +230,6 @@ export function useCurrentSellers({
       const allProps = {
         sellerId: result?.sellers[0]?.sellerId || null,
         admin: result?.sellers[0]?.admin || null,
-        clerk: result?.sellers[0]?.clerk || null,
         assistant: result?.sellers[0]?.assistant || null,
         treasury: result?.sellers[0]?.treasury || null
       };
@@ -274,7 +266,6 @@ export function useCurrentSellers({
 
       const currentSellerRoles = {
         admin: currentSeller?.admin || null,
-        clerk: currentSeller?.clerk || null,
         assistant: currentSeller?.assistant || null,
         treasury: currentSeller?.treasury || null
       };

@@ -223,6 +223,7 @@ export default function CompleteExchange({
             variant="primaryFill"
             exchangeId={exchange.id}
             envName={CONFIG.envName}
+            configId={CONFIG.configId}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
@@ -277,6 +278,7 @@ export default function CompleteExchange({
             variant="primaryFill"
             exchangeIds={exchangeIds}
             envName={CONFIG.envName}
+            configId={CONFIG.configId}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
