@@ -1,5 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { useField, useFormikContext } from "formik";
+import { BosonRoutes } from "lib/routing/routes";
+import { getViewModeUrl, ViewMode } from "lib/viewMode";
 import { ArrowsOut } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
@@ -152,6 +154,7 @@ export const formValuesWithOneLogoUrl = (
 };
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
+  const dappOrigin = getViewModeUrl(ViewMode.DAPP, BosonRoutes.Root);
   const { showModal } = useModal();
   const { setFieldValue, values, isValid, setValues, isSubmitting } =
     useFormikContext<StoreFormFields>();
@@ -952,7 +955,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 "IFRAME_MODAL",
                 {
                   title: "Preview",
-                  src: `${window.location.origin}/#/?${queryParams}`
+                  src: `${dappOrigin}?${queryParams}`
                 },
                 "fullscreen"
               );
@@ -968,7 +971,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 "IFRAME_MODAL",
                 {
                   title: "Preview",
-                  src: `${window.location.origin}/#/?${queryParams}`
+                  src: `${dappOrigin}?${queryParams}`
                 },
                 "fullscreen"
               );
@@ -976,7 +979,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           />
         </Grid>
         <iframe
-          src={`${window.location.origin}/#/?${queryParams}`}
+          src={`${dappOrigin}?${queryParams}`}
           style={{
             width: "100%",
             minHeight: "50rem",
