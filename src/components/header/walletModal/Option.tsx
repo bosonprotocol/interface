@@ -36,7 +36,7 @@ const HeaderText = styled.div`
   ${flexRowNoWrap};
   align-items: center;
   justify-content: center;
-  color: var(--textColor);
+  color: color-mix(in srgb, var(--textColor) 30%, white);
   font-size: 16px;
   font-weight: 600;
   padding: 0 8px;
