@@ -14,4 +14,4 @@ export const breakpoint = {
   m: `@media (min-width: ${breakpointNumbers.m}px)`,
   l: `@media (min-width: ${breakpointNumbers.l}px)`,
   xl: `@media (min-width: ${breakpointNumbers.xl}px)`
-};
+} as const;

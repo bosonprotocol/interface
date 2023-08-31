@@ -47,7 +47,6 @@ const Button = styled.button`
   display: flex;
   color: ${colors.darkGrey};
   background-color: transparent;
-  margin: 0 0.5rem;
   :hover {
     color: ${colors.black};
   }

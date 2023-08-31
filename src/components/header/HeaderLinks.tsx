@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import { ReactNode } from "react";
 import styled, { css } from "styled-components";
 
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
@@ -39,16 +40,13 @@ const NavigationLinks = styled.div<{
     isMobile
       ? css`
           position: absolute;
-          ${() => {
-            return css`
-              top: calc(${HEADER_HEIGHT} + 1px);
-            `;
-          }}
+          top: calc(${HEADER_HEIGHT} + 1px);
           left: 0;
           right: 0;
           bottom: 0;
           height: 100vh;
           transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
+
           a,
           [data-anchor] {
             display: flex;
@@ -59,7 +57,6 @@ const NavigationLinks = styled.div<{
             font-size: 16px;
             font-weight: 600;
             line-height: 150%;
-            padding: 2rem;
             border-bottom: 2px solid ${colors.border};
             position: relative;
             white-space: pre;
@@ -127,19 +124,21 @@ const NavigationLinks = styled.div<{
         `};
 `;
 
-const Links = styled.div<{
+const ItemsList = styled.div<{
   isMobile: boolean;
   $navigationBarPosition?: string;
 }>`
   display: flex;
   justify-content: end;
-  gap: 1rem;
   flex-direction: ${({ isMobile, $navigationBarPosition }) =>
     isMobile || ["left", "right"].includes($navigationBarPosition ?? "")
       ? "column"
       : "row"};
   align-items: ${({ $navigationBarPosition }) =>
     ["left", "right"].includes($navigationBarPosition ?? "") ? "center" : ""};
+  > * {
+    padding: 2rem;
+  }
 `;
 
 interface Props {
@@ -152,6 +151,7 @@ interface Props {
   withDisputeAdmin?: boolean;
   withResolutionCenter?: boolean;
   withSellerHub?: boolean;
+  children?: ReactNode;
 }
 export default function HeaderLinks({
   isMobile,
@@ -162,7 +162,8 @@ export default function HeaderLinks({
   withMyItems = true,
   withDisputeAdmin = true,
   withResolutionCenter,
-  withSellerHub
+  withSellerHub,
+  children
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
   const { account: address } = useWeb3React();
@@ -189,7 +190,10 @@ export default function HeaderLinks({
           navigationBarPosition={navigationBarPosition}
         />
       )}
-      <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
+      <ItemsList
+        isMobile={isMobile}
+        $navigationBarPosition={navigationBarPosition}
+      >
         {!onlySeller && withExploreProducts && (
           <ViewModeLink
             href={BosonRoutes.Explore}
@@ -239,7 +243,8 @@ export default function HeaderLinks({
             </ViewModeLink>
           )}
         {address && <ViewTxButton />}
-      </Links>
+        {children}
+      </ItemsList>
     </NavigationLinks>
   );
 }

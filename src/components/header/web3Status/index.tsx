@@ -22,7 +22,7 @@ const Web3StatusGeneric = styled.button`
   padding: 0.5rem;
   cursor: pointer;
   user-select: none;
-  height: 45px;
+
   margin-right: 2px;
   margin-left: 2px;
   :focus {
@@ -45,29 +45,40 @@ export const IconWrapper = styled.div<{ size?: number }>`
     align-items: flex-end;
   } ;
 `;
-
+const breakpointWhenConnectButtonOverflows = "1300px";
 const Web3StatusConnected = styled(Web3StatusGeneric)`
-  background-color: var(--buttonBgColor);
-  border: 1px solid var(--buttonBgColor);
   font-weight: 500;
   :hover,
   :focus {
     border: 1px solid color-mix(in srgb, var(--buttonBgColor) 90%, black);
   }
-
-  @media only screen and (max-width: ${breakpointNumbers.l}px) {
+  @media (min-width: ${breakpointNumbers.xs}px) and (max-width: ${breakpointNumbers.l -
+    1}px) {
+    background-color: var(--buttonBgColor);
+    border: 1px solid var(--buttonBgColor);
+  }
+  @media (min-width: ${breakpointWhenConnectButtonOverflows}) {
+    background-color: var(--buttonBgColor);
+    border: 1px solid var(--buttonBgColor);
+  }
+  ${breakpoint.l} {
     ${IconWrapper} {
       margin-right: 0;
     }
   }
 `;
-const navSearchInputVisibleSize = 1100;
 
 const AddressAndChevronContainer = styled.div`
   display: flex;
 
-  @media only screen and (max-width: ${navSearchInputVisibleSize}px) {
+  ${breakpoint.xxs} {
     display: none;
+  }
+  @media (min-width: ${breakpointNumbers.l}px) and (max-width: ${breakpointWhenConnectButtonOverflows}) {
+    display: none;
+  }
+  @media (min-width: ${breakpointWhenConnectButtonOverflows}) {
+    display: flex;
   }
 `;
 
@@ -87,7 +98,7 @@ const StyledConnectButton = styled(Button)`
   color: inherit;
 `;
 
-function Web3StatusInner() {
+function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   const { isLteXS } = useBreakpoints();
   const switchingChain = useAppSelector(
     (state) => state.wallets.switchingChain
@@ -119,7 +130,7 @@ function Web3StatusInner() {
           account={account}
           size={24}
           connection={connection}
-          showMiniIcons={false}
+          showMiniIcons={showOnlyIcon}
         />
 
         <AddressAndChevronContainer>
@@ -144,11 +155,15 @@ function Web3StatusInner() {
   );
 }
 
-export default function Web3Status() {
+export default function Web3Status({
+  showOnlyIcon
+}: {
+  showOnlyIcon?: boolean;
+}) {
   const [isDrawerOpen] = useAccountDrawer();
   return (
     <PrefetchBalancesWrapper shouldFetchOnAccountUpdate={isDrawerOpen}>
-      <Web3StatusInner />
+      <Web3StatusInner showOnlyIcon={showOnlyIcon} />
     </PrefetchBalancesWrapper>
   );
 }
