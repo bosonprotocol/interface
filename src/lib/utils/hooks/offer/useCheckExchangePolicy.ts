@@ -1,5 +1,6 @@
 import { offers } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { useEffect, useState } from "react";
 
 import { CONFIG } from "../../../config";
@@ -13,7 +14,8 @@ interface Props {
 
 const getRulesTemplate = async (
   fairExchangePolicyRules: string | undefined,
-  defaultDisputeResolverId: string
+  defaultDisputeResolverId: string,
+  defaultTokens: Token[]
 ) => {
   if (!fairExchangePolicyRules) {
     return undefined;
@@ -34,7 +36,7 @@ const getRulesTemplate = async (
       disputeResolverId_matches;
   }
   // replace TOKENS_LIST (environment dependent)
-  const tokensList = CONFIG.defaultTokens.map((token) => token.address);
+  const tokensList = defaultTokens.map((token) => token.address);
   const tokensList_pattern =
     rulesTemplate?.yupSchema?.properties?.exchangeToken?.properties?.address?.pattern?.replace(
       "<TOKENS_LIST>",
@@ -64,11 +66,14 @@ export default function useCheckExchangePolicy({ offerId }: Props) {
       setRulesTemplate(
         await getRulesTemplate(
           CONFIG.fairExchangePolicyRules,
-          config.envConfig.defaultDisputeResolverId
+          config.envConfig.defaultDisputeResolverId,
+          config.envConfig.defaultTokens || []
         )
       ))();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [CONFIG.fairExchangePolicyRules]);
+  }, [
+    config.envConfig.defaultDisputeResolverId,
+    config.envConfig.defaultTokens
+  ]);
   useEffect(() => {
     if (
       !core ||
