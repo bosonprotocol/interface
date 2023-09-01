@@ -222,8 +222,12 @@ export default function CompleteExchange({
           <CompleteButton
             variant="primaryFill"
             exchangeId={exchange.id}
-            envName={CONFIG.envName}
-            configId={CONFIG.configId}
+            coreSdkConfig={{
+              envName: CONFIG.envName,
+              configId: CONFIG.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: CONFIG.metaTx
+            }}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
@@ -267,8 +271,6 @@ export default function CompleteExchange({
                 }
               );
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           />
         </Grid>
       )}
@@ -277,8 +279,12 @@ export default function CompleteExchange({
           <BatchCompleteButton
             variant="primaryFill"
             exchangeIds={exchangeIds}
-            envName={CONFIG.envName}
-            configId={CONFIG.configId}
+            coreSdkConfig={{
+              envName: CONFIG.envName,
+              configId: CONFIG.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: CONFIG.metaTx
+            }}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
@@ -326,8 +332,6 @@ export default function CompleteExchange({
                 }
               );
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           >
             Batch Complete
           </BatchCompleteButton>

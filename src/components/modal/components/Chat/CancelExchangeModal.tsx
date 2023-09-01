@@ -195,8 +195,12 @@ export default function CancelExchangeModal({
           <CancelButton
             variant="accentInverted"
             exchangeId={exchange.id}
-            envName={CONFIG.envName}
-            configId={CONFIG.configId}
+            coreSdkConfig={{
+              envName: CONFIG.envName,
+              configId: CONFIG.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: CONFIG.metaTx
+            }}
             disabled={isLoading}
             onError={(error) => {
               console.error(error);
@@ -273,8 +277,6 @@ export default function CancelExchangeModal({
                 />
               ));
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           >
             <Grid gap="0.5rem">
               Confirm cancellation

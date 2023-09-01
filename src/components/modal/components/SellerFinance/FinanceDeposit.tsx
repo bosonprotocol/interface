@@ -5,7 +5,7 @@ import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 
-import { CONFIG, config } from "../../../../lib/config";
+import { CONFIG } from "../../../../lib/config";
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
@@ -129,10 +129,13 @@ export default function FinanceDeposit({
                   getNumberWithoutDecimals(amountToDeposit, tokenDecimals)
                 )
           }
-          envName={config.envName}
+          coreSdkConfig={{
+            envName: CONFIG.envName,
+            configId: CONFIG.configId,
+            web3Provider: signer?.provider as Provider,
+            metaTx: CONFIG.metaTx
+          }}
           disabled={isBeingDeposit || isDepositInvalid}
-          web3Provider={signer?.provider as Provider}
-          metaTx={CONFIG.metaTx}
           onPendingSignature={() => {
             setDepositError(null);
             setIsBeingDeposit(true);

@@ -6,7 +6,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { useAccount, useBalance } from "wagmi";
 
-import { CONFIG, config } from "../../../../lib/config";
+import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
@@ -150,10 +150,13 @@ export default function FinanceWithdraw({
                     )
             }
           ]}
-          envName={config.envName}
+          coreSdkConfig={{
+            envName: CONFIG.envName,
+            configId: CONFIG.configId,
+            web3Provider: signer?.provider as Provider,
+            metaTx: CONFIG.metaTx
+          }}
           disabled={isBeingWithdrawn || isWithdrawInvalid}
-          web3Provider={signer?.provider as Provider}
-          metaTx={CONFIG.metaTx}
           onPendingSignature={() => {
             setWithdrawError(null);
             setIsBeingWithdrawn(true);
