@@ -83,13 +83,10 @@ export const CONFIG = {
     process.env.REACT_APP_THE_GRAPH_IPFS_URL || config.theGraphIpfsUrl,
   ipfsMetadataStorageUrl:
     process.env.REACT_APP_IPFS_METADATA_URL || config.ipfsMetadataUrl,
-  ipfsMetadataStorageHeaders:
-    config.envName === "local"
-      ? { "Access-Control-Allow-Origin": "*" }
-      : getIpfsMetadataStorageHeaders(
-          process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
-          process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
-        ),
+  ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
+    process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
+    process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
+  ),
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
   metaTx: {
