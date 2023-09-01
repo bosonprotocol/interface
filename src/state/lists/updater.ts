@@ -4,18 +4,18 @@ import {
   DEFAULT_LIST_OF_LISTS,
   UNSUPPORTED_LIST_URLS
 } from "lib/constants/lists";
-import useInterval from "lib/hooks/useInterval";
+import { useFetchListCallback } from "lib/utils/hooks/useFetchListCallback";
+import useInterval from "lib/utils/hooks/useInterval";
+import useIsWindowVisible from "lib/utils/hooks/useIsWindowVisible";
 import ms from "ms";
 import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "state/hooks";
 import { useAllLists } from "state/lists/hooks";
 
-import { useFetchListCallback } from "../../hooks/useFetchListCallback";
-import useIsWindowVisible from "../../hooks/useIsWindowVisible";
 import { acceptListUpdate } from "./actions";
 import { shouldAcceptVersionUpdate } from "./utils";
 
-export default function Updater(): null {
+export function ListsUpdater(): null {
   const { provider } = useWeb3React();
   const dispatch = useAppDispatch();
   const isWindowVisible = useIsWindowVisible();
