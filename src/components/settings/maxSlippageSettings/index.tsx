@@ -112,7 +112,7 @@ export default function MaxSlippageSettings({
       onToggle={() => setIsOpen(!isOpen)}
       header={
         <Grid $width="auto">
-          <Typography>
+          <Typography color={colors.darkGrey}>
             <>Max slippage</>
           </Typography>
           <QuestionHelper

@@ -4,6 +4,7 @@ import { Input, InputContainer } from "components/settings/input/index";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { DEFAULT_DEADLINE_FROM_NOW } from "lib/constants/misc";
+import { colors } from "lib/styles/colors";
 import ms from "ms";
 import React, { useState } from "react";
 import { useUserTransactionTTL } from "state/user/hooks";
@@ -68,7 +69,7 @@ export default function TransactionDeadlineSettings() {
       testId="transaction-deadline-settings"
       header={
         <Grid $width="auto">
-          <Typography>
+          <Typography color={colors.darkGrey}>
             <>Transaction deadline</>
           </Typography>
           <QuestionHelper

@@ -13,7 +13,7 @@ const ButtonContainer = styled(Grid)`
 `;
 
 const ExpandIcon = styled(CaretDown)<{ $isOpen: boolean }>`
-  color: ${colors.lightGrey};
+  color: ${colors.darkGrey};
   transform: ${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "rotate(0deg)")};
   transition: transform 250ms;
 `;
@@ -46,7 +46,7 @@ export default function Expand({
           aria-expanded={isOpen}
         >
           {button}
-          <ExpandIcon $isOpen={isOpen} />
+          <ExpandIcon $isOpen={isOpen} size={24} />
         </ButtonContainer>
       </Grid>
       <AnimatedDropdown open={isOpen}>

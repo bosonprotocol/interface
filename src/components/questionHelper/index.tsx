@@ -9,7 +9,7 @@ const QuestionWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: 0px;
-  width: 18px;
+  /* width: 18px; */
   height: 18px;
   border: none;
   background: none;
@@ -29,7 +29,7 @@ const QuestionMark = styled.span`
   font-size: 14px;
   margin-left: 8px;
   align-items: center;
-  color: ${colors.lightGrey};
+  color: ${colors.darkGrey};
   margin-top: 2.5px;
 `;
 

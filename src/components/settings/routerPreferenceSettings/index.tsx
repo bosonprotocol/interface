@@ -71,7 +71,7 @@ export default function RouterPreferenceSettings() {
       <Grid gap="sm">
         <Grid>
           <Column gap="xs">
-            <Typography>
+            <Typography color={colors.darkGrey}>
               <>Local routing</>
             </Typography>
           </Column>
