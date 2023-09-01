@@ -24,7 +24,6 @@ import {
   tokenComparator,
   useSortTokensByQuery
 } from "lib/utils/hooks/useTokenList/sorting";
-import { X } from "phosphor-react";
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -43,10 +42,6 @@ import CommonBases from "./CommonBases";
 import { CurrencyRow, formatAnalyticsEventProperties } from "./CurrencyList";
 import CurrencyList from "./CurrencyList";
 import { PaddedColumn, SearchInput, Separator } from "./styled";
-
-const CloseIcon = styled(X)<{ onClick: () => void }>`
-  cursor: pointer;
-`;
 
 const ContentWrapper = styled(Column)`
   background-color: ${colors.lightGrey};
@@ -273,7 +268,6 @@ export function CurrencySearch({
           <Typography fontWeight={500} $fontSize={16}>
             <>Select a token</>
           </Typography>
-          <CloseIcon onClick={onDismiss} />
         </Grid>
         <Grid>
           <SearchInput

@@ -167,7 +167,7 @@ export default function NetworkFilter() {
                 </NetworkLabel>
                 {network === currentChainName && (
                   <CheckContainer>
-                    <Check size={16} color={theme.accentAction} />
+                    <Check size={16} color={colors.secondary} />
                   </CheckContainer>
                 )}
               </InternalLinkMenuItem>

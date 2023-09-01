@@ -1,6 +1,7 @@
 import AnimatedDropdown from "components/animatedDropdown";
 import Column from "components/ui/column";
 import Grid from "components/ui/Grid";
+import { colors } from "lib/styles/colors";
 import { CaretDown } from "phosphor-react";
 import { PropsWithChildren, ReactElement } from "react";
 import styled from "styled-components";
@@ -12,9 +13,9 @@ const ButtonContainer = styled(Grid)`
 `;
 
 const ExpandIcon = styled(CaretDown)<{ $isOpen: boolean }>`
-  color: ${({ theme }) => colors.lightGrey};
+  color: ${colors.lightGrey};
   transform: ${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "rotate(0deg)")};
-  transition: transform ${({ theme }) => theme.transition.duration.medium};
+  transition: transform 250ms;
 `;
 
 const Content = styled(Column)`

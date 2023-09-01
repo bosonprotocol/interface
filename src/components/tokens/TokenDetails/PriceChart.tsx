@@ -92,7 +92,7 @@ export const DeltaText = styled.span<{ delta?: number }>`
 const ChartHeader = styled.div`
   position: absolute;
   ${textFadeIn};
-  animation-duration: ${({ theme }) => theme.transition.duration.medium};
+  animation-duration: 250ms;
 `;
 export const TokenPrice = styled.span`
   font-size: 36px;
@@ -457,7 +457,7 @@ export function PriceChart({
                 left={crosshair}
                 top={rdScale(displayPrice.value) + margin.top}
                 size={50}
-                fill={theme.accentAction}
+                fill={colors.secondary}
                 stroke={theme.backgroundOutline}
                 strokeWidth={0.5}
               />

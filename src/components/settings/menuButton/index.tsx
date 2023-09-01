@@ -1,6 +1,7 @@
 import { ReactComponent as Settings } from "assets/svg/settings.svg";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
+import { colors } from "lib/styles/colors";
 import validateUserSlippageTolerance, {
   SlippageValidationResult
 } from "lib/utils/validateUserSlippageTolerance";
@@ -12,7 +13,7 @@ const Icon = styled(Settings)`
   height: 24px;
   width: 24px;
   > * {
-    fill: ${({ theme }) => theme.textSecondary};
+    fill: ${colors.black};
   }
 `;
 
@@ -41,7 +42,7 @@ const IconContainerWithSlippage = styled(IconContainer)<{
 }>`
   /* TODO: div {
     color: ${({ theme, displayWarning }) =>
-    displayWarning ? theme.accentWarning : theme.textSecondary};
+    displayWarning ? theme.accentWarning : colors.lightGrey};
   }
 
   background-color: ${({ theme, displayWarning }) =>

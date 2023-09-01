@@ -114,7 +114,7 @@ export default memo(function CurrencySearchModal({
     <Modal
       hidden={!isOpen}
       hideModal={onDismiss}
-      style={{ height: modalHeight }}
+      // TODO: style={{ height: modalHeight }}
       modalType={"CURRENCY_SEARCH"}
     >
       {content}

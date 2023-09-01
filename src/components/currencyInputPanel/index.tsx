@@ -12,6 +12,7 @@ import Button from "components/ui/Button";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { isSupportedChain } from "lib/constants/chains";
+import { colors } from "lib/styles/colors";
 import { formatCurrencyAmount } from "lib/utils/formatCurrencyAmount";
 import { darken } from "polished";
 import { ReactNode, useCallback, useState } from "react";
@@ -59,7 +60,7 @@ const CurrencySelect = styled(Button)<{
 }>`
   align-items: center;
   background-color: ${({ selected, theme }) =>
-    selected ? theme.backgroundInteractive : theme.accentAction};
+    selected ? theme.backgroundInteractive : colors.secondary};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   color: ${({ selected, theme }) =>
     selected ? theme.textPrimary : theme.white};
@@ -78,7 +79,7 @@ const CurrencySelect = styled(Button)<{
   :focus,
   :hover {
     background-color: ${({ selected, theme }) =>
-      selected ? theme.deprecated_bg3 : darken(0.05, theme.accentAction)};
+      selected ? theme.deprecated_bg3 : darken(0.05, colors.secondary)};
   }
   visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
   ${({ pointerEvents }) => pointerEvents && `pointer-events: none`}
@@ -142,7 +143,7 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: ${({ theme }) => theme.deprecated_primary5};
   border: none;
   border-radius: 12px;
-  color: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => colors.secondary};
   cursor: pointer;
   font-size: 11px;
   font-weight: 500;

@@ -2,7 +2,6 @@ import { useWeb3React } from "@web3-react/core";
 import { useAccountDrawer } from "components/header/accountDrawer";
 import Tooltip from "components/tooltip/Tooltip";
 import Button from "components/ui/Button";
-import { colors } from "lib/styles/colors";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -25,7 +24,6 @@ enum BuyFiatFlowState {
 }
 
 const StyledTextButton = styled(Button)`
-  color: ${colors.lightGrey};
   gap: 4px;
   &:focus {
     text-decoration: none;

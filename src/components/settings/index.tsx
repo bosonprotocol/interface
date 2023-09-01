@@ -8,6 +8,7 @@ import Column, { AutoColumn } from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { isSupportedChain, L2_CHAIN_IDS } from "lib/constants/chains";
+import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import useDisableScrolling from "lib/utils/hooks/useDisableScrolling";
@@ -41,9 +42,13 @@ const MenuFlyout = styled(AutoColumn)`
   right: 0;
   z-index: 100;
   color: ${({ theme }) => theme.textPrimary};
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+  // TODO: check theme.deprecated_mediaWidth
+  // .deprecated_upToMedium
+  // min-width: 18.125rem;
+  //};
+  ${breakpoint.m} {
     min-width: 18.125rem;
-  `};
+  }
   user-select: none;
   padding: 16px;
 `;
@@ -72,7 +77,7 @@ const MobileMenuWrapper = styled(Column)<{ open: boolean }>`
   overflow: hidden;
   position: absolute;
   bottom: ${({ open }) => (open ? `100vh` : 0)};
-  transition: bottom ${({ theme }) => theme.transition.duration.medium};
+  transition: bottom 250ms;
   border: ${({ theme }) => `1px solid ${theme.backgroundOutline}`};
   border-radius: 12px;
   border-bottom-right-radius: 0px;

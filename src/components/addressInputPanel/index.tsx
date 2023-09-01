@@ -110,7 +110,7 @@ export default function AddressInputPanel({
           <AutoColumn gap="md">
             <Grid>
               <Typography
-                // color={colors.lightGrey}
+                color={colors.lightGrey}
                 fontWeight={500}
                 $fontSize={14}
               >

@@ -1,3 +1,4 @@
+import { colors } from "lib/styles/colors";
 import { darken } from "polished";
 import { useState } from "react";
 import styled, { keyframes } from "styled-components";
@@ -40,20 +41,16 @@ const turnOffToggle = keyframes`
   }
 `;
 
-const ToggleElementHoverStyle = (
-  hasBgColor: boolean,
-  theme: any,
-  isActive?: boolean
-) =>
+const ToggleElementHoverStyle = (hasBgColor: boolean, isActive?: boolean) =>
   hasBgColor
     ? {
         opacity: "0.8"
       }
     : {
         background: isActive
-          ? darken(0.05, theme.accentAction)
-          : darken(0.05, theme.deprecated_bg4),
-        color: isActive ? theme.white : theme.textTertiary
+          ? darken(0.05, colors.secondary)
+          : darken(0.05, colors.lightGrey),
+        color: isActive ? colors.white : colors.black
       };
 
 const ToggleElement = styled.span<{
@@ -67,15 +64,14 @@ const ToggleElement = styled.span<{
     ease-in;
   background: ${({ theme, bgColor, isActive }) =>
     isActive
-      ? bgColor ?? theme.accentAction
+      ? bgColor ?? colors.secondary
       : bgColor
-      ? theme.deprecated_bg4
+      ? colors.lightGrey
       : theme.textTertiary};
   border-radius: 50%;
   height: 24px;
   :hover {
-    ${({ bgColor, theme, isActive }) =>
-      ToggleElementHoverStyle(!!bgColor, theme, isActive)}
+    ${({ bgColor, isActive }) => ToggleElementHoverStyle(!!bgColor, isActive)}
   }
   margin-left: ${({ isActive }) => isActive && "2.2em"};
   margin-right: ${({ isActive }) => !isActive && "2.2em"};

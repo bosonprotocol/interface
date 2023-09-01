@@ -127,7 +127,7 @@ const ExplorerContainer = styled.div`
   margin-top: 10px;
   font-size: 20px;
   background-color: ${({ theme }) => theme.accentActionSoft};
-  color: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => colors.secondary};
   border-radius: 8px;
   padding: 2px 12px;
   display: flex;
@@ -205,7 +205,7 @@ function ExplorerView({ token }: { token: Token }) {
 }
 
 const StyledExternalLink = styled.a`
-  color: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => colors.secondary};
   stroke: currentColor;
   font-weight: 600;
 `;

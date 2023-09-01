@@ -47,7 +47,7 @@ const DottedLine = styled.div`
 
 const DotColor = styled(DotLine)`
   path {
-    stroke: ${({ theme }) => theme.deprecated_bg4};
+    stroke: ${({ theme }) => colors.lightGrey};
   }
 `;
 // styled(Badge);

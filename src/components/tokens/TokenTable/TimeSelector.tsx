@@ -141,7 +141,7 @@ export default function TimeSelector() {
             >
               <div>{DISPLAYS[time]}</div>
               {time === activeTime && (
-                <Check color={theme.accentAction} size={16} />
+                <Check color={colors.secondary} size={16} />
               )}
             </InternalLinkMenuItem>
           ))}

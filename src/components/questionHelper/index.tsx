@@ -1,4 +1,5 @@
 import Tooltip from "components/tooltip/Tooltip";
+import { colors } from "lib/styles/colors";
 import { Question } from "phosphor-react";
 import { ReactNode, useCallback, useState } from "react";
 import styled from "styled-components";
@@ -28,7 +29,7 @@ const QuestionMark = styled.span`
   font-size: 14px;
   margin-left: 8px;
   align-items: center;
-  color: ${({ theme }) => colors.lightGrey};
+  color: ${colors.lightGrey};
   margin-top: 2.5px;
 `;
 

@@ -62,7 +62,7 @@ const CurrencySelect = styled(Button)<{
 }>`
   align-items: center;
   background-color: ${({ selected, theme }) =>
-    selected ? theme.backgroundInteractive : theme.accentAction};
+    selected ? theme.backgroundInteractive : colors.secondary};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) =>
     selected ? "none" : "0px 6px 10px rgba(0, 0, 0, 0.075)"};
@@ -86,7 +86,7 @@ const CurrencySelect = styled(Button)<{
   &:hover,
   &:active {
     background-color: ${({ theme, selected }) =>
-      selected ? theme.backgroundInteractive : theme.accentAction};
+      selected ? theme.backgroundInteractive : colors.secondary};
   }
 
   &:before {
@@ -169,7 +169,7 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
 const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: transparent;
   border: none;
-  color: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => colors.secondary};
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
@@ -271,7 +271,7 @@ export default function SwapCurrencyInputPanel({
         </FixedContainer>
       )}
       <Container hideInput={hideInput}>
-        <Typography color="textTertiary">{label}</Typography>
+        <Typography color={colors.darkGrey}>{label}</Typography>
         <InputRow
           style={hideInput ? { padding: "0", borderRadius: "8px" } : {}}
         >

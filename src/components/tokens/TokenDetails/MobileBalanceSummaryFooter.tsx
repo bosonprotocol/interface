@@ -66,7 +66,7 @@ const FiatValue = styled.span`
   }
 `;
 const SwapButton = styled(StyledInternalLink)`
-  background-color: ${({ theme }) => theme.accentAction};
+  background-color: ${({ theme }) => colors.secondary};
   border: none;
   border-radius: 12px;
   color: ${({ theme }) => theme.accentTextLightPrimary};

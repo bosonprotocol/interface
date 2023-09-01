@@ -16,7 +16,7 @@ const Container = styled(AutoColumn)`
 `;
 
 const InlineLink = styled(Typography)`
-  /* color: ${({ theme }) => theme.accentAction}; */
+  /* color: ${({ theme }) => colors.secondary}; */
   display: inline;
   cursor: pointer;
   &:hover {

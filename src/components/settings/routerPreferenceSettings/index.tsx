@@ -6,6 +6,7 @@ import Column from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { isUniswapXSupportedChain } from "lib/constants/chains";
+import { colors } from "lib/styles/colors";
 import { useAppDispatch } from "state/hooks";
 import { RouterPreference } from "state/routing/types";
 import { useRouterPreference } from "state/user/hooks";
@@ -13,7 +14,7 @@ import { updateDisabledUniswapX } from "state/user/reducer";
 import styled from "styled-components";
 
 const InlineLink = styled(Typography)`
-  color: ${({ theme }) => theme.accentAction};
+  color: ${colors.secondary};
   display: inline;
   cursor: pointer;
   &:hover {

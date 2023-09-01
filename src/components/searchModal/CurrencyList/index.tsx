@@ -26,7 +26,7 @@ const CheckIcon = styled(Check)`
   height: 20px;
   width: 20px;
   margin-left: 4px;
-  color: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => colors.secondary};
 `;
 
 const StyledBalanceText = styled(Typography)`
@@ -45,7 +45,7 @@ const CurrencyName = styled(Typography)`
 
 const Tag = styled.div`
   background-color: ${({ theme }) => theme.deprecated_bg3};
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   font-size: 14px;
   border-radius: 4px;
   padding: 0.25rem 0.3rem 0.25rem 0.3rem;

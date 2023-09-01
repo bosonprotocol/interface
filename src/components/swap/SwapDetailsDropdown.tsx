@@ -4,6 +4,7 @@ import { LoadingOpacityContainer } from "components/loader/styled";
 import Column from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
+import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
 import { CaretDown } from "phosphor-react";
 import { useState } from "react";
@@ -38,9 +39,13 @@ const StyledPolling = styled.div`
   /* color: ${({ theme }) => theme.textPrimary}; */
   transition: 250ms ease color;
 
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+  /* TODO: check {({ theme }) => theme.deprecated_mediaWidth
+    .deprecated_upToMedium;
+none;
+} */
+  ${breakpoint.m} {
     display: none;
-  `}
+  }
 `;
 
 const StyledPollingDot = styled.div`

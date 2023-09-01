@@ -14,7 +14,7 @@ const FilterOption = styled.button<{ active: boolean; highlight?: boolean }>`
   transition-duration: ${({ theme }) => theme.transition.duration.fast};
   border: none;
   outline: ${({ theme, active, highlight }) =>
-    active && highlight ? `1px solid ${theme.accentAction}` : "none"};
+    active && highlight ? `1px solid ${colors.secondary}` : "none"};
 
   :hover {
     cursor: pointer;

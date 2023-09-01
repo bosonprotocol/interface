@@ -5,6 +5,7 @@ import Column from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography, { TypographyProps } from "components/ui/Typography";
 import { breakpointNumbers } from "lib/styles/breakpoint";
+import { colors } from "lib/styles/colors";
 import { formatNumber, NumberType } from "lib/utils/formatNumbers";
 import { formatReviewSwapCurrencyAmount } from "lib/utils/formatNumbers";
 import { useWindowSize } from "lib/utils/hooks/useWindowSize";
@@ -14,7 +15,6 @@ import styled from "styled-components";
 
 export const Label = styled(Typography)<{ cursor?: string }>`
   cursor: ${({ cursor }) => cursor};
-  color: ${({ theme }) => colors.lightGrey};
   margin-right: 8px;
 `;
 
@@ -68,7 +68,7 @@ export function SwapModalHeaderAmount({
             {formatReviewSwapCurrencyAmount(amount)} {currency?.symbol}
           </ResponsiveHeadline>
           {usdAmount && (
-            <Typography color="textTertiary">
+            <Typography color={colors.darkGrey}>
               {formatNumber(usdAmount, NumberType.FiatTokenQuantity)}
             </Typography>
           )}

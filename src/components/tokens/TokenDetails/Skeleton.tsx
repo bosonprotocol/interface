@@ -1,22 +1,22 @@
-import { SwapSkeleton } from 'components/swap/SwapSkeleton'
-import { ArrowLeft } from 'react-feather'
-import { useParams } from 'react-router-dom'
-import styled, { useTheme } from 'styled-components'
-import { textFadeIn } from 'theme/styles'
+import { SwapSkeleton } from "components/swap/SwapSkeleton";
+import { ArrowLeft } from "react-feather";
+import { useParams } from "react-router-dom";
+import styled, { useTheme } from "styled-components";
+import { textFadeIn } from "theme/styles";
 
-import { LoadingBubble } from '../loading'
-import { AboutContainer, AboutHeader } from './About'
-import { BreadcrumbNavLink } from './BreadcrumbNavLink'
-import { TokenPrice } from './PriceChart'
-import { StatPair, StatsWrapper, StatWrapper } from './StatsSection'
+import { LoadingBubble } from "../loading";
+import { AboutContainer, AboutHeader } from "./About";
+import { BreadcrumbNavLink } from "./BreadcrumbNavLink";
+import { TokenPrice } from "./PriceChart";
+import { StatPair, StatsWrapper, StatWrapper } from "./StatsSection";
 
-const SWAP_COMPONENT_WIDTH = 360
+const SWAP_COMPONENT_WIDTH = 360;
 
 export const Hr = styled.hr`
   background-color: ${colors.lightGrey};
   border: none;
   height: 0.5px;
-`
+`;
 export const TokenDetailsLayout = styled.div`
   display: flex;
   padding: 0 8px 52px;
@@ -34,12 +34,12 @@ export const TokenDetailsLayout = styled.div`
   @media screen and (min-width: ${({ theme }) => theme.breakpoint.xl}px) {
     gap: 60px;
   }
-`
+`;
 export const LeftPanel = styled.div`
   flex: 1;
   max-width: 780px;
   overflow: hidden;
-`
+`;
 export const RightPanel = styled.div`
   display: none;
   flex-direction: column;
@@ -49,7 +49,7 @@ export const RightPanel = styled.div`
   @media screen and (min-width: ${({ theme }) => theme.breakpoint.lg}px) {
     display: flex;
   }
-`
+`;
 export const ChartContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -57,7 +57,7 @@ export const ChartContainer = styled.div`
   margin-bottom: 24px;
   align-items: flex-start;
   width: 100%;
-`
+`;
 const LoadingChartContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -66,76 +66,76 @@ const LoadingChartContainer = styled.div`
   margin-bottom: 44px;
   padding-bottom: 66px;
   overflow: hidden;
-`
+`;
 export const TokenInfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4px;
   ${textFadeIn};
-  animation-duration: ${({ theme }) => theme.transition.duration.medium};
-`
+  animation-duration: 250ms;
+`;
 export const TokenNameCell = styled.div`
   display: flex;
   gap: 8px;
   font-size: 20px;
   line-height: 28px;
   align-items: center;
-`
+`;
 /* Loading state bubbles */
 const DetailBubble = styled(LoadingBubble)`
   height: 16px;
   width: 180px;
-`
+`;
 const SquaredBubble = styled(DetailBubble)`
   height: 32px;
   border-radius: 8px;
-`
+`;
 const TokenLogoBubble = styled(DetailBubble)`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-`
+`;
 const TitleBubble = styled(DetailBubble)`
   width: 136px;
-`
+`;
 const PriceBubble = styled(SquaredBubble)`
   margin-top: 4px;
   height: 40px;
-`
+`;
 
 const SectionBubble = styled(SquaredBubble)`
   width: 120px;
-`
+`;
 const StatTitleBubble = styled(DetailBubble)`
   width: 80px;
   margin-bottom: 4px;
-`
+`;
 const StatBubble = styled(SquaredBubble)`
   width: 116px;
-`
+`;
 const WideBubble = styled(DetailBubble)`
   margin-bottom: 6px;
   width: 100%;
-`
+`;
 
 const ThinTitleBubble = styled(WideBubble)`
   width: 120px;
-`
+`;
 
 const HalfWideBubble = styled(WideBubble)`
   width: 50%;
-`
+`;
 
 const StatsLoadingContainer = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-`
+`;
 
 const ExtraDetailsContainer = styled.div`
   padding-top: 24px;
-`
+`;
 
 const ChartAnimation = styled.div`
   animation: wave 8s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
@@ -151,18 +151,23 @@ const ChartAnimation = styled.div`
       margin-left: -800px;
     }
   }
-`
+`;
 const Space = styled.div<{ heightSize: number }>`
   height: ${({ heightSize }) => `${heightSize}px`};
-`
+`;
 
 function Wave() {
-  const theme = useTheme()
+  const theme = useTheme();
   return (
     <svg width="416" height="160" xmlns="http://www.w3.org/2000/svg">
-      <path d="M 0 80 Q 104 10, 208 80 T 416 80" stroke={theme.backgroundOutline} fill="transparent" strokeWidth="2" />
+      <path
+        d="M 0 80 Q 104 10, 208 80 T 416 80"
+        stroke={theme.backgroundOutline}
+        fill="transparent"
+        strokeWidth="2"
+      />
     </svg>
-  )
+  );
 }
 
 export function LoadingChart() {
@@ -184,7 +189,7 @@ export function LoadingChart() {
         </div>
       </LoadingChartContainer>
     </ChartContainer>
-  )
+  );
 }
 
 function LoadingStats() {
@@ -214,12 +219,12 @@ function LoadingStats() {
         </StatPair>
       </StatsLoadingContainer>
     </StatsWrapper>
-  )
+  );
 }
 
 /* Loading State: row component with loading bubbles */
 export default function TokenDetailsSkeleton() {
-  const { chainName } = useParams<{ chainName?: string }>()
+  const { chainName } = useParams<{ chainName?: string }>();
   return (
     <LeftPanel>
       <BreadcrumbNavLink to={chainName ? `/tokens/${chainName}` : `/explore`}>
@@ -243,7 +248,7 @@ export default function TokenDetailsSkeleton() {
       </AboutContainer>
       <WideBubble />
       <WideBubble />
-      <HalfWideBubble style={{ marginBottom: '24px' }} />
+      <HalfWideBubble style={{ marginBottom: "24px" }} />
       <ExtraDetailsContainer>
         <ThinTitleBubble />
         <HalfWideBubble />
@@ -253,7 +258,7 @@ export default function TokenDetailsSkeleton() {
         <HalfWideBubble />
       </ExtraDetailsContainer>
     </LeftPanel>
-  )
+  );
 }
 
 export function TokenDetailsPageSkeleton() {
@@ -264,5 +269,5 @@ export function TokenDetailsPageSkeleton() {
         <SwapSkeleton />
       </RightPanel>
     </TokenDetailsLayout>
-  )
+  );
 }
