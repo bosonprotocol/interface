@@ -345,10 +345,7 @@ export function CurrencySearch({
         </div>
       ) : (
         <Column style={{ padding: "20px", height: "100%" }}>
-          <Typography //color={theme.textTertiary}
-            textAlign="center"
-            marginBottom="20px"
-          >
+          <Typography textAlign="center" marginBottom="20px">
             <>No results found.</>
           </Typography>
         </Column>

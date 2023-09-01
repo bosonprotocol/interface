@@ -5,12 +5,10 @@ import styled, { keyframes } from "styled-components";
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   align-items: center;
-  background: ${({ isActive, theme }) =>
-    isActive ? theme.accentActionSoft : "transparent"};
-  border: ${({ theme, isActive }) =>
-    isActive
-      ? "1px solid transparent"
-      : `1px solid ${theme.backgroundOutline}`};
+  background: ${({ isActive }) =>
+    isActive ? colors.secondary : "transparent"};
+  border: ${({ isActive }) =>
+    isActive ? "1px solid transparent" : `1px solid ${colors.darkGrey}`};
   border-radius: 20px;
   cursor: pointer;
   display: flex;
@@ -62,12 +60,12 @@ const ToggleElement = styled.span<{
     ${({ isActive, isInitialToggleLoad }) =>
       isInitialToggleLoad ? "none" : isActive ? turnOnToggle : turnOffToggle}
     ease-in;
-  background: ${({ theme, bgColor, isActive }) =>
+  background: ${({ bgColor, isActive }) =>
     isActive
-      ? bgColor ?? colors.secondary
+      ? bgColor ?? colors.blue
       : bgColor
       ? colors.lightGrey
-      : theme.textTertiary};
+      : colors.darkGrey};
   border-radius: 50%;
   height: 24px;
   :hover {

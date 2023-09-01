@@ -26,20 +26,18 @@ export default function SwapHeader({
   trade?: InterfaceTrade;
 }) {
   return (
-    <StyledSwapHeader>
-      <HeaderButtonContainer>
+    <StyledSwapHeader justifyContent="space-between">
+      <HeaderButtonContainer justifyContent="flex-start">
         <Typography>
           <>Swap</>
         </Typography>
         <SwapBuyFiatButton />
       </HeaderButtonContainer>
-      <Grid>
-        <SettingsTab
-          autoSlippage={autoSlippage}
-          chainId={chainId}
-          trade={trade}
-        />
-      </Grid>
+      <SettingsTab
+        autoSlippage={autoSlippage}
+        chainId={chainId}
+        trade={trade}
+      />
     </StyledSwapHeader>
   );
 }
