@@ -1,42 +1,34 @@
-import { Plural, Trans } from "@lingui/macro";
-import {
-  BrowserEvent,
-  InterfaceElementName,
-  SwapEventName
-} from "@uniswap/analytics-events";
 import { Percent, TradeType } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
-import { TraceEvent } from "analytics";
-import Column from "components/Column";
-import { MouseoverTooltip, TooltipSize } from "components/Tooltip";
-import { SwapResult } from "hooks/useSwapCallback";
-import useTransactionDeadline from "hooks/useTransactionDeadline";
-import useNativeCurrency from "lib/hooks/useNativeCurrency";
+import Tooltip from "components/tooltip/Tooltip";
+import Button from "components/ui/Button";
+import Column from "components/ui/column";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
+import {
+  formatNumber,
+  formatPriceImpact,
+  NumberType
+} from "lib/utils/formatNumbers";
+import {
+  formatTransactionAmount,
+  priceToPreciseFloat
+} from "lib/utils/formatNumbers";
+import getRoutingDiagramEntries from "lib/utils/getRoutingDiagramEntries";
+import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
+import { SwapResult } from "lib/utils/hooks/useSwapCallback";
+import useTransactionDeadline from "lib/utils/hooks/useTransactionDeadline";
+import { getPriceImpactWarning } from "lib/utils/prices";
+import { Warning as AlertTriangle } from "phosphor-react";
 import { ReactNode } from "react";
-import { AlertTriangle } from "react-feather";
-import { InterfaceTrade, RouterPreference } from "state/routing/types";
+import { InterfaceTrade } from "state/routing/types";
 import { getTransactionCount, isClassicTrade } from "state/routing/utils";
 import {
   useRouterPreference,
   useUserSlippageTolerance
 } from "state/user/hooks";
 import styled, { useTheme } from "styled-components";
-import { ThemedText } from "theme";
-import {
-  formatNumber,
-  formatPriceImpact,
-  NumberType
-} from "utils/formatNumbers";
-import {
-  formatTransactionAmount,
-  priceToPreciseFloat
-} from "utils/formatNumbers";
-import getRoutingDiagramEntries from "utils/getRoutingDiagramEntries";
-import { formatSwapButtonClickEventProperties } from "utils/loggingFormatters";
-import { getPriceImpactWarning } from "utils/prices";
 
-import { ButtonError, SmallButtonPrimary } from "../Button";
-import Row, { AutoRow, RowBetween, RowFixed } from "../Row";
 import { GasBreakdownTooltip } from "./GasBreakdownTooltip";
 import { SwapCallbackError, SwapShowAcceptChanges } from "./styled";
 import { Label } from "./SwapModalHeaderAmount";
@@ -50,12 +42,12 @@ const StyledAlertTriangle = styled(AlertTriangle)`
   min-width: 24px;
 `;
 
-const ConfirmButton = styled(ButtonError)`
+const ConfirmButton = styled(Button)`
   height: 56px;
   margin-top: 10px;
 `;
 
-const DetailRowValue = styled(ThemedText.BodySmall)`
+const DetailRowValue = styled(Typography)`
   text-align: right;
   overflow-wrap: break-word;
 `;
@@ -104,38 +96,32 @@ export default function SwapModalFooter({
   return (
     <>
       <DetailsContainer gap="md">
-        <ThemedText.BodySmall>
-          <Row align="flex-start" justify="space-between" gap="sm">
+        <Typography>
+          <Grid alignItems="flex-start" justifyContent="space-between" gap="sm">
             <Label>
-              <Trans>Exchange rate</Trans>
+              <>Exchange rate</>
             </Label>
             <DetailRowValue>{`1 ${labelInverted} = ${
               formattedPrice ?? "-"
             } ${label}`}</DetailRowValue>
-          </Row>
-        </ThemedText.BodySmall>
-        <ThemedText.BodySmall>
-          <Row align="flex-start" justify="space-between" gap="sm">
-            <MouseoverTooltip
-              text={
-                <Trans>
+          </Grid>
+        </Typography>
+        <Typography>
+          <Grid alignItems="flex-start" justifyContent="space-between" gap="sm">
+            <Tooltip
+              content={
+                <>
                   The fee paid to miners who process your transaction. This must
                   be paid in ${nativeCurrency.symbol}.
-                </Trans>
+                </>
               }
             >
-              <Label cursor="help">
-                <Plural
-                  value={txCount}
-                  one="Network fee"
-                  other="Network fees"
-                />
-              </Label>
-            </MouseoverTooltip>
-            <MouseoverTooltip
+              <Label cursor="help">Network fee/s</Label>
+            </Tooltip>
+            <Tooltip
               placement="right"
-              size={TooltipSize.Small}
-              text={<GasBreakdownTooltip trade={trade} />}
+              // size={TooltipSize.Small}
+              content={<GasBreakdownTooltip trade={trade} />}
             >
               <DetailRowValue>
                 {formatNumber(
@@ -143,54 +129,58 @@ export default function SwapModalFooter({
                   NumberType.FiatGasPrice
                 )}
               </DetailRowValue>
-            </MouseoverTooltip>
-          </Row>
-        </ThemedText.BodySmall>
+            </Tooltip>
+          </Grid>
+        </Typography>
         {isClassicTrade(trade) && (
-          <ThemedText.BodySmall>
-            <Row align="flex-start" justify="space-between" gap="sm">
-              <MouseoverTooltip
-                text={
-                  <Trans>
+          <Typography>
+            <Grid
+              alignItems="flex-start"
+              justifyContent="space-between"
+              gap="sm"
+            >
+              <Tooltip
+                content={
+                  <>
                     The impact your trade has on the market price of this pool.
-                  </Trans>
+                  </>
                 }
               >
                 <Label cursor="help">
-                  <Trans>Price impact</Trans>
+                  <>Price impact</>
                 </Label>
-              </MouseoverTooltip>
+              </Tooltip>
               <DetailRowValue color={getPriceImpactWarning(trade.priceImpact)}>
                 {trade.priceImpact ? formatPriceImpact(trade.priceImpact) : "-"}
               </DetailRowValue>
-            </Row>
-          </ThemedText.BodySmall>
+            </Grid>
+          </Typography>
         )}
-        <ThemedText.BodySmall>
-          <Row align="flex-start" justify="space-between" gap="sm">
-            <MouseoverTooltip
-              text={
+        <Typography>
+          <Grid alignItems="flex-start" justifyContent="space-between" gap="sm">
+            <Tooltip
+              content={
                 trade.tradeType === TradeType.EXACT_INPUT ? (
-                  <Trans>
+                  <>
                     The minimum amount you are guaranteed to receive. If the
                     price slips any further, your transaction will revert.
-                  </Trans>
+                  </>
                 ) : (
-                  <Trans>
+                  <>
                     The maximum amount you are guaranteed to spend. If the price
                     slips any further, your transaction will revert.
-                  </Trans>
+                  </>
                 )
               }
             >
               <Label cursor="help">
                 {trade.tradeType === TradeType.EXACT_INPUT ? (
-                  <Trans>Minimum received</Trans>
+                  <>Minimum received</>
                 ) : (
-                  <Trans>Maximum sent</Trans>
+                  <>Maximum sent</>
                 )}
               </Label>
-            </MouseoverTooltip>
+            </Tooltip>
             <DetailRowValue>
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? `${trade
@@ -200,58 +190,42 @@ export default function SwapModalFooter({
                     trade.inputAmount.currency.symbol
                   }`}
             </DetailRowValue>
-          </Row>
-        </ThemedText.BodySmall>
+          </Grid>
+        </Typography>
       </DetailsContainer>
       {showAcceptChanges ? (
         <SwapShowAcceptChanges data-testid="show-accept-changes">
-          <RowBetween>
-            <RowFixed>
+          <Grid>
+            <Grid>
               <StyledAlertTriangle size={20} />
-              <ThemedText.DeprecatedMain color={theme.accentAction}>
-                <Trans>Price updated</Trans>
-              </ThemedText.DeprecatedMain>
-            </RowFixed>
-            <SmallButtonPrimary onClick={onAcceptChanges}>
-              <Trans>Accept</Trans>
-            </SmallButtonPrimary>
-          </RowBetween>
+              <Typography //color={theme.accentAction}
+              >
+                <>Price updated</>
+              </Typography>
+            </Grid>
+            <Button onClick={onAcceptChanges}>
+              <>Accept</>
+            </Button>
+          </Grid>
         </SwapShowAcceptChanges>
       ) : (
-        <AutoRow>
-          <TraceEvent
-            events={[BrowserEvent.onClick]}
-            element={InterfaceElementName.CONFIRM_SWAP_BUTTON}
-            name={SwapEventName.SWAP_SUBMITTED_BUTTON_CLICKED}
-            properties={formatSwapButtonClickEventProperties({
-              trade,
-              swapResult,
-              allowedSlippage,
-              transactionDeadlineSecondsSinceEpoch,
-              isAutoSlippage,
-              isAutoRouterApi: routerPreference === RouterPreference.API,
-              routes,
-              fiatValueInput: fiatValueInput.data,
-              fiatValueOutput: fiatValueOutput.data
-            })}
+        <Grid>
+          <ConfirmButton
+            data-testid="confirm-swap-button"
+            onClick={onConfirm}
+            disabled={disabledConfirm}
+            // $borderRadius="12px"
+            id={"CONFIRM_SWAP_BUTTON"}
           >
-            <ConfirmButton
-              data-testid="confirm-swap-button"
-              onClick={onConfirm}
-              disabled={disabledConfirm}
-              $borderRadius="12px"
-              id={InterfaceElementName.CONFIRM_SWAP_BUTTON}
-            >
-              <ThemedText.HeadlineSmall color="accentTextLightPrimary">
-                <Trans>Confirm swap</Trans>
-              </ThemedText.HeadlineSmall>
-            </ConfirmButton>
-          </TraceEvent>
+            <Typography color="accentTextLightPrimary">
+              <>Confirm swap</>
+            </Typography>
+          </ConfirmButton>
 
           {swapErrorMessage ? (
             <SwapCallbackError error={swapErrorMessage} />
           ) : null}
-        </AutoRow>
+        </Grid>
       )}
     </>
   );

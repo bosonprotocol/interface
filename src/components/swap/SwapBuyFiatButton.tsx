@@ -1,17 +1,9 @@
-import { Trans } from "@lingui/macro";
-import {
-  BrowserEvent,
-  InterfaceElementName,
-  SharedEventName
-} from "@uniswap/analytics-events";
 import { useWeb3React } from "@web3-react/core";
-import { TraceEvent } from "analytics";
-import { useAccountDrawer } from "components/AccountDrawer";
-import { ButtonText } from "components/Button";
-import { MouseoverTooltip } from "components/Tooltip";
+import { useAccountDrawer } from "components/header/accountDrawer";
+import Tooltip from "components/tooltip/Tooltip";
+import Button from "components/ui/Button";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { ExternalLink } from "theme";
 
 import {
   useFiatOnrampAvailability,
@@ -31,8 +23,8 @@ enum BuyFiatFlowState {
   ACTIVE_NEEDS_ACCOUNT
 }
 
-const StyledTextButton = styled(ButtonText)`
-  color: ${({ theme }) => theme.textSecondary};
+const StyledTextButton = styled(Button)`
+  /* TODO: color: ${({ theme }) => theme.textSecondary}; */
   gap: 4px;
   &:focus {
     text-decoration: none;
@@ -115,41 +107,29 @@ export default function SwapBuyFiatButton() {
     (fiatOnrampAvailabilityChecked && fiatOnrampAvailable);
 
   return (
-    <MouseoverTooltip
-      text={
+    <Tooltip
+      content={
         <div data-testid="fiat-on-ramp-unavailable-tooltip">
-          <Trans>Crypto purchases are not available in your region. </Trans>
-          <TraceEvent
-            events={[BrowserEvent.onClick]}
-            name={SharedEventName.ELEMENT_CLICKED}
-            element={InterfaceElementName.FIAT_ON_RAMP_LEARN_MORE_LINK}
+          <>Crypto purchases are not available in your region. </>
+
+          <a
+            href={MOONPAY_REGION_AVAILABILITY_ARTICLE}
+            style={{ paddingLeft: "4px" }}
           >
-            <ExternalLink
-              href={MOONPAY_REGION_AVAILABILITY_ARTICLE}
-              style={{ paddingLeft: "4px" }}
-            >
-              <Trans>Learn more</Trans>
-            </ExternalLink>
-          </TraceEvent>
+            <>Learn more</>
+          </a>
         </div>
       }
       placement="bottom"
       disabled={fiatOnRampsUnavailableTooltipDisabled}
     >
-      <TraceEvent
-        events={[BrowserEvent.onClick]}
-        name={SharedEventName.ELEMENT_CLICKED}
-        element={InterfaceElementName.FIAT_ON_RAMP_BUY_BUTTON}
-        properties={{ account_connected: !!account }}
+      <StyledTextButton
+        onClick={handleBuyCrypto}
+        disabled={buyCryptoButtonDisabled}
+        data-testid="buy-fiat-button"
       >
-        <StyledTextButton
-          onClick={handleBuyCrypto}
-          disabled={buyCryptoButtonDisabled}
-          data-testid="buy-fiat-button"
-        >
-          <Trans>Buy</Trans>
-        </StyledTextButton>
-      </TraceEvent>
-    </MouseoverTooltip>
+        <>Buy</>
+      </StyledTextButton>
+    </Tooltip>
   );
 }

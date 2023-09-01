@@ -4,6 +4,7 @@ import { flexColumnNoWrap } from "components/header/styles";
 import { AutoColumn } from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
+import { colors } from "lib/styles/colors";
 import useENS from "lib/utils/hooks/useENS";
 import { ChangeEvent, ReactNode, useCallback } from "react";
 import styled from "styled-components";
@@ -12,7 +13,7 @@ const InputPanel = styled.div`
   ${flexColumnNoWrap};
   position: relative;
   border-radius: 1.25rem;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  background-color: ${colors.darkGrey};
   z-index: 1;
   width: 100%;
 `;
@@ -28,7 +29,7 @@ const ContainerRow = styled.div<{ error: boolean }>`
   transition: border-color 300ms
       ${({ error }) => (error ? "step-end" : "step-start")},
     color 500ms ${({ error }) => (error ? "step-end" : "step-start")};
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  background-color: ${colors.darkGrey};
 `;
 
 const InputContainer = styled.div`
@@ -42,7 +43,7 @@ const Input = styled.input<{ error?: boolean }>`
   border: none;
   flex: 1 1 auto;
   width: 0;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  background-color: ${colors.darkGrey};
   transition: color 300ms ${({ error }) => (error ? "step-end" : "step-start")};
   color: ${({ error, theme }) =>
     error ? theme.accentFailure : theme.textPrimary};

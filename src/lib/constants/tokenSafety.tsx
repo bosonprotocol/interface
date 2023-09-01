@@ -12,6 +12,45 @@ export enum WARNING_LEVEL {
   BLOCKED
 }
 
+export function getWarningCopy(warning: Warning | null, plural = false) {
+  let heading = null,
+    description = null;
+  if (warning) {
+    switch (warning.level) {
+      case WARNING_LEVEL.MEDIUM:
+        heading = plural ? (
+          <>These tokens aren't traded on leading U.S. centralized exchanges.</>
+        ) : (
+          <>This token isn't traded on leading U.S. centralized exchanges.</>
+        );
+        description = <>Always conduct your own research before trading.</>;
+        break;
+      case WARNING_LEVEL.UNKNOWN:
+        heading = plural ? (
+          <>
+            These tokens aren't traded on leading U.S. centralized exchanges or
+            frequently swapped on Uniswap.
+          </>
+        ) : (
+          <>
+            This token isn't traded on leading U.S. centralized exchanges or
+            frequently swapped on Uniswap.
+          </>
+        );
+        description = <>Always conduct your own research before trading.</>;
+        break;
+      case WARNING_LEVEL.BLOCKED:
+        description = plural ? (
+          <>You can't trade these tokens using the Uniswap App.</>
+        ) : (
+          <>You can't trade this token using the Uniswap App.</>
+        );
+        break;
+    }
+  }
+  return { heading, description };
+}
+
 export type Warning = {
   level: WARNING_LEVEL;
   message: JSX.Element;
@@ -62,4 +101,8 @@ export function checkWarning(tokenAddress: string, chainId?: number | null) {
     case TOKEN_LIST_TYPES.BROKEN:
       return BlockedWarning;
   }
+}
+
+export function displayWarningLabel(warning: Warning | null) {
+  return warning && warning.level !== WARNING_LEVEL.MEDIUM;
 }

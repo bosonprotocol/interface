@@ -1,20 +1,18 @@
-import { Trans } from "@lingui/macro";
 import { Percent } from "@uniswap/sdk-core";
-import { useFiatOnRampButtonEnabled } from "featureFlags/flags/fiatOnRampButton";
+import { SettingsTab } from "components/settings/index";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
 import { InterfaceTrade } from "state/routing/types";
 import styled from "styled-components";
-import { ThemedText } from "theme";
 
-import { RowBetween, RowFixed } from "../Row";
-import SettingsTab from "../Settings";
 import SwapBuyFiatButton from "./SwapBuyFiatButton";
 
-const StyledSwapHeader = styled(RowBetween)`
+const StyledSwapHeader = styled(Grid)`
   margin-bottom: 10px;
-  color: ${({ theme }) => theme.textSecondary};
+  /* TODO: color: ${({ theme }) => theme.textSecondary}; */
 `;
 
-const HeaderButtonContainer = styled(RowFixed)`
+const HeaderButtonContainer = styled(Grid)`
   padding: 0 12px;
   gap: 16px;
 `;
@@ -28,23 +26,21 @@ export default function SwapHeader({
   chainId?: number;
   trade?: InterfaceTrade;
 }) {
-  const fiatOnRampButtonEnabled = useFiatOnRampButtonEnabled();
-
   return (
     <StyledSwapHeader>
       <HeaderButtonContainer>
-        <ThemedText.SubHeader>
-          <Trans>Swap</Trans>
-        </ThemedText.SubHeader>
-        {fiatOnRampButtonEnabled && <SwapBuyFiatButton />}
+        <Typography>
+          <>Swap</>
+        </Typography>
+        <SwapBuyFiatButton />
       </HeaderButtonContainer>
-      <RowFixed>
+      <Grid>
         <SettingsTab
           autoSlippage={autoSlippage}
           chainId={chainId}
           trade={trade}
         />
-      </RowFixed>
+      </Grid>
     </StyledSwapHeader>
   );
 }

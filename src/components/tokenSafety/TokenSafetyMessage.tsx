@@ -11,7 +11,7 @@ const Label = styled.div<{ color: string; backgroundColor: string }>`
   padding: 12px 20px 16px;
   background-color: ${({ backgroundColor }) => backgroundColor};
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.backgroundOutline};
+  border: 1px solid ${colors.lightGrey};
   color: ${({ color }) => color};
 `
 

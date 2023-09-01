@@ -1,16 +1,14 @@
-import { InterfaceElementName, SwapEventName } from "@uniswap/analytics-events";
 import { useWeb3React } from "@web3-react/core";
-import { sendAnalyticsEvent } from "analytics";
 import { LoadingOpacityContainer } from "components/loader/styled";
 import { UniswapXRouterIcon } from "components/routerLabel/UniswapXRouterLabel";
-import Row, { RowFixed } from "components/Row";
-import { MouseoverTooltip, TooltipSize } from "components/Tooltip";
-import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "constants/chains";
+import Tooltip from "components/tooltip/Tooltip";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
+import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "lib/constants/chains";
+import { formatNumber, NumberType } from "lib/utils/formatNumbers";
 import { InterfaceTrade } from "state/routing/types";
 import { isUniswapXTrade } from "state/routing/utils";
 import styled from "styled-components";
-import { ThemedText } from "theme";
-import { formatNumber, NumberType } from "utils/formatNumbers";
 
 import { ReactComponent as GasIcon } from "../../assets/images/gas-icon.svg";
 import { GasBreakdownTooltip } from "./GasBreakdownTooltip";
@@ -42,28 +40,20 @@ export default function GasEstimateTooltip({
   }
 
   return (
-    <MouseoverTooltip
-      size={TooltipSize.Small}
-      text={<GasBreakdownTooltip trade={trade} />}
-      onOpen={() => {
-        sendAnalyticsEvent(
-          SwapEventName.SWAP_AUTOROUTER_VISUALIZATION_EXPANDED,
-          {
-            element: InterfaceElementName.AUTOROUTER_VISUALIZATION_ROW
-          }
-        );
-      }}
+    <Tooltip
+      // size={TooltipSize.Small}
+      content={<GasBreakdownTooltip trade={trade} />}
       placement="right"
     >
       <LoadingOpacityContainer $loading={loading}>
-        <RowFixed gap="xs">
+        <Grid gap="xs">
           {isUniswapXTrade(trade) ? (
             <UniswapXRouterIcon testId="gas-estimate-uniswapx-icon" />
           ) : (
             <StyledGasIcon />
           )}
-          <ThemedText.BodySmall color="textSecondary">
-            <Row gap="xs">
+          <Typography color="textSecondary">
+            <Grid gap="xs">
               <div>
                 {formatNumber(
                   trade.totalGasUseEstimateUSD,
@@ -80,10 +70,10 @@ export default function GasEstimateTooltip({
                   </s>
                 </div>
               )}
-            </Row>
-          </ThemedText.BodySmall>
-        </RowFixed>
+            </Grid>
+          </Typography>
+        </Grid>
       </LoadingOpacityContainer>
-    </MouseoverTooltip>
+    </Tooltip>
   );
 }

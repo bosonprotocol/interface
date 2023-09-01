@@ -1,18 +1,18 @@
 import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
-import Column from "components/Column";
-import CurrencyLogo from "components/Logo/CurrencyLogo";
-import Row from "components/Row";
-import { MouseoverTooltip } from "components/Tooltip";
-import { useWindowSize } from "hooks/useWindowSize";
+import CurrencyLogo from "components/logo/CurrencyLogo";
+import Tooltip from "components/tooltip/Tooltip";
+import Column from "components/ui/column";
+import Grid from "components/ui/Grid";
+import Typography, { TypographyProps } from "components/ui/Typography";
+import { breakpointNumbers } from "lib/styles/breakpoint";
+import { formatNumber, NumberType } from "lib/utils/formatNumbers";
+import { formatReviewSwapCurrencyAmount } from "lib/utils/formatNumbers";
+import { useWindowSize } from "lib/utils/hooks/useWindowSize";
 import { PropsWithChildren, ReactNode } from "react";
-import { TextProps } from "rebass";
 import { Field } from "state/swap/actions";
 import styled from "styled-components";
-import { BREAKPOINTS, ThemedText } from "theme";
-import { formatNumber, NumberType } from "utils/formatNumbers";
-import { formatReviewSwapCurrencyAmount } from "utils/formatNumbers";
 
-export const Label = styled(ThemedText.BodySmall)<{ cursor?: string }>`
+export const Label = styled(Typography)<{ cursor?: string }>`
   cursor: ${({ cursor }) => cursor};
   color: ${({ theme }) => theme.textSecondary};
   margin-right: 8px;
@@ -21,21 +21,17 @@ export const Label = styled(ThemedText.BodySmall)<{ cursor?: string }>`
 const ResponsiveHeadline = ({
   children,
   ...textProps
-}: PropsWithChildren<TextProps>) => {
+}: PropsWithChildren<TypographyProps>) => {
   const { width } = useWindowSize();
 
-  if (width && width < BREAKPOINTS.xs) {
-    return (
-      <ThemedText.HeadlineMedium {...textProps}>
-        {children}
-      </ThemedText.HeadlineMedium>
-    );
+  if (width && width < breakpointNumbers.xs) {
+    return <Typography {...textProps}>{children}</Typography>;
   }
 
   return (
-    <ThemedText.HeadlineLarge fontWeight={500} {...textProps}>
+    <Typography fontWeight={500} {...textProps}>
       {children}
-    </ThemedText.HeadlineLarge>
+    </Typography>
   );
 };
 
@@ -60,25 +56,25 @@ export function SwapModalHeaderAmount({
   currency
 }: AmountProps) {
   return (
-    <Row align="center" justify="space-between" gap="md">
+    <Grid alignItems="center" justifyContent="space-between" gap="md">
       <Column gap="xs">
-        <ThemedText.BodySecondary>
-          <MouseoverTooltip text={tooltipText} disabled={!tooltipText}>
+        <Typography>
+          <Tooltip content={tooltipText} disabled={!tooltipText}>
             <Label cursor="help">{label}</Label>
-          </MouseoverTooltip>
-        </ThemedText.BodySecondary>
+          </Tooltip>
+        </Typography>
         <Column gap="xs">
           <ResponsiveHeadline data-testid={`${field}-amount`}>
             {formatReviewSwapCurrencyAmount(amount)} {currency?.symbol}
           </ResponsiveHeadline>
           {usdAmount && (
-            <ThemedText.BodySmall color="textTertiary">
+            <Typography color="textTertiary">
               {formatNumber(usdAmount, NumberType.FiatTokenQuantity)}
-            </ThemedText.BodySmall>
+            </Typography>
           )}
         </Column>
       </Column>
       <CurrencyLogo currency={currency} size="36px" />
-    </Row>
+    </Grid>
   );
 }

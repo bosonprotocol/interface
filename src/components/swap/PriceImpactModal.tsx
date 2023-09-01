@@ -1,14 +1,13 @@
-import { Trans } from "@lingui/macro";
 import { Percent } from "@uniswap/sdk-core";
-import { ButtonEmphasis, ButtonSize, ThemeButton } from "components/Button";
-import { ColumnCenter } from "components/Column";
-import Row from "components/Row";
-import { AlertTriangle } from "react-feather";
+import { CloseIcon } from "components/icons";
+import Modal from "components/modal/Modal";
+import Button from "components/ui/Button";
+import { ColumnCenter } from "components/ui/column";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
+import { formatPriceImpact } from "lib/utils/formatNumbers";
+import { Warning } from "phosphor-react";
 import styled from "styled-components";
-import { CloseIcon, ThemedText } from "theme";
-import { formatPriceImpact } from "utils/formatNumbers";
-
-import Modal from "../Modal";
 
 const Wrapper = styled(ColumnCenter)`
   padding: 16px 24px;
@@ -18,7 +17,7 @@ const IconContainer = styled.div`
   padding: 32px 0px;
 `;
 
-const WarningIcon = styled(AlertTriangle)`
+const WarningIcon = styled(Warning)`
   color: ${({ theme }) => theme.accentCritical};
 `;
 
@@ -26,7 +25,7 @@ const ButtonContainer = styled(ColumnCenter)`
   padding: 12px 0px 0px;
 `;
 
-const StyledThemeButton = styled(ThemeButton)`
+const StyledThemeButton = styled(Button)`
   width: 100%;
 `;
 
@@ -42,47 +41,47 @@ export default function PriceImpactModal({
   onContinue
 }: PriceImpactModalProps) {
   return (
-    <Modal isOpen onDismiss={onDismiss}>
+    <Modal hideModal={onDismiss} modalType={"PRICE_IMPACT"}>
       <Wrapper gap="md">
-        <Row padding="8px 0px 4px">
+        <Grid padding="8px 0px 4px">
           <CloseIcon size={24} onClick={onDismiss} />
-        </Row>
+        </Grid>
         <IconContainer>
           <WarningIcon size={48} />
         </IconContainer>
         <ColumnCenter gap="sm">
-          <ThemedText.HeadlineSmall fontWeight={500}>
-            <Trans>Warning</Trans>
-          </ThemedText.HeadlineSmall>
-          <ThemedText.BodyPrimary lineHeight="24px" textAlign="center">
-            <Trans>
+          <Typography fontWeight={500}>
+            <>Warning</>
+          </Typography>
+          <Typography lineHeight="24px" textAlign="center">
+            <>
               This transaction will result in a{" "}
-              <ThemedText.BodyPrimary
+              <Typography
                 lineHeight="24px"
                 color="accentFailure"
-                display="inline"
+                // TODO: display="inline"
               >
                 {formatPriceImpact(priceImpact)}
-              </ThemedText.BodyPrimary>{" "}
+              </Typography>{" "}
               price impact on the market price of this pool. Do you wish to
               continue?
-            </Trans>
-          </ThemedText.BodyPrimary>
+            </>
+          </Typography>
         </ColumnCenter>
         <ButtonContainer gap="md">
           <StyledThemeButton
-            size={ButtonSize.large}
-            emphasis={ButtonEmphasis.failure}
+            // TODO: size={Button.large}
+            // TODO: emphasis={Button.failure}
             onClick={onContinue}
           >
-            <Trans>Continue</Trans>
+            <>Continue</>
           </StyledThemeButton>
           <StyledThemeButton
-            size={ButtonSize.medium}
-            emphasis={ButtonEmphasis.low}
+            // TODO: size={Button.medium}
+            // TODO: emphasis={Button.low}
             onClick={onDismiss}
           >
-            <Trans>Cancel</Trans>
+            <>Cancel</>
           </StyledThemeButton>
         </ButtonContainer>
       </Wrapper>

@@ -1,3 +1,4 @@
+import { colors } from "lib/styles/colors";
 import styled from "styled-components";
 
 const Card = styled.div<{
@@ -14,8 +15,8 @@ const Card = styled.div<{
 export default Card;
 
 export const LightCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.backgroundInteractive};
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  border: 1px solid ${colors.lightGrey};
+  background-color: ${colors.darkGrey};
 `;
 
 export const GrayCard = styled(Card)`
@@ -23,11 +24,11 @@ export const GrayCard = styled(Card)`
 `;
 
 export const DarkGrayCard = styled(Card)`
-  background-color: ${({ theme }) => theme.backgroundInteractive};
+  background-color: ${colors.lightGrey};
 `;
 
 export const DarkCard = styled(Card)`
-  background-color: ${({ theme }) => theme.backgroundSurface};
+  background-color: ${colors.lightGrey};
 `;
 
 export const OutlineCard = styled(Card)`

@@ -1,25 +1,21 @@
 import { ChainId } from "@uniswap/sdk-core";
+import { AutoColumn } from "components/ui/column";
+import { breakpointNumbers } from "lib/styles/breakpoint";
+import { colors } from "lib/styles/colors";
+import { Warning } from "phosphor-react";
 import { transparentize } from "polished";
 import { ReactNode } from "react";
-import { AlertTriangle } from "react-feather";
 import styled, { css } from "styled-components";
-import { Z_INDEX } from "theme/zIndex";
-
-import { useIsDarkMode } from "../../theme/components/ThemeToggle";
-import { AutoColumn } from "../Column";
 
 export const PageWrapper = styled.div`
   padding: 68px 8px 0px;
   max-width: 480px;
   width: 100%;
-
-  @media only screen and (max-width: ${({ theme }) =>
-      `${theme.breakpoint.md}px`}) {
+  @media only screen and (max-width: ${breakpointNumbers.m}px) {
     padding-top: 48px;
   }
 
-  @media only screen and (max-width: ${({ theme }) =>
-      `${theme.breakpoint.sm}px`}) {
+  @media only screen and (max-width: ${breakpointNumbers.s}px) {
     padding-top: 20px;
   }
 `;
@@ -27,18 +23,18 @@ export const PageWrapper = styled.div`
 // Mostly copied from `AppBody` but it was getting too hard to maintain backwards compatibility.
 export const SwapWrapper = styled.main<{ chainId?: number }>`
   position: relative;
-  background: ${({ theme }) => theme.backgroundSurface};
+  background: ${colors.lightGrey};
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.backgroundOutline};
+  border: 1px solid ${colors.lightGrey};
   padding: 8px;
   padding-top: 12px;
   box-shadow: ${({ chainId }) =>
     !!chainId && chainId === ChainId.BNB && "0px 40px 120px 0px #f0b90b29"};
-  z-index: ${Z_INDEX.default};
+  // TODO: z-index: zIndex.default
   transition: transform 250ms ease;
 
   &:hover {
-    border: 1px solid ${({ theme }) => theme.backgroundOutline};
+    border: 1px solid ${colors.lightGrey};
   }
 `;
 
@@ -49,9 +45,9 @@ export const UniswapPopoverContainer = styled.div`
   font-size: 12px;
   line-height: 16px;
   word-break: break-word;
-  background: ${({ theme }) => theme.backgroundSurface};
+  background: ${colors.lightGrey};
   border-radius: 20px;
-  border: 1px solid ${({ theme }) => theme.backgroundInteractive};
+  border: 1px solid ${colors.lightGrey};
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.9, theme.shadow1)};
   position: relative;
   overflow: hidden;
@@ -71,12 +67,8 @@ const backUpKeyframes = `@keyframes back-up {
 }`;
 
 export const UniswapXShine = (props: any) => {
-  const isDarkMode = useIsDarkMode();
   return (
-    <UniswapXShineInner
-      {...props}
-      style={{ opacity: isDarkMode ? 0.15 : 0.05, ...props.style }}
-    />
+    <UniswapXShineInner {...props} style={{ opacity: 0.05, ...props.style }} />
   );
 };
 
@@ -91,7 +83,7 @@ const UniswapXShineInner = styled.div`
   background: linear-gradient(
     130deg,
     transparent 20%,
-    ${({ theme }) => theme.accentAction},
+    ${colors.blue},
     transparent 80%
   );
   opacity: 0.15;
@@ -139,11 +131,11 @@ export const UniswapXOptInLargeContainer = styled.div<{ visible: boolean }>`
 
 export const SwapMustache = styled.main`
   position: relative;
-  background: ${({ theme }) => theme.backgroundSurface};
+  background: ${colors.lightGrey};
   border-radius: 16px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  border: 1px solid ${({ theme }) => theme.backgroundOutline};
+  border: 1px solid ${colors.lightGrey};
   border-top-width: 0;
   padding: 18px;
   padding-top: calc(12px + 18px);
@@ -174,7 +166,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   margin-right: auto;
   background-color: ${({ theme }) => theme.backgroundModule};
   border: 4px solid;
-  border-color: ${({ theme }) => theme.backgroundSurface};
+  border-color: ${colors.lightGrey};
 
   z-index: 2;
   ${({ clickable }) =>
@@ -243,7 +235,7 @@ export function SwapCallbackError({ error }: { error: ReactNode }) {
   return (
     <SwapCallbackErrorInner>
       <SwapCallbackErrorInnerAlertTriangle>
-        <AlertTriangle size={24} />
+        <Warning size={24} />
       </SwapCallbackErrorInnerAlertTriangle>
       <p style={{ wordBreak: "break-word" }}>{error}</p>
     </SwapCallbackErrorInner>

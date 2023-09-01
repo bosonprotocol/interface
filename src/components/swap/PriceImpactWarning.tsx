@@ -1,18 +1,16 @@
-import { Trans } from "@lingui/macro";
 import { Percent } from "@uniswap/sdk-core";
 import { OutlineCard } from "components/card";
-import styled, { useTheme } from "styled-components";
-import { opacify } from "theme/utils";
-import formatPriceImpact from "utils/formatPriceImpact";
-
-import { ThemedText } from "../../theme";
-import { AutoColumn } from "../Column";
-import { RowBetween, RowFixed } from "../Row";
-import { MouseoverTooltip } from "../Tooltip";
+import Tooltip from "components/tooltip/Tooltip";
+import { AutoColumn } from "components/ui/column";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
+import formatPriceImpact from "lib/utils/formatPriceImpact";
+import styled from "styled-components";
 
 const StyledCard = styled(OutlineCard)`
   padding: 12px;
-  border: 1px solid ${({ theme }) => opacify(24, theme.accentFailure)};
+  /* TODO: border: 1px solid {({ theme }) =>
+    opacify(24, theme.accentFailure)}; */
 `;
 
 interface PriceImpactWarningProps {
@@ -22,36 +20,31 @@ interface PriceImpactWarningProps {
 export default function PriceImpactWarning({
   priceImpact
 }: PriceImpactWarningProps) {
-  const theme = useTheme();
-
   return (
     <StyledCard>
       <AutoColumn gap="sm">
-        <MouseoverTooltip
-          text={
-            <Trans>
+        <Tooltip
+          content={
+            <>
               A swap of this size may have a high price impact, given the
               current liquidity in the pool. There may be a large difference
               between the amount of your input token and what you will receive
               in the output token
-            </Trans>
+            </>
           }
         >
-          <RowBetween>
-            <RowFixed>
-              <ThemedText.DeprecatedSubHeader color={theme.accentFailure}>
-                <Trans>Price impact warning</Trans>
-              </ThemedText.DeprecatedSubHeader>
-            </RowFixed>
-            <ThemedText.DeprecatedLabel
-              textAlign="right"
-              fontSize={14}
-              color="accentFailure"
-            >
+          <Grid>
+            <Grid>
+              <Typography //color={theme.accentFailure}
+              >
+                <>Price impact warning</>
+              </Typography>
+            </Grid>
+            <Typography textAlign="right" $fontSize={14} color="accentFailure">
               {formatPriceImpact(priceImpact)}
-            </ThemedText.DeprecatedLabel>
-          </RowBetween>
-        </MouseoverTooltip>
+            </Typography>
+          </Grid>
+        </Tooltip>
       </AutoColumn>
     </StyledCard>
   );

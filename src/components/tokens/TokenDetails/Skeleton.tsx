@@ -13,7 +13,7 @@ import { StatPair, StatsWrapper, StatWrapper } from './StatsSection'
 const SWAP_COMPONENT_WIDTH = 360
 
 export const Hr = styled.hr`
-  background-color: ${({ theme }) => theme.backgroundOutline};
+  background-color: ${colors.lightGrey};
   border: none;
   height: 0.5px;
 `

@@ -1,13 +1,13 @@
-import { Trans } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
-import Column from "components/Column";
+import { Separator } from "components/icons";
 import { LoadingRows } from "components/loader/styled";
-import RoutingDiagram from "components/RoutingDiagram/RoutingDiagram";
-import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "constants/chains";
-import useAutoRouterSupported from "hooks/useAutoRouterSupported";
+import RoutingDiagram from "components/routingDiagram/RoutingDiagram";
+import Column from "components/ui/column";
+import Typography from "components/ui/Typography";
+import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "lib/constants/chains";
+import getRoutingDiagramEntries from "lib/utils/getRoutingDiagramEntries";
+import useAutoRouterSupported from "lib/utils/hooks/useAutoRouterSupported";
 import { ClassicTrade } from "state/routing/types";
-import { Separator, ThemedText } from "theme";
-import getRoutingDiagramEntries from "utils/getRoutingDiagramEntries";
 
 import RouterLabel from "../routerLabel";
 
@@ -57,15 +57,15 @@ export default function SwapRoute({
               <div style={{ width: "100%", height: "15px" }} />
             </LoadingRows>
           ) : (
-            <ThemedText.Caption color="textSecondary">
+            <Typography color="textSecondary">
               {gasPrice ? (
-                <Trans>Best price route costs ~{gasPrice} in gas.</Trans>
+                <>Best price route costs ~{gasPrice} in gas.</>
               ) : null}{" "}
-              <Trans>
+              <>
                 This route optimizes your total output by considering split
                 routes, multiple hops, and the gas cost of each step.
-              </Trans>
-            </ThemedText.Caption>
+              </>
+            </Typography>
           )}
         </>
       )}

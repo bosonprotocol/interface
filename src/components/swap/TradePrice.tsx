@@ -1,11 +1,10 @@
-import { Trans } from "@lingui/macro";
 import { Currency, Price } from "@uniswap/sdk-core";
-import { useUSDPrice } from "hooks/useUSDPrice";
+import Typography from "components/ui/Typography";
+import { formatNumber, formatPrice, NumberType } from "lib/utils/formatNumbers";
+import { useUSDPrice } from "lib/utils/hooks/useUSDPrice";
 import tryParseCurrencyAmount from "lib/utils/tryParseCurrencyAmount";
 import { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-import { ThemedText } from "theme";
-import { formatNumber, formatPrice, NumberType } from "utils/formatNumbers";
 
 interface TradePriceProps {
   price: Price<Currency, Currency>;
@@ -69,11 +68,11 @@ export default function TradePrice({ price }: TradePriceProps) {
       }}
       title={text}
     >
-      <ThemedText.BodySmall>{text}</ThemedText.BodySmall>{" "}
+      <Typography>{text}</Typography>{" "}
       {usdPrice && (
-        <ThemedText.BodySmall color="textSecondary">
-          <Trans>({formatNumber(usdPrice, NumberType.FiatTokenPrice)})</Trans>
-        </ThemedText.BodySmall>
+        <Typography color="textSecondary">
+          <>({formatNumber(usdPrice, NumberType.FiatTokenPrice)})</>
+        </Typography>
       )}
     </StyledPriceContainer>
   );

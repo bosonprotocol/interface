@@ -1,17 +1,16 @@
 import {
+  DEFAULT_ACTIVE_LIST_URLS,
+  UNSUPPORTED_LIST_URLS
+} from "lib/constants/lists";
+import BROKEN_LIST from "lib/constants/tokenLists/broken.tokenlist.json";
+import {
   TokenAddressMap,
   tokensToChainTokenMap
-} from "lib/hooks/useTokenList/utils";
+} from "lib/utils/hooks/useTokenList/utils";
+import sortByListPriority from "lib/utils/listSort";
 import { useMemo } from "react";
 import { useAppSelector } from "state/hooks";
 import { AppState } from "state/reducer";
-import sortByListPriority from "utils/listSort";
-
-import BROKEN_LIST from "../../constants/tokenLists/broken.tokenlist.json";
-import {
-  DEFAULT_ACTIVE_LIST_URLS,
-  UNSUPPORTED_LIST_URLS
-} from "./../../constants/lists";
 
 type Mutable<T> = {
   -readonly [P in keyof T]: Mutable<T[P]>;

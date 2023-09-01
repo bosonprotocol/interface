@@ -1,25 +1,23 @@
-import { Plural, Trans } from "@lingui/macro";
-import { InterfaceElementName, SwapEventName } from "@uniswap/analytics-events";
 import { Percent, TradeType } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
-import { sendAnalyticsEvent } from "analytics";
+import { Separator } from "components/icons";
 import { LoadingRows } from "components/loader/styled";
-import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "constants/chains";
-import useNativeCurrency from "lib/hooks/useNativeCurrency";
-import { InterfaceTrade } from "state/routing/types";
-import { getTransactionCount, isClassicTrade } from "state/routing/utils";
+import Tooltip from "components/tooltip/Tooltip";
+import Column from "components/ui/column";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
+import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "lib/constants/chains";
 import {
   formatCurrencyAmount,
   formatNumber,
   formatPriceImpact,
   NumberType
-} from "utils/formatNumbers";
+} from "lib/utils/formatNumbers";
+import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
+import { InterfaceTrade } from "state/routing/types";
+import { getTransactionCount, isClassicTrade } from "state/routing/utils";
 
-import { Separator, ThemedText } from "../../theme";
-import Column from "../Column";
 import RouterLabel from "../routerLabel";
-import { RowBetween, RowFixed } from "../Row";
-import { MouseoverTooltip, TooltipSize } from "../Tooltip";
 import { GasBreakdownTooltip } from "./GasBreakdownTooltip";
 import SwapRoute from "./SwapRoute";
 
@@ -63,76 +61,72 @@ export function AdvancedSwapDetails({
     <Column gap="md">
       <Separator />
       {supportsGasEstimate && (
-        <RowBetween>
-          <MouseoverTooltip
-            text={
-              <Trans>
+        <Grid>
+          <Tooltip
+            content={
+              <>
                 The fee paid to miners who process your transaction. This must
                 be paid in {nativeCurrency.symbol}.
-              </Trans>
+              </>
             }
           >
-            <ThemedText.BodySmall color="textSecondary">
-              <Plural value={txCount} one="Network fee" other="Network fees" />
-            </ThemedText.BodySmall>
-          </MouseoverTooltip>
-          <MouseoverTooltip
+            <Typography color="textSecondary">Network fee/s</Typography>
+          </Tooltip>
+          <Tooltip
             placement="right"
-            size={TooltipSize.Small}
-            text={<GasBreakdownTooltip trade={trade} hideUniswapXDescription />}
+            // size={TooltipSize.Small}
+            content={
+              <GasBreakdownTooltip trade={trade} hideUniswapXDescription />
+            }
           >
             <TextWithLoadingPlaceholder syncing={syncing} width={50}>
-              <ThemedText.BodySmall>
+              <Typography>
                 {`${trade.totalGasUseEstimateUSD ? "~" : ""}${formatNumber(
                   trade.totalGasUseEstimateUSD,
                   NumberType.FiatGasPrice
                 )}`}
-              </ThemedText.BodySmall>
+              </Typography>
             </TextWithLoadingPlaceholder>
-          </MouseoverTooltip>
-        </RowBetween>
+          </Tooltip>
+        </Grid>
       )}
       {isClassicTrade(trade) && (
-        <RowBetween>
-          <MouseoverTooltip
-            text={
-              <Trans>
-                The impact your trade has on the market price of this pool.
-              </Trans>
+        <Grid>
+          <Tooltip
+            content={
+              <>The impact your trade has on the market price of this pool.</>
             }
           >
-            <ThemedText.BodySmall color="textSecondary">
-              <Trans>Price Impact</Trans>
-            </ThemedText.BodySmall>
-          </MouseoverTooltip>
+            <Typography color="textSecondary">
+              <>Price Impact</>
+            </Typography>
+          </Tooltip>
           <TextWithLoadingPlaceholder syncing={syncing} width={50}>
-            <ThemedText.BodySmall>
-              {formatPriceImpact(trade.priceImpact)}
-            </ThemedText.BodySmall>
+            <Typography>{formatPriceImpact(trade.priceImpact)}</Typography>
           </TextWithLoadingPlaceholder>
-        </RowBetween>
+        </Grid>
       )}
-      <RowBetween>
-        <RowFixed>
-          <MouseoverTooltip
-            text={
-              <Trans>
+      <Grid>
+        <Grid>
+          <Tooltip
+            content={
+              <>
                 The minimum amount you are guaranteed to receive. If the price
                 slips any further, your transaction will revert.
-              </Trans>
+              </>
             }
           >
-            <ThemedText.BodySmall color="textSecondary">
+            <Typography color="textSecondary">
               {trade.tradeType === TradeType.EXACT_INPUT ? (
-                <Trans>Minimum output</Trans>
+                <>Minimum output</>
               ) : (
-                <Trans>Maximum input</Trans>
+                <>Maximum input</>
               )}
-            </ThemedText.BodySmall>
-          </MouseoverTooltip>
-        </RowFixed>
+            </Typography>
+          </Tooltip>
+        </Grid>
         <TextWithLoadingPlaceholder syncing={syncing} width={70}>
-          <ThemedText.BodySmall>
+          <Typography>
             {trade.tradeType === TradeType.EXACT_INPUT
               ? `${formatCurrencyAmount(
                   trade.minimumAmountOut(allowedSlippage),
@@ -141,78 +135,62 @@ export function AdvancedSwapDetails({
               : `${trade.maximumAmountIn(allowedSlippage).toSignificant(6)} ${
                   trade.inputAmount.currency.symbol
                 }`}
-          </ThemedText.BodySmall>
+          </Typography>
         </TextWithLoadingPlaceholder>
-      </RowBetween>
-      <RowBetween>
-        <RowFixed>
-          <MouseoverTooltip
-            text={
-              <Trans>
+      </Grid>
+      <Grid>
+        <Grid>
+          <Tooltip
+            content={
+              <>
                 The amount you expect to receive at the current market price.
                 You may receive less or more if the market price changes while
                 your transaction is pending.
-              </Trans>
+              </>
             }
           >
-            <ThemedText.BodySmall color="textSecondary">
-              <Trans>Expected output</Trans>
-            </ThemedText.BodySmall>
-          </MouseoverTooltip>
-        </RowFixed>
+            <Typography color="textSecondary">
+              <>Expected output</>
+            </Typography>
+          </Tooltip>
+        </Grid>
         <TextWithLoadingPlaceholder syncing={syncing} width={65}>
-          <ThemedText.BodySmall>
+          <Typography>
             {`${formatCurrencyAmount(
               trade.outputAmount,
               NumberType.SwapTradeAmount
             )} ${trade.outputAmount.currency.symbol}`}
-          </ThemedText.BodySmall>
+          </Typography>
         </TextWithLoadingPlaceholder>
-      </RowBetween>
+      </Grid>
       <Separator />
-      <RowBetween>
-        <ThemedText.BodySmall color="textSecondary">
-          <Trans>Order routing</Trans>
-        </ThemedText.BodySmall>
+      <Grid>
+        <Typography color="textSecondary">
+          <>Order routing</>
+        </Typography>
         {isClassicTrade(trade) ? (
-          <MouseoverTooltip
-            size={TooltipSize.Large}
-            text={
+          <Tooltip
+            // size={TooltipSize.Large}
+            content={
               <SwapRoute
                 data-testid="swap-route-info"
                 trade={trade}
                 syncing={syncing}
               />
             }
-            onOpen={() => {
-              sendAnalyticsEvent(
-                SwapEventName.SWAP_AUTOROUTER_VISUALIZATION_EXPANDED,
-                {
-                  element: InterfaceElementName.AUTOROUTER_VISUALIZATION_ROW
-                }
-              );
-            }}
           >
             <RouterLabel trade={trade} />
-          </MouseoverTooltip>
+          </Tooltip>
         ) : (
-          <MouseoverTooltip
-            size={TooltipSize.Small}
-            text={<GasBreakdownTooltip trade={trade} hideFees />}
+          <Tooltip
+            // size={TooltipSize.Small}
+            content={<GasBreakdownTooltip trade={trade} hideFees />}
             placement="right"
-            onOpen={() => {
-              sendAnalyticsEvent(
-                SwapEventName.SWAP_AUTOROUTER_VISUALIZATION_EXPANDED,
-                {
-                  element: InterfaceElementName.AUTOROUTER_VISUALIZATION_ROW
-                }
-              );
-            }}
           >
             <RouterLabel trade={trade} />
-          </MouseoverTooltip>
+          </Tooltip>
         )}
-      </RowBetween>
+      </Grid>
     </Column>
   );
 }

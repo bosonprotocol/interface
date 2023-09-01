@@ -1,14 +1,14 @@
-import { t, Trans } from "@lingui/macro";
 import { ChainId, Currency } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
-import { OrderContent } from "components/AccountDrawer/MiniPortfolio/Activity/OffchainActivityModal";
-import { ColumnCenter } from "components/Column";
-import Column from "components/Column";
-import Row from "components/Row";
+import Column, { ColumnCenter } from "components/ui/column";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
 import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
-import { SwapResult } from "hooks/useSwapCallback";
-import { useUnmountingAnimation } from "hooks/useUnmountingAnimation";
-import { UniswapXOrderStatus } from "lib/hooks/orders/types";
+import { getExplorerLink } from "lib/utils/getExplorerLink";
+import { ExplorerDataType } from "lib/utils/getExplorerLink";
+import { UniswapXOrderStatus } from "lib/utils/hooks/orders/types";
+import { SwapResult } from "lib/utils/hooks/useSwapCallback";
+import { useUnmountingAnimation } from "lib/utils/hooks/useUnmountingAnimation";
 import { ReactNode, useMemo, useRef } from "react";
 import { InterfaceTrade, TradeFillType } from "state/routing/types";
 import { useOrder } from "state/signatures/hooks";
@@ -18,10 +18,6 @@ import {
   useSwapTransactionStatus
 } from "state/transactions/hooks";
 import styled, { css, keyframes } from "styled-components";
-import { ExternalLink } from "theme";
-import { ThemedText } from "theme/components/text";
-import { getExplorerLink } from "utils/getExplorerLink";
-import { ExplorerDataType } from "utils/getExplorerLink";
 
 import { ConfirmModalState } from "../ConfirmSwapModal";
 import {
@@ -49,14 +45,12 @@ const StepCircle = styled.div<{ active: boolean }>`
   height: 10px;
   width: 10px;
   border-radius: 50%;
-  background-color: ${({ theme, active }) =>
+  /* background-color: ${({ theme, active }) =>
     active ? theme.accentAction : theme.textTertiary};
   outline: 3px solid
     ${({ theme, active }) =>
-      active ? theme.accentActionSoft : theme.accentTextLightTertiary};
-  transition: background-color
-    ${({ theme }) =>
-      `${theme.transition.duration.medium} ${theme.transition.timing.inOut}`};
+    active ? theme.accentActionSoft : theme.accentTextLightTertiary}; */
+  transition: background-color 250ms ease-in-out;
 `;
 
 const slideIn = keyframes`
@@ -64,18 +58,14 @@ const slideIn = keyframes`
   to { opacity: 1; transform: translateX(0px) }
 `;
 const slideInAnimation = css`
-  animation: ${slideIn}
-    ${({ theme }) =>
-      `${theme.transition.duration.medium} ${theme.transition.timing.inOut}`};
+  animation: ${slideIn} 250ms ease-in-out;
 `;
 const slideOut = keyframes`
   from { opacity: 1; transform: translateX(0px) }
   to { opacity: 0; transform: translateX(-40px) }
 `;
 const slideOutAnimation = css`
-  animation: ${slideOut}
-    ${({ theme }) =>
-      `${theme.transition.duration.medium} ${theme.transition.timing.inOut}`};
+  animation: ${slideOut} 250ms ease-in-out;
 `;
 
 const AnimationWrapper = styled.div`
@@ -92,9 +82,7 @@ const StepTitleAnimationContainer = styled(Column)<{
   position: absolute;
   width: 100%;
   align-items: center;
-  transition: display
-    ${({ theme }) =>
-      `${theme.transition.duration.medium} ${theme.transition.timing.inOut}`};
+  transition: display ${({ theme }) => `250ms ease-in-out`};
   ${({ disableEntranceAnimation }) =>
     !disableEntranceAnimation &&
     css`
@@ -159,22 +147,22 @@ function getPendingConfirmationContent({
   "swapConfirmed" | "swapPending" | "trade" | "chainId" | "swapResult"
 >): PendingModalStep {
   const title = swapPending
-    ? t`Swap submitted`
+    ? `Swap submitted`
     : swapConfirmed
-    ? t`Swap success!`
-    : t`Confirm Swap`;
+    ? `Swap success!`
+    : `Confirm Swap`;
   const tradeSummary = trade ? <TradeSummary trade={trade} /> : null;
   if (swapPending && trade?.fillType === TradeFillType.UniswapX) {
     return {
       title,
       subtitle: tradeSummary,
       bottomLabel: (
-        <ExternalLink
+        <a
           href="https://support.uniswap.org/hc/en-us/articles/17515415311501"
           color="textSecondary"
         >
-          <Trans>Learn more about swapping with UniswapX</Trans>
-        </ExternalLink>
+          <>Learn more about swapping with UniswapX</>
+        </a>
       )
     };
   } else if (
@@ -183,7 +171,7 @@ function getPendingConfirmationContent({
     swapResult?.type === TradeFillType.Classic
   ) {
     const explorerLink = (
-      <ExternalLink
+      <a
         href={getExplorerLink(
           chainId,
           swapResult.response.hash,
@@ -191,8 +179,8 @@ function getPendingConfirmationContent({
         )}
         color="textSecondary"
       >
-        <Trans>View on Explorer</Trans>
-      </ExternalLink>
+        <>View on Explorer</>
+      </a>
     );
     if (swapPending) {
       // On Mainnet, we show a "submitted" state while the transaction is pending confirmation.
@@ -200,7 +188,7 @@ function getPendingConfirmationContent({
         title,
         subtitle: chainId === ChainId.MAINNET ? explorerLink : tradeSummary,
         bottomLabel:
-          chainId === ChainId.MAINNET ? t`Transaction pending...` : explorerLink
+          chainId === ChainId.MAINNET ? `Transaction pending...` : explorerLink
       };
     } else {
       return {
@@ -213,7 +201,7 @@ function getPendingConfirmationContent({
     return {
       title,
       subtitle: tradeSummary,
-      bottomLabel: t`Proceed in your wallet`
+      bottomLabel: `Proceed in your wallet`
     };
   }
 }
@@ -236,44 +224,42 @@ function useStepContents(
   return useMemo(
     () => ({
       [ConfirmModalState.WRAPPING]: {
-        title: t`Wrap ETH`,
+        title: `Wrap ETH`,
         subtitle: (
-          <ExternalLink href="https://support.uniswap.org/hc/en-us/articles/16015852009997">
-            <Trans>Why is this required?</Trans>
-          </ExternalLink>
+          <a href="https://support.uniswap.org/hc/en-us/articles/16015852009997">
+            <>Why is this required?</>
+          </a>
         ),
-        bottomLabel: wrapPending ? t`Pending...` : t`Proceed in your wallet`
+        bottomLabel: wrapPending ? `Pending...` : `Proceed in your wallet`
       },
       [ConfirmModalState.RESETTING_USDT]: {
-        title: t`Reset USDT`,
-        subtitle: t`USDT requires resetting approval when spending limits are too low.`,
-        bottomLabel: revocationPending
-          ? t`Pending...`
-          : t`Proceed in your wallet`
+        title: `Reset USDT`,
+        subtitle: `USDT requires resetting approval when spending limits are too low.`,
+        bottomLabel: revocationPending ? `Pending...` : `Proceed in your wallet`
       },
       [ConfirmModalState.APPROVING_TOKEN]: {
-        title: t`Enable spending ${
+        title: `Enable spending ${
           approvalCurrency?.symbol ?? "this token"
         } on Uniswap`,
         subtitle: (
-          <ExternalLink href="https://support.uniswap.org/hc/en-us/articles/8120520483085">
-            <Trans>Why is this required?</Trans>
-          </ExternalLink>
+          <a href="https://support.uniswap.org/hc/en-us/articles/8120520483085">
+            <>Why is this required?</>
+          </a>
         ),
         bottomLabel: tokenApprovalPending
-          ? t`Pending...`
-          : t`Proceed in your wallet`
+          ? `Pending...`
+          : `Proceed in your wallet`
       },
       [ConfirmModalState.PERMITTING]: {
-        title: t`Allow ${
+        title: `Allow ${
           approvalCurrency?.symbol ?? "this token"
         } to be used for swapping`,
         subtitle: (
-          <ExternalLink href="https://support.uniswap.org/hc/en-us/articles/8120520483085">
-            <Trans>Why is this required?</Trans>
-          </ExternalLink>
+          <a href="https://support.uniswap.org/hc/en-us/articles/8120520483085">
+            <>Why is this required?</>
+          </a>
         ),
-        bottomLabel: t`Proceed in your wallet`
+        bottomLabel: `Proceed in your wallet`
       },
       [ConfirmModalState.PENDING_CONFIRMATION]: getPendingConfirmationContent({
         chainId,
@@ -408,37 +394,42 @@ export function PendingModalContent({
                     step === currentStep ? currentStepContainerRef : undefined
                   }
                 >
-                  <ThemedText.SubHeaderLarge
+                  <Typography
                     textAlign="center"
                     data-testid="pending-modal-content-title"
                   >
                     {stepContents[step].title}
-                  </ThemedText.SubHeaderLarge>
-                  <ThemedText.LabelSmall textAlign="center">
+                  </Typography>
+                  <Typography textAlign="center">
                     {stepContents[step].subtitle}
-                  </ThemedText.LabelSmall>
+                  </Typography>
                 </StepTitleAnimationContainer>
               )
             );
           })}
         </AnimationWrapper>
-        <Row justify="center" marginTop="32px" minHeight="24px">
-          <ThemedText.Caption color="textSecondary">
+        <Grid
+          justifyContent="center"
+          marginTop="32px"
+          style={{ minHeight: "24px" }}
+        >
+          <Typography color="textSecondary">
             {stepContents[currentStep].bottomLabel}
-          </ThemedText.Caption>
-        </Row>
+          </Typography>
+        </Grid>
       </HeaderContainer>
       {stepContents[currentStep].button && (
-        <Row justify="center">{stepContents[currentStep].button}</Row>
+        <Grid justifyContent="center">{stepContents[currentStep].button}</Grid>
       )}
+
       {!hideStepIndicators && !showSuccess && (
-        <Row gap="14px" justify="center">
+        <Grid gap="14px" justifyContent="center">
           {steps.map((_, i) => {
             return (
               <StepCircle key={i} active={steps.indexOf(currentStep) === i} />
             );
           })}
-        </Row>
+        </Grid>
       )}
     </PendingModalContainer>
   );

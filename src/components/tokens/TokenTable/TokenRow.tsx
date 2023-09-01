@@ -114,7 +114,7 @@ const ClickableName = styled(ClickableContent)`
 `
 const StyledHeaderRow = styled(StyledTokenRow)`
   border-bottom: 1px solid;
-  border-color: ${({ theme }) => theme.backgroundOutline};
+  border-color: ${colors.lightGrey};
   border-radius: 8px 8px 0px 0px;
   color: ${({ theme }) => theme.textSecondary};
   font-size: 14px;

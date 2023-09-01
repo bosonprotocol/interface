@@ -1,21 +1,21 @@
-import Badge from 'components/Badge'
-import { getChainInfo } from 'constants/chainInfo'
+import Badge from "components/badge";
+import { getChainInfo } from "constants/chainInfo";
 import {
   BACKEND_NOT_YET_SUPPORTED_CHAIN_IDS,
   BACKEND_SUPPORTED_CHAINS,
   supportedChainIdFromGQLChain,
-  validateUrlChainParam,
-} from 'graphql/data/util'
-import { useOnClickOutside } from 'hooks/useOnClickOutside'
-import { useRef } from 'react'
-import { Check, ChevronDown, ChevronUp } from 'react-feather'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useModalIsOpen, useToggleModal } from 'state/application/hooks'
-import { ApplicationModal } from 'state/application/reducer'
-import styled, { css, useTheme } from 'styled-components'
-import { EllipsisStyle } from 'theme'
+  validateUrlChainParam
+} from "graphql/data/util";
+import { useOnClickOutside } from "hooks/useOnClickOutside";
+import { useRef } from "react";
+import { Check, ChevronDown, ChevronUp } from "react-feather";
+import { useNavigate, useParams } from "react-router-dom";
+import { useModalIsOpen, useToggleModal } from "state/application/hooks";
+import { ApplicationModal } from "state/application/reducer";
+import styled, { css, useTheme } from "styled-components";
+import { EllipsisStyle } from "theme";
 
-import FilterOption from './FilterOption'
+import FilterOption from "./FilterOption";
 
 const InternalMenuItem = styled.div`
   flex: 1;
@@ -26,7 +26,7 @@ const InternalMenuItem = styled.div`
     cursor: pointer;
     text-decoration: none;
   }
-`
+`;
 const InternalLinkMenuItem = styled(InternalMenuItem)<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
@@ -46,14 +46,14 @@ const InternalLinkMenuItem = styled(InternalMenuItem)<{ disabled?: boolean }>`
       opacity: 60%;
       pointer-events: none;
     `}
-`
+`;
 const MenuTimeFlyout = styled.span`
   min-width: 240px;
   max-height: 350px;
   overflow: auto;
-  background-color: ${({ theme }) => theme.backgroundSurface};
+  background-color: ${colors.lightGrey};
   box-shadow: ${({ theme }) => theme.deepShadow};
-  border: 0.5px solid ${({ theme }) => theme.backgroundOutline};
+  border: 0.5px solid ${colors.lightGrey};
   border-radius: 12px;
   padding: 8px;
   display: flex;
@@ -63,7 +63,7 @@ const MenuTimeFlyout = styled.span`
   top: 48px;
   z-index: 100;
   left: 0px;
-`
+`;
 const StyledMenu = styled.div`
   display: flex;
   justify-content: center;
@@ -71,7 +71,7 @@ const StyledMenu = styled.div`
   position: relative;
   border: none;
   text-align: left;
-`
+`;
 const StyledMenuContent = styled.div`
   display: flex;
   justify-content: space-between;
@@ -80,48 +80,51 @@ const StyledMenuContent = styled.div`
   border: none;
   font-weight: 600;
   vertical-align: middle;
-`
+`;
 const Chevron = styled.span<{ open: boolean }>`
   padding-top: 1px;
-  color: ${({ open, theme }) => (open ? theme.accentActive : theme.textSecondary)};
-`
+  color: ${({ open, theme }) =>
+    open ? theme.accentActive : theme.textSecondary};
+`;
 const NetworkLabel = styled.div`
   ${EllipsisStyle}
   display: flex;
   gap: 8px;
   align-items: center;
-`
+`;
 const Logo = styled.img`
   height: 20px;
   width: 20px;
-`
+`;
 const CheckContainer = styled.div`
   display: flex;
   flex-direction: flex-end;
-`
+`;
 const NetworkFilterOption = styled(FilterOption)`
   min-width: 156px;
-`
+`;
 const Tag = styled(Badge)`
   background-color: ${({ theme }) => theme.backgroundModule};
   color: ${({ theme }) => theme.textSecondary};
   font-size: 10px;
   opacity: 1;
   padding: 4px 6px;
-`
+`;
 
 export default function NetworkFilter() {
-  const theme = useTheme()
-  const node = useRef<HTMLDivElement | null>(null)
-  const open = useModalIsOpen(ApplicationModal.NETWORK_FILTER)
-  const toggleMenu = useToggleModal(ApplicationModal.NETWORK_FILTER)
-  useOnClickOutside(node, open ? toggleMenu : undefined)
-  const navigate = useNavigate()
+  const theme = useTheme();
+  const node = useRef<HTMLDivElement | null>(null);
+  const open = useModalIsOpen(ApplicationModal.NETWORK_FILTER);
+  const toggleMenu = useToggleModal(ApplicationModal.NETWORK_FILTER);
+  useOnClickOutside(node, open ? toggleMenu : undefined);
+  const navigate = useNavigate();
 
-  const { chainName } = useParams<{ chainName?: string }>()
-  const currentChainName = validateUrlChainParam(chainName)
+  const { chainName } = useParams<{ chainName?: string }>();
+  const currentChainName = validateUrlChainParam(chainName);
 
-  const chainInfo = getChainInfo(supportedChainIdFromGQLChain(currentChainName))
+  const chainInfo = getChainInfo(
+    supportedChainIdFromGQLChain(currentChainName)
+  );
 
   return (
     <StyledMenu ref={node}>
@@ -147,14 +150,16 @@ export default function NetworkFilter() {
       {open && (
         <MenuTimeFlyout>
           {BACKEND_SUPPORTED_CHAINS.map((network) => {
-            const chainInfo = getChainInfo(supportedChainIdFromGQLChain(network))
+            const chainInfo = getChainInfo(
+              supportedChainIdFromGQLChain(network)
+            );
             return (
               <InternalLinkMenuItem
                 key={network}
                 data-testid={`tokens-network-filter-option-${network.toLowerCase()}`}
                 onClick={() => {
-                  navigate(`/tokens/${network.toLowerCase()}`)
-                  toggleMenu()
+                  navigate(`/tokens/${network.toLowerCase()}`);
+                  toggleMenu();
                 }}
               >
                 <NetworkLabel>
@@ -167,10 +172,10 @@ export default function NetworkFilter() {
                   </CheckContainer>
                 )}
               </InternalLinkMenuItem>
-            )
+            );
           })}
           {BACKEND_NOT_YET_SUPPORTED_CHAIN_IDS.map((network) => {
-            const chainInfo = getChainInfo(network)
+            const chainInfo = getChainInfo(network);
             return (
               <InternalLinkMenuItem
                 key={network}
@@ -183,10 +188,10 @@ export default function NetworkFilter() {
                 </NetworkLabel>
                 <Tag>Coming soon</Tag>
               </InternalLinkMenuItem>
-            )
+            );
           })}
         </MenuTimeFlyout>
       )}
     </StyledMenu>
-  )
+  );
 }

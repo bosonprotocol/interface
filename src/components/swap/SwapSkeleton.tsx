@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { ArrowContainer } from "pages/Swap";
+import { ArrowContainer } from "pages/swap";
 import { ArrowDown } from "react-feather";
 import styled, { useTheme } from "styled-components";
 import { ThemedText } from "theme";
@@ -22,7 +22,7 @@ const LoadingWrapper = styled.div`
   padding: 8px;
   border: ${({ theme }) => `1px solid ${theme.backgroundOutline}`};
   border-radius: 16px;
-  background-color: ${({ theme }) => theme.backgroundSurface};
+  background-color: ${colors.lightGrey};
 `;
 
 const Blob = styled.div<{ width?: number; radius?: number }>`
@@ -33,7 +33,7 @@ const Blob = styled.div<{ width?: number; radius?: number }>`
 `;
 
 const ModuleBlob = styled(Blob)`
-  background-color: ${({ theme }) => theme.backgroundOutline};
+  background-color: ${colors.lightGrey};
   height: 36px;
 `;
 

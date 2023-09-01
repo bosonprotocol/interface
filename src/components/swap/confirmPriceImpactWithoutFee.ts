@@ -1,9 +1,8 @@
 import { Percent } from "@uniswap/sdk-core";
-
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
   PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN
-} from "../../constants/misc";
+} from "lib/constants/misc";
 
 /**
  * Given the price impact, get user confirmation.

@@ -7,7 +7,7 @@ import {
   LoadingOpacityContainer,
   loadingOpacityMixin
 } from "components/loader/styled";
-import CurrencyLogo from "components/Logo/CurrencyLogo";
+import CurrencyLogo from "components/logo/CurrencyLogo";
 import Button from "components/ui/Button";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
@@ -19,8 +19,8 @@ import { useCurrencyBalance } from "state/connection/hooks";
 import styled, { useTheme } from "styled-components";
 
 import DoubleCurrencyLogo from "../logo/DoubleCurrencyLogo";
-import { Input as NumericalInput } from "../NumericalInput";
-import CurrencySearchModal from "../SearchModal/CurrencySearchModal";
+import { Input as NumericalInput } from "../numericalInput";
+import CurrencySearchModal from "../searchModal/CurrencySearchModal";
 import { FiatValue } from "./FiatValue";
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
@@ -37,8 +37,8 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 
 const Container = styled.div<{ hideInput: boolean; disabled: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? "16px" : "20px")};
-  border: 1px solid ${({ theme }) => theme.backgroundSurface};
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  border: 1px solid ${colors.lightGrey};
+  background-color: ${colors.darkGrey};
   width: ${({ hideInput }) => (hideInput ? "100%" : "initial")};
   ${({ theme, hideInput, disabled }) =>
     !disabled &&

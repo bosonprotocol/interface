@@ -1,27 +1,25 @@
-import { Trans } from "@lingui/macro";
-import {
-  InterfaceEventName,
-  InterfaceModalName,
-  SwapEventName,
-  SwapPriceUpdateUserResponse
-} from "@uniswap/analytics-events";
 import { Currency, Percent } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
-import { sendAnalyticsEvent, Trace, useTrace } from "analytics";
-import Badge from "components/Badge";
-import Modal, { MODAL_TRANSITION_DURATION } from "components/Modal";
-import { RowFixed } from "components/Row";
-import { getChainInfo } from "constants/chainInfo";
-import { USDT as USDT_MAINNET } from "constants/tokens";
+import { CloseIcon } from "components/icons";
+import Modal from "components/modal/Modal";
+import { AutoColumn } from "components/ui/column";
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
 import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
-import { useMaxAmountIn } from "hooks/useMaxAmountIn";
-import { Allowance, AllowanceState } from "hooks/usePermit2Allowance";
-import usePrevious from "hooks/usePrevious";
-import { SwapResult } from "hooks/useSwapCallback";
-import useWrapCallback from "hooks/useWrapCallback";
-import useNativeCurrency from "lib/hooks/useNativeCurrency";
-import { getPriceUpdateBasisPoints } from "lib/utils/analytics";
-import { useCallback, useEffect, useState } from "react";
+import { getChainInfo } from "lib/constants/chainInfo";
+import { USDT as USDT_MAINNET } from "lib/constants/tokens";
+import { isL2ChainId } from "lib/utils/chains";
+import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
+import { useMaxAmountIn } from "lib/utils/hooks/useMaxAmountIn";
+import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
+import { Allowance, AllowanceState } from "lib/utils/hooks/usePermit2Allowance";
+import { usePrevious } from "lib/utils/hooks/usePrevious";
+import { SwapResult } from "lib/utils/hooks/useSwapCallback";
+import useWrapCallback from "lib/utils/hooks/useWrapCallback";
+import { didUserReject } from "lib/utils/swapErrorToUserReadableMessage";
+import { tradeMeaningfullyDiffers } from "lib/utils/tradeMeaningFullyDiffer";
+import { Wrapper } from "pages/dispute-resolver/DisputeResolver";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { InterfaceTrade, TradeFillType } from "state/routing/types";
 import { Field } from "state/swap/actions";
 import {
@@ -29,25 +27,57 @@ import {
   useSwapTransactionStatus
 } from "state/transactions/hooks";
 import styled from "styled-components";
-import { ThemedText } from "theme";
 import invariant from "tiny-invariant";
-import { isL2ChainId } from "utils/chains";
-import { formatCurrencyAmount, NumberType } from "utils/formatNumbers";
-import { formatSwapPriceUpdatedEventProperties } from "utils/loggingFormatters";
-import { didUserReject } from "utils/swapErrorToUserReadableMessage";
-import { tradeMeaningfullyDiffers } from "utils/tradeMeaningFullyDiffer";
 
-import { ConfirmationModalContent } from "../TransactionConfirmationModal";
 import {
   PendingConfirmModalState,
   PendingModalContent
-} from "./PendingModalContent";
+} from "./pendingModalContent";
 import {
   ErrorModalContent,
   PendingModalError
-} from "./PendingModalContent/ErrorModalContent";
+} from "./pendingModalContent/ErrorModalContent";
 import SwapModalFooter from "./SwapModalFooter";
 import SwapModalHeader from "./SwapModalHeader";
+
+const BottomSection = styled(AutoColumn)`
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+`;
+export function ConfirmationModalContent({
+  title,
+  bottomContent,
+  onDismiss,
+  topContent,
+  headerContent
+}: {
+  title: ReactNode;
+  onDismiss: () => void;
+  topContent: () => ReactNode;
+  bottomContent?: () => ReactNode;
+  headerContent?: () => ReactNode;
+}) {
+  return (
+    <Wrapper>
+      <AutoColumn gap="sm">
+        <Grid>
+          {headerContent?.()}
+          <Grid justifyContent="center" marginLeft="24px">
+            <Typography>{title}</Typography>
+          </Grid>
+          <CloseIcon
+            onClick={onDismiss}
+            data-testid="confirmation-close-icon"
+          />
+        </Grid>
+        {topContent()}
+      </AutoColumn>
+      {bottomContent && (
+        <BottomSection gap="12px">{bottomContent()}</BottomSection>
+      )}
+    </Wrapper>
+  );
+}
 
 export enum ConfirmModalState {
   REVIEWING,
@@ -57,8 +87,8 @@ export enum ConfirmModalState {
   PERMITTING,
   PENDING_CONFIRMATION
 }
-
-const StyledL2Badge = styled(Badge)`
+// TODO:styled(Badge)`
+const StyledL2Badge = styled.div`
   padding: 6px 8px;
 `;
 
@@ -132,7 +162,6 @@ function useConfirmModalState({
   }, [allowance, trade]);
 
   const { chainId } = useWeb3React();
-  const trace = useTrace();
   const maximumAmountIn = useMaxAmountIn(trade, allowedSlippage);
 
   const nativeCurrency = useNativeCurrency(chainId);
@@ -163,13 +192,6 @@ function useConfirmModalState({
               // After the wrap has succeeded, reset the input currency to be WETH
               // because the trade will be on WETH -> token
               onCurrencySelection(Field.INPUT, trade.inputAmount.currency);
-              sendAnalyticsEvent(InterfaceEventName.WRAP_TOKEN_TXN_SUBMITTED, {
-                chain_id: chainId,
-                token_symbol: maximumAmountIn?.currency.symbol,
-                token_address: maximumAmountIn?.currency.address,
-                ...trade,
-                ...trace
-              });
             })
             .catch((e) => catchUserReject(e, PendingModalError.WRAP_ERROR));
           break;
@@ -222,17 +244,7 @@ function useConfirmModalState({
           break;
       }
     },
-    [
-      allowance,
-      chainId,
-      maximumAmountIn?.currency.address,
-      maximumAmountIn?.currency.symbol,
-      onSwap,
-      onWrap,
-      trace,
-      trade,
-      onCurrencySelection
-    ]
+    [allowance, onSwap, onWrap, trade, onCurrencySelection]
   );
 
   const startSwapFlow = useCallback(() => {
@@ -383,37 +395,22 @@ export default function ConfirmSwapModal({
   const [lastExecutionPrice, setLastExecutionPrice] = useState(
     trade?.executionPrice
   );
-  const [priceUpdate, setPriceUpdate] = useState<number>();
   useEffect(() => {
     if (
       lastExecutionPrice &&
       !trade.executionPrice.equalTo(lastExecutionPrice)
     ) {
-      setPriceUpdate(
-        getPriceUpdateBasisPoints(lastExecutionPrice, trade.executionPrice)
-      );
       setLastExecutionPrice(trade.executionPrice);
     }
   }, [lastExecutionPrice, setLastExecutionPrice, trade]);
 
   const onModalDismiss = useCallback(() => {
-    if (showAcceptChanges) {
-      // If the user dismissed the modal while showing the price update, log the event as rejected.
-      sendAnalyticsEvent(
-        SwapEventName.SWAP_PRICE_UPDATE_ACKNOWLEDGED,
-        formatSwapPriceUpdatedEventProperties(
-          trade,
-          priceUpdate,
-          SwapPriceUpdateUserResponse.REJECTED
-        )
-      );
-    }
     onDismiss();
-    setTimeout(() => {
-      // Reset local state after the modal dismiss animation finishes, to avoid UI flicker as it dismisses
-      onCancel();
-    }, MODAL_TRANSITION_DURATION);
-  }, [onCancel, onDismiss, priceUpdate, showAcceptChanges, trade]);
+    // TODO: setTimeout(() => {
+    // Reset local state after the modal dismiss animation finishes, to avoid UI flicker as it dismisses
+    onCancel();
+    // }, MODAL_TRANSITION_DURATION);
+  }, [onCancel, onDismiss]);
 
   const modalHeader = useCallback(() => {
     if (
@@ -499,11 +496,11 @@ export default function ConfirmSwapModal({
     ) {
       const info = getChainInfo(chainId);
       return (
-        <StyledL2Badge>
-          <RowFixed data-testid="confirmation-modal-chain-icon" gap="sm">
+        <StyledL2Badge data-testid="l2-badge">
+          <Grid data-testid="confirmation-modal-chain-icon" gap="sm">
             <StyledL2Logo src={info.logoUrl} />
-            <ThemedText.SubHeaderSmall>{info.label}</ThemedText.SubHeaderSmall>
-          </RowFixed>
+            <Typography>{info.label}</Typography>
+          </Grid>
         </StyledL2Badge>
       );
     }
@@ -511,27 +508,29 @@ export default function ConfirmSwapModal({
   };
 
   return (
-    <Trace modal={InterfaceModalName.CONFIRM_SWAP}>
-      <Modal isOpen $scrollOverlay onDismiss={onModalDismiss} maxHeight={90}>
-        {approvalError || swapFailed ? (
-          <ErrorModalContent
-            errorType={approvalError ?? PendingModalError.CONFIRMATION_ERROR}
-            onRetry={startSwapFlow}
-          />
-        ) : (
-          <ConfirmationModalContent
-            title={
-              confirmModalState === ConfirmModalState.REVIEWING ? (
-                <Trans>Review swap</Trans>
-              ) : undefined
-            }
-            onDismiss={onModalDismiss}
-            topContent={modalHeader}
-            bottomContent={modalBottom}
-            headerContent={l2Badge}
-          />
-        )}
-      </Modal>
-    </Trace>
+    <Modal
+      hideModal={onModalDismiss}
+      style={{ maxHeight: 90 }}
+      modalType={"CONFIRM_SWAP"}
+    >
+      {approvalError || swapFailed ? (
+        <ErrorModalContent
+          errorType={approvalError ?? PendingModalError.CONFIRMATION_ERROR}
+          onRetry={startSwapFlow}
+        />
+      ) : (
+        <ConfirmationModalContent
+          title={
+            confirmModalState === ConfirmModalState.REVIEWING ? (
+              <>Review swap</>
+            ) : undefined
+          }
+          onDismiss={onModalDismiss}
+          topContent={modalHeader}
+          bottomContent={modalBottom}
+          headerContent={l2Badge}
+        />
+      )}
+    </Modal>
   );
 }

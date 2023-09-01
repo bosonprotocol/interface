@@ -1,3 +1,4 @@
+import { colors } from "lib/styles/colors";
 import styled, { css, keyframes } from "styled-components";
 
 export const loadingAnimation = keyframes`
@@ -14,9 +15,9 @@ const shimmerMixin = css`
   animation-fill-mode: both;
   background: linear-gradient(
     to left,
-    ${({ theme }) => theme.deprecated_bg1} 25%,
-    ${({ theme }) => theme.backgroundInteractive} 50%,
-    ${({ theme }) => theme.deprecated_bg1} 75%
+    ${colors.darkGrey} 25%,
+    ${colors.lightGrey} 50%,
+    ${colors.darkGrey} 75%
   );
   background-size: 400%;
   will-change: background-position;

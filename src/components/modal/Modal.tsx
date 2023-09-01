@@ -237,7 +237,7 @@ interface Props {
   noCloseIcon?: boolean;
   modalType: ModalType;
   headerComponent?: ReactNode;
-  size: NonNullable<Store["modalSize"]>;
+  size?: NonNullable<Store["modalSize"]>;
   maxWidths?: Store["modalMaxWidth"];
   theme?: NonNullable<Store["theme"]>;
   hidden?: boolean;

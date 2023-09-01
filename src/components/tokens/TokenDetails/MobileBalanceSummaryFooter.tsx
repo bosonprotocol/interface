@@ -1,20 +1,20 @@
-import { Trans } from '@lingui/macro'
-import { Currency } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
-import { NATIVE_CHAIN_ID } from 'constants/tokens'
-import { CHAIN_ID_TO_BACKEND_NAME } from 'graphql/data/util'
-import { useStablecoinValue } from 'hooks/useStablecoinPrice'
-import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
-import styled from 'styled-components'
-import { StyledInternalLink } from 'theme'
-import { formatCurrencyAmount, NumberType } from 'utils/formatNumbers'
+import { Trans } from "@lingui/macro";
+import { Currency } from "@uniswap/sdk-core";
+import { useWeb3React } from "@web3-react/core";
+import { NATIVE_CHAIN_ID } from "constants/tokens";
+import { CHAIN_ID_TO_BACKEND_NAME } from "graphql/data/util";
+import { useStablecoinValue } from "hooks/useStablecoinPrice";
+import useCurrencyBalance from "lib/hooks/useCurrencyBalance";
+import styled from "styled-components";
+import { StyledInternalLink } from "theme";
+import { formatCurrencyAmount, NumberType } from "utils/formatNumbers";
 
 const Wrapper = styled.div`
   align-content: center;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.backgroundOutline};
+  border: 1px solid ${colors.lightGrey};
   border-bottom: none;
-  background-color: ${({ theme }) => theme.backgroundSurface};
+  background-color: ${colors.lightGrey};
   border-radius: 20px 20px 0px 0px;
   bottom: 52px;
   color: ${({ theme }) => theme.textSecondary};
@@ -36,27 +36,27 @@ const Wrapper = styled.div`
   @media screen and (min-width: ${({ theme }) => theme.breakpoint.lg}px) {
     display: none;
   }
-`
+`;
 const BalanceValue = styled.div`
   color: ${({ theme }) => theme.textPrimary};
   font-size: 20px;
   line-height: 28px;
   display: flex;
   gap: 8px;
-`
+`;
 const Balance = styled.div`
   align-items: center;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 8px;
-`
+`;
 const BalanceInfo = styled.div`
   display: flex;
   flex: 10 1 auto;
   flex-direction: column;
   justify-content: flex-start;
-`
+`;
 const FiatValue = styled.span`
   font-size: 12px;
   line-height: 16px;
@@ -64,7 +64,7 @@ const FiatValue = styled.span`
   @media screen and (min-width: ${({ theme }) => theme.breakpoint.sm}px) {
     line-height: 24px;
   }
-`
+`;
 const SwapButton = styled(StyledInternalLink)`
   background-color: ${({ theme }) => theme.accentAction};
   border: none;
@@ -79,14 +79,21 @@ const SwapButton = styled(StyledInternalLink)`
   justify-content: center;
   margin: auto;
   max-width: 100vw;
-`
+`;
 
-export default function MobileBalanceSummaryFooter({ token }: { token: Currency }) {
-  const { account } = useWeb3React()
-  const balance = useCurrencyBalance(account, token)
-  const formattedBalance = formatCurrencyAmount(balance, NumberType.TokenNonTx)
-  const formattedUsdValue = formatCurrencyAmount(useStablecoinValue(balance), NumberType.FiatTokenStats)
-  const chain = CHAIN_ID_TO_BACKEND_NAME[token.chainId].toLowerCase()
+export default function MobileBalanceSummaryFooter({
+  token
+}: {
+  token: Currency;
+}) {
+  const { account } = useWeb3React();
+  const balance = useCurrencyBalance(account, token);
+  const formattedBalance = formatCurrencyAmount(balance, NumberType.TokenNonTx);
+  const formattedUsdValue = formatCurrencyAmount(
+    useStablecoinValue(balance),
+    NumberType.FiatTokenStats
+  );
+  const chain = CHAIN_ID_TO_BACKEND_NAME[token.chainId].toLowerCase();
 
   return (
     <Wrapper>
@@ -101,9 +108,13 @@ export default function MobileBalanceSummaryFooter({ token }: { token: Currency 
           </Balance>
         </BalanceInfo>
       )}
-      <SwapButton to={`/swap?chainName=${chain}&outputCurrency=${token.isNative ? NATIVE_CHAIN_ID : token.address}`}>
+      <SwapButton
+        to={`/swap?chainName=${chain}&outputCurrency=${
+          token.isNative ? NATIVE_CHAIN_ID : token.address
+        }`}
+      >
         <Trans>Swap</Trans>
       </SwapButton>
     </Wrapper>
-  )
+  );
 }

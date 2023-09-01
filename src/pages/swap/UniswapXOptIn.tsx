@@ -1,5 +1,4 @@
-import UniswapXBrandMark from "components/Logo/UniswapXBrandMark";
-import { Arrow } from "components/Popover";
+import UniswapXBrandMark from "components/logo/UniswapXBrandMark";
 import UniswapXRouterLabel from "components/routerLabel/UniswapXRouterLabel";
 import {
   SwapMustache,
@@ -13,6 +12,7 @@ import {
 import Column from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
+import { colors } from "lib/styles/colors";
 import { X } from "phosphor-react";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "state/hooks";
@@ -22,7 +22,57 @@ import { SwapInfo } from "state/swap/hooks";
 import { useRouterPreference, useUserDisabledUniswapX } from "state/user/hooks";
 import { updateDisabledUniswapX } from "state/user/reducer";
 import styled from "styled-components";
+export const Arrow = styled.div`
+  width: 8px;
+  height: 8px;
+  z-index: 9998;
 
+  ::before {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    box-sizing: border-box;
+    z-index: 9998;
+
+    content: "";
+    border: 1px solid ${colors.lightGrey};
+    transform: rotate(45deg);
+    background: ${colors.lightGrey};
+  }
+
+  &.arrow-top {
+    bottom: -4px;
+    ::before {
+      border-top: none;
+      border-left: none;
+    }
+  }
+
+  &.arrow-bottom {
+    top: -4px;
+    ::before {
+      border-bottom: none;
+      border-right: none;
+    }
+  }
+
+  &.arrow-left {
+    right: -4px;
+
+    ::before {
+      border-bottom: none;
+      border-left: none;
+    }
+  }
+
+  &.arrow-right {
+    left: -4px;
+    ::before {
+      border-right: none;
+      border-top: none;
+    }
+  }
+`;
 export const UniswapXOptIn = (props: {
   swapInfo: SwapInfo;
   isSmall: boolean;
