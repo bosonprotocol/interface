@@ -1,21 +1,21 @@
-import { Trans } from '@lingui/macro'
-import { ChainId } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
-import { ButtonPrimary } from 'components/Button'
-import { getChainInfo } from 'constants/chainInfo'
-import useSelectChain from 'hooks/useSelectChain'
-import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import { ThemedText } from 'theme'
+import { Trans } from "@lingui/macro";
+import { ChainId } from "@uniswap/sdk-core";
+import { useWeb3React } from "@web3-react/core";
+import { ButtonPrimary } from "components/Button";
+import { getChainInfo } from "constants/chainInfo";
+import useSelectChain from "hooks/useSelectChain";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { ThemedText } from "theme";
 
-import { ReactComponent as EyeIcon } from '../../../assets/svg/eye.svg'
+import { ReactComponent as EyeIcon } from "../../../assets/svg/eye.svg";
 
 const InvalidDetailsContainer = styled.div`
   padding-top: 128px;
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 
 const InvalidDetailsText = styled.span`
   margin-top: 28px;
@@ -23,11 +23,11 @@ const InvalidDetailsText = styled.span`
 
   text-align: center;
 
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-`
+`;
 
 const TokenExploreButton = styled(ButtonPrimary)`
   width: fit-content;
@@ -37,23 +37,25 @@ const TokenExploreButton = styled(ButtonPrimary)`
   color: ${({ theme }) => theme.textPrimary};
   font-size: 16px;
   font-weight: 600;
-`
+`;
 
 export default function InvalidTokenDetails({
   pageChainId,
-  isInvalidAddress,
+  isInvalidAddress
 }: {
-  pageChainId: ChainId
-  isInvalidAddress?: boolean
+  pageChainId: ChainId;
+  isInvalidAddress?: boolean;
 }) {
-  const { chainId } = useWeb3React()
-  const navigate = useNavigate()
-  const selectChain = useSelectChain()
+  const { chainId } = useWeb3React();
+  const navigate = useNavigate();
+  const selectChain = useSelectChain();
 
   // if the token's address is valid and the chains match, it's a non-existant token
-  const isNonExistantToken = !isInvalidAddress && pageChainId === chainId
+  const isNonExistantToken = !isInvalidAddress && pageChainId === chainId;
 
-  const connectedChainLabel = chainId ? getChainInfo(chainId)?.label : undefined
+  const connectedChainLabel = chainId
+    ? getChainInfo(chainId)?.label
+    : undefined;
 
   return (
     <InvalidDetailsContainer>
@@ -63,7 +65,7 @@ export default function InvalidTokenDetails({
           <InvalidDetailsText>
             <Trans>This token doesn&apos;t exist</Trans>
           </InvalidDetailsText>
-          <TokenExploreButton onClick={() => navigate('/tokens')}>
+          <TokenExploreButton onClick={() => navigate("/tokens")}>
             <ThemedText.SubHeader>
               <Trans>Explore tokens</Trans>
             </ThemedText.SubHeader>
@@ -73,7 +75,9 @@ export default function InvalidTokenDetails({
         <>
           {connectedChainLabel && (
             <InvalidDetailsText>
-              <Trans>This token doesn&apos;t exist on {connectedChainLabel}</Trans>
+              <Trans>
+                This token doesn&apos;t exist on {connectedChainLabel}
+              </Trans>
             </InvalidDetailsText>
           )}
           <TokenExploreButton onClick={() => selectChain(pageChainId)}>
@@ -84,5 +88,5 @@ export default function InvalidTokenDetails({
         </>
       )}
     </InvalidDetailsContainer>
-  )
+  );
 }

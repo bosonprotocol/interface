@@ -28,6 +28,7 @@ import JSBI from "jsbi";
 import { getChainInfo } from "lib/constants/chainInfo";
 import { asSupportedChain, isSupportedChain } from "lib/constants/chains";
 import { getSwapCurrencyId, TOKEN_SHORTHANDS } from "lib/constants/tokens";
+import { colors } from "lib/styles/colors";
 import { computeFiatValuePriceImpact } from "lib/utils/computeFiatValuePriceImpact";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
 import { useCurrency, useDefaultActiveTokens } from "lib/utils/hooks/Tokens";
@@ -87,7 +88,7 @@ export const ArrowContainer = styled.div`
 const SwapSection = styled.div`
   background-color: ${({ theme }) => theme.backgroundModule};
   border-radius: 16px;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${colors.lightGrey};
   font-size: 14px;
   font-weight: 500;
   height: 120px;
@@ -543,7 +544,7 @@ export function Swap({
         txHash: undefined
       }));
     }
-  }, [currencies, onUserInput, onWrap, wrapType]);
+  }, [onUserInput, onWrap]);
 
   // warnings on the greater of fiat value price impact and execution price impact
   const { priceImpactSeverity, largerPriceImpact } = useMemo(() => {
@@ -722,9 +723,7 @@ export function Swap({
                   style={{ padding: "0 1rem" }}
                 >
                   <ArrowWrapper clickable={false}>
-                    <ArrowDown
-                      size="16" //color={theme.textSecondary}
-                    />
+                    <ArrowDown size="16" color={colors.lightGrey} />
                   </ArrowWrapper>
                   <Button
                     id="remove-recipient-button"

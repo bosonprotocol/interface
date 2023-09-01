@@ -4,14 +4,16 @@ import { AutoColumn } from "components/ui/column/index";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { COMMON_BASES } from "lib/constants/routing";
+import { breakpoint } from "lib/styles/breakpoint";
 import { currencyId } from "lib/utils/currencyId";
 import { useTokenInfoFromActiveList } from "lib/utils/hooks/useTokenInfoFromActiveList";
 import styled from "styled-components";
 
 const MobileWrapper = styled(AutoColumn)`
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
+  ${breakpoint.s} {
+    // TODO: check
     display: none;
-  `};
+  } ;
 `;
 
 const BaseWrapper = styled.div<{ disable?: boolean }>`

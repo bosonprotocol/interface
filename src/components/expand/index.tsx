@@ -12,7 +12,7 @@ const ButtonContainer = styled(Grid)`
 `;
 
 const ExpandIcon = styled(CaretDown)<{ $isOpen: boolean }>`
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   transform: ${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "rotate(0deg)")};
   transition: transform ${({ theme }) => theme.transition.duration.medium};
 `;

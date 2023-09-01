@@ -32,7 +32,7 @@ const SearchInput = styled.input`
   width: min(200px, 100%);
   font-size: 14px;
   padding-left: 40px;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   transition-duration: ${({ theme }) => theme.transition.duration.fast};
 
   :hover {

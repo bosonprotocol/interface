@@ -14,7 +14,7 @@ import styled from "styled-components";
 
 export const Label = styled(Typography)<{ cursor?: string }>`
   cursor: ${({ cursor }) => cursor};
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   margin-right: 8px;
 `;
 

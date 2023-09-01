@@ -1,4 +1,5 @@
 import { Warning, WARNING_LEVEL } from "lib/constants/tokenSafety";
+import { colors } from "lib/styles/colors";
 import { Prohibit, Warning as WarningTriangle } from "phosphor-react";
 import styled, { css } from "styled-components";
 
@@ -20,7 +21,7 @@ const WarningIcon = styled(WarningTriangle)`
 
 export const BlockedIcon = styled(Prohibit)`
   ${WarningIconStyle}
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${colors.lightGrey};
 `;
 
 export default function TokenSafetyIcon({

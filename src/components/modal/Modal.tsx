@@ -250,7 +250,7 @@ export default function Modal({
   hideModal,
   title = "",
   headerComponent: HeaderComponent,
-  size,
+  size = "auto",
   maxWidths,
   theme = "light",
   closable = true,

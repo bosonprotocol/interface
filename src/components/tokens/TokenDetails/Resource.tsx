@@ -1,10 +1,10 @@
-import { darken } from 'polished'
-import styled from 'styled-components'
-import { ExternalLink } from 'theme'
+import { colors } from "lib/styles/colors";
+import { darken } from "polished";
+import styled from "styled-components";
 
-const ResourceLink = styled(ExternalLink)`
+const ResourceLink = styled.a`
   display: flex;
-  color: ${({ theme }) => theme.accentAction};
+  color: ${colors.blue};
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
@@ -13,15 +13,21 @@ const ResourceLink = styled(ExternalLink)`
 
   &:hover,
   &:focus {
-    color: ${({ theme }) => darken(0.1, theme.accentAction)};
+    color: ${darken(0.1, colors.blue)};
     text-decoration: none;
   }
-`
-export default function Resource({ name, link }: { name: string; link: string }) {
+`;
+export default function Resource({
+  name,
+  link
+}: {
+  name: string;
+  link: string;
+}) {
   return (
     <ResourceLink href={link}>
       {name}
       <sup>↗</sup>
     </ResourceLink>
-  )
+  );
 }

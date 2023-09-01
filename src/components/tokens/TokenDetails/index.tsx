@@ -51,13 +51,13 @@ import InvalidTokenDetails from "./InvalidTokenDetails";
 
 const TokenSymbol = styled.span`
   text-transform: uppercase;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   margin-left: 8px;
 `;
 const TokenActions = styled.div`
   display: flex;
   gap: 16px;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
 `;
 const TokenTitle = styled.div`
   display: flex;

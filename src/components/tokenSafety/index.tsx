@@ -61,7 +61,7 @@ const StyledButton = styled(Button)`
 
 const StyledCancelButton = styled(Button)`
   margin-top: 16px;
-  /* color: ${({ theme }) => theme.textSecondary}; */
+  color: ${colors.lightGrey};
   font-weight: 600;
   font-size: 14px;
 `;
@@ -72,7 +72,7 @@ const StyledCloseButton = styled(StyledButton)`
 
   &:hover {
     background-color: ${colors.lightGrey};
-    /* opacity: ${({ theme }) => theme.opacity.hover}; */
+    opacity: 0.6;
     transition: opacity 250ms ease;
   }
 `;
@@ -142,7 +142,7 @@ const ExplorerLinkWrapper = styled.div`
   cursor: pointer;
 
   :hover {
-    opacity: ${({ theme }) => theme.opacity.hover};
+    opacity: 0.6;
   }
   :active {
     opacity: ${({ theme }) => theme.opacity.click};

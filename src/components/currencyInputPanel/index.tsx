@@ -101,7 +101,7 @@ const LabelRow = styled.div`
   padding: 0 1rem 1rem;
   span:hover {
     cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.textSecondary)};
+    color: ${({ theme }) => darken(0.2, colors.lightGrey)};
   }
 `;
 

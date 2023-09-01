@@ -19,9 +19,9 @@ const InlineLink = styled(Typography)`
   /* color: ${({ theme }) => theme.accentAction}; */
   display: inline;
   cursor: pointer;
-  /* &:hover {
-    opacity: ${({ theme }) => theme.opacity.hover};
-  } */
+  &:hover {
+    opacity: 0.6;
+  }
 `;
 
 const InlineUniswapXGradient = styled(UniswapXGradient)`

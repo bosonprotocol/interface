@@ -83,8 +83,7 @@ const StyledMenuContent = styled.div`
 `;
 const Chevron = styled.span<{ open: boolean }>`
   padding-top: 1px;
-  color: ${({ open, theme }) =>
-    open ? theme.accentActive : theme.textSecondary};
+  color: ${({ open, theme }) => (open ? theme.accentActive : colors.lightGrey)};
 `;
 const NetworkLabel = styled.div`
   ${EllipsisStyle}
@@ -105,7 +104,7 @@ const NetworkFilterOption = styled(FilterOption)`
 `;
 const Tag = styled(Badge)`
   background-color: ${({ theme }) => theme.backgroundModule};
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   font-size: 10px;
   opacity: 1;
   padding: 4px 6px;

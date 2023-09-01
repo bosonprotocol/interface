@@ -14,12 +14,13 @@ import { AutoColumn } from "components/ui/column/index";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { isSupportedChain } from "lib/constants/chains";
+import { colors } from "lib/styles/colors";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
 import { Lock } from "phosphor-react";
 import { darken } from "polished";
 import { ReactNode, useCallback, useState } from "react";
 import { useCurrencyBalance } from "state/connection/hooks";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 
 import DoubleCurrencyLogo from "../logo/DoubleCurrencyLogo";
 import { Input as NumericalInput } from "../numericalInput";
@@ -121,13 +122,13 @@ const InputRow = styled.div`
 const LabelRow = styled.div`
   ${flexRowNoWrap};
   align-items: center;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${colors.lightGrey};
   font-size: 0.75rem;
   line-height: 1rem;
 
   span:hover {
     cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.textSecondary)};
+    color: ${darken(0.2, colors.lightGrey)};
   }
 `;
 
@@ -247,7 +248,6 @@ export default function SwapCurrencyInputPanel({
     account ?? undefined,
     currency ?? undefined
   );
-  const theme = useTheme();
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false);
@@ -354,7 +354,7 @@ export default function SwapCurrencyInputPanel({
                 <Grid style={{ height: "17px" }}>
                   <Typography
                     data-testid="balance-text"
-                    // color={theme.textSecondary}
+                    // color={colors.lightGrey}
                     fontWeight={400}
                     $fontSize={14}
                     style={{ display: "inline" }}

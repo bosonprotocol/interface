@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   background-color: ${colors.lightGrey};
   border-radius: 20px 20px 0px 0px;
   bottom: 52px;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   display: flex;
   flex-direction: row;
   font-weight: 500;

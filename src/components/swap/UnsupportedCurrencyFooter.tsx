@@ -7,6 +7,7 @@ import { AutoColumn } from "components/Column";
 import CurrencyLogo from "components/Logo/CurrencyLogo";
 import Modal from "components/Modal";
 import { AutoRow, RowBetween } from "components/Row";
+import { breakpoint } from "lib/styles/breakpoint";
 import { useState } from "react";
 import styled from "styled-components";
 import { CloseIcon, ExternalLink, ThemedText } from "theme";
@@ -25,7 +26,7 @@ const DetailsFooter = styled.div<{ show: boolean }>`
   max-width: 400px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   background-color: ${({ theme }) => theme.deprecated_advancedBG};
   z-index: ${Z_INDEX.deprecated_zero};
 
@@ -41,9 +42,10 @@ const StyledButtonEmpty = styled(ButtonEmpty)`
 const AddressText = styled(ThemedText.DeprecatedBlue)`
   font-size: 12px;
 
-  ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
+  ${breakpoint.s} {
+    // TODO: check
     font-size: 10px;
-`}
+  }
 `;
 
 export default function UnsupportedCurrencyFooter({

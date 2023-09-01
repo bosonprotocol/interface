@@ -26,7 +26,7 @@ const ShareButtonDisplay = styled.div`
 `;
 
 const Share = styled(ShareIcon)<{ open: boolean }>`
-  stroke: ${({ theme }) => theme.textSecondary};
+  stroke: ${({ theme }) => colors.lightGrey};
   height: 24px;
   width: 24px;
   ${ClickableStyle}

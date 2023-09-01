@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 export const BreadcrumbNavLink = styled(Link)`
   display: flex;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   font-size: 14px;
   line-height: 20px;
   align-items: center;
@@ -16,4 +16,4 @@ export const BreadcrumbNavLink = styled(Link)`
   &:hover {
     color: ${({ theme }) => theme.textTertiary};
   }
-`
+`;

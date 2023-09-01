@@ -66,7 +66,7 @@ const OpaqueBadge = styled.div`
 const ProtocolBadge = styled.div`
   background-color: ${({ theme }) => theme.deprecated_bg3};
   border-radius: 4px;
-  color: ${({ theme }) => theme.textSecondary};
+  color: ${({ theme }) => colors.lightGrey};
   font-size: 10px;
   padding: 2px 4px;
   /* z-index: {Z_INDEX.sticky + 1}; */
