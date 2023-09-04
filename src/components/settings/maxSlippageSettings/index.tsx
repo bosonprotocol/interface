@@ -145,7 +145,7 @@ export default function MaxSlippageSettings({
             }}
             isActive={userSlippageTolerance === SlippageTolerance.Auto}
           >
-            <Typography>
+            <Typography color="initial">
               <>Auto</>
             </Typography>
           </Option>
@@ -156,7 +156,7 @@ export default function MaxSlippageSettings({
             }}
             isActive={userSlippageTolerance !== SlippageTolerance.Auto}
           >
-            <Typography>
+            <Typography color="initial">
               <>Custom</>
             </Typography>
           </Option>

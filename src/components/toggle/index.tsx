@@ -1,5 +1,5 @@
 import { colors } from "lib/styles/colors";
-import { darken } from "polished";
+import { darken, lighten } from "polished";
 import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 
@@ -46,7 +46,7 @@ const ToggleElementHoverStyle = (hasBgColor: boolean, isActive?: boolean) =>
       }
     : {
         background: isActive
-          ? darken(0.05, colors.secondary)
+          ? lighten(0.15, colors.secondary)
           : darken(0.05, colors.lightGrey),
         color: isActive ? colors.white : colors.black
       };
@@ -62,7 +62,7 @@ const ToggleElement = styled.span<{
     ease-in;
   background: ${({ bgColor, isActive }) =>
     isActive
-      ? bgColor ?? colors.blue
+      ? bgColor ?? lighten(0.09, colors.secondary)
       : bgColor
       ? colors.lightGrey
       : colors.darkGrey};

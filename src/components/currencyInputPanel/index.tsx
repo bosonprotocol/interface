@@ -256,7 +256,7 @@ export default function CurrencyInputPanel({
                 pointerEvents={!onCurrencySelect ? "none" : undefined}
               >
                 <Aligner>
-                  <Grid>
+                  <Grid $width="fit-content">
                     {pair ? (
                       <span style={{ marginRight: "0.5rem" }}>
                         <DoubleCurrencyLogo

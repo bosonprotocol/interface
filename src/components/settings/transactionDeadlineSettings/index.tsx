@@ -97,7 +97,7 @@ export default function TransactionDeadlineSettings() {
               setDeadlineError(false);
             }}
           />
-          <Typography>
+          <Typography color="initial">
             <>minutes</>
           </Typography>
         </InputContainer>

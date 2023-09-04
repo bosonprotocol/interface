@@ -29,6 +29,7 @@ import { getChainInfo } from "lib/constants/chainInfo";
 import { asSupportedChain, isSupportedChain } from "lib/constants/chains";
 import { getSwapCurrencyId, TOKEN_SHORTHANDS } from "lib/constants/tokens";
 import { colors } from "lib/styles/colors";
+import { PreventCustomStoreStyles } from "lib/styles/preventCustomStoreStyles";
 import { computeFiatValuePriceImpact } from "lib/utils/computeFiatValuePriceImpact";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
 import { useCurrency, useDefaultActiveTokens } from "lib/utils/hooks/Tokens";
@@ -77,9 +78,10 @@ import styled from "styled-components";
 
 import { UniswapXOptIn } from "./UniswapXOptIn";
 
-const SwapButton = styled(Button)`
-  /* width: 100%; */
-  /* border-radius: 16px; */
+const CTAButton = styled(Button)`
+  width: 100%;
+  border-radius: 16px;
+  margin-top: 4px;
 `;
 
 export const ArrowContainer = styled.div`
@@ -696,11 +698,8 @@ export function Swap({
             onClick={() => {
               !disableTokenInputs && onSwitchTokens();
             }}
-            // color={theme.textPrimary}
           >
-            <ArrowDown
-              size="16" //color={theme.textPrimary}
-            />
+            <ArrowDown size="16" color={colors.black} />
           </ArrowContainer>
         </ArrowWrapper>
       </div>
@@ -761,22 +760,22 @@ export function Swap({
         )}
         <div>
           {swapIsUnsupported ? (
-            <Button disabled={true}>
+            <CTAButton disabled={true}>
               <Typography //mb="4px"
               >
                 <>Unsupported Asset</>
               </Typography>
-            </Button>
+            </CTAButton>
           ) : switchingChain ? (
-            <Button disabled={true}>
+            <CTAButton disabled={true}>
               <>Connecting to {getChainInfo(switchingChain)?.label}</>
-            </Button>
+            </CTAButton>
           ) : !account ? (
-            <Button onClick={toggleWalletDrawer}>
+            <CTAButton onClick={toggleWalletDrawer}>
               <Typography fontWeight={600}>Connect Wallet</Typography>
-            </Button>
+            </CTAButton>
           ) : chainId && chainId !== connectedChainId ? (
-            <Button
+            <CTAButton
               onClick={async () => {
                 try {
                   await switchChain(connector, chainId);
@@ -791,13 +790,12 @@ export function Swap({
               }}
             >
               Connect to {getChainInfo(chainId)?.label}
-            </Button>
+            </CTAButton>
           ) : showWrap ? (
-            <Button
+            <CTAButton
               disabled={Boolean(wrapInputError)}
               onClick={handleOnWrap}
               data-testid="wrap-button"
-              style={{ width: "100%", borderRadius: "16px", marginTop: "4px" }}
             >
               <Typography fontWeight={600}>
                 {wrapInputError ? (
@@ -808,7 +806,7 @@ export function Swap({
                   <>Unwrap</>
                 ) : null}
               </Typography>
-            </Button>
+            </CTAButton>
           ) : routeNotFound &&
             userHasSpecifiedInputOutput &&
             !routeIsLoading &&
@@ -819,7 +817,7 @@ export function Swap({
               </Typography>
             </GrayCard>
           ) : (
-            <Button
+            <CTAButton
               onClick={() => {
                 showPriceImpactWarning
                   ? setShowPriceImpactModal(true)
@@ -845,7 +843,7 @@ export function Swap({
                   <>Swap</>
                 )}
               </Typography>
-            </Button>
+            </CTAButton>
           )}
         </div>
       </AutoColumn>
@@ -854,9 +852,9 @@ export function Swap({
   );
 
   return (
-    <>
+    <PreventCustomStoreStyles>
       {swapElement}
       {showOptInSmall && <UniswapXOptIn isSmall swapInfo={swapInfo} />}
-    </>
+    </PreventCustomStoreStyles>
   );
 }

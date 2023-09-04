@@ -149,6 +149,9 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0.25rem 0 0.35rem;
   height: 35%;
   margin-left: 8px;
+  && {
+    stroke: ${colors.white};
+  }
 
   path {
     stroke: ${({ selected }) => (selected ? colors.primary : colors.white)};
@@ -341,7 +344,7 @@ export default function SwapCurrencyInputPanel({
         </InputRow>
         {Boolean(!hideInput && !hideBalance) && (
           <FiatRow>
-            <Grid justifyContent="space-between" data-aaaaa>
+            <Grid justifyContent="space-between">
               <LoadingOpacityContainer $loading={loading}>
                 {fiatValue && (
                   <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
