@@ -45,10 +45,10 @@ const StepCircle = styled.div<{ active: boolean }>`
   height: 10px;
   width: 10px;
   border-radius: 50%;
-  /* background-color: ${({ theme, active }) =>
+  /* background-color: {({ theme, active }) =>
     active ? colors.secondary : theme.textTertiary};
   outline: 3px solid
-    ${({ theme, active }) =>
+    {({ theme, active }) =>
     active ? theme.accentActionSoft : theme.accentTextLightTertiary}; */
   transition: background-color 250ms ease-in-out;
 `;
@@ -327,19 +327,6 @@ export function PendingModalContent({
 
   if (steps.length === 0) {
     return null;
-  }
-
-  // Return finalized-order-specifc content if available
-  if (order && order.status !== UniswapXOrderStatus.OPEN) {
-    return (
-      <OrderContent
-        order={{
-          status: order.status,
-          orderHash: order.orderHash,
-          details: order
-        }}
-      />
-    );
   }
 
   // On mainnet, we show a different icon when the transaction is submitted but pending confirmation.

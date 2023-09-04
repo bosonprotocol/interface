@@ -30,13 +30,13 @@ import styled from "styled-components";
 import invariant from "tiny-invariant";
 
 import {
-  PendingConfirmModalState,
-  PendingModalContent
-} from "./pendingModalContent";
-import {
   ErrorModalContent,
   PendingModalError
 } from "./pendingModalContent/ErrorModalContent";
+import {
+  PendingConfirmModalState,
+  PendingModalContent
+} from "./pendingModalContent/index";
 import SwapModalFooter from "./SwapModalFooter";
 import SwapModalHeader from "./SwapModalHeader";
 
