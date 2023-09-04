@@ -5,7 +5,6 @@ import Column from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { supportedChainIdFromGQLChain } from "graphql/data/util";
-import { colors } from "lib/styles/colors";
 import { UserAddedToken } from "lib/types/tokens";
 import { isAddress } from "lib/utils/address";
 import {
@@ -39,12 +38,12 @@ import { FixedSizeList } from "react-window";
 import styled from "styled-components";
 
 import CommonBases from "./CommonBases";
-import { CurrencyRow, formatAnalyticsEventProperties } from "./CurrencyList";
+import { CurrencyRow } from "./CurrencyList";
 import CurrencyList from "./CurrencyList";
 import { PaddedColumn, SearchInput, Separator } from "./styled";
 
 const ContentWrapper = styled(Column)`
-  background-color: ${colors.lightGrey};
+  height: 100%;
   width: 100%;
   overflow: hidden;
   flex: 1 1;
@@ -311,13 +310,6 @@ export function CurrencySearch({
                 otherSelectedCurrency.equals(searchToken)
             )}
             showCurrencyAmount={showCurrencyAmount}
-            eventProperties={formatAnalyticsEventProperties(
-              searchToken,
-              0,
-              [searchToken],
-              searchQuery,
-              isAddressSearch
-            )}
           />
         </Column>
       ) : searchCurrencies?.length > 0 ||
@@ -336,8 +328,6 @@ export function CurrencySearch({
                 fixedListRef={fixedList}
                 showCurrencyAmount={showCurrencyAmount}
                 isLoading={isLoading}
-                searchQuery={searchQuery}
-                isAddressSearch={isAddressSearch}
                 balances={balances}
               />
             )}

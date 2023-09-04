@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Token } from "@uniswap/sdk-core";
+import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { Spinner } from "components/loading/Spinner";
 import TokenSafetyIcon from "components/tokenSafety/TokenSafetyIcon";
@@ -7,6 +7,7 @@ import Column, { AutoColumn } from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { checkWarning } from "lib/constants/tokenSafety";
+import { colors } from "lib/styles/colors";
 import { TokenBalances } from "lib/utils/hooks/useTokenList/sorting";
 import tryParseCurrencyAmount from "lib/utils/tryParseCurrencyAmount";
 import { Check } from "phosphor-react";
@@ -21,12 +22,25 @@ import { LoadingRows, MenuItem } from "../styled";
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : "ETHER";
 }
+/* &::-webkit-scrollbar: {
+    background: transparent;
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb: {
+    background: grey;
+    borderradius: 8px;
+  } */
+const StyledFixedSizeList = styled(FixedSizeList)`
+  scrollbar-width: thin;
+  scrollbar-color: ${colors.darkGrey} transparent;
+  height: 100%;
+`;
 
 const CheckIcon = styled(Check)`
   height: 20px;
   width: 20px;
   margin-left: 4px;
-  color: ${({ theme }) => colors.secondary};
+  color: ${colors.secondary};
 `;
 
 const StyledBalanceText = styled(Typography)`
@@ -45,7 +59,7 @@ const CurrencyName = styled(Typography)`
 
 const Tag = styled.div`
   background-color: ${({ theme }) => theme.deprecated_bg3};
-  color: ${({ theme }) => colors.lightGrey};
+  color: ${colors.lightGrey};
   font-size: 14px;
   border-radius: 4px;
   padding: 0.25rem 0.3rem 0.25rem 0.3rem;
@@ -114,7 +128,6 @@ export function CurrencyRow({
   otherSelected,
   style,
   showCurrencyAmount,
-  eventProperties,
   balance
 }: {
   currency: Currency;
@@ -123,7 +136,6 @@ export function CurrencyRow({
   otherSelected: boolean;
   style?: CSSProperties;
   showCurrencyAmount?: boolean;
-  eventProperties: Record<string, unknown>;
   balance?: CurrencyAmount<Currency>;
 }) {
   const { account } = useWeb3React();
@@ -199,25 +211,6 @@ interface TokenRowProps {
   style: CSSProperties;
 }
 
-export const formatAnalyticsEventProperties = (
-  token: Token,
-  index: number,
-  data: any[],
-  searchQuery: string,
-  isAddressSearch: string | false
-) => ({
-  token_symbol: token?.symbol,
-  token_address: token?.address,
-  is_suggested_token: false,
-  is_selected_from_list: true,
-  scroll_position: "",
-  token_list_index: index,
-  token_list_length: data.length,
-  ...(isAddressSearch === false
-    ? { search_token_symbol_input: searchQuery }
-    : { search_token_address_input: isAddressSearch })
-});
-
 const LoadingRow = () => (
   <LoadingRows data-testid="loading-rows">
     <div />
@@ -236,8 +229,6 @@ export default function CurrencyList({
   fixedListRef,
   showCurrencyAmount,
   isLoading,
-  searchQuery,
-  isAddressSearch,
   balances
 }: {
   height: number;
@@ -249,8 +240,6 @@ export default function CurrencyList({
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>;
   showCurrencyAmount?: boolean;
   isLoading: boolean;
-  searchQuery: string;
-  isAddressSearch: string | false;
   balances: TokenBalances;
 }) {
   const itemData: Currency[] = useMemo(() => {
@@ -285,8 +274,6 @@ export default function CurrencyList({
       const handleSelect = (hasWarning: boolean) =>
         currency && onCurrencySelect(currency, hasWarning);
 
-      const token = currency?.wrapped;
-
       if (isLoading) {
         return LoadingRow();
       } else if (currency) {
@@ -298,13 +285,6 @@ export default function CurrencyList({
             onSelect={handleSelect}
             otherSelected={otherSelected}
             showCurrencyAmount={showCurrencyAmount}
-            eventProperties={formatAnalyticsEventProperties(
-              token,
-              index,
-              data,
-              searchQuery,
-              isAddressSearch
-            )}
             balance={balance}
           />
         );
@@ -318,8 +298,6 @@ export default function CurrencyList({
       isLoading,
       onCurrencySelect,
       showCurrencyAmount,
-      searchQuery,
-      isAddressSearch,
       balances
     ]
   );
@@ -332,8 +310,7 @@ export default function CurrencyList({
   return (
     <ListWrapper data-testid="currency-list-wrapper">
       {isLoading ? (
-        <FixedSizeList
-          // TODO: className={scrollbarStyle}
+        <StyledFixedSizeList
           height={height}
           ref={fixedListRef as any}
           width="100%"
@@ -342,10 +319,9 @@ export default function CurrencyList({
           itemSize={56}
         >
           {LoadingRow}
-        </FixedSizeList>
+        </StyledFixedSizeList>
       ) : (
         <FixedSizeList
-          // TODO: className={scrollbarStyle}
           height={height}
           ref={fixedListRef as any}
           width="100%"

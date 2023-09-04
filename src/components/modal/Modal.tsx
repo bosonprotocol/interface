@@ -256,7 +256,8 @@ export default function Modal({
   closable = true,
   hidden,
   modalType,
-  style
+  style,
+  ...rest
 }: Props) {
   const handleOnClose = () => {
     if (closable) {
@@ -264,13 +265,18 @@ export default function Modal({
     }
   };
   return createPortal(
-    <Root data-testid="modal" style={{ display: hidden ? "none" : "" }}>
+    <Root
+      data-testid="modal"
+      style={{ display: hidden ? "none" : "" }}
+      {...rest}
+    >
       <Wrapper
         $size={size}
         $modalType={modalType}
         $theme={theme}
         $maxWidths={maxWidths}
         style={style}
+        data-wrapper
       >
         {HeaderComponent ? (
           <ModalHeader
@@ -285,7 +291,7 @@ export default function Modal({
             handleOnClose={handleOnClose}
           />
         )}
-        <Content $size={size} $modalType={modalType}>
+        <Content $size={size} $modalType={modalType} data-content>
           {children}
         </Content>
       </Wrapper>

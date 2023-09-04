@@ -18,6 +18,7 @@ import copyToClipboard from "lib/utils/copyToClipboard";
 import { ExplorerDataType, getExplorerLink } from "lib/utils/getExplorerLink";
 import { useToken } from "lib/utils/hooks/Tokens";
 import { ArrowSquareOut as LinkIconFeather, Copy } from "phosphor-react";
+import { lighten } from "polished";
 import { useAddUserToken } from "state/user/hooks";
 import styled from "styled-components";
 
@@ -47,6 +48,7 @@ const ShortColumn = styled(AutoColumn)`
 `;
 
 const InfoText = styled(Typography)`
+  display: block;
   padding: 0 12px 0 12px;
   font-size: 14px;
   line-height: 20px;
@@ -61,7 +63,6 @@ const StyledButton = styled(Button)`
 
 const StyledCancelButton = styled(Button)`
   margin-top: 16px;
-  color: ${colors.lightGrey};
   font-weight: 600;
   font-size: 14px;
 `;
@@ -96,7 +97,9 @@ const Buttons = ({
         {!displayWarningLabel(warning) ? <>Continue</> : <>I understand</>}
       </StyledButton>
       {showCancel && (
-        <StyledCancelButton onClick={onCancel}>Cancel</StyledCancelButton>
+        <StyledCancelButton onClick={onCancel} theme="blank">
+          Cancel
+        </StyledCancelButton>
       )}
     </>
   ) : (
@@ -126,8 +129,8 @@ const ExplorerContainer = styled.div`
   height: 32px;
   margin-top: 10px;
   font-size: 20px;
-  background-color: ${({ theme }) => theme.accentActionSoft};
-  color: ${({ theme }) => colors.secondary};
+  background-color: ${colors.blue};
+  color: ${lighten(0.5, colors.blue)};
   border-radius: 8px;
   padding: 2px 12px;
   display: flex;
@@ -145,7 +148,7 @@ const ExplorerLinkWrapper = styled.div`
     opacity: 0.6;
   }
   :active {
-    opacity: ${({ theme }) => theme.opacity.click};
+    opacity: 0.4;
   }
 `;
 
@@ -205,7 +208,7 @@ function ExplorerView({ token }: { token: Token }) {
 }
 
 const StyledExternalLink = styled.a`
-  color: ${({ theme }) => colors.secondary};
+  font-size: unset;
   stroke: currentColor;
   font-weight: 600;
 `;

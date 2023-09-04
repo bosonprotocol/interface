@@ -5,8 +5,17 @@ import { useLast } from "lib/utils/hooks/useLast";
 import { useWindowSize } from "lib/utils/hooks/useWindowSize";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useUserAddedTokens } from "state/user/hooks";
+import styled from "styled-components";
 
 import { CurrencySearch } from "./CurrencySearch";
+
+const StyledModal = styled(Modal)`
+  [data-content] {
+    height: 100%;
+    max-height: calc(100% - 4.25rem);
+    padding: 0;
+  }
+`;
 
 interface CurrencySearchModalProps {
   isOpen: boolean;
@@ -111,13 +120,17 @@ export default memo(function CurrencySearchModal({
       break;
   }
   return (
-    <Modal
+    <StyledModal
       hidden={!isOpen}
       hideModal={onDismiss}
-      // TODO: style={{ height: modalHeight }}
+      size="auto"
+      style={{
+        height: `${modalHeight}vh`,
+        maxWidth: `420px`
+      }}
       modalType={"CURRENCY_SEARCH"}
     >
       {content}
-    </Modal>
+    </StyledModal>
   );
 });

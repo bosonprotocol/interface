@@ -1,6 +1,7 @@
 import { WARNING_LEVEL } from "lib/constants/tokenSafety";
 import { colors } from "lib/styles/colors";
-import { opacify } from "polished";
+
+import { opacify } from "../opacify";
 
 export const useTokenWarningTextColor = (level: WARNING_LEVEL) => {
   switch (level) {

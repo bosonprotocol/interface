@@ -164,9 +164,9 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   margin-bottom: -18px;
   margin-left: auto;
   margin-right: auto;
-  background-color: ${({ theme }) => theme.backgroundModule};
+  background-color: ${colors.lightGrey};
   border: 4px solid;
-  border-color: ${colors.lightGrey};
+  border-color: ${colors.white};
 
   z-index: 2;
   ${({ clickable }) =>
@@ -245,7 +245,7 @@ export function SwapCallbackError({ error }: { error: ReactNode }) {
 export const SwapShowAcceptChanges = styled(AutoColumn)`
   background-color: ${({ theme }) =>
     transparentize(0.95, theme.deprecated_primary3)};
-  color: ${({ theme }) => colors.secondary};
+  color: ${colors.secondary};
   padding: 12px;
   border-radius: 12px;
   margin-top: 8px;

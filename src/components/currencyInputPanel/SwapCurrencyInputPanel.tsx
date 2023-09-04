@@ -16,6 +16,7 @@ import Typography from "components/ui/Typography";
 import { isSupportedChain } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
+import { opacify } from "lib/utils/opacify";
 import { Lock } from "phosphor-react";
 import { darken } from "polished";
 import { ReactNode, useCallback, useState } from "react";
@@ -61,13 +62,12 @@ const CurrencySelect = styled(Button)<{
   disabled?: boolean;
 }>`
   align-items: center;
-  background-color: ${({ selected, theme }) =>
-    selected ? theme.backgroundInteractive : colors.secondary};
+  background-color: ${({ selected }) =>
+    selected ? colors.darkGrey : colors.secondary};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) =>
     selected ? "none" : "0px 6px 10px rgba(0, 0, 0, 0.075)"};
-  color: ${({ selected, theme }) =>
-    selected ? theme.textPrimary : theme.white};
+  color: ${({ selected }) => (selected ? colors.primary : colors.white)};
   cursor: pointer;
   height: unset;
   border-radius: 16px;
@@ -85,8 +85,8 @@ const CurrencySelect = styled(Button)<{
 
   &:hover,
   &:active {
-    background-color: ${({ theme, selected }) =>
-      selected ? theme.backgroundInteractive : colors.secondary};
+    background-color: ${({ selected }) =>
+      selected ? colors.darkGrey : colors.secondary};
   }
 
   &:before {
@@ -103,11 +103,11 @@ const CurrencySelect = styled(Button)<{
   }
 
   &:hover:before {
-    background-color: ${({ theme }) => theme.stateOverlayHover};
+    background-color: ${opacify(8, colors.darkGrey)};
   }
 
   &:active:before {
-    background-color: ${({ theme }) => theme.stateOverlayPressed};
+    background-color: ${opacify(24, colors.lightGrey)};
   }
 
   visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
@@ -151,17 +151,14 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin-left: 8px;
 
   path {
-    stroke: ${({ selected, theme }) =>
-      selected ? theme.textPrimary : theme.white};
+    stroke: ${({ selected }) => (selected ? colors.primary : colors.white)};
     stroke-width: 2px;
   }
 `;
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) =>
-    active
-      ? "  margin: 0 0.25rem 0 0.25rem;"
-      : "  margin: 0 0.25rem 0 0.25rem;"}
+    active ? "margin: 0 0.25rem 0 0.25rem;" : "margin: 0 0.25rem 0 0.25rem;"}
   font-size: 20px;
   font-weight: 600;
 `;
@@ -169,7 +166,7 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
 const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: transparent;
   border: none;
-  color: ${({ theme }) => colors.secondary};
+  color: ${colors.secondary};
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
@@ -344,19 +341,19 @@ export default function SwapCurrencyInputPanel({
         </InputRow>
         {Boolean(!hideInput && !hideBalance) && (
           <FiatRow>
-            <Grid>
+            <Grid justifyContent="space-between" data-aaaaa>
               <LoadingOpacityContainer $loading={loading}>
                 {fiatValue && (
                   <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
                 )}
               </LoadingOpacityContainer>
               {account ? (
-                <Grid style={{ height: "17px" }}>
+                <Grid $height={"17px"} $width={"fit-content"}>
                   <Typography
                     data-testid="balance-text"
-                    // color={colors.lightGrey}
+                    color="initial"
                     fontWeight={400}
-                    $fontSize={14}
+                    $fontSize={`14px`}
                     style={{ display: "inline" }}
                   >
                     {!hideBalance && currency && selectedCurrencyBalance ? (

@@ -47,6 +47,7 @@ import useWrapCallback, {
   WrapType
 } from "lib/utils/hooks/useWrapCallback";
 import { maxAmountSpend } from "lib/utils/maxAmountSpend";
+import { opacify } from "lib/utils/opacify";
 import { computeRealizedPriceImpact, warningSeverity } from "lib/utils/prices";
 import { didUserReject } from "lib/utils/swapErrorToUserReadableMessage";
 import { ArrowDown } from "phosphor-react";
@@ -76,6 +77,11 @@ import styled from "styled-components";
 
 import { UniswapXOptIn } from "./UniswapXOptIn";
 
+const SwapButton = styled(Button)`
+  /* width: 100%; */
+  /* border-radius: 16px; */
+`;
+
 export const ArrowContainer = styled.div`
   display: inline-flex;
   align-items: center;
@@ -86,7 +92,7 @@ export const ArrowContainer = styled.div`
 `;
 
 const SwapSection = styled.div`
-  background-color: ${({ theme }) => theme.backgroundModule};
+  /* background-color: ${colors.darkGrey}; */
   border-radius: 16px;
   color: ${colors.lightGrey};
   font-size: 14px;
@@ -109,20 +115,20 @@ const SwapSection = styled.div`
     height: 100%;
     pointer-events: none;
     content: "";
-    border: 1px solid ${({ theme }) => theme.backgroundModule};
+    border: 1px solid ${colors.white};
   }
 
   &:hover:before {
-    border-color: ${({ theme }) => theme.stateOverlayHover};
+    border-color: ${colors.white};
   }
 
   &:focus-within:before {
-    border-color: ${({ theme }) => theme.stateOverlayPressed};
+    /* border-color: ${opacify(24, colors.lightGrey)}; */
   }
 `;
 
 const OutputSwapSection = styled(SwapSection)`
-  border-bottom: ${({ theme }) => `1px solid ${theme.backgroundSurface}`};
+  border-bottom: 1px solid ${colors.white};
 `;
 
 function getIsValidSwapQuote(
@@ -151,7 +157,7 @@ export default function SwapPage({ className }: { className?: string }) {
   const supportedChainId = asSupportedChain(connectedChainId);
 
   return (
-    <>
+    <Grid justifyContent="center" alignItems="center">
       <PageWrapper>
         <Swap
           className={className}
@@ -168,7 +174,7 @@ export default function SwapPage({ className }: { className?: string }) {
         />
         <NetworkAlert />
       </PageWrapper>
-    </>
+    </Grid>
   );
 }
 
@@ -460,6 +466,7 @@ export function Swap({
     maxInputAmount?.greaterThan(0) &&
       !parsedAmounts[Field.INPUT]?.equalTo(maxInputAmount)
   );
+
   const swapFiatValues = useMemo(() => {
     return {
       amountIn: fiatValueTradeInput.data,
@@ -790,6 +797,7 @@ export function Swap({
               disabled={Boolean(wrapInputError)}
               onClick={handleOnWrap}
               data-testid="wrap-button"
+              style={{ width: "100%", borderRadius: "16px", marginTop: "4px" }}
             >
               <Typography fontWeight={600}>
                 {wrapInputError ? (
@@ -826,7 +834,7 @@ export function Swap({
               //   allowance.state === AllowanceState.ALLOWED
               // }
             >
-              <Typography $fontSize={20} fontWeight={600}>
+              <Typography $fontSize={`20px`} fontWeight={600}>
                 {swapInputError ? (
                   swapInputError
                 ) : routeIsSyncing || routeIsLoading ? (

@@ -3,6 +3,7 @@ import { LoadingBubble } from "components/tokens/loading";
 import Tooltip from "components/tooltip/Tooltip";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
+import { colors } from "lib/styles/colors";
 import {
   formatNumber,
   formatPriceImpact,
@@ -27,11 +28,11 @@ export function FiatValue({
 }) {
   const priceImpactColor = useMemo(() => {
     if (!priceImpact) return undefined;
-    if (priceImpact.lessThan("0")) return "accentSuccess";
+    if (priceImpact.lessThan("0")) return colors.green;
     const severity = warningSeverity(priceImpact);
-    if (severity < 1) return "textTertiary";
-    if (severity < 3) return "deprecated_yellow1";
-    return "accentFailure";
+    if (severity < 1) return colors.secondary;
+    if (severity < 3) return "yellow";
+    return colors.darkRed;
   }, [priceImpact]);
 
   if (fiatValue.isLoading) {
@@ -40,7 +41,7 @@ export function FiatValue({
 
   return (
     <Grid gap="1rem">
-      <Typography color="textSecondary">
+      <Typography color={colors.secondary}>
         {fiatValue.data ? (
           formatNumber(fiatValue.data, NumberType.FiatTokenPrice)
         ) : (
