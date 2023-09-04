@@ -761,8 +761,7 @@ export function Swap({
         <div>
           {swapIsUnsupported ? (
             <CTAButton disabled={true}>
-              <Typography //mb="4px"
-              >
+              <Typography marginBottom="4px">
                 <>Unsupported Asset</>
               </Typography>
             </CTAButton>
@@ -826,11 +825,14 @@ export function Swap({
               id="swap-button"
               data-testid="swap-button"
               disabled={!getIsValidSwapQuote(trade, tradeState, swapInputError)}
-              // error={
-              //   !swapInputError &&
-              //   priceImpactSeverity > 2 &&
-              //   allowance.state === AllowanceState.ALLOWED
-              // }
+              style={{
+                color:
+                  !swapInputError &&
+                  priceImpactSeverity > 2 &&
+                  allowance.state === AllowanceState.ALLOWED
+                    ? colors.red
+                    : ""
+              }}
             >
               <Typography $fontSize={`20px`} fontWeight={600}>
                 {swapInputError ? (
