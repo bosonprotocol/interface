@@ -5,6 +5,7 @@ import UniswapXRouterLabel, {
 import { AutoColumn } from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
+import { colors } from "lib/styles/colors";
 import { formatNumber, NumberType } from "lib/utils/formatNumbers";
 import { ReactNode } from "react";
 import { InterfaceTrade } from "state/routing/types";
@@ -16,7 +17,7 @@ const Container = styled(AutoColumn)`
 `;
 
 const InlineLink = styled(Typography)`
-  /* color: ${({ theme }) => colors.secondary}; */
+  color: ${colors.secondary};
   display: inline;
   cursor: pointer;
   &:hover {
