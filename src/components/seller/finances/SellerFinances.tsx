@@ -145,7 +145,7 @@ export default function SellerFinances({
   offersBacked,
   sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
-  const { showModal, modalTypes } = useModal();
+  const { showModal } = useModal();
   const { funds, reload, fundStatus } = fundsData;
   const {
     isLoading: isLoadingExchangesTokens,
@@ -274,7 +274,7 @@ export default function SellerFinances({
                 tooltip="This action is restricted to only the clerk wallet"
                 onClick={() => {
                   showModal(
-                    modalTypes.FINANCE_WITHDRAW_MODAL,
+                    "FINANCE_WITHDRAW_MODAL",
                     {
                       title: `Withdraw ${fund.token.symbol}`,
                       protocolBalance: withdrawable,
@@ -297,7 +297,7 @@ export default function SellerFinances({
                 size="small"
                 onClick={() => {
                   showModal(
-                    modalTypes.FINANCE_DEPOSIT_MODAL,
+                    "FINANCE_DEPOSIT_MODAL",
                     {
                       title: `Deposit ${fund.token.symbol}`,
                       protocolBalance: withdrawable,
@@ -319,8 +319,6 @@ export default function SellerFinances({
         };
       }),
     [
-      modalTypes.FINANCE_DEPOSIT_MODAL,
-      modalTypes.FINANCE_WITHDRAW_MODAL,
       offersBackedCell,
       reloadData,
       sellerId,

@@ -9,7 +9,10 @@ import {
 } from "../useCurrencyBalance";
 
 export function useExchangeTokenBalance(
-  exchangeToken: subgraph.OfferFieldsFragment["exchangeToken"]
+  exchangeToken: Pick<
+    subgraph.OfferFieldsFragment["exchangeToken"],
+    "address" | "decimals"
+  >
 ) {
   const { account: address, chainId } = useWeb3React();
   const isNativeCoin = exchangeToken.address === ethers.constants.AddressZero;
