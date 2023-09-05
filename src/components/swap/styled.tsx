@@ -8,7 +8,7 @@ import { ReactNode } from "react";
 import styled, { css } from "styled-components";
 
 export const PageWrapper = styled.div`
-  padding: 68px 8px 0px;
+  padding: 68px 8px;
   max-width: 480px;
   width: 100%;
   @media only screen and (max-width: ${breakpointNumbers.m}px) {
