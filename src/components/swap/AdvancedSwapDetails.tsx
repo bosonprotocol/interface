@@ -52,7 +52,6 @@ export function AdvancedSwapDetails({
 }: AdvancedSwapDetailsProps) {
   const { chainId } = useWeb3React();
   const nativeCurrency = useNativeCurrency(chainId);
-  // const txCount = getTransactionCount(trade);
 
   const supportsGasEstimate =
     chainId && SUPPORTED_GAS_ESTIMATE_CHAIN_IDS.includes(chainId);

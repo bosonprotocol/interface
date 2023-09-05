@@ -61,13 +61,14 @@ const CurrencySelect = styled(Button)<{
   hideInput?: boolean;
   disabled?: boolean;
 }>`
+  min-width: 175px;
   align-items: center;
   background-color: ${({ selected }) =>
-    selected ? colors.darkGrey : colors.secondary};
+    selected ? colors.black : colors.secondary};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) =>
     selected ? "none" : "0px 6px 10px rgba(0, 0, 0, 0.075)"};
-  color: ${({ selected }) => (selected ? colors.primary : colors.white)};
+  color: ${colors.white};
   cursor: pointer;
   height: unset;
   border-radius: 16px;
@@ -82,32 +83,44 @@ const CurrencySelect = styled(Button)<{
   gap: 8px;
   justify-content: space-between;
   margin-left: ${({ hideInput }) => (hideInput ? "0" : "12px")};
-
-  &:hover,
-  &:active {
-    background-color: ${({ selected }) =>
-      selected ? colors.lightGrey : colors.secondary};
-  }
-
-  &:before {
-    background-size: 100%;
-    border-radius: inherit;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
+  [data-child-wrapper-button] {
     width: 100%;
-    height: 100%;
-    content: "";
-  }
 
-  &:hover:before {
-    background-color: ${opacify(8, colors.darkGrey)};
+    > * > * {
+      justify-content: space-around;
+    }
   }
+  &&& {
+    svg {
+      fill: none !important;
+    }
 
-  &:active:before {
-    background-color: ${opacify(24, colors.lightGrey)};
+    &:hover,
+    &:active {
+      background-color: ${({ selected }) =>
+        selected ? colors.darkGrey : colors.secondary};
+    }
+
+    &:before {
+      background-size: 100%;
+      border-radius: inherit;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+      content: "";
+    }
+
+    &:hover:before {
+      background-color: ${opacify(8, colors.darkGrey)};
+    }
+
+    &:active:before {
+      background-color: ${opacify(24, colors.lightGrey)};
+    }
   }
 
   visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
