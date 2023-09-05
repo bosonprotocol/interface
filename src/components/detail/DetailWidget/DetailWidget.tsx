@@ -8,6 +8,7 @@ import {
 import * as Sentry from "@sentry/browser";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
+import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { useAccountDrawer } from "components/header/accountDrawer";
 import dayjs from "dayjs";
 import {
@@ -15,8 +16,11 @@ import {
   BigNumberish,
   constants,
   ContractTransaction,
-  ethers
+  ethers,
+  utils
 } from "ethers";
+import { swapQueryParameters } from "lib/routing/parameters";
+import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import {
   ArrowRight,
   ArrowSquareOut,
@@ -27,8 +31,8 @@ import {
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { Field } from "state/swap/actions";
 import styled from "styled-components";
-import { useBalance } from "wagmi";
 
 import { ReactComponent as Logo } from "../../../assets/logo-white.svg";
 import { CONFIG } from "../../../lib/config";
@@ -408,15 +412,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     exchangeStatus === exchanges.ExtendedExchangeState.NotRedeemableYet
       ? "Redeem"
       : titleCase(exchangeStatus || "Unsupported");
-
-  const { data: dataBalance } = useBalance(
-    offer.exchangeToken.address !== ethers.constants.AddressZero
-      ? {
-          address: address as `0x${string}`,
-          token: offer.exchangeToken.address as `0x${string}`
-        }
-      : { address: address as `0x${string}` }
-  );
+  const exchangeTokenBalance = useExchangeTokenBalance(offer.exchangeToken);
 
   const {
     buyer: { buyerId }
@@ -441,9 +437,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const isBuyerInsufficientFunds: boolean = useMemo(
-    () => !!dataBalance?.value && dataBalance?.value < BigInt(offer.price),
-    [dataBalance, offer.price]
+    () => !!exchangeTokenBalance && exchangeTokenBalance.lessThan(offer.price),
+    [exchangeTokenBalance, offer.price]
   );
+  const minNeededBalance = exchangeTokenBalance?.asFraction
+    ?.subtract(offer.price)
+    .multiply(-1);
 
   const convertedPrice = useConvertedPrice({
     value: offer.price,
@@ -585,10 +584,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isOffer;
 
   const commitButtonRef = useRef<HTMLButtonElement>(null);
-
+  const tokenOrCoinSymbol = offer.exchangeToken.symbol;
   const notCommittableOfferStatus = useMemo(() => {
     if (isBuyerInsufficientFunds) {
-      return "Insufficient Funds";
+      return tokenOrCoinSymbol
+        ? `Insufficient ${tokenOrCoinSymbol}`
+        : "Insufficient Funds";
     }
     if (offer.voided) {
       return "Offer voided";
@@ -612,7 +613,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isExpiredOffer,
     isOfferEmpty,
     isOfferNotValidYet,
-    offer.voided
+    offer.voided,
+    tokenOrCoinSymbol
   ]);
   const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
   const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
@@ -798,7 +800,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             await tx.wait();
           }
         }
-
         const buyerAddress = await signer.getAddress();
 
         const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
@@ -936,7 +937,38 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
 
             {isOffer && isNotCommittableOffer && (
-              <DetailTopRightLabel>
+              <DetailTopRightLabel
+                swapButton={
+                  !isPreview && isBuyerInsufficientFunds ? (
+                    <LinkWithQuery
+                      to={BosonRoutes.Swap}
+                      search={{
+                        [swapQueryParameters.outputCurrency]:
+                          offer.exchangeToken.address,
+                        [swapQueryParameters.exactAmount]: minNeededBalance
+                          ? utils.formatUnits(
+                              minNeededBalance?.toSignificant(
+                                Number(offer.exchangeToken.decimals)
+                              ) || "",
+                              offer.exchangeToken.decimals
+                            )
+                          : "",
+                        [swapQueryParameters.exactField]:
+                          Field.OUTPUT.toLowerCase()
+                      }}
+                    >
+                      <Button
+                        size="small"
+                        theme="accentFill"
+                        withBosonStyle
+                        style={{ color: colors.white }}
+                      >
+                        Buy or Swap {tokenOrCoinSymbol}
+                      </Button>
+                    </LinkWithQuery>
+                  ) : null
+                }
+              >
                 {!isPreview && notCommittableOfferStatus}
               </DetailTopRightLabel>
             )}

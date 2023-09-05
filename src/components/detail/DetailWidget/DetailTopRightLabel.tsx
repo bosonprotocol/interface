@@ -5,19 +5,22 @@ import Typography from "../../ui/Typography";
 
 interface Props {
   children?: string | React.ReactNode;
+  swapButton: React.ReactNode | null;
 }
-export default function DetailTopRightLabel({ children }: Props) {
+export default function DetailTopRightLabel({ children, swapButton }: Props) {
   const { isLteXS } = useBreakpoints();
   return (
     <Grid
+      flexDirection="column"
       $height="100%"
-      alignItems="center"
-      justifyContent="flex-end"
+      alignItems="flex-end"
+      justifyContent="center"
       style={{ marginTop: isLteXS ? "-7rem" : "0" }}
     >
       <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
         {children}
       </Typography>
+      {swapButton}
     </Grid>
   );
 }

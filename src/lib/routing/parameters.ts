@@ -41,3 +41,10 @@ export const SellerLandingPageParameters = {
 export const configQueryParameters = {
   configId: "configId"
 };
+
+export const swapQueryParameters = {
+  inputCurrency: "inputCurrency",
+  outputCurrency: "outputCurrency",
+  exactAmount: "exactAmount",
+  exactField: "exactField"
+};

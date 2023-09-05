@@ -49,6 +49,7 @@ export default function FinanceDeposit({
 
   const signer = useEthersSigner();
   const { account: address } = useWeb3React();
+  // TODO: fix this as it doesnt work
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {

@@ -62,7 +62,7 @@ export default function FinanceWithdraw({
   const signer = useEthersSigner();
   const { account: address } = useWeb3React();
   const addPendingTransaction = useAddPendingTransaction();
-
+  // TODO: fix as this doesnt work
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {
