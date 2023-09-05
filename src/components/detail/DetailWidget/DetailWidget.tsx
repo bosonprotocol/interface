@@ -10,6 +10,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { useAccountDrawer } from "components/header/accountDrawer";
+import { Spinner } from "components/loading/Spinner";
 import dayjs from "dayjs";
 import {
   BigNumber,
@@ -412,7 +413,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     exchangeStatus === exchanges.ExtendedExchangeState.NotRedeemableYet
       ? "Redeem"
       : titleCase(exchangeStatus || "Unsupported");
-  const exchangeTokenBalance = useExchangeTokenBalance(offer.exchangeToken);
+  const { balance: exchangeTokenBalance, loading: balanceLoading } =
+    useExchangeTokenBalance(offer.exchangeToken);
 
   const {
     buyer: { buyerId }
@@ -938,9 +940,14 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
             {isOffer && isNotCommittableOffer && (
               <DetailTopRightLabel
+                style={isBuyerInsufficientFunds ? { alignItems: "center" } : {}}
+                typographyStyle={
+                  isBuyerInsufficientFunds ? { fontSize: "0.75rem" } : {}
+                }
                 swapButton={
                   !isPreview && isBuyerInsufficientFunds ? (
                     <LinkWithQuery
+                      style={{ width: "100%" }}
                       to={BosonRoutes.Swap}
                       search={{
                         [swapQueryParameters.outputCurrency]:
@@ -961,7 +968,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                         size="small"
                         theme="accentFill"
                         withBosonStyle
-                        style={{ color: colors.white }}
+                        style={{ color: colors.white, width: "100%" }}
                       >
                         Buy or Swap {tokenOrCoinSymbol}
                       </Button>
@@ -984,31 +991,39 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   }
                 }}
               >
-                {showCommitProxyButton ? (
-                  <CommitProxyButton />
+                {balanceLoading || !exchangeTokenBalance ? (
+                  <Button disabled>
+                    <Spinner />
+                  </Button>
                 ) : (
-                  <CommitButton
-                    coreSdkConfig={{
-                      envName: config.envName,
-                      configId: config.envConfig.configId,
-                      web3Provider: signer?.provider as Provider,
-                      metaTx: config.metaTx
-                    }}
-                    variant="primaryFill"
-                    isPauseCommitting={!address}
-                    buttonRef={commitButtonRef}
-                    onGetSignerAddress={handleOnGetSignerAddress}
-                    disabled={!!isCommitDisabled}
-                    offerId={offer.id}
-                    exchangeToken={offer.exchangeToken.address}
-                    price={offer.price}
-                    onError={onCommitError}
-                    onPendingSignature={onCommitPendingSignature}
-                    onPendingTransaction={onCommitPendingTransaction}
-                    onSuccess={onCommitSuccess}
-                    extraInfo="Step 1/2"
-                    withBosonStyle
-                  />
+                  <>
+                    {showCommitProxyButton ? (
+                      <CommitProxyButton />
+                    ) : (
+                      <CommitButton
+                        coreSdkConfig={{
+                          envName: config.envName,
+                          configId: config.envConfig.configId,
+                          web3Provider: signer?.provider as Provider,
+                          metaTx: config.metaTx
+                        }}
+                        variant="primaryFill"
+                        isPauseCommitting={!address}
+                        buttonRef={commitButtonRef}
+                        onGetSignerAddress={handleOnGetSignerAddress}
+                        disabled={!!isCommitDisabled}
+                        offerId={offer.id}
+                        exchangeToken={offer.exchangeToken.address}
+                        price={offer.price}
+                        onError={onCommitError}
+                        onPendingSignature={onCommitPendingSignature}
+                        onPendingTransaction={onCommitPendingTransaction}
+                        onSuccess={onCommitSuccess}
+                        extraInfo="Step 1/2"
+                        withBosonStyle
+                      />
+                    )}
+                  </>
                 )}
               </CommitButtonWrapper>
             )}

@@ -60,7 +60,7 @@ export default function FinanceWithdraw({
   const signer = useEthersSigner();
   const addPendingTransaction = useAddPendingTransaction();
 
-  const exchangeTokenBalance = useExchangeTokenBalance({
+  const { balance: exchangeTokenBalance } = useExchangeTokenBalance({
     address: exchangeToken,
     decimals: tokenDecimals
   });

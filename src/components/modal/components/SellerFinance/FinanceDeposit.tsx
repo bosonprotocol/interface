@@ -46,7 +46,7 @@ export default function FinanceDeposit({
   const [depositError, setDepositError] = useState<unknown>(null);
 
   const signer = useEthersSigner();
-  const exchangeTokenBalance = useExchangeTokenBalance({
+  const { balance: exchangeTokenBalance } = useExchangeTokenBalance({
     address: exchangeToken,
     decimals: tokenDecimals
   });

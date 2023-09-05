@@ -17,7 +17,7 @@ export function useExchangeTokenBalance(
   const { account: address, chainId } = useWeb3React();
   const isNativeCoin = exchangeToken.address === ethers.constants.AddressZero;
 
-  const [tokenCurrencyAmounts] = useTokenBalancesWithLoadingIndicator(
+  const [tokenCurrencyAmounts, loading] = useTokenBalancesWithLoadingIndicator(
     address,
     !isNativeCoin && chainId
       ? [
@@ -32,5 +32,10 @@ export function useExchangeTokenBalance(
   const nativeBalances = useNativeCurrencyBalances(
     isNativeCoin ? [address] : []
   );
-  return Object.values(isNativeCoin ? nativeBalances : tokenCurrencyAmounts)[0];
+  return {
+    balance: Object.values(
+      isNativeCoin ? nativeBalances : tokenCurrencyAmounts
+    )[0],
+    loading
+  };
 }
