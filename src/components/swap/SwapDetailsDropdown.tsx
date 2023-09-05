@@ -90,7 +90,8 @@ const SwapDetailsWrapper = styled.div`
 `;
 
 const Wrapper = styled(Column)`
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.white};
+  margin-top: 4px;
   border-radius: 16px;
   padding: 12px 16px;
 `;
@@ -139,11 +140,12 @@ export default function SwapDetailsDropdown({
             </Typography>
           ) : null}
         </Grid>
-        <Grid>
+        <Grid justifyContent="flex-end">
           {!showDetails && (
             <GasEstimateTooltip trade={trade} loading={syncing || loading} />
           )}
           <RotatingArrow
+            size={18}
             // TODO: stroke={trade ? theme.textTertiary : theme.deprecated_bg3}
             open={Boolean(trade && showDetails)}
           />

@@ -15,7 +15,7 @@ import {
 } from "lib/utils/formatNumbers";
 import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
 import { InterfaceTrade } from "state/routing/types";
-import { getTransactionCount, isClassicTrade } from "state/routing/utils";
+import { isClassicTrade } from "state/routing/utils";
 
 import RouterLabel from "../routerLabel";
 import { GasBreakdownTooltip } from "./GasBreakdownTooltip";
@@ -52,7 +52,7 @@ export function AdvancedSwapDetails({
 }: AdvancedSwapDetailsProps) {
   const { chainId } = useWeb3React();
   const nativeCurrency = useNativeCurrency(chainId);
-  const txCount = getTransactionCount(trade);
+  // const txCount = getTransactionCount(trade);
 
   const supportsGasEstimate =
     chainId && SUPPORTED_GAS_ESTIMATE_CHAIN_IDS.includes(chainId);
@@ -107,7 +107,7 @@ export function AdvancedSwapDetails({
         </Grid>
       )}
       <Grid>
-        <Grid>
+        <Grid $width="fit-content">
           <Tooltip
             content={
               <>
@@ -126,7 +126,7 @@ export function AdvancedSwapDetails({
           </Tooltip>
         </Grid>
         <TextWithLoadingPlaceholder syncing={syncing} width={70}>
-          <Typography>
+          <Typography fontWeight={400} $fontSize={`14px`}>
             {trade.tradeType === TradeType.EXACT_INPUT
               ? `${formatCurrencyAmount(
                   trade.minimumAmountOut(allowedSlippage),
@@ -139,7 +139,7 @@ export function AdvancedSwapDetails({
         </TextWithLoadingPlaceholder>
       </Grid>
       <Grid>
-        <Grid>
+        <Grid $width="fit-content">
           <Tooltip
             content={
               <>

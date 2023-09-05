@@ -14,7 +14,7 @@ export const Column = styled.div<{
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: ${({ gap }) => gap};
+  gap: ${({ gap }) => gap && gapValues[gap]};
 `;
 export const ColumnCenter = styled(Column)`
   width: 100%;
