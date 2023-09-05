@@ -804,7 +804,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
           buyerAddress,
           offer.id,
-          offer.condition.tokenId,
+          offer.condition.minTokenId,
           {
             value:
               offer.exchangeToken.address === constants.AddressZero
