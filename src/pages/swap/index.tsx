@@ -10,6 +10,7 @@ import { useWeb3React } from "@web3-react/core";
 import AddressInputPanel from "components/addressInputPanel";
 import { GrayCard } from "components/card";
 import SwapCurrencyInputPanel from "components/currencyInputPanel/SwapCurrencyInputPanel";
+import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { useToggleAccountDrawer } from "components/header/accountDrawer";
 import { NetworkAlert } from "components/networkAlert/NetworkAlert";
 import confirmPriceImpactWithoutFee from "components/swap/confirmPriceImpactWithoutFee";
@@ -28,6 +29,7 @@ import JSBI from "jsbi";
 import { getChainInfo } from "lib/constants/chainInfo";
 import { asSupportedChain, isSupportedChain } from "lib/constants/chains";
 import { getSwapCurrencyId, TOKEN_SHORTHANDS } from "lib/constants/tokens";
+import { BosonRoutes } from "lib/routing/routes";
 import { colors } from "lib/styles/colors";
 import { PreventCustomStoreStyles } from "lib/styles/preventCustomStoreStyles";
 import { computeFiatValuePriceImpact } from "lib/utils/computeFiatValuePriceImpact";
@@ -51,7 +53,7 @@ import { maxAmountSpend } from "lib/utils/maxAmountSpend";
 import { opacify } from "lib/utils/opacify";
 import { computeRealizedPriceImpact, warningSeverity } from "lib/utils/prices";
 import { didUserReject } from "lib/utils/swapErrorToUserReadableMessage";
-import { ArrowDown } from "phosphor-react";
+import { ArrowDown, ArrowLeft } from "phosphor-react";
 import {
   ReactNode,
   useCallback,
@@ -60,7 +62,7 @@ import {
   useReducer,
   useState
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
 import { InterfaceTrade, TradeState } from "state/routing/types";
 import { isClassicTrade, isUniswapXTrade } from "state/routing/utils";
@@ -157,10 +159,25 @@ export default function SwapPage({ className }: { className?: string }) {
   const loadedUrlParams = useDefaultsFromURLSearch();
 
   const supportedChainId = asSupportedChain(connectedChainId);
-
+  const location = useLocation();
+  const { state } = location;
+  const prevPath = (state as { prevPath: string })?.prevPath;
   return (
-    <Grid justifyContent="center" alignItems="center">
+    <Grid flexDirection="column" justifyContent="center" alignItems="center">
       <PageWrapper>
+        {prevPath?.includes(BosonRoutes.Products) && (
+          <LinkWithQuery
+            to={prevPath}
+            style={{
+              marginBottom: "1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem"
+            }}
+          >
+            <ArrowLeft size={14} /> Back to product page
+          </LinkWithQuery>
+        )}
         <Swap
           className={className}
           chainId={supportedChainId ?? ChainId.MAINNET}
