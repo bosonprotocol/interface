@@ -5,6 +5,7 @@ import { AutoColumn } from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
+import { ExplorerDataType, getExplorerLink } from "lib/utils/getExplorerLink";
 import useENS from "lib/utils/hooks/useENS";
 import { ChangeEvent, ReactNode, useCallback } from "react";
 import styled from "styled-components";
@@ -118,12 +119,11 @@ export default function AddressInputPanel({
               </Typography>
               {address && chainId && (
                 <a
-                  // TODO:
-                  // href={getExplorerLink(
-                  //   chainId,
-                  //   name ?? address,
-                  //   ExplorerDataType.ADDRESS
-                  // )}
+                  href={getExplorerLink(
+                    chainId,
+                    name ?? address,
+                    ExplorerDataType.ADDRESS
+                  )}
                   style={{ fontSize: "14px" }}
                 >
                   <>(View on Explorer)</>

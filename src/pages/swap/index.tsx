@@ -187,7 +187,8 @@ export default function SwapPage({ className }: { className?: string }) {
             },
             [Field.OUTPUT]: {
               currencyId: loadedUrlParams?.[Field.OUTPUT]?.currencyId
-            }
+            },
+            typedValue: loadedUrlParams.typedValue
           }}
           disableTokenInputs={supportedChainId === undefined}
         />
