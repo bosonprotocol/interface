@@ -1,9 +1,9 @@
 import { Currency, CurrencyAmount, Price } from "@uniswap/sdk-core";
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "lib/constants/locales";
+import { DEFAULT_LOCALE } from "lib/constants/locales";
 
 interface FormatLocaleNumberArgs {
   number: CurrencyAmount<Currency> | Price<Currency, Currency> | number;
-  locale?: string | null;
+  locale: string;
   options?: Intl.NumberFormatOptions;
   sigFigs?: number;
   fixedDecimals?: number;
@@ -16,12 +16,8 @@ export default function formatLocaleNumber({
   fixedDecimals,
   options = {}
 }: FormatLocaleNumberArgs): string {
-  let localeArg: string | string[];
-  if (!locale || (locale && !SUPPORTED_LOCALES.includes(locale))) {
-    localeArg = DEFAULT_LOCALE;
-  } else {
-    localeArg = [locale, DEFAULT_LOCALE];
-  }
+  const localeArg: string[] = [locale, DEFAULT_LOCALE];
+
   options.minimumFractionDigits =
     options.minimumFractionDigits || fixedDecimals;
   options.maximumFractionDigits =

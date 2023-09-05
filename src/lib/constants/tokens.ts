@@ -4,7 +4,6 @@ import {
   Ether,
   NativeCurrency,
   Token,
-  UNI_ADDRESSES,
   WETH9
 } from "@uniswap/sdk-core";
 import invariant from "tiny-invariant";
@@ -329,30 +328,6 @@ export const DAI_AVALANCHE = new Token(
   "DAI.e",
   "Dai.e Token"
 );
-
-export const UNI: { [chainId: number]: Token } = {
-  [ChainId.MAINNET]: new Token(
-    ChainId.MAINNET,
-    UNI_ADDRESSES[ChainId.MAINNET],
-    18,
-    "UNI",
-    "Uniswap"
-  ),
-  [ChainId.GOERLI]: new Token(
-    ChainId.GOERLI,
-    UNI_ADDRESSES[ChainId.GOERLI],
-    18,
-    "UNI",
-    "Uniswap"
-  ),
-  [ChainId.SEPOLIA]: new Token(
-    ChainId.SEPOLIA,
-    UNI_ADDRESSES[ChainId.SEPOLIA],
-    18,
-    "UNI",
-    "Uniswap"
-  )
-};
 
 export const ARB = new Token(
   ChainId.ARBITRUM_ONE,

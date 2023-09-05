@@ -10,7 +10,7 @@ import styled from "styled-components";
 import { flexColumnNoWrap } from "../styles";
 import Identicon from ".";
 
-export const IconWrapper = styled.div<{ size?: number }>`
+const IconWrapper = styled.div<{ size?: number }>`
   position: relative;
   ${flexColumnNoWrap};
   align-items: center;

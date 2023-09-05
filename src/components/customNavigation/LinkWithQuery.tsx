@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { getKeptQueryParams } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
-export type LinkWithQueryProps = {
+type LinkWithQueryProps = {
   children: ReactNode;
   to: string;
   state?: Record<string, unknown>;

@@ -10,7 +10,7 @@ import React, {
 import styled, { css } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-export const IconHoverText = styled.span`
+const IconHoverText = styled.span`
   position: absolute;
   top: 28px;
   border-radius: 8px;
@@ -96,14 +96,6 @@ const IconBlock = forwardRef<
   // @ts-ignore
   return <IconBlockButton ref={ref} {...props} />;
 });
-
-const IconButton = ({ Icon, ...rest }: IconButtonProps | IconLinkProps) => (
-  <IconBlock {...rest}>
-    <IconWrapper>
-      <Icon strokeWidth={1.5} size={16} />
-    </IconWrapper>
-  </IconBlock>
-);
 
 type IconWithTextProps = (IconButtonProps | IconLinkProps) & {
   text: string;
@@ -264,5 +256,3 @@ export const IconWithConfirmTextButton = ({
     </IconBlock>
   );
 };
-
-export default IconButton;

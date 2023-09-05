@@ -9,7 +9,7 @@ import { ReactNode, useEffect, useState } from "react";
 
 import { Context, useConfigContext } from "./ConfigContext";
 
-export type ConfigProviderProps = {
+type ConfigProviderProps = {
   children: ReactNode;
 };
 

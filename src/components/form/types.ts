@@ -4,7 +4,7 @@ import { MultiValue, SingleValue } from "react-select";
 
 import { UploadFileType } from "./Upload/types";
 
-export interface BaseProps {
+interface BaseProps {
   name: string;
   placeholder?: string;
   disabled?: boolean;
@@ -73,7 +73,7 @@ export interface SelectContentProps {
   children: React.ReactNode | JSX.Element;
 }
 
-export type OnChange = (value: SingleValue<SelectDataProps>) => void;
+type OnChange = (value: SingleValue<SelectDataProps>) => void;
 
 export interface BaseSelectProps {
   options: Array<SelectDataProps>;

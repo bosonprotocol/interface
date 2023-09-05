@@ -1,5 +1,5 @@
 import { colors } from "lib/styles/colors";
-import { css, keyframes } from "styled-components";
+import { css } from "styled-components";
 
 export const ClickableStyle = css`
   text-decoration: none;
@@ -56,23 +56,4 @@ export const flexColumnNoWrap = css`
 export const flexRowNoWrap = css`
   display: flex;
   flex-flow: row nowrap;
-`;
-
-export enum TRANSITION_DURATIONS {
-  slow = 500,
-  medium = 250,
-  fast = 125
-}
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-export const textFadeIn = css`
-  animation: ${fadeIn} 125ms ease-in;
 `;

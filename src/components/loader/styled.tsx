@@ -42,9 +42,3 @@ export const loadingOpacityMixin = css<{ $loading: boolean }>`
 export const LoadingOpacityContainer = styled.div<{ $loading: boolean }>`
   ${loadingOpacityMixin}
 `;
-
-export const LoadingFullscreen = styled.div`
-  ${shimmerMixin}
-  inset: 0;
-  position: absolute;
-`;

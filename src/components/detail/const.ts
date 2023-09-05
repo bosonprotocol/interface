@@ -42,10 +42,3 @@ export const SLIDER_OPTIONS = {
 };
 
 export const HEADER = ["Event", "From", "To", "Price", "Date"];
-export const EVENT_TYPES = [
-  "Commit",
-  "Redeem",
-  "Cancel",
-  "Revoke",
-  "Finalize"
-] as const;
