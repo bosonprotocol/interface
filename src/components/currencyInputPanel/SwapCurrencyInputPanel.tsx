@@ -86,7 +86,7 @@ const CurrencySelect = styled(Button)<{
   &:hover,
   &:active {
     background-color: ${({ selected }) =>
-      selected ? colors.darkGrey : colors.secondary};
+      selected ? colors.lightGrey : colors.secondary};
   }
 
   &:before {
