@@ -79,7 +79,6 @@ async function createSellerAccount(
         ? getLensTokenIdDecimal(authTokenId || "0x0")
         : "0",
     authTokenType,
-    clerk: address,
     contractUri,
     assistant: address,
     royaltyPercentage: royaltyPercentageTimes100.toString(),

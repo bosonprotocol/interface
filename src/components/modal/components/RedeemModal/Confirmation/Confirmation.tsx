@@ -216,7 +216,12 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
           <RedeemButton
             disabled={isLoading || !isInitializationValid}
             exchangeId={exchangeId}
-            envName={CONFIG.envName}
+            coreSdkConfig={{
+              envName: CONFIG.envName,
+              configId: CONFIG.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: CONFIG.metaTx
+            }}
             onError={(error) => {
               console.error("Error while redeeming", error);
               setRedeemError(error);
@@ -296,8 +301,6 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
 
               reload?.();
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           >
             <Grid gap="0.5rem">
               Confirm address and redeem

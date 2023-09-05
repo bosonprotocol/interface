@@ -6,7 +6,6 @@ import { fetchSubgraph } from "../core-components/subgraph";
 interface Props {
   disputeResolvers: {
     admin: string;
-    clerk: string;
     escalationResponsePeriod: string;
     fees: {
       feeAmount: string;
@@ -24,7 +23,6 @@ export function useDisputeResolvers() {
         query GetDisputeResolvers {
           disputeResolvers {
             admin
-            clerk
             escalationResponsePeriod
             fees {
               feeAmount

@@ -134,7 +134,12 @@ export default function RevokeProduct({
           <RevokeButton
             variant="accentInverted"
             exchangeId={exchangeId || 0}
-            envName={CONFIG.envName}
+            coreSdkConfig={{
+              envName: CONFIG.envName,
+              configId: CONFIG.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: CONFIG.metaTx
+            }}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
@@ -191,8 +196,6 @@ export default function RevokeProduct({
               ));
               refetch();
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           />
         </RevokeButtonWrapper>
       </Grid>

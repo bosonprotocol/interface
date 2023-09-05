@@ -1,4 +1,4 @@
-import { EnvironmentType, getDefaultConfig } from "@bosonprotocol/react-kit";
+import { EnvironmentType, getEnvConfigs } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 
 import { Token } from "../components/convertion-rate/ConvertionRateContext";
@@ -9,7 +9,7 @@ import { parseCurationList } from "./utils/curationList";
 import { ViewMode } from "./viewMode";
 
 const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
-export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
+export const config = getEnvConfigs(REACT_APP_ENV_NAME as EnvironmentType)[0];
 
 const REACT_APP_ENABLE_SENTRY_LOGGING =
   process.env.NODE_ENV === "development"

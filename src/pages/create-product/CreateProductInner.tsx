@@ -286,7 +286,8 @@ async function getOfferDataFromMetadata(
     disputeResolverId: CONFIG.defaultDisputeResolverId,
     agentId: 0, // no agent
     metadataUri: `ipfs://${metadataHash}`,
-    metadataHash: metadataHash
+    metadataHash: metadataHash,
+    collectionIndex: "0"
   };
   return offerData;
 }

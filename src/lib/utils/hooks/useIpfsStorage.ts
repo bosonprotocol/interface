@@ -5,6 +5,7 @@ import { CONFIG } from "../../config";
 export function useIpfsStorage() {
   const storage = hooks.useIpfsMetadataStorage(
     CONFIG.envName,
+    CONFIG.configId,
     CONFIG.ipfsMetadataStorageUrl,
     CONFIG.ipfsMetadataStorageHeaders
   );

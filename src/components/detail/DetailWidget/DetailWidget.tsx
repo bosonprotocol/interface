@@ -800,7 +800,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
           buyerAddress,
           offer.id,
-          offer.condition.tokenId,
+          offer.condition.minTokenId,
           {
             value:
               offer.exchangeToken.address === constants.AddressZero
@@ -959,14 +959,17 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     offerId={offer.id}
                     exchangeToken={offer.exchangeToken.address}
                     price={offer.price}
-                    envName={CONFIG.envName}
+                    coreSdkConfig={{
+                      envName: CONFIG.envName,
+                      configId: CONFIG.configId,
+                      web3Provider: signer?.provider as Provider,
+                      metaTx: CONFIG.metaTx
+                    }}
                     onError={onCommitError}
                     onPendingSignature={onCommitPendingSignature}
                     onPendingTransaction={onCommitPendingTransaction}
                     onSuccess={onCommitSuccess}
                     extraInfo="Step 1/2"
-                    web3Provider={signer?.provider as Provider}
-                    metaTx={CONFIG.metaTx}
                   />
                 )}
               </CommitButtonWrapper>
