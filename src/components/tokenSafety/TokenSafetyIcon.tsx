@@ -19,7 +19,7 @@ const WarningIcon = styled(WarningTriangle)`
   color: ${({ theme }) => theme.textTertiary};
 `;
 
-export const BlockedIcon = styled(Prohibit)`
+const BlockedIcon = styled(Prohibit)`
   ${WarningIconStyle}
   color: ${colors.lightGrey};
 `;
