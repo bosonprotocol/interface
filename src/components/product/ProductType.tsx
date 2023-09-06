@@ -85,19 +85,7 @@ export const RadioButton = styled.input`
   }
 `;
 
-export const Box = styled.div`
-  padding: 0.875rem;
-  height: 100%;
-  width: 100%;
-  p {
-    display: block;
-  }
-  p:first {
-    margin: 0.938rem 0 0 0;
-  }
-`;
-
-export const RadioButtonText = styled(Typography).attrs({
+const RadioButtonText = styled(Typography).attrs({
   tag: "p",
   fontWeight: "600",
   $fontSize: "1rem",

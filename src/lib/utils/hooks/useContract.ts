@@ -6,7 +6,6 @@ import {
 } from "@uniswap/sdk-core";
 import UniswapInterfaceMulticallJson from "@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json";
 import { useWeb3React } from "@web3-react/core";
-import EIP_2612 from "abis/eip_2612.json";
 import ENS_PUBLIC_RESOLVER_ABI from "abis/ens-public-resolver.json";
 import ENS_ABI from "abis/ens-registrar.json";
 import ERC20_ABI from "abis/erc20.json";
@@ -128,10 +127,6 @@ export function useBytes32TokenContract(
   withSignerIfPossible?: boolean
 ): Contract | null {
   return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible);
-}
-
-export function useEIP2612Contract(tokenAddress?: string): Contract | null {
-  return useContract(tokenAddress, EIP_2612, false);
 }
 
 export function useInterfaceMulticall() {

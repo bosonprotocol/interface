@@ -1,11 +1,5 @@
 import { Trade } from "@uniswap/router-sdk";
-import {
-  Currency,
-  CurrencyAmount,
-  Fraction,
-  Percent,
-  TradeType
-} from "@uniswap/sdk-core";
+import { Currency, Fraction, Percent, TradeType } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
 import { FeeAmount } from "@uniswap/v3-sdk";
 import JSBI from "jsbi";
@@ -77,23 +71,6 @@ function computeRealizedLPFeePercent(
   }
 
   return new Percent(percent.numerator, percent.denominator);
-}
-
-// computes price breakdown for the trade
-export function computeRealizedLPFeeAmount(
-  trade?: Trade<Currency, Currency, TradeType> | null
-): CurrencyAmount<Currency> | undefined {
-  if (trade) {
-    const realizedLPFee = computeRealizedLPFeePercent(trade);
-
-    // the amount of the input that accrues to LPs
-    return CurrencyAmount.fromRawAmount(
-      trade.inputAmount.currency,
-      trade.inputAmount.multiply(realizedLPFee).quotient
-    );
-  }
-
-  return undefined;
 }
 
 const IMPACT_TIERS = [

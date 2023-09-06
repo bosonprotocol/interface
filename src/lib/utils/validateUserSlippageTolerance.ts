@@ -6,8 +6,8 @@ export enum SlippageValidationResult {
   Valid
 }
 
-export const MINIMUM_RECOMMENDED_SLIPPAGE = new Percent(5, 10_000);
-export const MAXIMUM_RECOMMENDED_SLIPPAGE = new Percent(1, 100);
+const MINIMUM_RECOMMENDED_SLIPPAGE = new Percent(5, 10_000);
+const MAXIMUM_RECOMMENDED_SLIPPAGE = new Percent(1, 100);
 
 export default function validateUserSlippageTolerance(
   userSlippageTolerance: Percent

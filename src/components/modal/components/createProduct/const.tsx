@@ -60,13 +60,6 @@ export const variableStepMap = {
     body: "Creating a profile helps establish your branding and Web3 presence in dComemrce",
     to: { pathname: "" }
   },
-  [VariableStep.CreateYourProducts]: {
-    key: VariableStep.CreateYourProducts,
-    icon: <CirclesThreePlus color={colors.secondary} />,
-    title: "Create your products",
-    body: "Create a physical or phygital product, enriching it with details, such as images and videos",
-    to: { pathname: SellerCenterRoutes.CreateProduct }
-  },
   [VariableStep.CreateYourTokenGatedProduct]: {
     key: VariableStep.CreateYourTokenGatedProduct,
     icon: <CirclesThreePlus color={colors.secondary} />,

@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import { ContactPreference } from "../../../../components/modal/components/Profile/const";
 import { useCoreSDK } from "../../useCoreSdk";
 
-export type CreateSellerMetadata = Omit<
+type CreateSellerMetadata = Omit<
   Extract<OfferOrSellerMetadata, { type: "SELLER" }>,
   "__typename" | "id" | "createdAt" | "type" | "contactPreference"
 > & { contactPreference: ContactPreference };

@@ -9,14 +9,9 @@ import { useEffect, useState } from "react";
 
 const isClient = typeof window !== "undefined";
 
-export const navSearchInputVisibleSize = 1100;
-
 // for breakpoints that are not meant to be used except for in marginal areas of the app
 // we don't want to expose the types everywhere, just make them available via this hook
-const BREAKPOINTS_ADDITIONAL = {
-  ...breakpointNumbers,
-  navSearchInputVisible: navSearchInputVisibleSize
-};
+const BREAKPOINTS_ADDITIONAL = breakpointNumbers;
 
 function getScreenSize(): Record<keyof typeof BREAKPOINTS_ADDITIONAL, boolean> {
   return Object.keys(BREAKPOINTS_ADDITIONAL).reduce(
