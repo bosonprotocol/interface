@@ -32,10 +32,6 @@ function useBlockNumberContext() {
   return blockNumber;
 }
 
-export function useFastForwardBlockNumber(): (block: number) => void {
-  return useBlockNumberContext().fastForward;
-}
-
 /** Requires that BlockUpdater be installed in the DOM tree. */
 export default function useBlockNumber(): number | undefined {
   return useBlockNumberContext().block;

@@ -4,7 +4,7 @@ import Column, { AutoColumn } from "../../../ui/column";
 import Grid from "../../../ui/Grid";
 import { LoadingBubble } from "../../../ui/LoadingBubble";
 
-export const PortfolioRowWrapper = styled(Grid)`
+const PortfolioRowWrapper = styled(Grid)`
   gap: 12px;
   height: 68px;
   padding: 0 16px;

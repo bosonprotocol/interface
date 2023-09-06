@@ -9,7 +9,7 @@ import { ReactNode, useEffect, useState } from "react";
 
 import { Context, useConfigContext } from "./ConfigContext";
 
-export type ConfigProviderProps = {
+type ConfigProviderProps = {
   children: ReactNode;
 };
 
@@ -32,7 +32,6 @@ function SyncCurrentConfigId({
 export function ConfigProvider({ children }: ConfigProviderProps) {
   const [envConfig, setEnvConfig] = useState<ProtocolConfig>(defaultEnvConfig);
   const dappConfig = getDappConfig(envConfig || defaultEnvConfig);
-  console.log("configId", envConfig.configId); // TODO: remove
   return (
     <Context.Provider value={{ config: dappConfig, setEnvConfig }}>
       <SyncCurrentConfigId>{children}</SyncCurrentConfigId>

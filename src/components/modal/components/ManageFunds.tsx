@@ -57,7 +57,7 @@ export default function ManageFunds({ id }: Props) {
   const { funds, reload, fundStatus } = useFunds(id, tokens);
   const [uiFunds, setUiFunds] =
     useState<subgraph.FundsEntityFieldsFragment[]>(funds);
-  const { showModal, modalTypes } = useModal();
+  const { showModal } = useModal();
 
   useEffect(() => {
     setUiFunds((prevFunds) => [
@@ -71,7 +71,6 @@ export default function ManageFunds({ id }: Props) {
   }, [funds, id]);
 
   if (fundStatus === ProgressStatus.ERROR) {
-    // TODO: NO FIGMA REPRESENTATIONS
     return <Typography tag="h2">There has been an error...</Typography>;
   }
 
@@ -123,7 +122,7 @@ export default function ManageFunds({ id }: Props) {
                 size="small"
                 onClick={() => {
                   showModal(
-                    modalTypes.FINANCE_WITHDRAW_MODAL,
+                    "FINANCE_WITHDRAW_MODAL",
                     {
                       title: `Withdraw ${fund.token.symbol}`,
                       protocolBalance: withdrawable,

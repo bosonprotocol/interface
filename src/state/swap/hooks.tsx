@@ -7,6 +7,7 @@ import {
 } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { TOKEN_SHORTHANDS } from "lib/constants/tokens";
+import { swapQueryParameters } from "lib/routing/parameters";
 import { isAddress } from "lib/utils/address";
 import { useCurrency } from "lib/utils/hooks/Tokens";
 import useAutoSlippageTolerance from "lib/utils/hooks/useAutoSlippageTolerance";
@@ -310,11 +311,17 @@ function validatedRecipient(recipient: any): string | null {
 }
 
 export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
-  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency);
-  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency);
-  const typedValue = parseTokenAmountURLParameter(parsedQs.exactAmount);
+  let inputCurrency = parseCurrencyFromURLParameter(
+    parsedQs[swapQueryParameters.inputCurrency]
+  );
+  let outputCurrency = parseCurrencyFromURLParameter(
+    parsedQs[swapQueryParameters.outputCurrency]
+  );
+  const typedValue = parseTokenAmountURLParameter(
+    parsedQs[swapQueryParameters.exactAmount]
+  );
   const independentField = parseIndependentFieldURLParameter(
-    parsedQs.exactField
+    parsedQs[swapQueryParameters.exactField]
   );
 
   if (

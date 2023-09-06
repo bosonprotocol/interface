@@ -1,6 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import { ConfigProvider } from "components/config/ConfigProvider";
 import { apolloClient } from "graphql/data/apollo";
+import { MulticallUpdater } from "lib/state/multicall";
 import { BlockNumberProvider } from "lib/utils/hooks/useBlockNumber";
 import { queryClient, rootElement } from "queryClient";
 import React from "react";
@@ -10,6 +11,8 @@ import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { Provider } from "react-redux";
 import store from "state";
+import { ApplicationUpdater } from "state/application/updater";
+import { ListsUpdater } from "state/lists/updater";
 
 import ConvertionRateProvider from "./components/convertion-rate/ConvertionRateProvider";
 import Web3Provider from "./components/header/web3Provider";
@@ -26,6 +29,21 @@ import AppRouter from "./router/AppRouter";
 //     }
 //   }
 // });
+
+function Updaters() {
+  return (
+    <>
+      {/* <RadialGradientByChainUpdater /> */}
+      <ListsUpdater />
+      {/* <SystemThemeUpdater /> */}
+      <ApplicationUpdater />
+      {/* <TransactionUpdater /> */}
+      {/* <OrderUpdater /> */}
+      <MulticallUpdater />
+      {/* <LogsUpdater /> */}
+    </>
+  );
+}
 
 if (!rootElement) throw new Error("Unable to find the root element");
 const root = createRoot(rootElement);
@@ -50,6 +68,7 @@ root.render(
         <ConfigProvider>
           <ApolloProvider client={apolloClient}>
             <BlockNumberProvider>
+              <Updaters />
               <Toaster
                 position="top-right"
                 toastOptions={{

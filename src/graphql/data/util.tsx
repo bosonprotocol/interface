@@ -1,72 +1,16 @@
-import { QueryResult } from "@apollo/client";
 import * as Sentry from "@sentry/react";
 import { ChainId, Currency, Token } from "@uniswap/sdk-core";
 import ms from "ms";
-import { useEffect } from "react";
 
 import { AVERAGE_L1_BLOCK_TIME } from "../../lib/constants/chainInfo";
-import {
-  NATIVE_CHAIN_ID,
-  nativeOnChain,
-  WRAPPED_NATIVE_CURRENCY
-} from "../../lib/constants/tokens";
-import { getNativeTokenDBAddress } from "../../lib/utils/nativeTokens";
-import {
-  Chain,
-  ContractInput,
-  HistoryDuration,
-  TokenStandard
-} from "./__generated__/types-and-hooks";
+import { nativeOnChain } from "../../lib/constants/tokens";
+import { Chain, TokenStandard } from "./__generated__/types-and-hooks";
 
 export enum PollingInterval {
   Slow = ms(`5m`),
   Normal = ms(`1m`),
   Fast = AVERAGE_L1_BLOCK_TIME,
   LightningMcQueen = ms(`3s`) // approx block interval for polygon
-}
-
-// Polls a query only when the current component is mounted, as useQuery's pollInterval prop will continue to poll after unmount
-export function usePollQueryWhileMounted<T, K>(
-  queryResult: QueryResult<T, K>,
-  interval: PollingInterval
-) {
-  const { startPolling, stopPolling } = queryResult;
-
-  useEffect(() => {
-    startPolling(interval);
-    return stopPolling;
-  }, [interval, startPolling, stopPolling]);
-
-  return queryResult;
-}
-
-export enum TimePeriod {
-  HOUR,
-  DAY,
-  WEEK,
-  MONTH,
-  YEAR
-}
-
-export function toHistoryDuration(timePeriod: TimePeriod): HistoryDuration {
-  switch (timePeriod) {
-    case TimePeriod.HOUR:
-      return HistoryDuration.Hour;
-    case TimePeriod.DAY:
-      return HistoryDuration.Day;
-    case TimePeriod.WEEK:
-      return HistoryDuration.Week;
-    case TimePeriod.MONTH:
-      return HistoryDuration.Month;
-    case TimePeriod.YEAR:
-      return HistoryDuration.Year;
-  }
-}
-
-export type PricePoint = { timestamp: number; value: number };
-
-export function isPricePoint(p: PricePoint | null): p is PricePoint {
-  return p !== null;
 }
 
 export const GQL_MAINNET_CHAINS = [
@@ -89,9 +33,9 @@ const UX_SUPPORTED_GQL_CHAINS = [
   ...GQL_MAINNET_CHAINS,
   ...GQL_TESTNET_CHAINS
 ] as const;
-export type InterfaceGqlChain = typeof UX_SUPPORTED_GQL_CHAINS[number];
+type InterfaceGqlChain = typeof UX_SUPPORTED_GQL_CHAINS[number];
 
-export const CHAIN_ID_TO_BACKEND_NAME: { [key: number]: InterfaceGqlChain } = {
+const CHAIN_ID_TO_BACKEND_NAME: { [key: number]: InterfaceGqlChain } = {
   [ChainId.MAINNET]: Chain.Ethereum,
   [ChainId.GOERLI]: Chain.EthereumGoerli,
   [ChainId.SEPOLIA]: Chain.EthereumSepolia,
@@ -128,16 +72,6 @@ export function isGqlSupportedChain(
 ): chainId is GqlChainsType {
   return !!chainId && GQL_CHAINS.includes(chainId);
 }
-export function toContractInput(currency: Currency): ContractInput {
-  const chain = chainIdToBackendName(currency.chainId);
-  return {
-    chain,
-    address: currency.isToken
-      ? currency.address
-      : getNativeTokenDBAddress(chain)
-  };
-}
-
 export function gqlToCurrency(token: {
   address?: string;
   chain: Chain;
@@ -160,33 +94,6 @@ export function gqlToCurrency(token: {
     );
 }
 
-const URL_CHAIN_PARAM_TO_BACKEND: { [key: string]: InterfaceGqlChain } = {
-  ethereum: Chain.Ethereum,
-  polygon: Chain.Polygon,
-  celo: Chain.Celo,
-  arbitrum: Chain.Arbitrum,
-  optimism: Chain.Optimism,
-  bnb: Chain.Bnb,
-  avalanche: Chain.Avalanche,
-  base: Chain.Base
-};
-
-/**
- * @param chainName parsed in chain name from url query parameter
- * @returns if chainName is a valid chain name supported by the backend, returns the backend chain name, otherwise returns Chain.Ethereum
- */
-export function validateUrlChainParam(chainName: string | undefined) {
-  const isValidChainName = chainName && URL_CHAIN_PARAM_TO_BACKEND[chainName];
-  const isValidBackEndChain =
-    isValidChainName &&
-    (BACKEND_SUPPORTED_CHAINS as ReadonlyArray<Chain>).includes(
-      isValidChainName
-    );
-  return isValidBackEndChain
-    ? URL_CHAIN_PARAM_TO_BACKEND[chainName]
-    : Chain.Ethereum;
-}
-
 const CHAIN_NAME_TO_CHAIN_ID: { [key in InterfaceGqlChain]: ChainId } = {
   [Chain.Ethereum]: ChainId.MAINNET,
   [Chain.EthereumGoerli]: ChainId.GOERLI,
@@ -200,7 +107,7 @@ const CHAIN_NAME_TO_CHAIN_ID: { [key in InterfaceGqlChain]: ChainId } = {
   [Chain.Base]: ChainId.BASE
 };
 
-export function isSupportedGQLChain(chain: Chain): chain is InterfaceGqlChain {
+function isSupportedGQLChain(chain: Chain): chain is InterfaceGqlChain {
   return (UX_SUPPORTED_GQL_CHAINS as ReadonlyArray<Chain>).includes(chain);
 }
 
@@ -226,54 +133,4 @@ export function logSentryErrorForUnsupportedChain({
       });
     Sentry.captureException(new Error(errorMessage));
   });
-}
-
-export const BACKEND_SUPPORTED_CHAINS = [
-  Chain.Ethereum,
-  Chain.Polygon,
-  Chain.Arbitrum,
-  Chain.Optimism,
-  Chain.Celo,
-  Chain.Base
-] as const;
-export const BACKEND_NOT_YET_SUPPORTED_CHAIN_IDS = [
-  ChainId.BNB,
-  ChainId.AVALANCHE
-] as const;
-
-export function getTokenDetailsURL({
-  address,
-  chain,
-  inputAddress
-}: {
-  address?: string | null;
-  chain: Chain;
-  inputAddress?: string | null;
-}) {
-  const chainName = chain.toLowerCase();
-  const tokenAddress = address ?? NATIVE_CHAIN_ID;
-  const inputAddressSuffix = inputAddress
-    ? `?inputCurrency=${inputAddress}`
-    : "";
-  return `/tokens/${chainName}/${tokenAddress}${inputAddressSuffix}`;
-}
-
-export function unwrapToken<
-  T extends {
-    address?: string | null;
-  } | null
->(chainId: number, token: T): T {
-  if (!token?.address) return token;
-
-  const address = token.address.toLowerCase();
-  const nativeAddress = WRAPPED_NATIVE_CURRENCY[chainId]?.address.toLowerCase();
-  if (address !== nativeAddress) return token;
-
-  const nativeToken = nativeOnChain(chainId);
-  return {
-    ...token,
-    ...nativeToken,
-    address: NATIVE_CHAIN_ID,
-    extensions: undefined // prevents marking cross-chain wrapped tokens as native
-  };
 }

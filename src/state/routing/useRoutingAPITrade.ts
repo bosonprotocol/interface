@@ -5,9 +5,8 @@ import {
   MetricLoggerUnit,
   setGlobalMetric
 } from "@uniswap/smart-order-router";
-import { sendTiming } from "components/analytics";
-import { AVERAGE_L1_BLOCK_TIME } from "constants/chainInfo";
-import { useRoutingAPIArguments } from "lib/hooks/routing/useRoutingAPIArguments";
+import { AVERAGE_L1_BLOCK_TIME } from "lib/constants/chainInfo";
+import { useRoutingAPIArguments } from "lib/utils/hooks/routing/useRoutingAPIArguments";
 import ms from "ms";
 import { useMemo } from "react";
 
@@ -155,7 +154,7 @@ class GAMetric extends IMetric {
   }
 
   putMetric(key: string, value: number, unit?: MetricLoggerUnit) {
-    sendTiming("Routing API", `${key} | ${unit}`, value, "client");
+    return;
   }
 
   setProperty() {

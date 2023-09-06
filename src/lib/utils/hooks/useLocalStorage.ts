@@ -2,9 +2,7 @@ import * as Sentry from "@sentry/browser";
 // extracted from https://usehooks.com/useLocalStorage/
 import { useState } from "react";
 
-export const createProductImagePrefix = "create-product-image_";
-
-export type CreateProductImageCreteYourProfileLogo =
+export type CreateProductImageCreateYourProfileLogo =
   "create-product-image_createYourProfile.logo";
 
 export type CreateProductImageProductImages =
@@ -27,7 +25,7 @@ export type GetItemFromStorageKey =
   | "isConnectWalletFromCommit"
   | "showCookies"
   | CreateProductImageProductImages
-  | CreateProductImageCreteYourProfileLogo;
+  | CreateProductImageCreateYourProfileLogo;
 
 export function getItemFromStorage<T>(
   key: GetItemFromStorageKey,

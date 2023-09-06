@@ -1,16 +1,14 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
+import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { useState } from "react";
-import { useBalance } from "wagmi";
 
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
-import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
@@ -48,16 +46,10 @@ export default function FinanceDeposit({
   const [depositError, setDepositError] = useState<unknown>(null);
 
   const signer = useEthersSigner();
-  const { account: address } = useWeb3React();
-  const { data: dataBalance, refetch } = useBalance(
-    exchangeToken !== ethers.constants.AddressZero
-      ? {
-          address: address as `0x${string}`,
-          token: exchangeToken as `0x${string}`
-        }
-      : { address: address as `0x${string}` }
-  );
-
+  const { balance: exchangeTokenBalance } = useExchangeTokenBalance({
+    address: exchangeToken,
+    decimals: tokenDecimals
+  });
   const { showModal, hideModal } = useModal();
   const addPendingTransaction = useAddPendingTransaction();
 
@@ -114,7 +106,8 @@ export default function FinanceDeposit({
               {symbol}
             </Typography>
             <Typography $fontSize="0.625rem" margin="0">
-              Balance {dataBalance?.formatted}
+              Balance{" "}
+              {exchangeTokenBalance?.toSignificant(Number(tokenDecimals))}
             </Typography>
           </div>
         </InputWrapper>
@@ -169,16 +162,17 @@ export default function FinanceDeposit({
             }
           }}
           onSuccess={async () => {
-            await poll(
-              async () => {
-                const balance = await refetch();
-                return balance;
-              },
-              (balance) => {
-                return dataBalance?.formatted === balance.data?.formatted;
-              },
-              500
-            );
+            // TODO: test if this is necessary
+            // await poll(
+            //   async () => {
+            //     const balance = await refetch();
+            //     return balance;
+            //   },
+            //   (balance) => {
+            //     return dataBalance?.formatted === balance.data?.formatted;
+            //   },
+            //   500
+            // );
             setAmountToDeposit("0");
             setIsDepositInvalid(true);
             reload();

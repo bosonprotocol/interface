@@ -6,7 +6,7 @@ import { useEnsName } from "wagmi";
 import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
-import Settings from "../../../components/settings";
+import { Settings } from "../../../components/settings";
 import Tabs from "../Tabs";
 import { SellerToggleContext } from "./Toogle/SellerToggleContext";
 import Toggle from "./Toogle/Toogle";

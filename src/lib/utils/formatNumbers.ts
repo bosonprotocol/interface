@@ -356,12 +356,6 @@ export function formatPriceImpact(priceImpact: Percent | undefined): string {
   return `${priceImpact.multiply(-1).toFixed(3)}%`;
 }
 
-export function formatSlippage(slippage: Percent | undefined) {
-  if (!slippage) return "-";
-
-  return `${slippage.toFixed(3)}%`;
-}
-
 export function formatPrice(
   price: Nullish<Price<Currency, Currency>>,
   type: NumberType = NumberType.FiatTokenPrice
@@ -372,45 +366,6 @@ export function formatPrice(
 
   return formatNumber(parseFloat(price.toSignificant()), type);
 }
-
-export function formatNumberOrString(
-  price: Nullish<number | string>,
-  type: NumberType
-): string {
-  if (price === null || price === undefined) return "-";
-  if (typeof price === "string") return formatNumber(parseFloat(price), type);
-  return formatNumber(price, type);
-}
-
-export function formatUSDPrice(
-  price: Nullish<number | string>,
-  type: NumberType = NumberType.FiatTokenPrice
-): string {
-  return formatNumberOrString(price, type);
-}
-
-/** Formats USD and non-USD prices */
-export function formatFiatPrice(
-  price: Nullish<number>,
-  currency = "USD"
-): string {
-  if (price === null || price === undefined) return "-";
-  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(
-    price
-  );
-}
-
-// Convert [CurrencyAmount] to number with necessary precision for price formatting.
-export const currencyAmountToPreciseFloat = (
-  currencyAmount: CurrencyAmount<Currency> | undefined
-) => {
-  if (!currencyAmount) return undefined;
-  const floatForLargerNumbers = parseFloat(currencyAmount.toExact());
-  if (floatForLargerNumbers < 0.1) {
-    return parseFloat(currencyAmount.toSignificant(6));
-  }
-  return floatForLargerNumbers;
-};
 
 // Convert [Price] to number with necessary precision for price formatting.
 export const priceToPreciseFloat = (

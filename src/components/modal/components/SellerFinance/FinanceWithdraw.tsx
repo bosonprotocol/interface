@@ -1,12 +1,11 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
+import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { useState } from "react";
 import styled from "styled-components";
-import { useBalance } from "wagmi";
 
 import { colors } from "../../../../lib/styles/colors";
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
@@ -15,7 +14,6 @@ import {
   getNumberWithDecimals,
   getNumberWithoutDecimals
 } from "../../../../pages/account/funds/FundItem";
-import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
@@ -60,17 +58,13 @@ export default function FinanceWithdraw({
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
   const signer = useEthersSigner();
-  const { account: address } = useWeb3React();
   const addPendingTransaction = useAddPendingTransaction();
 
-  const { data: dataBalance, refetch } = useBalance(
-    exchangeToken !== ethers.constants.AddressZero
-      ? {
-          address: address as `0x${string}`,
-          token: exchangeToken as `0x${string}`
-        }
-      : { address: address as `0x${string}` }
-  );
+  const { balance: exchangeTokenBalance } = useExchangeTokenBalance({
+    address: exchangeToken,
+    decimals: tokenDecimals
+  });
+
   const { showModal, hideModal } = useModal();
 
   const tokenStep = 10 ** -Number(tokenDecimals);
@@ -132,9 +126,10 @@ export default function FinanceWithdraw({
         </MaxLimitWrapper>
       </AmountWrapper>
       <Grid>
-        {dataBalance ? (
+        {exchangeTokenBalance ? (
           <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
-            Wallet Balance: {dataBalance?.formatted} {dataBalance?.symbol}
+            Wallet Balance:{" "}
+            {exchangeTokenBalance.toSignificant(Number(tokenDecimals))} {symbol}
           </Typography>
         ) : (
           <div />
@@ -177,16 +172,17 @@ export default function FinanceWithdraw({
             });
           }}
           onSuccess={async () => {
-            await poll(
-              async () => {
-                const balance = await refetch();
-                return balance;
-              },
-              (balance) => {
-                return dataBalance?.formatted === balance.data?.formatted;
-              },
-              500
-            );
+            // TODO: test if this is necessary
+            // await poll(
+            //   async () => {
+            //     const balance = await refetch();
+            //     return balance;
+            //   },
+            //   (balance) => {
+            //     return dataBalance?.formatted === balance.data?.formatted;
+            //   },
+            //   500
+            // );
             setAmountToWithdraw("0");
             setIsWithdrawInvalid(true);
             hideModal();

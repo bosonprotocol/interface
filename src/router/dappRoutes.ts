@@ -45,6 +45,8 @@ const DisputeResolverPage = lazy(
   () => import("../pages/dispute-resolver/DisputeResolver")
 );
 
+const SwapPage = lazy(() => import("../pages/swap/index"));
+
 export const baseAppProps = {
   withLayout: true,
   withFooter: true,
@@ -338,6 +340,15 @@ export default [
       withBosonStyles: false
     },
     component: AboutPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.Swap,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
+    component: SwapPage
   },
   {
     ...base,

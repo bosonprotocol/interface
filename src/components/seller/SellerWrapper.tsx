@@ -19,9 +19,6 @@ const SellerInner = styled.div`
     0px 0px 15px 0px rgb(0 0 0 / 5%);
   overflow: auto;
 `;
-export const LoadingWrapper = styled.div`
-  text-align: center;
-`;
 
 interface Props {
   children: React.ReactNode;

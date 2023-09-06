@@ -1,10 +1,7 @@
 import { ChainId, Currency, Token } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { getChainInfo } from "lib/constants/chainInfo";
-import {
-  DEFAULT_INACTIVE_LIST_URLS,
-  DEFAULT_LIST_OF_LISTS
-} from "lib/constants/lists";
+import { DEFAULT_INACTIVE_LIST_URLS } from "lib/constants/lists";
 import { isL2ChainId } from "lib/utils/chains";
 import {
   useCurrencyFromMap,
@@ -13,15 +10,10 @@ import {
 import { getTokenFilter } from "lib/utils/hooks/useTokenList/filtering";
 import { TokenAddressMap } from "lib/utils/hooks/useTokenList/utils";
 import { useMemo } from "react";
-import { useAppSelector } from "state/hooks";
-import {
-  useAllLists,
-  useCombinedActiveList,
-  useCombinedTokenMapFromUrls
-} from "state/lists/hooks";
+import { useAllLists, useCombinedActiveList } from "state/lists/hooks";
 import { useUnsupportedTokenList } from "state/lists/hooks";
 import { WrappedTokenInfo } from "state/lists/wrappedTokenInfo";
-import { deserializeToken, useUserAddedTokens } from "state/user/hooks";
+import { useUserAddedTokens } from "state/user/hooks";
 
 type Maybe<T> = T | null | undefined;
 
@@ -41,45 +33,6 @@ function useTokensFromMap(
       return newMap;
     }, {});
   }, [chainId, tokenMap]);
-}
-
-// TODO(WEB-2347): after disallowing unchecked index access, refactor ChainTokenMap to not use ?'s
-export type ChainTokenMap = {
-  [chainId in number]?: { [address in string]?: Token };
-};
-/** Returns tokens from all token lists on all chains, combined with user added tokens */
-export function useAllTokensMultichain(): ChainTokenMap {
-  const allTokensFromLists = useCombinedTokenMapFromUrls(DEFAULT_LIST_OF_LISTS);
-  const userAddedTokensMap = useAppSelector(({ user: { tokens } }) => tokens);
-
-  return useMemo(() => {
-    const chainTokenMap: ChainTokenMap = {};
-
-    if (userAddedTokensMap) {
-      Object.keys(userAddedTokensMap).forEach((key) => {
-        const chainId = Number(key);
-        const tokenMap = {} as { [address in string]?: Token };
-        Object.values(userAddedTokensMap[chainId]).forEach(
-          (serializedToken) => {
-            tokenMap[serializedToken.address] =
-              deserializeToken(serializedToken);
-          }
-        );
-        chainTokenMap[chainId] = tokenMap;
-      });
-    }
-
-    Object.keys(allTokensFromLists).forEach((key) => {
-      const chainId = Number(key);
-      const tokenMap = chainTokenMap[chainId] ?? {};
-      Object.values(allTokensFromLists[chainId]).forEach(({ token }) => {
-        tokenMap[token.address] = token;
-      });
-      chainTokenMap[chainId] = tokenMap;
-    });
-
-    return chainTokenMap;
-  }, [allTokensFromLists, userAddedTokensMap]);
 }
 
 /** Returns all tokens from the default list + user added tokens */

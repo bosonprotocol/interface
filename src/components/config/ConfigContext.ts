@@ -2,7 +2,7 @@ import { ProtocolConfig } from "@bosonprotocol/react-kit";
 import type { DappConfig } from "lib/config";
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
-export type ConfigContextProps = {
+type ConfigContextProps = {
   config: DappConfig;
   setEnvConfig: Dispatch<SetStateAction<ProtocolConfig>>;
 };

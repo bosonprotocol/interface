@@ -11,7 +11,6 @@ import {
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import { getConnection } from "../../../lib/connection";
 import { ConnectionType } from "../../../lib/connection/types";
@@ -116,15 +115,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => setIsOpen(false), [modalRef]);
   const info = getChainInfo(chainId);
-  // TODO: remove
-  console.log(
-    "chainId",
-    chainId,
-    "config.envConfig.chainId",
-    config.envConfig.chainId,
-    config.envConfig.configId,
-    { account, address: useAccount()["address"] }
-  );
   const [activeConfigId, setActiveConfigId] = useState<ConfigId>(
     config.envConfig.configId
   );

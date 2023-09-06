@@ -7,14 +7,14 @@ const gapValues = {
   lg: "24px",
   xl: "32px"
 };
-export type Gap = keyof typeof gapValues;
+type Gap = keyof typeof gapValues;
 export const Column = styled.div<{
   gap?: Gap;
 }>`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: ${({ gap }) => gap};
+  gap: ${({ gap }) => gap && gapValues[gap]};
 `;
 export const ColumnCenter = styled(Column)`
   width: 100%;

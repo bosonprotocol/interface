@@ -70,14 +70,6 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   // ChainId.BASE
 ] as const;
 
-/**
- * Supported networks for V2 pool behavior.
- */
-export const SUPPORTED_V2POOL_CHAIN_IDS = [
-  ChainId.MAINNET,
-  ChainId.GOERLI
-] as const;
-
 export const TESTNET_CHAIN_IDS = [
   ChainId.GOERLI,
   ChainId.SEPOLIA,

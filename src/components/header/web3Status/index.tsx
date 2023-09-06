@@ -13,7 +13,7 @@ import { formatAddress } from "../../../lib/utils/address";
 import { useAccountDrawer } from "../accountDrawer";
 import PrefetchBalancesWrapper from "../accountDrawer/PrefetchBalancesWrapper";
 import StatusIcon from "../identicon/StatusIcon";
-import { flexColumnNoWrap, flexRowNoWrap } from "../styles";
+import { flexRowNoWrap } from "../styles";
 
 const Web3StatusGeneric = styled.button`
   ${flexRowNoWrap};
@@ -30,21 +30,6 @@ const Web3StatusGeneric = styled.button`
   }
 `;
 
-export const IconWrapper = styled.div<{ size?: number }>`
-  position: relative;
-  ${flexColumnNoWrap};
-  align-items: center;
-  justify-content: center;
-  margin-right: 8px;
-  & > img,
-  span {
-    height: ${({ size }) => (size ? size + "px" : "32px")};
-    width: ${({ size }) => (size ? size + "px" : "32px")};
-  }
-  ${breakpoint.m} {
-    align-items: flex-end;
-  } ;
-`;
 const breakpointWhenConnectButtonOverflows = "1300px";
 const Web3StatusConnected = styled(Web3StatusGeneric)`
   font-weight: 500;
@@ -60,11 +45,6 @@ const Web3StatusConnected = styled(Web3StatusGeneric)`
   @media (min-width: ${breakpointWhenConnectButtonOverflows}) {
     background-color: var(--buttonBgColor);
     border: 1px solid var(--buttonBgColor);
-  }
-  ${breakpoint.l} {
-    ${IconWrapper} {
-      margin-right: 0;
-    }
   }
 `;
 

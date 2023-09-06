@@ -1,5 +1,5 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { parsedQueryString } from "hooks/useParsedQueryString";
+import { parsedQueryString } from "lib/utils/hooks/useParsedQueryString";
 
 import {
   Field,

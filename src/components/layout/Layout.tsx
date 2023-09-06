@@ -4,7 +4,7 @@ import styled, { css, CSSProperties } from "styled-components";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { LayoutContext } from "./Context";
 
-export const layoutPadding = css`
+const layoutPadding = css`
   padding: 0 1rem;
 
   ${breakpoint.xs} {
