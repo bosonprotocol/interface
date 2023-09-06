@@ -29,7 +29,7 @@ import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import Loading from "../../ui/Loading";
 import useOffersBacked from "./useOffersBacked";
 
-export const Wrapper = styled.div`
+const Wrapper = styled.div`
   text-align: center;
 `;
 

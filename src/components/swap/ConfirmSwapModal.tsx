@@ -44,7 +44,7 @@ const BottomSection = styled(AutoColumn)`
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 `;
-export function ConfirmationModalContent({
+function ConfirmationModalContent({
   title,
   bottomContent,
   onDismiss,

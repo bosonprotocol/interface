@@ -62,7 +62,7 @@ interface L1ChainInfo extends BaseChainInfo {
   readonly defaultListUrl?: string;
 }
 
-export interface L2ChainInfo extends BaseChainInfo {
+interface L2ChainInfo extends BaseChainInfo {
   readonly networkType: NetworkType.L2;
   readonly bridge: string;
   readonly statusPage?: string;
@@ -347,12 +347,4 @@ export function getChainInfo(
     return CHAIN_INFO[chainId] ?? undefined;
   }
   return undefined;
-}
-
-const MAINNET_INFO = CHAIN_INFO[ChainId.MAINNET];
-export function getChainInfoOrDefault(
-  chainId: number | undefined,
-  featureFlags?: Record<number, boolean>
-) {
-  return getChainInfo(chainId, featureFlags) ?? MAINNET_INFO;
 }

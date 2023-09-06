@@ -11,7 +11,7 @@ import {
 } from "../../state/application/hooks";
 import { ApplicationModal } from "../../state/application/reducer";
 
-export const MOONPAY_REGION_AVAILABILITY_ARTICLE =
+const MOONPAY_REGION_AVAILABILITY_ARTICLE =
   "https://support.uniswap.org/hc/en-us/articles/11306664890381-Why-isn-t-MoonPay-available-in-my-region-";
 
 enum BuyFiatFlowState {

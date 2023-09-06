@@ -180,28 +180,6 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
       : null}
 `;
 
-// styles
-export const Dots = styled.span`
-  &::after {
-    display: inline-block;
-    animation: ellipsis 1.25s infinite;
-    content: ".";
-    width: 1em;
-    text-align: left;
-  }
-  @keyframes ellipsis {
-    0% {
-      content: ".";
-    }
-    33% {
-      content: "..";
-    }
-    66% {
-      content: "...";
-    }
-  }
-`;
-
 const SwapCallbackErrorInner = styled.div`
   background-color: ${({ theme }) => transparentize(0.9, theme.accentFailure)};
   border-radius: 1rem;
