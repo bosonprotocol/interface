@@ -1,7 +1,7 @@
 import { useConfigContext } from "components/config/ConfigContext";
+import useENSName from "lib/utils/hooks/useENSName";
 import { useState } from "react";
 import styled from "styled-components";
-import { useEnsName } from "wagmi";
 
 import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
@@ -52,9 +52,7 @@ const SettingsWrapper = styled.div`
 
 export default function PrivateAccount({ account }: { account: string }) {
   const { config } = useConfigContext();
-  const { data: ensName } = useEnsName({
-    address: account as `0x${string}`
-  });
+  const { ENSName } = useENSName(account);
   const [isTabSellerSelected, setTabSellerSelected] = useState<boolean>(false);
 
   return (
@@ -62,7 +60,7 @@ export default function PrivateAccount({ account }: { account: string }) {
       <BasicInfo>
         <Avatar address={account} size={200} />
 
-        <EnsName>{ensName}</EnsName>
+        <EnsName>{ENSName}</EnsName>
         <AddressAndSettings>
           <div style={{ flexBasis: "25%" }}></div>
           <AddressContainer>

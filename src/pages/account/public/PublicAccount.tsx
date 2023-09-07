@@ -1,11 +1,11 @@
+import { useConfigContext } from "components/config/ConfigContext";
+import useENSName from "lib/utils/hooks/useENSName";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { useEnsName } from "wagmi";
 
 import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
-import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import Tabs from "../Tabs";
 
@@ -38,10 +38,9 @@ const AddressContainer = styled.div`
 
 export default function PublicAccount() {
   const { [UrlParameters.accountId]: accountParameter } = useParams();
+  const { config } = useConfigContext();
   const address = accountParameter || "";
-  const { data: ensName } = useEnsName({
-    address: address
-  });
+  const { ENSName } = useENSName(address);
 
   if (!address) {
     return <div>There has been an error</div>;
@@ -52,10 +51,12 @@ export default function PublicAccount() {
       <BasicInfo>
         <Avatar address={address} size={200} />
 
-        <EnsName>{ensName}</EnsName>
+        <EnsName>{ENSName}</EnsName>
 
         <AddressContainer>
-          <CurrencyIcon currencySymbol={CONFIG.nativeCoin?.symbol || ""} />
+          <CurrencyIcon
+            currencySymbol={config.envConfig.nativeCoin?.symbol || ""}
+          />
           <AddressText address={address} />
         </AddressContainer>
       </BasicInfo>
