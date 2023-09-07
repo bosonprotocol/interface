@@ -5,7 +5,7 @@ import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 
 interface Props {
-  requiredRole: "admin" | "assistant" | "clerk" | "treasury";
+  requiredRole: "admin" | "assistant" | "treasury";
   action: string;
 }
 

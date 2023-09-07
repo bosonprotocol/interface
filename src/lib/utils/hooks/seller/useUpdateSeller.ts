@@ -21,7 +21,6 @@ async function updateSellerAccount(
   {
     sellerId,
     admin,
-    clerk,
     assistant,
     treasury,
     authTokenId,
@@ -30,7 +29,6 @@ async function updateSellerAccount(
   }: {
     sellerId: string;
     admin: string;
-    clerk: string;
     assistant: string;
     treasury: string;
     authTokenId: string | null;
@@ -49,7 +47,6 @@ async function updateSellerAccount(
         ? (authTokenId || "0").toString() // in hex with a leading 0x if different from 0
         : "0",
     authTokenType,
-    clerk,
     assistant,
     treasury,
     metadataUri

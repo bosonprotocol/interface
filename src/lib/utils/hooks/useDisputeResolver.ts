@@ -9,7 +9,6 @@ interface Props {
     id: string;
     escalationResponsePeriod: string;
     admin: string;
-    clerk: string;
     treasury: string;
     assistant: string;
     metadataUri: string;
@@ -43,7 +42,6 @@ export function useDisputeResolver(id: string) {
             id
             escalationResponsePeriod
             admin
-            clerk
             treasury
             assistant
             metadataUri

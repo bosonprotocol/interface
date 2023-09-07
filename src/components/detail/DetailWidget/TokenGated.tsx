@@ -28,7 +28,9 @@ interface Condition {
   method: number;
   tokenType: number;
   tokenAddress: string;
-  tokenId: string;
+  minTokenId: string;
+  maxTokenId: string;
+  gatingType: number;
   threshold?: string;
   maxCommits: string;
   minBalance?: string;
@@ -49,7 +51,13 @@ interface TokenInfo {
 
 const getBuildMessage =
   (config: DappConfig) => (condition: Condition, tokenInfo: TokenInfo) => {
-    const { method, tokenType, tokenId, tokenAddress, threshold } = condition;
+    const {
+      method,
+      tokenType,
+      minTokenId: tokenId,
+      tokenAddress,
+      threshold
+    } = condition;
 
     if (tokenType === TokenType.FungibleToken) {
       return (

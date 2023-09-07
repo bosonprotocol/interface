@@ -167,9 +167,8 @@ export default function ProductType({
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isAssistant = currentRoles?.find((role) => role === "assistant");
-  const isClerk = currentRoles?.find((role) => role === "clerk");
   const isAdmin = currentRoles?.find((role) => role === "admin");
-  const isSellerNotAssistant = (isClerk || isAdmin) && !isAssistant;
+  const isSellerNotAssistant = isAdmin && !isAssistant;
 
   const isAdminLinkedToLens =
     !isLoading &&

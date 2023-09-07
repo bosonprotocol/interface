@@ -106,7 +106,6 @@ const getExchangesFunction = (subgraphUrl: string) => async (props: Props) => {
           id
           assistant
           admin
-          clerk
           treasury
           authTokenId
           authTokenType

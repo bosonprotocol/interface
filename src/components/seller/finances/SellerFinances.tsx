@@ -270,8 +270,8 @@ export default function SellerFinances({
               <WithdrawButton
                 theme="outline"
                 size="small"
-                disabled={!sellerRoles.isClerk}
-                tooltip="This action is restricted to only the clerk wallet"
+                disabled={!sellerRoles.isAssistant}
+                tooltip="This action is restricted to only the assistant wallet"
                 onClick={() => {
                   showModal(
                     "FINANCE_WITHDRAW_MODAL",

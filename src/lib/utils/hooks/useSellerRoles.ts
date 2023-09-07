@@ -13,7 +13,6 @@ export interface SellerRolesProps {
   isSeller: boolean;
   isActive: boolean;
   isAdmin: boolean;
-  isClerk: boolean;
   isAssistant: boolean;
   isTreasury: boolean;
 }
@@ -30,7 +29,6 @@ export function useSellerRoles(id: string) {
         sellers: {
           id: string;
           admin: string;
-          clerk: string;
           assistant: string;
           treasury: string;
           active: boolean;
@@ -49,7 +47,6 @@ export function useSellerRoles(id: string) {
               id
               admin
               active
-              clerk
               assistant
               treasury
             }
@@ -71,7 +68,6 @@ export function useSellerRoles(id: string) {
       isSeller: data !== null,
       isActive: data ? data?.active : false,
       isAdmin: data ? lowerCase(data?.admin) === lowerCase(address) : false,
-      isClerk: data ? lowerCase(data?.clerk) === lowerCase(address) : false,
       isAssistant: data
         ? lowerCase(data?.assistant) === lowerCase(address)
         : false,

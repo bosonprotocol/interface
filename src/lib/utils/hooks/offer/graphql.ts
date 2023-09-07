@@ -17,7 +17,7 @@ const offerGraphQl = gql`
     validUntilDate
     voidedAt
     voided
-    createdAt
+    collectionIndex
     voucherRedeemableFromDate
     voucherRedeemableUntilDate
     voucherValidDuration
@@ -26,7 +26,9 @@ const offerGraphQl = gql`
       method
       tokenType
       tokenAddress
-      tokenId
+      gatingType
+      minTokenId
+      maxTokenId
       threshold
       maxCommits
     }
@@ -45,7 +47,6 @@ const offerGraphQl = gql`
     seller {
       id
       admin
-      clerk
       treasury
       assistant
       active
