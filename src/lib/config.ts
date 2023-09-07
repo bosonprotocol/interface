@@ -18,14 +18,17 @@ if (!envName) {
   throw new Error("REACT_APP_ENV_NAME is not defined");
 }
 
-function getMetaTxApiIds(protocolAddress: string, defaultTokens: Token[]) {
+function getMetaTxApiIds(envConfig: ProtocolConfig) {
+  const protocolAddress: string = envConfig.contracts.protocolDiamond;
+  const defaultTokens: Token[] = envConfig.defaultTokens || [];
   const apiIds: Record<string, Record<string, string>> = {};
   try {
-    const apiIdsInput = JSON.parse(
-      process.env.REACT_APP_META_TX_API_IDS || "[]"
+    const apiIdsInputPerConfigId = JSON.parse(
+      process.env.REACT_APP_META_TX_API_IDS_MAP || "{}"
     );
     const method = "executeMetaTransaction"; // At the moment, both protocol and tokens have the same method
     const tokens = defaultTokens;
+    const apiIdsInput = apiIdsInputPerConfigId[envConfig.configId];
     Object.keys(apiIdsInput).forEach((key) => {
       if (key.toLowerCase() === "protocol") {
         apiIds[protocolAddress.toLowerCase()] = {};
@@ -47,6 +50,21 @@ function getMetaTxApiIds(protocolAddress: string, defaultTokens: Token[]) {
     Sentry.captureException(error);
   }
   return apiIds;
+}
+
+function getMetaTxApiKey(envConfig: ProtocolConfig) {
+  let apiKey = "";
+  try {
+    const apiKeysPerConfigId = JSON.parse(
+      process.env.REACT_APP_META_TX_API_KEY_MAP || "{}"
+    );
+    apiKey = apiKeysPerConfigId[envConfig.configId];
+    return apiKey;
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
+  }
+  return apiKey;
 }
 
 function getCarouselPromotedSellerId(
@@ -162,25 +180,22 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
     ),
     metaTx: {
       ...envConfig.metaTx,
-      apiKey: process.env.REACT_APP_META_TX_API_KEY,
-      apiIds: getMetaTxApiIds(
-        envConfig.contracts.protocolDiamond,
-        envConfig.defaultTokens || []
-      )
+      apiKey: getMetaTxApiKey(envConfig),
+      apiIds: getMetaTxApiIds(envConfig)
     },
     lens: {
       lensHandleExtension: envConfig.chainId === 137 ? ".lens" : ".test",
       availableOnNetwork: [80001, 137].includes(envConfig.chainId),
-      apiLink: envConfig.lens.apiLink,
-      ipfsGateway: envConfig.lens.ipfsGateway,
-      LENS_HUB_CONTRACT: envConfig.lens.LENS_HUB_CONTRACT,
-      LENS_PERIPHERY_CONTRACT: envConfig.lens.LENS_PERIPHERY_CONTRACT,
+      apiLink: envConfig.lens?.apiLink,
+      ipfsGateway: envConfig.lens?.ipfsGateway,
+      LENS_HUB_CONTRACT: envConfig.lens?.LENS_HUB_CONTRACT,
+      LENS_PERIPHERY_CONTRACT: envConfig.lens?.LENS_PERIPHERY_CONTRACT,
       LENS_PROFILES_CONTRACT_ADDRESS:
-        envConfig.lens.LENS_PROFILES_CONTRACT_ADDRESS,
+        envConfig.lens?.LENS_PROFILES_CONTRACT_ADDRESS,
       LENS_HUB_ABI: lensHubContractAbi,
       LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
       LENS_PROFILES_CONTRACT_PARTIAL_ABI:
-        envConfig.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
+        envConfig.lens?.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
       LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
     },
     moonpay: {

@@ -77,7 +77,7 @@ export default function Preview({
   const exchangeSymbol = isMultiVariant
     ? firstVariant.currency.value
     : values.coreTermsOfSale.currency.value;
-  const exchangeToken = CONFIG.defaultTokens.find(
+  const exchangeToken = config.envConfig.defaultTokens?.find(
     (n: Token) => n.symbol === exchangeSymbol
   );
 

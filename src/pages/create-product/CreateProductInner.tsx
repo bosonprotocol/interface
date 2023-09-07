@@ -520,7 +520,8 @@ function CreateProductInner({
       isMultiVariant,
       isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
-      isOneSetOfImages
+      isOneSetOfImages,
+      config
     });
     return {
       currentStep:
@@ -539,7 +540,8 @@ function CreateProductInner({
     isMultiVariant,
     isTokenGated,
     isOneSetOfImages,
-    currentStep
+    currentStep,
+    config
   ]);
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
@@ -640,7 +642,7 @@ function CreateProductInner({
       const exchangeSymbol = isMultiVariant
         ? firstVariant.currency.value
         : values.coreTermsOfSale.currency.value;
-      const exchangeToken = CONFIG.defaultTokens.find(
+      const exchangeToken = config.envConfig.defaultTokens?.find(
         (n: Token) => n.symbol === exchangeSymbol
       );
 
@@ -788,7 +790,7 @@ function CreateProductInner({
         });
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map((metadata, index) => {
-            const exchangeToken = CONFIG.defaultTokens.find(
+            const exchangeToken = config.envConfig.defaultTokens.find(
               (n: Token) => n.symbol === variants[index].currency.label
             );
             const decimals = Number(exchangeToken?.decimals || 18);

@@ -121,7 +121,7 @@ function AboutPage() {
           <Text>
             <span>Default token list:</span>
             <ul>
-              {CONFIG.defaultTokens.map((token, index) => {
+              {config.envConfig.defaultTokens?.map((token, index) => {
                 return (
                   <li key={`token_${token.symbol}_${index}`}>
                     <b>{JSON.stringify(token)}</b>
