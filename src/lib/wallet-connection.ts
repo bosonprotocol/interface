@@ -11,7 +11,7 @@ import * as wagmiChains from "wagmi/chains";
 
 import { CONFIG } from "./config";
 
-function getChainForEnvironment(chainId: number): Array<Chain> {
+function getChain(chainId: number): Array<Chain> {
   const chain = Object.values(wagmiChains).find(
     (chain) => chain.id === chainId
   );
@@ -22,19 +22,16 @@ function getChainForEnvironment(chainId: number): Array<Chain> {
 }
 
 export function getConnectors(chainId: number) {
-  const { publicClient, chains } = configureChains(
-    getChainForEnvironment(chainId),
-    [
-      jsonRpcProvider({
-        rpc: (chain: Chain) => {
-          return {
-            http: chain.rpcUrls.default.http[0],
-            webSocket: chain.rpcUrls.default.webSocket?.[0]
-          };
-        }
-      })
-    ]
-  );
+  const { publicClient, chains } = configureChains(getChain(chainId), [
+    jsonRpcProvider({
+      rpc: (chain: Chain) => {
+        return {
+          http: chain.rpcUrls.default.http[0],
+          webSocket: chain.rpcUrls.default.webSocket?.[0]
+        };
+      }
+    })
+  ]);
 
   const projectId = CONFIG.walletConnect.projectId;
   const connectors = connectorsForWallets([

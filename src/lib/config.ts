@@ -29,6 +29,9 @@ function getMetaTxApiIds(envConfig: ProtocolConfig) {
     const method = "executeMetaTransaction"; // At the moment, both protocol and tokens have the same method
     const tokens = defaultTokens;
     const apiIdsInput = apiIdsInputPerConfigId[envConfig.configId];
+    if (!apiIdsInput) {
+      return;
+    }
     Object.keys(apiIdsInput).forEach((key) => {
       if (key.toLowerCase() === "protocol") {
         apiIds[protocolAddress.toLowerCase()] = {};
@@ -178,11 +181,13 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
       process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
       process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
     ),
-    metaTx: {
-      ...envConfig.metaTx,
-      apiKey: getMetaTxApiKey(envConfig),
-      apiIds: getMetaTxApiIds(envConfig)
-    },
+    metaTx: envConfig.metaTx
+      ? {
+          ...envConfig.metaTx,
+          apiKey: getMetaTxApiKey(envConfig),
+          apiIds: getMetaTxApiIds(envConfig)
+        }
+      : undefined,
     lens: {
       lensHandleExtension: envConfig.chainId === 137 ? ".lens" : ".test",
       availableOnNetwork: [80001, 137].includes(envConfig.chainId),
