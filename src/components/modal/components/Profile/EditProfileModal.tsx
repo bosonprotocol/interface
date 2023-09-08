@@ -1,5 +1,6 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useCallback, useState } from "react";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -21,13 +22,16 @@ import { EditRegularProfileFlow } from "./Regular/EditRegularProfileFlow";
 import { buildRegularProfileFromMetadata } from "./utils";
 
 export default function EditProfileModal() {
+  const { config } = useConfigContext();
+  const { availableOnNetwork: isLensAvailable } = config.lens;
   const { sellers: currentSellers, lens, isLoading } = useCurrentSellers();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
   const lensProfile = lens?.length ? lens[0] : undefined;
   const hasMetadata = !!seller?.metadata;
   const metadata = seller?.metadata;
   const authTokenType = seller?.authTokenType;
-  const useLens = seller?.authTokenType === AuthTokenType.LENS;
+  const useLens =
+    seller?.authTokenType === AuthTokenType.LENS && isLensAvailable;
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
   const { hideModal } = useModal();
@@ -42,8 +46,8 @@ export default function EditProfileModal() {
     setSwitchChecked(switchToLens);
     setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
   }, []);
-  const SwitchButton = useCallback(
-    () => (
+  const SwitchButton = useCallback(() => {
+    return isLensAvailable ? (
       <Switch
         onCheckedChange={(checked) => {
           setSwitchAndProfileType(checked);
@@ -63,9 +67,10 @@ export default function EditProfileModal() {
           </Typography>
         )}
       />
-    ),
-    [switchChecked, setSwitchAndProfileType]
-  );
+    ) : (
+      <></>
+    );
+  }, [switchChecked, setSwitchAndProfileType, isLensAvailable]);
   const Component = useCallback(() => {
     const profileDataFromMetadata: CreateProfile =
       buildRegularProfileFromMetadata(metadata);
