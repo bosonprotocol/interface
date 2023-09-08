@@ -77,7 +77,7 @@ function useWalletSupportedChains(): ChainId[] {
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
-  const { chainId, account } = useWeb3React();
+  const { chainId } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
 
@@ -160,7 +160,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
             disabled={!walletSupportsChain.includes(config.chainId as ChainId)}
             onSelectChain={() => onSelectChain(config)}
             targetChain={config.chainId as ChainId}
-            label={config.envName}
             key={config.configId}
             active={config.configId === activeConfigId}
             isPending={config.configId === pendingConfigId}
@@ -173,7 +172,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
             targetChain={config.chainId as ChainId}
             key={config.configId}
             isPending={false}
-            label={config.envName}
             active={config.configId === activeConfigId}
           />
         ))}

@@ -66,7 +66,6 @@ interface ChainSelectorRowProps {
   disabled?: boolean;
   targetChain: ChainId;
   onSelectChain: () => void;
-  label: string;
   isPending: boolean;
   active: boolean;
 }
@@ -74,13 +73,11 @@ export default function ChainSelectorRow({
   disabled,
   targetChain,
   onSelectChain,
-  label,
   isPending,
   active
 }: ChainSelectorRowProps) {
   const chainInfo = getChainInfo(targetChain);
   const name = chainInfo?.label;
-  const nameAndLabel = name ? `${name} (${label})` : label;
   const logoUrl = chainInfo?.logoUrl;
 
   return (
@@ -90,8 +87,8 @@ export default function ChainSelectorRow({
         if (!disabled) onSelectChain();
       }}
     >
-      {logoUrl && <Logo src={logoUrl} alt={nameAndLabel} />}
-      {nameAndLabel && <Label>{nameAndLabel}</Label>}
+      {logoUrl && <Logo src={logoUrl} alt={name} />}
+      {name && <Label>{name}</Label>}
       {disabled && <CaptionText>Unsupported by your wallet</CaptionText>}
       {isPending && <CaptionText>Approve in wallet</CaptionText>}
       <Status>
