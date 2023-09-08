@@ -1,5 +1,4 @@
 import {
-  envConfigs,
   EnvironmentType,
   getEnvConfigs,
   ProtocolConfig
@@ -89,18 +88,7 @@ function getCarouselPromotedSellerId(
   return carouselPromotedSellerId;
 }
 
-export const envConfigsFilteredByEnv: ProtocolConfig[] =
-  envName === "production"
-    ? getEnvConfigs(envName)
-    : Object.entries(envConfigs)
-        .filter(([_env]) => {
-          const env = _env as EnvironmentType;
-          // TODO: temporary, if we are in staging, only show staging configs, otherwise all but local
-          return envName === "testing" ? env !== "local" : env === "staging";
-          // TODO: return envName === env;
-        })
-        .map(([, value]) => value)
-        .flat();
+export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(envName);
 export const defaultEnvConfig: ProtocolConfig = envConfigsFilteredByEnv[0];
 
 export const CONFIG = {

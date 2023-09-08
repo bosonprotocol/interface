@@ -790,7 +790,7 @@ function CreateProductInner({
         });
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map((metadata, index) => {
-            const exchangeToken = config.envConfig.defaultTokens.find(
+            const exchangeToken = config.envConfig.defaultTokens?.find(
               (n: Token) => n.symbol === variants[index].currency.label
             );
             const decimals = Number(exchangeToken?.decimals || 18);

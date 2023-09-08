@@ -1041,6 +1041,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 id="boson-redeem-redeem"
                 data-exchange-id={exchange?.id}
                 data-bypass-mode="REDEEM"
+                data-config-id={config.envConfig.configId}
                 withBosonStyle
               >
                 <span>Redeem</span>
