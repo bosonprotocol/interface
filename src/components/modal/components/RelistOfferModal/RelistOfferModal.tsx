@@ -222,11 +222,17 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
             }
           });
           onRelistedSuccessfully?.();
-        } catch (error) {
+        } catch (err) {
+          const error = err as Error;
+          const m = error.toString().match(/(?<=execution reverted: ).*/)?.[0];
+          const endIndex = m?.indexOf(`\\",`);
+          const details = m?.substring(
+            0,
+            endIndex === -1 ? m?.indexOf(`",`) : endIndex
+          );
           showModal("TRANSACTION_FAILED", {
             errorMessage: "Something went wrong",
-            detailedErrorMessage:
-              "Please try again or try disconnecting and reconnecting your wallet before relisting the offer"
+            detailedErrorMessage: details
           });
           console.error(error);
           Sentry.captureException(error);
