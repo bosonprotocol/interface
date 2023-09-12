@@ -137,7 +137,7 @@ export function useCurrentSellers({
   const enableResultByAddress =
     !!sellerAddress && sellerAddressType === "ADDRESS";
   const resultByAddress = useQuery(
-    ["current-seller-data-by-address", { address: sellerAddress }],
+    ["current-seller-data-by-address", { address: sellerAddress, coreSDK }],
     async () => {
       if (!sellerAddress) {
         return null;
@@ -204,8 +204,11 @@ export function useCurrentSellers({
   const resultByLensId = useQuery(
     [
       "current-seller-data-by-lens-id",
-      { authTokenId: decimalLensTokenId, authTokenType: AuthTokenType.LENS },
-      subgraphUrl
+      {
+        authTokenId: decimalLensTokenId,
+        authTokenType: AuthTokenType.LENS,
+        subgraphUrl
+      }
     ],
     async () => {
       const result = await fetchSubgraph<{
@@ -320,7 +323,7 @@ export function useCurrentSellers({
       profileIds
     },
     {
-      enabled: enableResultLens
+      enabled: enableResultLens && config.lens.availableOnNetwork
     }
   );
   const lens: (Profile | undefined)[] = useMemo(() => {

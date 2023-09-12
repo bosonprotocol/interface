@@ -22,7 +22,7 @@ export default function useOffer(
   };
 
   return useQuery(
-    ["offer", props.offerId, subgraphUrl, defaultDisputeResolverId],
+    ["offer", props, subgraphUrl, defaultDisputeResolverId],
     async () => {
       return getOfferById(
         subgraphUrl,

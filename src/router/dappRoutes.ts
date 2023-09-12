@@ -7,16 +7,6 @@ import {
   ProductRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
-import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
-import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
-import CreateProductPage from "../pages/create-product/CreateProduct";
-import { DCLPage } from "../pages/dcl/DCLPage";
-import ExplorePage from "../pages/explore/Explore";
-import LandingPage from "../pages/landing/Landing";
-import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
-import SellerLandingPage from "../pages/sell/landing/SellerLandingPage";
-import SellerCenterPage from "../pages/sell/SellerCenter";
-
 const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
 const CustomStorePage = lazy(
@@ -44,6 +34,21 @@ const ContractualAgreementPage = lazy(
 const DisputeResolverPage = lazy(
   () => import("../pages/dispute-resolver/DisputeResolver")
 );
+const CreateProductPage = lazy(
+  () => import("../pages/create-product/CreateProduct")
+);
+const PrivacyPolicyPage = lazy(() => import("../pages/common/PrivacyPolicy"));
+const TermsAndConditionsPage = lazy(
+  () => import("../pages/common/TermsAndConditions")
+);
+const DCLPage = lazy(() => import("../pages/dcl/DCLPage"));
+const ExplorePage = lazy(() => import("../pages/explore/Explore"));
+const LandingPage = lazy(() => import("../pages/landing/Landing"));
+const OfferUuidReroute = lazy(() => import("../pages/offers/OfferUuidReroute"));
+const SellerLandingPage = lazy(
+  () => import("../pages/sell/landing/SellerLandingPage")
+);
+const SellerCenterPage = lazy(() => import("../pages/sell/SellerCenter"));
 
 const SwapPage = lazy(() => import("../pages/swap/index"));
 

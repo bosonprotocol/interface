@@ -11,7 +11,7 @@ export default function useProductByUuid(
   const coreSDK = useCoreSDK();
 
   return useQuery(
-    ["get-product-by-uuid", { uuid }],
+    ["get-product-by-uuid", { uuid, coreSDK }],
     async () => {
       return await coreSDK?.getProductWithVariants(uuid);
     },

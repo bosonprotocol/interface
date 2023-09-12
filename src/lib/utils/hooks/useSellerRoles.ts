@@ -23,7 +23,7 @@ export function useSellerRoles(id: string) {
   const { account: address } = useWeb3React();
 
   const { data } = useQuery(
-    ["seller-roles", { id }],
+    ["seller-roles", { id, subgraphUrl }],
     async () => {
       const result = await fetchSubgraph<{
         sellers: {

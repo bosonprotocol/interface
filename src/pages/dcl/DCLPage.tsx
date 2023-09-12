@@ -40,10 +40,6 @@ const STEPS = [
   } as const
 ];
 
-interface DCLPageProps {
-  offerIds?: string[];
-}
-
 enum Step {
   _0_DETAILS = "_0_DETAILS",
   _1_EXECUTE = "_1_EXECUTE"
@@ -68,7 +64,7 @@ const iconStyle: CSSProperties = {
 };
 const iconSize = 32;
 
-export const DCLPage: React.FC<DCLPageProps> = () => {
+export default () => {
   const [searchParams] = useSearchParams();
   const { setFullWidth, fullWidth } = useLayoutContext();
   const navigate = useKeepQueryParamsNavigate();

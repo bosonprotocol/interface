@@ -16,7 +16,15 @@ export const useCompletedTransactions = (page = 0) => {
   const accountIds = [...sellerIds, currentBuyer?.id].filter(Boolean);
 
   return useQuery(
-    ["transactions", "completed", address, page],
+    [
+      "transactions",
+      "completed",
+      address,
+      page,
+      coreSDK,
+      sellerIds,
+      currentBuyer
+    ],
     async () => {
       const logs = await coreSDK.getEventLogs({
         logsFilter: {

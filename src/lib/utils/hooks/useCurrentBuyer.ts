@@ -7,7 +7,7 @@ export function useCurrentBuyer() {
   const coreSDK = useCoreSDK();
   const { account: address } = useWeb3React();
   return useQuery(
-    ["current-buyer"],
+    ["current-buyer", { coreSDK, address }],
     async () => {
       const buyers = await coreSDK.getBuyers({
         buyersFilter: {

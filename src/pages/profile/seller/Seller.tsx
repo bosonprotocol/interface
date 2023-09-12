@@ -99,7 +99,7 @@ export default function Seller() {
       handles: [lensHandle]
     },
     {
-      enabled: !!lensHandle
+      enabled: !!lensHandle && config.lens.availableOnNetwork
     }
   );
   const lensProfiles: Profile[] = useMemo(() => {

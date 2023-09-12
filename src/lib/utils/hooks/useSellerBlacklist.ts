@@ -51,11 +51,12 @@ export function useSellerBlacklist(
       ...options
     }
   );
+  const { sellerBlacklistUrl } = props;
   const blacklist = useQuery(
-    "seller-blacklist",
+    ["seller-blacklist", { sellerBlacklistUrl }],
     async () => {
-      const blacklistStr = props.sellerBlacklistUrl
-        ? await fetchTextFile(props.sellerBlacklistUrl, false)
+      const blacklistStr = sellerBlacklistUrl
+        ? await fetchTextFile(sellerBlacklistUrl, false)
         : undefined;
       return blacklistStr
         ? (JSON.parse(blacklistStr).map((id: unknown) =>

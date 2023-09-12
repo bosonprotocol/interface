@@ -51,8 +51,15 @@ export function useSellers(
     ...(props.treasury && { treasury: props.treasury }),
     ...(props.id && { id: props.id })
   };
+  const { includeFunds } = props;
   return useQuery(
-    ["sellers", props, subgraphUrl],
+    [
+      "sellers",
+      filter,
+      subgraphUrl,
+      includeFunds,
+      curationLists.sellerCurationList
+    ],
     async () => {
       return accounts.subgraph.getSellers(subgraphUrl, {
         sellersFilter: {
@@ -61,7 +68,7 @@ export function useSellers(
         },
         sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
         sellersOrderDirection: subgraph.OrderDirection.Asc,
-        includeFunds: props.includeFunds
+        includeFunds: includeFunds
       });
     },
     {

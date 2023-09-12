@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -22,7 +23,12 @@ import { CongratulationsType } from "./congratulations/Congratulations";
 import { CongratulationsPage } from "./congratulations/CongratulationsPage";
 import CreateProductInner from "./CreateProductInner";
 
-export default function CreateProduct() {
+export default function CreateProductWrapper() {
+  const { config } = useConfigContext();
+  return <CreateProduct key={config.envConfig.configId} />;
+}
+
+function CreateProduct() {
   const store = useInitialValues();
   const [searchParams] = useSearchParams();
   const [initial, setInitial] = useState<CreateProductForm>(store.base);

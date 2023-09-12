@@ -74,7 +74,13 @@ export default function useProducts(
   const { store } = useContext(ConvertionRateContext);
 
   const productsVariants = useQuery(
-    ["get-all-products-variants", baseProps, coreSDK],
+    [
+      "get-all-products-variants",
+      baseProps,
+      coreSDK,
+      props.onlyNotVoided,
+      OFFERS_PER_PAGE
+    ],
     async () => {
       const newProps = {
         ...baseProps,

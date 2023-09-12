@@ -172,11 +172,11 @@ export default function ProductDetail() {
                   autoPlay: true
                 }}
                 componentWhileLoading={() => (
-                  <Image src={offerImg} alt="Offer image" />
+                  <Image src={offerImg || ""} alt="Offer image" />
                 )}
               />
             ) : (
-              <Image src={offerImg} dataTestId="offerImage" />
+              <Image src={offerImg || ""} dataTestId="offerImage" />
             )}
           </ImageWrapper>
           <div>
