@@ -97,19 +97,11 @@ export default function useOffersBacked({
     (fund: subgraph.FundsEntityFieldsFragment): number | null => {
       let result = null;
       const backedFund = calcOffersBacked[fund.token.symbol];
-      if (
-        fund.availableAmount &&
-        backedFund !== "" &&
-        calcOffersBacked[fund.token.symbol]
-      ) {
+      if (fund.availableAmount && backedFund) {
         result = Number(
-          (
-            (Number(fund.availableAmount) /
-              Number(calcOffersBacked[fund.token.symbol])) *
-            100
-          ).toFixed(2)
+          ((Number(fund.availableAmount) / Number(backedFund)) * 100).toFixed(2)
         );
-        result = Number.isNaN(result) ? null : result;
+        result = Number.isNaN(result) ? 0 : result;
       }
       return result;
     },
