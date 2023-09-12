@@ -15,7 +15,17 @@ import { handleRates } from "./utils";
 interface Props {
   children: React.ReactNode;
 }
-export default function ConvertionRateProvider({ children }: Props) {
+
+export default function ConvertionRateProviderWrapper({ children }: Props) {
+  const { config } = useConfigContext();
+  return (
+    <ConvertionRateProvider key={config.envConfig.configId}>
+      {children}
+    </ConvertionRateProvider>
+  );
+}
+
+function ConvertionRateProvider({ children }: Props) {
   const { config } = useConfigContext();
   const defaultTokens = useMemo(
     () => config.envConfig.defaultTokens || [],

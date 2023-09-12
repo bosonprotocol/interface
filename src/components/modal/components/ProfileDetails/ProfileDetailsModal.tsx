@@ -21,11 +21,9 @@ export const ProfileDetailsModal: React.FC<ProfileDetailsModalProps> = ({
   return (
     <Grid justifyContent="center" gap="2rem" flexWrap="wrap">
       <EditProfile />
-      <Button as="div" theme="secondary" type={null as never}>
-        <LinkWithQuery to={sellerUrl} style={{ all: "unset" }}>
-          View profile
-        </LinkWithQuery>
-      </Button>
+      <LinkWithQuery to={sellerUrl} style={{ all: "unset" }}>
+        <Button theme="secondary">View profile</Button>
+      </LinkWithQuery>
     </Grid>
   );
 };

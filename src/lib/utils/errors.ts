@@ -15,9 +15,7 @@ export function toReadableError(errorText: string, error: unknown) {
   return new Error(`${errorText} 👺 ${error}`);
 }
 
-export function extractExecutionRevertedError(
-  error: Error
-): string | undefined {
+export function extractUserFriendlyError(error: Error): string | undefined {
   const m = error.toString().match(/(?<=execution reverted: ).*/)?.[0];
   const endIndex = m?.indexOf(`\\",`);
   const details = m?.substring(

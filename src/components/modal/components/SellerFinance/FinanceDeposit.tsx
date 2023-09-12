@@ -3,6 +3,7 @@ import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
+import { extractUserFriendlyError } from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { useState } from "react";
 
@@ -189,7 +190,8 @@ export default function FinanceDeposit({
             } else {
               Sentry.captureException(error);
               showModal("TRANSACTION_FAILED", {
-                errorMessage: "Something went wrong"
+                errorMessage: "Something went wrong",
+                detailedErrorMessage: extractUserFriendlyError(error)
               });
             }
             setDepositError(error);
