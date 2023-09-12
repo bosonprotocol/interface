@@ -1,71 +1,64 @@
-import "@rainbow-me/rainbowkit/styles.css";
+/* eslint-disable unused-imports/no-unused-imports */
+import { useWeb3React } from "@web3-react/core";
+import { MetaMask } from "@web3-react/metamask";
+import { ReactNode, useEffect } from "react";
+import { useAccount, useConnect, useNetwork, WagmiConfig } from "wagmi";
 
-import {
-  AvatarComponent,
-  darkTheme,
-  RainbowKitProvider,
-  Theme
-} from "@rainbow-me/rainbowkit";
-import merge from "lodash.merge";
-import { ReactNode } from "react";
-import { WagmiConfig } from "wagmi";
-
-import { colors } from "../lib/styles/colors";
-import { useCSSVariable } from "../lib/utils/hooks/useCSSVariable";
-import { chains, wagmiConfig } from "../lib/wallet-connection";
-import FallbackAvatar from "./avatar/fallback-avatar";
+import { getConnectors, useWagmiConfig } from "../lib/wallet-connection";
+import { useConfigContext } from "./config/ConfigContext";
 
 interface Props {
   children: ReactNode;
 }
 
-export default function WalletConnectionProvider({ children }: Props) {
-  const secondaryColor = useCSSVariable("--secondary");
-  const accentDarkColor = useCSSVariable("--accentDark");
-  const walletConnectionTheme = merge(darkTheme({ borderRadius: "medium" }), {
-    colors: {
-      accentColor: secondaryColor,
-      accentColorForeground: accentDarkColor,
-      closeButtonBackground: colors.navy,
-      actionButtonBorder: colors.navy,
-      profileForeground: colors.navy,
-      modalBackground: colors.navy,
-      modalBorder: colors.navy,
-      modalText: colors.white,
-      modalTextSecondary: colors.lightGrey
-    },
-    shadows: {
-      connectButton: "none"
-    },
-    fonts: {
-      body: "Plus Jakarta Sans, sans-serif"
+/**
+ * Component that forcefully connects wagmi if it's already connected in web3React
+ * @param param0 children
+ * @returns children
+ */
+function ForceConnectWagmi({ children }: Props) {
+  const { config } = useConfigContext();
+  const { account, connector } = useWeb3React();
+  const { address } = useAccount();
+  const { connect } = useConnect();
+  const { chain, chains } = useNetwork();
+  useEffect(() => {
+    if (
+      account &&
+      !address &&
+      config.envConfig.chainId &&
+      chains[0].id === config.envConfig.chainId && // we want to connect (enter if) if config.envConfig.chainId doesnt change anymore (at the start)
+      chain?.id !== config.envConfig.chainId
+    ) {
+      const { connectors } = getConnectors(config.envConfig.chainId);
+      const connectorsList = connectors();
+      connect({
+        chainId: config.envConfig.chainId,
+        connector:
+          connectorsList.find((connector_) =>
+            connector instanceof MetaMask
+              ? connector_.id === "metaMask"
+              : connector_.id === "walletConnect"
+          ) || connectorsList[0]
+      });
     }
-  } as Theme);
+  }, [
+    account,
+    address,
+    config.envConfig.chainId,
+    connect,
+    connector,
+    chain?.id,
+    chains
+  ]);
+  return <>{children}</>;
+}
 
+export default function WalletConnectionProvider({ children }: Props) {
+  const wagmiConfig = useWagmiConfig();
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider
-        chains={chains}
-        theme={walletConnectionTheme}
-        avatar={CustomAvatar}
-        appInfo={{ appName: "Boson dApp" }}
-      >
-        {children}
-      </RainbowKitProvider>
+      <ForceConnectWagmi>{children}</ForceConnectWagmi>
     </WagmiConfig>
   );
 }
-
-const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
-  return ensImage ? (
-    <img
-      src={ensImage}
-      alt="Avatar"
-      width={size}
-      height={size}
-      style={{ borderRadius: 999 }}
-    />
-  ) : (
-    <FallbackAvatar address={address} size={50} />
-  );
-};

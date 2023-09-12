@@ -2,6 +2,8 @@ import { MessageType } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/defini
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
 import { ArrowLeft } from "phosphor-react";
@@ -9,7 +11,6 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import ExchangePreview from "../../components/modal/components/Chat/components/ExchangePreview";
 import { useModal } from "../../components/modal/useModal";
@@ -24,7 +25,6 @@ import {
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import Grid from "../../components/ui/Grid";
-import { CONFIG } from "../../lib/config";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -117,9 +117,10 @@ const validationSchema = [
   disputeCentreValidationSchemaProposalSummary
 ];
 function RaiseDisputePage() {
+  const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { showModal, hideModal } = useModal();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const coreSDK = useCoreSDK();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
@@ -311,7 +312,7 @@ function RaiseDisputePage() {
                     <SuccessTransactionToast
                       t={t}
                       action={`Raised dispute: ${exchange.offer.metadata.name}`}
-                      url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                      url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
                     />
                   ));
                   hideModal();

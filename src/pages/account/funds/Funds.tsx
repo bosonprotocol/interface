@@ -1,12 +1,12 @@
-import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { useConvertionRate } from "../../../components/convertion-rate/useConvertionRate";
 import BosonButton from "../../../components/ui/BosonButton";
-import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useSellerToggle } from "../private/Toogle/SellerToggleContext";
@@ -70,6 +70,7 @@ const buyerFlexBasisCells: [number, number, number] = [15, 42.5, 42.5];
 const sellerFlexBasisCells: [number, number, number, number] = [15, 25, 30, 30];
 
 export default function Funds({ sellerId, buyerId }: Props) {
+  const { config } = useConfigContext();
   const { isTabSellerSelected } = useSellerToggle();
   const [newTokenAddress, setNewTokenAddress] = useState<string>("");
   const [highlightedToken, setHighlightedToken] = useState<string>("");
@@ -91,6 +92,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
     setHighlightedToken(tokenName);
     setTimeout(() => setHighlightedToken(""), 300);
   };
+  const nativeCoin = config.envConfig.nativeCoin;
   useEffect(() => {
     const nativeFund = funds.find(
       (f) => f.token.address === ethers.constants.AddressZero
@@ -105,9 +107,9 @@ export default function Funds({ sellerId, buyerId }: Props) {
             token: {
               id: "",
               address: ethers.constants.AddressZero,
-              name: CONFIG.nativeCoin?.name || "",
-              symbol: CONFIG.nativeCoin?.symbol || "",
-              decimals: CONFIG.nativeCoin?.decimals || ""
+              name: nativeCoin?.name || "",
+              symbol: nativeCoin?.symbol || "",
+              decimals: nativeCoin?.decimals || ""
             }
           }
         ];
@@ -122,7 +124,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
       )
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [funds, accountId]);
+  }, [funds, accountId, nativeCoin]);
 
   if (!core) {
     return <div>Connect your wallet</div>;
@@ -263,7 +265,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
             <CustomButton
               onClick={addNew}
               variant="primaryFill"
-              size={ButtonSize.Small}
+              size="small"
               disabled={!newTokenAddress.length}
             >
               Add
@@ -280,7 +282,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
               <CustomButton
                 onClick={withdrawAll}
                 variant="primaryFill"
-                size={ButtonSize.Small}
+                size="small"
               >
                 Withdraw All Funds
               </CustomButton>
@@ -295,7 +297,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
               <CustomButton
                 onClick={withdrawAll}
                 variant="primaryFill"
-                size={ButtonSize.Small}
+                size="small"
               >
                 Withdraw All Funds
               </CustomButton>

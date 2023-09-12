@@ -31,8 +31,9 @@ import {
   useSearchParams
 } from "react-router-dom";
 import uuid from "react-uuid";
-import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, ethers } from "ethers";
 import { useEffect } from "react";
 
@@ -55,7 +56,7 @@ import SuccessTransactionToast from "../../components/toasts/SuccessTransactionT
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
+import { CONFIG, DappConfig } from "../../lib/config";
 import {
   SellerLandingPageParameters,
   UrlParameters
@@ -239,6 +240,7 @@ async function getProductV1Metadata({
 
 type GetOfferDataFromMetadataProps = {
   coreSDK: CoreSDK;
+  config: DappConfig;
   priceBN: BigNumber;
   sellerDeposit: BigNumber | string;
   buyerCancellationPenaltyValue: BigNumber | string;
@@ -255,6 +257,7 @@ async function getOfferDataFromMetadata(
   productV1Metadata: productV1.ProductV1Metadata,
   {
     coreSDK,
+    config,
     priceBN,
     sellerDeposit,
     buyerCancellationPenaltyValue,
@@ -283,7 +286,7 @@ async function getOfferDataFromMetadata(
     disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
     resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
     exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
-    disputeResolverId: CONFIG.defaultDisputeResolverId,
+    disputeResolverId: config.envConfig.defaultDisputeResolverId,
     agentId: 0, // no agent
     metadataUri: `ipfs://${metadataHash}`,
     metadataHash: metadataHash,
@@ -332,6 +335,7 @@ function CreateProductInner({
   setCreatedOffersIds,
   isDraftModalClosed
 }: Props) {
+  const { config } = useConfigContext();
   const history = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -427,7 +431,7 @@ function CreateProductInner({
     navigate({ pathname });
   };
   const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
   const { mutateAsync: createOffers } = useCreateOffers();
@@ -439,7 +443,7 @@ function CreateProductInner({
   const assistantLens: Profile | null =
     lensProfiles.find((lensProfile) => {
       return (
-        getLensTokenIdDecimal(lensProfile.id).toString() ===
+        getLensTokenIdDecimal(lensProfile?.id).toString() ===
         currentAssistant?.authTokenId
       );
     }) || null;
@@ -516,7 +520,8 @@ function CreateProductInner({
       isMultiVariant,
       isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
-      isOneSetOfImages
+      isOneSetOfImages,
+      config
     });
     return {
       currentStep:
@@ -535,7 +540,8 @@ function CreateProductInner({
     isMultiVariant,
     isTokenGated,
     isOneSetOfImages,
-    currentStep
+    currentStep,
+    config
   ]);
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
@@ -636,7 +642,7 @@ function CreateProductInner({
       const exchangeSymbol = isMultiVariant
         ? firstVariant.currency.value
         : values.coreTermsOfSale.currency.value;
-      const exchangeToken = CONFIG.defaultTokens.find(
+      const exchangeToken = config.envConfig.defaultTokens?.find(
         (n: Token) => n.symbol === exchangeSymbol
       );
 
@@ -784,7 +790,7 @@ function CreateProductInner({
         });
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map((metadata, index) => {
-            const exchangeToken = CONFIG.defaultTokens.find(
+            const exchangeToken = config.envConfig.defaultTokens?.find(
               (n: Token) => n.symbol === variants[index].currency.label
             );
             const decimals = Number(exchangeToken?.decimals || 18);
@@ -811,6 +817,7 @@ function CreateProductInner({
             );
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
+              config,
               priceBN,
               sellerDeposit,
               buyerCancellationPenaltyValue,
@@ -869,6 +876,7 @@ function CreateProductInner({
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,
+          config,
           priceBN,
           sellerDeposit,
           buyerCancellationPenaltyValue,

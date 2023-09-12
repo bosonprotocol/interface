@@ -1,5 +1,6 @@
+import { useWeb3React } from "@web3-react/core";
+import { ReactNode } from "react";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -32,23 +33,20 @@ const NavigationLinks = styled.div<{
     color: var(--headerTextColor, ${colors.black});
     :hover {
       background-color: ${colors.border};
-      color: ${colors.accent};
+      color: ${colors.black};
     }
   }
   ${({ isMobile, isOpen, $navigationBarPosition }) =>
     isMobile
       ? css`
           position: absolute;
-          ${() => {
-            return css`
-              top: calc(${HEADER_HEIGHT} + 1px);
-            `;
-          }}
+          top: calc(${HEADER_HEIGHT} + 1px);
           left: 0;
           right: 0;
           bottom: 0;
           height: 100vh;
           transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
+
           a,
           [data-anchor] {
             display: flex;
@@ -59,7 +57,6 @@ const NavigationLinks = styled.div<{
             font-size: 16px;
             font-weight: 600;
             line-height: 150%;
-            padding: 2rem;
             border-bottom: 2px solid ${colors.border};
             position: relative;
             white-space: pre;
@@ -107,7 +104,10 @@ const NavigationLinks = styled.div<{
               a,
               [data-anchor] {
                 justify-content: center;
-                padding: 1rem 0;
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+                padding-left: 0.1rem;
+                padding-right: 0.1rem;
               }
             `;
           }}
@@ -124,19 +124,26 @@ const NavigationLinks = styled.div<{
         `};
 `;
 
-const Links = styled.div<{
+const ItemsList = styled.div<{
   isMobile: boolean;
   $navigationBarPosition?: string;
 }>`
   display: flex;
   justify-content: end;
-  gap: 1rem;
   flex-direction: ${({ isMobile, $navigationBarPosition }) =>
     isMobile || ["left", "right"].includes($navigationBarPosition ?? "")
       ? "column"
       : "row"};
   align-items: ${({ $navigationBarPosition }) =>
     ["left", "right"].includes($navigationBarPosition ?? "") ? "center" : ""};
+  > * {
+    padding: 2rem;
+  }
+  ${({ isMobile }) =>
+    !isMobile &&
+    css`
+      gap: 1rem;
+    `}
 `;
 
 interface Props {
@@ -149,6 +156,7 @@ interface Props {
   withDisputeAdmin?: boolean;
   withResolutionCenter?: boolean;
   withSellerHub?: boolean;
+  children?: ReactNode;
 }
 export default function HeaderLinks({
   isMobile,
@@ -159,10 +167,11 @@ export default function HeaderLinks({
   withMyItems = true,
   withDisputeAdmin = true,
   withResolutionCenter,
-  withSellerHub
+  withSellerHub,
+  children
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });
@@ -186,7 +195,10 @@ export default function HeaderLinks({
           navigationBarPosition={navigationBarPosition}
         />
       )}
-      <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
+      <ItemsList
+        isMobile={isMobile}
+        $navigationBarPosition={navigationBarPosition}
+      >
         {!onlySeller && withExploreProducts && (
           <ViewModeLink
             href={BosonRoutes.Explore}
@@ -236,7 +248,8 @@ export default function HeaderLinks({
             </ViewModeLink>
           )}
         {address && <ViewTxButton />}
-      </Links>
+        {children}
+      </ItemsList>
     </NavigationLinks>
   );
 }

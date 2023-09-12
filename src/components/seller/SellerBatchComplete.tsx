@@ -1,5 +1,3 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
-
 import { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { SellerRolesProps } from "../../lib/utils/hooks/useSellerRoles";
 import { useModal } from "../modal/useModal";
@@ -15,7 +13,7 @@ function SellerBatchComplete({ selected, refetch, sellerRoles }: Props) {
   return (
     <BosonButton
       variant="primaryFill"
-      size={ButtonSize.Small}
+      size="small"
       disabled={!sellerRoles?.isAssistant}
       tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {

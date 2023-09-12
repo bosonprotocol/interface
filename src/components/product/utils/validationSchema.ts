@@ -11,7 +11,7 @@ import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { getCommonFieldsValidation } from "../../modal/components/Profile/valitationSchema";
-import { CONFIG } from "./../../../lib/config";
+import { CONFIG, DappConfig } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
   OPTIONS_DISPUTE_RESOLVER,
@@ -50,72 +50,77 @@ export const productTypeValidationSchema = Yup.object({
   })
 });
 
-function testPrice(price: number | null | undefined) {
-  if (!this.parent.currency?.value) {
-    return true;
-  }
-  const _price = price as number;
-  if (_price === null || isNaN(_price) || (_price > 0 && _price < 1e-100)) {
-    return false;
-  }
-  try {
-    const currencySymbol = this.parent.currency.value; // there has to be a sibling with the currency
-    const exchangeToken = CONFIG.defaultTokens.find(
-      (n: Token) => n.symbol === currencySymbol
-    );
-    const decimals = exchangeToken?.decimals || 18;
-    const priceWithoutEnotation =
-      _price < 0.1 ? fixformattedString(_price) : _price.toString();
-    parseUnits(priceWithoutEnotation, decimals);
-    return true;
-  } catch (error) {
-    console.error(
-      `error in test function in price validation, price: ${price}`,
-      error
-    );
-    return false;
-  }
-}
+const testPrice = (config: DappConfig) =>
+  function (price: number | null | undefined) {
+    if (!this.parent.currency?.value) {
+      return true;
+    }
+    const _price = price as number;
+    if (_price === null || isNaN(_price) || (_price > 0 && _price < 1e-100)) {
+      return false;
+    }
+    try {
+      const currencySymbol = this.parent.currency.value; // there has to be a sibling with the currency
+      const exchangeToken = config.envConfig.defaultTokens?.find(
+        (n: Token) => n.symbol === currencySymbol
+      );
+      const decimals = exchangeToken?.decimals || 18;
+      const priceWithoutEnotation =
+        _price < 0.1 ? fixformattedString(_price) : _price.toString();
+      parseUnits(priceWithoutEnotation, decimals);
+      return true;
+    } catch (error) {
+      console.error(
+        `error in test function in price validation, price: ${price}`,
+        error
+      );
+      return false;
+    }
+  };
 
 const productAnimation = {
   productAnimation: validationOfIpfsImage()
 };
 
-export const productVariantsValidationSchema = Yup.object({
-  productVariants: Yup.object({
-    colors: Yup.array(Yup.string()),
-    sizes: Yup.array(Yup.string()),
-    variants: Yup.array(
-      Yup.object({
-        color: Yup.string(),
-        size: Yup.string(),
-        name: Yup.string(),
-        currency: Yup.object({
-          value: Yup.string(),
-          label: Yup.string()
+export const getProductVariantsValidationSchema = (config: DappConfig) =>
+  Yup.object({
+    productVariants: Yup.object({
+      colors: Yup.array(Yup.string()),
+      sizes: Yup.array(Yup.string()),
+      variants: Yup.array(
+        Yup.object({
+          color: Yup.string(),
+          size: Yup.string(),
+          name: Yup.string(),
+          currency: Yup.object({
+            value: Yup.string(),
+            label: Yup.string()
+          })
+            .nullable()
+            .required("Currency is required"),
+          price: Yup.number()
+            .nullable()
+            .required("Price is required")
+            .min(0, "Should be 0 or more")
+            .test({
+              name: "valid_bigNumber",
+              message: "Price is not valid",
+              test: testPrice(config)
+            }),
+          quantity: Yup.number()
+            .nullable()
+            .required("Quantity is required")
+            .min(1, "Must be greater than or equal to 1")
         })
-          .nullable()
-          .required("Currency is required"),
-        price: Yup.number()
-          .nullable()
-          .required("Price is required")
-          .min(0, "Should be 0 or more")
-          .test({
-            name: "valid_bigNumber",
-            message: "Price is not valid",
-            test: testPrice
-          }),
-        quantity: Yup.number()
-          .nullable()
-          .required("Quantity is required")
-          .min(1, "Must be greater than or equal to 1")
-      })
-    )
-      .required("Variants are required")
-      .min(2, "You have to define at least two variants")
-      .max(12, "Maximum 12 variants per product")
-  })
-});
+      )
+        .required("Variants are required")
+        .min(2, "You have to define at least two variants")
+        .max(12, "Maximum 12 variants per product")
+    })
+  });
+export type ProductVariantsValidationSchema = ReturnType<
+  typeof getProductVariantsValidationSchema
+>;
 
 export const productImagesValidationSchema = Yup.object({
   productImages: Yup.object({
@@ -260,25 +265,32 @@ export const tokenGatingValidationSchema = Yup.object({
   })
 });
 
-export const coreTermsOfSaleValidationSchema = Yup.object({
-  coreTermsOfSale: Yup.object({
-    price: Yup.number().nullable().required(validationMessage.required).test({
-      name: "valid_bigNumber",
-      message: "Price is not valid",
-      test: testPrice
-    }),
-    currency: Yup.object()
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
-      .required(validationMessage.required),
-    quantity: Yup.number()
-      .min(1, "Quantity must be greater than or equal to 1")
-      .required(validationMessage.required),
-    ...commonCoreTermsOfSaleValidationSchema
-  })
-});
+export const getCoreTermsOfSaleValidationSchema = (config: DappConfig) =>
+  Yup.object({
+    coreTermsOfSale: Yup.object({
+      price: Yup.number()
+        .nullable()
+        .required(validationMessage.required)
+        .test({
+          name: "valid_bigNumber",
+          message: "Price is not valid",
+          test: testPrice(config)
+        }),
+      currency: Yup.object()
+        .shape({
+          value: Yup.string(),
+          label: Yup.string()
+        })
+        .required(validationMessage.required),
+      quantity: Yup.number()
+        .min(1, "Quantity must be greater than or equal to 1")
+        .required(validationMessage.required),
+      ...commonCoreTermsOfSaleValidationSchema
+    })
+  });
+export type CoreTermsOfSaleValidationSchema = ReturnType<
+  typeof getCoreTermsOfSaleValidationSchema
+>;
 
 export const variantsCoreTermsOfSaleValidationSchema = Yup.object({
   variantsCoreTermsOfSale: Yup.object({

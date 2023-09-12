@@ -1,7 +1,7 @@
+import { useWeb3React } from "@web3-react/core";
 import { useField, useFormikContext } from "formik";
 import { useEffect } from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { colors } from "../../../../../../../lib/styles/colors";
 import { useBuyers } from "../../../../../../../lib/utils/hooks/useBuyers";
@@ -35,7 +35,7 @@ export default function MakeAProposalStep({
   isValid,
   isCounterProposal
 }: Props) {
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { data: buyers = [] } = useBuyers(
     {
       wallet: address

@@ -9,7 +9,6 @@ import Grid from "../../components/ui/Grid";
 import { buttonText } from "../../components/ui/styles";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
 import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import extractUniqueRandomProducts from "../../lib/utils/product/extractUniqueRandomProducts";
@@ -46,10 +45,9 @@ const ViewMore = styled(LinkWithQuery)`
     transform: translateX(0);
   }
   &:hover {
-    filter: invert(50%);
+    color: color-mix(in srgb, var(--accent) 50%, black);
     > svg {
       transform: translateX(5px);
-      fill: ${colors.black};
     }
   }
 `;

@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 import {
-  coreTermsOfSaleValidationSchema,
+  CoreTermsOfSaleValidationSchema,
   disputeCentreValidationSchemaAdditionalInformation,
   disputeCentreValidationSchemaGetStarted,
   disputeCentreValidationSchemaMakeProposal,
@@ -12,7 +12,7 @@ import {
   productInformationValidationSchema,
   productTypeValidationSchema,
   productVariantsImagesValidationSchema,
-  productVariantsValidationSchema,
+  ProductVariantsValidationSchema,
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
@@ -32,13 +32,9 @@ export type ProductInformation = Yup.InferType<
   typeof productInformationValidationSchema
 >;
 
-export type ProductVariants = Yup.InferType<
-  typeof productVariantsValidationSchema
->;
+export type ProductVariants = Yup.InferType<ProductVariantsValidationSchema>;
 
-export type CoreTermsOfSale = Yup.InferType<
-  typeof coreTermsOfSaleValidationSchema
->;
+export type CoreTermsOfSale = Yup.InferType<CoreTermsOfSaleValidationSchema>;
 
 export type VariantsCoreTermsOfSale = Yup.InferType<
   typeof variantsCoreTermsOfSaleValidationSchema

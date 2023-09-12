@@ -1,4 +1,3 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { useModal } from "../../components/modal/useModal";
@@ -30,7 +29,7 @@ function SellerBatchVoid({ selected, refetch, sellerRoles }: Props) {
   return (
     <BatchVoidButton
       variant="secondaryInverted"
-      size={ButtonSize.Small}
+      size="small"
       disabled={!sellerRoles?.isAssistant}
       tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {

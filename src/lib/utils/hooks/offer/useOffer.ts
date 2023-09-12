@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { useQuery } from "react-query";
 
 import { useCurationLists } from "../useCurationLists";
@@ -10,6 +11,9 @@ export default function useOffer(
     enabled?: boolean;
   } = {}
 ) {
+  const { config } = useConfigContext();
+  const { subgraphUrl, defaultDisputeResolverId } = config.envConfig;
+
   const curationLists = useCurationLists();
 
   props = {
@@ -18,9 +22,14 @@ export default function useOffer(
   };
 
   return useQuery(
-    ["offer", props.offerId],
+    ["offer", props, subgraphUrl, defaultDisputeResolverId],
     async () => {
-      return getOfferById(props.offerId, props);
+      return getOfferById(
+        subgraphUrl,
+        defaultDisputeResolverId,
+        props.offerId,
+        props
+      );
     },
     {
       ...options

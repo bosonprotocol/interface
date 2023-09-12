@@ -1,4 +1,6 @@
-mutation createSetFollowModuleTypedData($request: CreateSetFollowModuleRequest!) {
+mutation createSetFollowModuleTypedData(
+  $request: CreateSetFollowModuleRequest!
+) {
   createSetFollowModuleTypedData(request: $request) {
     id
     expiresAt

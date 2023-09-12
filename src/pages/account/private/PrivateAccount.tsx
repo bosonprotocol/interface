@@ -1,12 +1,12 @@
+import { useConfigContext } from "components/config/ConfigContext";
+import useENSName from "lib/utils/hooks/useENSName";
 import { useState } from "react";
 import styled from "styled-components";
-import { useEnsName } from "wagmi";
 
 import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
-import Settings from "../../../components/settings";
-import { CONFIG } from "../../../lib/config";
+import { Settings } from "../../../components/settings";
 import Tabs from "../Tabs";
 import { SellerToggleContext } from "./Toogle/SellerToggleContext";
 import Toggle from "./Toogle/Toogle";
@@ -51,9 +51,8 @@ const SettingsWrapper = styled.div`
 `;
 
 export default function PrivateAccount({ account }: { account: string }) {
-  const { data: ensName } = useEnsName({
-    address: account
-  });
+  const { config } = useConfigContext();
+  const { ENSName } = useENSName(account);
   const [isTabSellerSelected, setTabSellerSelected] = useState<boolean>(false);
 
   return (
@@ -61,11 +60,13 @@ export default function PrivateAccount({ account }: { account: string }) {
       <BasicInfo>
         <Avatar address={account} size={200} />
 
-        <EnsName>{ensName}</EnsName>
+        <EnsName>{ENSName}</EnsName>
         <AddressAndSettings>
           <div style={{ flexBasis: "25%" }}></div>
           <AddressContainer>
-            <CurrencyIcon currencySymbol={CONFIG.nativeCoin?.symbol || ""} />
+            <CurrencyIcon
+              currencySymbol={config.envConfig.nativeCoin?.symbol || ""}
+            />
             <AddressText address={account} />
           </AddressContainer>
           <SettingsWrapper>

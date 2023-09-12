@@ -1,6 +1,7 @@
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { Disputes } from "../useExchanges";
@@ -77,24 +78,31 @@ const buildQuery = (queryString: string, name: string) => {
 };
 
 export const GetActiveEscalatedDisputes = () => {
-  const { address: admin } = useAccount();
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+  const { account: admin } = useWeb3React();
+
   const props = { admin };
 
-  const result = useQuery(["getActiveEscalatedDisputes", props], async () => {
-    const result = await fetchSubgraph<{
-      disputes: Disputes[];
-    }>(
-      buildQuery(
-        `escalatedDate_not: null
+  const result = useQuery(
+    ["getActiveEscalatedDisputes", props, subgraphUrl],
+    async () => {
+      const result = await fetchSubgraph<{
+        disputes: Disputes[];
+      }>(
+        subgraphUrl,
+        buildQuery(
+          `escalatedDate_not: null
          retractedDate: null
          exchange_: { completedDate: null }
          state: "ESCALATED"`,
-        `getActiveEscalatedDisputes`
-      ),
-      props
-    );
-    return result;
-  });
+          `getActiveEscalatedDisputes`
+        ),
+        props
+      );
+      return result;
+    }
+  );
 
   return {
     ...result,
@@ -103,15 +111,19 @@ export const GetActiveEscalatedDisputes = () => {
 };
 
 export const GetPastEscalatedDisputesWithDecisions = () => {
-  const { address: admin } = useAccount();
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+  const { account: admin } = useWeb3React();
+
   const props = { admin };
 
   const result = useQuery(
-    ["getPastEscalatedDisputesWithDecisions", props],
+    ["getPastEscalatedDisputesWithDecisions", props, subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         disputes: Disputes[];
       }>(
+        subgraphUrl,
         buildQuery(
           `escalatedDate_not: null, decidedDate_not: null`,
           `getPastEscalatedDisputesWithDecisions`
@@ -129,15 +141,19 @@ export const GetPastEscalatedDisputesWithDecisions = () => {
 };
 
 export const GetPastEscalatedDisputesWithRefusals = () => {
-  const { address: admin } = useAccount();
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+  const { account: admin } = useWeb3React();
+
   const props = { admin };
 
   const result = useQuery(
-    ["getPastEscalatedDisputesWithRefusals", props],
+    ["getPastEscalatedDisputesWithRefusals", props, subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         disputes: Disputes[];
       }>(
+        subgraphUrl,
         buildQuery(
           `escalatedDate_not: null, refusedDate_not: null`,
           `getPastEscalatedDisputesWithDecisions`

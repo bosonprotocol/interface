@@ -1,4 +1,6 @@
 import { offers } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
+import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { useEffect, useState } from "react";
 
 import { CONFIG } from "../../../config";
@@ -11,7 +13,9 @@ interface Props {
 }
 
 const getRulesTemplate = async (
-  fairExchangePolicyRules: string | undefined
+  fairExchangePolicyRules: string | undefined,
+  defaultDisputeResolverId: string,
+  defaultTokens: Token[]
 ) => {
   if (!fairExchangePolicyRules) {
     return undefined;
@@ -25,14 +29,14 @@ const getRulesTemplate = async (
   const disputeResolverId_matches =
     rulesTemplate?.yupSchema?.properties?.disputeResolverId?.matches?.replace(
       "<DEFAULT_DISPUTE_RESOLVER_ID>",
-      CONFIG.defaultDisputeResolverId
+      defaultDisputeResolverId
     );
   if (disputeResolverId_matches) {
     rulesTemplate.yupSchema.properties.disputeResolverId.matches =
       disputeResolverId_matches;
   }
   // replace TOKENS_LIST (environment dependent)
-  const tokensList = CONFIG.defaultTokens.map((token) => token.address);
+  const tokensList = defaultTokens.map((token) => token.address);
   const tokensList_pattern =
     rulesTemplate?.yupSchema?.properties?.exchangeToken?.properties?.address?.pattern?.replace(
       "<TOKENS_LIST>",
@@ -49,6 +53,7 @@ const getRulesTemplate = async (
 };
 
 export default function useCheckExchangePolicy({ offerId }: Props) {
+  const { config } = useConfigContext();
   const [result, setResult] = useState<
     offers.CheckExchangePolicyResult | undefined
   >(undefined);
@@ -59,10 +64,16 @@ export default function useCheckExchangePolicy({ offerId }: Props) {
   useEffect(() => {
     (async () =>
       setRulesTemplate(
-        await getRulesTemplate(CONFIG.fairExchangePolicyRules)
+        await getRulesTemplate(
+          CONFIG.fairExchangePolicyRules,
+          config.envConfig.defaultDisputeResolverId,
+          config.envConfig.defaultTokens || []
+        )
       ))();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [CONFIG.fairExchangePolicyRules]);
+  }, [
+    config.envConfig.defaultDisputeResolverId,
+    config.envConfig.defaultTokens
+  ]);
   useEffect(() => {
     if (
       !core ||

@@ -12,7 +12,7 @@ import {
 } from "./DatePicker.style";
 import { getCalenderRow, ICalendarCell } from "./utils";
 
-export interface Props {
+interface Props {
   date: Dayjs | null;
   secondDate: Dayjs | null;
   month: Dayjs;

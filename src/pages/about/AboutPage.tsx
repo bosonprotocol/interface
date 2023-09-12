@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { CheckCircle, XCircle } from "phosphor-react";
 import styled from "styled-components";
 
@@ -38,6 +39,7 @@ const Text = styled(Typography)`
 `;
 
 function AboutPage() {
+  const { config } = useConfigContext();
   const curationLists = useCurationLists();
   return (
     <Wrapper
@@ -48,7 +50,7 @@ function AboutPage() {
     >
       <Text margin="0 0 0.5rem 0">
         <span>Environment name:</span>
-        <span>{CONFIG.envName || "-"}</span>
+        <span>{config.envName || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Release version:</span>
@@ -119,7 +121,7 @@ function AboutPage() {
           <Text>
             <span>Default token list:</span>
             <ul>
-              {CONFIG.defaultTokens.map((token, index) => {
+              {config.envConfig.defaultTokens?.map((token, index) => {
                 return (
                   <li key={`token_${token.symbol}_${index}`}>
                     <b>{JSON.stringify(token)}</b>
@@ -138,7 +140,7 @@ function AboutPage() {
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Default Dispute Resolver ID:</span>
-        <span>{CONFIG.defaultDisputeResolverId || "-"}</span>
+        <span>{config.envConfig.defaultDisputeResolverId || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>IPFS GATEWAY:</span>
@@ -158,7 +160,7 @@ function AboutPage() {
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Carousel Promoted SellerId:</span>
-        <span>{CONFIG.carouselPromotedSellerId || "-"}</span>
+        <span>{config.carouselPromotedSellerId || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>dApp View Mode Url:</span>
@@ -170,7 +172,7 @@ function AboutPage() {
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Widgets Url:</span>
-        <span>{process.env.REACT_APP_WIDGETS_URL || "-"}</span>
+        <span>{config.widgetsUrl || "-"}</span>
       </Text>
     </Wrapper>
   );

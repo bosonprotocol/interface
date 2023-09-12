@@ -1,21 +1,27 @@
 import {
-  ButtonSize,
   CommitButton,
   exchanges,
   offers,
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
+import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
+import { useAccountDrawer } from "components/header/accountDrawer";
+import { Spinner } from "components/loading/Spinner";
 import dayjs from "dayjs";
 import {
   BigNumber,
   BigNumberish,
   constants,
   ContractTransaction,
-  ethers
+  ethers,
+  utils
 } from "ethers";
+import { swapQueryParameters } from "lib/routing/parameters";
+import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import {
   ArrowRight,
   ArrowSquareOut,
@@ -26,8 +32,8 @@ import {
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { Field } from "state/swap/actions";
 import styled from "styled-components";
-import { useAccount, useBalance } from "wagmi";
 
 import { ReactComponent as Logo } from "../../../assets/logo-white.svg";
 import { CONFIG } from "../../../lib/config";
@@ -92,11 +98,13 @@ const StyledPrice = styled(Price)`
     font-size: 1rem;
   }
 `;
-const CommitButtonWrapper = styled.div<{ pointerEvents: string }>`
+
+const CommitButtonWrapper = styled.div<{ $pointerEvents: string }>`
   width: 100%;
+  cursor: pointer;
   > button {
     width: 100%;
-    pointer-events: ${({ pointerEvents }) => pointerEvents};
+    pointer-events: ${({ $pointerEvents }) => $pointerEvents};
   }
 `;
 
@@ -375,10 +383,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   hasMultipleVariants,
   exchangePolicyCheckResult
 }) => {
+  const { config } = useConfigContext();
   const [commitType, setCommitType] = useState<ActionName | undefined | null>(
     null
   );
-  const { openConnectModal } = useConnectModal();
+  const [, openConnectModal] = useAccountDrawer();
   const [
     isCommittingFromNotConnectedWallet,
     setIsCommittingFromNotConnectedWallet
@@ -391,7 +400,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isSeller = exchange?.seller.assistant === address?.toLowerCase();
   const isOffer = pageType === "offer";
@@ -404,15 +413,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     exchangeStatus === exchanges.ExtendedExchangeState.NotRedeemableYet
       ? "Redeem"
       : titleCase(exchangeStatus || "Unsupported");
-
-  const { data: dataBalance } = useBalance(
-    offer.exchangeToken.address !== ethers.constants.AddressZero
-      ? {
-          address: address,
-          token: offer.exchangeToken.address as `0x${string}`
-        }
-      : { address: address }
-  );
+  const { balance: exchangeTokenBalance, loading: balanceLoading } =
+    useExchangeTokenBalance(offer.exchangeToken);
 
   const {
     buyer: { buyerId }
@@ -437,9 +439,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const isBuyerInsufficientFunds: boolean = useMemo(
-    () => !!dataBalance?.value && dataBalance?.value < BigInt(offer.price),
-    [dataBalance, offer.price]
+    () => !!exchangeTokenBalance && exchangeTokenBalance.lessThan(offer.price),
+    [exchangeTokenBalance, offer.price]
   );
+  const minNeededBalance = exchangeTokenBalance?.asFraction
+    ?.subtract(offer.price)
+    .multiply(-1);
 
   const convertedPrice = useConvertedPrice({
     value: offer.price,
@@ -581,10 +586,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isOffer;
 
   const commitButtonRef = useRef<HTMLButtonElement>(null);
-
+  const tokenOrCoinSymbol = offer.exchangeToken.symbol;
   const notCommittableOfferStatus = useMemo(() => {
     if (isBuyerInsufficientFunds) {
-      return "Insufficient Funds";
+      return tokenOrCoinSymbol
+        ? `Insufficient ${tokenOrCoinSymbol}`
+        : "Insufficient Funds";
     }
     if (offer.voided) {
       return "Offer voided";
@@ -608,7 +615,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isExpiredOffer,
     isOfferEmpty,
     isOfferNotValidYet,
-    offer.voided
+    offer.voided,
+    tokenOrCoinSymbol
   ]);
   const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
   const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
@@ -794,7 +802,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             await tx.wait();
           }
         }
-
         const buyerAddress = await signer.getAddress();
 
         const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
@@ -825,6 +832,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         disabled={disabled}
         data-commit-proxy-address
         style={{ height: "3.5rem" }}
+        withBosonStyle
       >
         Commit <small>Step 1/2</small>
       </BosonButton>
@@ -931,53 +939,98 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
 
             {isOffer && isNotCommittableOffer && (
-              <DetailTopRightLabel>
+              <DetailTopRightLabel
+                style={isBuyerInsufficientFunds ? { alignItems: "center" } : {}}
+                typographyStyle={
+                  isBuyerInsufficientFunds ? { fontSize: "0.75rem" } : {}
+                }
+                swapButton={
+                  !isPreview && isBuyerInsufficientFunds ? (
+                    <LinkWithQuery
+                      style={{ width: "100%" }}
+                      to={BosonRoutes.Swap}
+                      search={{
+                        [swapQueryParameters.outputCurrency]:
+                          offer.exchangeToken.address,
+                        [swapQueryParameters.exactAmount]: minNeededBalance
+                          ? utils.formatUnits(
+                              minNeededBalance?.toSignificant(
+                                Number(offer.exchangeToken.decimals)
+                              ) || "",
+                              offer.exchangeToken.decimals
+                            )
+                          : "",
+                        [swapQueryParameters.exactField]:
+                          Field.OUTPUT.toLowerCase()
+                      }}
+                    >
+                      <Button
+                        size="small"
+                        theme="accentFill"
+                        withBosonStyle
+                        style={{ color: colors.white, width: "100%" }}
+                      >
+                        Buy or Swap {tokenOrCoinSymbol}
+                      </Button>
+                    </LinkWithQuery>
+                  ) : null
+                }
+              >
                 {!isPreview && notCommittableOfferStatus}
               </DetailTopRightLabel>
             )}
             {isOffer && (
               <CommitButtonWrapper
                 role="button"
-                pointerEvents={!address && openConnectModal ? "none" : "all"}
+                $pointerEvents={!address ? "none" : "all"}
                 onClick={() => {
-                  if (!address && openConnectModal) {
+                  if (!address) {
                     saveItemInStorage("isConnectWalletFromCommit", true);
                     setIsCommittingFromNotConnectedWallet(true);
                     openConnectModal();
                   }
                 }}
               >
-                {showCommitProxyButton ? (
-                  <CommitProxyButton />
+                {balanceLoading || !exchangeTokenBalance ? (
+                  <Button disabled>
+                    <Spinner />
+                  </Button>
                 ) : (
-                  <CommitButton
-                    variant="primaryFill"
-                    isPauseCommitting={!address}
-                    buttonRef={commitButtonRef}
-                    onGetSignerAddress={handleOnGetSignerAddress}
-                    disabled={!!isCommitDisabled}
-                    offerId={offer.id}
-                    exchangeToken={offer.exchangeToken.address}
-                    price={offer.price}
-                    coreSdkConfig={{
-                      envName: CONFIG.envName,
-                      configId: CONFIG.configId,
-                      web3Provider: signer?.provider as Provider,
-                      metaTx: CONFIG.metaTx
-                    }}
-                    onError={onCommitError}
-                    onPendingSignature={onCommitPendingSignature}
-                    onPendingTransaction={onCommitPendingTransaction}
-                    onSuccess={onCommitSuccess}
-                    extraInfo="Step 1/2"
-                  />
+                  <>
+                    {showCommitProxyButton ? (
+                      <CommitProxyButton />
+                    ) : (
+                      <CommitButton
+                        coreSdkConfig={{
+                          envName: config.envName,
+                          configId: config.envConfig.configId,
+                          web3Provider: signer?.provider as Provider,
+                          metaTx: config.metaTx
+                        }}
+                        variant="primaryFill"
+                        isPauseCommitting={!address}
+                        buttonRef={commitButtonRef}
+                        onGetSignerAddress={handleOnGetSignerAddress}
+                        disabled={!!isCommitDisabled}
+                        offerId={offer.id}
+                        exchangeToken={offer.exchangeToken.address}
+                        price={offer.price}
+                        onError={onCommitError}
+                        onPendingSignature={onCommitPendingSignature}
+                        onPendingTransaction={onCommitPendingTransaction}
+                        onSuccess={onCommitSuccess}
+                        extraInfo="Step 1/2"
+                        withBosonStyle
+                      />
+                    )}
+                  </>
                 )}
               </CommitButtonWrapper>
             )}
             {isToRedeem && (
               <RedeemButton
                 variant="primaryFill"
-                size={ButtonSize.Large}
+                size="large"
                 disabled={
                   isChainUnsupported ||
                   isLoading ||
@@ -988,6 +1041,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 id="boson-redeem-redeem"
                 data-exchange-id={exchange?.id}
                 data-bypass-mode="REDEEM"
+                data-config-id={config.envConfig.configId}
+                withBosonStyle
               >
                 <span>Redeem</span>
                 <Typography

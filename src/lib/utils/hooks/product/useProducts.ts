@@ -1,4 +1,5 @@
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import groupBy from "lodash/groupBy";
 import omit from "lodash/omit";
@@ -41,6 +42,9 @@ export default function useProducts(
     withNumExchanges?: boolean;
   }
 ) {
+  const { config } = useConfigContext();
+  const { subgraphUrl, defaultDisputeResolverId } = config.envConfig;
+
   const curationLists = useCurationLists();
   const now = Math.floor(Date.now() / 1000);
   const validityFilter = props.onlyValid
@@ -55,21 +59,28 @@ export default function useProducts(
       productsFirst: OFFERS_PER_PAGE,
       productsFilter: {
         uuid_in: props?.productsIds || undefined,
-        disputeResolverId: CONFIG.defaultDisputeResolverId,
+        disputeResolverId: defaultDisputeResolverId,
         sellerId_in: options.enableCurationList
           ? curationLists.sellerCurationList
           : undefined,
         ...props.productsFilter
       }
     }),
-    [props, options, curationLists]
+    [props, options, curationLists, defaultDisputeResolverId]
   );
 
   const coreSDK = useCoreSDK();
+
   const { store } = useContext(ConvertionRateContext);
 
   const productsVariants = useQuery(
-    ["get-all-products-variants", baseProps],
+    [
+      "get-all-products-variants",
+      baseProps,
+      coreSDK,
+      props.onlyNotVoided,
+      OFFERS_PER_PAGE
+    ],
     async () => {
       const newProps = {
         ...baseProps,
@@ -242,7 +253,7 @@ export default function useProducts(
   );
 
   const exchangesBySellers = useQuery(
-    ["get-all-exchanges-from-sellers", props],
+    ["get-all-exchanges-from-sellers", props, subgraphUrl],
     async () => {
       const numItemsPerRequest = 1000;
       let skip = 0;
@@ -260,6 +271,7 @@ export default function useProducts(
             };
           }[];
         }>(
+          subgraphUrl,
           gql`
             query GetSellersExchanges(
               $sellerIds: [String]

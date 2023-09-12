@@ -1,4 +1,6 @@
-mutation createSetProfileImageURITypedData($request: UpdateProfileImageRequest!) {
+mutation createSetProfileImageURITypedData(
+  $request: UpdateProfileImageRequest!
+) {
   createSetProfileImageURITypedData(request: $request) {
     id
     expiresAt

@@ -25,7 +25,11 @@ const copyToClipboard = (text: string): Promise<void> => {
     }
     navigator.clipboard.writeText(text).then(
       () => resolve(),
-      (error) => reject(error)
+      (error) => {
+        console.error("Error while copying:", error);
+        Sentry.captureException(error);
+        reject(error);
+      }
     );
 
     resolve();

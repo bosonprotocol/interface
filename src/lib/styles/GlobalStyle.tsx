@@ -122,6 +122,7 @@ const GlobalStyle = createGlobalStyle<{
 
   button {
     all: unset;
+    box-sizing: border-box;
   }
 
   html, body {

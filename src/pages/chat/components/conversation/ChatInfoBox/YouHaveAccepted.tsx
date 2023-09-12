@@ -3,9 +3,9 @@ import {
   MessageData,
   ProposalContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { useWeb3React } from "@web3-react/core";
 import { Info, X } from "phosphor-react";
 import { useState } from "react";
-import { useAccount } from "wagmi";
 
 import { PERCENTAGE_FACTOR } from "../../../../../components/modal/components/Chat/const";
 import { useModal } from "../../../../../components/modal/useModal";
@@ -30,7 +30,7 @@ export const YouHaveAccepted: React.FC<YouHaveAcceptedProps> = ({
   iAmTheBuyer
 }) => {
   const { showModal } = useModal();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const proposalAcceptedByYou =
     acceptedProposal.sender.toLowerCase() === address?.toLowerCase();
   const acceptedProposalContent = acceptedProposal.data

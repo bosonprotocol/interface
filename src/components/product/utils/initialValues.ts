@@ -4,7 +4,6 @@ import { proposals } from "../../modal/components/Chat/MakeProposal/steps/MakeAP
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
-  OPTIONS_CURRENCIES,
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_LENGTH,
@@ -96,7 +95,7 @@ export const productImagesInitialValues = {
 export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {
   coreTermsOfSale: {
     price: null as unknown as number,
-    currency: OPTIONS_CURRENCIES[0],
+    currency: null,
     quantity: 1,
     redemptionPeriod: [],
     offerValidityPeriod: []

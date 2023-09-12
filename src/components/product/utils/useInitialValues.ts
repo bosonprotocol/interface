@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -8,11 +9,13 @@ import {
   removeItemInStorage,
   saveItemInStorage
 } from "../../../lib/utils/hooks/useLocalStorage";
+import { getOptionsCurrencies } from "./const";
 import { initialValues as baseValues } from "./initialValues";
 import type { CreateProductForm } from "./types";
 
 const MAIN_KEY = "create-product";
 export function useInitialValues() {
+  const { config } = useConfigContext();
   const [searchParams] = useSearchParams();
   const isTokenGated = searchParams.get(
     SellerLandingPageParameters.sltokenGated
@@ -21,7 +24,17 @@ export function useInitialValues() {
     () => getItemFromStorage<CreateProductForm | null>(MAIN_KEY, null),
     []
   );
-  const cloneBaseValues = useMemo(() => structuredClone(baseValues), []);
+  const cloneBaseValues = useMemo(
+    () =>
+      structuredClone({
+        ...baseValues,
+        coreTermsOfSale: {
+          ...baseValues.coreTermsOfSale,
+          currency: getOptionsCurrencies(config.envConfig)[0]
+        }
+      }),
+    [config.envConfig]
+  );
   const cloneInitialValues = useMemo(
     () =>
       initialValues

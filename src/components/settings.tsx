@@ -18,7 +18,7 @@ const SettingsSvgIcon = styled.button`
   }
 `;
 
-export default function Settings() {
+export function Settings() {
   const navigate = useKeepQueryParamsNavigate();
 
   return (

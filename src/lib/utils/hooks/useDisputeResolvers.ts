@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -17,8 +18,12 @@ interface Props {
 }
 
 export function useDisputeResolvers() {
-  return useQuery(["disputeResolvers"], async () => {
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
+  return useQuery(["disputeResolvers", { subgraphUrl }], async () => {
     const result = await fetchSubgraph<Props>(
+      subgraphUrl,
       gql`
         query GetDisputeResolvers {
           disputeResolvers {

@@ -1,8 +1,8 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import { BigNumber, BigNumberish } from "ethers";
 import { useCallback } from "react";
-import { useAccount } from "wagmi";
 
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 
@@ -21,7 +21,7 @@ export default function useWithdrawFunds({
   tokensToWithdraw
 }: Props) {
   const coreSdk = useCoreSDK();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
 
   return useCallback(() => {
     let withdrawFundsResponse: Promise<TransactionResponse>;

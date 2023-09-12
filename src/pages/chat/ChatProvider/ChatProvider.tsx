@@ -1,30 +1,32 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { ReactNode, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
-import { config } from "../../../lib/config";
 import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
 import { Context } from "./ChatContext";
-import { envName } from "./const";
+import { getChatEnvName } from "./const";
 
 interface Props {
   children: ReactNode;
 }
 
 export default function ChatProvider({ children }: Props) {
+  const { config } = useConfigContext();
   const signer = useEthersSigner();
   const [initialize, setInitialized] = useState<number>(0);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>();
   const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpClient>();
+  const chatEnvName = getChatEnvName(config);
   useEffect(() => {
     if (signer && initialize && !bosonXmtp) {
       setLoading(true);
       BosonXmtpClient.initialise(
         signer,
-        config.envName === "production" ? "production" : "dev",
-        envName
+        config.envConfig.envName === "production" ? "production" : "dev",
+        chatEnvName
       )
         .then((bosonClient) => {
           setBosonXmtp(bosonClient);
@@ -38,7 +40,7 @@ export default function ChatProvider({ children }: Props) {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signer, initialize]);
+  }, [signer, initialize, chatEnvName, config.envConfig.envName]);
   const signerAddress = useQuery(["signer-address", signer], () => {
     return signer?.getAddress();
   });
@@ -53,7 +55,7 @@ export default function ChatProvider({ children }: Props) {
           setInitialized((prev) => prev + 1);
         },
         error,
-        envName,
+        chatEnvName,
         isInitializing: isLoading
       }}
     >

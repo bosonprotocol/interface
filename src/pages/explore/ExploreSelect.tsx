@@ -1,8 +1,9 @@
+import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { ParsedQuery } from "query-string";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { default as ReactSelect, StylesConfig } from "react-select";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
@@ -49,6 +50,7 @@ const customStyles: StylesConfig<
 > = {
   control: (provided) => ({
     ...provided,
+    cursor: "pointer",
     borderRadius: 0,
     boxShadow: "none",
     ":hover": {
@@ -92,7 +94,7 @@ const customStyles: StylesConfig<
   })
 };
 
-const SelectFilterWrapper = styled.div`
+const SelectFilterWrapper = styled.div<{ $color: string }>`
   position: relative;
   min-width: 10.125rem;
   max-height: 2.5rem;
@@ -100,6 +102,13 @@ const SelectFilterWrapper = styled.div`
   display: flex;
   align-items: center;
   width: max-content;
+  ${({ $color }) =>
+    css`
+      [class$="-ValueContainer"] > *,
+      [class$="-indicatorContainer"] {
+        color: ${$color};
+      }
+    `}
 `;
 
 interface Props {
@@ -107,6 +116,7 @@ interface Props {
   handleChange: (name: string, value: string) => void;
 }
 export default function ExploreSelect({ params, handleChange }: Props) {
+  const textColor = useCustomStoreQueryParameter("textColor");
   const location = useLocation();
   const DEFAULT_FILTER =
     params?.[ExploreQueryParameters.sortBy] || "validFromDate:desc";
@@ -128,8 +138,8 @@ export default function ExploreSelect({ params, handleChange }: Props) {
   }, [location]); // eslint-disable-line
 
   return (
-    <SelectFilterWrapper>
-      <Typography fontWeight="600" color={colors.darkGrey}>
+    <SelectFilterWrapper $color={textColor}>
+      <Typography fontWeight="600" color={textColor}>
         Sort:
       </Typography>
       <ReactSelect

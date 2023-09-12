@@ -1,4 +1,4 @@
-import { ButtonSize, offers as OffersKit } from "@bosonprotocol/react-kit";
+import { offers as OffersKit } from "@bosonprotocol/react-kit";
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import uniqBy from "lodash/uniqBy";
@@ -586,7 +586,7 @@ export default function SellerProductsTable({
                       ) && (
                         <VoidButton
                           variant="secondaryInverted"
-                          size={ButtonSize.Small}
+                          size="small"
                           disabled={!sellerRoles?.isAssistant}
                           tooltip="This action is restricted to only the assistant wallet"
                           onClick={() => {

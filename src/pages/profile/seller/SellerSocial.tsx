@@ -1,5 +1,6 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { Globe } from "phosphor-react";
 import { useEffect, useState } from "react";
 
@@ -50,6 +51,7 @@ export default function SellerSocial({
   seller,
   voucherCloneAddress
 }: Props) {
+  const { config } = useConfigContext();
   const [openSeaUrl, setOpenSeaUrl] = useState<string | null>(null);
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
 
@@ -57,16 +59,16 @@ export default function SellerSocial({
     ? getLensWebsite(sellerLens as Profile)
     : seller.metadata?.website;
   const websiteToShow = website ? preAppendHttps(website) || false : false;
-
+  const { envName } = config;
   useEffect(() => {
     if (openSeaUrl === null && voucherCloneAddress) {
-      getOpenSeaUrl(voucherCloneAddress).then((value) => {
+      getOpenSeaUrl(voucherCloneAddress, envName).then((value) => {
         if (value) {
           setOpenSeaUrl(value as string);
         }
       });
     }
-  }, [openSeaUrl, voucherCloneAddress]);
+  }, [openSeaUrl, voucherCloneAddress, envName]);
 
   return (
     <SocialIconContainer>

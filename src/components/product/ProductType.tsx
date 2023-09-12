@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
+import { useAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
@@ -43,6 +43,7 @@ import {
   CreateProductForm,
   CreateProfile,
   CreateYourProfile,
+  getOptionsCurrencies,
   initialValues
 } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
@@ -84,19 +85,7 @@ export const RadioButton = styled.input`
   }
 `;
 
-export const Box = styled.div`
-  padding: 0.875rem;
-  height: 100%;
-  width: 100%;
-  p {
-    display: block;
-  }
-  p:first {
-    margin: 0.938rem 0 0 0;
-  }
-`;
-
-export const RadioButtonText = styled(Typography).attrs({
+const RadioButtonText = styled(Typography).attrs({
   tag: "p",
   fontWeight: "600",
   $fontSize: "1rem",
@@ -126,9 +115,10 @@ export default function ProductType({
   showInvalidRoleModal,
   isDraftModalClosed
 }: Props) {
-  const { openConnectModal } = useConnectModal();
+  const { config } = useConfigContext();
+  const [connectModalOpen, openConnectModal] = useAccountDrawer();
   const navigate = useKeepQueryParamsNavigate();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
     useCreateForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
@@ -186,7 +176,7 @@ export default function ProductType({
     !!currentSellers.some((seller, index) => {
       return (
         seller.authTokenType === authTokenTypes.LENS &&
-        seller.authTokenId === getLensTokenIdDecimal(lens[index].id).toString()
+        seller.authTokenId === getLensTokenIdDecimal(lens[index]?.id).toString()
       );
     });
 
@@ -212,6 +202,10 @@ export default function ProductType({
       );
       const newValues: CreateProductForm = {
         ...initialValues,
+        coreTermsOfSale: {
+          ...initialValues.coreTermsOfSale,
+          currency: getOptionsCurrencies(config.envConfig)[0]
+        },
         ...currentValues,
         createYourProfile: regularProfile
       };
@@ -344,24 +338,16 @@ export default function ProductType({
       setWasConnectModalOpen(true);
     }
   }, [address, openConnectModal]);
+
   if (!address) {
-    return (
-      <>
-        <Typography>Please connect your wallet</Typography>
-        <RainbowConnectButton.Custom>
-          {({ connectModalOpen }) => {
-            if (wasConnectModalOpen && !connectModalOpen) {
-              if (prevPath && prevPath !== "/sell/create-product") {
-                reactRouterNavigate(-1);
-              } else {
-                return <Navigate to={{ pathname: BosonRoutes.Root }} />;
-              }
-            }
-            return <></>;
-          }}
-        </RainbowConnectButton.Custom>
-      </>
-    );
+    if (wasConnectModalOpen && !connectModalOpen) {
+      if (prevPath && prevPath !== "/sell/create-product") {
+        reactRouterNavigate(-1);
+      } else {
+        return <Navigate to={{ pathname: BosonRoutes.Root }} />;
+      }
+    }
+    return <Typography>Please connect your wallet</Typography>;
   }
   return (
     <ContainerProductPage>

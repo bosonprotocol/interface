@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { useFormikContext } from "formik";
 import { Check } from "phosphor-react";
 import { useEffect, useMemo } from "react";
@@ -73,6 +74,7 @@ const InfoWrapperList = styled.div`
 `;
 
 export default function TermsOfExchange() {
+  const { config } = useConfigContext();
   const { nextIsDisabled } = useCreateForm();
   const { values, setFieldValue } = useFormikContext<CreateProductForm>();
   const isMultiVariant =
@@ -92,7 +94,7 @@ export default function TermsOfExchange() {
     values.productType?.productVariant === "differentVariants"
       ? values.productVariants?.variants?.[0]?.currency?.label
       : values.coreTermsOfSale?.currency?.label;
-  const exchangeToken = CONFIG.defaultTokens.find(
+  const exchangeToken = config.envConfig.defaultTokens?.find(
     (n: Token) =>
       n.symbol ===
       (values.productType?.productVariant === "differentVariants"

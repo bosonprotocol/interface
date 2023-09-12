@@ -1,7 +1,8 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
@@ -61,9 +62,10 @@ export default function CreateProfileModal({
   lensProfile: selectedProfile,
   waitUntilIndexed
 }: Props) {
+  const { config } = useConfigContext();
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
-  const { address = "" } = useAccount();
+  const { account: address = "" } = useWeb3React();
 
   const {
     data: lensData,
@@ -75,7 +77,7 @@ export default function CreateProfileModal({
       limit: 50
     },
     {
-      enabled: !!address
+      enabled: !!address && config.lens.availableOnNetwork
     }
   );
   const hasLensProfile = !!lensData?.items.length;
@@ -86,7 +88,7 @@ export default function CreateProfileModal({
   }, [isSuccess, hasLensProfile]);
   const { hideModal } = useModal();
   const [profileType, setProfileType] = useState<ProfileType | undefined>(
-    undefined
+    config.lens.availableOnNetwork ? undefined : ProfileType.REGULAR
   );
 
   const [switchChecked, setSwitchChecked] = useState<boolean>(

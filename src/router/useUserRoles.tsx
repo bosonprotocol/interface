@@ -1,5 +1,5 @@
+import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo } from "react";
-import { useAccount } from "wagmi";
 
 import { useBuyerSellerAccounts } from "../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentSellers } from "../lib/utils/hooks/useCurrentSellers";
@@ -17,7 +17,7 @@ interface Props {
 export default function useUserRoles({ role }: Props) {
   // TODO: add admin role
   const MOCK_ADMIN = false;
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const {
     refetch,
     buyer: { buyerId }

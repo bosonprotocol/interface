@@ -1,7 +1,8 @@
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { fetchSubgraph } from "../core-components/subgraph";
 
@@ -16,10 +17,13 @@ export interface SellerRolesProps {
   isTreasury: boolean;
 }
 export function useSellerRoles(id: string) {
-  const { address } = useAccount();
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
+  const { account: address } = useWeb3React();
 
   const { data } = useQuery(
-    ["seller-roles", { id }],
+    ["seller-roles", { id, subgraphUrl }],
     async () => {
       const result = await fetchSubgraph<{
         sellers: {
@@ -30,6 +34,7 @@ export function useSellerRoles(id: string) {
           active: boolean;
         }[];
       }>(
+        subgraphUrl,
         gql`
           query GetSellerByID(
             $id: String

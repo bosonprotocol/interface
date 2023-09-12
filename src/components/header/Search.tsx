@@ -18,7 +18,7 @@ const InputWrapper = styled(Grid)<{
 
   padding: 1.5rem 1.75rem;
   border-bottom: 2px solid ${colors.border};
-  background: ${colors.lightGrey};
+  background: color-mix(in srgb, var(--headerBgColor) 90%, black);
 
   margin: 0rem;
 
@@ -29,7 +29,6 @@ const InputWrapper = styled(Grid)<{
       ? css`
           border-bottom: none;
           padding: 0.25rem 1rem;
-          background: ${colors.lightGrey};
         `
       : css`
           max-width: 487px;
@@ -37,7 +36,6 @@ const InputWrapper = styled(Grid)<{
           margin: 1.25rem 0.5rem 1.25rem 0;
           padding: 0.25rem 1rem 0.25rem 1rem;
           min-width: 20vw;
-          background: ${colors.lightGrey};
         `}
 `;
 
@@ -46,14 +44,14 @@ const Input = styled.input`
   width: 21.25rem;
   font-size: 16px;
   background: transparent;
-  border: 0px solid ${colors.border};
-
-  font-family: "Plus Jakarta Sans";
+  border-width: 0;
   font-style: normal;
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
-
+  ::placeholder {
+    color: var(--headerTextColor);
+  }
   &:focus {
     outline: none;
   }

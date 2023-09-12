@@ -4,6 +4,7 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { Provider, RedeemButton, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { utils } from "ethers";
 import { useField } from "formik";
 import { Warning } from "phosphor-react";
@@ -11,7 +12,6 @@ import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import {
   ChatInitializationStatus,
@@ -62,6 +62,7 @@ export default function Confirmation({
   reload,
   setIsLoading: setLoading
 }: Props) {
+  const { config } = useConfigContext();
   const coreSDK = useCoreSDK();
   const redeemRef = useRef<HTMLDivElement | null>(null);
   const addPendingTransaction = useAddPendingTransaction();
@@ -217,10 +218,10 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
             disabled={isLoading || !isInitializationValid}
             exchangeId={exchangeId}
             coreSdkConfig={{
-              envName: CONFIG.envName,
-              configId: CONFIG.configId,
+              envName: config.envName,
+              configId: config.envConfig.configId,
               web3Provider: signer?.provider as Provider,
-              metaTx: CONFIG.metaTx
+              metaTx: config.metaTx
             }}
             onError={(error) => {
               console.error("Error while redeeming", error);

@@ -1,10 +1,10 @@
 import { ExpireButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import qs from "query-string";
 import { useState } from "react";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
 import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
@@ -57,6 +57,7 @@ interface Props {
   exchange: Exchange;
 }
 export default function ExpireVoucherModal({ exchange }: Props) {
+  const { config } = useConfigContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [expireError, setExpireError] = useState<Error | null>(null);
 
@@ -180,10 +181,10 @@ export default function ExpireVoucherModal({ exchange }: Props) {
             variant="primaryFill"
             exchangeId={exchange.id}
             coreSdkConfig={{
-              envName: CONFIG.envName,
-              configId: CONFIG.configId,
+              envName: config.envName,
+              configId: config.envConfig.configId,
               web3Provider: signer?.provider as Provider,
-              metaTx: CONFIG.metaTx
+              metaTx: config.metaTx
             }}
             disabled={isLoading}
             onError={(error) => {

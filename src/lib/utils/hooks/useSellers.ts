@@ -1,8 +1,8 @@
 import { accounts, subgraph } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useCallback } from "react";
 import { useQuery } from "react-query";
 
-import { CONFIG } from "../../../lib/config";
 import { useCurationLists } from "./useCurationLists";
 
 interface Props {
@@ -40,6 +40,9 @@ export function useSellers(
     enabled: boolean;
   }
 ) {
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   const curationLists = useCurationLists();
   const filter = {
     ...(props.admin && { admin: props.admin }),
@@ -48,17 +51,24 @@ export function useSellers(
     ...(props.treasury && { treasury: props.treasury }),
     ...(props.id && { id: props.id })
   };
+  const { includeFunds } = props;
   return useQuery(
-    ["sellers", props],
+    [
+      "sellers",
+      filter,
+      subgraphUrl,
+      includeFunds,
+      curationLists.sellerCurationList
+    ],
     async () => {
-      return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
+      return accounts.subgraph.getSellers(subgraphUrl, {
         sellersFilter: {
           ...filter,
           id_in: curationLists.sellerCurationList
         },
         sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
         sellersOrderDirection: subgraph.OrderDirection.Asc,
-        includeFunds: props.includeFunds
+        includeFunds: includeFunds
       });
     },
     {
