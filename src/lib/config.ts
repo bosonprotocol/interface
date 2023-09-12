@@ -144,11 +144,17 @@ export const CONFIG = {
     dappViewModeUrl: process.env.REACT_APP_DAPP_VIEW_MODE || "",
     drCenterViewModeUrl: process.env.REACT_APP_DR_CENTER_VIEW_MODE || ""
   },
+  moonpay: {
+    api: process.env.REACT_APP_MOONPAY_API || "",
+    apiKey: process.env.REACT_APP_MOONPAY_API_KEY || "",
+    link: process.env.REACT_APP_MOONPAY_LINK || "",
+    externalLink: process.env.REACT_APP_MOONPAY_EXTERNAL_LINK || ""
+  },
   awsApiEndpoint: process.env.REACT_APP_AWS_API_ENDPOINT as string,
   uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
   infuraKey: process.env.REACT_APP_INFURA_KEY as string
 };
-
+export type GlobalConfig = typeof CONFIG;
 export const lensHandleMaxLength = Math.max(
   ...[".lens", ".test"].map((ext) => ext.length)
 );
@@ -190,11 +196,6 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
       LENS_PROFILES_CONTRACT_PARTIAL_ABI:
         envConfig.lens?.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
       LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
-    },
-    moonpay: {
-      api: process.env.REACT_APP_MOONPAY_API || "",
-      apiKey: process.env.REACT_APP_MOONPAY_API_KEY || "",
-      link: process.env.REACT_APP_MOONPAY_LINK || ""
     },
     widgetsUrl: process.env.REACT_APP_WIDGETS_URL,
     carouselPromotedSellerId: getCarouselPromotedSellerId(envConfig)

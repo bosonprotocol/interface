@@ -13,11 +13,6 @@ import {
   SignOut
 } from "phosphor-react";
 import { useCallback, useState } from "react";
-import {
-  useFiatOnrampAvailability,
-  useOpenModal
-} from "state/application/hooks";
-import { ApplicationModal } from "state/application/reducer";
 import { useAppDispatch } from "state/hooks";
 import { updateSelectedWallet } from "state/user/reducer";
 import styled from "styled-components";
@@ -33,8 +28,8 @@ import Grid from "../../ui/Grid";
 import { LoadingBubble } from "../../ui/LoadingBubble";
 import Typography from "../../ui/Typography";
 import StatusIcon from "../identicon/StatusIcon";
-import { useToggleAccountDrawer } from ".";
-import FiatOnrampModal from "./fiatOnrampModal";
+import { FiatLink } from "./fiatOnrampModal/FiatLink";
+// import FiatOnrampModal from "./fiatOnrampModal";
 import { IconWithConfirmTextButton } from "./IconButton";
 import MiniPortfolio from "./miniPortfolio";
 import { portfolioFadeInAnimation } from "./miniPortfolio/PortfolioRow";
@@ -49,6 +44,7 @@ const AuthenticatedHeaderWrapper = styled.div`
 
 const HeaderButton = styled.button`
   background-color: var(--buttonBgColor);
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -178,38 +174,39 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
     dispatch(updateSelectedWallet({ wallet: undefined }));
   }, [connector, dispatch]);
 
-  const toggleWalletDrawer = useToggleAccountDrawer();
+  // const toggleWalletDrawer = useToggleAccountDrawer();
 
-  const openFiatOnrampModal = useOpenModal(ApplicationModal.FIAT_ONRAMP);
-  const openFoRModalWithAnalytics = useCallback(() => {
-    toggleWalletDrawer();
-    openFiatOnrampModal();
-  }, [openFiatOnrampModal, toggleWalletDrawer]);
+  // const openFiatOnrampModal = useOpenModal(ApplicationModal.FIAT_ONRAMP);
+  // const openFoRModal = useCallback(() => {
+  //   toggleWalletDrawer();
+  //   openFiatOnrampModal();
 
-  const [shouldCheck, setShouldCheck] = useState(false);
-  const {
-    available: fiatOnrampAvailable,
-    availabilityChecked: fiatOnrampAvailabilityChecked,
-    error,
-    loading: fiatOnrampAvailabilityLoading
-  } = useFiatOnrampAvailability(shouldCheck, openFoRModalWithAnalytics);
+  // }, [toggleWalletDrawer, openFiatOnrampModal]);
 
-  const handleBuyCryptoClick = useCallback(() => {
-    if (!fiatOnrampAvailabilityChecked) {
-      setShouldCheck(true);
-    } else if (fiatOnrampAvailable) {
-      openFoRModalWithAnalytics();
-    }
-  }, [
-    fiatOnrampAvailabilityChecked,
-    fiatOnrampAvailable,
-    openFoRModalWithAnalytics
-  ]);
-  const disableBuyCryptoButton = Boolean(
-    error ||
-      (!fiatOnrampAvailable && fiatOnrampAvailabilityChecked) ||
-      fiatOnrampAvailabilityLoading
-  );
+  // const [shouldCheck, setShouldCheck] = useState(false);
+  // const {
+  //   available: fiatOnrampAvailable,
+  //   availabilityChecked: fiatOnrampAvailabilityChecked,
+  //   error,
+  //   loading: fiatOnrampAvailabilityLoading
+  // } = useFiatOnrampAvailability(shouldCheck, openFoRModal);
+
+  // const handleBuyCryptoClick = useCallback(() => {
+  //   if (!fiatOnrampAvailabilityChecked) {
+  //     setShouldCheck(true);
+  //   } else if (fiatOnrampAvailable) {
+  //     openFoRModal();
+  //   }
+  // }, [fiatOnrampAvailabilityChecked, fiatOnrampAvailable, openFoRModal]);
+  // const disableBuyCryptoButton = Boolean(
+  //   error ||
+  //     (!fiatOnrampAvailable && fiatOnrampAvailabilityChecked) ||
+  //     fiatOnrampAvailabilityLoading
+  // );
+  const error = false;
+  const fiatOnrampAvailabilityLoading = false;
+  const fiatOnrampAvailable = true;
+  const fiatOnrampAvailabilityChecked = false;
   const [showFiatOnrampUnavailableTooltip, setShow] = useState<boolean>(false);
   const openFiatOnrampUnavailableTooltip = useCallback(
     () => setShow(true),
@@ -232,7 +229,9 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
 
   return (
     <AuthenticatedHeaderWrapper>
-      <FiatOnrampModal />
+      {/* 
+       TODO: uncomment when we create a moonpay account
+      <FiatOnrampModal /> */}
       <HeaderWrapper>
         <StatusWrapper>
           <StatusIcon account={account} connection={connection} size={40} />
@@ -303,24 +302,26 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
             <LoadingBubble height="16px" width="100px" margin="4px 0 20px 0" />
           </Column>
         )}
-        <HeaderButton
-          onClick={handleBuyCryptoClick}
-          disabled={disableBuyCryptoButton}
-          data-testid="wallet-buy-crypto"
-        >
-          {error ? (
-            <Typography>{error}</Typography>
-          ) : (
-            <>
-              {fiatOnrampAvailabilityLoading ? (
-                <Spinner />
-              ) : (
-                <CreditCard height="20px" width="20px" />
-              )}{" "}
-              Buy crypto
-            </>
-          )}
-        </HeaderButton>
+        <FiatLink>
+          <HeaderButton
+            // onClick={handleBuyCryptoClick}
+            // disabled={disableBuyCryptoButton}
+            data-testid="wallet-buy-crypto"
+          >
+            {error ? (
+              <Typography>{error}</Typography>
+            ) : (
+              <>
+                {fiatOnrampAvailabilityLoading ? (
+                  <Spinner />
+                ) : (
+                  <CreditCard height="20px" width="20px" />
+                )}{" "}
+                Buy crypto
+              </>
+            )}
+          </HeaderButton>
+        </FiatLink>
         {Boolean(!fiatOnrampAvailable && fiatOnrampAvailabilityChecked) && (
           <FiatOnrampNotAvailableText marginTop="8px">
             Not available in your region

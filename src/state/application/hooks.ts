@@ -1,5 +1,4 @@
-import { useConfigContext } from "components/config/ConfigContext";
-import { DappConfig } from "lib/config";
+import { CONFIG, GlobalConfig } from "lib/config";
 import { DEFAULT_TXN_DISMISS_MS } from "lib/constants/misc";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "state/hooks";
@@ -30,7 +29,7 @@ interface MoonpayIPAddressesResponse {
 }
 
 async function getMoonpayAvailability(
-  moonpay: DappConfig["moonpay"]
+  moonpay: GlobalConfig["moonpay"]
 ): Promise<boolean> {
   const moonpayApiKey = moonpay.apiKey;
   if (!moonpayApiKey) {
@@ -51,8 +50,6 @@ export function useFiatOnrampAvailability(
   shouldCheck: boolean,
   callback?: () => void
 ) {
-  const { config } = useConfigContext();
-  const { moonpay } = config;
   const dispatch = useAppDispatch();
   const { available, availabilityChecked } = useAppSelector(
     (state: AppState) => state.application.fiatOnramp
@@ -65,7 +62,7 @@ export function useFiatOnrampAvailability(
       setError(null);
       setLoading(true);
       try {
-        const result = await getMoonpayAvailability(moonpay);
+        const result = await getMoonpayAvailability(CONFIG.moonpay);
         if (stale) return;
         dispatch(setFiatOnrampAvailability(result));
         if (result && callback) {
@@ -89,7 +86,7 @@ export function useFiatOnrampAvailability(
     return () => {
       stale = true;
     };
-  }, [availabilityChecked, callback, dispatch, shouldCheck, moonpay]);
+  }, [availabilityChecked, callback, dispatch, shouldCheck]);
 
   return { available, availabilityChecked, loading, error };
 }

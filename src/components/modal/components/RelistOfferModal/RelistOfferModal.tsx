@@ -2,6 +2,7 @@ import { EvaluationMethod } from "@bosonprotocol/common";
 import { offers, productV1, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
+import { extractExecutionRevertedError } from "lib/utils/errors";
 import React from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
@@ -224,15 +225,9 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
           onRelistedSuccessfully?.();
         } catch (err) {
           const error = err as Error;
-          const m = error.toString().match(/(?<=execution reverted: ).*/)?.[0];
-          const endIndex = m?.indexOf(`\\",`);
-          const details = m?.substring(
-            0,
-            endIndex === -1 ? m?.indexOf(`",`) : endIndex
-          );
           showModal("TRANSACTION_FAILED", {
             errorMessage: "Something went wrong",
-            detailedErrorMessage: details
+            detailedErrorMessage: extractExecutionRevertedError(error)
           });
           console.error(error);
           Sentry.captureException(error);

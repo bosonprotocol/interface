@@ -56,6 +56,7 @@ jobs:
       REACT_APP_AWS_API_ENDPOINT: "https://beta.api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
       REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
+      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -94,6 +95,7 @@ jobs:
       REACT_APP_AWS_API_ENDPOINT: "https://beta.api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
       REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
+      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -136,6 +138,7 @@ jobs:
       REACT_APP_AWS_API_ENDPOINT: "https://beta.api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
       REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
+      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -178,6 +181,7 @@ jobs:
       REACT_APP_AWS_API_ENDPOINT: "https://beta.api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
       REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
+      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}

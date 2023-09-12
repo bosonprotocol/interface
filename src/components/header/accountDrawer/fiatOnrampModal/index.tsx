@@ -1,8 +1,8 @@
 import { useWeb3React } from "@web3-react/core";
-import { useConfigContext } from "components/config/ConfigContext";
 import { Spinner } from "components/loading/Spinner";
 import Modal from "components/modal/Modal";
 import Typography from "components/ui/Typography";
+import { CONFIG } from "lib/config";
 import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
 import { BosonRoutes } from "lib/routing/routes";
 import { colors } from "lib/styles/colors";
@@ -67,8 +67,7 @@ const MOONPAY_SUPPORTED_CURRENCY_CODES = [
 ];
 
 export default function FiatOnrampModal() {
-  const { config } = useConfigContext();
-  const moonpayLink = config.moonpay.link;
+  const moonpayLink = CONFIG.moonpay.link;
   const { account } = useWeb3React();
   const closeModal = useCloseModal();
   const fiatOnrampModalOpen = useModalIsOpen(ApplicationModal.FIAT_ONRAMP);
