@@ -141,10 +141,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
     [selectChain, setIsOpen]
   );
 
-  if (!chainId) {
-    return null;
-  }
-
   const isSupported = !!info;
 
   const dropdown = (
