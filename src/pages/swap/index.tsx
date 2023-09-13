@@ -41,7 +41,6 @@ import usePermit2Allowance, {
   AllowanceState
 } from "lib/utils/hooks/usePermit2Allowance";
 import { usePrevious } from "lib/utils/hooks/usePrevious";
-import { useScreenSize } from "lib/utils/hooks/useScreenSize";
 import { SwapResult, useSwapCallback } from "lib/utils/hooks/useSwapCallback";
 import { useSwitchChain } from "lib/utils/hooks/useSwitchChain";
 import { useUSDPrice } from "lib/utils/hooks/useUSDPrice";
@@ -78,7 +77,7 @@ import swapReducer, {
 } from "state/swap/reducer";
 import styled from "styled-components";
 
-import { UniswapXOptIn } from "./UniswapXOptIn";
+// import { UniswapXOptIn } from "./UniswapXOptIn";
 
 const CTAButton = styled(Button)`
   width: 100%;
@@ -431,7 +430,7 @@ export function Swap({
   // reset if they close warning without tokens in params
   const handleDismissTokenWarning = useCallback(() => {
     setDismissTokenWarning(true);
-    navigate("/swap/");
+    navigate(BosonRoutes.Swap);
   }, [navigate]);
 
   // modal and loading
@@ -651,7 +650,7 @@ export function Swap({
   const switchingChain = useAppSelector(
     (state) => state.wallets.switchingChain
   );
-  const showOptInSmall = !useScreenSize().navSearchInputVisible;
+  // const showOptInSmall = !useScreenSize().navSearchInputVisible;
 
   const swapElement = (
     <SwapWrapper chainId={chainId} className={className} id="swap-page">
@@ -867,14 +866,14 @@ export function Swap({
           )}
         </div>
       </AutoColumn>
-      {!showOptInSmall && <UniswapXOptIn isSmall={false} swapInfo={swapInfo} />}
+      {/* {!showOptInSmall && <UniswapXOptIn isSmall={false} swapInfo={swapInfo} />} */}
     </SwapWrapper>
   );
 
   return (
     <PreventCustomStoreStyles>
       {swapElement}
-      {showOptInSmall && <UniswapXOptIn isSmall swapInfo={swapInfo} />}
+      {/* {showOptInSmall && <UniswapXOptIn isSmall swapInfo={swapInfo} />} */}
     </PreventCustomStoreStyles>
   );
 }

@@ -249,7 +249,9 @@ export default function TokenSafety({
     token1Warning &&
     (token1Unsupported || !(token2Warning && token2Unsupported))
   ) {
-    logos.push(<CurrencyLogo currency={token1} size="48px" />);
+    logos.push(
+      <CurrencyLogo currency={token1} size="48px" key={token1.address} />
+    );
     urls.push(<ExplorerView token={token1} />);
   }
   if (
@@ -257,7 +259,9 @@ export default function TokenSafety({
     token2Warning &&
     (token2Unsupported || !(token1Warning && token1Unsupported))
   ) {
-    logos.push(<CurrencyLogo currency={token2} size="48px" />);
+    logos.push(
+      <CurrencyLogo currency={token2} size="48px" key={token2.address} />
+    );
     urls.push(<ExplorerView token={token2} />);
   }
 

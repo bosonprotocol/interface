@@ -1,5 +1,6 @@
 import { ApolloProvider } from "@apollo/client";
 import { ConfigProvider } from "components/config/ConfigProvider";
+import { CoreSDKProvider } from "components/core-sdk/CoreSDKProvider";
 import { apolloClient } from "graphql/data/apollo";
 import { MulticallUpdater } from "lib/state/multicall";
 import { BlockNumberProvider } from "lib/utils/hooks/useBlockNumber";
@@ -84,12 +85,14 @@ root.render(
               />
 
               <WalletConnectionProvider>
-                <QueryClientProvider client={queryClient}>
-                  <ConvertionRateProvider>
-                    <AppRouter />
-                  </ConvertionRateProvider>
-                  <ReactQueryDevtools initialIsOpen={false} />
-                </QueryClientProvider>
+                <CoreSDKProvider>
+                  <QueryClientProvider client={queryClient}>
+                    <ConvertionRateProvider>
+                      <AppRouter />
+                    </ConvertionRateProvider>
+                    <ReactQueryDevtools initialIsOpen={false} />
+                  </QueryClientProvider>
+                </CoreSDKProvider>
               </WalletConnectionProvider>
             </BlockNumberProvider>
           </ApolloProvider>

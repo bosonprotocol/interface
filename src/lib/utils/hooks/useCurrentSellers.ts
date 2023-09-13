@@ -137,7 +137,13 @@ export function useCurrentSellers({
   const enableResultByAddress =
     !!sellerAddress && sellerAddressType === "ADDRESS";
   const resultByAddress = useQuery(
-    ["current-seller-data-by-address", { address: sellerAddress, coreSDK }],
+    [
+      "current-seller-data-by-address",
+      {
+        address: sellerAddress
+        // coreSDK
+      }
+    ],
     async () => {
       if (!sellerAddress) {
         return null;
