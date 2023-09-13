@@ -90,6 +90,7 @@ function getCarouselPromotedSellerId(
 
 export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(envName);
 export const defaultEnvConfig: ProtocolConfig = envConfigsFilteredByEnv[0];
+export const defaultChainId = defaultEnvConfig.chainId;
 
 export const CONFIG = {
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",

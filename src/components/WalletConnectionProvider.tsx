@@ -27,6 +27,7 @@ function ForceConnectWagmi({ children }: Props) {
       account &&
       !address &&
       config.envConfig.chainId &&
+      chains[0]?.id &&
       chains[0].id === config.envConfig.chainId && // we want to connect (enter if) if config.envConfig.chainId doesnt change anymore (at the start)
       chain?.id !== config.envConfig.chainId
     ) {

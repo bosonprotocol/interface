@@ -21,6 +21,9 @@ export default function TokenSafetyModal({
       hideModal={onCancel}
       size="auto"
       modalType={"ACCOUNT_CREATION"}
+      maxWidths={{
+        m: "35rem"
+      }}
     >
       <TokenSafety
         tokenAddress={tokenAddress}

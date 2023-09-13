@@ -10,6 +10,7 @@ import UNISWAP_LOGO from "assets/svg/logo.svg";
 import COINBASE_ICON from "assets/wallets/coinbase-icon.svg";
 import UNIWALLET_ICON from "assets/wallets/uniswap-wallet-icon.png";
 import WALLET_CONNECT_ICON from "assets/wallets/walletconnect-icon.svg";
+import { defaultChainId as importedDefaultChainId } from "lib/config";
 import { useSyncExternalStore } from "react";
 
 import { RPC_URLS } from "../constants/networks";
@@ -93,8 +94,11 @@ export const gnosisSafeConnection: Connection = {
 export const walletConnectV2Connection: Connection = new (class
   implements Connection
 {
-  private initializer = (actions: Actions, defaultChainId = ChainId.MAINNET) =>
-    new WalletConnectV2({ actions, defaultChainId, onError });
+  private initializer = (
+    actions: Actions,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    defaultChainId = importedDefaultChainId as any as ChainId
+  ) => new WalletConnectV2({ actions, defaultChainId, onError });
 
   type = ConnectionType.WALLET_CONNECT_V2;
   getName = () => "WalletConnect";
@@ -177,7 +181,7 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] =
       new CoinbaseWallet({
         actions,
         options: {
-          url: RPC_URLS[ChainId.MAINNET][0],
+          url: RPC_URLS[importedDefaultChainId][0],
           appName: "Uniswap",
           appLogoUrl: UNISWAP_LOGO,
           reloadOnDisconnect: false

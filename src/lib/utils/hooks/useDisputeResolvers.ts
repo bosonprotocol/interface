@@ -21,7 +21,7 @@ export function useDisputeResolvers() {
   const { config } = useConfigContext();
   const { subgraphUrl } = config.envConfig;
 
-  return useQuery(["disputeResolvers", { subgraphUrl }], async () => {
+  return useQuery(["disputeResolvers", subgraphUrl], async () => {
     const result = await fetchSubgraph<Props>(
       subgraphUrl,
       gql`

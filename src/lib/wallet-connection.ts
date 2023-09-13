@@ -53,7 +53,7 @@ export const useWagmiConfig = () => {
       config.envConfig.chainId
     );
     const wagmiConfig = createConfig({
-      autoConnect: true,
+      autoConnect: false,
       connectors,
       publicClient
     });

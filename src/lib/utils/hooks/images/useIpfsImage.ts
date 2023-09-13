@@ -12,7 +12,7 @@ export function useIpfsImage(
   options: { enabled: boolean }
 ) {
   return useQuery(
-    ["useIpfsImage", { url }],
+    ["useIpfsImage", url],
     async () => {
       const result = await fetchImageAsBase64(url);
       const metadata = await getImageMetadata(result.base64);

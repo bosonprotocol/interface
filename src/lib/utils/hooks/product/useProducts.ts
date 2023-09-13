@@ -77,7 +77,7 @@ export default function useProducts(
     [
       "get-all-products-variants",
       baseProps,
-      coreSDK,
+      coreSDK.uuid,
       props.onlyNotVoided,
       OFFERS_PER_PAGE
     ],

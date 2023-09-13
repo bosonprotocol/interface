@@ -11,7 +11,7 @@ export function useFileImage(
   options: { enabled: boolean }
 ) {
   return useQuery(
-    ["useFileImage", { file }],
+    ["useFileImage", file],
     async () => {
       if (!file) {
         return;

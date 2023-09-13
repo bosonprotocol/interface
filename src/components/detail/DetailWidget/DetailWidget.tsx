@@ -991,7 +991,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   }
                 }}
               >
-                {balanceLoading || !exchangeTokenBalance ? (
+                {balanceLoading && address ? (
                   <Button disabled>
                     <Spinner />
                   </Button>
