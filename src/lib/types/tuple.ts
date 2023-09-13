@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // From https://stackoverflow.com/a/67605309/1345206
 // Used for slicing tuples (e.g. picking some subset of a param type)
 

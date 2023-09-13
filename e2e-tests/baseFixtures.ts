@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { test as baseTest } from "@playwright/test";
 import * as crypto from "crypto";
 import * as fs from "fs";

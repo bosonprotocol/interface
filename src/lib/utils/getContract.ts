@@ -8,6 +8,7 @@ import { isAddress } from "./address";
 
 export function getContract(
   address: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ABI: any,
   provider: JsonRpcProvider,
   account?: string
@@ -19,6 +20,7 @@ export function getContract(
   return new Contract(
     address,
     ABI,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getProviderOrSigner(provider, account) as any
   );
 }

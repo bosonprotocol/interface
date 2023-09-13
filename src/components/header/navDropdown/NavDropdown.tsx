@@ -1,4 +1,5 @@
-import { ForwardedRef, forwardRef } from "react";
+import { ForwardedRef, forwardRef, ReactNode } from "react";
+import { CSSProperties } from "styled-components";
 
 import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
@@ -24,7 +25,10 @@ const stylesMobileNavDropdown = {
 } as const;
 
 export const NavDropdown = forwardRef(
-  (props: Record<string, any>, ref: ForwardedRef<HTMLDivElement>) => {
+  (
+    props: { children: ReactNode } & Pick<CSSProperties, "left" | "right">,
+    ref: ForwardedRef<HTMLDivElement>
+  ) => {
     const { isLteS: isMobile } = useBreakpoints();
     return (
       <div

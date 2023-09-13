@@ -123,6 +123,7 @@ export function logSentryErrorForUnsupportedChain({
   extras,
   errorMessage
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extras?: Record<string, any>;
   errorMessage: string;
 }) {

@@ -14,6 +14,7 @@ class TokenLogoLookupTable {
       if (!listData) {
         return;
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       listData.current?.tokens.forEach((token: any) => {
         if (token.logoURI) {
           const lowercaseAddress = token.address.toLowerCase();

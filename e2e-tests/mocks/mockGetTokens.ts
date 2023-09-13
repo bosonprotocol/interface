@@ -10,7 +10,7 @@ export interface MockProps {
     };
   };
 }
-export async function mockGetTokens({ postData }: MockProps) {
+export async function mockGetTokens() {
   const exchangeTokens = {
     data: {
       exchangeTokens: [

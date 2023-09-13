@@ -81,6 +81,7 @@ enum ErrorCode {
 }
 
 // TODO(WEB-1973): merge this function with existing didUserReject for Swap errors
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function didUserReject(connection: Connection, error: any): boolean {
   return (
     error?.code === ErrorCode.USER_REJECTED_REQUEST ||

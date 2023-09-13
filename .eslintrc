@@ -43,6 +43,7 @@
   "ignorePatterns": [
     "src/lib/utils/hooks/lens/graphql/generated.ts",
     "src/components/detail/DetailWidget/BosonSnapshotGate",
-    "src/lib/utils/__generated__"
+    "src/lib/utils/__generated__",
+    "src/graphql/data/__generated__"
   ]
 }

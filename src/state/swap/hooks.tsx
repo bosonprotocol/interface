@@ -97,7 +97,7 @@ export type SwapInfo = {
     trade?: InterfaceTrade;
     state: TradeState;
     uniswapXGasUseEstimateUSD?: number;
-    error?: any;
+    error?: unknown;
     swapQuoteLatency?: number;
   };
   allowedSlippage: Percent;
@@ -286,13 +286,13 @@ function parseCurrencyFromURLParameter(urlParam: ParsedQs[string]): string {
   return "";
 }
 
-function parseTokenAmountURLParameter(urlParam: any): string {
+function parseTokenAmountURLParameter(urlParam: ParsedQs[string]): string {
   return typeof urlParam === "string" && !isNaN(parseFloat(urlParam))
     ? urlParam
     : "";
 }
 
-function parseIndependentFieldURLParameter(urlParam: any): Field {
+function parseIndependentFieldURLParameter(urlParam: ParsedQs[string]): Field {
   return typeof urlParam === "string" && urlParam.toLowerCase() === "output"
     ? Field.OUTPUT
     : Field.INPUT;
@@ -301,7 +301,7 @@ function parseIndependentFieldURLParameter(urlParam: any): Field {
 const ENS_NAME_REGEX =
   /^[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)?$/;
 const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
-function validatedRecipient(recipient: any): string | null {
+function validatedRecipient(recipient: ParsedQs["recipient"]): string | null {
   if (typeof recipient !== "string") return null;
   const address = isAddress(recipient);
   if (address) return address;

@@ -174,7 +174,6 @@ jobs:
       - id: lint
         run: echo "::set-output name=pass::success"
       - run: npm run build
-        if: ${{ inputs.IS_PREVIEW == false }}
       - id: build
         run: echo "::set-output name=pass::success"
       - name: Run Tests & Generate coverage reports

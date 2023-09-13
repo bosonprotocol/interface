@@ -150,7 +150,7 @@ export function CurrencyRow({
       tabIndex={0}
       style={style}
       className={`token-item-${key}`}
-      onKeyPress={(e: any) =>
+      onKeyPress={(e) =>
         !isSelected && e.key === "Enter" ? onSelect(!!warning) : null
       }
       onClick={() => (isSelected ? null : onSelect(!!warning))}
@@ -312,6 +312,7 @@ export default function CurrencyList({
       {isLoading ? (
         <StyledFixedSizeList
           height={height}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ref={fixedListRef as any}
           width="100%"
           itemData={[]}
@@ -323,6 +324,7 @@ export default function CurrencyList({
       ) : (
         <FixedSizeList
           height={height}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ref={fixedListRef as any}
           width="100%"
           itemData={itemData}

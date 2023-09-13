@@ -286,8 +286,6 @@ export function CurrencySearch({
             chainId={chainId}
             onSelect={handleCurrencySelect}
             selectedCurrency={selectedCurrency}
-            searchQuery={searchQuery}
-            isAddressSearch={isAddressSearch}
           />
         )}
       </PaddedColumn>

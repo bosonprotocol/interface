@@ -66,7 +66,8 @@ const backUpKeyframes = `@keyframes back-up {
   100% { transform: translateY(-80px); }
 }`;
 
-export const UniswapXShine = (props: any) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const UniswapXShine = (props: Record<string, any>) => {
   return (
     <UniswapXShineInner {...props} style={{ opacity: 0.05, ...props.style }} />
   );

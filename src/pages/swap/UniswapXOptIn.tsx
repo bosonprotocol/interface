@@ -111,8 +111,7 @@ const OptInContents = ({
   isSmall: boolean;
 }) => {
   const {
-    trade: { trade },
-    allowedSlippage
+    trade: { trade }
   } = swapInfo;
   const [, setRouterPreference] = useRouterPreference();
   const dispatch = useAppDispatch();
@@ -160,6 +159,7 @@ const OptInContents = ({
   if (isSmall) {
     return (
       <SwapOptInSmallContainer
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ref={containerRef as any}
         visible={isVisible}
         shouldAnimate={shouldAnimate}

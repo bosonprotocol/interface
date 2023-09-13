@@ -334,11 +334,13 @@ export function getChainInfo(
  * SupportedL2ChainId -> returns L2ChainInfo
  */
 export function getChainInfo(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
   featureFlags?: Record<
     ChainId | SupportedL1ChainId | SupportedL2ChainId | number,
     boolean
   >
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   if (featureFlags && chainId in featureFlags) {
     return featureFlags[chainId] ? CHAIN_INFO[chainId] : undefined;

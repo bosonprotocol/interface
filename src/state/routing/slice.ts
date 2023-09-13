@@ -173,6 +173,7 @@ export const routingApi = createApi({
             if (response.error) {
               try {
                 // cast as any here because we do a runtime check on it being an object before indexing into .errorCode
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const errorData = response.error.data as any;
                 // NO_ROUTE should be treated as a valid response to prevent retries.
                 if (
@@ -204,6 +205,7 @@ export const routingApi = createApi({
                 latencyMs: getQuoteLatencyMeasure(quoteStartMark).duration
               }
             };
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
             console.warn(
               `GetQuote failed on Unified Routing API, falling back to client: ${
@@ -242,6 +244,7 @@ export const routingApi = createApi({
               }
             };
           }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           console.warn(`GetQuote failed on client: ${error}`);
           return {
