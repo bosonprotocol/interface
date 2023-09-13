@@ -11,7 +11,7 @@ export interface MockProps {
     };
   };
 }
-export async function mockGetSellers({ postData }: MockProps) {
+export async function mockGetSellers() {
   const exchangeSellers = {
     data: {
       sellers: [
