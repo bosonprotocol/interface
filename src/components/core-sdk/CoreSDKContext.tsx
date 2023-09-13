@@ -1,11 +1,12 @@
-import { CoreSDK } from "@bosonprotocol/react-kit";
 import { hooks } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { providers } from "ethers";
 import { useEthersSigner } from "lib/utils/hooks/ethers/useEthersSigner";
 import { createContext, useContext } from "react";
 
-export const CoreSDKContext = createContext<CoreSDK | null>(null);
+import { ExtendedCoreSDK } from "./types";
+
+export const CoreSDKContext = createContext<ExtendedCoreSDK | null>(null);
 
 export function useProviderCoreSDK() {
   const signer = useEthersSigner();

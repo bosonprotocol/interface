@@ -53,7 +53,7 @@ export function useSellerBlacklist(
   );
   const { sellerBlacklistUrl } = props;
   const blacklist = useQuery(
-    ["seller-blacklist", { sellerBlacklistUrl }],
+    ["seller-blacklist", sellerBlacklistUrl],
     async () => {
       const blacklistStr = sellerBlacklistUrl
         ? await fetchTextFile(sellerBlacklistUrl, false)

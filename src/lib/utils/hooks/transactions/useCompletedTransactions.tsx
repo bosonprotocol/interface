@@ -21,7 +21,7 @@ export const useCompletedTransactions = (page = 0) => {
       "completed",
       address,
       page,
-      coreSDK,
+      coreSDK.uuid,
       sellerIds,
       currentBuyer
     ],

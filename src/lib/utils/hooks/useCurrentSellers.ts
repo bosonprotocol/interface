@@ -25,7 +25,7 @@ interface Props {
 const getSellersByIds =
   (subgraphUrl: string) => (sellerIds: string[], isSellerId: boolean) => {
     const resultSellerByIds = useQuery(
-      ["seller-by-ids", { sellerIds }],
+      ["seller-by-ids", sellerIds],
       async () => {
         const result = await fetchSubgraph<{
           sellers: {
@@ -137,13 +137,7 @@ export function useCurrentSellers({
   const enableResultByAddress =
     !!sellerAddress && sellerAddressType === "ADDRESS";
   const resultByAddress = useQuery(
-    [
-      "current-seller-data-by-address",
-      {
-        address: sellerAddress
-        // coreSDK
-      }
-    ],
+    ["current-seller-data-by-address", sellerAddress, coreSDK.uuid],
     async () => {
       if (!sellerAddress) {
         return null;
@@ -186,7 +180,7 @@ export function useCurrentSellers({
   );
 
   const resultById = useQuery(
-    ["current-seller-data-by-id", { sellerId: sellerAddress }],
+    ["current-seller-data-by-id", sellerAddress],
     async () => {
       const allProps = {
         admin: sellers?.[0]?.admin || null,
@@ -210,11 +204,9 @@ export function useCurrentSellers({
   const resultByLensId = useQuery(
     [
       "current-seller-data-by-lens-id",
-      {
-        authTokenId: decimalLensTokenId,
-        authTokenType: AuthTokenType.LENS,
-        subgraphUrl
-      }
+      decimalLensTokenId,
+      AuthTokenType.LENS,
+      subgraphUrl
     ],
     async () => {
       const result = await fetchSubgraph<{
@@ -276,7 +268,7 @@ export function useCurrentSellers({
     enableSellerById
   );
   const sellerById = useQuery(
-    ["current-seller-by-id", { sellerIds: sellerIdsToQuery, sellers2 }],
+    ["current-seller-by-id", sellerIdsToQuery, sellers2],
     async () => {
       const currentSeller = sellers2?.[0] || null;
 
