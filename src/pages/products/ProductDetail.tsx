@@ -39,9 +39,6 @@ import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
 
 export default function ProductDetail() {
-  useEffect(() => {
-    console.log("mount ProductDetail");
-  }, []);
   const { [UrlParameters.uuid]: productUuid = "" } = useParams();
   const textColor = useCustomStoreQueryParameter("textColor");
 
