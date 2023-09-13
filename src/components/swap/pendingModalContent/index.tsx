@@ -82,7 +82,7 @@ const StepTitleAnimationContainer = styled(Column)<{
   position: absolute;
   width: 100%;
   align-items: center;
-  transition: display ${({ theme }) => `250ms ease-in-out`};
+  transition: display 250ms ease-in-out;
   ${({ disableEntranceAnimation }) =>
     !disableEntranceAnimation &&
     css`

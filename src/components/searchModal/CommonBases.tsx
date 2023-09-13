@@ -39,15 +39,11 @@ const BaseWrapper = styled.div<{ disable?: boolean }>`
 export default function CommonBases({
   chainId,
   onSelect,
-  selectedCurrency,
-  searchQuery,
-  isAddressSearch
+  selectedCurrency
 }: {
   chainId?: number;
   selectedCurrency?: Currency | null;
   onSelect: (currency: Currency) => void;
-  searchQuery: string;
-  isAddressSearch: string | false;
 }) {
   const bases = chainId !== undefined ? COMMON_BASES[chainId] ?? [] : [];
 

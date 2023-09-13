@@ -58,6 +58,7 @@ export const legacyLocalStorageMigration = async () => {
   return result;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function legacyTransactionMigrations(state: any): TransactionState {
   // Make a copy of the object so we can mutate it.
   const result = JSON.parse(JSON.stringify(state));
@@ -74,6 +75,7 @@ function legacyTransactionMigrations(state: any): TransactionState {
   return result;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function legacyUserMigrations(state: any): UserState {
   // Make a copy of the object so we can mutate it.
   const result = JSON.parse(JSON.stringify(state));

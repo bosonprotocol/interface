@@ -11,6 +11,7 @@ export { NEVER_RELOAD } from "@uniswap/redux-multicall"; // re-export for conven
 
 // Create wrappers for hooks so consumers don't need to get latest block themselves
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SkipFirstTwoParams<T extends (...args: any) => any> = SkipFirst<
   Parameters<T>,
   2

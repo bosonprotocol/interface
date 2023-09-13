@@ -10,7 +10,6 @@ import { getChainInfo } from "lib/constants/chainInfo";
 import { USDT as USDT_MAINNET } from "lib/constants/tokens";
 import { isL2ChainId } from "lib/utils/chains";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
-import { useMaxAmountIn } from "lib/utils/hooks/useMaxAmountIn";
 import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
 import { Allowance, AllowanceState } from "lib/utils/hooks/usePermit2Allowance";
 import { usePrevious } from "lib/utils/hooks/usePrevious";
@@ -107,14 +106,12 @@ function isInApprovalPhase(confirmModalState: ConfirmModalState) {
 
 function useConfirmModalState({
   trade,
-  allowedSlippage,
   onSwap,
   allowance,
   doesTradeDiffer,
   onCurrencySelection
 }: {
   trade: InterfaceTrade;
-  allowedSlippage: Percent;
   onSwap: () => void;
   allowance: Allowance;
   doesTradeDiffer: boolean;
@@ -162,7 +159,6 @@ function useConfirmModalState({
   }, [allowance, trade]);
 
   const { chainId } = useWeb3React();
-  const maximumAmountIn = useMaxAmountIn(trade, allowedSlippage);
 
   const nativeCurrency = useNativeCurrency(chainId);
 
@@ -174,6 +170,7 @@ function useConfirmModalState({
   );
   const wrapConfirmed = useIsTransactionConfirmed(wrapTxHash);
   const prevWrapConfirmed = usePrevious(wrapConfirmed);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const catchUserReject = async (e: any, errorType: PendingModalError) => {
     setConfirmModalState(ConfirmModalState.REVIEWING);
     if (didUserReject(e)) return;
@@ -334,9 +331,7 @@ export default function ConfirmSwapModal({
   onDismiss,
   onCurrencySelection,
   swapError,
-  swapResult,
-  fiatValueInput,
-  fiatValueOutput
+  swapResult
 }: {
   trade: InterfaceTrade;
   inputCurrency?: Currency;
@@ -365,7 +360,6 @@ export default function ConfirmSwapModal({
     wrapTxHash
   } = useConfirmModalState({
     trade,
-    allowedSlippage,
     onSwap: onConfirm,
     onCurrencySelection,
     allowance,
@@ -406,10 +400,11 @@ export default function ConfirmSwapModal({
 
   const onModalDismiss = useCallback(() => {
     onDismiss();
-    // TODO: setTimeout(() => {
-    // Reset local state after the modal dismiss animation finishes, to avoid UI flicker as it dismisses
-    onCancel();
-    // }, MODAL_TRANSITION_DURATION);
+    setTimeout(() => {
+      // Reset local state after the modal dismiss animation finishes, to avoid UI flicker as it dismisses
+      onCancel();
+      // TODO:     }, MODAL_TRANSITION_DURATION);
+    }, 0);
   }, [onCancel, onDismiss]);
 
   const modalHeader = useCallback(() => {
@@ -443,11 +438,8 @@ export default function ConfirmSwapModal({
         <SwapModalFooter
           onConfirm={startSwapFlow}
           trade={trade}
-          swapResult={swapResult}
           allowedSlippage={allowedSlippage}
           disabledConfirm={showAcceptChanges}
-          fiatValueInput={fiatValueInput}
-          fiatValueOutput={fiatValueOutput}
           showAcceptChanges={showAcceptChanges}
           onAcceptChanges={onAcceptChanges}
           swapErrorMessage={swapFailed ? swapError?.message : undefined}
@@ -481,8 +473,6 @@ export default function ConfirmSwapModal({
     wrapTxHash,
     allowance,
     allowedSlippage,
-    fiatValueInput,
-    fiatValueOutput,
     onAcceptChanges,
     swapFailed,
     swapError?.message,

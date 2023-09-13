@@ -21,6 +21,7 @@ type ActivationPendingState = {
 type ActivationErrorState = {
   status: ActivationStatus.ERROR;
   connection: Connection;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any;
 };
 const IDLE_ACTIVATION_STATE = { status: ActivationStatus.IDLE } as const;

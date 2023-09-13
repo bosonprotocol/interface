@@ -14,20 +14,13 @@ import {
   formatTransactionAmount,
   priceToPreciseFloat
 } from "lib/utils/formatNumbers";
-import getRoutingDiagramEntries from "lib/utils/getRoutingDiagramEntries";
 import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
-import { SwapResult } from "lib/utils/hooks/useSwapCallback";
-import useTransactionDeadline from "lib/utils/hooks/useTransactionDeadline";
 import { getPriceImpactWarning } from "lib/utils/prices";
 import { Warning as AlertTriangle } from "phosphor-react";
 import { ReactNode } from "react";
 import { InterfaceTrade } from "state/routing/types";
-import { getTransactionCount, isClassicTrade } from "state/routing/utils";
-import {
-  useRouterPreference,
-  useUserSlippageTolerance
-} from "state/user/hooks";
-import styled, { useTheme } from "styled-components";
+import { isClassicTrade } from "state/routing/utils";
+import styled from "styled-components";
 
 import { GasBreakdownTooltip } from "./GasBreakdownTooltip";
 import { SwapCallbackError, SwapShowAcceptChanges } from "./styled";
@@ -55,34 +48,20 @@ const DetailRowValue = styled(Typography)`
 export default function SwapModalFooter({
   trade,
   allowedSlippage,
-  swapResult,
   onConfirm,
   swapErrorMessage,
   disabledConfirm,
-  fiatValueInput,
-  fiatValueOutput,
   showAcceptChanges,
   onAcceptChanges
 }: {
   trade: InterfaceTrade;
-  swapResult?: SwapResult;
   allowedSlippage: Percent;
   onConfirm: () => void;
   swapErrorMessage?: ReactNode;
   disabledConfirm: boolean;
-  fiatValueInput: { data?: number; isLoading: boolean };
-  fiatValueOutput: { data?: number; isLoading: boolean };
   showAcceptChanges: boolean;
   onAcceptChanges: () => void;
 }) {
-  const transactionDeadlineSecondsSinceEpoch =
-    useTransactionDeadline()?.toNumber(); // in seconds since epoch
-  const isAutoSlippage = useUserSlippageTolerance()[0] === "auto";
-  const [routerPreference] = useRouterPreference();
-  const routes = isClassicTrade(trade)
-    ? getRoutingDiagramEntries(trade)
-    : undefined;
-  const theme = useTheme();
   const { chainId } = useWeb3React();
   const nativeCurrency = useNativeCurrency(chainId);
 
@@ -91,7 +70,6 @@ export default function SwapModalFooter({
   const formattedPrice = formatTransactionAmount(
     priceToPreciseFloat(trade.executionPrice)
   );
-  const txCount = getTransactionCount(trade);
 
   return (
     <>

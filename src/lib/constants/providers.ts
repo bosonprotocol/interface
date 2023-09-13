@@ -10,6 +10,7 @@ import { CHAIN_IDS_TO_NAMES } from "./chains";
 import { RPC_URLS } from "./networks";
 
 class AppJsonRpcProvider extends StaticJsonRpcProvider {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _blockCache = new Map<string, Promise<any>>();
   get blockCache() {
     // If the blockCache has not yet been initialized this block, do so by
@@ -33,6 +34,7 @@ class AppJsonRpcProvider extends StaticJsonRpcProvider {
     this.pollingInterval = AVERAGE_L1_BLOCK_TIME;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   send(method: string, params: Array<any>): Promise<any> {
     // Only cache eth_call's.
     if (method !== "eth_call") return super.send(method, params);

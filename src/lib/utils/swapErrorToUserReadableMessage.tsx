@@ -1,5 +1,5 @@
 import { UserRejectedRequestError } from "./errors";
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getReason(error: any): string | undefined {
   let reason: string | undefined;
   while (error) {
@@ -8,7 +8,7 @@ function getReason(error: any): string | undefined {
   }
   return reason;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function didUserReject(error: any): boolean {
   const reason = getReason(error);
   if (
@@ -39,6 +39,7 @@ export function didUserReject(error: any): boolean {
  * This object seems to be undocumented by ethers.
  * @param error - An error from the ethers provider
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function swapErrorToUserReadableMessage(error: any): string {
   if (didUserReject(error)) {
     return `Transaction rejected`;

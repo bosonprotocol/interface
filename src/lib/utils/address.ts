@@ -10,6 +10,7 @@ export function formatAddress(address: string): string {
 }
 
 // returns the checksummed address if the address is valid, otherwise returns false
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isAddress(value: any): string | false {
   try {
     // Alphabetical letters must be made lowercase for getAddress to work.

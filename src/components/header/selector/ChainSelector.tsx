@@ -88,7 +88,9 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
     const { supported, unsupported } = NETWORK_SELECTOR_CHAINS.filter(
       (config) => {
         return (
-          showTestnets || !TESTNET_CHAIN_IDS.includes(config.chainId as any)
+          showTestnets ||
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          !TESTNET_CHAIN_IDS.includes(config.chainId as any)
         );
       }
     )

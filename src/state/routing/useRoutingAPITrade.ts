@@ -153,6 +153,7 @@ class GAMetric extends IMetric {
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   putMetric(key: string, value: number, unit?: MetricLoggerUnit) {
     return;
   }

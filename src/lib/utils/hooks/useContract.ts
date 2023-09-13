@@ -32,6 +32,7 @@ const { abi: MulticallABI } = UniswapInterfaceMulticallJson;
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string } | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ABI: any,
   withSignerIfPossible = true
 ): T | null {
@@ -66,6 +67,7 @@ export function useContract<T extends Contract = Contract>(
 
 function useMainnetContract<T extends Contract = Contract>(
   address: string | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ABI: any
 ): T | null {
   const { chainId } = useWeb3React();
