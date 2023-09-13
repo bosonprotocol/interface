@@ -198,5 +198,9 @@ export const RPC_URLS = {
   [ChainId.BASE_GOERLI]: [
     `https://base-goerli.infura.io/v3/${INFURA_KEY}`,
     ...FALLBACK_URLS[ChainId.BASE_GOERLI]
+  ],
+  [31337]: [
+    `https://mainnet.infura.io/v3/${INFURA_KEY}`,
+    ...FALLBACK_URLS[ChainId.MAINNET]
   ]
 };
