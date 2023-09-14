@@ -85,14 +85,14 @@ root.render(
               />
 
               <WalletConnectionProvider>
-                <CoreSDKProvider>
-                  <QueryClientProvider client={queryClient}>
+                <QueryClientProvider client={queryClient}>
+                  <CoreSDKProvider>
                     <ConvertionRateProvider>
                       <AppRouter />
                     </ConvertionRateProvider>
                     <ReactQueryDevtools initialIsOpen={false} />
-                  </QueryClientProvider>
-                </CoreSDKProvider>
+                  </CoreSDKProvider>
+                </QueryClientProvider>
               </WalletConnectionProvider>
             </BlockNumberProvider>
           </ApolloProvider>

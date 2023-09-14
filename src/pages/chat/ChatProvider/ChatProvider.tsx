@@ -41,7 +41,7 @@ export default function ChatProvider({ children }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signer, initialize, chatEnvName, config.envConfig.envName]);
-  const signerAddress = useQuery(["signer-address", signer], () => {
+  const signerAddress = useQuery(["signer-address", signer?._address], () => {
     return signer?.getAddress();
   });
   useEffect(() => {

@@ -77,7 +77,6 @@ function useWalletSupportedChains(): ChainId[] {
 
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
-  const { chainId } = useWeb3React();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
 
@@ -116,14 +115,14 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => setIsOpen(false), [modalRef]);
-  const info = getChainInfo(chainId);
+  const info = getChainInfo(config.envConfig.chainId); // TODO: verify if this is correct or it should be chainId as before
   const [activeConfigId, setActiveConfigId] = useState<ConfigId>(
     config.envConfig.configId
   );
   useEffect(() => {
     setActiveConfigId(config.envConfig.configId);
   }, [config.envConfig.configId]);
-  const selectChain = useSelectChain({ throwErrors: true });
+  const selectChain = useSelectChain({ throwErrors: true, doConnect: false });
   useSyncChainQuery();
 
   const [pendingConfigId, setPendingConfigId] = useState<ConfigId>();
@@ -131,6 +130,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
     async (config: ProtocolConfig) => {
       try {
         setPendingConfigId(config.configId);
+        console.debug(`[debug] selectChain(${config.configId})`);
         await selectChain(config.configId);
         setActiveConfigId(config.configId);
       } finally {

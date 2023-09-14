@@ -17,11 +17,14 @@ import { isSupportedChain } from "../../constants/chains";
 import { useSwitchChain } from "./useSwitchChain";
 
 export default function useSelectChain(
-  { throwErrors }: { throwErrors: boolean } = { throwErrors: false }
+  { throwErrors, doConnect }: { throwErrors: boolean; doConnect: boolean } = {
+    throwErrors: false,
+    doConnect: false
+  }
 ) {
   const { setEnvConfig } = useConfigContext();
   const { connector } = useWeb3React();
-  const switchChain = useSwitchChain();
+  const switchChain = useSwitchChain(doConnect);
   const [searchParams, setSearchParams] = useSearchParams();
 
   return useCallback(
