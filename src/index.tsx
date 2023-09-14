@@ -17,7 +17,6 @@ import { ListsUpdater } from "state/lists/updater";
 
 import ConvertionRateProvider from "./components/convertion-rate/ConvertionRateProvider";
 import Web3Provider from "./components/header/web3Provider";
-import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import reportWebVitals from "./reportWebVitals";
 import AppRouter from "./router/AppRouter";
 
@@ -84,16 +83,14 @@ root.render(
                 }}
               />
 
-              <WalletConnectionProvider>
-                <QueryClientProvider client={queryClient}>
-                  <CoreSDKProvider>
-                    <ConvertionRateProvider>
-                      <AppRouter />
-                    </ConvertionRateProvider>
-                    <ReactQueryDevtools initialIsOpen={false} />
-                  </CoreSDKProvider>
-                </QueryClientProvider>
-              </WalletConnectionProvider>
+              <QueryClientProvider client={queryClient}>
+                <CoreSDKProvider>
+                  <ConvertionRateProvider>
+                    <AppRouter />
+                  </ConvertionRateProvider>
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </CoreSDKProvider>
+              </QueryClientProvider>
             </BlockNumberProvider>
           </ApolloProvider>
         </ConfigProvider>
