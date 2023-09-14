@@ -80,6 +80,6 @@ export function useSwitchChain(doConnect = true) {
         }
       }
     },
-    [dispatch]
+    [connectedChain, dispatch, doConnect]
   );
 }
