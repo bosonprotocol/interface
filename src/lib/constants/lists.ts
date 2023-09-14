@@ -1,8 +1,8 @@
-export const UNI_LIST = "https://gateway.ipfs.io/ipns/tokens.uniswap.org";
-export const UNI_EXTENDED_LIST =
-  "https://gateway.ipfs.io/ipns/extendedtokens.uniswap.org";
-const UNI_UNSUPPORTED_LIST =
-  "https://gateway.ipfs.io/ipns/unsupportedtokens.uniswap.org";
+const ipfsGateway = "https://ipfs.io"; // TODO: before we had "https://gateway.ipfs.io"; but it was failing because of an HSTS error
+
+export const UNI_LIST = `${ipfsGateway}/ipns/tokens.uniswap.org`;
+export const UNI_EXTENDED_LIST = `${ipfsGateway}/ipns/extendedtokens.uniswap.org`;
+const UNI_UNSUPPORTED_LIST = `${ipfsGateway}/ipns/unsupportedtokens.uniswap.org`;
 const AAVE_LIST = "tokenlist.aave.eth";
 const BA_LIST =
   "https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json";
