@@ -1,7 +1,6 @@
 import { hooks } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
-import { providers } from "ethers";
-import { useEthersSigner } from "lib/utils/hooks/ethers/useEthersSigner";
 import { createContext, useContext } from "react";
 
 import { ExtendedCoreSDK } from "./types";
@@ -9,7 +8,8 @@ import { ExtendedCoreSDK } from "./types";
 export const CoreSDKContext = createContext<ExtendedCoreSDK | null>(null);
 
 export function useProviderCoreSDK() {
-  const signer = useEthersSigner();
+  const { provider } = useWeb3React();
+
   const { config } = useConfigContext();
   return hooks.useCoreSdk({
     ipfsMetadataStorageHeaders: config.ipfsMetadataStorageHeaders,
@@ -23,7 +23,7 @@ export function useProviderCoreSDK() {
     subgraphUrl: config.envConfig.subgraphUrl,
     theGraphIpfsStorageHeaders: undefined,
     theGraphIpfsUrl: config.envConfig.theGraphIpfsUrl,
-    web3Provider: signer?.provider as providers.Web3Provider
+    web3Provider: provider
   });
 }
 

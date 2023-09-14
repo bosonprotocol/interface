@@ -35,7 +35,7 @@ export default function useSyncChainQuery() {
 
   const urlConfigId = getParsedConfigId(parsedQs);
 
-  const selectChain = useSelectChain();
+  const selectChain = useSelectChain({ doConnect: true, throwErrors: false });
 
   const [searchParams, setSearchParams] = useSearchParams();
 

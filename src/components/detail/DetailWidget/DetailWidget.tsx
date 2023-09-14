@@ -1146,6 +1146,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       disabled={isChainUnsupported || !isBuyer}
                       id="boson-redeem-cancel"
                       data-exchange-id={exchange?.id}
+                      data-config-id={config.envConfig.configId}
                       data-bypass-mode="CANCEL"
                     >
                       Cancel

@@ -1,4 +1,5 @@
 import { ChainId, SupportedChainsType } from "@uniswap/sdk-core";
+import { useWeb3React } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
 import { useCallback } from "react";
 import { useAppDispatch } from "state/hooks";
@@ -27,11 +28,17 @@ function getRpcUrl(chainId: SupportedChainsType): string {
   }
 }
 
-export function useSwitchChain() {
-  const dispatch = useAppDispatch();
+export function useSwitchChain(doConnect = true) {
+  const { chainId: connectedChain } = useWeb3React();
 
+  // if you are connected, all good
+  // if you are not, then do nothing if it's from the chainselector (doConnect = false)
+  const dispatch = useAppDispatch();
   return useCallback(
     async (connector: Connector, chainId: ChainId) => {
+      if (!connectedChain && !doConnect) {
+        return;
+      }
       if (!isSupportedChain(chainId)) {
         throw new Error(
           `Chain ${chainId} not supported for connector (${typeof connector})`
@@ -73,6 +80,6 @@ export function useSwitchChain() {
         }
       }
     },
-    [dispatch]
+    [connectedChain, dispatch, doConnect]
   );
 }
