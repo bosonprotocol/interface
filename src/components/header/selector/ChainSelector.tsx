@@ -130,7 +130,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
     async (config: ProtocolConfig) => {
       try {
         setPendingConfigId(config.configId);
-        console.debug(`[debug] selectChain(${config.configId})`);
         await selectChain(config.configId);
         setActiveConfigId(config.configId);
       } finally {

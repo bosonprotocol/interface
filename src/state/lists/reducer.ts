@@ -99,7 +99,6 @@ export default createReducer(initialState, (builder) =>
             loadingRequestId: null,
             error: null
           };
-          console.log("[debug] url", url);
           tokenSafetyLookup.update(state);
         }
       }
