@@ -1,6 +1,8 @@
 import "@glidejs/glide/dist/css/glide.core.min.css";
 
 import Glide from "@glidejs/glide";
+import { colors } from "lib/styles/colors";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { useEffect, useReducer, useRef } from "react";
 
@@ -44,6 +46,8 @@ export default function DetailSlider({ images }: Props) {
     glide?.go(direction);
   };
 
+  const afterBackground = useCSSVariable("--secondary") || colors.lightGrey;
+
   if (images.length === 0) {
     return null;
   }
@@ -63,7 +67,11 @@ export default function DetailSlider({ images }: Props) {
           </Button>
         </Grid>
       </Grid>
-      <GlideWrapper className="glide" ref={ref}>
+      <GlideWrapper
+        className="glide"
+        ref={ref}
+        $afterBackground={afterBackground}
+      >
         <div className="glide__track" data-glide-el="track">
           <div className="glide__slides">
             {images?.map((image: string, index: number) => (
