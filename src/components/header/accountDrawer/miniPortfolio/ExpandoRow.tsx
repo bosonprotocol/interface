@@ -5,7 +5,9 @@ import styled from "styled-components";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 
-const ExpandIcon = styled(CaretDoubleDown)<{ $expanded: boolean }>`
+const ExpandIcon = styled(CaretDoubleDown).attrs({
+  size: 20
+})<{ $expanded: boolean }>`
   transform: ${({ $expanded }) =>
     $expanded ? "rotate(180deg)" : "rotate(0deg)"};
   transition: transform 250ms;
