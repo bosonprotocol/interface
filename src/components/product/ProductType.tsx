@@ -1,16 +1,10 @@
-/* eslint-disable unused-imports/no-unused-imports */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Sentry from "@sentry/browser";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
-import {
-  useAccountDrawer,
-  useCloseAccountDrawer,
-  useOpenAccountDrawer
-} from "components/header/accountDrawer";
+import { useOpenAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
-import { useEffectDebugger } from "lib/utils/hooks/useEffectDebugger";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
