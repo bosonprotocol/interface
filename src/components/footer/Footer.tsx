@@ -115,6 +115,9 @@ const NavigationLinks = styled.nav<INavigationLinks>`
   ${breakpoint.s} {
     max-width: 300px;
   }
+  ${breakpoint.m} {
+    max-width: initial;
+  }
 `;
 const LogoImg = styled.img`
   height: 24px;

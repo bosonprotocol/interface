@@ -58,6 +58,24 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
   {
     label: "Terms & Conditions",
     value: BosonRoutes.TermsAndConditions
+  },
+  {
+    label: "Community Guidelines",
+    value: BosonRoutes.CommunityRules
+  }
+];
+
+export const ADDITIONAL_LINKS_DR_CENTER: Array<{
+  label: string;
+  value: string;
+}> = [
+  {
+    label: "Privacy Policy",
+    value: DrCenterRoutes.PrivacyPolicy
+  },
+  {
+    label: "Terms & Conditions",
+    value: DrCenterRoutes.TermsAndConditions
   }
 ];
 

@@ -127,7 +127,7 @@ const Table = styled.table`
   }
 `;
 
-export default function PrivacyPolicy() {
+export default function PrivacyPolicyDrCenter() {
   return (
     <Wrapper flexDirection="column">
       <Title>PRIVACY POLICY</Title>
@@ -151,9 +151,13 @@ export default function PrivacyPolicy() {
               <List>
                 <li>
                   <Text>
-                    access or use the Boson dApp, our website&nbsp;
-                    <a href="https://www.bosonapp.io" target="_blank">
-                      https://www.bosonapp.io
+                    access or use the Boson Dispute Resolver Center, our
+                    website&nbsp;
+                    <a
+                      href="https://disputes.bosonprotocol.io/"
+                      target="_blank"
+                    >
+                      disputes.bosonprotocol.io
                     </a>
                     , or any other apps, software or services we provide
                     (collectively the <b>Services</b>); and/or
@@ -1156,11 +1160,11 @@ export default function PrivacyPolicy() {
               <List>
                 <li>
                   <Text>
-                    <b>Blockchain</b> When using the Boson dApp, your smart
-                    contract address, the transactions made with the dApp,
-                    addresses of externally owned accounts and token balances
-                    will be stored on the Blockchain. See section 7.2 of this
-                    Policy.{" "}
+                    <b>Blockchain</b> When using the Boson Dispute Resolver
+                    Center, your smart contract address, the transactions made
+                    with the Dispute Resolver Center, addresses of externally
+                    owned accounts and token balances will be stored on the
+                    Blockchain. See section 7.2 of this Policy.{" "}
                     <b>
                       The information will be displayed permanently and public,
                       this is part of the nature of the blockchain.If you are
@@ -1171,28 +1175,10 @@ export default function PrivacyPolicy() {
                 </li>
                 <li>
                   <Text>
-                    <b>Lens Protocol</b> (
-                    <a href="https://lens.xyz/" target="_blank">
-                      https://lens.xyz/
-                    </a>
-                    ) Lens Protocol provides a social graph for web3. Lens is
-                    integrated into the Boson dApp to provide user profiles to
-                    buyers and sellers. We do not store any data collected by
-                    them. Lens’ privacy policy is available at{" "}
-                    <a
-                      href="https://claim.lens.xyz/pdf_privacy.pdf"
-                      target="_blank"
-                    >
-                      https://claim.lens.xyz/pdf_privacy.pdf
-                    </a>
-                  </Text>
-                </li>
-                <li>
-                  <Text>
                     <b>XMTP</b> (website link) is a secure messaging protocol
                     and decentralized communication network for web3. XMTP is
-                    integrated into the Boson dApp to allow for secure
-                    communication between buyer and seller.
+                    integrated into the Boson Dispute Resolver Center to allow
+                    for secure communication between buyer and seller.
                   </Text>
                 </li>
                 <li>

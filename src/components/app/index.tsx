@@ -2,6 +2,7 @@ import { IconContext } from "phosphor-react";
 import styled, { ThemeProvider } from "styled-components";
 
 import ModalProvider from "../../components/modal/ModalProvider";
+import { getCurrentViewMode, ViewMode } from "../../lib/viewMode";
 import ChatProvider from "../../pages/chat/ChatProvider/ChatProvider";
 import theme from "../../theme";
 import CookieBanner from "../cookie/CookieBanner";
@@ -61,7 +62,7 @@ export default function App({
                   {children}
                 </AppView>
               </Container>
-              <CookieBanner />
+              <CookieBanner isDapp={getCurrentViewMode() === ViewMode.DAPP} />
             </>
           </ModalProvider>
         </ChatProvider>

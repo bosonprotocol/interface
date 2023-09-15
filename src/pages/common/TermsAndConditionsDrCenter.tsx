@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { BosonRoutes } from "../../lib/routing/routes";
+import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { colors } from "../../lib/styles/colors";
 
 const Wrapper = styled(Grid)`
@@ -23,9 +23,6 @@ const Wrapper = styled(Grid)`
 
   ol[type] > li {
     margin: 0.25rem 0;
-    > p {
-      display: inline;
-    }
   }
 `;
 const List = styled.ol`
@@ -83,7 +80,7 @@ const SubTitle = styled.h4`
 `;
 const Text = styled.p`
   font-family: "Plus Jakarta Sans";
-  display: inline-block;
+  display: block;
   margin: 0;
   + p {
     margin-top: 0.5rem;
@@ -99,7 +96,7 @@ const Break = styled.br`
   height: 1rem;
   display: block;
 `;
-export default function TermsAndConditions() {
+export default function TermsAndConditionsDrCenter() {
   return (
     <Wrapper flexDirection="column">
       <Margin />
@@ -123,32 +120,32 @@ export default function TermsAndConditions() {
           ACTION LAWSUIT OR A JURY TRIAL.
         </b>
       </Text>
-      <Title>BOSON DAPP TERMS AND CONDITIONS </Title>
+      <Title>BOSON DISPUTE RESOLUTION CENTER TERMS AND CONDITIONS</Title>
       <Typography color={colors.grey} tag="p" fontWeight="400" margin="0">
         Last updated on 18 August 2023
       </Typography>
       <Margin />
       <Text>
-        PLEASE FIND BELOW THE TERMS AND CONDITIONS GOVERNING THE BOSON DAPP
-        (“the <b>dApp</b>”), INCLUDING:
+        PLEASE FIND BELOW THE TERMS AND CONDITIONS GOVERNING THE BOSON DISPUTE
+        RESOLUTION CENTER (“the <b>DR Center</b>”), INCLUDING:
         <Break />
         <Grid flexDirection="column" gap="0.5rem">
-          <div>• ACCESSING OR USING THE BOSON DAPP;</div>
+          <div>• ACCESSING OR USING THE BOSON DR CENTER; OR</div>
           <div>
-            • BUYING, SELLING OR RECEIVING ANY NFT THAT WAS CREATED ON THE DAPP;
-            OR
+            • BUYING, SELLING OR RECEIVING ANY NFT THAT WAS CREATED ON THE DR
+            CENTER; OR
           </div>
           <div>
             • USING, SENDING TOKENS TO, RECEIVING TOKENS FROM, SENDING MESSAGES
-            TO OR OTHERWISE TRANSACTING ON THE DAPP.
+            TO OR OTHERWISE TRANSACTING ON THE DR CENTER.
           </div>
         </Grid>
       </Text>
       <Text style={{ marginTop: "2rem" }}>
         These terms and conditions (these <b>“Terms”</b>) have been established
-        by BApplication Limited (the “Company”) to govern the dApp. By engaging
-        in or undertaking any of the aforementioned activities, you will be
-        deemed to be legally bound by these Terms.
+        by BApplication Limited (the “Company”) to govern the DR Center. By
+        engaging in or undertaking any of the aforementioned activities, you
+        will be deemed to be legally bound by these Terms.
       </Text>
       <Text>
         For any matters which are not expressly governed by these terms, please
@@ -156,18 +153,10 @@ export default function TermsAndConditions() {
         these Terms:
       </Text>
       <Text>
-        a) The dApp Privacy Policy:{" "}
-        <LinkWithQuery to={BosonRoutes.PrivacyPolicy}>
+        a) The DR Center Privacy Policy:{" "}
+        <LinkWithQuery to={DrCenterRoutes.PrivacyPolicy}>
           <>
-            {window.location.origin}/#{BosonRoutes.PrivacyPolicy}
-          </>
-        </LinkWithQuery>
-      </Text>
-      <Text>
-        b) The dApp Community Rules:{" "}
-        <LinkWithQuery to={BosonRoutes.CommunityRules}>
-          <>
-            {window.location.origin}/#{BosonRoutes.CommunityRules}
+            {window.location.origin}/#{DrCenterRoutes.PrivacyPolicy}
           </>
         </LinkWithQuery>
       </Text>
@@ -190,12 +179,11 @@ export default function TermsAndConditions() {
             redeemable NFTs.{" "}
           </Text>
           <Text>
-            <b>“Boson dApp”</b> / “the dApp” means a generic interface to Boson
-            Protocol v2, that enables users to exchange physical products as
-            redeemable NFTs.{" "}
+            <b>“Boson DR Center” / “the DR Center”</b> means a mutual resolution
+            center where users can mutually resolve disputes.{" "}
           </Text>
           <Text>
-            <b>“Polygon Blockchain”</b> / “Polygon” means Ethereum Virtual
+            <b>“Polygon Blockchain” / “Polygon” </b>means Ethereum Virtual
             Machine compatible validation mechanism.{" "}
           </Text>
           <Text>
@@ -208,29 +196,14 @@ export default function TermsAndConditions() {
             infringements.
           </Text>
           <Text>
-            <b>“Item”</b> means the good or service being sold or a set of the
-            good or service being sold together in a single Offer.
-          </Text>
-          <Text>
             <b>“NFTs”</b> means Ethereum-based tokens complying with the ERC-721
             standard, ERC-1155 standard or other similar “non-fungible” token
             standard.{" "}
           </Text>
           <Text>
-            <b>“Offer”</b> means an expression of readiness by the seller to
-            sell an Item.{" "}
-          </Text>
-          <Text>
-            <b>“Redeemable NFT (rNFT / NFT Voucher)”</b> means a voucher using
-            NFT technology, representing the right to redeem an Item. It is
-            important to note that an rNFT is a voucher that can be redeemed for
-            a Digital and/or Physical good and it is subject to the rNFTs T&Cs.
-            It is NOT a digital representation of said good.
-          </Text>
-          <Text>
-            <b>“Services”</b> means access or use of the Boson dApp, our website
-            https://www.bosonapp.io, or any other apps, software or services we
-            provide (collectively, the Services).
+            <b>“Services”</b> means access or use of the Boson DR Center, our
+            website disputes.bosonprotocol.io, or any other apps, software or
+            services we provide (collectively, the Services).
           </Text>
         </li>
         <li>
@@ -239,39 +212,39 @@ export default function TermsAndConditions() {
           <Text>
             <b>User Responsible for Accounts / Addresses.</b> You are
             responsible for all matters relating to your accounts (if any) on
-            the dApp, or the blockchain accounts or addresses through which they
-            interact with the dApp, and for ensuring that all uses thereof
-            comply fully with these Terms. You are responsible for protecting
-            the confidentiality of your login information and passwords (if
-            applicable) for the dApp or the private keys controlling the
-            relevant blockchain accounts or addresses through which they
-            interact with the platforms.{" "}
+            the DR Center, or the blockchain accounts or addresses through which
+            they interact with the DR Center, and for ensuring that all uses
+            thereof comply fully with these Terms. You are responsible for
+            protecting the confidentiality of your login information and
+            passwords (if applicable) for the DR Center or the private keys
+            controlling the relevant blockchain accounts or addresses through
+            which they interact with the platforms.{" "}
           </Text>
           <Text>
-            <b>dApp May Discontinue Activities.</b> The Company shall have the
-            right at any time to change or discontinue any or all aspects or
+            <b>DR Center May Discontinue Activities.</b> The Company shall have
+            the right at any time to change or discontinue any or all aspects or
             features of the activities.
           </Text>
           <Text>
-            <b>dApp May Deny Access to or Use of the Activities.</b> The Company
-            reserves the right to terminate your access to or use of any or all
-            of the activities at any time, with or without notice, for violation
-            of these Terms or for any other reason, or based on the discretion
-            of the Company. The Company reserves the right at all times to
-            disclose any information as it deems necessary to satisfy any
-            applicable law, regulation, legal process or governmental request,
-            or to edit, refuse to post or to remove any information or
+            <b>DR Center May Deny Access to or Use of the Activities.</b> The
+            Company reserves the right to terminate your access to or use of any
+            or all of the activities at any time, with or without notice, for
+            violation of these Terms or for any other reason, or based on the
+            discretion of the Company. The Company reserves the right at all
+            times to disclose any information as it deems necessary to satisfy
+            any applicable law, regulation, legal process or governmental
+            request, or to edit, refuse to post or to remove any information or
             materials, in whole or in part, in the Company sole discretion. NFTs
-            or other materials uploaded to the dApp and may be subject to
+            or other materials uploaded to the DR Center and may be subject to
             limitations on usage, reproduction and/or dissemination; you are
             responsible for adhering to such limitations if you acquire an NFT.
             You must always use caution when giving out any personally
-            identifiable information through any of the activities on the dApp.
-            The Company does not control or endorse the content, messages or
-            information found in any of the activities and the Company
-            specifically disclaims any liability with regard to the activities
-            and any actions resulting from any of your participation in any
-            activities.{" "}
+            identifiable information through any of the activities on the DR
+            Center. The Company does not control or endorse the content,
+            messages or information found in any of the activities and the
+            Company specifically disclaims any liability with regard to the
+            activities and any actions resulting from any of your participation
+            in any activities.{" "}
           </Text>
           <Text>
             <b>Monitoring.</b> The Company shall have the right, but not the
@@ -280,76 +253,67 @@ export default function TermsAndConditions() {
             the Company and to satisfy any law, regulation or authorized
             government request. The Company shall have the right in its sole
             discretion to edit, refuse to post or remove any material submitted
-            to or posted through the dApp. Without limiting the foregoing, the
-            Company shall have the right to remove any material that Company, in
-            its sole discretion, finds to be in violation of the provisions
-            hereof or otherwise objectionable.
+            to or posted through the DR Center. Without limiting the foregoing,
+            the Company shall have the right to remove any material that
+            Company, in its sole discretion, finds to be in violation of the
+            provisions hereof or otherwise objectionable.
           </Text>
           <Text>
             <b>Copyright Notice.</b> “Boson” and its logos are trademarks of the
             Company or its licensors. All rights are reserved. All other
-            trademarks appearing in the dApp are the property of their
+            trademarks appearing in the DR Center are the property of their
             respective owners.{" "}
           </Text>
           <Text>
-            <b>Privacy Policy.</b> To access the dApp, you must explicitly
+            <b>Privacy Policy.</b> To access the DR Center, you must explicitly
             consent to the Company's privacy and data security practices.
-          </Text>
-          <Text>
-            <b>Community Rules.</b> A breach of any of Community Rules is a
-            breach of the Terms and the seller's Items will not be displayed on
-            the dApp's interface.
           </Text>
         </li>
         <li>
-          <SubTitle>The dApp</SubTitle>
+          <SubTitle>The DR Center</SubTitle>
           <Break />
           <Text>
-            <b>Nature of dApp.</b> The dApp is a public software utility that
-            communicates with blockchain, which is accessible through any
-            compatible Ethereum “wallet” application.{" "}
+            <b>Nature of DR Center.</b> The DR Center is a public software
+            utility that communicates with blockchain, which is accessible
+            through any compatible Ethereum “wallet” application.{" "}
           </Text>
           <Text>
-            <b>Seller Information.</b> The information you input to create a
-            seller profile on the dApp will be public and accessible via IPFS.{" "}
+            <b>License to Use the DR Center.</b> You, subject to and conditioned
+            upon such your acceptance of and adherence to these Terms, are
+            hereby granted a nontransferable, non-exclusive, personal, non-sub
+            licensable license to use the DR Center for its intended purposes.{" "}
           </Text>
           <Text>
-            <b>License to Use the dApp.</b> You, subject to and conditioned upon
-            such your acceptance of and adherence to these Terms, are hereby
-            granted a nontransferable, non-exclusive, personal, non-sub
-            licensable license to use the dApp for its intended purposes.{" "}
-          </Text>
-          <Text>
-            <b>Alterations to dApp.</b> The Company may from time to time alter
-            the dApp. The Company does not guarantee to provide support for such
-            interactions.{" "}
+            <b>Alterations to DR Center.</b> The Company may from time to time
+            alter the DR Center. The Company does not guarantee to provide
+            support for such interactions.{" "}
           </Text>
           <Text>
             <b>Content.</b> The Company makes no representations or warranties
             as to the quality, origin, or ownership of any content found in the
-            dApp that is created by you or any third parties. The Company shall
-            not be liable for any errors, misrepresentations, or omissions in,
-            of, and about, the content, nor for the availability of the content
-            that is created by you or any third parties. The Company shall not
-            be liable for any losses, injuries, or damages from the purchase,
-            inability to purchase, display, or use of content.{" "}
+            DR Center that is created by you or any third parties. The Company
+            shall not be liable for any errors, misrepresentations, or omissions
+            in, of, and about, the content, nor for the availability of the
+            content that is created by you or any third parties. The Company
+            shall not be liable for any losses, injuries, or damages from the
+            purchase, inability to purchase, display, or use of content.{" "}
           </Text>
           <Text>
             <b>Claims of Copyright Infringement.</b> The Company will respond to
             notices of alleged copyright infringement under applicable law. If
             you believe that your Intellectual Property Rights have been
             infringed, please notify us immediately. The Company reserves the
-            right to terminate the accounts or block usage of the dApp of any
-            party who infringes copyrights.{" "}
+            right to terminate the accounts or block usage of the DR Center of
+            any party who infringes copyrights.{" "}
           </Text>
         </li>
         <li>
-          <SubTitle>Acceptable & Prohibited Use of the dApp</SubTitle>
+          <SubTitle>Acceptable & Prohibited Use of the DR Center</SubTitle>
           <Break />
           <Text>
-            <b>Acceptable Uses.</b> The dApp and other activities are reserved
-            exclusively for lawful consumer entertainment and artistic purposes
-            (the “Permitted Uses”).{" "}
+            <b>Acceptable Uses.</b> The DR Center and other activities are
+            reserved exclusively for lawful consumer entertainment and artistic
+            purposes (the <b>“Permitted Uses”</b>).{" "}
           </Text>
           <Text>
             <b>Prohibited Uses.</b> You must not, directly or indirectly:{" "}
@@ -361,18 +325,18 @@ export default function TermsAndConditions() {
             the Company, or any member of the Community;
             <b>(c)</b> violate, breach or fail to comply with any applicable
             provision of these Terms or any other terms of service, privacy
-            policy, Community Rules or other contract governing the use of any
-            the activities on the dApp or any relevant NFTs; <b>(d)</b> use the
-            dApp by or on behalf of a competitor of the Company or competing
-            platform or service for the purpose of interfering with the dApp to
-            obtain a competitive advantage; <b>(e)</b> engage or attempt to
-            engage in or assist any hack of or attack on the dApp, or any member
-            of the Community, including any “sybil attack”, “DoS attack” or
+            policy or other contract governing the use of any the activities on
+            the DR Center or any relevant NFTs; <b>(d)</b> use the DR Center by
+            or on behalf of a competitor of the Company or competing platform or
+            service for the purpose of interfering with the DR Center to obtain
+            a competitive advantage; <b>(e)</b> engage or attempt to engage in
+            or assist any hack of or attack on the DR Center, or any member of
+            the Community, including any “sybil attack”, “DoS attack” or
             “griefing attack” or theft of NFTs, or funds, or upload files that
             contain viruses, Trojan horses, worms, time bombs, cancelbots,
             corrupted files, or any other similar software or programs that may
             damage the operation of another’s computer or property or interfere
-            with the dApp; <b>(f)</b>
+            with the DR Center; <b>(f)</b>
             buy, sell or use any NFTs that infringes or in a manner infringing
             the copyright, trademark, patent, trade secret or other Intellectual
             Property Rights or other proprietary rights of others, or upload, or
@@ -382,7 +346,7 @@ export default function TermsAndConditions() {
             publicity unless you own or control the rights thereto or have
             received all necessary consent to do the same; <b>(g)</b> commit any
             violation of applicable laws, rules or regulations; <b>(h)</b> use
-            the dApp in connection with surveys, contests, pyramid schemes,
+            the DR Center in connection with surveys, contests, pyramid schemes,
             chain letters, junk email, spamming, or any duplicative or
             unsolicited messages (commercial or otherwise); <b>(i)</b> defame,
             abuse, harass, stalk, threaten or otherwise violate the legal rights
@@ -392,12 +356,12 @@ export default function TermsAndConditions() {
             material or information; <b>(k)</b> engage in or knowingly
             facilitate any “front-running,” “wash trading,” “pump and dump
             trading,” “ramping,” “cornering” or fraudulent, deceptive or
-            manipulative trading activities; and <b>(l)</b> utilize the dApp to
-            transact in securities, commodities futures, trading of commodities
-            on a leveraged, margined or financed basis, binary options
-            (including prediction-market transactions), real estate or real
-            estate leases, equipment leases, debt financings, equity financings
-            or other similar transactions.{" "}
+            manipulative trading activities; and <b>(l)</b> utilize the DR
+            Center to transact in securities, commodities futures, trading of
+            commodities on a leveraged, margined or financed basis, binary
+            options (including prediction-market transactions), real estate or
+            real estate leases, equipment leases, debt financings, equity
+            financings or other similar transactions.{" "}
           </Text>
           <Text>
             The foregoing matters are referred to herein as{" "}
@@ -412,7 +376,7 @@ export default function TermsAndConditions() {
             statements and information are accurate and complete at all relevant
             times. In the event that any such statement or information becomes
             untrue to you, you shall immediately divest and cease using all NFTs
-            and cease accessing and using the dApp.{" "}
+            and cease accessing and using the DR Center.{" "}
           </Text>
           <Text>
             <b>Status.</b> If you are an individual, you are of legal age in the
@@ -463,31 +427,32 @@ export default function TermsAndConditions() {
             Turkmenistan, Venezuela, Yemen, and Russian Federation, Zimbabwe or
             any other country or jurisdiction against which the U.S. maintains
             economic sanctions or an arms embargo. The tokens or other funds you
-            use to participate in the dApp or acquire NFTs are not derived from,
-            and do not otherwise represent the proceeds of, any activities done
-            in violation or contravention of any law.{" "}
+            use to participate in the DR Center or acquire NFTs are not derived
+            from, and do not otherwise represent the proceeds of, any activities
+            done in violation or contravention of any law.{" "}
           </Text>
           <Text>
             <b>No Claim, Loan, Ownership Interest or Investment Purpose.</b> You
             understand and agree that your purchase, sale, holding, receipt and
-            use of NFT and the other usage of the dApp does not: (a) represent
-            or constitute a loan or a contribution of capital to, or other
-            investment in the Company or any business or venture; (b) provide
-            you with any ownership interest, equity, security, or right to or
-            interest in the assets, rights, properties, revenues or profits of,
-            or voting rights whatsoever in, the Company or any other business or
-            venture; and (c) create or imply or entitle you to the benefits of
-            any fiduciary or other agency relationship between the Company or
-            any of its directors, officers, employees, agents or affiliates, on
-            the on hand, and you, on the other hand. You are not entering into
-            these Terms or buying, selling, holding receiving or using NFTs for
-            the purpose of making an investment with respect to the Company or
-            its securities, but solely wishes to use the dApp for its intended
-            purposes in order to participate in the protection and improvement
-            of the use and enjoyment of the dApp for such purposes. You
-            understand and agree that the Company will not accept or take
-            custody over any NFTs, cryptocurrencies or other assets of yours and
-            has no responsibility or control over the foregoing.{" "}
+            use of NFT and the other usage of the DR Center does not: (a)
+            represent or constitute a loan or a contribution of capital to, or
+            other investment in the Company or any business or venture; (b)
+            provide you with any ownership interest, equity, security, or right
+            to or interest in the assets, rights, properties, revenues or
+            profits of, or voting rights whatsoever in, the Company or any other
+            business or venture; and (c) create or imply or entitle you to the
+            benefits of any fiduciary or other agency relationship between the
+            Company or any of its directors, officers, employees, agents or
+            affiliates, on the on hand, and you, on the other hand. You are not
+            entering into these Terms or buying, selling, holding receiving or
+            using NFTs for the purpose of making an investment with respect to
+            the Company or its securities, but solely wishes to use the DR
+            Center for its intended purposes in order to participate in the
+            protection and improvement of the use and enjoyment of the DR Center
+            for such purposes. You understand and agree that the Company will
+            not accept or take custody over any NFTs, cryptocurrencies or other
+            assets of yours and has no responsibility or control over the
+            foregoing.{" "}
           </Text>
           <Text>
             <b>Non-Reliance.</b> You are knowledgeable, experienced and
@@ -495,12 +460,12 @@ export default function TermsAndConditions() {
             technologies and assets, including Polygon Blockchain, NFTs and
             “smart contracts” (bytecode deployed to Polygon Blockchain or
             another blockchain). You have conducted your own thorough
-            independent investigation and analysis of the dApp, NFTs and the
-            other matters contemplated by these Terms, and have not relied upon
-            any information, statement, omission, representation or warranty,
-            express or implied, written or oral, made by or on behalf of the
-            Company in connection therewith, except as expressly set forth by
-            the Company in these Terms.{" "}
+            independent investigation and analysis of the DR Center, NFTs and
+            the other matters contemplated by these Terms, and have not relied
+            upon any information, statement, omission, representation or
+            warranty, express or implied, written or oral, made by or on behalf
+            of the Company in connection therewith, except as expressly set
+            forth by the Company in these Terms.{" "}
           </Text>
           <Text>
             <b>Taxes.</b> The Company does not, and will not, act as your agent
@@ -514,18 +479,19 @@ export default function TermsAndConditions() {
           <SubTitle>RISKS, DISCLAIMERS AND LIMITATIONS OF LIABILITY. </SubTitle>
           <Break />
           <Text>
-            <b>Disclaimer of Representations.</b> The dApp is being provided on
-            an “AS IS” and “AS AVAILABLE” basis. To the fullest extent permitted
-            by law, the Company is not making, and hereby disclaims, any and all
-            information, statements, omissions, representations and warranties,
-            express or implied, written or oral, equitable, legal or statutory,
-            in connection with the dApp and the other matters contemplated by
-            these Terms, including any representations or warranties of title,
-            non-infringement, merchantability, usage, security, uptime,
-            reliability, suitability or fitness for any particular purpose,
-            workmanship or technical quality of any code or software used in or
-            relating to the dApp. You acknowledge and agree that use of the dApp
-            is at your own risk.{" "}
+            <b>Disclaimer of Representations.</b> The DR Center is being
+            provided on an “AS IS” and “AS AVAILABLE” basis. To the fullest
+            extent permitted by law, the Company is not making, and hereby
+            disclaims, any and all information, statements, omissions,
+            representations and warranties, express or implied, written or oral,
+            equitable, legal or statutory, in connection with the DR Center and
+            the other matters contemplated by these Terms, including any
+            representations or warranties of title, non-infringement,
+            merchantability, usage, security, uptime, reliability, suitability
+            or fitness for any particular purpose, workmanship or technical
+            quality of any code or software used in or relating to the DR
+            Center. You acknowledge and agree that use of the DR Center is at
+            your own risk.{" "}
           </Text>
           <Text>
             <b>Limitation of Liability.</b> The Company’s liability for damages
@@ -549,11 +515,11 @@ export default function TermsAndConditions() {
           </Text>
           <Text>
             <b>No Guarantee of Value or Uniqueness NFTs.</b> The Company has no
-            responsibility for the NFTs created or traded by you on the dApp.
-            The Company does not investigate and cannot guarantee or warrant the
-            level of authenticity, originality, uniqueness, marketability, or
-            the legality or value of any NFTs created or traded by you on the
-            dApp.{" "}
+            responsibility for the NFTs created or traded by you on the DR
+            Center. The Company does not investigate and cannot guarantee or
+            warrant the level of authenticity, originality, uniqueness,
+            marketability, or the legality or value of any NFTs created or
+            traded by you on the DR Center.{" "}
           </Text>
           <Text>
             <b>No Professional Advice or Liability.</b> All information provided
@@ -562,27 +528,27 @@ export default function TermsAndConditions() {
             advice. You should not take or refrain from taking any action in
             reliance on any information contained in these Terms or provided by
             or on behalf of the Company. Before you make any financial, legal,
-            or other decisions involving the dApp, you should seek independent
-            professional advice from persons licensed and qualified in the area
-            for which such advice would be appropriate.{" "}
+            or other decisions involving the DR Center, you should seek
+            independent professional advice from persons licensed and qualified
+            in the area for which such advice would be appropriate.{" "}
           </Text>
           <Text>
             <b>Limited Survival Period for Claims.</b> Any claim or cause of
-            action you may have or acquire in connection with the dApp or any of
-            the other matters contemplated by these Terms shall survive for the
-            shorter of, and maybe brought against the Company solely prior to
-            (a) the expiration of the statute of limitations applicable thereto;
-            and (b) the date that is six months after the date on which the
-            facts and circumstances giving rise to such claim or cause of action
-            first arose.{" "}
+            action you may have or acquire in connection with the DR Center or
+            any of the other matters contemplated by these Terms shall survive
+            for the shorter of, and maybe brought against the Company solely
+            prior to (a) the expiration of the statute of limitations applicable
+            thereto; and (b) the date that is six months after the date on which
+            the facts and circumstances giving rise to such claim or cause of
+            action first arose.{" "}
           </Text>
           <Text>
             <b>Third-Party Activities and Content.</b> References, links or
             referrals to or connections with or reliance on third-party
             resources, products, services or content, including smart contracts
             developed or operated by third parties, may be provided to you in
-            connection with the dApp. In addition, third parties may offer
-            promotions related to the dApp. The Company does not endorse or
+            connection with the DR Center. In addition, third parties may offer
+            promotions related to the DR Center. The Company does not endorse or
             assume any responsibility for any activities of or resources,
             products, services, content or promotions owned, controlled,
             operated or sponsored by third parties. If you access any such
@@ -607,48 +573,49 @@ export default function TermsAndConditions() {
                 technologies, including tokens, cryptocurrencies, stablecoins,
                 “smart contracts,” consensus algorithms, voting systems and
                 distributed, decentralized or peer-to-peer networks or systems
-                for the activities on the dApp. You acknowledge and agree that
-                such technologies are novel, experimental, and speculative, and
-                that therefore there is significant uncertainty regarding the
-                operation and effects and risks thereof and the application of
-                existing law thereto.
+                for the activities on the DR Center. You acknowledge and agree
+                that such technologies are novel, experimental, and speculative,
+                and that therefore there is significant uncertainty regarding
+                the operation and effects and risks thereof and the application
+                of existing law thereto.
               </Text>
             </li>
             <li>
               <Text>
                 <em>Certain Risks of Blockchain Technology.</em> The technology
-                utilized in dApp depends on public peer-to-peer networks such as
-                Polygon that are not under the control or influence of the
-                Company and are subject to many risks and uncertainties. Such
-                technologies include the dApp, which the Company may have
-                limited or no ability to change, other than ceasing to support
-                certain “smart contracts” and adding support for new “smart
-                contracts”. You are solely responsible for the safekeeping of
-                the private key associated with the blockchain address used to
-                participate in the activities on the dApp. The Company will not
-                be able to restore or issue any refund in respect of any NFT due
-                to lost private keys. If you are not able to spend or use an NFT
-                due to loss or theft of the corresponding private key or
-                otherwise, you will be unable to exercise your rights with
-                respect to such NFT.
+                utilized in DR Center depends on public peer-to-peer networks
+                such as Polygon that are not under the control or influence of
+                the Company and are subject to many risks and uncertainties.
+                Such technologies include the DR Center, which the Company may
+                have limited or no ability to change, other than ceasing to
+                support certain “smart contracts” and adding support for new
+                “smart contracts”. You are solely responsible for the
+                safekeeping of the private key associated with the blockchain
+                address used to participate in the activities on the DR Center.
+                The Company will not be able to restore or issue any refund in
+                respect of any NFT due to lost private keys. If you are not able
+                to spend or use an NFT due to loss or theft of the corresponding
+                private key or otherwise, you will be unable to exercise your
+                rights with respect to such NFT.
               </Text>
             </li>
             <li>
               <Text>
                 <em>Certain Risks of Smart Contract Technology.</em> NFT and
-                other digital assets relevant to the dApp depend on the dApp
-                System, or other smart contracts deployed to Polygon, some of
-                which may be coded or deployed by persons other than the
+                other digital assets relevant to the DR Center depend on the DR
+                Center System, or other smart contracts deployed to Polygon,
+                some of which may be coded or deployed by persons other than the
                 Company. Once deployed to Polygon, the code of smart contracts,
-                including the dApp System, cannot be modified. In the event that
-                the dApp System or other smart contracts are adversely affected
-                by malfunctions, bugs, defects, malfunctions, hacking, theft,
-                attacks, negligent coding or design choices, or changes to the
-                protocol rules of Polygon, you may be exposed to a risk of total
-                loss and forfeiture of all NFTs and other relevant digital
-                assets. The Company assumes no liability or responsibility for
-                any of the foregoing matters, except as otherwise expressly
-                provided by these Terms or required by applicable law.
+                including the DR Center System, cannot be modified. In the event
+                that the DR Center System or other smart contracts are adversely
+                affected by malfunctions, bugs, defects, malfunctions, hacking,
+                theft, attacks, negligent coding or design choices, or changes
+                to the protocol rules of Polygon, you may be exposed to a risk
+                of total loss and forfeiture of all NFTs and other relevant
+                digital assets. The Company assumes no liability or
+                responsibility for any of the foregoing matters, except as
+                otherwise expressly provided by these Terms or required by
+                applicable law.
               </Text>
             </li>
             <li>
@@ -662,24 +629,24 @@ export default function TermsAndConditions() {
                 is generated by speculators and investors seeking to profit from
                 the short- or long-term holding of blockchain assets. The market
                 value of any ETH, and NFT may decline below the price for which
-                you acquire such asset through the dApp or on any other
+                you acquire such asset through the DR Center or on any other
                 platform. You acknowledge and agree that the costs and speeds of
                 transacting with cryptographic and blockchain-based systems such
                 as Polygon are variable and may increase or decrease
                 dramatically at any time, resulting in prolonged inability to
                 access or use any ETHs, NFTs, or other digital assets associated
-                with the dApp.
+                with the DR Center.
               </Text>
             </li>
             <li>
               <Text>
                 <em>Regulatory Uncertainty.</em> Blockchain technologies and
                 digital assets are subject to many legal and regulatory
-                uncertainties, and the dApp and NFTs could be adversely impacted
-                by one or more regulatory or legal inquiries, actions, suits,
-                investigations, claims, fines or judgments, which could impede
-                or limit the ability of you to continue the use and enjoyment of
-                such assets and technologies.
+                uncertainties, and the DR Center and NFTs could be adversely
+                impacted by one or more regulatory or legal inquiries, actions,
+                suits, investigations, claims, fines or judgments, which could
+                impede or limit the ability of you to continue the use and
+                enjoyment of such assets and technologies.
               </Text>
             </li>
             <li>
@@ -687,17 +654,17 @@ export default function TermsAndConditions() {
                 <em>Cryptography Risks.</em> Cryptography is a progressing
                 field. Advances in code cracking or technical advances such as
                 the development of quantum computers may present risks to
-                Polygon, the dApp and NFTs, including the theft, loss or
+                Polygon, the DR Center and NFTs, including the theft, loss or
                 inaccessibility thereof.
               </Text>
             </li>
             <li>
               <Text>
-                <em>Fork Handling.</em> Polygon, the dApp System, and the NFTs
-                may be subject to “forks.” Forks occur when some or all persons
-                running the software clients for a particular blockchain system
-                adopt a new client or a new version of an existing client that:
-                (i) changes the protocol rules in backwards-compatible or
+                <em>Fork Handling.</em> Polygon, the DR Center System, and the
+                NFTs may be subject to “forks.” Forks occur when some or all
+                persons running the software clients for a particular blockchain
+                system adopt a new client or a new version of an existing client
+                that: (i) changes the protocol rules in backwards-compatible or
                 backwards-incompatible manner that affects which transactions
                 can be added into later blocks, how later blocks are added to
                 the blockchain, or other matters relating to the future
@@ -718,12 +685,12 @@ export default function TermsAndConditions() {
                 such response (or lack of such response) acts to a user
                 detriment. Without limiting the generality of the foregoing, the
                 Company’s possible and permissible responses to a fork may
-                include: (i) honoring the dApp System, and NFTs on both chains;
-                (ii) honoring the dApp System and NFTs on only one of the
-                chains; (iii) honoring the dApp System and NFTs in different
-                respects or to a different extent on both chains; or (iv) any
-                other response or policy or procedure, as determined by the
-                Company in its sole and absolute discretion. You assume full
+                include: (i) honoring the DR Center System, and NFTs on both
+                chains; (ii) honoring the DR Center System and NFTs on only one
+                of the chains; (iii) honoring the DR Center System and NFTs in
+                different respects or to a different extent on both chains; or
+                (iv) any other response or policy or procedure, as determined by
+                the Company in its sole and absolute discretion. You assume full
                 responsibility to independently remain apprised of and informed
                 about possible forks, and to manage your own interests in
                 connection therewith.
@@ -738,11 +705,11 @@ export default function TermsAndConditions() {
                 Google Chrome, the Polygon network, any Web3 Provider or any
                 other third party site, product, or service that you might
                 access, visit, or use for the purpose of enabling you to use the
-                various features of the dApp. The Company shall not be liable
-                for the acts or omissions of any such third parties, nor shall
-                the Company be liable for any damage that you may suffer as a
-                result of your transactions or any other interaction with any
-                such third parties.
+                various features of the DR Center. The Company shall not be
+                liable for the acts or omissions of any such third parties, nor
+                shall the Company be liable for any damage that you may suffer
+                as a result of your transactions or any other interaction with
+                any such third parties.
               </Text>
               <Text>
                 <b>Legal Limitations on Disclaimers.</b> Some jurisdictions do
@@ -767,9 +734,10 @@ export default function TermsAndConditions() {
                 from any claim, demand, action, damage, loss, cost or expense,
                 including without limitation reasonable attorneys’ fees, arising
                 out or relating to (a) you misuse of, or conduct in connection
-                with, the dApp operations; (b) your violation of these Terms or
-                any other applicable policy or contract of the Company; or (c)
-                your violation of any rights of any other person or entity.{" "}
+                with, the DR Center operations; (b) your violation of these
+                Terms or any other applicable policy or contract of the Company;
+                or (c) your violation of any rights of any other person or
+                entity.{" "}
               </Text>
             </li>
           </List>
@@ -786,11 +754,11 @@ export default function TermsAndConditions() {
                 be governed by and construed in accordance with the law of
                 England and Wales, as to all matters, including matters of
                 validity, construction, effect, enforceability, performance and
-                remedies. Although the activities on the dApp may be available
-                in other jurisdictions, you hereby acknowledge and agree that
-                such availability shall not be deemed to give rise to general or
-                specific personal jurisdiction over the Company in any forum
-                outside England and Wales.
+                remedies. Although the activities on the DR Center may be
+                available in other jurisdictions, you hereby acknowledge and
+                agree that such availability shall not be deemed to give rise to
+                general or specific personal jurisdiction over the Company in
+                any forum outside England and Wales.
               </Text>
             </li>
             <li>
@@ -802,13 +770,13 @@ export default function TermsAndConditions() {
                   <Text>
                     We will use our best efforts to resolve through informal,
                     good faith negotiations any dispute, claim or controversy
-                    relating to the dApp and this Agreement or relating to the
-                    breach, termination, enforcement, interpretation or validity
-                    thereof, including the determination of the scope or
-                    applicability of the arbitration agreement in clause 7.2(d)
-                    (hereinafter “Dispute”). For any claim not relating to or
-                    connected to the dApp, please refer to the relevant
-                    mechanisms of the Boson Protocol.
+                    relating to the DR Center and this Agreement or relating to
+                    the breach, termination, enforcement, interpretation or
+                    validity thereof, including the determination of the scope
+                    or applicability of the arbitration agreement in clause
+                    7.2(d) (hereinafter “Dispute”). For any claim not relating
+                    to or connected to the DR Center, please refer to the
+                    relevant mechanisms of the Boson Protocol.
                   </Text>
                 </li>
                 <li>
@@ -818,6 +786,15 @@ export default function TermsAndConditions() {
                     <a href="mailto:info@bosonapp.io">info@bosonapp.io</a> so
                     that we can attempt to resolve it without resorting to
                     formal dispute resolution.
+                  </Text>
+                </li>
+                <li>
+                  <Text>
+                    If we are not able to reach an informal resolution within 60
+                    days of your email, then you and we may bring proceedings
+                    either in binding arbitration, if clause 7.2(d) applies to
+                    you, or in the courts of England and Wales, if clause 7.2(d)
+                    does not apply to you.
                   </Text>
                 </li>
                 <li>
@@ -982,31 +959,31 @@ export default function TermsAndConditions() {
           <Break />
           <Text>
             All title, ownership and Intellectual Property Rights in and to the
-            dApp are owned by the Company or its licensors. You acknowledge and
-            agree that the dApp contains proprietary and confidential
+            DR Center are owned by the Company or its licensors. You acknowledge
+            and agree that the DR Center contains proprietary and confidential
             information that is protected by applicable intellectual property
             and other laws. The visual interfaces, graphics, art and drawings,
             design, systems, methods, information, computer code, software,
             "look and feel", organization, compilation of the content, code,
-            data, and all other elements of the dApp (collectively, the{" "}
+            data, and all other elements of the DR Center (collectively, the{" "}
             <b>"Company Materials"</b>) are owned by the Company or its
             licensors, and are protected by copyright, trade dress, patent, and
             trademark laws, international conventions, other relevant
             intellectual property and proprietary rights, and applicable laws.
           </Text>
           <Text>
-            Except as expressly set forth herein, your use of the dApp does not
-            grant you ownership of or any other rights with respect to the dApp
-            and/or any Company Materials. The Company reserves all rights in and
-            to the dApp and the Company Materials. For the sake of clarity, you
-            understand and agree that any "purchase" of NFT, whether via the
-            dApp or otherwise, does not give you any rights in the Company
-            Materials (including, without limitation, the Company’s copyright in
-            and to the art and drawings associated with the dApp and content
-            therein) other than those expressly contained in these Terms. The
-            software and computer code are released under the Apache v2 License
-            (link) which explains the terms and conditions for use,
-            reproduction, and distribution of the code.{" "}
+            Except as expressly set forth herein, your use of the DR Center does
+            not grant you ownership of or any other rights with respect to the
+            DR Center and/or any Company Materials. The Company reserves all
+            rights in and to the DR Center and the Company Materials. For the
+            sake of clarity, you understand and agree that any "purchase" of
+            NFT, whether via the DR Center or otherwise, does not give you any
+            rights in the Company Materials (including, without limitation, the
+            Company’s copyright in and to the art and drawings associated with
+            the DR Center and content therein) other than those expressly
+            contained in these Terms. The software and computer code are
+            released under the Apache v2 License (link) which explains the terms
+            and conditions for use, reproduction, and distribution of the code.{" "}
           </Text>
           <Text>
             All the brands, the relative figurative and/or shape trademarks, all
@@ -1076,14 +1053,14 @@ export default function TermsAndConditions() {
             terrorism, any epidemic or pandemic, or the unavailability,
             disruption or malfunction of the Internet, the World Wide Web or any
             other electronic network, the Polygon network or blockchain or the
-            dApp or any aspect thereof, or any consensus attack, or hack, or
-            denial-of-service or other attack on the foregoing or any aspect
+            DR Center or any aspect thereof, or any consensus attack, or hack,
+            or denial-of-service or other attack on the foregoing or any aspect
             thereof, or on the other software, networks and infrastructure that
-            enables the Company to provide the dApp), it being understood that
-            the Company shall use commercially reasonable efforts, consistent
-            with accepted practices in the industries in which the Company
-            operates, as applicable, to resume performance as soon as reasonably
-            practicable under the circumstances.{" "}
+            enables the Company to provide the DR Center), it being understood
+            that the Company shall use commercially reasonable efforts,
+            consistent with accepted practices in the industries in which the
+            Company operates, as applicable, to resume performance as soon as
+            reasonably practicable under the circumstances.{" "}
           </Text>
           <Text>
             <b>Amendments and Modifications.</b> These Terms may only be
@@ -1096,10 +1073,11 @@ export default function TermsAndConditions() {
             Agreement being posted to the Company’s website. You shall be
             responsible for reviewing and becoming familiar with any such
             modifications. You hereby waive any right you may have to receive
-            specific notice of such changes or modifications. Use of the dApp by
-            you after any modification of these Terms constitutes your
+            specific notice of such changes or modifications. Use of the DR
+            Center by you after any modification of these Terms constitutes your
             acceptance of the modified terms and conditions. If you do not agree
-            to any such modifications, you must immediately stop using the dApp.{" "}
+            to any such modifications, you must immediately stop using the DR
+            Center.{" "}
           </Text>
           <Text>
             <b>No Implied Waivers.</b> No failure or delay on the part of the

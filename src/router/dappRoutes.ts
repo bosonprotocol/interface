@@ -51,6 +51,7 @@ const SellerLandingPage = lazy(
 const SellerCenterPage = lazy(() => import("../pages/sell/SellerCenter"));
 
 const SwapPage = lazy(() => import("../pages/swap/index"));
+const CommunityRules = lazy(() => import("../pages/common/CommunityRules"));
 
 export const baseAppProps = {
   withLayout: true,
@@ -336,6 +337,14 @@ export default [
       ...base.app
     },
     component: TermsAndConditionsPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.CommunityRules,
+    app: {
+      ...base.app
+    },
+    component: CommunityRules
   },
   {
     ...base,

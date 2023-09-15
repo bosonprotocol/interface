@@ -11,6 +11,12 @@ const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 const RaiseDisputePage = lazy(
   () => import("../pages/dispute-centre/RaiseDisputePage")
 );
+const PrivacyPolicyPage = lazy(
+  () => import("../pages/common/PrivacyPolicyDrCenter")
+);
+const TermsAndConditionsPage = lazy(
+  () => import("../pages/common/TermsAndConditionsDrCenter")
+);
 
 const baseAppProps = {
   withLayout: true,
@@ -74,6 +80,22 @@ export default [
       withFooter: false
     },
     role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+  },
+  {
+    ...base,
+    path: DrCenterRoutes.PrivacyPolicy,
+    app: {
+      ...base.app
+    },
+    component: PrivacyPolicyPage
+  },
+  {
+    ...base,
+    path: DrCenterRoutes.TermsAndConditions,
+    app: {
+      ...base.app
+    },
+    component: TermsAndConditionsPage
   },
   {
     ...base,
