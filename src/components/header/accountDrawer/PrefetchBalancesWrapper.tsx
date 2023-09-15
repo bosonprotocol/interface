@@ -3,7 +3,7 @@ import {
   usePortfolioBalancesLazyQuery,
   usePortfolioBalancesQuery
 } from "graphql/data/__generated__/types-and-hooks";
-import { GQL_MAINNET_CHAINS } from "graphql/data/util";
+import { GQL_ENV_CHAINS } from "graphql/data/util";
 import { atom, useAtom } from "jotai";
 import { usePrevious } from "lib/utils/hooks/usePrevious";
 import { PropsWithChildren, useCallback, useEffect } from "react";
@@ -15,7 +15,7 @@ export function useCachedPortfolioBalancesQuery({
 }) {
   return usePortfolioBalancesQuery({
     skip: !account,
-    variables: { ownerAddress: account ?? "", chains: GQL_MAINNET_CHAINS },
+    variables: { ownerAddress: account ?? "", chains: GQL_ENV_CHAINS },
     fetchPolicy: "cache-only", // PrefetchBalancesWrapper handles balance fetching/staleness; this component only reads from cache
     errorPolicy: "all"
   });
@@ -38,7 +38,7 @@ export default function PrefetchBalancesWrapper({
   const fetchBalances = useCallback(() => {
     if (account) {
       prefetchPortfolioBalances({
-        variables: { ownerAddress: account, chains: GQL_MAINNET_CHAINS }
+        variables: { ownerAddress: account, chains: GQL_ENV_CHAINS }
       });
       setHasUnfetchedBalances(false);
     }

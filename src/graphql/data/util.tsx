@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/react";
 import { ChainId, Currency, Token } from "@uniswap/sdk-core";
+import { envChainIds } from "lib/config";
 import ms from "ms";
 
 import { AVERAGE_L1_BLOCK_TIME } from "../../lib/constants/chainInfo";
@@ -51,7 +52,9 @@ const CHAIN_ID_TO_BACKEND_NAME: { [key: number]: InterfaceGqlChain } = {
   [ChainId.AVALANCHE]: Chain.Avalanche,
   [ChainId.BASE]: Chain.Base
 };
-
+export const GQL_ENV_CHAINS = envChainIds.map(
+  (chainId) => CHAIN_ID_TO_BACKEND_NAME[chainId]
+);
 export function chainIdToBackendName(chainId: number | undefined) {
   return chainId && CHAIN_ID_TO_BACKEND_NAME[chainId]
     ? CHAIN_ID_TO_BACKEND_NAME[chainId]
