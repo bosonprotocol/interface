@@ -11,6 +11,7 @@ export const useCSSVariable = (
     | "--textColor"
     | "--headerTextColor"
     | "--headerBgColor"
+    | "--secondaryBgColor"
 ) => {
   const [value, setValue] = useState<string>();
   useEffect(() => {
