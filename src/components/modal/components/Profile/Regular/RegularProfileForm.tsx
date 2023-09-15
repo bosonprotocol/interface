@@ -50,7 +50,9 @@ export default function RegularProfileForm({
         {!isEdit && (
           <Typography>
             To begin selling on Boson, create a profile and a seller account in
-            the steps below.
+            the steps below. The information you provide here is public and
+            accessible on IPFS. Please provide business information only, do not
+            put personal information.
           </Typography>
         )}
       </Grid>

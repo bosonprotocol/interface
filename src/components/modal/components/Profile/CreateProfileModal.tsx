@@ -99,8 +99,11 @@ export default function CreateProfileModal({
     setSwitchChecked(switchToLens);
     setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
   }, []);
-  const SwitchButton = useCallback(
-    () => (
+  const SwitchButton = useCallback(() => {
+    if (!config.lens.availableOnNetwork) {
+      return <></>;
+    }
+    return (
       <Switch
         onCheckedChange={(checked) => {
           setSwitchAndProfileType(checked);
@@ -120,9 +123,8 @@ export default function CreateProfileModal({
           </Typography>
         )}
       />
-    ),
-    [switchChecked, setSwitchAndProfileType]
-  );
+    );
+  }, [config.lens.availableOnNetwork, switchChecked, setSwitchAndProfileType]);
 
   if (!address) {
     return (
