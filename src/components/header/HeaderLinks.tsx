@@ -1,4 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
+import { getTextColorWithContrast } from "lib/styles/contrast";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { ReactNode } from "react";
 import styled, { css } from "styled-components";
 
@@ -21,6 +23,7 @@ const NavigationLinks = styled.div<{
   isMobile: boolean;
   isOpen: boolean;
   $navigationBarPosition?: string;
+  $hoverHeaderTextColor: string;
 }>`
   background-color: var(--headerBgColor);
   color: var(--headerTextColor);
@@ -33,7 +36,7 @@ const NavigationLinks = styled.div<{
     color: var(--headerTextColor, ${colors.black});
     :hover {
       background-color: ${colors.border};
-      color: ${colors.black};
+      color: ${({ $hoverHeaderTextColor }) => $hoverHeaderTextColor};
     }
   }
   ${({ isMobile, isOpen, $navigationBarPosition }) =>
@@ -188,6 +191,10 @@ export default function HeaderLinks({
       isMobile={isMobile}
       isOpen={isOpen}
       $navigationBarPosition={navigationBarPosition}
+      $hoverHeaderTextColor={getTextColorWithContrast({
+        backgroundColor: useCSSVariable("--headerBgColor") || colors.white,
+        textColor: useCSSVariable("--headerTextColor") || colors.darkGrey
+      })}
     >
       {withSearch && (
         <Search

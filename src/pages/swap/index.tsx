@@ -31,6 +31,7 @@ import { asSupportedChain, isSupportedChain } from "lib/constants/chains";
 import { getSwapCurrencyId, TOKEN_SHORTHANDS } from "lib/constants/tokens";
 import { BosonRoutes } from "lib/routing/routes";
 import { colors } from "lib/styles/colors";
+import { opacify } from "lib/styles/opacify";
 import { PreventCustomStoreStyles } from "lib/styles/preventCustomStoreStyles";
 import { computeFiatValuePriceImpact } from "lib/utils/computeFiatValuePriceImpact";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
@@ -49,7 +50,6 @@ import useWrapCallback, {
   WrapType
 } from "lib/utils/hooks/useWrapCallback";
 import { maxAmountSpend } from "lib/utils/maxAmountSpend";
-import { opacify } from "lib/utils/opacify";
 import { computeRealizedPriceImpact, warningSeverity } from "lib/utils/prices";
 import { didUserReject } from "lib/utils/swapErrorToUserReadableMessage";
 import { ArrowDown, ArrowLeft } from "phosphor-react";
