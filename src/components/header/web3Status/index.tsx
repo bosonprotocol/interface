@@ -2,7 +2,7 @@ import { Button } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { getConnection } from "lib/connection";
 import { colors } from "lib/styles/colors";
-import { getTextColorWithContrast } from "lib/styles/contrast";
+import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
@@ -104,11 +104,14 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   }, [toggleAccountDrawer]);
   const buttonBgColor = useCSSVariable("--buttonBgColor") || colors.primary;
   const textColor = useCSSVariable("--textColor") || colors.black;
-
+  const connectedButtonTextColor = getColor1OverColor2WithContrast({
+    color2: useCSSVariable("--buttonBgColor") || colors.primary,
+    color1: useCSSVariable("--textColor") || colors.black
+  });
   if (account) {
-    const color = getTextColorWithContrast({
-      backgroundColor: buttonBgColor,
-      textColor
+    const color = getColor1OverColor2WithContrast({
+      color2: buttonBgColor,
+      color1: textColor
     });
     return (
       <Web3StatusConnected
@@ -138,7 +141,8 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
       size={isLteXS ? "small" : "regular"}
       variant="primaryFill"
       style={{
-        whiteSpace: "pre"
+        whiteSpace: "pre",
+        color: connectedButtonTextColor
       }}
     >
       Connect Wallet

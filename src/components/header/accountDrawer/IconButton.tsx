@@ -1,6 +1,6 @@
 import Grid from "components/ui/Grid";
 import { colors } from "lib/styles/colors";
-import { getTextColorWithContrast } from "lib/styles/contrast";
+import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { Icon } from "phosphor-react";
 import React, {
@@ -206,9 +206,9 @@ export const IconWithConfirmTextButton = ({
   const xPad = showText ? 8 : 0;
   const width = showText ? dimensions.frame + dimensions.innerText + xPad : 32;
   const mouseLeaveTimeout = useRef<NodeJS.Timeout>();
-  const color = getTextColorWithContrast({
-    backgroundColor: useCSSVariable("--buttonBgColor") || colors.primary,
-    textColor: useCSSVariable("--textColor") || colors.black
+  const color = getColor1OverColor2WithContrast({
+    color2: useCSSVariable("--buttonBgColor") || colors.primary,
+    color1: useCSSVariable("--textColor") || colors.black
   });
   return (
     <IconBlock

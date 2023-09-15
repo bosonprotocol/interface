@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { CopyButton } from "components/form/Field.styles";
 import { colors } from "lib/styles/colors";
-import { getTextColorWithContrast } from "lib/styles/contrast";
+import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import copyToClipboard from "lib/utils/copyToClipboard";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
@@ -229,9 +229,9 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
     portfolio?.tokensTotalDenominatedValueChange?.absolute?.value;
   const percentChange =
     portfolio?.tokensTotalDenominatedValueChange?.percentage?.value;
-  const color = getTextColorWithContrast({
-    backgroundColor: useCSSVariable("--buttonBgColor") || colors.primary,
-    textColor: useCSSVariable("--textColor") || colors.black
+  const color = getColor1OverColor2WithContrast({
+    color2: useCSSVariable("--buttonBgColor") || colors.primary,
+    color1: useCSSVariable("--textColor") || colors.black
   });
   return (
     <AuthenticatedHeaderWrapper>

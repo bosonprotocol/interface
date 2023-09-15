@@ -1,25 +1,25 @@
 import { colors } from "lib/styles/colors";
 import { getContrast } from "polished";
 
-export const getTextColorWithContrast = ({
-  backgroundColor,
-  textColor,
-  defaultLightTextColor = colors.white,
-  defaultDarkTextColor = colors.black,
+export const getColor1OverColor2WithContrast = ({
+  color2,
+  color1,
+  defaultLightColor1 = colors.white,
+  defaultDarkColor1 = colors.black,
   contrastThreshold = 10
 }: {
-  backgroundColor: string;
-  textColor: string;
-  defaultLightTextColor?: string;
-  defaultDarkTextColor?: string;
+  color2: string;
+  color1: string;
+  defaultLightColor1?: string;
+  defaultDarkColor1?: string;
   contrastThreshold?: number;
 }) => {
-  const contrast = getContrast(backgroundColor, textColor);
-  const contrastWithWhite = getContrast(backgroundColor, defaultLightTextColor);
-  const contrastWithBlack = getContrast(backgroundColor, defaultDarkTextColor);
+  const contrast = getContrast(color2, color1);
+  const contrastWithWhite = getContrast(color2, defaultLightColor1);
+  const contrastWithBlack = getContrast(color2, defaultDarkColor1);
   return contrast > contrastThreshold
-    ? textColor
+    ? color1
     : contrastWithWhite > contrastWithBlack
-    ? defaultLightTextColor
-    : defaultDarkTextColor;
+    ? defaultLightColor1
+    : defaultDarkColor1;
 };
