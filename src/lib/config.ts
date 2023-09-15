@@ -89,6 +89,9 @@ function getCarouselPromotedSellerId(
 }
 
 export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(envName);
+export const envChainIds = envConfigsFilteredByEnv.map(
+  (envConf) => envConf.chainId
+);
 export const defaultEnvConfig: ProtocolConfig = envConfigsFilteredByEnv[0];
 export const defaultChainId = defaultEnvConfig.chainId;
 
