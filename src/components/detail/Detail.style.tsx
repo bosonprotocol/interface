@@ -197,7 +197,7 @@ export const ImageWrapper = styled.div`
   width: -webkit-fill-available;
 `;
 
-export const GlideWrapper = styled.div`
+export const GlideWrapper = styled.div<{ $afterBackground: string }>`
   &:after {
     content: "";
     position: absolute;
@@ -209,7 +209,7 @@ export const GlideWrapper = styled.div`
     right: 0;
     background: linear-gradient(
       -90deg,
-      ${colors.lightGrey} 0%,
+      ${({ $afterBackground }) => $afterBackground} 0%,
       transparent 100%
     );
     pointer-events: none;
