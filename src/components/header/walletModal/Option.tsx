@@ -33,6 +33,11 @@ const OptionCardClickable = styled.button<{ selected: boolean }>`
   opacity: ${({ disabled, selected }) => (disabled && !selected ? "0.5" : "1")};
   padding: 18px;
   transition: 125ms;
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      cursor: not-allowed;
+    `};
 `;
 
 const HeaderText = styled.div<{ $color: string }>`

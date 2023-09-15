@@ -1,14 +1,21 @@
+/* eslint-disable unused-imports/no-unused-imports */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Sentry from "@sentry/browser";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
-import { useAccountDrawer } from "components/header/accountDrawer";
+import {
+  useAccountDrawer,
+  useCloseAccountDrawer,
+  useOpenAccountDrawer
+} from "components/header/accountDrawer";
 import { useField } from "formik";
-import { useCallback, useEffect, useState } from "react";
+import { useEffectDebugger } from "lib/utils/hooks/useEffectDebugger";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
-import { BosonRoutes } from "../../lib/routing/routes";
+import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
@@ -116,9 +123,12 @@ export default function ProductType({
   isDraftModalClosed
 }: Props) {
   const { config } = useConfigContext();
-  const [connectModalOpen, openConnectModal] = useAccountDrawer();
+  const isWalletConnected = useAppSelector(
+    (state) => state.user.selectedWallet
+  );
+  const [connectModalOpen, openConnectModal] = useOpenAccountDrawer();
   const navigate = useKeepQueryParamsNavigate();
-  const { account: address } = useWeb3React();
+  const { account: address, isActivating } = useWeb3React();
   const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
     useCreateForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
@@ -332,19 +342,26 @@ export default function ProductType({
   const location = useLocation();
   const { state } = location;
   const prevPath = (state as { prevPath: string })?.prevPath;
+
   useEffect(() => {
-    if (!address && openConnectModal) {
+    if (!address && !wasConnectModalOpen) {
       openConnectModal();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, wasConnectModalOpen]);
+  useEffect(() => {
+    if (connectModalOpen && !wasConnectModalOpen) {
       setWasConnectModalOpen(true);
     }
-  }, [address, openConnectModal]);
-
+  }, [connectModalOpen, wasConnectModalOpen]);
   if (!address) {
-    if (wasConnectModalOpen && !connectModalOpen) {
-      if (prevPath && prevPath !== "/sell/create-product") {
-        reactRouterNavigate(-1);
-      } else {
-        return <Navigate to={{ pathname: BosonRoutes.Root }} />;
+    if (!isActivating && !isWalletConnected) {
+      if (wasConnectModalOpen && !connectModalOpen) {
+        if (prevPath && prevPath !== SellerCenterRoutes.CreateProduct) {
+          reactRouterNavigate(prevPath);
+        } else {
+          return <Navigate to={{ pathname: BosonRoutes.Root }} />;
+        }
       }
     }
     return <Typography>Please connect your wallet</Typography>;

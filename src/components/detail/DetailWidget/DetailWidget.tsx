@@ -20,6 +20,7 @@ import {
   ethers,
   utils
 } from "ethers";
+import { fairExchangePolicyLabel } from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import {
@@ -189,7 +190,9 @@ export const getOfferDetailData = (
   const exchangePolicyLabel = (
     (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
       ?.label || "Unspecified"
-  ).replace("fairExchangePolicy", "Fair Exchange Policy");
+  )
+    .replace("fairExchangePolicy", fairExchangePolicyLabel)
+    .replace("Fair Exchange Policy", fairExchangePolicyLabel);
 
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
@@ -321,12 +324,12 @@ export const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            {exchangePolicyLabel + " "}
+            <span>{exchangePolicyLabel + " "}</span>
             {modalTypes && showModal && (
               <ArrowSquareOut
                 size={20}
                 onClick={() => handleShowExchangePolicy()}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", minWidth: "20px" }}
               />
             )}
           </Typography>

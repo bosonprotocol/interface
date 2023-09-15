@@ -42,6 +42,15 @@ export function useAccountDrawer(): [boolean, () => void] {
   return [accountDrawerOpen, useToggleAccountDrawer()];
 }
 
+export function useOpenAccountDrawer(): [boolean, () => void] {
+  const accountDrawerOpen = useAtomValue(accountDrawerOpenAtom);
+  const updateAccountDrawerOpen = useUpdateAtom(accountDrawerOpenAtom);
+  return [
+    accountDrawerOpen,
+    useCallback(() => updateAccountDrawerOpen(true), [updateAccountDrawerOpen])
+  ];
+}
+
 const ScrimBackground = styled.div<{ open: boolean }>`
   z-index: ${zIndex.Modal - 1};
   overflow: hidden;

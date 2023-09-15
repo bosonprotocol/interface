@@ -142,7 +142,7 @@ export const productVariantsImagesValidationSchema = Yup.object({
   ).test({
     name: "minLength",
     test: function (value) {
-      return value?.length === this.parent.productVariants.variants.length;
+      return value?.length === this.parent.productVariants?.variants.length;
     }
   }),
   ...productAnimation

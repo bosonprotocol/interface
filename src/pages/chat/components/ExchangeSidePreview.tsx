@@ -3,6 +3,7 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
+import { fairExchangePolicyLabel } from "lib/constants/policies";
 import {
   ArrowSquareOut,
   CircleWavyQuestion,
@@ -200,7 +201,9 @@ const getOfferDetailData = (
   const exchangePolicyLabel = (
     (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
       ?.label || "Unspecified"
-  ).replace("fairExchangePolicy", "Fair Exchange Policy");
+  )
+    .replace("fairExchangePolicy", fairExchangePolicyLabel)
+    .replace("Fair Exchange Policy", fairExchangePolicyLabel);
 
   const handleShowExchangePolicy = () => {
     showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
@@ -256,11 +259,11 @@ const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            {exchangePolicyLabel + " "}
+            <span>{exchangePolicyLabel + " "}</span>
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", minWidth: "20px" }}
             />
           </Typography>
         ) : (

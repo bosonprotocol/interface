@@ -232,7 +232,7 @@ export default function TermsOfExchange() {
           >
             <FieldContainer>
               <div>
-                {values.termsOfExchange.sellerDepositUnit.value === "%" ? (
+                {values.termsOfExchange.sellerDepositUnit?.value === "%" ? (
                   <Input
                     placeholder="Seller deposit"
                     name="termsOfExchange.sellerDeposit"
