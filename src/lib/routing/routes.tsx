@@ -20,7 +20,6 @@ export const BosonRoutes = addViewModePrefixToPaths(
     PrivacyPolicy: "/privacy-policy",
     TermsAndConditions: "/terms-and-conditions",
     CommunityRules: "/community-rules",
-    LearnMore: "https://www.bosonprotocol.io/technology",
     Chat: "/chat",
     ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
     BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
@@ -34,6 +33,10 @@ export const BosonRoutes = addViewModePrefixToPaths(
     Swap: "/swap"
   } as const
 );
+
+export const BosonProtocolRoutes = {
+  LearnMore: "https://www.bosonprotocol.io/technology"
+};
 
 export const SellerCenterRoutes = {
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,

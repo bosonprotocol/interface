@@ -1,4 +1,5 @@
 import { useConfigContext } from "components/config/ConfigContext";
+import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 import { CheckCircle, XCircle } from "phosphor-react";
 import styled from "styled-components";
 
@@ -113,7 +114,7 @@ function AboutPage() {
         <span>{CONFIG.rNFTLicenseTemplate || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
-        <span>Link to Fair Exchange Policy Rules:</span>
+        <span>Link to {onlyFairExchangePolicyLabel} Rules:</span>
         <span>{CONFIG.fairExchangePolicyRules || "-"}</span>
       </Text>
       <Grid margin="0 0 0.5rem 0">

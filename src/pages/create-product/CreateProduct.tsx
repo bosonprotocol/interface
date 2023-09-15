@@ -1,5 +1,10 @@
+import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import Button from "components/ui/Button";
+import { BosonRoutes } from "lib/routing/routes";
+import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useSearchParams } from "react-router-dom";
 
 import {
@@ -25,7 +30,31 @@ import CreateProductInner from "./CreateProductInner";
 
 export default function CreateProductWrapper() {
   const { config } = useConfigContext();
-  return <CreateProduct key={config.envConfig.configId} />;
+  const navigate = useKeepQueryParamsNavigate();
+  return (
+    <ErrorBoundary
+      FallbackComponent={() => (
+        <div>
+          <p>
+            Something when wrong, please refresh the page to try again or go
+            back to the home page
+          </p>
+
+          <Button
+            theme="warning"
+            onClick={() => navigate({ pathname: BosonRoutes.Root })}
+          >
+            Go back
+          </Button>
+        </div>
+      )}
+      onError={(error) => {
+        Sentry.captureException(error);
+      }}
+    >
+      <CreateProduct key={config.envConfig.configId} />
+    </ErrorBoundary>
+  );
 }
 
 function CreateProduct() {

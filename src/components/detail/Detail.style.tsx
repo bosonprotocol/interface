@@ -314,7 +314,7 @@ export const Table = styled.table<{
               font-weight: 600;
               > p, > p > small {
                 font-weight: 600;
-                white-space: pre;
+                white-space: pre-line;
               }
           }
         }

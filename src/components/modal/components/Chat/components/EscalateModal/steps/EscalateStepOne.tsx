@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 import { ArrowSquareOut } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
@@ -94,7 +95,7 @@ function EscalateStepOne({ exchange }: Props) {
               color={colors.darkGrey}
               justifyContent="flex-end"
             >
-              Fair Exchange Policy
+              {onlyFairExchangePolicyLabel}
             </Typography>
             <StyledArrowSquare color={colors.secondary} size={22} />
           </Grid>

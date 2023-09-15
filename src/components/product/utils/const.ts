@@ -1,4 +1,5 @@
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
+import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 
 import { CONFIG } from "../../../lib/config";
 import countries from "../../../lib/const/countries.json";
@@ -118,7 +119,7 @@ export const TOKEN_CRITERIA = [
 export const OPTIONS_EXCHANGE_POLICY = [
   {
     value: CONFIG.buyerSellerAgreementTemplate as string,
-    label: "Fair Exchange Policy"
+    label: onlyFairExchangePolicyLabel
   }
 ];
 
