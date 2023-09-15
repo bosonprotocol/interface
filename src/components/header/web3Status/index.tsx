@@ -1,7 +1,10 @@
 import { Button } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { getConnection } from "lib/connection";
+import { colors } from "lib/styles/colors";
+import { getTextColorWithContrast } from "lib/styles/contrast";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
 import { useLast } from "lib/utils/hooks/useLast";
 import { useCallback } from "react";
@@ -31,8 +34,9 @@ const Web3StatusGeneric = styled.button`
 `;
 
 const breakpointWhenConnectButtonOverflows = "1300px";
-const Web3StatusConnected = styled(Web3StatusGeneric)`
+const Web3StatusConnected = styled(Web3StatusGeneric)<{ $color: string }>`
   font-weight: 500;
+  color: ${({ $color }) => $color};
   :hover,
   :focus {
     border: 1px solid color-mix(in srgb, var(--buttonBgColor) 90%, black);
@@ -98,13 +102,20 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   const handleWalletDropdownClick = useCallback(() => {
     toggleAccountDrawer();
   }, [toggleAccountDrawer]);
+  const buttonBgColor = useCSSVariable("--buttonBgColor") || colors.primary;
+  const textColor = useCSSVariable("--textColor") || colors.black;
 
   if (account) {
+    const color = getTextColorWithContrast({
+      backgroundColor: buttonBgColor,
+      textColor
+    });
     return (
       <Web3StatusConnected
         disabled={Boolean(switchingChain)}
         data-testid="web3-status-connected"
         onClick={handleWalletDropdownClick}
+        $color={color}
       >
         <StatusIcon
           account={account}

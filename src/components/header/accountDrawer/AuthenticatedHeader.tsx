@@ -1,7 +1,9 @@
 import { useWeb3React } from "@web3-react/core";
 import { CopyButton } from "components/form/Field.styles";
 import { colors } from "lib/styles/colors";
+import { getTextColorWithContrast } from "lib/styles/contrast";
 import copyToClipboard from "lib/utils/copyToClipboard";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
 import {
   ArrowDownRight,
@@ -42,7 +44,8 @@ const AuthenticatedHeaderWrapper = styled.div`
   flex: 1;
 `;
 
-const HeaderButton = styled.button`
+const HeaderButton = styled.button<{ $color: string }>`
+  color: ${({ $color }) => $color};
   background-color: var(--buttonBgColor);
   width: 100%;
   display: flex;
@@ -226,7 +229,10 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
     portfolio?.tokensTotalDenominatedValueChange?.absolute?.value;
   const percentChange =
     portfolio?.tokensTotalDenominatedValueChange?.percentage?.value;
-
+  const color = getTextColorWithContrast({
+    backgroundColor: useCSSVariable("--buttonBgColor") || colors.primary,
+    textColor: useCSSVariable("--textColor") || colors.black
+  });
   return (
     <AuthenticatedHeaderWrapper>
       {/* 
@@ -304,6 +310,7 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
         )}
         <FiatLink>
           <HeaderButton
+            $color={color}
             // onClick={handleBuyCryptoClick}
             // disabled={disableBuyCryptoButton}
             data-testid="wallet-buy-crypto"

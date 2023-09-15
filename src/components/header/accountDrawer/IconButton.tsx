@@ -1,4 +1,7 @@
 import Grid from "components/ui/Grid";
+import { colors } from "lib/styles/colors";
+import { getTextColorWithContrast } from "lib/styles/contrast";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { Icon } from "phosphor-react";
 import React, {
   forwardRef,
@@ -23,7 +26,8 @@ const IconHoverText = styled.span`
 
 const getWidthTransition = () => `width ease-in-out 125ms`;
 
-const IconStyles = css<{ hideHorizontal?: boolean }>`
+const IconStyles = css<{ hideHorizontal?: boolean; $color: string }>`
+  color: ${({ $color }) => $color};
   background-color: var(--buttonBgColor);
   transition: ${getWidthTransition};
   border-radius: 12px;
@@ -80,13 +84,17 @@ interface IconButtonProps
 type IconBlockProps = React.ComponentPropsWithoutRef<"a" | "button">;
 
 const IconBlock = forwardRef<
-  HTMLAnchorElement | HTMLDivElement,
+  (HTMLAnchorElement | HTMLDivElement) & { color: string },
   IconBlockProps
 >(function IconBlock(props, ref) {
+  const $color = props.color;
   if ("href" in props) {
     return (
       <IconBlockLink
         ref={ref as React.ForwardedRef<HTMLAnchorElement>}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        $color={$color}
         {...props}
       />
     );
@@ -94,7 +102,7 @@ const IconBlock = forwardRef<
   // ignoring 'button' 'type' conflict between React and styled-components
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  return <IconBlockButton ref={ref} {...props} />;
+  return <IconBlockButton ref={ref} $color={$color} {...props} />;
 });
 
 type IconWithTextProps = (IconButtonProps | IconLinkProps) & {
@@ -198,7 +206,10 @@ export const IconWithConfirmTextButton = ({
   const xPad = showText ? 8 : 0;
   const width = showText ? dimensions.frame + dimensions.innerText + xPad : 32;
   const mouseLeaveTimeout = useRef<NodeJS.Timeout>();
-
+  const color = getTextColorWithContrast({
+    backgroundColor: useCSSVariable("--buttonBgColor") || colors.primary,
+    textColor: useCSSVariable("--textColor") || colors.black
+  });
   return (
     <IconBlock
       ref={(node) => {
@@ -211,6 +222,7 @@ export const IconWithConfirmTextButton = ({
         paddingLeft: xPad,
         paddingRight: xPad
       }}
+      color={color}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore MouseEvent is valid, its a subset of the two mouse events,
       // even manually typing this all out more specifically it still gets mad about any casting for some reason
