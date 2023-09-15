@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { useQuery } from "react-query";
 
 import { fetchLens } from "../fetchLens";
@@ -17,11 +18,13 @@ export default function useGetLensProfiles(
     enabled?: boolean;
   }
 ) {
+  const { config } = useConfigContext();
+  const lensApiLink = config.lens.apiLink || "";
   const { enabled } = options;
   return useQuery(
-    ["get-lens-profiles", props],
+    ["get-lens-profiles", props, lensApiLink],
     async () => {
-      return getLensProfiles(props);
+      return getLensProfiles(props, lensApiLink);
     },
     {
       enabled
@@ -29,7 +32,11 @@ export default function useGetLensProfiles(
   );
 }
 
-async function getLensProfiles(request: ProfileQueryRequest) {
-  return (await fetchLens<ProfilesQuery>(ProfilesDocument, { request }))
-    .profiles;
+async function getLensProfiles(
+  request: ProfileQueryRequest,
+  lensApiLink: string
+) {
+  return (
+    await fetchLens<ProfilesQuery>(lensApiLink, ProfilesDocument, { request })
+  ).profiles;
 }

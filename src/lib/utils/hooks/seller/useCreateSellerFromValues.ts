@@ -1,6 +1,6 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import { useMutation } from "react-query";
-import { useAccount } from "wagmi";
 
 import { BosonAccount } from "../../../../components/modal/components/Profile/bosonAccount/validationSchema";
 import { ProfileType } from "../../../../components/modal/components/Profile/const";
@@ -17,7 +17,7 @@ type StoreSellerMetadataFn = ReturnType<
 >["mutateAsync"];
 
 export default function useCreateSellerFromValues() {
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { mutateAsync: createSeller } = useCreateSeller();
   const { mutateAsync: storeSellerMetadata } = useStoreSellerMetadata();
 

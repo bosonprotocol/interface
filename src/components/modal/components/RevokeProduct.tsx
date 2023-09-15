@@ -1,9 +1,9 @@
 import { Provider, RevokeButton, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
@@ -50,6 +50,7 @@ export default function RevokeProduct({
   exchange,
   refetch
 }: Props) {
+  const { config } = useConfigContext();
   const signer = useEthersSigner();
   const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
@@ -134,7 +135,12 @@ export default function RevokeProduct({
           <RevokeButton
             variant="accentInverted"
             exchangeId={exchangeId || 0}
-            envName={CONFIG.envName}
+            coreSdkConfig={{
+              envName: config.envName,
+              configId: config.envConfig.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: config.metaTx
+            }}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
@@ -186,13 +192,13 @@ export default function RevokeProduct({
                 <SuccessTransactionToast
                   t={t}
                   action={`Revoked exchange: ${exchange.offer.metadata.name}`}
-                  url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+                  url={config.envConfig.getTxExplorerUrl?.(
+                    receipt.transactionHash
+                  )}
                 />
               ));
               refetch();
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           />
         </RevokeButtonWrapper>
       </Grid>

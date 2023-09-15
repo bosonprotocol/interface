@@ -1,10 +1,11 @@
 import { subgraph } from "@bosonprotocol/core-sdk";
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import {
   getLensTokenIdDecimal,
@@ -21,82 +22,82 @@ interface Props {
   lensTokenId?: string;
 }
 
-const getSellersByIds = () => (sellerIds: string[], isSellerId: boolean) => {
-  const resultSellerByIds = useQuery(
-    ["seller-by-ids", { sellerIds }],
-    async () => {
-      const result = await fetchSubgraph<{
-        sellers: {
-          authTokenId: string;
-          authTokenType: number;
-          admin: string;
-          clerk: string;
-          treasury: string;
-          assistant: string;
-          id: string;
-          voucherCloneAddress: string;
-          active: boolean;
-          sellerId: string;
-          metadata: SellerFieldsFragment["metadata"];
-        }[];
-      }>(
-        gql`
-          query GetSellerBySellerId($sellerIds: [String]) {
-            sellers(where: { sellerId_in: $sellerIds }) {
-              authTokenId
-              authTokenType
-              admin
-              clerk
-              treasury
-              assistant
-              id
-              voucherCloneAddress
-              active
-              sellerId
-              metadata {
+const getSellersByIds =
+  (subgraphUrl: string) => (sellerIds: string[], isSellerId: boolean) => {
+    const resultSellerByIds = useQuery(
+      ["seller-by-ids", sellerIds],
+      async () => {
+        const result = await fetchSubgraph<{
+          sellers: {
+            authTokenId: string;
+            authTokenType: number;
+            admin: string;
+            treasury: string;
+            assistant: string;
+            id: string;
+            voucherCloneAddress: string;
+            active: boolean;
+            sellerId: string;
+            metadata: SellerFieldsFragment["metadata"];
+          }[];
+        }>(
+          subgraphUrl,
+          gql`
+            query GetSellerBySellerId($sellerIds: [String]) {
+              sellers(where: { sellerId_in: $sellerIds }) {
+                authTokenId
+                authTokenType
+                admin
+                treasury
+                assistant
                 id
-                type
-                createdAt
-                name
-                description
-                legalTradingName
-                kind
-                website
-                images {
+                voucherCloneAddress
+                active
+                sellerId
+                metadata {
                   id
-                  url
-                  tag
                   type
-                  width
-                  height
-                  fit
-                  position
-                }
-                contactLinks {
-                  id
-                  url
-                  tag
-                }
-                contactPreference
-                socialLinks {
-                  id
-                  url
-                  tag
+                  createdAt
+                  name
+                  description
+                  legalTradingName
+                  kind
+                  website
+                  images {
+                    id
+                    url
+                    tag
+                    type
+                    width
+                    height
+                    fit
+                    position
+                  }
+                  contactLinks {
+                    id
+                    url
+                    tag
+                  }
+                  contactPreference
+                  socialLinks {
+                    id
+                    url
+                    tag
+                  }
                 }
               }
             }
-          }
-        `,
-        { sellerIds }
-      );
-      return result.sellers;
-    },
-    {
-      enabled: isSellerId
-    }
-  );
-  return resultSellerByIds;
-};
+          `,
+          { sellerIds }
+        );
+        return result.sellers;
+      },
+      {
+        enabled: isSellerId
+      }
+    );
+    return resultSellerByIds;
+  };
 
 /**
  * This hook returns the current seller or sellers in a list. It will return more than one
@@ -110,9 +111,11 @@ export function useCurrentSellers({
   sellerId,
   lensTokenId
 }: Props = {}) {
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
   const coreSDK = useCoreSDK();
-  const fetchSellers = getSellersByIds();
-  const { address: loggedInUserAddress } = useAccount();
+  const fetchSellers = getSellersByIds(subgraphUrl);
+  const { account: loggedInUserAddress } = useWeb3React();
   const sellerAddress =
     address || sellerId || lensTokenId || loggedInUserAddress || null;
   const sellerAddressType = useMemo(() => {
@@ -134,7 +137,7 @@ export function useCurrentSellers({
   const enableResultByAddress =
     !!sellerAddress && sellerAddressType === "ADDRESS";
   const resultByAddress = useQuery(
-    ["current-seller-data-by-address", { address: sellerAddress }],
+    ["current-seller-data-by-address", sellerAddress, coreSDK.uuid],
     async () => {
       if (!sellerAddress) {
         return null;
@@ -144,7 +147,6 @@ export function useCurrentSellers({
       const rolesWithSameAddress = sellers
         .flatMap((seller) => [
           { admin: seller.admin },
-          { clerk: seller.clerk },
           { treasury: seller.treasury },
           { assistant: seller.assistant }
         ])
@@ -155,8 +157,7 @@ export function useCurrentSellers({
           );
         })
         .map(
-          (role) =>
-            Object.keys(role)[0] as "admin" | "clerk" | "treasury" | "assistant"
+          (role) => Object.keys(role)[0] as "admin" | "treasury" | "assistant"
         );
       const isLensSeller = sellers.find(
         (seller) => seller.authTokenType === AuthTokenType.LENS
@@ -179,11 +180,10 @@ export function useCurrentSellers({
   );
 
   const resultById = useQuery(
-    ["current-seller-data-by-id", { sellerId: sellerAddress }],
+    ["current-seller-data-by-id", sellerAddress],
     async () => {
       const allProps = {
         admin: sellers?.[0]?.admin || null,
-        clerk: sellers?.[0]?.clerk || null,
         assistant: sellers?.[0]?.assistant || null,
         treasury: sellers?.[0]?.treasury || null
       };
@@ -204,18 +204,20 @@ export function useCurrentSellers({
   const resultByLensId = useQuery(
     [
       "current-seller-data-by-lens-id",
-      { authTokenId: decimalLensTokenId, authTokenType: AuthTokenType.LENS }
+      decimalLensTokenId,
+      AuthTokenType.LENS,
+      subgraphUrl
     ],
     async () => {
       const result = await fetchSubgraph<{
         sellers: {
           sellerId: string;
           admin: string;
-          clerk: string;
           assistant: string;
           treasury: string;
         }[];
       }>(
+        subgraphUrl,
         gql`
           query GetSellerByLensId($authTokenId: String, $authTokenType: Int) {
             sellers(
@@ -226,7 +228,6 @@ export function useCurrentSellers({
             ) {
               sellerId
               admin
-              clerk
               assistant
               treasury
             }
@@ -237,7 +238,6 @@ export function useCurrentSellers({
       const allProps = {
         sellerId: result?.sellers[0]?.sellerId || null,
         admin: result?.sellers[0]?.admin || null,
-        clerk: result?.sellers[0]?.clerk || null,
         assistant: result?.sellers[0]?.assistant || null,
         treasury: result?.sellers[0]?.treasury || null
       };
@@ -268,13 +268,12 @@ export function useCurrentSellers({
     enableSellerById
   );
   const sellerById = useQuery(
-    ["current-seller-by-id", { sellerIds: sellerIdsToQuery, sellers2 }],
+    ["current-seller-by-id", sellerIdsToQuery, sellers2],
     async () => {
       const currentSeller = sellers2?.[0] || null;
 
       const currentSellerRoles = {
         admin: currentSeller?.admin || null,
-        clerk: currentSeller?.clerk || null,
         assistant: currentSeller?.assistant || null,
         treasury: currentSeller?.treasury || null
       };
@@ -322,7 +321,7 @@ export function useCurrentSellers({
       profileIds
     },
     {
-      enabled: enableResultLens
+      enabled: enableResultLens && config.lens.availableOnNetwork
     }
   );
   const lens: (Profile | undefined)[] = useMemo(() => {

@@ -1,8 +1,8 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { ArrowCircleUp } from "phosphor-react";
 import { useEffect } from "react";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
@@ -30,6 +30,7 @@ export default function TransactionSubmittedModal({
   txHash,
   hideModal
 }: Props) {
+  const { config } = useConfigContext();
   const { updateProps, store } = useModal();
   useEffect(() => {
     updateProps<"TRANSACTION_SUBMITTED">({
@@ -55,7 +56,7 @@ export default function TransactionSubmittedModal({
       <Typography fontWeight="600" $fontSize="1.5rem" lineHeight="150%">
         {action} transaction submitted
       </Typography>
-      <a href={CONFIG.getTxExplorerUrl?.(txHash)} target="_blank">
+      <a href={config.envConfig.getTxExplorerUrl?.(txHash)} target="_blank">
         <Typography
           fontWeight="600"
           $fontSize="1rem"

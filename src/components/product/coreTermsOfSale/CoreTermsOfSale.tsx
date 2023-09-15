@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import styled from "styled-components";
 
 import { FormField, Input, Select } from "../../form";
@@ -7,7 +8,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "../Product.styles";
-import { OPTIONS_CURRENCIES } from "../utils";
+import { getOptionsCurrencies } from "../utils";
 import { useCreateForm } from "../utils/useCreateForm";
 import { CoreTermsOfSaleDates } from "./CoreTermsOfSaleDates";
 
@@ -26,6 +27,9 @@ interface Props {
 }
 
 export default function CoreTermsOfSale({ isMultiVariant }: Props) {
+  const { config } = useConfigContext();
+  const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
+
   const { nextIsDisabled } = useCreateForm();
 
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";

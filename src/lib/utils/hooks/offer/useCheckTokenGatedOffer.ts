@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { utils } from "ethers";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 
 import { BosonSnapshotGate__factory } from "../../../../components/detail/DetailWidget/BosonSnapshotGate/typechain";
 import { Offer } from "../../../types/offer";
@@ -18,7 +18,8 @@ export default function useCheckTokenGatedOffer({
   condition
 }: Props) {
   const signer = useEthersSigner();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
+
   const core = useCoreSDK();
   const [isConditionMet, setConditionMet] = useState<boolean>(false);
 
@@ -38,7 +39,7 @@ export default function useCheckTokenGatedOffer({
             signer
           );
           const [owned, used] = await proxyContract.checkSnapshot(
-            condition.tokenId,
+            condition.minTokenId,
             utils.getAddress(address)
           );
           setConditionMet(owned.sub(used).gt("0"));

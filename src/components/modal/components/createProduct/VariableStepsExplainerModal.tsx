@@ -1,7 +1,7 @@
+import { useWeb3React } from "@web3-react/core";
 import { CheckCircle } from "phosphor-react";
 import React, { useMemo } from "react";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import { SellerLandingPageParameters } from "../../../../lib/routing/parameters";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
@@ -171,7 +171,7 @@ const VariableStepsExplainerModal: React.FC<
   doSetQueryParams,
   buttonText
 }) => {
-  const { isConnected } = useAccount();
+  const { account } = useWeb3React();
   const { sellers } = useCurrentSellers();
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, store } = useModal();
@@ -233,7 +233,7 @@ const VariableStepsExplainerModal: React.FC<
           })}
         </StepWrapper>
       </Grid>
-      {isConnected ? (
+      {account ? (
         <BosonButton
           onClick={() => {
             if (hasSeller) {

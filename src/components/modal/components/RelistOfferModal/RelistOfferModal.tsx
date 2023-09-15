@@ -2,6 +2,7 @@ import { EvaluationMethod } from "@bosonprotocol/common";
 import { offers, productV1, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
+import { extractUserFriendlyError } from "lib/utils/errors";
 import React from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
@@ -67,7 +68,7 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
           const voucherRedeemableUntilDate = values.redemptionPeriod[1]
             .toDate()
             .getTime();
-          const isMultiVariant = (offer.additional?.variants?.length ?? []) > 1;
+          const isMultiVariant = (offer.additional?.variants?.length ?? 0) > 1;
           const { condition } = offer;
           const isTokenGated = !!condition;
           const offersToCreate: offers.CreateOfferArgs[] = [];
@@ -141,7 +142,8 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
               disputeResolverId: variant.disputeResolverId,
               agentId: variant.agentId, // no agent
               metadataUri: `ipfs://${metadataHash}`,
-              metadataHash: metadataHash
+              metadataHash: metadataHash,
+              collectionIndex: "0"
             };
             offersToCreate.push(offerData);
           }
@@ -188,7 +190,7 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
                     condition.method === EvaluationMethod.SpecificToken
                       ? TOKEN_CRITERIA[1]
                       : TOKEN_CRITERIA[0],
-                  tokenId: condition.tokenId,
+                  tokenId: condition.minTokenId,
                   tokenType: condition.tokenType
                 }
               : null,
@@ -221,11 +223,11 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
             }
           });
           onRelistedSuccessfully?.();
-        } catch (error) {
+        } catch (err) {
+          const error = err as Error;
           showModal("TRANSACTION_FAILED", {
             errorMessage: "Something went wrong",
-            detailedErrorMessage:
-              "Please try again or try disconnecting and reconnecting your wallet before relisting the offer"
+            detailedErrorMessage: extractUserFriendlyError(error)
           });
           console.error(error);
           Sentry.captureException(error);

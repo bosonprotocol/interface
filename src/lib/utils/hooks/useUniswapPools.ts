@@ -106,7 +106,7 @@ export function useUniswapPools({ tokens }: Props) {
   const swapQueries = generateQuery(tokensWithoutBoson, true);
 
   const allTokens = useQuery(
-    ["pools-all"],
+    ["pools-all", queries, swapQueries],
     async () => {
       const allPromises = [...queries, ...swapQueries].map(
         async ({ query, variables }: QueryProps) =>

@@ -1,7 +1,7 @@
 import { accounts, offers, subgraph } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
-import { useAccount } from "wagmi";
 
 import { useModal } from "../../../../components/modal/useModal";
 import { TOKEN_TYPES } from "../../../../components/product/utils";
@@ -40,7 +40,7 @@ type UseCreateOffersProps = {
 
 export function useCreateOffers() {
   const coreSDK = useCoreSDK();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { showModal, hideModal } = useModal();
   const addPendingTransaction = useAddPendingTransaction();
   const isMetaTx = Boolean(coreSDK.isMetaTxConfigSet && address);

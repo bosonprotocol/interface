@@ -13,11 +13,7 @@ import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 dayjs.extend(isBetween);
 
-import {
-  ButtonSize,
-  Currencies,
-  CurrencyDisplay
-} from "@bosonprotocol/react-kit";
+import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 
 import { colors } from "../../../lib/styles/colors";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
@@ -149,7 +145,7 @@ export default function SellerFinances({
   offersBacked,
   sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
-  const { showModal, modalTypes } = useModal();
+  const { showModal } = useModal();
   const { funds, reload, fundStatus } = fundsData;
   const {
     isLoading: isLoadingExchangesTokens,
@@ -274,11 +270,11 @@ export default function SellerFinances({
               <WithdrawButton
                 theme="outline"
                 size="small"
-                disabled={!sellerRoles.isClerk}
-                tooltip="This action is restricted to only the clerk wallet"
+                disabled={!sellerRoles.isAssistant}
+                tooltip="This action is restricted to only the assistant wallet"
                 onClick={() => {
                   showModal(
-                    modalTypes.FINANCE_WITHDRAW_MODAL,
+                    "FINANCE_WITHDRAW_MODAL",
                     {
                       title: `Withdraw ${fund.token.symbol}`,
                       protocolBalance: withdrawable,
@@ -298,10 +294,10 @@ export default function SellerFinances({
               </WithdrawButton>
               <BosonButton
                 variant="accentInverted"
-                size={ButtonSize.Small}
+                size="small"
                 onClick={() => {
                   showModal(
-                    modalTypes.FINANCE_DEPOSIT_MODAL,
+                    "FINANCE_DEPOSIT_MODAL",
                     {
                       title: `Deposit ${fund.token.symbol}`,
                       protocolBalance: withdrawable,
@@ -323,8 +319,6 @@ export default function SellerFinances({
         };
       }),
     [
-      modalTypes.FINANCE_DEPOSIT_MODAL,
-      modalTypes.FINANCE_WITHDRAW_MODAL,
       offersBackedCell,
       reloadData,
       sellerId,

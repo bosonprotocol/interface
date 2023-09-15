@@ -1,4 +1,6 @@
-mutation createSetFollowNFTUriTypedData($request: CreateSetFollowNFTUriRequest!) {
+mutation createSetFollowNFTUriTypedData(
+  $request: CreateSetFollowNFTUriRequest!
+) {
   createSetFollowNFTUriTypedData(request: $request) {
     id
     expiresAt

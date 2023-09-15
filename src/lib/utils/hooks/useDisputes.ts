@@ -11,7 +11,7 @@ export function useDisputes(
 ) {
   const coreSDK = useCoreSDK();
   return useQuery(
-    ["disputes", props],
+    ["disputes", props, coreSDK.uuid],
     async () => {
       const disputes = await coreSDK?.getDisputes(props);
 

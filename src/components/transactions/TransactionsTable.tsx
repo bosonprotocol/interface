@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import dayjs from "dayjs";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
@@ -33,6 +34,8 @@ interface Props {
 }
 
 export default function TransactionsTable({ transactions }: Props) {
+  const { config } = useConfigContext();
+  const getTxExplorerUrl = config.envConfig.getTxExplorerUrl;
   const columns = useMemo(
     () => [
       {
@@ -93,7 +96,7 @@ export default function TransactionsTable({ transactions }: Props) {
             </Tooltip>
           ),
           linkToBlock: (
-            <a href={CONFIG.getTxExplorerUrl?.(tx.hash)} target="_blank">
+            <a href={getTxExplorerUrl?.(tx.hash)} target="_blank">
               <Typography
                 fontWeight="600"
                 $fontSize="0.75rem"
@@ -107,7 +110,7 @@ export default function TransactionsTable({ transactions }: Props) {
           pathname: tx.pathname
         };
       }),
-    [transactions] // eslint-disable-line
+    [transactions, getTxExplorerUrl] // eslint-disable-line
   );
 
   const tableProps = useTable(

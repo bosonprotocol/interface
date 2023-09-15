@@ -6,12 +6,12 @@ import {
   VoidButton
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
@@ -193,6 +193,7 @@ export default function VoidProduct({
   offers,
   refetch
 }: Props) {
+  const { config } = useConfigContext();
   const { showModal } = useModal();
   const coreSdk = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
@@ -266,12 +267,12 @@ export default function VoidProduct({
         <SuccessTransactionToast
           t={t}
           action={text}
-          url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+          url={config.envConfig.getTxExplorerUrl?.(receipt.transactionHash)}
         />
       ));
       handleFinish();
     },
-    [batchVoidPool, handleFinish, offer, voidPool]
+    [batchVoidPool, handleFinish, offer, voidPool, config.envConfig]
   );
 
   const handleBatchVoid = useCallback(async () => {
@@ -333,8 +334,13 @@ export default function VoidProduct({
           <VoidButtonWrapper>
             <VoidButton
               variant="accentInverted"
+              coreSdkConfig={{
+                envName: config.envName,
+                configId: config.envConfig.configId,
+                web3Provider: signer?.provider as Provider,
+                metaTx: config.metaTx
+              }}
               offerId={offerId || 0}
-              envName={CONFIG.envName}
               onError={(error) => {
                 console.error("onError", error);
                 const hasUserRejectedTx =
@@ -369,8 +375,6 @@ export default function VoidProduct({
                 });
               }}
               onSuccess={handleSuccess}
-              web3Provider={signer?.provider as Provider}
-              metaTx={CONFIG.metaTx}
             />
           </VoidButtonWrapper>
         </Grid>

@@ -1,8 +1,8 @@
 import { Button } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import { House, WarningCircle } from "phosphor-react";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import {
   WithSellerData,
@@ -66,7 +66,7 @@ function SellerCenterWrapper() {
     sellerIds?.length === 1 ? sellerIds[0] : ""
   );
 
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
 
   useEffect(() => {
     if (isSuccess) {

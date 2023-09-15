@@ -2,12 +2,11 @@ import { defaultMockOffers } from "./defaultMockOffers";
 import { CustomResponse } from "./mockGetBase";
 
 export interface MockProps {
-  postData: string | null;
   options: {
     response?: Partial<CustomResponse>;
   };
 }
-export async function mockGetExchanges({ postData, options }: MockProps) {
+export async function mockGetExchanges({ options }: MockProps) {
   const { response } = options;
   if (response) {
     return {

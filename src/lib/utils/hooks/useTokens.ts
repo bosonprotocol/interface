@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -9,12 +10,16 @@ export function useTokens(
     enabled?: boolean;
   } = {}
 ) {
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   return useQuery(
-    "tokens",
+    ["tokens", subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         exchangeTokens: Pick<Offer["exchangeToken"], "address" | "symbol">[];
       }>(
+        subgraphUrl,
         gql`
           {
             exchangeTokens(orderBy: "symbol", orderDirection: asc) {

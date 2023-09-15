@@ -1,3 +1,4 @@
+import { DappConfig } from "lib/config";
 import React from "react";
 
 import ConfirmProductDetails from "../../../components/product/ConfirmProductDetails";
@@ -10,12 +11,13 @@ import ShippingInfo from "../../../components/product/ShippingInfo";
 import TermsOfExchange from "../../../components/product/TermsOfExchange";
 import TokenGating from "../../../components/product/tokenGating/TokenGating";
 import {
-  coreTermsOfSaleValidationSchema,
+  CoreTermsOfSaleValidationSchema,
+  getCoreTermsOfSaleValidationSchema,
+  getProductVariantsValidationSchema,
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
   productVariantsImagesValidationSchema,
-  productVariantsValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
   tokenGatingValidationSchema,
@@ -72,7 +74,7 @@ export type CreateProductSteps = {
   };
   3: {
     ui: JSX.Element;
-    validation: typeof coreTermsOfSaleValidationSchema;
+    validation: CoreTermsOfSaleValidationSchema;
     helpSection: typeof coreTermsOfSaleHelp;
   };
   4: {
@@ -102,6 +104,7 @@ type CreateProductStepsParams = {
   isTokenGated: boolean;
   onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
   isOneSetOfImages: boolean;
+  config: DappConfig;
 };
 
 export const createProductSteps = ({
@@ -113,7 +116,8 @@ export const createProductSteps = ({
   isMultiVariant,
   isTokenGated,
   onChangeOneSetOfImages,
-  isOneSetOfImages
+  isOneSetOfImages,
+  config
 }: CreateProductStepsParams) => {
   const productType = {
     ui: (
@@ -160,7 +164,7 @@ export const createProductSteps = ({
     ),
     validation: isMultiVariant
       ? variantsCoreTermsOfSaleValidationSchema
-      : coreTermsOfSaleValidationSchema,
+      : getCoreTermsOfSaleValidationSchema(config),
     helpSection: coreTermsOfSaleHelp
   };
   const tokenGating = {
@@ -232,7 +236,7 @@ export const createProductSteps = ({
           <ProductVariants />
         </>
       ),
-      validation: productVariantsValidationSchema,
+      validation: getProductVariantsValidationSchema(config),
       helpSection: productVariantsHelp,
       stepNo: "productVariants"
     };

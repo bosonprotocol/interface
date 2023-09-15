@@ -1,10 +1,10 @@
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import { Warning } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import Collapse from "../../components/collapse/Collapse";
 import { Spinner } from "../../components/loading/Spinner";
@@ -92,7 +92,7 @@ export default function ConfirmProductDetails({
   const { bosonXmtp } = useChatContext();
 
   const { values } = useCreateForm();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
 
   const showSuccessInitialization =
     [

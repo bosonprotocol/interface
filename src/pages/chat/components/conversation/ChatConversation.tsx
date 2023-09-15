@@ -7,6 +7,7 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { ArrowLeft, WarningCircle } from "phosphor-react";
@@ -21,7 +22,6 @@ import {
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { Spinner } from "../../../../components/loading/Spinner";
 import InitializeChat from "../../../../components/modal/components/Chat/components/InitializeChat";
@@ -275,7 +275,7 @@ const ChatConversation = ({
     { enabled: !!exchange }
   );
   const dispute = disputes?.[0];
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
@@ -860,7 +860,7 @@ const ChatConversation = ({
             setHasError={setHasError}
             addMessage={addMessage}
             destinationAddress={destinationAddress}
-            address={address}
+            address={address as `0x${string}`}
             onSentMessage={onSentMessage}
             onTextAreaChange={onTextAreaChange}
             textAreaValue={textAreaValue}

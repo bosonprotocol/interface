@@ -17,9 +17,6 @@ const DisputeResolverInner = styled.div`
   box-shadow: 0px 0px 5px 0px rgb(0 0 0 / 2%), 0px 0px 10px 0px rgb(0 0 0 / 2%),
     0px 0px 15px 0px rgb(0 0 0 / 5%);
 `;
-export const LoadingWrapper = styled.div`
-  text-align: center;
-`;
 
 interface Props {
   children: React.ReactNode;

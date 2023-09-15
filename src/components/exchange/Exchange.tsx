@@ -6,11 +6,12 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -65,11 +66,14 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
 `;
 
 export default function Exchange({ offer, exchange }: Props) {
+  const { config } = useConfigContext();
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const avatar = getLensImageUrl(getLensProfilePictureUrl(lens));
+  const avatar = config.lens.ipfsGateway
+    ? getLensImageUrl(getLensProfilePictureUrl(lens), config.lens.ipfsGateway)
+    : null;
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
@@ -77,7 +81,7 @@ export default function Exchange({ offer, exchange }: Props) {
     height: 500
   });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
 
   const handleText = useHandleText(offer);
@@ -148,7 +152,8 @@ export default function Exchange({ offer, exchange }: Props) {
             //@ts-ignore
             window.bosonWidgetShowRedeem({
               exchangeId: exchange?.id || "",
-              bypassMode: "REDEEM"
+              bypassMode: "REDEEM",
+              configId: config.envConfig.configId
             });
           } catch (e) {
             console.error(e);
@@ -161,7 +166,8 @@ export default function Exchange({ offer, exchange }: Props) {
             //@ts-ignore
             window.bosonWidgetShowRedeem({
               exchangeId: exchange?.id || "",
-              bypassMode: "CANCEL"
+              bypassMode: "CANCEL",
+              configId: config.envConfig.configId
             });
           } catch (e) {
             console.error(e);

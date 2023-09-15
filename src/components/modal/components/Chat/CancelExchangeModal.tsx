@@ -1,11 +1,11 @@
 import { CancelButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { displayFloat } from "../../../../lib/utils/calcPrice";
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
@@ -109,6 +109,7 @@ export default function CancelExchangeModal({
   BASE_MODAL_DATA,
   reload
 }: Props) {
+  const { config } = useConfigContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [cancelError, setCancelError] = useState<Error | null>(null);
   const { offer } = exchange;
@@ -195,7 +196,12 @@ export default function CancelExchangeModal({
           <CancelButton
             variant="accentInverted"
             exchangeId={exchange.id}
-            envName={CONFIG.envName}
+            coreSdkConfig={{
+              envName: config.envName,
+              configId: config.envConfig.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: config.metaTx
+            }}
             disabled={isLoading}
             onError={(error) => {
               console.error(error);
@@ -272,8 +278,6 @@ export default function CancelExchangeModal({
                 />
               ));
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           >
             <Grid gap="0.5rem">
               Confirm cancellation

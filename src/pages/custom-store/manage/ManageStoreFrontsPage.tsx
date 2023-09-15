@@ -1,12 +1,12 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
 import { Copy, Gear, Trash } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { CopyButton } from "../../../components/form/Field.styles";
 import ConnectButton from "../../../components/header/ConnectButton";
@@ -114,7 +114,7 @@ const iconProps = {
 } as const;
 
 export const ManageStoreFrontsPage = () => {
-  const { isConnected } = useAccount();
+  const { account: address } = useWeb3React();
   const { showModal } = useModal();
   const { sellers, refetch } = useCurrentSellers();
 
@@ -127,7 +127,7 @@ export const ManageStoreFrontsPage = () => {
         Number(st1.deployments?.[0]?.lastUpdated)
       );
     });
-  if (!isConnected) {
+  if (!address) {
     return (
       <Grid justifyContent="flex-start" alignItems="center" gap="1rem">
         <ConnectButton /> Please connect your wallet

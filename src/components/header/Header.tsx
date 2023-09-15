@@ -1,27 +1,28 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
+import logo from "assets/logo.svg";
+import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
+import { ChainSelector } from "components/header/selector/ChainSelector";
+import Layout from "components/layout/Layout";
+import { Spinner } from "components/loading/Spinner";
+import { Portal } from "components/portal/Portal";
+import { DEFAULT_SELLER_PAGE } from "components/seller/SellerPages";
+import BosonButton from "components/ui/BosonButton";
+import Grid from "components/ui/Grid";
+import { UrlParameters } from "lib/routing/parameters";
+import { BosonRoutes, SellerCenterRoutes } from "lib/routing/routes";
+import { breakpoint } from "lib/styles/breakpoint";
+import { colors } from "lib/styles/colors";
+import { zIndex } from "lib/styles/zIndex";
+import { useOffers } from "lib/utils/hooks/offers";
+import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
+import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { X } from "phosphor-react";
 import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
+import useUserRoles from "router/useUserRoles";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
-import logo from "../../../src/assets/logo.svg";
-import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
-import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
-import { zIndex } from "../../lib/styles/zIndex";
-import { useOffers } from "../../lib/utils/hooks/offers";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
-import useUserRoles from "../../router/useUserRoles";
-import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import Layout from "../layout/Layout";
-import { Spinner } from "../loading/Spinner";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
-import BosonButton from "../ui/BosonButton";
-import Grid from "../ui/Grid";
+import { AccountDrawer } from "./accountDrawer";
 import { BurgerButton } from "./BurgerButton";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
@@ -209,7 +210,6 @@ interface Props {
 }
 export const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false }, ref) => {
-    const { address } = useAccount();
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
@@ -280,7 +280,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                     whiteSpace: "pre",
                     marginLeft: isLteXS ? "1rem" : ""
                   }}
-                  size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
+                  size={"regular"}
                   onClick={() => {
                     navigate({ pathname: sellUrl });
                   }}
@@ -308,81 +308,88 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
     ]);
 
     return (
-      <>
-        <Header
+      <Header
+        $navigationBarPosition={navigationBarPosition}
+        $isSideBarOpen={isOpen}
+        ref={ref}
+      >
+        <HeaderContainer
+          fluidHeader={fluidHeader}
           $navigationBarPosition={navigationBarPosition}
-          $isSideBarOpen={isOpen}
-          ref={ref}
         >
-          <HeaderContainer
-            fluidHeader={fluidHeader}
-            $navigationBarPosition={navigationBarPosition}
-          >
-            {isSideBurgerVisible ? (
-              <Grid justifyContent="center">
-                <BurgerButton onClick={toggleMenu} />
+          {isSideBurgerVisible ? (
+            <Grid justifyContent="center">
+              <BurgerButton onClick={toggleMenu} />
+            </Grid>
+          ) : (
+            <>
+              <Grid flexDirection="row" alignItems="center" $width="initial">
+                <LinkWithQuery
+                  to={BosonRoutes.Root}
+                  style={{ display: "flex" }}
+                >
+                  <LogoImg
+                    src={logoUrl || logo}
+                    alt="logo image"
+                    data-testid="logo"
+                    width={logoUrl ? undefined : isLteXS ? 104 : 204}
+                    height={
+                      logoUrl
+                        ? undefined
+                        : isLteXS
+                        ? logoXXSHeightPx
+                        : logoSHeightPx
+                    }
+                  />
+                </LinkWithQuery>
+                {isSideCrossVisible && (
+                  <X
+                    color={colors.secondary}
+                    onClick={toggleMenu}
+                    style={{ cursor: "pointer" }}
+                    size="24"
+                  />
+                )}
               </Grid>
-            ) : (
-              <>
-                <Grid flexDirection="row" alignItems="center" $width="initial">
-                  <LinkWithQuery
-                    to={BosonRoutes.Root}
-                    style={{ display: "flex" }}
-                  >
-                    <LogoImg
-                      src={logoUrl || logo}
-                      alt="logo image"
-                      data-testid="logo"
-                      width={logoUrl ? undefined : isLteXS ? 104 : 204}
-                      height={
-                        logoUrl
-                          ? undefined
-                          : isLteXS
-                          ? logoXXSHeightPx
-                          : logoSHeightPx
-                      }
-                    />
-                  </LinkWithQuery>
-                  {isSideCrossVisible && (
-                    <X
-                      color={colors.secondary}
-                      onClick={toggleMenu}
-                      style={{ cursor: "pointer" }}
-                      size="24"
-                    />
-                  )}
-                </Grid>
-                <HeaderItems
-                  fluidHeader={fluidHeader}
-                  $navigationBarPosition={navigationBarPosition}
+              <HeaderItems
+                fluidHeader={fluidHeader}
+                $navigationBarPosition={navigationBarPosition}
+              >
+                {burgerMenuBreakpoint && (
+                  <>
+                    <CTA />
+                    {!isLteXS && <ChainSelector />}
+                    <ConnectButton showOnlyIcon />
+                    <BurgerButton onClick={toggleMenu} />
+                  </>
+                )}
+                <HeaderLinks
+                  isMobile={burgerMenuBreakpoint}
+                  isOpen={isOpen}
+                  navigationBarPosition={navigationBarPosition}
                 >
                   {burgerMenuBreakpoint && (
-                    <>
-                      <CTA />
-                      <ConnectButton showAddress={!address} />
-                      <BurgerButton onClick={toggleMenu} />
-                    </>
+                    <Grid justifyContent="flex-start">
+                      <ChainSelector />
+                      <ConnectButton />
+                    </Grid>
                   )}
-                  <HeaderLinks
-                    isMobile={burgerMenuBreakpoint}
-                    isOpen={isOpen}
-                    navigationBarPosition={navigationBarPosition}
-                  />
-                  {!burgerMenuBreakpoint && (
-                    <>
-                      <CTA />
-                      <ConnectButton
-                        navigationBarPosition={navigationBarPosition}
-                        showAddress={!address}
-                      />
-                    </>
-                  )}
-                </HeaderItems>
-              </>
-            )}
-          </HeaderContainer>
-        </Header>
-      </>
+                </HeaderLinks>
+                {!burgerMenuBreakpoint && (
+                  <>
+                    <CTA />
+                    <ChainSelector />
+                    <ConnectButton />
+                  </>
+                )}
+              </HeaderItems>
+            </>
+          )}
+        </HeaderContainer>
+        <Portal>
+          <AccountDrawer />
+        </Portal>
+      </Header>
     );
   }
 );

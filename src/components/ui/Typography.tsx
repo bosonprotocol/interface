@@ -49,7 +49,7 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 type Tag = keyof JSX.IntrinsicElements;
 
-type ITypography<T extends Tag> = WrapperProps &
+export type TypographyProps<T extends Tag = "div"> = WrapperProps &
   Omit<HTMLAttributes<T>, "color"> & {
     children?: string | React.ReactNode;
     tag?: Tag;
@@ -58,7 +58,7 @@ type ITypography<T extends Tag> = WrapperProps &
   };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Typography = forwardRef<HTMLElement, ITypography<any>>(
+const Typography = forwardRef<HTMLElement, TypographyProps<any>>(
   ({ tag = "div", children, style = {}, ...props }, ref) => {
     return (
       <Wrapper style={style} {...props} as={tag} ref={ref}>

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ButtonSize } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useField } from "formik";
 import { useCallback, useEffect } from "react";
 import styled from "styled-components";
@@ -16,7 +16,7 @@ import {
   SectionTitle
 } from "./Product.styles";
 import {
-  OPTIONS_CURRENCIES,
+  getOptionsCurrencies,
   ProductVariants as ProductVariantsType
 } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
@@ -122,6 +122,9 @@ const deleteTagsIfNoVariants = (
 };
 
 export default function ProductVariants() {
+  const { config } = useConfigContext();
+  const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
+
   const { nextIsDisabled } = useCreateForm();
   const [fieldColors, , helpersColors] =
     useField<ProductVariantsType["productVariants"]["colors"]>(
@@ -341,7 +344,7 @@ export default function ProductVariants() {
                     <Grid justifyContent="center">
                       <BosonButton
                         variant="secondaryInverted"
-                        size={ButtonSize.Small}
+                        size="small"
                         onClick={() => {
                           deleteTagsIfNoVariants(
                             variant,

@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
+import { useConfigContext } from "components/config/ConfigContext";
 import { ethers } from "ethers";
 import map from "lodash/map";
 import styled from "styled-components";
@@ -61,6 +62,7 @@ export default function Preview({
   hasMultipleVariants,
   decimals
 }: Props) {
+  const { config } = useConfigContext();
   const { values } = useCreateForm();
 
   const redemptionPointUrl =
@@ -75,7 +77,7 @@ export default function Preview({
   const exchangeSymbol = isMultiVariant
     ? firstVariant.currency.value
     : values.coreTermsOfSale.currency.value;
-  const exchangeToken = CONFIG.defaultTokens.find(
+  const exchangeToken = config.envConfig.defaultTokens?.find(
     (n: Token) => n.symbol === exchangeSymbol
   );
 
@@ -89,7 +91,7 @@ export default function Preview({
   );
   const offerImg = sliderImages?.[0] || "";
 
-  const disputeResolverId = CONFIG.defaultDisputeResolverId;
+  const disputeResolverId = config.envConfig.defaultDisputeResolverId;
   const { disputeResolver } = useDisputeResolver(disputeResolverId);
   const escalationResponsePeriod =
     disputeResolver?.escalationResponsePeriod || "0";
@@ -203,7 +205,7 @@ export default function Preview({
     exchangeToken: exchangeToken || {
       // this 'or' should never occurr
       address: ethers.constants.AddressZero,
-      decimals: CONFIG.nativeCoin?.decimals || "",
+      decimals: config.envConfig.nativeCoin?.decimals || "",
       name: values.coreTermsOfSale.currency.value || "",
       symbol: values.coreTermsOfSale.currency.value || ""
     },

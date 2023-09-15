@@ -163,7 +163,8 @@ export default function MessageList({
   selectExchange
 }: Props) {
   const [showDisputesOnly, setShowDisputesOnly] = useState<boolean>(
-    !!currentExchange?.disputedDate
+    !!currentExchange?.disputedDate ||
+      exchanges.every((exchange) => !!exchange.disputedDate)
   );
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentExchange ? getMessageItemKey(currentExchange) : ""

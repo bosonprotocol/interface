@@ -1,13 +1,7 @@
-import { hooks } from "@bosonprotocol/react-kit";
-import { providers } from "ethers";
+import { useCoreSDKContext } from "components/core-sdk/CoreSDKContext";
 
-import { CONFIG } from "../config";
-import { useEthersSigner } from "./hooks/ethers/useEthersSigner";
+export const useCoreSDK = () => {
+  const coreSDK = useCoreSDKContext();
 
-export function useCoreSDK() {
-  const signer = useEthersSigner();
-  return hooks.useCoreSdk({
-    ...CONFIG,
-    web3Provider: signer?.provider as providers.Web3Provider
-  });
-}
+  return coreSDK;
+};

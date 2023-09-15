@@ -2,9 +2,7 @@ import * as Sentry from "@sentry/browser";
 // extracted from https://usehooks.com/useLocalStorage/
 import { useState } from "react";
 
-export const createProductImagePrefix = "create-product-image_";
-
-export type CreateProductImageCreteYourProfileLogo =
+export type CreateProductImageCreateYourProfileLogo =
   "create-product-image_createYourProfile.logo";
 
 export type CreateProductImageProductImages =
@@ -18,7 +16,6 @@ export type CreateProductImageProductImages =
   | "create-product-image_productImages.more";
 
 export type GetItemFromStorageKey =
-  | "wagmi.store"
   | "isChainUnsupported"
   | "create-product"
   | "tracing-url"
@@ -28,7 +25,7 @@ export type GetItemFromStorageKey =
   | "showCookies"
   | "showCookiesDrCenter"
   | CreateProductImageProductImages
-  | CreateProductImageCreteYourProfileLogo;
+  | CreateProductImageCreateYourProfileLogo;
 
 export function getItemFromStorage<T>(
   key: GetItemFromStorageKey,

@@ -15,7 +15,7 @@ export function useGetSellerMetadata(
 ) {
   const ipfsStorage = useIpfsStorage();
   return useQuery(
-    ["useGetSellerMetadata", props],
+    ["useGetSellerMetadata", props.seller],
     async () => {
       const seller = props.seller;
       if (!seller) {

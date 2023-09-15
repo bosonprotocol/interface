@@ -1,10 +1,9 @@
 import * as Sentry from "@sentry/browser";
 
-import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 
-export async function getOpenSeaUrl(address: string) {
-  const isProd = CONFIG.envName === "production";
+export async function getOpenSeaUrl(address: string, envName: string) {
+  const isProd = envName === "production";
 
   return new Promise((resolve) => {
     fetch(

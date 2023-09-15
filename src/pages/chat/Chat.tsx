@@ -1,8 +1,8 @@
+import { useWeb3React } from "@web3-react/core";
 import { WarningCircle } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
-import { useAccount } from "wagmi";
 
 import frame from "../../assets/frame.png";
 import Grid from "../../components/ui/Grid";
@@ -65,7 +65,7 @@ const getIsSameThread = (
 };
 
 export default function Chat() {
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
 
   const {
     seller: {

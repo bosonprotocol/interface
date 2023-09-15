@@ -7,6 +7,8 @@ import {
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import {
@@ -20,10 +22,9 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount, useSignMessage } from "wagmi";
+import { useSignMessage } from "wagmi";
 import * as Yup from "yup";
 
-import { CONFIG } from "../../../../../../../lib/config";
 import { colors } from "../../../../../../../lib/styles/colors";
 import {
   ChatInitializationStatus,
@@ -181,6 +182,7 @@ function EscalateStepTwo({
   onSentMessage,
   setHasError
 }: Props) {
+  const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { chatInitializationStatus } = useChatStatus();
   const { data } = useDisputeResolvers();
@@ -188,7 +190,7 @@ function EscalateStepTwo({
   const feeAmount = disputeResolver?.fees[0]?.feeAmount;
   const { hideModal, showModal } = useModal();
   const emailFormField =
-    CONFIG.envName === "production"
+    config.envName === "production"
       ? FormModel.formFields.email
       : FormModel.formFields.email_test;
 
@@ -198,7 +200,7 @@ function EscalateStepTwo({
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const { isLoading, signMessage } = useSignMessage({
     onSuccess(data) {
       setActiveStep(1);
@@ -369,7 +371,7 @@ function EscalateStepTwo({
         <SuccessTransactionToast
           t={t}
           action={`Escalated dispute: ${exchange?.offer?.metadata?.name}`}
-          url={CONFIG.getTxExplorerUrl?.(tx?.hash || "")}
+          url={config.envConfig.getTxExplorerUrl?.(tx?.hash || "")}
         />
       ));
       refetch();
@@ -402,7 +404,8 @@ function EscalateStepTwo({
     refetch,
     showModal,
     addPendingTransaction,
-    handleSendingEscalateMessage
+    handleSendingEscalateMessage,
+    config.envConfig
   ]);
   const showSuccessInitialization =
     [

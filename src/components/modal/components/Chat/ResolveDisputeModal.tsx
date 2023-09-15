@@ -8,6 +8,8 @@ import {
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, utils } from "ethers";
 import { Info as InfoComponent } from "phosphor-react";
 import {
@@ -19,9 +21,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
-import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
@@ -117,11 +117,12 @@ export default function ResolveDisputeModal({
   onSentMessage,
   setHasError
 }: Props) {
+  const { config } = useConfigContext();
   const { showModal, hideModal } = useModal();
   const { bosonXmtp } = useChatContext();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
       return null;
@@ -309,7 +310,7 @@ export default function ResolveDisputeModal({
                 <SuccessTransactionToast
                   t={t}
                   action={`Raised dispute: ${exchange.offer.metadata.name}`}
-                  url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                  url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
             } catch (error) {

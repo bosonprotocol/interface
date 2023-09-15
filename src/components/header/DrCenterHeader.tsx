@@ -1,6 +1,6 @@
+import { Portal } from "components/portal/Portal";
 import { forwardRef, useState } from "react";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import logo from "../../../src/assets/logo.svg";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
@@ -11,9 +11,11 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../layout/Layout";
 import Grid from "../ui/Grid";
+import { AccountDrawer } from "./accountDrawer";
 import { BurgerButton } from "./BurgerButton";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
+import { ChainSelector } from "./selector/ChainSelector";
 
 const Header = styled.header`
   position: fixed;
@@ -90,7 +92,6 @@ type DrCenterHeaderProps = {
 
 export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
   ({ fluidHeader = false }, ref) => {
-    const { address } = useAccount();
     const [isOpen, setOpen] = useState(false);
     const { isLteM, isLteXS } = useBreakpoints();
 
@@ -121,7 +122,8 @@ export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
               <HeaderItems fluidHeader={fluidHeader}>
                 {burgerMenuBreakpoint && (
                   <>
-                    <ConnectButton showAddress={!address} />
+                    <ChainSelector />
+                    <ConnectButton />
                     <BurgerButton onClick={toggleMenu} />
                   </>
                 )}
@@ -137,12 +139,16 @@ export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
                 />
                 {!burgerMenuBreakpoint && (
                   <>
-                    <ConnectButton showAddress={!address} />
+                    <ChainSelector />
+                    <ConnectButton />
                   </>
                 )}
               </HeaderItems>
             </>
           </HeaderContainer>
+          <Portal>
+            <AccountDrawer />
+          </Portal>
         </Header>
       </>
     );

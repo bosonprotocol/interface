@@ -1,4 +1,6 @@
-mutation createSetProfileMetadataTypedData($request: CreatePublicSetProfileMetadataURIRequest!) {
+mutation createSetProfileMetadataTypedData(
+  $request: CreatePublicSetProfileMetadataURIRequest!
+) {
   createSetProfileMetadataTypedData(request: $request) {
     id
     expiresAt

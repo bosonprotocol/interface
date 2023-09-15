@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -6,9 +7,12 @@ import { fetchSubgraph } from "../../core-components/subgraph";
 export default function useOfferByUuid(uuid: string | undefined): {
   offerId: string | undefined;
 } {
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   const props = { uuid };
 
-  const result = useQuery(["useOfferByUuid", props], async () => {
+  const result = useQuery(["useOfferByUuid", props, subgraphUrl], async () => {
     const result = await fetchSubgraph<{
       productV1MetadataEntities: {
         offer: {
@@ -16,6 +20,7 @@ export default function useOfferByUuid(uuid: string | undefined): {
         };
       }[];
     }>(
+      subgraphUrl,
       gql`
         query GeEtOfferIdFromUuid($uuid: String) {
           productV1MetadataEntities(where: { uuid: $uuid }) {

@@ -1,13 +1,13 @@
+import { useWeb3React } from "@web3-react/core";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { useCoreSDK } from "../useCoreSdk";
 
 export function useCurrentBuyer() {
   const coreSDK = useCoreSDK();
-  const { address } = useAccount();
+  const { account: address } = useWeb3React();
   return useQuery(
-    ["current-buyer"],
+    ["current-buyer", coreSDK.uuid, address],
     async () => {
       const buyers = await coreSDK.getBuyers({
         buyersFilter: {

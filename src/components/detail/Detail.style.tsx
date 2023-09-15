@@ -15,25 +15,6 @@ export const ChartWrapper = styled.div`
   }
 `;
 
-export const Labels = styled.div`
-  display: flex;
-  margin-left: 1rem;
-`;
-
-export const Label = styled.div<{ $background: string; $color: string }>`
-  background: ${(props) => props.$background || colors.lightGrey};
-  color: ${(props) => props.$color || colors.darkGrey};
-  padding: 0.5rem 1rem;
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.5;
-  text-transform: lowercase;
-  &:first-letter {
-    text-transform: uppercase;
-  }
-`;
 export const CommitStepWrapper = styled.div`
   overflow: hidden;
   margin: 1rem 0;

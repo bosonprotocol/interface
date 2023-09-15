@@ -1,15 +1,15 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { BigNumber, ethers } from "ethers";
+import { useConfigContext } from "components/config/ConfigContext";
+import { BigNumber } from "ethers";
+import { extractUserFriendlyError } from "lib/utils/errors";
+import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { useState } from "react";
-import { useAccount, useBalance } from "wagmi";
 
-import { CONFIG, config } from "../../../../lib/config";
 import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
-import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
@@ -38,6 +38,7 @@ export default function FinanceDeposit({
   tokenDecimals,
   reload
 }: Props) {
+  const { config } = useConfigContext();
   const [amountToDepositTouched, setAmountToDepositTouched] =
     useState<boolean>(false);
   const [amountToDeposit, setAmountToDeposit] = useState<string>("0");
@@ -46,16 +47,10 @@ export default function FinanceDeposit({
   const [depositError, setDepositError] = useState<unknown>(null);
 
   const signer = useEthersSigner();
-  const { address } = useAccount();
-  const { data: dataBalance, refetch } = useBalance(
-    exchangeToken !== ethers.constants.AddressZero
-      ? {
-          address: address,
-          token: exchangeToken as `0x${string}`
-        }
-      : { address: address }
-  );
-
+  const { balance: exchangeTokenBalance } = useExchangeTokenBalance({
+    address: exchangeToken,
+    decimals: tokenDecimals
+  });
   const { showModal, hideModal } = useModal();
   const addPendingTransaction = useAddPendingTransaction();
 
@@ -112,7 +107,8 @@ export default function FinanceDeposit({
               {symbol}
             </Typography>
             <Typography $fontSize="0.625rem" margin="0">
-              Balance {dataBalance?.formatted}
+              Balance{" "}
+              {exchangeTokenBalance?.toSignificant(Number(tokenDecimals))}
             </Typography>
           </div>
         </InputWrapper>
@@ -129,10 +125,13 @@ export default function FinanceDeposit({
                   getNumberWithoutDecimals(amountToDeposit, tokenDecimals)
                 )
           }
-          envName={config.envName}
+          coreSdkConfig={{
+            envName: config.envName,
+            configId: config.envConfig.configId,
+            web3Provider: signer?.provider as Provider,
+            metaTx: config.metaTx
+          }}
           disabled={isBeingDeposit || isDepositInvalid}
-          web3Provider={signer?.provider as Provider}
-          metaTx={CONFIG.metaTx}
           onPendingSignature={() => {
             setDepositError(null);
             setIsBeingDeposit(true);
@@ -164,16 +163,17 @@ export default function FinanceDeposit({
             }
           }}
           onSuccess={async () => {
-            await poll(
-              async () => {
-                const balance = await refetch();
-                return balance;
-              },
-              (balance) => {
-                return dataBalance?.formatted === balance.data?.formatted;
-              },
-              500
-            );
+            // TODO: test if this is necessary
+            // await poll(
+            //   async () => {
+            //     const balance = await refetch();
+            //     return balance;
+            //   },
+            //   (balance) => {
+            //     return dataBalance?.formatted === balance.data?.formatted;
+            //   },
+            //   500
+            // );
             setAmountToDeposit("0");
             setIsDepositInvalid(true);
             reload();
@@ -190,7 +190,8 @@ export default function FinanceDeposit({
             } else {
               Sentry.captureException(error);
               showModal("TRANSACTION_FAILED", {
-                errorMessage: "Something went wrong"
+                errorMessage: "Something went wrong",
+                detailedErrorMessage: extractUserFriendlyError(error)
               });
             }
             setDepositError(error);

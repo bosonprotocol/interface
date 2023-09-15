@@ -1,9 +1,10 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { EditProfile } from "../../../components/detail/EditProfile";
 import {
@@ -79,7 +80,8 @@ const SellerButton = styled.div`
 `;
 
 export default function Seller() {
-  const { address: currentWalletAddress = "" } = useAccount();
+  const { config } = useConfigContext();
+  const { account: currentWalletAddress = "" } = useWeb3React();
   let { [UrlParameters.sellerId]: sellerId = "" } = useParams();
   let lensHandle: string | null = null;
   if (isMatchingLensHandle(sellerId)) {
@@ -97,7 +99,7 @@ export default function Seller() {
       handles: [lensHandle]
     },
     {
-      enabled: !!lensHandle
+      enabled: !!lensHandle && config.lens.availableOnNetwork
     }
   );
   const lensProfiles: Profile[] = useMemo(() => {
@@ -122,8 +124,20 @@ export default function Seller() {
   const [sellerLens] = sellersLens;
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
   sellerId = sellersData?.length ? sellersData[0].id : sellerId;
-  const lensCoverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
-  const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
+  const lensCoverImage =
+    config.lens.ipfsGateway && sellerLens
+      ? getLensImageUrl(
+          getLensCoverPictureUrl(sellerLens),
+          config.lens.ipfsGateway
+        )
+      : null;
+  const avatar =
+    config.lens.ipfsGateway && sellerLens
+      ? getLensImageUrl(
+          getLensProfilePictureUrl(sellerLens),
+          config.lens.ipfsGateway
+        )
+      : null;
 
   const name =
     (useLens ? sellerLens?.name : metadata?.name) ?? metadata?.name ?? "";

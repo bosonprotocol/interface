@@ -30,7 +30,8 @@ export const BosonRoutes = addViewModePrefixToPaths(
     DRAdmin: "/dr-admin",
     DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,
     Error404: "*",
-    AboutPage: "/about"
+    AboutPage: "/about",
+    Swap: "/swap"
   } as const
 );
 

@@ -1,6 +1,6 @@
+import { useWeb3React } from "@web3-react/core";
 import { useMemo } from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import disputeResolutionBackground from "../../assets/background1.svg";
 import ConnectButton from "../../components/header/ConnectButton";
@@ -86,8 +86,8 @@ const CustomGridContainer = styled.div`
 function DisputeCenterPage() {
   const { showModal, modalTypes } = useModal();
   const { isLteS } = useBreakpoints();
-  const { address } = useAccount();
-  const { buyer, seller } = useBuyerSellerAccounts(address);
+  const { account } = useWeb3React();
+  const { buyer, seller } = useBuyerSellerAccounts(account);
   const myBuyerId = buyer.buyerId;
   const mySellerId = seller.sellerId;
 
@@ -185,7 +185,7 @@ function DisputeCenterPage() {
           </CustomGridContainer>
         </LayoutRoot>
       </DisputeListHeader>
-      {address ? (
+      {account ? (
         <>
           <Grid
             justifyContent="flex-end"

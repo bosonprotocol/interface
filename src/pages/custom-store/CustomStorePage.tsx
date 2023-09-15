@@ -1,9 +1,11 @@
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
 import { Form, Formik } from "formik";
+import { BosonRoutes } from "lib/routing/routes";
+import { getViewModeUrl, ViewMode } from "lib/viewMode";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 import * as Yup from "yup";
 
 import ConnectButton from "../../components/header/ConnectButton";
@@ -42,7 +44,7 @@ const Root = styled(Layout)`
 
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
-  const { isConnected } = useAccount();
+  const { account: address } = useWeb3React();
   const [searchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const removeLandingQueryParams = useRemoveLandingQueryParams();
@@ -57,7 +59,7 @@ export default function CustomStore() {
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
   const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
 
-  if (!isConnected) {
+  if (!address) {
     return (
       <Grid justifyContent="flex-start" alignItems="center" gap="1rem">
         <ConnectButton /> Please connect your wallet
@@ -111,6 +113,7 @@ export default function CustomStore() {
         onSubmit={async (values) => {
           setHasSubmitError(false);
           try {
+            const dappOrigin = getViewModeUrl(ViewMode.DAPP, BosonRoutes.Root);
             const queryParams = new URLSearchParams(
               formValuesWithOneLogoUrl(values as unknown as StoreFormFields)
             ).toString();
@@ -136,7 +139,7 @@ export default function CustomStore() {
               }
             </style>
             <iframe
-              src="${window.location.origin}/#/?${queryParams}"
+              src="${dappOrigin}?${queryParams}"
               width="100%"
               height="100%"/>
       </body>

@@ -1,8 +1,8 @@
 import { Currencies, CurrencyLogo } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useState } from "react";
 
-import { CONFIG } from "../../lib/config";
 import { ReactComponent as bosonIcon } from "./images/boson.svg";
 import { ReactComponent as daiIcon } from "./images/dai.svg";
 
@@ -17,14 +17,12 @@ interface Props {
   size?: number;
 }
 
-const chain = ["testing", "staging", "production"].includes(CONFIG.envName)
-  ? "polygon"
-  : "ethereum";
 export default function CurrencyIcon({
   currencySymbol,
   onError,
   size = 20
 }: Props) {
+  const { config } = useConfigContext();
   const [error, setError] = useState<boolean>(false);
   try {
     const symbolUpperCase =
@@ -43,12 +41,10 @@ export default function CurrencyIcon({
 
     let usedCurrency: Currencies;
 
-    switch (chain) {
-      case "polygon":
+    switch (config.envConfig.chainId) {
+      case 137:
+      case 80001:
         usedCurrency = Currencies.POLYGON;
-        break;
-      case "ethereum":
-        usedCurrency = Currencies.ETH;
         break;
       default:
         usedCurrency = Currencies.ETH;

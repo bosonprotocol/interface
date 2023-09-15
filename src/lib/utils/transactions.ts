@@ -53,6 +53,16 @@ const buildTransactionLabelAndPath = (
         label: `Escalated dispute with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
+    case subgraph.EventType.DisputeRetracted:
+      return {
+        label: `Retracted dispute with id: ${exchangeOrDisputeId}`,
+        pathname: exchangeOrDisputePath
+      };
+    case subgraph.EventType.DisputeTimeoutExtended:
+      return {
+        label: `Dispute timeout extended with id: ${exchangeOrDisputeId}`,
+        pathname: exchangeOrDisputePath
+      };
     case subgraph.EventType.DisputeRaised:
       return {
         label: `Raised dispute with id: ${exchangeOrDisputeId}`,
