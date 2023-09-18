@@ -14,18 +14,48 @@ interface Props {
 const openSeaUrlMap = new Map([
   [
     "testing", // Mumbai
-    (tokenId: string, contractAddress: string) =>
-      `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
+    new Map([
+      [
+        "testing-80001-0",
+        (tokenId: string, contractAddress: string) =>
+          `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
+      ],
+      [
+        "testing-5-0",
+        (tokenId: string, contractAddress: string) =>
+          `https://testnets.opensea.io/assets/goerli/${contractAddress}/${tokenId}`
+      ]
+    ])
   ],
   [
     "staging", // Mumbai
-    (tokenId: string, contractAddress: string) =>
-      `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
+    new Map([
+      [
+        "staging-80001-0",
+        (tokenId: string, contractAddress: string) =>
+          `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
+      ],
+      [
+        "staging-5-0",
+        (tokenId: string, contractAddress: string) =>
+          `https://testnets.opensea.io/assets/goerli/${contractAddress}/${tokenId}`
+      ]
+    ])
   ],
   [
     "production", // Polygon
-    (tokenId: string, contractAddress: string) =>
-      `https://opensea.io/assets/matic/${contractAddress}/${tokenId}`
+    new Map([
+      [
+        "production-137-0",
+        (tokenId: string, contractAddress: string) =>
+          `https://opensea.io/assets/matic/${contractAddress}/${tokenId}`
+      ],
+      [
+        "production-1-0",
+        (tokenId: string, contractAddress: string) =>
+          `https://opensea.io/assets/ethereum/${contractAddress}/${tokenId}`
+      ]
+    ])
   ]
 ]);
 
@@ -44,12 +74,14 @@ export default function DetailOpenSea({ exchange }: Props) {
       return "";
     }
 
-    const urlFn = openSeaUrlMap.get(config.envName);
+    const urlFn = openSeaUrlMap
+      .get(config.envName)
+      ?.get(config.envConfig.configId);
 
     const tokenId = getExchangeTokenId(exchange, config.envName);
 
     return urlFn?.(tokenId, exchange.seller.voucherCloneAddress) || "";
-  }, [exchange, config.envName]);
+  }, [exchange, config.envName, config.envConfig.configId]);
 
   if (!isToRedeem) {
     return null;
