@@ -1,5 +1,4 @@
 import { useConfigContext } from "components/config/ConfigContext";
-import { useFormikContext } from "formik";
 import { Check } from "phosphor-react";
 import { useEffect, useMemo } from "react";
 import styled from "styled-components";
@@ -15,7 +14,6 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import type { CreateProductForm } from "./utils";
 import {
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
@@ -75,8 +73,7 @@ const InfoWrapperList = styled.div`
 
 export default function TermsOfExchange() {
   const { config } = useConfigContext();
-  const { nextIsDisabled } = useCreateForm();
-  const { values, setFieldValue } = useFormikContext<CreateProductForm>();
+  const { values, setFieldValue, nextIsDisabled } = useCreateForm();
   const isMultiVariant =
     values.productType?.productVariant === "differentVariants" &&
     new Set(
@@ -232,7 +229,7 @@ export default function TermsOfExchange() {
           >
             <FieldContainer>
               <div>
-                {values.termsOfExchange.sellerDepositUnit?.value === "%" ? (
+                {values.termsOfExchange?.sellerDepositUnit?.value === "%" ? (
                   <Input
                     placeholder="Seller deposit"
                     name="termsOfExchange.sellerDeposit"

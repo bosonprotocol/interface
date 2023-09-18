@@ -58,7 +58,7 @@ export const ConfirmationContent = styled.div`
 `;
 
 export const ConfirmProductDetailsButtonGroup = styled(ProductButtonGroup)`
-  margin: 5rem 0 0 0;
+  margin: 0;
 `;
 
 export const GridBox = styled.div<{ $minWidth?: string }>`

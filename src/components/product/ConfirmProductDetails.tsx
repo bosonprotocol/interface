@@ -2,6 +2,7 @@ import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
 import map from "lodash/map";
+import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTermsAndSellerAgreement";
 import { Warning } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
@@ -90,7 +91,6 @@ export default function ConfirmProductDetails({
   isOneSetOfImages
 }: Props) {
   const { bosonXmtp } = useChatContext();
-
   const { values } = useCreateForm();
   const { account: address } = useWeb3React();
 
@@ -112,10 +112,10 @@ export default function ConfirmProductDetails({
   const renderProductType = useMemo(() => {
     let src = "";
     let description = "";
-    if (values.productType.productType === "physical") {
+    if (values.productType?.productType === "physical") {
       src = physicalProductSmall;
       description = "Physical";
-    } else if (values.productType.productType === "phygital") {
+    } else if (values.productType?.productType === "phygital") {
       // TODO: MISSING UI AND FOR NOW ONLY physical available
       // description = "Phygital";
     }
@@ -531,38 +531,48 @@ export default function ConfirmProductDetails({
           </Info>
         </InitializeChatContainer>
       )}
-      <ConfirmProductDetailsButtonGroup>
-        <BosonButton
-          variant="primaryFill"
-          type="submit"
-          disabled={
-            ![
-              ChatInitializationStatus.INITIALIZED,
-              ChatInitializationStatus.ALREADY_INITIALIZED
-            ].includes(chatInitializationStatus)
-          }
-        >
-          {chatInitializationStatus ===
-            ChatInitializationStatus.NOT_INITIALIZED && bosonXmtp ? (
-            <Spinner size={20} />
-          ) : (
-            "Confirm"
-          )}
-        </BosonButton>
-        <BosonButton
-          variant="accentInverted"
-          type="button"
-          onClick={handleOpenPreview}
-          disabled={
-            ![
-              ChatInitializationStatus.INITIALIZED,
-              ChatInitializationStatus.ALREADY_INITIALIZED
-            ].includes(chatInitializationStatus)
-          }
-        >
-          Preview product detail page
-        </BosonButton>
-      </ConfirmProductDetailsButtonGroup>
+
+      <Grid
+        flexDirection="column"
+        marginTop="5rem"
+        alignItems="flex-start"
+        gap="1rem"
+      >
+        <AgreeToTermsAndSellerAgreement isMultiVariant={isMultiVariant} />
+        <ConfirmProductDetailsButtonGroup>
+          <BosonButton
+            variant="primaryFill"
+            type="submit"
+            disabled={
+              ![
+                ChatInitializationStatus.INITIALIZED,
+                ChatInitializationStatus.ALREADY_INITIALIZED
+              ].includes(chatInitializationStatus) ||
+              !values.confirmProductDetails?.acceptsTerms
+            }
+          >
+            {chatInitializationStatus ===
+              ChatInitializationStatus.NOT_INITIALIZED && bosonXmtp ? (
+              <Spinner size={20} />
+            ) : (
+              "Confirm"
+            )}
+          </BosonButton>
+          <BosonButton
+            variant="accentInverted"
+            type="button"
+            onClick={handleOpenPreview}
+            disabled={
+              ![
+                ChatInitializationStatus.INITIALIZED,
+                ChatInitializationStatus.ALREADY_INITIALIZED
+              ].includes(chatInitializationStatus)
+            }
+          >
+            Preview product detail page
+          </BosonButton>
+        </ConfirmProductDetailsButtonGroup>
+      </Grid>
     </ConfirmProductDetailsContainer>
   );
 }

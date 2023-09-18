@@ -9,6 +9,9 @@ function isOfferValidityDatesValid() {
         return false;
       }
       const rpValue: (Dayjs | null)[] = this.parent.redemptionPeriod;
+      if (!rpValue) {
+        return false;
+      }
       const doesItEndBefore =
         rpValue[1] instanceof dayjs
           ? rpValue[1]?.isBefore(value[1])

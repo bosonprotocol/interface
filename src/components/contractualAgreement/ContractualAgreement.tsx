@@ -1,13 +1,12 @@
-import { subgraph } from "@bosonprotocol/react-kit";
-import { Loading } from "@bosonprotocol/react-kit";
-import { useConfigContext } from "components/config/ConfigContext";
+import { Loading, subgraph } from "@bosonprotocol/react-kit";
+import { CONFIG } from "lib/config";
+import { useRenderTemplate } from "lib/utils/hooks/useRenderTemplate";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 import { ProgressStatus } from "../../lib/types/progressStatus";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
-import { useRenderTemplate } from "../../lib/utils/hooks/useRenderTemplate";
 import SimpleError from "../error/SimpleError";
 
 interface Props {
@@ -23,7 +22,6 @@ const getTemplate = (
 };
 
 export default function ContractualAgreement({ offerId, offerData }: Props) {
-  const { config } = useConfigContext();
   const { data: offerFetched, isFetching } = useOffer(
     {
       offerId: offerId || ""
@@ -36,7 +34,7 @@ export default function ContractualAgreement({ offerId, offerData }: Props) {
   const template = getTemplate(offer);
   const templateUrl =
     !template || template === "fairExchangePolicy"
-      ? (config.buyerSellerAgreementTemplate as string)
+      ? (CONFIG.buyerSellerAgreementTemplate as string)
       : template;
   const { renderStatus, renderResult } = useRenderTemplate(
     offerId,

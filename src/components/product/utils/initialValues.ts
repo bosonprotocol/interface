@@ -174,6 +174,12 @@ export const imagesSpecificOrAllInitialValues = {
   }
 };
 
+export const confirmProductDetailsInitalValues = {
+  confirmProductDetails: {
+    acceptsTerms: false
+  }
+};
+
 export const initialValues: CreateProductForm = {
   ...createYourProfileInitialValues,
   ...productTypeInitialValues,
@@ -187,5 +193,6 @@ export const initialValues: CreateProductForm = {
   ...shippingInfoInitialValues,
   ...disputeCentreInitialValues,
   ...imagesSpecificOrAllInitialValues,
-  ...tokenGatingInitialValues
+  ...tokenGatingInitialValues,
+  ...confirmProductDetailsInitalValues
 } as const;
