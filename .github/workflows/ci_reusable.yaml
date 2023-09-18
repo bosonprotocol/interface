@@ -69,6 +69,9 @@ on:
       REACT_APP_META_TX_API_IDS_MAP:
         required: true
         type: string
+      REACT_APP_FAIR_EXCHANGE_POLICY_RULES:
+        required: true
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -93,8 +96,6 @@ on:
       REACT_APP_WALLET_CONNECT_PROJECT_ID:
         required: true
       REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_MAP:
-        required: true
-      REACT_APP_FAIR_EXCHANGE_POLICY_RULES:
         required: true
       REACT_APP_INFURA_KEY:
         required: true
@@ -133,7 +134,7 @@ jobs:
       REACT_APP_META_TX_API_KEY_MAP: ${{ inputs.REACT_APP_META_TX_API_KEY_MAP }}
       REACT_APP_META_TX_API_IDS_MAP: ${{ inputs.REACT_APP_META_TX_API_IDS_MAP }}
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID }}
-      REACT_APP_FAIR_EXCHANGE_POLICY_RULES: ${{ secrets.REACT_APP_FAIR_EXCHANGE_POLICY_RULES }}
+      REACT_APP_FAIR_EXCHANGE_POLICY_RULES: ${{ inputs.REACT_APP_FAIR_EXCHANGE_POLICY_RULES }}
       REACT_APP_RELEASE_TAG: ${{ inputs.REACT_APP_RELEASE_TAG }}
       REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}
       REACT_APP_VIEW_MODE: "dapp"
