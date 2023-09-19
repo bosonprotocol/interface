@@ -1,11 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
+import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
 import { Spinner } from "../../../components/loading/Spinner";
-import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
-import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import NotFound from "../../not-found/NotFound";
 import Buyer from "../../profile/buyer/Buyer";
 
@@ -16,10 +15,14 @@ const SpinnerWrapper = styled.div`
 `;
 
 export default function PrivateAccountContainer() {
-  const { account: address, isActivating } = useWeb3React();
+  const { isActivating, account: address } = useWeb3React();
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet);
 
-  const navigate = useKeepQueryParamsNavigate();
-  const { data: buyers, isLoading } = useBuyers(
+  const {
+    data: buyers,
+    isLoading,
+    isSuccess
+  } = useBuyers(
     {
       wallet: address
     },
@@ -30,7 +33,7 @@ export default function PrivateAccountContainer() {
 
   const buyerId = buyers?.[0]?.id || "";
 
-  if (isActivating || isLoading) {
+  if (isActivating || isLoading || !selectedWallet) {
     return (
       <SpinnerWrapper>
         <Spinner size={42} />
@@ -39,10 +42,9 @@ export default function PrivateAccountContainer() {
   }
 
   if (!address) {
-    navigate({ pathname: BosonRoutes.Root });
     return <div>Please connect your wallet</div>;
   }
-  if (!buyerId) {
+  if (!buyerId && isSuccess) {
     return <NotFound />;
   }
 
