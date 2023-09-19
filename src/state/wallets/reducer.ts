@@ -23,8 +23,9 @@ const walletsSlice = createSlice({
     addConnectedWallet(state, { payload }) {
       if (
         state.connectedWallets.some((wallet) => shallowEqual(payload, wallet))
-      )
+      ) {
         return;
+      }
       state.connectedWallets = [...state.connectedWallets, payload];
     },
     startSwitchingChain(state, { payload }) {
