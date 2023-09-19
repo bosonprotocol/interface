@@ -3,7 +3,7 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
-import { fairExchangePolicyLabel } from "lib/constants/policies";
+import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import {
   ArrowSquareOut,
   CircleWavyQuestion,
@@ -198,12 +198,9 @@ const getOfferDetailData = (
 ) => {
   const { deposit, formatted } = calcPercentage(offer, "sellerDeposit");
 
-  const exchangePolicyLabel = (
-    (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
-      ?.label || "Unspecified"
-  )
-    .replace("fairExchangePolicy", fairExchangePolicyLabel)
-    .replace("Fair Exchange Policy", fairExchangePolicyLabel);
+  const exchangePolicyLabel = getExchangePolicyName(
+    (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy?.label
+  );
 
   const handleShowExchangePolicy = () => {
     showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {

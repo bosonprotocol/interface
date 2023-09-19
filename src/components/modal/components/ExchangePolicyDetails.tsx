@@ -1,4 +1,5 @@
 import { offers, subgraph } from "@bosonprotocol/react-kit";
+import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import {
   CaretDown,
   CaretUp,
@@ -32,9 +33,10 @@ export default function ExchangePolicyDetails({
         (error) => error.path === "metadata.exchangePolicy.template"
       ));
   const exchangePolicy = {
-    name:
+    name: getExchangePolicyName(
       (offerData?.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
-        ?.label || "unspecified",
+        ?.label
+    ),
     version: (offerData?.metadata as subgraph.ProductV1MetadataEntity)
       ?.exchangePolicy?.version
       ? "v" +
