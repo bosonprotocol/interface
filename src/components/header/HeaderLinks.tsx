@@ -123,6 +123,7 @@ const NavigationLinks = styled.div<{
             font-weight: 600;
             line-height: 150%;
             height: 100%;
+            white-space: nowrap;
           }
         `};
 `;

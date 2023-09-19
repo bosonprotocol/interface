@@ -213,13 +213,13 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
-    const { isLteS, isLteM, isM, isLteXS } = useBreakpoints();
+    const { isLteS, isLteL, isLteM, isM, isLteXS } = useBreakpoints();
     const logoUrl = useCustomStoreQueryParameter("logoUrl");
     const navigationBarPosition = useCustomStoreQueryParameter(
       "navigationBarPosition"
     );
     const isSideNavBar = ["left", "right"].includes(navigationBarPosition);
-    const burgerMenuBreakpoint = isLteM && !isSideNavBar;
+    const burgerMenuBreakpoint = isLteL && !isSideNavBar;
     const isSideCrossVisible = isSideNavBar && isOpen && isLteS;
     const isSideBurgerVisible = isSideNavBar && !isOpen && isLteS;
 
