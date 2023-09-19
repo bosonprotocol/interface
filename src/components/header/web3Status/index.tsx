@@ -71,7 +71,7 @@ const Text = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin: 0 0.5rem 0 0.25rem;
+  margin: 0 0 0 0.25rem;
   font-size: 1rem;
   width: fit-content;
   font-weight: 500;
