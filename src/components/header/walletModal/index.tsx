@@ -83,7 +83,7 @@ export default function WalletModal() {
               ))}
           </OptionGrid>
           <PrivacyPolicyWrapper>
-            By connecting a wallet, you agree to Boson Protocol's{" "}
+            By connecting a wallet, you agree to Boson App's{" "}
             <LinkWithQuery
               to={
                 viewMode === ViewMode.DAPP
@@ -103,7 +103,7 @@ export default function WalletModal() {
             >
               Privacy Policy
             </LinkWithQuery>
-            .
+            . (Last Updated 18 August 2023)
           </PrivacyPolicyWrapper>
         </AutoColumn>
       )}
