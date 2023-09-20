@@ -27,6 +27,8 @@ export const offerGraphQl = gql`
       feeAmount
       buyerEscalationDeposit
     }
+    agentId
+    disputeResolverId
     disputeResolver {
       escalationResponsePeriod
     }
@@ -140,6 +142,8 @@ export const offerGraphQl = gql`
           version
           label
           template
+          disputeResolverContactMethod
+          sellerContactMethod
         }
         shipping {
           id

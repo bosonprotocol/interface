@@ -375,12 +375,19 @@ export const WidgetUpperGrid = styled.div`
   grid-column-gap: 1em;
   grid-row-gap: 1rem;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  align-items: center;
+  align-items: start;
+  .by-proceeding {
+    margin-bottom: -0.75rem;
+  }
 
   ${breakpoint.s} {
     grid-column-gap: 2rem;
     grid-row-gap: 2rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    .by-proceeding {
+      margin-bottom: -1.5rem;
+    }
   }
 
   > button {

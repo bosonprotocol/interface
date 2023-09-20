@@ -1,6 +1,11 @@
 import { useWeb3React } from "@web3-react/core";
+import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { AutoColumn } from "components/ui/column";
+import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
+import { BosonRoutes } from "lib/routing/routes";
 import { breakpoint } from "lib/styles/breakpoint";
+import { colors } from "lib/styles/colors";
+import { getCurrentViewMode, ViewMode } from "lib/viewMode";
 import { useEffect } from "react";
 import styled from "styled-components";
 
@@ -33,6 +38,18 @@ const OptionGrid = styled.div`
   } ;
 `;
 
+const PrivacyPolicyWrapper = styled.div`
+  padding: 0 4px;
+  color: ${colors.darkGrey};
+  font-weight: 400;
+  font-size: 0.75rem;
+
+  * {
+    font-weight: 400;
+    font-size: 0.75rem;
+  }
+`;
+
 export default function WalletModal() {
   const { connector, chainId } = useWeb3React();
 
@@ -48,7 +65,7 @@ export default function WalletModal() {
       networkConnection.connector.activate(chainId);
     }
   }, [chainId, connector]);
-
+  const viewMode = getCurrentViewMode();
   return (
     <Wrapper data-testid="wallet-modal">
       <Grid justifyContent="space-between" marginBottom="16px">
@@ -65,6 +82,29 @@ export default function WalletModal() {
                 <Option key={connection.getName()} connection={connection} />
               ))}
           </OptionGrid>
+          <PrivacyPolicyWrapper>
+            By connecting a wallet, you agree to Boson App's{" "}
+            <LinkWithQuery
+              to={
+                viewMode === ViewMode.DAPP
+                  ? BosonRoutes.TermsAndConditions
+                  : DrCenterRoutes.TermsAndConditions
+              }
+            >
+              Terms & Conditions
+            </LinkWithQuery>{" "}
+            and consent to its{" "}
+            <LinkWithQuery
+              to={
+                viewMode === ViewMode.DAPP
+                  ? BosonRoutes.PrivacyPolicy
+                  : DrCenterRoutes.PrivacyPolicy
+              }
+            >
+              Privacy Policy
+            </LinkWithQuery>
+            . (Last Updated 18 August 2023)
+          </PrivacyPolicyWrapper>
         </AutoColumn>
       )}
     </Wrapper>

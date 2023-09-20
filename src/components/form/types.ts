@@ -20,7 +20,7 @@ export interface DatepickerProps extends BaseProps {
 }
 
 export interface CheckboxProps extends BaseProps {
-  text?: string;
+  text?: ReactNode;
 }
 
 export type TextareaProps = BaseProps &

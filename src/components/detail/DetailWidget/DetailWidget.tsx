@@ -20,9 +20,9 @@ import {
   ethers,
   utils
 } from "ethers";
-import { fairExchangePolicyLabel } from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
+import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import {
   ArrowRight,
   ArrowSquareOut,
@@ -54,7 +54,6 @@ import {
   useAddPendingTransaction,
   useRemovePendingTransaction
 } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
-import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -187,12 +186,9 @@ export const getOfferDetailData = (
     "sellerDeposit"
   );
 
-  const exchangePolicyLabel = (
-    (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
-      ?.label || "Unspecified"
-  )
-    .replace("fairExchangePolicy", fairExchangePolicyLabel)
-    .replace("Fair Exchange Policy", fairExchangePolicyLabel);
+  const exchangePolicyLabel = getExchangePolicyName(
+    (offer.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy?.label
+  );
 
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
@@ -324,7 +320,9 @@ export const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            <span>{exchangePolicyLabel + " "}</span>
+            <span style={{ fontSize: "0.5rem" }}>
+              {exchangePolicyLabel + " including Buyer and Seller Agreement"}
+            </span>
             {modalTypes && showModal && (
               <ArrowSquareOut
                 size={20}
@@ -334,25 +332,33 @@ export const getOfferDetailData = (
             )}
           </Typography>
         ) : (
-          <Typography tag="p" color={colors.orange}>
-            <WarningCircle size={20}></WarningCircle> Non-standard{" "}
+          <Typography tag="p" color={colors.orange} $fontSize="0.5rem">
+            <WarningCircle
+              size={20}
+              style={{ minWidth: "20px" }}
+            ></WarningCircle>{" "}
+            Non-standard{" including Buyer and Seller Agreement"}
             {modalTypes && showModal && (
               <ArrowSquareOut
                 size={20}
                 onClick={() => handleShowExchangePolicy()}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", minWidth: "20px" }}
               />
             )}
           </Typography>
         )
       ) : (
-        <Typography tag="p" color="purple">
-          <CircleWavyQuestion size={20}></CircleWavyQuestion> Unknown{" "}
+        <Typography tag="p" color="purple" $fontSize="0.5rem">
+          <CircleWavyQuestion
+            size={20}
+            style={{ minWidth: "20px" }}
+          ></CircleWavyQuestion>{" "}
+          Unknown{" "}
           {modalTypes && showModal && (
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", minWidth: "20px" }}
             />
           )}
         </Typography>
@@ -401,7 +407,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const removePendingTransaction = useRemovePendingTransaction();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
 
-  const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { account: address } = useWeb3React();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
@@ -858,7 +863,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       }
     }
   }, [isExchange, exchange]);
-
+  const isRedeemDisabled =
+    isChainUnsupported || isLoading || isOffer || isPreview || !isBuyer;
   return (
     <>
       <Widget>
@@ -920,9 +926,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               <ArrowRight size={18} color={colors.darkGrey} />
             </Grid>
           )}
-          <WidgetUpperGrid
-            style={{ paddingBottom: !isExchange || isLteXS ? "0.5rem" : "0" }}
-          >
+          <WidgetUpperGrid style={{ paddingBottom: "0.5rem" }}>
             <StyledPrice
               isExchange={isExchange}
               currencySymbol={offer.exchangeToken.symbol}
@@ -983,6 +987,54 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </DetailTopRightLabel>
             )}
             {isOffer && (
+              <Typography
+                $fontSize="0.8rem"
+                style={{ gridColumn: "1 / -1", display: "block" }}
+                className="by-proceeding"
+              >
+                By proceeding to Commit, I agree to the{" "}
+                <span
+                  style={{
+                    color: colors.blue,
+                    fontSize: "inherit",
+                    cursor: "pointer"
+                  }}
+                  onClick={() => {
+                    showModal("REDEEMABLE_NFT_TERMS", {
+                      offerData: offer
+                    });
+                  }}
+                >
+                  rNFT Terms
+                </span>
+                .
+              </Typography>
+            )}
+            {isToRedeem && !isRedeemDisabled && (
+              <Typography
+                $fontSize="0.8rem"
+                style={{ gridColumn: "1 / -1", display: "block" }}
+                className="by-proceeding"
+              >
+                By proceeding to Redeem, I agree to the{" "}
+                <span
+                  style={{
+                    color: colors.blue,
+                    fontSize: "inherit",
+                    cursor: "pointer"
+                  }}
+                  onClick={() => {
+                    showModal("BUYER_SELLER_AGREEMENT", {
+                      offerData: offer
+                    });
+                  }}
+                >
+                  Buyer & Seller Agreement
+                </span>
+                .
+              </Typography>
+            )}
+            {isOffer && (
               <CommitButtonWrapper
                 role="button"
                 $pointerEvents={!address ? "none" : "all"}
@@ -1034,13 +1086,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               <RedeemButton
                 variant="primaryFill"
                 size="large"
-                disabled={
-                  isChainUnsupported ||
-                  isLoading ||
-                  isOffer ||
-                  isPreview ||
-                  !isBuyer
-                }
+                disabled={isRedeemDisabled}
                 id="boson-redeem-redeem"
                 data-exchange-id={exchange?.id}
                 data-bypass-mode="REDEEM"
@@ -1067,17 +1113,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
           </WidgetUpperGrid>
         </div>
-        <Grid
-          justifyContent="center"
-          style={
-            !isOffer && !isLteXS
-              ? {
-                  maxWidth: "50%",
-                  marginLeft: "calc(50% - 0.5rem)"
-                }
-              : {}
-          }
-        >
+        <Grid justifyContent="center">
           {isBeforeRedeem ? (
             <CommitAndRedeemButton
               tag="p"

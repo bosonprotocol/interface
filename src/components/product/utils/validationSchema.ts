@@ -419,3 +419,9 @@ export const disputeCentreValidationSchemaMakeProposal = Yup.object({
 });
 
 export const disputeCentreValidationSchemaProposalSummary = Yup.object({});
+
+export const confirmProductDetailsSchema = Yup.object({
+  confirmProductDetails: Yup.object({
+    acceptsTerms: Yup.boolean().required()
+  })
+});

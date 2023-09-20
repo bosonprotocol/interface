@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 import {
+  confirmProductDetailsSchema,
   CoreTermsOfSaleValidationSchema,
   disputeCentreValidationSchemaAdditionalInformation,
   disputeCentreValidationSchemaGetStarted,
@@ -78,6 +79,10 @@ export type ImagesSpecificOrAll = Yup.InferType<
   typeof imagesSpecificOrAllValidationSchema
 >;
 
+export type ConfirmProductDetails = Yup.InferType<
+  typeof confirmProductDetailsSchema
+>;
+
 export type CreateProductForm = CreateYourProfile &
   ProductType &
   ProductInformation &
@@ -94,4 +99,5 @@ export type CreateProductForm = CreateYourProfile &
   DisputeCentreMakeProposal &
   DisputeCentreValidationSchemaProposalSummary &
   ImagesSpecificOrAll &
-  TokenGating;
+  TokenGating &
+  ConfirmProductDetails;

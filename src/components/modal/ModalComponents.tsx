@@ -1,4 +1,5 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
+import { BuyerSellerAgreementModal } from "./components/BuyerSellerAgreementModal";
 import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
 import EscalateModal from "./components/Chat/components/EscalateModal/EscalateModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
@@ -26,6 +27,7 @@ import CreateProfileModal from "./components/Profile/CreateProfileModal";
 import EditProfileModal from "./components/Profile/EditProfileModal";
 import { ProfileDetailsModal } from "./components/ProfileDetails/ProfileDetailsModal";
 import ProgressBarModal from "./components/ProgressBarModal";
+import { RedeemableNftTermsModal } from "./components/RedeemableNftTermsModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
 import { RelistOfferModal } from "./components/RelistOfferModal/RelistOfferModal";
@@ -92,7 +94,9 @@ export const MODAL_TYPES = {
   TOKEN_SAFETY: "TOKEN_SAFETY",
   CURRENCY_SEARCH: "CURRENCY_SEARCH",
   PRICE_IMPACT: "PRICE_IMPACT",
-  CONFIRM_SWAP: "CONFIRM_SWAP"
+  CONFIRM_SWAP: "CONFIRM_SWAP",
+  BUYER_SELLER_AGREEMENT: "BUYER_SELLER_AGREEMENT",
+  REDEEMABLE_NFT_TERMS: "REDEEMABLE_NFT_TERMS"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -139,5 +143,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.ACCOUNT_CREATION]: AccountCreationModal,
   [MODAL_TYPES.VARIABLE_STEPS_EXPLAINER]: VariableStepsExplainerModal,
   [MODAL_TYPES.PREPARING_TRANSACTION]: PreparingTransactionModal,
-  [MODAL_TYPES.CONFIRMATION]: ConfirmationModal
+  [MODAL_TYPES.CONFIRMATION]: ConfirmationModal,
+  [MODAL_TYPES.BUYER_SELLER_AGREEMENT]: BuyerSellerAgreementModal,
+  [MODAL_TYPES.REDEEMABLE_NFT_TERMS]: RedeemableNftTermsModal
 } as const;

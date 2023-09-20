@@ -6,7 +6,6 @@ import {
   productV1,
   subgraph
 } from "@bosonprotocol/react-kit";
-import { parseUnits } from "@ethersproject/units";
 import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
@@ -34,10 +33,10 @@ import uuid from "react-uuid";
 dayjs.extend(localizedFormat);
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
+import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { BigNumber, ethers } from "ethers";
 import { useEffect } from "react";
 
-import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../components/form/Upload/types";
 import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
@@ -47,10 +46,8 @@ import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
   OPTIONS_EXCHANGE_POLICY,
-  optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
-import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import BosonButton from "../../components/ui/BosonButton";
@@ -69,7 +66,6 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
-import { fixformattedString } from "../../lib/utils/number";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
   CreateProductWrapper,
@@ -79,6 +75,11 @@ import {
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP } from "./utils";
 import { validateDates } from "./utils/dataValidator";
+import { getTermsOfExchange } from "./utils/getTermsOfExchange";
+import {
+  getDisputePeriodDurationInMS,
+  getResolutionPeriodDurationInMS
+} from "./utils/helpers";
 import { CreateProductSteps } from "./utils/index";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
@@ -663,9 +664,8 @@ function CreateProductInner({
       });
 
       const disputePeriodDurationInMS =
-        parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
-      const resolutionPeriodDurationInMS =
-        parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
+        getDisputePeriodDurationInMS(termsOfExchange);
+      const resolutionPeriodDurationInMS = getResolutionPeriodDurationInMS();
 
       const nftAttributes = [];
       nftAttributes.push({ trait_type: "Token Type", value: "BOSON rNFT" });
@@ -795,26 +795,13 @@ function CreateProductInner({
             );
             const decimals = Number(exchangeToken?.decimals || 18);
             const price = variants[index].price;
-            const priceBN = parseUnits(
-              price < 0.1 ? fixformattedString(price) : price.toString(),
-              decimals
-            );
 
-            const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
-              priceBN,
-              termsOfExchange.buyerCancellationPenalty,
-              termsOfExchange.buyerCancellationPenaltyUnit
-                .value as keyof typeof optionUnitKeys,
-              decimals
-            );
-
-            const sellerDeposit = getFixedOrPercentageVal(
-              priceBN,
-              termsOfExchange.sellerDeposit,
-              termsOfExchange.sellerDepositUnit
-                .value as keyof typeof optionUnitKeys,
-              decimals
-            );
+            const { priceBN, buyerCancellationPenaltyValue, sellerDeposit } =
+              getTermsOfExchange({
+                termsOfExchange,
+                price,
+                decimals
+              });
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
               config,
@@ -853,26 +840,12 @@ function CreateProductInner({
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
-        const priceBN = parseUnits(
-          price < 0.1 ? fixformattedString(price) : price.toString(),
-          decimals
-        );
-
-        const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
-          priceBN,
-          termsOfExchange.buyerCancellationPenalty,
-          termsOfExchange.buyerCancellationPenaltyUnit
-            .value as keyof typeof optionUnitKeys,
-          decimals
-        );
-
-        const sellerDeposit = getFixedOrPercentageVal(
-          priceBN,
-          termsOfExchange.sellerDeposit,
-          termsOfExchange.sellerDepositUnit
-            .value as keyof typeof optionUnitKeys,
-          decimals
-        );
+        const { priceBN, buyerCancellationPenaltyValue, sellerDeposit } =
+          getTermsOfExchange({
+            termsOfExchange,
+            price,
+            decimals
+          });
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,

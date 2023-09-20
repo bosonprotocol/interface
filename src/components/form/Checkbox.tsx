@@ -36,7 +36,7 @@ export default function Checkbox({ name, text, ...props }: CheckboxProps) {
         <div>
           <Check size={16} />
         </div>
-        <b>{text || "Checkbox"}</b>
+        {text}
       </CheckboxWrapper>
       <Error display={displayError} message={errorMessage} />
     </>

@@ -1,23 +1,21 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import SimpleError from "components/error/SimpleError";
 import Loading from "components/ui/Loading";
+import { CONFIG } from "lib/config";
+import { ProgressStatus } from "lib/types/progressStatus";
 import { useRenderTemplate } from "lib/utils/hooks/useRenderTemplate";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-import { CONFIG } from "../../lib/config";
-import { ProgressStatus } from "../../lib/types/progressStatus";
-import SimpleError from "../error/SimpleError";
-
 interface Props {
-  offerId: string | undefined;
-  offerData: subgraph.OfferFieldsFragment | undefined;
+  offerData: subgraph.OfferFieldsFragment;
 }
 
-export default function License({ offerId, offerData }: Props) {
-  const templateUrl = CONFIG.rNFTLicenseTemplate as string; // TODO: get the template from the offer metadata
+export function BuyerSellerAgreementModal({ offerData }: Props) {
+  const templateUrl = CONFIG.buyerSellerAgreementTemplate as string;
   const { renderStatus, renderResult } = useRenderTemplate(
-    offerId,
+    undefined,
     offerData,
     templateUrl
   );
