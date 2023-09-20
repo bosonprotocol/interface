@@ -85,7 +85,8 @@ export default function WalletModal() {
           </OptionGrid>
           <MagicLoginButton />
           <PrivacyPolicyWrapper>
-            By connecting a wallet, you agree to Boson App's{" "}
+            By connecting a wallet, you agree to{" "}
+            {viewMode === ViewMode.DAPP ? "Boson App" : "DR Center"}'s{" "}
             <LinkWithQuery
               to={
                 viewMode === ViewMode.DAPP
