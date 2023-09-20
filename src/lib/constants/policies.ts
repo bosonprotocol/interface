@@ -1,3 +1,3 @@
-export const fairExchangePolicyLabel =
-  "Buyer & Seller Agreement including Fair Exchange Policy";
+export const includingBuyerSellerAgreement =
+  "including Buyer and Seller Agreement";
 export const onlyFairExchangePolicyLabel = "Fair Exchange Policy";
