@@ -6,7 +6,6 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { useAccountDrawer } from "components/header/accountDrawer";
@@ -49,7 +48,10 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { getHasExchangeDisputeResolutionElapsed } from "../../../lib/utils/exchange";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
+import {
+  useAccount,
+  useSigner
+} from "../../../lib/utils/hooks/ethers/connection";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
 import {
   useAddPendingTransaction,
@@ -409,7 +411,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
 
   const navigate = useKeepQueryParamsNavigate();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isSeller = exchange?.seller.assistant === address?.toLowerCase();
   const isOffer = pageType === "offer";
@@ -444,7 +446,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       exchangeStatus as unknown as exchanges.ExtendedExchangeState
     );
 
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const isBuyerInsufficientFunds: boolean = useMemo(

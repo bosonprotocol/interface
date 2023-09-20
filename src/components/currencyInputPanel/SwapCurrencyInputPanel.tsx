@@ -17,6 +17,7 @@ import { isSupportedChain } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { opacify } from "lib/styles/opacify";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { Lock } from "phosphor-react";
 import { darken } from "polished";
 import { ReactNode, useCallback, useState } from "react";
@@ -256,7 +257,8 @@ export default function SwapCurrencyInputPanel({
   ...rest
 }: SwapCurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const { account, chainId } = useWeb3React();
+  const { account } = useAccount();
+  const { chainId } = useWeb3React();
   const selectedCurrencyBalance = useCurrencyBalance(
     account ?? undefined,
     currency ?? undefined

@@ -16,6 +16,7 @@ import { useCallback } from "react";
 import { ClassicTrade, TradeFillType } from "state/routing/types";
 
 import { isZero } from "../address";
+import { useAccount } from "./ethers/connection";
 import { PermitSignature } from "./usePermitAllowance";
 
 /** Thrown when gas estimation fails. This class of error usually requires an emulator to determine the root cause. */
@@ -49,7 +50,8 @@ export function useUniversalRouterSwapCallback(
   fiatValues: { amountIn?: number; amountOut?: number },
   options: SwapOptions
 ) {
-  const { account, chainId, provider } = useWeb3React();
+  const { chainId, provider } = useWeb3React();
+  const { account } = useAccount();
 
   return useCallback(async () => {
     try {

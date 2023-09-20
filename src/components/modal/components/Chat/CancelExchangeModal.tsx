@@ -8,7 +8,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import { displayFloat } from "../../../../lib/utils/calcPrice";
-import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
+import { useSigner } from "../../../../lib/utils/hooks/ethers/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import useRefundData from "../../../../lib/utils/hooks/useRefundData";
@@ -116,7 +116,7 @@ export default function CancelExchangeModal({
 
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const { showModal, modalTypes } = useModal();
 
   const { currency, price, penalty, refund } = useRefundData(

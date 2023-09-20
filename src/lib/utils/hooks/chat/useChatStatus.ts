@@ -1,9 +1,9 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
+import { useAccount } from "../ethers/connection";
 
 export enum ChatInitializationStatus {
   PENDING = "PENDING",
@@ -23,7 +23,7 @@ export const useChatStatus = (): {
     useState<ChatInitializationStatus>(ChatInitializationStatus.PENDING);
   const { bosonXmtp, chatEnvName } = useChatContext();
   const { config } = useConfigContext();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   useEffect(() => {
     if (

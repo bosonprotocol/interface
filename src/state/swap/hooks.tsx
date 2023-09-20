@@ -9,6 +9,7 @@ import { useWeb3React } from "@web3-react/core";
 import { TOKEN_SHORTHANDS } from "lib/constants/tokens";
 import { swapQueryParameters } from "lib/routing/parameters";
 import { isAddress } from "lib/utils/address";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { useCurrency } from "lib/utils/hooks/Tokens";
 import useAutoSlippageTolerance from "lib/utils/hooks/useAutoSlippageTolerance";
 import { useDebouncedTrade } from "lib/utils/hooks/useDebouncedTrade";
@@ -109,7 +110,7 @@ export function useDerivedSwapInfo(
   state: SwapState,
   chainId: ChainId | undefined
 ): SwapInfo {
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const [previouslyInvalid, setPreviouslyInvalid] = useState(false);
 
   const {

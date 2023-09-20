@@ -1,7 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { Copy, Gear, Trash } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -114,7 +114,7 @@ const iconProps = {
 } as const;
 
 export const ManageStoreFrontsPage = () => {
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const { showModal } = useModal();
   const { sellers, refetch } = useCurrentSellers();
 

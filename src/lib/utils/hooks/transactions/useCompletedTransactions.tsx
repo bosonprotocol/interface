@@ -1,13 +1,13 @@
 import { subgraph } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import { useQuery } from "react-query";
 
 import { useCoreSDK } from "../../useCoreSdk";
+import { useAccount } from "../ethers/connection";
 import { useCurrentBuyer } from "../useCurrentBuyer";
 import { useCurrentSellers } from "../useCurrentSellers";
 
 export const useCompletedTransactions = (page = 0) => {
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   const { sellerIds } = useCurrentSellers();
   const { data: currentBuyer } = useCurrentBuyer();

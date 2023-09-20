@@ -1,7 +1,7 @@
-import { useWeb3React } from "@web3-react/core";
 import { useAccountDrawer } from "components/header/accountDrawer";
 import Tooltip from "components/tooltip/Tooltip";
 import Button from "components/ui/Button";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -34,7 +34,7 @@ const StyledTextButton = styled(Button)`
 `;
 
 export default function SwapBuyFiatButton() {
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const openFiatOnRampModal = useOpenModal(ApplicationModal.FIAT_ONRAMP);
   const [checkFiatRegionAvailability, setCheckFiatRegionAvailability] =
     useState(false);

@@ -27,6 +27,8 @@ import { UniswapInterfaceMulticall } from "lib/types/v3/UniswapInterfaceMultical
 import { getContract } from "lib/utils/getContract";
 import { useMemo } from "react";
 
+import { useAccount } from "./ethers/connection";
+
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson;
 
 // returns null on errors
@@ -36,7 +38,8 @@ export function useContract<T extends Contract = Contract>(
   ABI: any,
   withSignerIfPossible = true
 ): T | null {
-  const { provider, account, chainId } = useWeb3React();
+  const { provider, chainId } = useWeb3React();
+  const { account } = useAccount();
 
   return useMemo(() => {
     if (!addressOrAddressMap || !ABI || !provider || !chainId) return null;

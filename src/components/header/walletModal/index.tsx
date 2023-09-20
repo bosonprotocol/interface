@@ -1,5 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
+import { MagicLoginButton } from "components/magicLink/Login";
 import { AutoColumn } from "components/ui/column";
 import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
 import { BosonRoutes } from "lib/routing/routes";
@@ -82,6 +83,7 @@ export default function WalletModal() {
                 <Option key={connection.getName()} connection={connection} />
               ))}
           </OptionGrid>
+          <MagicLoginButton />
           <PrivacyPolicyWrapper>
             By connecting a wallet, you agree to Boson App's{" "}
             <LinkWithQuery

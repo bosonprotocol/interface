@@ -31,10 +31,10 @@ import {
 } from "react-router-dom";
 import uuid from "react-uuid";
 dayjs.extend(localizedFormat);
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { BigNumber, ethers } from "ethers";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { useEffect } from "react";
 
 import { FileProps } from "../../components/form/Upload/types";
@@ -432,7 +432,7 @@ function CreateProductInner({
     navigate({ pathname });
   };
   const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
   const { mutateAsync: createOffers } = useCreateOffers();

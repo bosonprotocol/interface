@@ -8,7 +8,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
-import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
+import { useSigner } from "../../../../lib/utils/hooks/ethers/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import {
   getNumberWithDecimals,
@@ -57,7 +57,7 @@ export default function FinanceWithdraw({
   const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(true);
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const addPendingTransaction = useAddPendingTransaction();
 
   const { balance: exchangeTokenBalance } = useExchangeTokenBalance({

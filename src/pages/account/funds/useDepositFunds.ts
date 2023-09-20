@@ -1,7 +1,7 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumberish, ethers } from "ethers";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { useCallback } from "react";
 
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -18,7 +18,7 @@ export default function useDepositFunds({
   amount
 }: Props) {
   const coreSdk = useCoreSDK();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   return useCallback(() => {
     let depositFundsResponse: Promise<TransactionResponse>;

@@ -7,10 +7,10 @@ import {
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import {
   Dispatch,
   SetStateAction,
@@ -200,7 +200,7 @@ function EscalateStepTwo({
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const { isLoading, signMessage } = useSignMessage({
     onSuccess(data) {
       setActiveStep(1);

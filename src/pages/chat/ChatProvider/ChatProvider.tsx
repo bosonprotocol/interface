@@ -4,7 +4,7 @@ import { useConfigContext } from "components/config/ConfigContext";
 import { ReactNode, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
-import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
+import { useSigner } from "../../../lib/utils/hooks/ethers/connection";
 import { Context } from "./ChatContext";
 import { getChatEnvName } from "./const";
 
@@ -14,7 +14,7 @@ interface Props {
 
 export default function ChatProvider({ children }: Props) {
   const { config } = useConfigContext();
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const [initialize, setInitialized] = useState<number>(0);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>();

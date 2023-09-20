@@ -17,7 +17,7 @@ import {
   ChatInitializationStatus,
   useChatStatus
 } from "../../../../../lib/utils/hooks/chat/useChatStatus";
-import { useEthersSigner } from "../../../../../lib/utils/hooks/ethers/useEthersSigner";
+import { useSigner } from "../../../../../lib/utils/hooks/ethers/connection";
 import { useAddPendingTransaction } from "../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
@@ -83,7 +83,7 @@ export default function Confirmation({
       ChatInitializationStatus.ALREADY_INITIALIZED
     ].includes(chatInitializationStatus);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const [nameField] = useField(FormModel.formFields.name.name);
   const [streetNameAndNumberField] = useField(
     FormModel.formFields.streetNameAndNumber.name

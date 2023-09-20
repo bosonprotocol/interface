@@ -1,5 +1,4 @@
 import { accounts, offers, subgraph } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 
@@ -12,6 +11,7 @@ import {
   PartialTokenGating
 } from "../../../../pages/create-product/utils/buildCondition";
 import { useCoreSDK } from "../../useCoreSdk";
+import { useAccount } from "../ethers/connection";
 import { useAddPendingTransaction } from "../transactions/usePendingTransactions";
 
 const getOfferCreationToast = () => {
@@ -40,7 +40,7 @@ type UseCreateOffersProps = {
 
 export function useCreateOffers() {
   const coreSDK = useCoreSDK();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const { showModal, hideModal } = useModal();
   const addPendingTransaction = useAddPendingTransaction();
   const isMetaTx = Boolean(coreSDK.isMetaTxConfigSet && address);

@@ -1,10 +1,14 @@
 import { useWeb3React } from "@web3-react/core";
 import { CopyButton } from "components/form/Field.styles";
+import { useUser } from "components/magicLink/UserContext";
+import { useWeb3 } from "components/magicLink/Web3Context";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import copyToClipboard from "lib/utils/copyToClipboard";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
+import { getMagicLogout } from "lib/utils/magicLink/logout";
+import { useMagic } from "lib/utils/magicLink/magic";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -166,7 +170,10 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
   const { connector } = useWeb3React();
   const { ENSName } = useENSName(account);
   const dispatch = useAppDispatch();
-
+  const magic = useMagic();
+  const { setWeb3 } = useWeb3();
+  const { setUser } = useUser();
+  const magicLogout = getMagicLogout(magic);
   const connection = getConnection(connector);
 
   const disconnect = useCallback(() => {
@@ -174,7 +181,9 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
       connector.deactivate();
     }
     connector.resetState();
+    magicLogout(setWeb3, setUser);
     dispatch(updateSelectedWallet({ wallet: undefined }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connector, dispatch]);
 
   // const toggleWalletDrawer = useToggleAccountDrawer();

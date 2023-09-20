@@ -156,7 +156,8 @@ export const CONFIG = {
   },
   awsApiEndpoint: process.env.REACT_APP_AWS_API_ENDPOINT as string,
   uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
-  infuraKey: process.env.REACT_APP_INFURA_KEY as string
+  infuraKey: process.env.REACT_APP_INFURA_KEY as string,
+  magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string
 };
 export type GlobalConfig = typeof CONFIG;
 export const lensHandleMaxLength = Math.max(

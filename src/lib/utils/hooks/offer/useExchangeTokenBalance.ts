@@ -3,6 +3,7 @@ import { Token } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 
+import { useAccount } from "../ethers/connection";
 import {
   useNativeCurrencyBalances,
   useTokenBalancesWithLoadingIndicator
@@ -14,7 +15,9 @@ export function useExchangeTokenBalance(
     "address" | "decimals"
   >
 ) {
-  const { account: address, chainId } = useWeb3React();
+  const { chainId } = useWeb3React();
+  const { account: address } = useAccount();
+
   const isNativeCoin = exchangeToken.address === ethers.constants.AddressZero;
 
   const [tokenCurrencyAmounts, loading] = useTokenBalancesWithLoadingIndicator(

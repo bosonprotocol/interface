@@ -11,6 +11,8 @@ import {
 import { useCallback } from "react";
 import { DutchOrderTrade, TradeFillType } from "state/routing/types";
 
+import { useAccount } from "./ethers/connection";
+
 const DEFAULT_START_TIME_PADDING_SECONDS = 30;
 
 type DutchAuctionOrderError = { errorCode?: number; detail?: string };
@@ -58,7 +60,8 @@ export function useUniswapXSwapCallback({
 }: {
   trade?: DutchOrderTrade;
 }) {
-  const { account, provider } = useWeb3React();
+  const { provider } = useWeb3React();
+  const { account } = useAccount();
 
   return useCallback(async () => {
     if (!account) throw new Error("missing account");

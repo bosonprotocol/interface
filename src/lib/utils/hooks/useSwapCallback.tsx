@@ -17,6 +17,8 @@ import {
   TransactionType
 } from "state/transactions/types";
 
+import { useAccount } from "./ethers/connection";
+
 export type SwapResult = Awaited<
   ReturnType<ReturnType<typeof useSwapCallback>>
 >;
@@ -33,7 +35,8 @@ export function useSwapCallback(
 
   const addTransaction = useTransactionAdder();
   const addOrder = useAddOrder();
-  const { account, chainId } = useWeb3React();
+  const { chainId } = useWeb3React();
+  const { account } = useAccount();
 
   const uniswapXSwapCallback = useUniswapXSwapCallback({
     trade: isUniswapXTrade(trade) ? trade : undefined

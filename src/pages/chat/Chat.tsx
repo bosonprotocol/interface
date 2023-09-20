@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { WarningCircle } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
@@ -65,7 +65,7 @@ const getIsSameThread = (
 };
 
 export default function Chat() {
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   const {
     seller: {

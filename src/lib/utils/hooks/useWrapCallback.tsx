@@ -8,6 +8,7 @@ import { useCurrencyBalance } from "state/connection/hooks";
 import { useTransactionAdder } from "state/transactions/hooks";
 import { TransactionType } from "state/transactions/types";
 
+import { useAccount } from "./ethers/connection";
 import { useWETHContract } from "./useContract";
 
 export enum WrapType {
@@ -65,7 +66,8 @@ export default function useWrapCallback(
   execute?: () => Promise<string | undefined>;
   inputError?: WrapInputError;
 } {
-  const { chainId, account } = useWeb3React();
+  const { chainId } = useWeb3React();
+  const { account } = useAccount();
   const wethContract = useWETHContract();
   const balance = useCurrencyBalance(
     account ?? undefined,

@@ -3,6 +3,8 @@ import { useWeb3React } from "@web3-react/core";
 import { useMemo } from "react";
 import { useTokenBalance } from "state/connection/hooks";
 
+import { useAccount } from "./ethers/connection";
+
 // technically a 721, not an ERC20, but suffices for our purposes
 const SOCKS = new Token(
   ChainId.MAINNET,
@@ -11,7 +13,8 @@ const SOCKS = new Token(
 );
 
 export function useHasSocks(): boolean | undefined {
-  const { account, chainId } = useWeb3React();
+  const { chainId } = useWeb3React();
+  const { account } = useAccount();
 
   const balance = useTokenBalance(
     account ?? undefined,

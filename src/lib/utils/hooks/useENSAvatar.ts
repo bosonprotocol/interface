@@ -1,6 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { hexZeroPad } from "@ethersproject/bytes";
-import { useWeb3React } from "@web3-react/core";
 import {
   NEVER_RELOAD,
   useMainnetSingleCallResult
@@ -10,6 +9,7 @@ import uriToHttp from "lib/utils/uriToHttp";
 import { useEffect, useMemo, useState } from "react";
 
 import { isAddress, isZero } from "../address";
+import { useAccount } from "./ethers/connection";
 import {
   useENSRegistrarContract,
   useENSResolverContract,
@@ -157,7 +157,7 @@ function useERC721Uri(
   enforceOwnership: boolean
 ): { uri?: string; loading: boolean } {
   const idArgument = useMemo(() => [id], [id]);
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const contract = useERC721Contract(contractAddress);
   const owner = useMainnetSingleCallResult(
     contract,
@@ -195,7 +195,7 @@ function useERC1155Uri(
   id: string | undefined,
   enforceOwnership: boolean
 ): { uri?: string; loading: boolean } {
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const idArgument = useMemo(() => [id], [id]);
   const accountArgument = useMemo(() => [account || "", id], [account, id]);
   const contract = useERC1155Contract(contractAddress);

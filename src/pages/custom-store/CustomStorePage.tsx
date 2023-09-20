@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { Form, Formik } from "formik";
 import { BosonRoutes } from "lib/routing/routes";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { getViewModeUrl, ViewMode } from "lib/viewMode";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -44,7 +44,7 @@ const Root = styled(Layout)`
 
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const [searchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const removeLandingQueryParams = useRemoveLandingQueryParams();

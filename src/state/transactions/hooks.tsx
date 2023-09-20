@@ -3,6 +3,7 @@ import type { TransactionResponse } from "@ethersproject/providers";
 import { ChainId, SUPPORTED_CHAINS, Token } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { SwapResult } from "lib/utils/hooks/useSwapCallback";
 import { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "state/hooks";
@@ -21,7 +22,9 @@ export function useTransactionAdder(): (
   info: TransactionInfo,
   deadline?: number
 ) => void {
-  const { chainId, account } = useWeb3React();
+  const { chainId } = useWeb3React();
+  const { account } = useAccount();
+
   const dispatch = useAppDispatch();
 
   return useCallback(
@@ -46,7 +49,8 @@ export function useTransactionAdder(): (
 }
 
 export function useTransactionRemover() {
-  const { chainId, account } = useWeb3React();
+  const { chainId } = useWeb3React();
+  const { account } = useAccount();
   const dispatch = useAppDispatch();
 
   return useCallback(
@@ -186,7 +190,7 @@ export function isPendingTx(tx: TransactionDetails): boolean {
 
 export function usePendingTransactions(): TransactionDetails[] {
   const allTransactions = useAllTransactions();
-  const { account } = useWeb3React();
+  const { account } = useAccount();
 
   return useMemo(
     () =>

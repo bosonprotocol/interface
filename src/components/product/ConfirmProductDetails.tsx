@@ -1,6 +1,6 @@
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import map from "lodash/map";
 import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTermsAndSellerAgreement";
 import { Warning } from "phosphor-react";
@@ -92,7 +92,7 @@ export default function ConfirmProductDetails({
 }: Props) {
   const { bosonXmtp } = useChatContext();
   const { values } = useCreateForm();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   const showSuccessInitialization =
     [

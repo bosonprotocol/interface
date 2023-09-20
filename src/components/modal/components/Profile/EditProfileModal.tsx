@@ -1,6 +1,6 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { useCallback, useState } from "react";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -38,7 +38,8 @@ export default function EditProfileModal() {
   const [profileType, setProfileType] = useState<ProfileType>(
     useLens ? ProfileType.LENS : ProfileType.REGULAR
   );
-  const { account: address = "" } = useWeb3React();
+  const { account: address = "" } = useAccount();
+
   const [switchChecked, setSwitchChecked] = useState<boolean>(
     profileType === ProfileType.LENS
   );

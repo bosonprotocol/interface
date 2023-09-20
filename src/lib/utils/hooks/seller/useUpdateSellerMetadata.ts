@@ -1,6 +1,5 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType, OfferOrSellerMetadata } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import { useMutation } from "react-query";
 
 import {
@@ -11,6 +10,7 @@ import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
 import { decimalToHex } from "../../number";
 import { removeEmpty } from "../../objects";
+import { useAccount } from "../ethers/connection";
 import { useCurrentSellers } from "../useCurrentSellers";
 import { useSellers } from "../useSellers";
 import useStoreSellerMetadata from "./useStoreSellerMetadata";
@@ -26,7 +26,7 @@ type StoreSellerMetadataFn = ReturnType<
 
 export default function useUpdateSellerMetadata() {
   const { sellers: currentSellers } = useCurrentSellers();
-  const { account: address = "" } = useWeb3React();
+  const { account: address = "" } = useAccount();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
   const sellerId = seller?.id;
   const { refetch: refetchSeller } = useSellers(

@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
@@ -15,7 +16,9 @@ const SpinnerWrapper = styled.div`
 `;
 
 export default function PrivateAccountContainer() {
-  const { isActivating, account: address } = useWeb3React();
+  const { isActivating } = useWeb3React();
+  const { account: address } = useAccount();
+
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet);
 
   const {

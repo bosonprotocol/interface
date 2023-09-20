@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { isSupportedChain } from "../../constants/chains";
+import { useAccount } from "./ethers/connection";
 import useParsedQueryString from "./useParsedQueryString";
 import useSelectChain from "./useSelectChain";
 
@@ -18,7 +19,8 @@ function getParsedConfigId(parsedQs?: ParsedQs) {
 }
 
 export default function useSyncChainQuery() {
-  const { chainId, isActive, account } = useWeb3React();
+  const { chainId, isActive } = useWeb3React();
+  const { account } = useAccount();
   const { config } = useConfigContext();
   const currentConfigId = config.envConfig.configId;
 

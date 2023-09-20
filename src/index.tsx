@@ -1,6 +1,8 @@
 import { ApolloProvider } from "@apollo/client";
 import { ConfigProvider } from "components/config/ConfigProvider";
 import { CoreSDKProvider } from "components/core-sdk/CoreSDKProvider";
+import { UserProvider } from "components/magicLink/UserContext";
+import { Web3ContextProvider } from "components/magicLink/Web3Context";
 import { apolloClient } from "graphql/data/apollo";
 import { MulticallUpdater } from "lib/state/multicall";
 import { BlockNumberProvider } from "lib/utils/hooks/useBlockNumber";
@@ -66,33 +68,37 @@ root.render(
     <Provider store={store}>
       <Web3Provider>
         <ConfigProvider>
-          <ApolloProvider client={apolloClient}>
-            <BlockNumberProvider>
-              <Updaters />
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  duration: 5000,
-                  style: {
-                    minWidth: "455px",
-                    padding: "24px",
-                    boxShadow:
-                      "0 3px 10px rgb(0 0 0 / 40%), 0 3px 3px rgb(0 0 0 / 5%)",
-                    borderRadius: 0
-                  }
-                }}
-              />
+          <Web3ContextProvider>
+            <UserProvider>
+              <ApolloProvider client={apolloClient}>
+                <BlockNumberProvider>
+                  <Updaters />
+                  <Toaster
+                    position="top-right"
+                    toastOptions={{
+                      duration: 5000,
+                      style: {
+                        minWidth: "455px",
+                        padding: "24px",
+                        boxShadow:
+                          "0 3px 10px rgb(0 0 0 / 40%), 0 3px 3px rgb(0 0 0 / 5%)",
+                        borderRadius: 0
+                      }
+                    }}
+                  />
 
-              <QueryClientProvider client={queryClient}>
-                <CoreSDKProvider>
-                  <ConvertionRateProvider>
-                    <AppRouter />
-                  </ConvertionRateProvider>
-                  <ReactQueryDevtools initialIsOpen={false} />
-                </CoreSDKProvider>
-              </QueryClientProvider>
-            </BlockNumberProvider>
-          </ApolloProvider>
+                  <QueryClientProvider client={queryClient}>
+                    <CoreSDKProvider>
+                      <ConvertionRateProvider>
+                        <AppRouter />
+                      </ConvertionRateProvider>
+                      <ReactQueryDevtools initialIsOpen={false} />
+                    </CoreSDKProvider>
+                  </QueryClientProvider>
+                </BlockNumberProvider>
+              </ApolloProvider>
+            </UserProvider>
+          </Web3ContextProvider>
         </ConfigProvider>
       </Web3Provider>
     </Provider>

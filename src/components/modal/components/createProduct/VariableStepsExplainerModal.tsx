@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { CheckCircle } from "phosphor-react";
 import React, { useMemo } from "react";
 import styled, { css } from "styled-components";
@@ -171,7 +171,7 @@ const VariableStepsExplainerModal: React.FC<
   doSetQueryParams,
   buttonText
 }) => {
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const { sellers } = useCurrentSellers();
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, store } = useModal();

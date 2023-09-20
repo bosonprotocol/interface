@@ -35,6 +35,7 @@ import { opacify } from "lib/styles/opacify";
 import { PreventCustomStoreStyles } from "lib/styles/preventCustomStoreStyles";
 import { computeFiatValuePriceImpact } from "lib/utils/computeFiatValuePriceImpact";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { useCurrency, useDefaultActiveTokens } from "lib/utils/hooks/Tokens";
 import { useIsSwapUnsupported } from "lib/utils/hooks/useIsSwapUnsupported";
 import { useMaxAmountIn } from "lib/utils/hooks/useMaxAmountIn";
@@ -219,7 +220,8 @@ export function Swap({
   ) => void;
   disableTokenInputs?: boolean;
 }) {
-  const { account, chainId: connectedChainId, connector } = useWeb3React();
+  const { chainId: connectedChainId, connector } = useWeb3React();
+  const { account } = useAccount();
 
   // token warning stuff
   const prefilledInputCurrency = useCurrency(

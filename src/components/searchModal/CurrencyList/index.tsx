@@ -1,5 +1,4 @@
 import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { Spinner } from "components/loading/Spinner";
 import TokenSafetyIcon from "components/tokenSafety/TokenSafetyIcon";
 import Tooltip from "components/tooltip/Tooltip";
@@ -8,6 +7,7 @@ import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { checkWarning } from "lib/constants/tokenSafety";
 import { colors } from "lib/styles/colors";
+import { useAccount } from "lib/utils/hooks/ethers/connection";
 import { TokenBalances } from "lib/utils/hooks/useTokenList/sorting";
 import tryParseCurrencyAmount from "lib/utils/tryParseCurrencyAmount";
 import { Check } from "phosphor-react";
@@ -138,7 +138,7 @@ export function CurrencyRow({
   showCurrencyAmount?: boolean;
   balance?: CurrencyAmount<Currency>;
 }) {
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const key = currencyKey(currency);
   const warning = currency.isNative ? null : checkWarning(currency.address);
   const isBlockedToken = !!warning && !warning.canProceed;

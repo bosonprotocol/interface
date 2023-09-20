@@ -1,11 +1,11 @@
-import { useWeb3React } from "@web3-react/core";
 import { useQuery } from "react-query";
 
 import { useCoreSDK } from "../useCoreSdk";
+import { useAccount } from "./ethers/connection";
 
 export function useCurrentBuyer() {
   const coreSDK = useCoreSDK();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   return useQuery(
     ["current-buyer", coreSDK.uuid, address],
     async () => {
