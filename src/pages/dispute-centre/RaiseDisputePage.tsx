@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";

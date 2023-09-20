@@ -8,7 +8,7 @@ import { useCurrencyBalance } from "state/connection/hooks";
 import { useTransactionAdder } from "state/transactions/hooks";
 import { TransactionType } from "state/transactions/types";
 
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 import { useWETHContract } from "./useContract";
 
 export enum WrapType {

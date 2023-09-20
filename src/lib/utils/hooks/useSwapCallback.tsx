@@ -17,7 +17,7 @@ import {
   TransactionType
 } from "state/transactions/types";
 
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 
 export type SwapResult = Awaited<
   ReturnType<ReturnType<typeof useSwapCallback>>

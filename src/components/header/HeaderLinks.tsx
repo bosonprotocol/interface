@@ -1,5 +1,5 @@
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { ReactNode } from "react";
 import styled, { css } from "styled-components";

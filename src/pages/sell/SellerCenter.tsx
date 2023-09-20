@@ -1,5 +1,5 @@
 import { Button } from "@bosonprotocol/react-kit";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { House, WarningCircle } from "phosphor-react";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";

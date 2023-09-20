@@ -27,7 +27,7 @@ import { UniswapInterfaceMulticall } from "lib/types/v3/UniswapInterfaceMultical
 import { getContract } from "lib/utils/getContract";
 import { useMemo } from "react";
 
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson;
 

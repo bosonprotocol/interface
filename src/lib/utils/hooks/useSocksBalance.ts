@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useMemo } from "react";
 import { useTokenBalance } from "state/connection/hooks";
 
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 
 // technically a 721, not an ERC20, but suffices for our purposes
 const SOCKS = new Token(

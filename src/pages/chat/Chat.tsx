@@ -1,4 +1,4 @@
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { WarningCircle } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";

@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { asSupportedChain } from "lib/constants/chains";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import useDebounce from "lib/utils/hooks/useDebounce";
 import useIsWindowVisible from "lib/utils/hooks/useIsWindowVisible";
 import { useEffect, useRef, useState } from "react";

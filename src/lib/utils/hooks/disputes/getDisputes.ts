@@ -3,7 +3,7 @@ import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
 import { fetchSubgraph } from "../../core-components/subgraph";
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 import { Disputes } from "../useExchanges";
 
 const buildQuery = (queryString: string, name: string) => {

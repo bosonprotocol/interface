@@ -1,7 +1,7 @@
 import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { useConfigContext } from "components/config/ConfigContext";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 

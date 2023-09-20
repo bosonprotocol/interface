@@ -5,7 +5,7 @@ import { CONFIG } from "lib/config";
 import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
 import { BosonRoutes } from "lib/routing/routes";
 import { colors } from "lib/styles/colors";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { getCurrentViewMode, getViewModeUrl, ViewMode } from "lib/viewMode";
 import { useCallback, useEffect, useState } from "react";
 import { useCloseModal, useModalIsOpen } from "state/application/hooks";

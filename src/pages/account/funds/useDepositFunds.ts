@@ -1,7 +1,7 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import { BigNumberish, ethers } from "ethers";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCallback } from "react";
 
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";

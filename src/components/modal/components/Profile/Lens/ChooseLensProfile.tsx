@@ -1,4 +1,4 @@
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect, useState } from "react";
 
 import { BosonRoutes } from "../../../../../lib/routing/routes";

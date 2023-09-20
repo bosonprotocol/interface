@@ -1,6 +1,6 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCallback, useState } from "react";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";

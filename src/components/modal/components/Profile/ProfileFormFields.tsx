@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { ReactNode } from "react";
 
 import { getIpfsGatewayUrl } from "../../../../lib/utils/ipfs";

@@ -3,7 +3,7 @@ import {
   MessageData,
   ProposalContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { Info, X } from "phosphor-react";
 import { useState } from "react";
 

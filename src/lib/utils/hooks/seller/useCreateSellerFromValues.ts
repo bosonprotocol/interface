@@ -5,7 +5,7 @@ import { BosonAccount } from "../../../../components/modal/components/Profile/bo
 import { ProfileType } from "../../../../components/modal/components/Profile/const";
 import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 import useCreateSeller from "./useCreateSeller";
 import useStoreSellerMetadata from "./useStoreSellerMetadata";
 

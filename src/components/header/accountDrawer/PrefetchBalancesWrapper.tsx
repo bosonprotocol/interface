@@ -4,7 +4,7 @@ import {
 } from "graphql/data/__generated__/types-and-hooks";
 import { GQL_ENV_CHAINS } from "graphql/data/util";
 import { atom, useAtom } from "jotai";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { usePrevious } from "lib/utils/hooks/usePrevious";
 import { PropsWithChildren, useCallback, useEffect } from "react";
 

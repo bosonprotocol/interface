@@ -7,7 +7,7 @@ import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { checkWarning } from "lib/constants/tokenSafety";
 import { colors } from "lib/styles/colors";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { TokenBalances } from "lib/utils/hooks/useTokenList/sorting";
 import tryParseCurrencyAmount from "lib/utils/tryParseCurrencyAmount";
 import { Check } from "phosphor-react";

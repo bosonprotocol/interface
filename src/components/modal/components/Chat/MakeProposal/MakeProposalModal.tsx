@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/browser";
 import { Form, Formik, FormikProps } from "formik";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 

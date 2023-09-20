@@ -2,7 +2,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import { useQuery } from "react-query";
 
 import { useCoreSDK } from "../../useCoreSdk";
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 import { useCurrentBuyer } from "../useCurrentBuyer";
 import { useCurrentSellers } from "../useCurrentSellers";
 

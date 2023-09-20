@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useParams } from "react-router-dom";
 
 import Loading from "../../../components/ui/Loading";

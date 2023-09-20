@@ -10,7 +10,7 @@ import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
 import { decimalToHex } from "../../number";
 import { removeEmpty } from "../../objects";
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 import { useCurrentSellers } from "../useCurrentSellers";
 import { useSellers } from "../useSellers";
 import useStoreSellerMetadata from "./useStoreSellerMetadata";

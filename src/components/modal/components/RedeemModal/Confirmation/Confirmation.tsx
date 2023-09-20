@@ -17,7 +17,7 @@ import {
   ChatInitializationStatus,
   useChatStatus
 } from "../../../../../lib/utils/hooks/chat/useChatStatus";
-import { useSigner } from "../../../../../lib/utils/hooks/ethers/connection";
+import { useSigner } from "../../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";

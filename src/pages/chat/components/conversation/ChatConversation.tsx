@@ -9,7 +9,7 @@ import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validator
 import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import { utils } from "ethers";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { ArrowLeft, WarningCircle } from "phosphor-react";
 import {
   ReactNode,

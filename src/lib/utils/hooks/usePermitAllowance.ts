@@ -16,7 +16,7 @@ import { didUserReject } from "lib/utils/swapErrorToUserReadableMessage";
 import ms from "ms";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 
 const PERMIT_EXPIRATION = ms(`30d`);
 const PERMIT_SIG_EXPIRATION = ms(`30m`);

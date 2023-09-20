@@ -3,7 +3,7 @@ import { Token } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 import {
   useNativeCurrencyBalances,
   useTokenBalancesWithLoadingIndicator

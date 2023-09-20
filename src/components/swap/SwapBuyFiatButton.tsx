@@ -1,7 +1,7 @@
 import { useAccountDrawer } from "components/header/accountDrawer";
 import Tooltip from "components/tooltip/Tooltip";
 import Button from "components/ui/Button";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 

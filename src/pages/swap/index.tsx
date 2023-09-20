@@ -35,7 +35,7 @@ import { opacify } from "lib/styles/opacify";
 import { PreventCustomStoreStyles } from "lib/styles/preventCustomStoreStyles";
 import { computeFiatValuePriceImpact } from "lib/utils/computeFiatValuePriceImpact";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCurrency, useDefaultActiveTokens } from "lib/utils/hooks/Tokens";
 import { useIsSwapUnsupported } from "lib/utils/hooks/useIsSwapUnsupported";
 import { useMaxAmountIn } from "lib/utils/hooks/useMaxAmountIn";

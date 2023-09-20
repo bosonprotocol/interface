@@ -1,7 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { Copy, Gear, Trash } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";

@@ -7,6 +7,7 @@ import Typography from "components/ui/Typography";
 import { supportedChainIdFromGQLChain } from "graphql/data/util";
 import { UserAddedToken } from "lib/types/tokens";
 import { isAddress } from "lib/utils/address";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import {
   useDefaultActiveTokens,
   useIsUserAddedToken,

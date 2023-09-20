@@ -1,4 +1,4 @@
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { Warning } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";

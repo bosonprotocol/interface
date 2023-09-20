@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
 import { ThreadObjectWithInfo } from "../../../../pages/chat/types";
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 import {
   DateStep,
   getDedupSortedMessages,

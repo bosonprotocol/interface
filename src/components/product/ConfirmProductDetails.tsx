@@ -1,6 +1,6 @@
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import map from "lodash/map";
 import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTermsAndSellerAgreement";
 import { Warning } from "phosphor-react";

@@ -4,7 +4,7 @@ import { useConfigContext } from "components/config/ConfigContext";
 import { ReactNode, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
-import { useSigner } from "../../../lib/utils/hooks/ethers/connection";
+import { useSigner } from "../../../lib/utils/hooks/connection/connection";
 import { Context } from "./ChatContext";
 import { getChatEnvName } from "./const";
 

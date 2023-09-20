@@ -1,4 +1,4 @@
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect, useMemo } from "react";
 
 import { useBuyerSellerAccounts } from "../lib/utils/hooks/useBuyerSellerAccounts";

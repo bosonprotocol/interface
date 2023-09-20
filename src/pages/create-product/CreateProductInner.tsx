@@ -34,7 +34,7 @@ dayjs.extend(localizedFormat);
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { BigNumber, ethers } from "ethers";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 
 import { FileProps } from "../../components/form/Upload/types";

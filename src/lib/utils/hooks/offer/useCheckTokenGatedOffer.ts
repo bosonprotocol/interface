@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { BosonSnapshotGate__factory } from "../../../../components/detail/DetailWidget/BosonSnapshotGate/typechain";
 import { Offer } from "../../../types/offer";
 import { useCoreSDK } from "../../useCoreSdk";
-import { useAccount, useSigner } from "../ethers/connection";
+import { useAccount, useSigner } from "../connection/connection";
 
 interface Props {
   commitProxyAddress?: string | undefined;

@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
 import { BosonRoutes } from "lib/routing/routes";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { getViewModeUrl, ViewMode } from "lib/viewMode";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";

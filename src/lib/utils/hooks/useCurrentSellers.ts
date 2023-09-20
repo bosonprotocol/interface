@@ -12,7 +12,7 @@ import {
 } from "../../../components/modal/components/Profile/Lens/utils";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { useCoreSDK } from "../useCoreSdk";
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 import { Profile } from "./lens/graphql/generated";
 import useGetLensProfiles from "./lens/profile/useGetLensProfiles";
 

@@ -3,7 +3,7 @@ import type { TransactionResponse } from "@ethersproject/providers";
 import { ChainId, SUPPORTED_CHAINS, Token } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { SwapResult } from "lib/utils/hooks/useSwapCallback";
 import { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "state/hooks";

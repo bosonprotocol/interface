@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 

@@ -1,10 +1,8 @@
 import Button from "components/ui/Button";
 import { useMagic } from "lib/utils/magicLink/magic";
-import { getWeb3 } from "lib/utils/magicLink/web3";
 import { useState } from "react";
 
 import { useUser } from "./UserContext";
-import { useWeb3 } from "./Web3Context";
 
 const GoogleLogo = () => {
   return (
@@ -39,7 +37,6 @@ const GoogleLogo = () => {
 export const MagicLoginButton = () => {
   const magic = useMagic();
   const { setUser } = useUser();
-  const { setWeb3 } = useWeb3();
   const [disabled, setDisabled] = useState(false);
 
   const connect = async () => {
@@ -52,9 +49,6 @@ export const MagicLoginButton = () => {
       setDisabled(false);
       //   TODO: localStorage.setItem("user", accounts[0]);
 
-      // Once user is logged in, re-initialize web3 instance to use the new provider (if connected with third party wallet)
-      const web3 = await getWeb3(magic);
-      setWeb3(web3);
       setUser(accounts[0]);
     } catch (error) {
       setDisabled(false);

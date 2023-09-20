@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
-import { useSigner } from "../../../lib/utils/hooks/ethers/connection";
+import { useSigner } from "../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";

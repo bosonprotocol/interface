@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import create from "zustand";
 
 import { EventLog } from "../../transactions";
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 
 type PendingTransaction = Omit<EventLog, "__typename" | "account"> & {
   accountType: "Buyer" | "Seller" | string;

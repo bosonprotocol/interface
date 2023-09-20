@@ -17,7 +17,7 @@ import { isSupportedChain } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { opacify } from "lib/styles/opacify";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { Lock } from "phosphor-react";
 import { darken } from "polished";
 import { ReactNode, useCallback, useState } from "react";

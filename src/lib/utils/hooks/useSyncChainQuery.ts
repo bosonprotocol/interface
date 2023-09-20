@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { isSupportedChain } from "../../constants/chains";
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 import useParsedQueryString from "./useParsedQueryString";
 import useSelectChain from "./useSelectChain";
 

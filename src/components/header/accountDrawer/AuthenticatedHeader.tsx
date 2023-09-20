@@ -1,7 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { CopyButton } from "components/form/Field.styles";
 import { useUser } from "components/magicLink/UserContext";
-import { useWeb3 } from "components/magicLink/Web3Context";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import copyToClipboard from "lib/utils/copyToClipboard";
@@ -171,7 +170,6 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
   const { ENSName } = useENSName(account);
   const dispatch = useAppDispatch();
   const magic = useMagic();
-  const { setWeb3 } = useWeb3();
   const { setUser } = useUser();
   const magicLogout = getMagicLogout(magic);
   const connection = getConnection(connector);
@@ -181,7 +179,7 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
       connector.deactivate();
     }
     connector.resetState();
-    magicLogout(setWeb3, setUser);
+    magicLogout(setUser);
     dispatch(updateSelectedWallet({ wallet: undefined }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connector, dispatch]);

@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useQuery } from "react-query";
 
 import { fetchSubgraph } from "../core-components/subgraph";
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 
 function lowerCase(str: string | undefined) {
   return str?.toLowerCase() || "";

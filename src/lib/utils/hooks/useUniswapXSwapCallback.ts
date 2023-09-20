@@ -11,7 +11,7 @@ import {
 import { useCallback } from "react";
 import { DutchOrderTrade, TradeFillType } from "state/routing/types";
 
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 
 const DEFAULT_START_TIME_PADDING_SECONDS = 30;
 

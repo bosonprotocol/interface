@@ -1,4 +1,4 @@
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { CheckCircle } from "phosphor-react";
 import React, { useMemo } from "react";
 import styled, { css } from "styled-components";

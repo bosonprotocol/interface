@@ -20,7 +20,7 @@ import {
   useTransactionAdder
 } from "state/transactions/hooks";
 
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 
 enum ApprovalState {
   PENDING,

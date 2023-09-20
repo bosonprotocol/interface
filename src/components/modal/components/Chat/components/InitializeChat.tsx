@@ -5,7 +5,7 @@ import { colors } from "../../../../../lib/styles/colors";
 import {
   useAccount,
   useSigner
-} from "../../../../../lib/utils/hooks/ethers/connection";
+} from "../../../../../lib/utils/hooks/connection/connection";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
 import ConnectButton from "../../../../header/ConnectButton";
 import { Spinner } from "../../../../loading/Spinner";

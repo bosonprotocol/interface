@@ -8,7 +8,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import { displayFloat } from "../../../../lib/utils/calcPrice";
-import { useSigner } from "../../../../lib/utils/hooks/ethers/connection";
+import { useSigner } from "../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import useRefundData from "../../../../lib/utils/hooks/useRefundData";

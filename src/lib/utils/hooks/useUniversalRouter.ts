@@ -16,7 +16,7 @@ import { useCallback } from "react";
 import { ClassicTrade, TradeFillType } from "state/routing/types";
 
 import { isZero } from "../address";
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 import { PermitSignature } from "./usePermitAllowance";
 
 /** Thrown when gas estimation fails. This class of error usually requires an emulator to determine the root cause. */

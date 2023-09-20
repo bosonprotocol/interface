@@ -1,5 +1,5 @@
 import { useField, useFormikContext } from "formik";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 import styled from "styled-components";
 

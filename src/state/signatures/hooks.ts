@@ -1,5 +1,5 @@
 import { ChainId } from "@uniswap/sdk-core";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { UniswapXOrderStatus } from "lib/utils/hooks/orders/types";
 import { useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";

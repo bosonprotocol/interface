@@ -3,7 +3,7 @@ import { useConfigContext } from "components/config/ConfigContext";
 import { useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 
 export enum ChatInitializationStatus {
   PENDING = "PENDING",

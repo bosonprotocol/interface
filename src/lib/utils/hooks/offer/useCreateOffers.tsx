@@ -11,7 +11,7 @@ import {
   PartialTokenGating
 } from "../../../../pages/create-product/utils/buildCondition";
 import { useCoreSDK } from "../../useCoreSdk";
-import { useAccount } from "../ethers/connection";
+import { useAccount } from "../connection/connection";
 import { useAddPendingTransaction } from "../transactions/usePendingTransactions";
 
 const getOfferCreationToast = () => {

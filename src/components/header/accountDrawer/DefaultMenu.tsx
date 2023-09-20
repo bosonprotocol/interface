@@ -1,5 +1,5 @@
 import Column from "components/ui/column";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import styled from "styled-components";
 
 import WalletModal from "../walletModal";

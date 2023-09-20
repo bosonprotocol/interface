@@ -51,7 +51,7 @@ import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import {
   useAccount,
   useSigner
-} from "../../../lib/utils/hooks/ethers/connection";
+} from "../../../lib/utils/hooks/connection/connection";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
 import {
   useAddPendingTransaction,

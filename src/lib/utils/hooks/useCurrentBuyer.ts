@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 import { useCoreSDK } from "../useCoreSdk";
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 
 export function useCurrentBuyer() {
   const coreSDK = useCoreSDK();

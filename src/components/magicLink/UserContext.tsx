@@ -3,8 +3,6 @@ import { useMagic } from "lib/utils/magicLink/magic";
 import { getProvider } from "lib/utils/magicLink/provider";
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 
-import { useWeb3 } from "./Web3Context";
-
 export type SetUser = React.Dispatch<React.SetStateAction<string | undefined>>;
 export const UserContext = React.createContext<{
   user: string | undefined;
@@ -12,7 +10,6 @@ export const UserContext = React.createContext<{
 } | null>(null);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const { setWeb3 } = useWeb3();
   const magic = useMagic();
   const [user, setUser] =
     useState<string>(/* TODO: localStorage.getItem("user")*/);
@@ -23,7 +20,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     // console.log("accounts", accounts);
     // If user wallet is no longer connected, logout
     if (!accounts[0] && user) {
-      logout(setWeb3, setUser);
+      logout(setUser);
     }
     // Set user in localStorage, or clear localStorage if no wallet connected
     /* TODO: accounts[0]

@@ -9,7 +9,7 @@ import uriToHttp from "lib/utils/uriToHttp";
 import { useEffect, useMemo, useState } from "react";
 
 import { isAddress, isZero } from "../address";
-import { useAccount } from "./ethers/connection";
+import { useAccount } from "./connection/connection";
 import {
   useENSRegistrarContract,
   useENSResolverContract,

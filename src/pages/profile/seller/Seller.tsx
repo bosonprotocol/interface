@@ -1,7 +1,7 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
-import { useAccount } from "lib/utils/hooks/ethers/connection";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
