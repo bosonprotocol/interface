@@ -20,6 +20,7 @@ import {
   ethers,
   utils
 } from "ethers";
+import { includingBuyerSellerAgreement } from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
@@ -321,7 +322,7 @@ export const getOfferDetailData = (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
             <span style={{ fontSize: "0.5rem" }}>
-              {exchangePolicyLabel + " including Buyer and Seller Agreement"}
+              {exchangePolicyLabel + " " + includingBuyerSellerAgreement}
             </span>
             {modalTypes && showModal && (
               <ArrowSquareOut
@@ -337,7 +338,7 @@ export const getOfferDetailData = (
               size={20}
               style={{ minWidth: "20px" }}
             ></WarningCircle>{" "}
-            Non-standard{" including Buyer and Seller Agreement"}
+            Non-standard{` ${includingBuyerSellerAgreement}`}
             {modalTypes && showModal && (
               <ArrowSquareOut
                 size={20}
@@ -353,7 +354,7 @@ export const getOfferDetailData = (
             size={20}
             style={{ minWidth: "20px" }}
           ></CircleWavyQuestion>{" "}
-          Unknown{" "}
+          Unknown{` ${includingBuyerSellerAgreement}`}
           {modalTypes && showModal && (
             <ArrowSquareOut
               size={20}

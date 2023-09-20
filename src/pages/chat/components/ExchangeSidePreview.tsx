@@ -3,6 +3,7 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
+import { includingBuyerSellerAgreement } from "lib/constants/policies";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import {
   ArrowSquareOut,
@@ -256,7 +257,9 @@ const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            <span>{exchangePolicyLabel + " "}</span>
+            <span style={{ fontSize: "0.5rem" }}>
+              {exchangePolicyLabel + " " + includingBuyerSellerAgreement}
+            </span>
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}
@@ -265,21 +268,31 @@ const getOfferDetailData = (
           </Typography>
         ) : (
           <Typography tag="p" color={colors.orange}>
-            <WarningCircle size={20}></WarningCircle> Non-standard{" "}
+            <WarningCircle
+              size={20}
+              style={{ minWidth: "20px" }}
+            ></WarningCircle>{" "}
+            Non-standard
+            {` ${includingBuyerSellerAgreement}`}
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", minWidth: "20px" }}
             />
           </Typography>
         )
       ) : (
         <Typography tag="p" color="purple">
-          <CircleWavyQuestion size={20}></CircleWavyQuestion> Unknown{" "}
+          <CircleWavyQuestion
+            size={20}
+            style={{ minWidth: "20px" }}
+          ></CircleWavyQuestion>{" "}
+          Unknown
+          {` ${includingBuyerSellerAgreement}`}
           <ArrowSquareOut
             size={20}
             onClick={() => handleShowExchangePolicy()}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", minWidth: "20px" }}
           />
         </Typography>
       )
