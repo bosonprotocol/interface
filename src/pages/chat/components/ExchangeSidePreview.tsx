@@ -188,7 +188,7 @@ const HistorySection = styled(Section)`
     padding-bottom: 5rem;
   }
 `;
-
+const fontSizeExchangePolicy = "0.625rem";
 const getOfferDetailData = (
   offer: Offer,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -257,7 +257,7 @@ const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            <span style={{ fontSize: "0.5rem" }}>
+            <span style={{ fontSize: fontSizeExchangePolicy }}>
               {exchangePolicyLabel + " " + includingBuyerSellerAgreement}
             </span>
             <ArrowSquareOut
@@ -267,7 +267,11 @@ const getOfferDetailData = (
             />
           </Typography>
         ) : (
-          <Typography tag="p" color={colors.orange}>
+          <Typography
+            tag="p"
+            color={colors.orange}
+            $fontSize={fontSizeExchangePolicy}
+          >
             <WarningCircle
               size={20}
               style={{ minWidth: "20px" }}
@@ -282,7 +286,7 @@ const getOfferDetailData = (
           </Typography>
         )
       ) : (
-        <Typography tag="p" color="purple">
+        <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
           <CircleWavyQuestion
             size={20}
             style={{ minWidth: "20px" }}
