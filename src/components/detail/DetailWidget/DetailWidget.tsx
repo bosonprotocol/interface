@@ -28,10 +28,8 @@ import {
   ArrowRight,
   ArrowSquareOut,
   Check,
-  CircleWavyQuestion,
   Info,
-  Question,
-  WarningCircle
+  Question
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -340,10 +338,6 @@ export const getOfferDetailData = (
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
           >
-            <WarningCircle
-              size={20}
-              style={{ minWidth: "20px" }}
-            ></WarningCircle>{" "}
             Non-standard{` ${includingBuyerSellerAgreement}`}
             {modalTypes && showModal && (
               <ArrowSquareOut
@@ -356,10 +350,6 @@ export const getOfferDetailData = (
         )
       ) : (
         <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
-          <CircleWavyQuestion
-            size={20}
-            style={{ minWidth: "20px" }}
-          ></CircleWavyQuestion>{" "}
           Unknown{` ${includingBuyerSellerAgreement}`}
           {modalTypes && showModal && (
             <ArrowSquareOut

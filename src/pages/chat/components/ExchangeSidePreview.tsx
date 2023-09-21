@@ -5,11 +5,7 @@ import {
 import { offers, subgraph } from "@bosonprotocol/react-kit";
 import { includingBuyerSellerAgreement } from "lib/constants/policies";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
-import {
-  ArrowSquareOut,
-  CircleWavyQuestion,
-  WarningCircle
-} from "phosphor-react";
+import { ArrowSquareOut } from "phosphor-react";
 import {
   Dispatch,
   ReactNode,
@@ -272,10 +268,6 @@ const getOfferDetailData = (
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
           >
-            <WarningCircle
-              size={20}
-              style={{ minWidth: "20px" }}
-            ></WarningCircle>{" "}
             Non-standard
             {` ${includingBuyerSellerAgreement}`}
             <ArrowSquareOut
@@ -287,10 +279,6 @@ const getOfferDetailData = (
         )
       ) : (
         <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
-          <CircleWavyQuestion
-            size={20}
-            style={{ minWidth: "20px" }}
-          ></CircleWavyQuestion>{" "}
           Unknown
           {` ${includingBuyerSellerAgreement}`}
           <ArrowSquareOut
