@@ -1043,6 +1043,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   data-exchange-id={exchange?.id}
                   data-bypass-mode="REDEEM"
                   data-config-id={config.envConfig.configId}
+                  data-account={address}
                   withBosonStyle
                 >
                   <span>Redeem</span>
@@ -1191,6 +1192,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       id="boson-redeem-cancel"
                       data-exchange-id={exchange?.id}
                       data-config-id={config.envConfig.configId}
+                      data-account={address}
                       data-bypass-mode="CANCEL"
                     >
                       Cancel
