@@ -37,7 +37,7 @@ export const AgreeToTermsAndSellerAgreement: React.FC<
         name="confirmProductDetails.acceptsTerms"
         text={
           <div style={{ all: "unset" }}>
-            By confirming, you agree to{" "}
+            By confirming, you agree to the{" "}
             {previewOffers.length === 1 ? (
               <button
                 style={{ color: colors.blue }}
@@ -48,12 +48,12 @@ export const AgreeToTermsAndSellerAgreement: React.FC<
                 }
                 type="button"
               >
-                the rNFT terms
+                rNFT terms
               </button>
             ) : (
-              <>the rNFT terms</>
+              <>rNFT terms</>
             )}{" "}
-            and{" "}
+            and the{" "}
             {previewOffers.length === 1 ? (
               <button
                 style={{ color: colors.blue }}
@@ -64,10 +64,10 @@ export const AgreeToTermsAndSellerAgreement: React.FC<
                 }
                 type="button"
               >
-                the Buyer and Seller Agreement
+                Buyer and Seller Agreement
               </button>
             ) : (
-              <>the Buyer and Seller Agreements</>
+              <>Buyer and Seller Agreements</>
             )}{" "}
             and acknowledge that you have read and understood both documents.
           </div>
