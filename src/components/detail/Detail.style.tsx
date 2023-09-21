@@ -7,7 +7,6 @@ import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import { buttonText } from "../ui/styles";
-import Typography from "../ui/Typography";
 
 export const ChartWrapper = styled.div`
   canvas {
@@ -375,19 +374,12 @@ export const WidgetUpperGrid = styled.div`
   grid-column-gap: 1em;
   grid-row-gap: 1rem;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  align-items: start;
-  .by-proceeding {
-    margin-bottom: -0.75rem;
-  }
+  align-items: center;
 
   ${breakpoint.s} {
     grid-column-gap: 2rem;
     grid-row-gap: 2rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    .by-proceeding {
-      margin-bottom: -1.5rem;
-    }
   }
 
   > button {
@@ -506,9 +498,6 @@ export const Widget = styled.div`
     &:first-of-type {
       padding-top: 2rem;
     }
-    &:last-of-type {
-      padding-bottom: 2rem;
-    }
   }
 
   box-shadow: 0px 4.318px 107.946px rgba(21, 30, 52, 0.1);
@@ -576,14 +565,12 @@ export const RedeemLeftButton = styled.button`
   color: ${colors.black};
 `;
 
-export const CommitAndRedeemButton = styled(Typography)`
+export const CommitAndRedeemButton = styled.p`
   font-weight: 600;
-  color: ${colors.darkGrey};
-  cursor: pointer;
-  transition: color 150ms ease-in-out;
-  &:hover {
-    color: ${colors.secondary};
-  }
+  font-size: 0.75rem;
+  font-style: normal;
+  margin: 0;
+  color: ${colors.secondary};
 `;
 
 export const RaiseProblemButton = styled(Button)`
@@ -615,8 +602,8 @@ export const ContactSellerButton = styled(RaiseProblemButton)`
   }
 `;
 
-export const Break = styled.span`
-  width: 100%;
+export const Break = styled.div`
+  display: block;
   height: 2px;
   background: ${colors.border};
 `;

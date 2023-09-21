@@ -5,11 +5,7 @@ import {
 import { offers, subgraph } from "@bosonprotocol/react-kit";
 import { includingBuyerSellerAgreement } from "lib/constants/policies";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
-import {
-  ArrowSquareOut,
-  CircleWavyQuestion,
-  WarningCircle
-} from "phosphor-react";
+import { ArrowSquareOut } from "phosphor-react";
 import {
   Dispatch,
   ReactNode,
@@ -188,7 +184,7 @@ const HistorySection = styled(Section)`
     padding-bottom: 5rem;
   }
 `;
-
+const fontSizeExchangePolicy = "0.625rem";
 const getOfferDetailData = (
   offer: Offer,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -257,7 +253,7 @@ const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            <span style={{ fontSize: "0.5rem" }}>
+            <span style={{ fontSize: fontSizeExchangePolicy }}>
               {exchangePolicyLabel + " " + includingBuyerSellerAgreement}
             </span>
             <ArrowSquareOut
@@ -267,11 +263,11 @@ const getOfferDetailData = (
             />
           </Typography>
         ) : (
-          <Typography tag="p" color={colors.orange}>
-            <WarningCircle
-              size={20}
-              style={{ minWidth: "20px" }}
-            ></WarningCircle>{" "}
+          <Typography
+            tag="p"
+            color={colors.orange}
+            $fontSize={fontSizeExchangePolicy}
+          >
             Non-standard
             {` ${includingBuyerSellerAgreement}`}
             <ArrowSquareOut
@@ -282,11 +278,7 @@ const getOfferDetailData = (
           </Typography>
         )
       ) : (
-        <Typography tag="p" color="purple">
-          <CircleWavyQuestion
-            size={20}
-            style={{ minWidth: "20px" }}
-          ></CircleWavyQuestion>{" "}
+        <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
           Unknown
           {` ${includingBuyerSellerAgreement}`}
           <ArrowSquareOut
