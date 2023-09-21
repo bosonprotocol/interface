@@ -336,6 +336,23 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
             )}
           </HeaderButton>
         </FiatLink>
+        <button
+          type="button"
+          onClick={async () => {
+            if (!magic) {
+              return;
+            }
+            // const walletInfo = await magic.user.getInfo();
+            // const walletType = walletInfo.walletType;
+
+            // if (walletType === "magic") {
+            const result = await magic.wallet.showUI();
+            console.log("result", result);
+            // }
+          }}
+        >
+          fiat
+        </button>
         {Boolean(!fiatOnrampAvailable && fiatOnrampAvailabilityChecked) && (
           <FiatOnrampNotAvailableText marginTop="8px">
             Not available in your region
