@@ -1,4 +1,5 @@
 import { gql, request } from "graphql-request";
+import { CONFIG } from "lib/config";
 import { useQuery } from "react-query";
 
 import { Offer } from "../../../lib/types/offer";
@@ -101,7 +102,7 @@ export interface IPool {
 
 export function useUniswapPools({ tokens }: Props) {
   const tokensWithoutBoson = tokens?.filter((t) => t.symbol !== "BOSON") || [];
-  const isDev = process.env.NODE_ENV === "development";
+  const mockConversionRates = CONFIG.mockConversionRates;
   const queries = generateQuery(tokensWithoutBoson, false);
   const swapQueries = generateQuery(tokensWithoutBoson, true);
 
@@ -122,7 +123,7 @@ export function useUniswapPools({ tokens }: Props) {
       ).filter((n) => n) as IPool[];
     },
     {
-      enabled: !!queries.length && !!swapQueries.length && !isDev
+      enabled: !!queries.length && !!swapQueries.length && !mockConversionRates
     }
   );
 
@@ -165,7 +166,7 @@ export function useUniswapPools({ tokens }: Props) {
       ).filter((n) => n) as IPool[];
     },
     {
-      enabled: !isDev
+      enabled: !mockConversionRates
     }
   );
 

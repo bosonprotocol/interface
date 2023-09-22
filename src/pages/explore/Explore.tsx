@@ -80,29 +80,25 @@ function Explore({
               xl: 4
             }}
           >
-            {offerArray &&
-              offerArray
-                ?.slice(
-                  pageOptions.pagination
-                    ? (pageIndex || 0) * pageOptions?.itemsPerPage
-                    : 0,
-                  pageOptions.pagination
-                    ? (pageIndex || 0) * pageOptions?.itemsPerPage +
-                        pageOptions?.itemsPerPage
-                    : pageOptions?.itemsPerPage
-                )
-                ?.map((offer) => (
-                  <div
-                    key={`ProductCard_${offer?.id}`}
-                    id={`offer_${offer?.id}`}
-                  >
-                    <ProductCard
-                      offer={offer as ExtendedOffer}
-                      filterOptions={filterOptions}
-                      dataTestId="offer"
-                    />
-                  </div>
-                ))}
+            {offerArray
+              ?.slice(
+                pageOptions.pagination
+                  ? (pageIndex || 0) * pageOptions?.itemsPerPage
+                  : 0,
+                pageOptions.pagination
+                  ? (pageIndex || 0) * pageOptions?.itemsPerPage +
+                      pageOptions?.itemsPerPage
+                  : pageOptions?.itemsPerPage
+              )
+              ?.map((offer) => (
+                <div key={`ProductCard_${offer?.id}`} id={`offer_${offer?.id}`}>
+                  <ProductCard
+                    offer={offer as ExtendedOffer}
+                    filterOptions={filterOptions}
+                    dataTestId="offer"
+                  />
+                </div>
+              ))}
           </ProductGridContainer>
         </GridInner>
       )}
@@ -129,28 +125,25 @@ function Explore({
               xl: 4
             }}
           >
-            {collections &&
-              collections
-                ?.slice(
-                  pageOptions.pagination
-                    ? (pageIndex || 0) * pageOptions?.itemsPerPage
-                    : 0,
-                  pageOptions.pagination
-                    ? (pageIndex || 0) * pageOptions?.itemsPerPage +
-                        pageOptions?.itemsPerPage
-                    : pageOptions?.itemsPerPage
-                )
-                ?.map((collection) => (
-                  <Fragment
-                    key={`CollectionsCard_${
-                      collection?.brandName || collection?.id
-                    }`}
-                  >
-                    <CollectionsCard
-                      collection={collection as ExtendedSeller}
-                    />
-                  </Fragment>
-                ))}
+            {collections
+              ?.slice(
+                pageOptions.pagination
+                  ? (pageIndex || 0) * pageOptions?.itemsPerPage
+                  : 0,
+                pageOptions.pagination
+                  ? (pageIndex || 0) * pageOptions?.itemsPerPage +
+                      pageOptions?.itemsPerPage
+                  : pageOptions?.itemsPerPage
+              )
+              ?.map((collection) => (
+                <Fragment
+                  key={`CollectionsCard_${
+                    collection?.brandName || collection?.id
+                  }`}
+                >
+                  <CollectionsCard collection={collection as ExtendedSeller} />
+                </Fragment>
+              ))}
           </ProductGridContainer>
         </GridInner>
       )}
