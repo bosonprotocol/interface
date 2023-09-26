@@ -109,10 +109,6 @@ export default function useSyncChainQuery() {
       currentConfigId !== urlConfigId &&
       !account
     ) {
-      console.log(`selectChain(${urlConfigId})`, {
-        currentConfigId,
-        urlConfigId
-      });
       selectChain(urlConfigId as ConfigId);
     }
     // If a user has a connected wallet and has manually changed their chain, update the query parameter if it's supported

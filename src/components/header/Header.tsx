@@ -214,7 +214,6 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
     const { isLteS, isLteL, isLteM, isM, isLteXS, isXXS } = useBreakpoints();
-    console.log({ isLteS, isLteL, isLteM, isM, isLteXS });
     const logoUrl = useCustomStoreQueryParameter("logoUrl");
     const navigationBarPosition = useCustomStoreQueryParameter(
       "navigationBarPosition"
