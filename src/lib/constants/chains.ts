@@ -3,6 +3,7 @@ import {
   SUPPORTED_CHAINS,
   SupportedChainsType
 } from "@uniswap/sdk-core";
+import { envChainIds } from "lib/config";
 
 export const UniWalletSupportedChains = [
   ChainId.MAINNET,
@@ -30,8 +31,30 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.BASE_GOERLI]: "base_goerli"
 } as const;
 
+export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
+  [ChainId.MAINNET]: "Mainnet",
+  [ChainId.GOERLI]: "Goerli",
+  [ChainId.SEPOLIA]: "Sepolia",
+  [ChainId.POLYGON]: "Polygon",
+  [ChainId.POLYGON_MUMBAI]: "Polygon Mumbai",
+  [ChainId.CELO]: "Celo",
+  [ChainId.CELO_ALFAJORES]: "Celo Alfajores",
+  [ChainId.ARBITRUM_ONE]: "Arbitrum",
+  [ChainId.ARBITRUM_GOERLI]: "Arbitrum Goerli",
+  [ChainId.OPTIMISM]: "Optimism",
+  [ChainId.OPTIMISM_GOERLI]: "Optimism Goerli",
+  [ChainId.BNB]: "Bnb",
+  [ChainId.AVALANCHE]: "Avalanche",
+  [ChainId.BASE]: "Base",
+  [ChainId.BASE_GOERLI]: "Base Goerli"
+} as const;
+
 // Include ChainIds in this array if they are not supported by the UX yet, but are already in the SDK.
 const NOT_YET_UX_SUPPORTED_CHAIN_IDS: number[] = [];
+const ACTUALLY_SUPPORTED_CHAINS = SUPPORTED_CHAINS.filter((chainId) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return envChainIds.includes(chainId as any);
+});
 
 export function isSupportedChain(
   chainId: number | null | undefined | ChainId,
@@ -42,7 +65,7 @@ export function isSupportedChain(
   }
   return (
     !!chainId &&
-    SUPPORTED_CHAINS.indexOf(chainId) !== -1 &&
+    ACTUALLY_SUPPORTED_CHAINS.indexOf(chainId) !== -1 &&
     NOT_YET_UX_SUPPORTED_CHAIN_IDS.indexOf(chainId) === -1 &&
     !!CHAIN_IDS_TO_NAMES[chainId as keyof typeof CHAIN_IDS_TO_NAMES]
   );
@@ -72,7 +95,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
 
 export const TESTNET_CHAIN_IDS = [
   ChainId.GOERLI,
-  ChainId.SEPOLIA,
+  // ChainId.SEPOLIA,
   ChainId.POLYGON_MUMBAI
   // ChainId.ARBITRUM_GOERLI,
   // ChainId.OPTIMISM_GOERLI,
@@ -86,7 +109,7 @@ export const TESTNET_CHAIN_IDS = [
 export const L1_CHAIN_IDS = [
   ChainId.MAINNET,
   ChainId.GOERLI,
-  ChainId.SEPOLIA,
+  // ChainId.SEPOLIA,
   ChainId.POLYGON,
   ChainId.POLYGON_MUMBAI
   // ChainId.CELO,

@@ -1,12 +1,18 @@
 import { Button } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import Tooltip from "components/tooltip/Tooltip";
+import Grid from "components/ui/Grid";
+import { envConfigsFilteredByEnv } from "lib/config";
 import { getConnection } from "lib/connection";
+import { CHAIN_IDS_TO_FRIENDLY_NAMES } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
+import { getConfigsByChainId } from "lib/utils/config/getConfigsByChainId";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
 import { useLast } from "lib/utils/hooks/useLast";
+import { Warning } from "phosphor-react";
 import { useCallback } from "react";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
@@ -83,9 +89,13 @@ const StyledConnectButton = styled(Button)`
 `;
 
 function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
+  const { chainId, ...rest } = useWeb3React();
   const { isLteXS } = useBreakpoints();
   const switchingChain = useAppSelector(
     (state) => state.wallets.switchingChain
+  );
+  const connectedWallets = useAppSelector(
+    (state) => state.wallets.connectedWallets
   );
   const ignoreWhileSwitchingChain = useCallback(
     () => !switchingChain,
@@ -133,20 +143,59 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
       </Web3StatusConnected>
     );
   }
+  const configs = getConfigsByChainId(chainId);
+  // console.log({ connectedWallets, chainId, configs, ...rest });
+  const connectedToWrongChainId =
+    chainId && (!configs?.length || !!connectedWallets.length);
   return (
-    <StyledConnectButton
-      tabIndex={0}
-      onClick={handleWalletDropdownClick}
-      data-testid="navbar-connect-wallet"
-      size={isLteXS ? "small" : "regular"}
-      variant="primaryFill"
-      style={{
-        whiteSpace: "pre",
-        color: connectedButtonTextColor
-      }}
-    >
-      Connect Wallet
-    </StyledConnectButton>
+    <Grid justifyContent="center" flexDirection="column">
+      <StyledConnectButton
+        tabIndex={0}
+        onClick={handleWalletDropdownClick}
+        data-testid="navbar-connect-wallet"
+        size={isLteXS ? "small" : "regular"}
+        variant="primaryFill"
+        style={{
+          whiteSpace: "pre",
+          color: connectedButtonTextColor
+        }}
+      >
+        Connect Wallet
+      </StyledConnectButton>
+      {connectedToWrongChainId && (
+        <Tooltip
+          content={
+            <div>
+              Connect to{" "}
+              {envConfigsFilteredByEnv
+                .map(
+                  (config) =>
+                    `${
+                      CHAIN_IDS_TO_FRIENDLY_NAMES[
+                        config.chainId as keyof typeof CHAIN_IDS_TO_FRIENDLY_NAMES
+                      ]
+                    } (${config.chainId})`
+                )
+                .join(", ")}
+            </div>
+          }
+        >
+          <Grid alignItems="center" gap="0.1rem">
+            <Warning color={colors.red} size={10} />
+            <small
+              style={{
+                fontSize: "0.8rem",
+                color: colors.red,
+                fontWeight: "600",
+                margin: 0
+              }}
+            >
+              Connected to unsupported chain
+            </small>
+          </Grid>
+        </Tooltip>
+      )}
+    </Grid>
   );
 }
 

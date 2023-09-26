@@ -4,6 +4,7 @@ import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import copyToClipboard from "lib/utils/copyToClipboard";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
+import { useDisconnect } from "lib/utils/hooks/useDisconnect";
 import useENSName from "lib/utils/hooks/useENSName";
 import {
   ArrowDownRight,
@@ -15,8 +16,6 @@ import {
   SignOut
 } from "phosphor-react";
 import { useCallback, useState } from "react";
-import { useAppDispatch } from "state/hooks";
-import { updateSelectedWallet } from "state/user/reducer";
 import styled from "styled-components";
 
 import { getConnection } from "../../../lib/connection";
@@ -165,17 +164,10 @@ export function PortfolioArrow({
 export default function AuthenticatedHeader({ account }: { account: string }) {
   const { connector } = useWeb3React();
   const { ENSName } = useENSName(account);
-  const dispatch = useAppDispatch();
 
   const connection = getConnection(connector);
 
-  const disconnect = useCallback(() => {
-    if (connector && connector.deactivate) {
-      connector.deactivate();
-    }
-    connector.resetState();
-    dispatch(updateSelectedWallet({ wallet: undefined }));
-  }, [connector, dispatch]);
+  const disconnect = useDisconnect();
 
   // const toggleWalletDrawer = useToggleAccountDrawer();
 
