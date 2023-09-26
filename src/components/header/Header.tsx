@@ -213,7 +213,8 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
-    const { isLteS, isLteL, isLteM, isM, isLteXS } = useBreakpoints();
+    const { isLteS, isLteL, isLteM, isM, isLteXS, isXXS } = useBreakpoints();
+    console.log({ isLteS, isLteL, isLteM, isM, isLteXS });
     const logoUrl = useCustomStoreQueryParameter("logoUrl");
     const navigationBarPosition = useCustomStoreQueryParameter(
       "navigationBarPosition"
@@ -359,7 +360,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   <>
                     <CTA />
                     {!isLteXS && <ChainSelector />}
-                    <ConnectButton showOnlyIcon />
+                    {!isXXS && <ConnectButton showOnlyIcon />}
                     <BurgerButton onClick={toggleMenu} />
                   </>
                 )}
