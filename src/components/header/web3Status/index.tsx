@@ -13,7 +13,7 @@ import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
 import { useLast } from "lib/utils/hooks/useLast";
 import { Warning } from "phosphor-react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
@@ -89,22 +89,29 @@ const StyledConnectButton = styled(Button)`
 `;
 
 function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
-  const { chainId, ...rest } = useWeb3React();
+  const { chainId, account } = useWeb3React();
+  const accountRef = useRef(account);
+  const chainIdRef = useRef(chainId);
+  useEffect(() => {
+    if (account && !accountRef.current) {
+      accountRef.current = account;
+    }
+  }, [account]);
+  useEffect(() => {
+    if (account && chainId && chainId !== chainIdRef.current) {
+      chainIdRef.current = chainId;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId]);
   const { isLteXS } = useBreakpoints();
   const switchingChain = useAppSelector(
     (state) => state.wallets.switchingChain
-  );
-  const connectedWallets = useAppSelector(
-    (state) => state.wallets.connectedWallets
   );
   const ignoreWhileSwitchingChain = useCallback(
     () => !switchingChain,
     [switchingChain]
   );
-  const { account, connector } = useLast(
-    useWeb3React(),
-    ignoreWhileSwitchingChain
-  );
+  const { connector } = useLast(useWeb3React(), ignoreWhileSwitchingChain);
   const connection = getConnection(connector);
   const { ENSName } = useENSName(account);
 
@@ -118,7 +125,11 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
     color2: useCSSVariable("--buttonBgColor") || colors.primary,
     color1: useCSSVariable("--textColor") || colors.black
   });
-  if (account) {
+  const wasConnected = !!accountRef.current;
+  const previousChainId = chainIdRef.current;
+  const configs = getConfigsByChainId(previousChainId);
+  const connectedToWrongChainId = wasConnected && !configs?.length;
+  if (!connectedToWrongChainId && account) {
     const color = getColor1OverColor2WithContrast({
       color2: buttonBgColor,
       color1: textColor
@@ -143,10 +154,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
       </Web3StatusConnected>
     );
   }
-  const configs = getConfigsByChainId(chainId);
-  // console.log({ connectedWallets, chainId, configs, ...rest });
-  const connectedToWrongChainId =
-    chainId && (!configs?.length || !!connectedWallets.length);
+
   return (
     <Grid justifyContent="center" flexDirection="column">
       <StyledConnectButton
@@ -190,7 +198,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
                 margin: 0
               }}
             >
-              Connected to unsupported chain
+              Unsupported chain
             </small>
           </Grid>
         </Tooltip>

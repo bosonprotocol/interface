@@ -29,13 +29,70 @@ export default function useSyncChainQuery() {
   const parsedQs = useParsedQueryString();
   const configIdRef = useRef(currentConfigId);
   const accountRef = useRef(account);
+  const accountAlreadyConnected = useRef(account);
 
+  useEffect(() => {
+    if (!isActive) {
+      return;
+    }
+    const alreadyConnected = !!accountAlreadyConnected.current;
+    if (alreadyConnected) {
+      if (account && chainId !== currentChainId) {
+        if (isSupportedChain(chainId)) {
+          // connected account to a different supported chain ${chainId} ${currentChainId}
+          const configIdFromChainId =
+            getConfigsByChainId(chainId)?.[0].configId;
+          selectChain(configIdFromChainId);
+
+          if (configIdFromChainId) {
+            searchParams.set(
+              configQueryParameters.configId,
+              configIdFromChainId
+            );
+            setSearchParams(searchParams);
+            configIdRef.current = configIdFromChainId;
+          }
+        } else {
+          // connected account to an unsupported chain ${chainId}
+          disconnect();
+        }
+      }
+    } else {
+      // connecting
+
+      if (!isSupportedChain(chainId)) {
+        {
+          // connecting account to an unsupported chain ${chainId}
+          const configIdToConnect = (urlConfigId ||
+            currentConfigId) as ConfigId;
+          selectChain(configIdToConnect);
+
+          if (configIdToConnect) {
+            searchParams.set(configQueryParameters.configId, configIdToConnect);
+            setSearchParams(searchParams);
+            configIdRef.current = configIdToConnect;
+          }
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId, isActive]);
   useEffect(() => {
     if (account && account !== accountRef.current) {
       configIdRef.current = currentConfigId;
       accountRef.current = account;
     }
   }, [account, currentConfigId]);
+  useEffect(() => {
+    if (
+      isActive &&
+      account &&
+      account !== accountAlreadyConnected.current &&
+      !accountAlreadyConnected.current
+    ) {
+      accountAlreadyConnected.current = account;
+    }
+  }, [account, isActive]);
 
   const urlConfigId = getParsedConfigId(parsedQs);
 
@@ -66,11 +123,9 @@ export default function useSyncChainQuery() {
     ) {
       if (isSupportedChain(chainId)) {
         searchParams.set(configQueryParameters.configId, currentConfigId);
-        console.log(`update params`);
       } else {
         searchParams.delete(configQueryParameters.configId);
         disconnect();
-        console.log(`update params + disconnect`);
       }
       setSearchParams(searchParams);
     }
@@ -81,32 +136,6 @@ export default function useSyncChainQuery() {
       configIdRef.current !== urlConfigId
     ) {
       configIdRef.current = urlConfigId;
-    }
-    if (account && chainId !== currentChainId) {
-      if (isSupportedChain(chainId)) {
-        console.log(
-          `connected account to a different supported chain ${chainId} ${currentChainId}`
-        );
-        const configIdFromChainId = getConfigsByChainId(chainId)?.[0].configId;
-        selectChain(configIdFromChainId);
-
-        if (configIdFromChainId) {
-          searchParams.set(configQueryParameters.configId, configIdFromChainId);
-          setSearchParams(searchParams);
-          configIdRef.current = configIdFromChainId;
-        }
-      } else {
-        console.log(`connected account to an unsupported chain ${chainId}`);
-        // disconnect();
-        const configIdToConnect = (urlConfigId || currentConfigId) as ConfigId;
-        selectChain(configIdToConnect);
-
-        if (configIdToConnect) {
-          searchParams.set(configQueryParameters.configId, configIdToConnect);
-          setSearchParams(searchParams);
-          configIdRef.current = configIdToConnect;
-        }
-      }
     }
   }, [
     currentConfigId,
