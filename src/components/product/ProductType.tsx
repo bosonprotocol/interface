@@ -4,6 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useOpenAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
+import { useEffectDebugger } from "lib/utils/hooks/useEffectDebugger";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
@@ -45,7 +46,8 @@ import {
   CreateProfile,
   CreateYourProfile,
   getOptionsCurrencies,
-  initialValues
+  initialValues,
+  ProductTypeValues
 } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
@@ -268,8 +270,8 @@ export default function ProductType({
     firstLensProfile,
     seller?.authTokenType
   ]);
-
-  useEffect(() => {
+  console.log({ isFetching, isLoading, isRefetching, isSuccess });
+  useEffectDebugger(() => {
     if (!(isSuccess && !isRefetching && !isLoading && !isFetching)) {
       return;
     }
@@ -458,8 +460,11 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productVariant"
-                  value="oneItemType"
-                  checked={values.productType?.productVariant === "oneItemType"}
+                  value={ProductTypeValues.oneItemType}
+                  checked={
+                    values.productType?.productVariant ===
+                    ProductTypeValues.oneItemType
+                  }
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -485,9 +490,10 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productVariant"
-                  value="differentVariants"
+                  value={ProductTypeValues.differentVariants}
                   checked={
-                    values.productType?.productVariant === "differentVariants"
+                    values.productType?.productVariant ===
+                    ProductTypeValues.differentVariants
                   }
                   onChange={handleChange}
                   onBlur={handleBlur}

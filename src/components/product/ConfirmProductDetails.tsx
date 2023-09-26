@@ -48,7 +48,7 @@ import differentVariantsProduct from "./img/different-variants-product.png";
 import oneItemTypeProductSmall from "./img/one-item-product-small.png";
 import physicalProductSmall from "./img/physical-product-small.png";
 import { SectionTitle } from "./Product.styles";
-import { optionUnitValues } from "./utils";
+import { optionUnitValues, ProductTypeValues } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const VariantsTable = styled.table`
@@ -135,10 +135,12 @@ export default function ConfirmProductDetails({
   const renderProductVariant = useMemo(() => {
     let src = "";
     let description = "";
-    if (values.productType.productVariant === "oneItemType") {
+    if (values.productType.productVariant === ProductTypeValues.oneItemType) {
       src = oneItemTypeProductSmall;
       description = "One item type";
-    } else if (values.productType.productVariant === "differentVariants") {
+    } else if (
+      values.productType.productVariant === ProductTypeValues.differentVariants
+    ) {
       src = differentVariantsProduct;
       description = "Different variants";
     }

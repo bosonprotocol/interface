@@ -9,8 +9,8 @@ export const CoreSDKContext = createContext<ExtendedCoreSDK | null>(null);
 
 export function useProviderCoreSDK() {
   const { provider } = useWeb3React();
-
   const { config } = useConfigContext();
+  console.log("provider", provider);
   return hooks.useCoreSdk({
     ipfsMetadataStorageHeaders: config.ipfsMetadataStorageHeaders,
     configId: config.envConfig.configId,

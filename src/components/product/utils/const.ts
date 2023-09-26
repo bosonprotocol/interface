@@ -207,3 +207,13 @@ export const OPTIONS_WEIGHT = [
     label: "Kilogram"
   }
 ];
+
+export enum ProductTypeValues {
+  oneItemType = "oneItemType",
+  differentVariants = "differentVariants"
+}
+
+export enum TypeKeys {
+  Size = "Size",
+  Color = "Color"
+}

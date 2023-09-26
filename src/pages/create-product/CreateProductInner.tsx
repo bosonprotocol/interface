@@ -46,7 +46,9 @@ import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
   OPTIONS_EXCHANGE_POLICY,
-  TOKEN_TYPES
+  ProductTypeValues,
+  TOKEN_TYPES,
+  TypeKeys
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
@@ -343,10 +345,10 @@ function CreateProductInner({
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
-    initial?.productType?.productVariant || "oneItemType"
+    initial?.productType?.productVariant || ProductTypeValues.oneItemType
   );
   const isMultiVariant = useMemo(
-    () => productVariant === "differentVariants" || false,
+    () => productVariant === ProductTypeValues.differentVariants || false,
     [productVariant]
   );
   const [isTokenGated, setIsTokenGated] = useState<boolean>(false);
@@ -718,11 +720,11 @@ function CreateProductInner({
           const { color, size } = variant;
           const typeOptions = [
             {
-              type: "Size",
+              type: TypeKeys.Size,
               option: size || "-"
             },
             {
-              type: "Color",
+              type: TypeKeys.Color,
               option: color || "-"
             }
           ];

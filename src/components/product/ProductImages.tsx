@@ -10,6 +10,7 @@ import Tabs from "../tabs/Tabs";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
+import { ProductTypeValues } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
@@ -104,7 +105,8 @@ const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const { nextIsDisabled, values } = useCreateForm();
   const [isVideoLoading, setVideoLoading] = useState<boolean>();
-  const hasVariants = values.productType.productVariant === "differentVariants";
+  const hasVariants =
+    values.productType.productVariant === ProductTypeValues.differentVariants;
   const oneSetOfImages =
     !hasVariants || values.imagesSpecificOrAll?.value === "all";
   const tabsData = useMemo(() => {
