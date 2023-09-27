@@ -3,7 +3,10 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
-import { buyerAndSellerAgreementIncluding } from "lib/constants/policies";
+import {
+  buyerAndSellerAgreementIncluding,
+  customisedExchangePolicy
+} from "lib/constants/policies";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { ArrowSquareOut } from "phosphor-react";
 import {
@@ -268,7 +271,7 @@ const getOfferDetailData = (
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
           >
-            Non-standard terms
+            {customisedExchangePolicy}
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}

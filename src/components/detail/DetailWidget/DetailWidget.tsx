@@ -20,7 +20,10 @@ import {
   ethers,
   utils
 } from "ethers";
-import { buyerAndSellerAgreementIncluding } from "lib/constants/policies";
+import {
+  buyerAndSellerAgreementIncluding,
+  customisedExchangePolicy
+} from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
@@ -338,7 +341,7 @@ export const getOfferDetailData = (
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
           >
-            Non-standard terms
+            {customisedExchangePolicy}
             {modalTypes && showModal && (
               <ArrowSquareOut
                 size={20}
