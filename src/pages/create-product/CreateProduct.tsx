@@ -63,6 +63,11 @@ function CreateProduct() {
   const [initial, setInitial] = useState<CreateProductForm>(
     store.fromProductUuid ?? store.base
   );
+  useEffect(() => {
+    if (store.fromProductUuid) {
+      setInitial(store.fromProductUuid);
+    }
+  }, [store.fromProductUuid]);
   const [createdOffersIds, setCreatedOffersIds] = useState<string[]>([]);
   const [isDraftModalClosed, setDraftModalClosed] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
@@ -141,7 +146,7 @@ function CreateProduct() {
   if (!!seller && !isSellerCurated) {
     return <NotFound />;
   }
-
+  console.log("initial", initial);
   return !nextStepResult && createdOffersIds.length ? (
     <CongratulationsPage
       reset={() => setCreatedOffersIds([])}

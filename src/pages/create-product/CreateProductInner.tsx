@@ -1014,7 +1014,8 @@ function CreateProductInner({
           validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
-          {({ values }) => {
+          {({ values, errors }) => {
+            console.log("errors", errors);
             // TODO: fix: these setState calls cause this warning: Warning: Cannot update a component (`CreateProductInner`) while rendering a different component (`Formik`). To locate the bad setState() call inside `Formik`, follow the stack trace as described in
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);

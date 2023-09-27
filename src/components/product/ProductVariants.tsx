@@ -19,6 +19,7 @@ import {
   getOptionsCurrencies,
   ProductVariants as ProductVariantsType
 } from "./utils";
+import { getVariantName } from "./utils/getVariantName";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const variantsColorsKey = "productVariants.colors";
@@ -202,7 +203,7 @@ export default function ProductVariants() {
           variantsToAdd.push({
             color,
             size,
-            name: `${color} / ${size}`,
+            name: getVariantName({ color, size }),
             // TODO: yup does not infer currency, price and quantity as nullable, even though they are are defined as such
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore

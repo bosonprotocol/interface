@@ -1,5 +1,5 @@
-import { subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import { utils } from "ethers";
 import { isTruthy } from "lib/types/helpers";
 import useProductByUuid, {
   ReturnUseProductByUuid
@@ -18,7 +18,13 @@ import {
   removeItemInStorage,
   saveItemInStorage
 } from "../../../lib/utils/hooks/useLocalStorage";
-import { getOptionsCurrencies, ProductTypeValues, TypeKeys } from "./const";
+import {
+  CATEGORY_OPTIONS,
+  getOptionsCurrencies,
+  ProductTypeValues,
+  TypeKeys
+} from "./const";
+import { getVariantName } from "./getVariantName";
 import { initialValues as baseValues } from "./initialValues";
 import type { CreateProductForm } from "./types";
 
@@ -53,14 +59,16 @@ export function useInitialValues() {
   });
 
   console.log("product", product); // TODO: remove
+  const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
 
   const valuesFromExistingProduct: CreateProductForm | null | undefined =
     useMemo(() => {
       return loadExistingProduct<typeof cloneBaseValues>(
         product,
-        cloneBaseValues
+        cloneBaseValues,
+        OPTIONS_CURRENCIES
       );
-    }, [product, cloneBaseValues]);
+    }, [product, cloneBaseValues, OPTIONS_CURRENCIES]);
 
   const cloneInitialValues = useMemo(
     () =>
@@ -78,9 +86,9 @@ export function useInitialValues() {
       cloneInitialValues.productType.tokenGatedOffer = "true";
     }
   }
-
+  console.log("valuesFromExistingProduct", valuesFromExistingProduct);
   return {
-    shouldDisplayModal: cloneInitialValues !== null,
+    shouldDisplayModal: cloneInitialValues !== null && !fromProductUuid,
     base: cloneBaseValues,
     draft: cloneInitialValues,
     fromProductUuid: valuesFromExistingProduct,
@@ -92,7 +100,11 @@ export function useInitialValues() {
 }
 function loadExistingProduct<T extends CreateProductForm>(
   productWithVariants: ReturnUseProductByUuid,
-  cloneBaseValues: T
+  cloneBaseValues: T,
+  OPTIONS_CURRENCIES: {
+    value: string;
+    label: string;
+  }[]
 ): CreateProductForm | undefined | null {
   if (!productWithVariants) {
     return;
@@ -114,25 +126,33 @@ function loadExistingProduct<T extends CreateProductForm>(
     },
     productInformation: {
       ...cloneBaseValues.productInformation,
-      productTitle: product.title,
-      description: product.description,
-      category: product.details_category,
+      productTitle: product.title ?? "",
+      description: product.description ?? "",
+      category:
+        CATEGORY_OPTIONS.find(
+          (categoryOption) =>
+            categoryOption.value ===
+            (product.details_category ?? product.category?.name)
+        ) ?? product.category,
       tags: product.details_tags ?? [],
-      attributes: (
+      attributes: [] /* // TODO: load attributes?
+      (
         firstOffer.metadata as subgraph.ProductV1MetadataEntity
       ).attributes?.map((attribute) => ({
         name: attribute.traitType,
         value: attribute.value ?? ""
-      })),
-      sku: product.identification_sKU,
-      id: product.identification_productId,
-      idType: product.identification_productIdType,
-      brandName: product.productionInformation_brandName,
-      manufacture: product.productionInformation_manufacturer,
+      }))*/,
+      sku: product.identification_sKU ?? "",
+      id: product.identification_productId ?? "",
+      idType: product.identification_productIdType ?? "",
+      brandName: product.productionInformation_brandName ?? "",
+      manufacture: product.productionInformation_manufacturer ?? "",
       manufactureModelName:
-        product.productionInformation_manufacturerPartNumber,
-      partNumber: product.productionInformation_modelNumber,
-      materials: product.productionInformation_materials
+        product.productionInformation_manufacturerPartNumber ?? "",
+      partNumber: product.productionInformation_modelNumber ?? "",
+      materials: product.productionInformation_materials?.length
+        ? product.productionInformation_materials?.join(",")
+        : ""
     },
     productVariants: {
       ...cloneBaseValues.productVariants,
@@ -160,7 +180,23 @@ function loadExistingProduct<T extends CreateProductForm>(
             .filter(isTruthy),
           (string) => string
         ) ?? [],
-      variants
+      variants: variants.map(({ offer, variations }) => {
+        return {
+          name: getVariantName({
+            color: variations.find(
+              (variation) => variation.type.toLowerCase() === "color"
+            )?.option,
+            size: variations.find(
+              (variation) => variation.type.toLowerCase() === "size"
+            )?.option
+          }),
+          price: utils.formatUnits(offer.price, offer.exchangeToken.decimals),
+          currency: OPTIONS_CURRENCIES.find(
+            (currency) => currency.value === offer.exchangeToken.symbol
+          ),
+          quantity: offer.quantityInitial
+        };
+      })
     },
     productVariantsImages: [
       ...(cloneBaseValues.productVariantsImages ?? []),
@@ -170,7 +206,7 @@ function loadExistingProduct<T extends CreateProductForm>(
           productAnimation: {},
           productImages: {
             thumbnail: {
-              src: variant.offer.metadata?.image
+              src: variant.offer.metadata?.image ?? ""
             },
             secondary: {},
             everyAngle: {},
