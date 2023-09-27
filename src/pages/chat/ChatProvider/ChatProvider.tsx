@@ -1,6 +1,7 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import { useEffectDebugger } from "lib/utils/hooks/useEffectDebugger";
 import { ReactNode, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
@@ -20,8 +21,9 @@ export default function ChatProvider({ children }: Props) {
   const [error, setError] = useState<unknown>();
   const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpClient>();
   const chatEnvName = getChatEnvName(config);
-  useEffect(() => {
+  useEffectDebugger(() => {
     if (signer && initialize && !bosonXmtp) {
+      console.log("initialize if");
       setLoading(true);
       BosonXmtpClient.initialise(
         signer,
@@ -52,6 +54,7 @@ export default function ChatProvider({ children }: Props) {
       value={{
         bosonXmtp,
         initialize: () => {
+          console.log("initialize boson");
           setInitialized((prev) => prev + 1);
         },
         error,

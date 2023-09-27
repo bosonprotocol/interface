@@ -52,6 +52,8 @@ export function useInitialValues() {
     enabled: !!fromProductUuid
   });
 
+  console.log("product", product); // TODO: remove
+
   const valuesFromExistingProduct: CreateProductForm | null | undefined =
     useMemo(() => {
       return loadExistingProduct<typeof cloneBaseValues>(
