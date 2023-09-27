@@ -14,7 +14,6 @@ export const BosonRoutes = addViewModePrefixToPaths(
     Sell: "/sell",
     Exchange: `/exchange/:${UrlParameters.exchangeId}`,
     YourAccount: `/account`,
-    Account: `/account/:${UrlParameters.accountId}`,
     CreateStorefront: "/custom-store",
     ManageStorefronts: "/custom-store/manage",
     PrivacyPolicy: "/privacy-policy",

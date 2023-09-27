@@ -1,12 +1,11 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { ethers } from "ethers";
+import { ProgressStatus } from "lib/types/progressStatus";
+import { useCoreSDK } from "lib/utils/useCoreSdk";
 import { useCallback, useEffect, useReducer, useState } from "react";
-
-import { Token } from "../../../components/convertion-rate/ConvertionRateContext";
-import { ProgressStatus } from "../../../lib/types/progressStatus";
-import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 
 export interface FundsProps {
   funds: Array<subgraph.FundsEntityFieldsFragment>;

@@ -23,9 +23,6 @@ const PrivateAccountPage = lazy(
   () => import("../pages/account/private/PrivateAccountContainer")
 );
 const ProfilePagePage = lazy(() => import("../pages/profile/ProfilePage"));
-const PublicOrPrivateAccountPage = lazy(
-  () => import("../pages/account/public/PublicOrPrivateAccount")
-);
 const LicensePage = lazy(() => import("../pages/license/License"));
 const ContractualAgreementPage = lazy(
   () => import("../pages/contractualAgreement/ContractualAgreement")
@@ -256,15 +253,6 @@ export default [
       withBosonStyles: false
     },
     role: [UserRoles.Buyer]
-  },
-  {
-    ...base,
-    path: BosonRoutes.Account,
-    component: PublicOrPrivateAccountPage,
-    app: {
-      ...base.app,
-      withBosonStyles: false
-    }
   },
   {
     ...base,
