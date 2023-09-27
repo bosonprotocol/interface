@@ -1,13 +1,18 @@
-import { Button } from "@bosonprotocol/react-kit";
+import { Button, ThemedButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import Tooltip from "components/tooltip/Tooltip";
+import Grid from "components/ui/Grid";
+import { envConfigsFilteredByEnv } from "lib/config";
 import { getConnection } from "lib/connection";
+import { CHAIN_IDS_TO_FRIENDLY_NAMES } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
+import { getConfigsByChainId } from "lib/utils/config/getConfigsByChainId";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
 import { useLast } from "lib/utils/hooks/useLast";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
@@ -82,8 +87,29 @@ const StyledConnectButton = styled(Button)`
   color: inherit;
 `;
 
+const getCommonWalletButtonProps = (isXXS: boolean) =>
+  ({
+    tabIndex: 0,
+    size: isXXS ? "small" : "regular",
+    style: {
+      whiteSpace: "pre"
+    }
+  } as const);
 function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
-  const { isLteXS } = useBreakpoints();
+  const { chainId, account, isActive } = useWeb3React();
+  const accountRef = useRef(account);
+  const chainIdRef = useRef(chainId);
+  useEffect(() => {
+    if (account && !accountRef.current) {
+      accountRef.current = account;
+    }
+  }, [account]);
+  useEffect(() => {
+    if (account && chainId && chainId !== chainIdRef.current) {
+      chainIdRef.current = chainId;
+    }
+  }, [chainId, account]);
+  const { isXXS } = useBreakpoints();
   const switchingChain = useAppSelector(
     (state) => state.wallets.switchingChain
   );
@@ -91,10 +117,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
     () => !switchingChain,
     [switchingChain]
   );
-  const { account, connector } = useLast(
-    useWeb3React(),
-    ignoreWhileSwitchingChain
-  );
+  const { connector } = useLast(useWeb3React(), ignoreWhileSwitchingChain);
   const connection = getConnection(connector);
   const { ENSName } = useENSName(account);
 
@@ -108,7 +131,16 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
     color2: useCSSVariable("--buttonBgColor") || colors.primary,
     color1: useCSSVariable("--textColor") || colors.black
   });
-  if (account) {
+  const wasConnected = !!accountRef.current;
+  const previousChainId = chainIdRef.current;
+  const configsPreviousChain = getConfigsByChainId(previousChainId);
+  const configsCurrentChain = getConfigsByChainId(chainId);
+
+  const connectedToWrongChainId = account
+    ? !configsCurrentChain?.length
+    : wasConnected && !configsPreviousChain?.length && isActive;
+
+  if (!connectedToWrongChainId && account) {
     const color = getColor1OverColor2WithContrast({
       color2: buttonBgColor,
       color1: textColor
@@ -133,20 +165,51 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
       </Web3StatusConnected>
     );
   }
+
   return (
-    <StyledConnectButton
-      tabIndex={0}
-      onClick={handleWalletDropdownClick}
-      data-testid="navbar-connect-wallet"
-      size={isLteXS ? "small" : "regular"}
-      variant="primaryFill"
-      style={{
-        whiteSpace: "pre",
-        color: connectedButtonTextColor
-      }}
-    >
-      Connect Wallet
-    </StyledConnectButton>
+    <Grid justifyContent="center" flexDirection="column">
+      {connectedToWrongChainId ? (
+        <Tooltip
+          content={
+            <div>
+              Connect to{" "}
+              {envConfigsFilteredByEnv
+                .map(
+                  (config) =>
+                    `${
+                      CHAIN_IDS_TO_FRIENDLY_NAMES[
+                        config.chainId as keyof typeof CHAIN_IDS_TO_FRIENDLY_NAMES
+                      ]
+                    } (${config.chainId})`
+                )
+                .join(", ")}{" "}
+              and click here again
+            </div>
+          }
+        >
+          <ThemedButton
+            {...getCommonWalletButtonProps(isXXS)}
+            onClick={handleWalletDropdownClick}
+            theme="orangeInverse"
+          >
+            Wrong network
+          </ThemedButton>
+        </Tooltip>
+      ) : (
+        <StyledConnectButton
+          onClick={handleWalletDropdownClick}
+          data-testid="navbar-connect-wallet"
+          {...getCommonWalletButtonProps(isXXS)}
+          variant="primaryFill"
+          style={{
+            ...getCommonWalletButtonProps(isXXS).style,
+            color: connectedButtonTextColor
+          }}
+        >
+          Connect Wallet
+        </StyledConnectButton>
+      )}
+    </Grid>
   );
 }
 

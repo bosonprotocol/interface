@@ -3,7 +3,10 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
-import { includingBuyerSellerAgreement } from "lib/constants/policies";
+import {
+  buyerAndSellerAgreementIncluding,
+  customisedExchangePolicy
+} from "lib/constants/policies";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { ArrowSquareOut } from "phosphor-react";
 import {
@@ -254,7 +257,7 @@ const getOfferDetailData = (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
             <span style={{ fontSize: fontSizeExchangePolicy }}>
-              {exchangePolicyLabel + " " + includingBuyerSellerAgreement}
+              {`${buyerAndSellerAgreementIncluding} ${exchangePolicyLabel}`}
             </span>
             <ArrowSquareOut
               size={20}
@@ -268,8 +271,7 @@ const getOfferDetailData = (
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
           >
-            Non-standard
-            {` ${includingBuyerSellerAgreement}`}
+            {customisedExchangePolicy}
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}
@@ -280,7 +282,6 @@ const getOfferDetailData = (
       ) : (
         <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
           Unknown
-          {` ${includingBuyerSellerAgreement}`}
           <ArrowSquareOut
             size={20}
             onClick={() => handleShowExchangePolicy()}

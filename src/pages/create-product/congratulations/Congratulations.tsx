@@ -29,11 +29,11 @@ import { useOffers } from "../../../lib/utils/hooks/offers";
 import useProducts from "../../../lib/utils/hooks/product/useProducts";
 import { useExchanges } from "../../../lib/utils/hooks/useExchanges";
 import { useExchangeTokens } from "../../../lib/utils/hooks/useExchangeTokens";
+import useFunds from "../../../lib/utils/hooks/useFunds";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerDeposit } from "../../../lib/utils/hooks/useSellerDeposit";
 import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
 import { useSellerCurationListFn } from "../../../lib/utils/hooks/useSellers";
-import useFunds from "../../account/funds/useFunds";
 import { CardCTA } from "./CardCTA";
 
 const Container = styled.div`

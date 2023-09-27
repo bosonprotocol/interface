@@ -28,7 +28,8 @@ export default function useSelectChain(
   const [searchParams, setSearchParams] = useSearchParams();
 
   return useCallback(
-    async (newConfigId: ConfigId) => {
+    async (newConfigId: ConfigId | undefined) => {
+      if (!newConfigId) return;
       if (!connector) return;
 
       const connection = getConnection(connector);
