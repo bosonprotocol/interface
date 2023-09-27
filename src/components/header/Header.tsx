@@ -265,7 +265,11 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
       return (
         <>
           {isFetching ? (
-            <BosonButton variant="accentInverted">
+            <BosonButton
+              variant="accentInverted"
+              size="regular"
+              style={{ minWidth: "200px" }}
+            >
               <Spinner />
             </BosonButton>
           ) : (
@@ -278,9 +282,10 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   variant="accentInverted"
                   style={{
                     whiteSpace: "pre",
-                    marginLeft: isLteXS ? "1rem" : ""
+                    marginLeft: isLteXS ? "1rem" : "",
+                    minWidth: "200px"
                   }}
-                  size={"regular"}
+                  size="regular"
                   onClick={() => {
                     navigate({ pathname: sellUrl });
                   }}
