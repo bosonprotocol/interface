@@ -178,12 +178,14 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
                       ]
                     } (${config.chainId})`
                 )
-                .join(", ")}
+                .join(", ")}{" "}
+              and click here again
             </div>
           }
         >
           <ThemedButton
             {...getCommonWalletButtonProps(isXXS)}
+            onClick={handleWalletDropdownClick}
             theme="orangeInverse"
           >
             Wrong network
