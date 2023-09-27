@@ -96,7 +96,7 @@ const getCommonWalletButtonProps = (isXXS: boolean) =>
     }
   } as const);
 function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
-  const { chainId, account } = useWeb3React();
+  const { chainId, account, isActive } = useWeb3React();
   const accountRef = useRef(account);
   const chainIdRef = useRef(chainId);
   useEffect(() => {
@@ -108,8 +108,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
     if (account && chainId && chainId !== chainIdRef.current) {
       chainIdRef.current = chainId;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, account]);
   const { isXXS } = useBreakpoints();
   const switchingChain = useAppSelector(
     (state) => state.wallets.switchingChain
@@ -134,8 +133,13 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   });
   const wasConnected = !!accountRef.current;
   const previousChainId = chainIdRef.current;
-  const configs = getConfigsByChainId(previousChainId);
-  const connectedToWrongChainId = wasConnected && !configs?.length;
+  const configsPreviousChain = getConfigsByChainId(previousChainId);
+  const configsCurrentChain = getConfigsByChainId(chainId);
+
+  const connectedToWrongChainId = account
+    ? !configsCurrentChain?.length
+    : wasConnected && !configsPreviousChain?.length && isActive;
+
   if (!connectedToWrongChainId && account) {
     const color = getColor1OverColor2WithContrast({
       color2: buttonBgColor,

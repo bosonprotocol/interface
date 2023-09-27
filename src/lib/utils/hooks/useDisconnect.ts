@@ -8,11 +8,11 @@ export const useDisconnect = () => {
 
   const dispatch = useAppDispatch();
 
-  return useCallback(() => {
+  return useCallback(async () => {
     if (connector && connector.deactivate) {
-      connector.deactivate();
+      await connector.deactivate();
     }
-    connector.resetState();
+    await connector.resetState();
     dispatch(updateSelectedWallet({ wallet: undefined }));
   }, [connector, dispatch]);
 };
