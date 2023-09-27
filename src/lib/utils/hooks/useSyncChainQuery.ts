@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { configQueryParameters } from "lib/routing/parameters";
 import { ParsedQs } from "qs";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { isSupportedChain } from "../../constants/chains";
@@ -22,7 +22,8 @@ function getParsedConfigId(parsedQs?: ParsedQs) {
 export default function useSyncChainQuery() {
   const { chainId, isActive, account } = useWeb3React();
   const { config } = useConfigContext();
-  const disconnect = useDisconnect();
+  const _disconnect = useDisconnect();
+
   const currentConfigId = config.envConfig.configId;
   const currentChainId = config.envConfig.chainId;
 
@@ -30,7 +31,10 @@ export default function useSyncChainQuery() {
   const configIdRef = useRef(currentConfigId);
   const accountRef = useRef(account);
   const accountAlreadyConnected = useRef(account);
-
+  const disconnect = useCallback(() => {
+    accountAlreadyConnected.current = undefined;
+    _disconnect();
+  }, [_disconnect]);
   useEffect(() => {
     if (!isActive) {
       return;

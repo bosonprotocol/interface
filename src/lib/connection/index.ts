@@ -10,7 +10,10 @@ import UNISWAP_LOGO from "assets/svg/logo.svg";
 import COINBASE_ICON from "assets/wallets/coinbase-icon.svg";
 import UNIWALLET_ICON from "assets/wallets/uniswap-wallet-icon.png";
 import WALLET_CONNECT_ICON from "assets/wallets/walletconnect-icon.svg";
-import { defaultChainId as importedDefaultChainId } from "lib/config";
+import {
+  defaultChainId,
+  defaultChainId as importedDefaultChainId
+} from "lib/config";
 import { useSyncExternalStore } from "react";
 
 import { RPC_URLS } from "../constants/networks";
@@ -34,7 +37,11 @@ function onError(error: Error) {
 
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
   (actions) =>
-    new Network({ actions, urlMap: RPC_PROVIDERS, defaultChainId: 1 })
+    new Network({
+      actions,
+      urlMap: RPC_PROVIDERS,
+      defaultChainId: defaultChainId
+    })
 );
 export const networkConnection: Connection = {
   getName: () => "Network",
