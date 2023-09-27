@@ -268,7 +268,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
             <BosonButton
               variant="accentInverted"
               size="regular"
-              style={{ minWidth: "200px" }}
+              {...(!isLteS && { style: { minWidth: "200px" } })}
             >
               <Spinner />
             </BosonButton>
@@ -282,9 +282,9 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   variant="accentInverted"
                   style={{
                     whiteSpace: "pre",
-                    marginLeft: isLteXS ? "1rem" : "",
-                    minWidth: "200px"
+                    marginLeft: isLteXS ? "1rem" : ""
                   }}
+                  {...(!isLteS && { style: { minWidth: "200px" } })}
                   size="regular"
                   onClick={() => {
                     navigate({ pathname: sellUrl });
