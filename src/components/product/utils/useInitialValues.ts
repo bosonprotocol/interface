@@ -51,7 +51,6 @@ export function useInitialValues() {
   const { data: product } = useProductByUuid(fromProductUuid, {
     enabled: !!fromProductUuid
   });
-  console.log("product", product);
 
   const valuesFromExistingProduct: CreateProductForm | null | undefined =
     useMemo(() => {
