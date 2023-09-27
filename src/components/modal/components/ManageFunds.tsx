@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { colors } from "../../../lib/styles/colors";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
 import { calcPrice } from "../../../lib/utils/calcPrice";
-import useFunds from "../../../pages/account/funds/useFunds";
+import useFunds from "../../../lib/utils/hooks/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { Spinner } from "../../loading/Spinner";
 import Tooltip from "../../tooltip/Tooltip";
