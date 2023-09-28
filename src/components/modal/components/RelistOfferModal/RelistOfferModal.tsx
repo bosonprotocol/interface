@@ -127,7 +127,7 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
               price: variant.price.toString(),
               sellerDeposit: variant.sellerDeposit.toString(),
               buyerCancelPenalty: variant.buyerCancelPenalty.toString(),
-              quantityAvailable: variant.quantityAvailable.toString(),
+              quantityAvailable: variant.quantityInitial.toString(),
               voucherRedeemableFromDateInMS:
                 voucherRedeemableFromDate.toString(),
               voucherRedeemableUntilDateInMS: voucherRedeemableUntilDate,
