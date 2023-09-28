@@ -15,6 +15,7 @@ import {
   ExchangeTokensProps,
   useExchangeTokens
 } from "../../../lib/utils/hooks/useExchangeTokens";
+import useFunds, { FundsProps } from "../../../lib/utils/hooks/useFunds";
 import {
   SellerProps,
   useSellerDeposit
@@ -24,7 +25,6 @@ import {
   useSellerRoles
 } from "../../../lib/utils/hooks/useSellerRoles";
 import { useSellerCurationListFn } from "../../../lib/utils/hooks/useSellers";
-import useFunds, { FundsProps } from "../../../pages/account/funds/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import Loading from "../../ui/Loading";
 import useOffersBacked from "./useOffersBacked";

@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+
 /**
  * Given a small number, it returns its string representation without the scientific 'e' notation.
  * For example:
@@ -30,3 +32,23 @@ export const isNumeric = (strNumber: string) => {
 
 export const decimalToHex = (decimal: number): string =>
   "0x" + decimal.toString(16);
+
+export const getNumberWithoutDecimals = (
+  value: string,
+  decimals: string
+): string => {
+  const valueAsNumber = Number(value);
+  if (!Number.isInteger(valueAsNumber)) {
+    return Math.floor(valueAsNumber * 10 ** Number(decimals)).toString();
+  }
+  return BigNumber.from(valueAsNumber + "")
+    .mul(BigNumber.from(10).pow(BigNumber.from(decimals)))
+    .toString();
+};
+
+export const getNumberWithDecimals = (
+  value: string,
+  decimals: string
+): number => {
+  return Number(value) * 10 ** -Number(decimals);
+};

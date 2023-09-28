@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-empty-function: "off" */
 /* eslint @typescript-eslint/no-explicit-any: "off" */
+import { CONFIG } from "lib/config";
 import { createContext } from "react";
 
 import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
@@ -36,10 +37,9 @@ export const initalState: ConvertionRateContextType = {
   store: {
     type: null,
     tokens: null,
-    rates:
-      process.env.NODE_ENV === "development"
-        ? MOCK_RATES
-        : getItemFromStorage("convertionRates", null),
+    rates: CONFIG.mockConversionRates
+      ? MOCK_RATES
+      : getItemFromStorage("convertionRates", null),
     fixed: 20,
     isLoading: true
   } as const

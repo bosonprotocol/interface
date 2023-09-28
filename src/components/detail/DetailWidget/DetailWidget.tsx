@@ -20,7 +20,10 @@ import {
   ethers,
   utils
 } from "ethers";
-import { includingBuyerSellerAgreement } from "lib/constants/policies";
+import {
+  buyerAndSellerAgreementIncluding,
+  customisedExchangePolicy
+} from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
@@ -322,7 +325,7 @@ export const getOfferDetailData = (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
             <span style={{ fontSize: fontSizeExchangePolicy }}>
-              {exchangePolicyLabel + " " + includingBuyerSellerAgreement}
+              {`${buyerAndSellerAgreementIncluding} ${exchangePolicyLabel}`}
             </span>
             {modalTypes && showModal && (
               <ArrowSquareOut
@@ -338,7 +341,7 @@ export const getOfferDetailData = (
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
           >
-            Non-standard{` ${includingBuyerSellerAgreement}`}
+            {customisedExchangePolicy}
             {modalTypes && showModal && (
               <ArrowSquareOut
                 size={20}
@@ -350,7 +353,7 @@ export const getOfferDetailData = (
         )
       ) : (
         <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
-          Unknown{` ${includingBuyerSellerAgreement}`}
+          Unknown
           {modalTypes && showModal && (
             <ArrowSquareOut
               size={20}

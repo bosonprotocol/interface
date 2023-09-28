@@ -120,6 +120,10 @@ export const CONFIG = {
     true
   ),
   mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID,
+  mockConversionRates: stringToBoolean(
+    process.env.REACT_MOCK_CONVERSION_RATES,
+    false
+  ),
   defaultDisputeResolutionPeriodDays:
     process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
   defaultSellerContactMethod: "Chat App in the dApp",
