@@ -420,17 +420,6 @@ function CreateProductInner({
     setIsPreviewVisible(false);
   };
 
-  const onViewMyItem = (id: string | null) => {
-    hideModal();
-    setCurrentStepWithHistory(FIRST_STEP);
-    setIsPreviewVisible(false);
-    const pathname = id
-      ? generatePath(ProductRoutes.ProductDetail, {
-          [UrlParameters.uuid]: id
-        })
-      : generatePath(ProductRoutes.Root);
-    navigate({ pathname });
-  };
   const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
   const { account: address } = useWeb3React();
 
@@ -449,6 +438,18 @@ function CreateProductInner({
       );
     }) || null;
 
+  const onViewMyItem = (id: string | null) => {
+    hideModal();
+    setCurrentStepWithHistory(FIRST_STEP);
+    setIsPreviewVisible(false);
+    const pathname = id
+      ? generatePath(ProductRoutes.ProductDetail, {
+          [UrlParameters.sellerId]: currentAssistant?.id || null,
+          [UrlParameters.uuid]: id
+        })
+      : generatePath(ProductRoutes.Root);
+    navigate({ pathname });
+  };
   const handleOpenSuccessModal = async ({
     offerInfo,
     values

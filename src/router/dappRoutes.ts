@@ -224,7 +224,21 @@ export default [
   },
   {
     ...base,
+    path: OffersRoutes.OfferUuidLegacy,
+    component: OfferUuidReroute,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
+  },
+  {
+    ...base,
     path: BosonRoutes.License,
+    component: LicensePage
+  },
+  {
+    ...base,
+    path: BosonRoutes.LicenseLegacy,
     component: LicensePage
   },
   {

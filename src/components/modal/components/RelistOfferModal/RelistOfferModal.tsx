@@ -157,6 +157,7 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
               hideModal();
               const id = productUuid;
               const pathname = generatePath(ProductRoutes.ProductDetail, {
+                [UrlParameters.sellerId]: offer?.seller?.id,
                 [UrlParameters.uuid]: id
               });
               navigate({ pathname });

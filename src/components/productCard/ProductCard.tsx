@@ -164,6 +164,7 @@ export default function ProductCard({
     navigate(
       {
         pathname: generatePath(ProductRoutes.ProductDetail, {
+          [UrlParameters.sellerId]: offer?.seller?.id,
           [UrlParameters.uuid]: offer?.uuid || ""
         })
       },
