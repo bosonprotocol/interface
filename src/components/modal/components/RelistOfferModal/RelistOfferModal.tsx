@@ -91,12 +91,20 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
                   `${origin}/#/license/${metadataUuid}`
                 )
                 .replaceAll(
+                  `${origin}/#/license/${offer.seller.id}/${originalMetadata.uuid}`,
+                  `${origin}/#/license/${offer.seller.id}/${metadataUuid}`
+                )
+                .replaceAll(
                   `${origin}/#/variant-uuid/${originalMetadata.uuid}`,
                   `${origin}/#/variant-uuid/${metadataUuid}`
                 )
                 .replaceAll(
                   `${origin}/#/offer-uuid/${originalMetadata.uuid}`,
                   `${origin}/#/offer-uuid/${metadataUuid}`
+                )
+                .replaceAll(
+                  `${origin}/#/offer-uuid/${offer.seller.id}/${originalMetadata.uuid}`,
+                  `${origin}/#/offer-uuid/${offer.seller.id}/${metadataUuid}`
                 )
             ) as productV1.ProductV1Metadata;
             const metadataHash = await coreSDK.storeMetadata({
