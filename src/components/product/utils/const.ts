@@ -217,3 +217,19 @@ export enum TypeKeys {
   Size = "Size",
   Color = "Color"
 }
+
+export enum ImageSpecificOrAll {
+  all = "all",
+  specific = "specific"
+}
+
+export const IMAGE_SPECIFIC_OR_ALL_OPTIONS = [
+  {
+    value: ImageSpecificOrAll.all,
+    label: "All"
+  },
+  {
+    value: ImageSpecificOrAll.specific,
+    label: "Specific"
+  }
+] as const;

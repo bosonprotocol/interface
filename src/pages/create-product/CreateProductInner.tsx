@@ -45,6 +45,7 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  ImageSpecificOrAll,
   OPTIONS_EXCHANGE_POLICY,
   ProductTypeValues,
   TOKEN_TYPES,
@@ -708,7 +709,7 @@ function CreateProductInner({
         >[1] = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =
-          values.imagesSpecificOrAll?.value === "all";
+          values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
         if (allVariationsWithSameImages) {
           const variantVisualImages = extractVisualImages(productImages);
 

@@ -21,7 +21,10 @@ import {
 import {
   CATEGORY_OPTIONS,
   getOptionsCurrencies,
+  IMAGE_SPECIFIC_OR_ALL_OPTIONS,
+  ImageSpecificOrAll,
   ProductTypeValues,
+  SUPPORTED_FILE_FORMATS,
   TypeKeys
 } from "./const";
 import { getVariantName } from "./getVariantName";
@@ -59,7 +62,10 @@ export function useInitialValues() {
   });
 
   console.log("product", product); // TODO: remove
-  const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
+  const OPTIONS_CURRENCIES = useMemo(
+    () => getOptionsCurrencies(config.envConfig),
+    [config.envConfig]
+  );
 
   const valuesFromExistingProduct: CreateProductForm | null | undefined =
     useMemo(() => {
@@ -113,6 +119,49 @@ function loadExistingProduct<T extends CreateProductForm>(
   const { product, variants = [] } = productWithVariants;
   const [firstOfferAndVariations] = variants;
   const { offer: firstOffer } = firstOfferAndVariations;
+
+  const hasVariantSpecificImages = variants.some((variant) => {
+    return (
+      variant.offer.metadata &&
+      "productOverrides" in variant.offer.metadata &&
+      // TODO: remove comments below
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      !!variant.offer.metadata.productOverrides.visuals_images.length
+    );
+  });
+  const getProductImages = () => {
+    const buildGetNextImg = () => {
+      let index = 0;
+      return () => {
+        const visualImages = product.visuals_images;
+        if (!visualImages) {
+          return;
+        }
+        const image = visualImages[index++];
+        if (!image) {
+          return;
+        }
+        return {
+          src: image.url,
+          type: SUPPORTED_FILE_FORMATS[0]
+        };
+      };
+    };
+    const getNextImg = buildGetNextImg();
+    return hasVariantSpecificImages
+      ? cloneBaseValues.productImages
+      : {
+          thumbnail: getNextImg(),
+          secondary: getNextImg(),
+          everyAngle: getNextImg(),
+          details: getNextImg(),
+          inUse: getNextImg(),
+          styledScene: getNextImg(),
+          sizeAndScale: getNextImg(),
+          more: getNextImg()
+        };
+  };
   return {
     ...cloneBaseValues,
     productType: {
@@ -199,25 +248,58 @@ function loadExistingProduct<T extends CreateProductForm>(
       })
     },
     productVariantsImages: [
-      ...(cloneBaseValues.productVariantsImages ?? []),
-
-      variants.map((variant) => {
-        return {
-          productAnimation: {},
-          productImages: {
-            thumbnail: {
-              src: variant.offer.metadata?.image ?? ""
-            },
-            secondary: {},
-            everyAngle: {},
-            details: {},
-            inUse: {},
-            styledScene: {},
-            sizeAndScale: {},
-            more: {}
-          }
-        };
-      })
-    ]
+      hasVariantSpecificImages
+        ? variants.map((variant) => {
+            const variantImages =
+              variant.offer.metadata &&
+              "productOverrides" in variant.offer.metadata &&
+              // TODO: remove comments below
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              (variant.offer.metadata.productOverrides
+                .visuals_images as typeof product["visuals_images"]);
+            const buildGetImg = () => {
+              let index = 0;
+              return () => {
+                if (!variantImages) {
+                  return;
+                }
+                const image = variantImages[index++];
+                if (!image) {
+                  return;
+                }
+                return {
+                  src: image.url,
+                  type: SUPPORTED_FILE_FORMATS[0]
+                };
+              };
+            };
+            const getImg = buildGetImg();
+            return {
+              productAnimation: firstOffer.metadata?.animationUrl
+                ? {
+                    src: firstOffer.metadata?.animationUrl
+                  }
+                : undefined,
+              productImages: {
+                thumbnail: getImg(),
+                secondary: getImg(),
+                everyAngle: getImg(),
+                details: getImg(),
+                inUse: getImg(),
+                styledScene: getImg(),
+                sizeAndScale: getImg(),
+                more: getImg()
+              }
+            };
+          })
+        : cloneBaseValues.productVariantsImages ?? []
+    ],
+    imagesSpecificOrAll: IMAGE_SPECIFIC_OR_ALL_OPTIONS.find((option) =>
+      hasVariantSpecificImages
+        ? option.value === ImageSpecificOrAll.specific
+        : option.value === ImageSpecificOrAll.all
+    ),
+    productImages: getProductImages()
   };
 }

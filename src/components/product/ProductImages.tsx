@@ -10,7 +10,11 @@ import Tabs from "../tabs/Tabs";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
-import { ProductTypeValues } from "./utils";
+import {
+  IMAGE_SPECIFIC_OR_ALL_OPTIONS,
+  ImageSpecificOrAll,
+  ProductTypeValues
+} from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
@@ -108,7 +112,8 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const hasVariants =
     values.productType.productVariant === ProductTypeValues.differentVariants;
   const oneSetOfImages =
-    !hasVariants || values.imagesSpecificOrAll?.value === "all";
+    !hasVariants ||
+    values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
   const tabsData = useMemo(() => {
     return (
       values.productVariants?.variants?.map((variant, index) => {
@@ -139,16 +144,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
           <>
             <StyledSelect
               name="imagesSpecificOrAll"
-              options={[
-                {
-                  value: "all",
-                  label: "All"
-                },
-                {
-                  value: "specific",
-                  label: "Specific"
-                }
-              ]}
+              options={IMAGE_SPECIFIC_OR_ALL_OPTIONS}
             />
           </>
         )}
