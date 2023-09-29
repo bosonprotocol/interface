@@ -599,14 +599,12 @@ function CreateProductInner({
       const productAttributes: Array<{
         trait_type: string;
         value: string;
-      }> = productInformation.attributes.map(
-        ({ name, value }: { name: string; value: string }) => {
-          return {
-            trait_type: name,
-            value: value || ""
-          };
-        }
-      );
+      }> = productInformation.attributes.map(({ name, value }) => {
+        return {
+          trait_type: name || "",
+          value: value || ""
+        };
+      });
 
       const supportedJurisdictions: Array<SupportedJuridiction> =
         shippingInfo.jurisdiction.reduce((prev, { region, time }) => {

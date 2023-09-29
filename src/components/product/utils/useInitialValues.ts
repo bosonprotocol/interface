@@ -195,9 +195,7 @@ function loadExistingProduct<T extends CreateProductForm>(
         ) ?? product.category,
       tags: product.details_tags ?? [],
       attributes:
-        (
-          firstOffer.metadata as subgraph.ProductV1MetadataEntity
-        ).attributes?.map((attribute) => ({
+        firstOfferMetadata?.attributes?.map((attribute) => ({
           name: attribute.traitType,
           value: attribute.value ?? ""
         })) ?? [],
@@ -262,8 +260,7 @@ function loadExistingProduct<T extends CreateProductForm>(
           const variantImages =
             variant.offer.metadata &&
             "productOverrides" in variant.offer.metadata &&
-            (variant.offer.metadata.productOverrides
-              ?.visuals_images as typeof product["visuals_images"]);
+            variant.offer.metadata.productOverrides?.visuals_images;
           const buildGetImg = () => {
             let index = 0;
             return () => {
