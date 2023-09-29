@@ -16,7 +16,12 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { OPTIONS_LENGTH, OPTIONS_PERIOD, OPTIONS_WEIGHT } from "./utils";
+import {
+  OPTIONS_LENGTH,
+  OPTIONS_PERIOD,
+  OPTIONS_WEIGHT,
+  ShippingInfo as ShippingInfoType
+} from "./utils";
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;
@@ -55,7 +60,9 @@ const AdditionalContainer = styled.div`
   }
 `;
 
-const checkLastElementIsPristine = (elements: any[]): boolean => {
+const checkLastElementIsPristine = (
+  elements: ShippingInfoType["shippingInfo"]["jurisdiction"]
+): boolean => {
   const element = elements[elements.length - 1];
   return element?.region.length === 0 || element?.time.length === 0;
 };
@@ -120,10 +127,7 @@ const AddSupportedJurisdictions = () => {
 };
 
 const validJurisdiction = (
-  jurisdictionElements: Array<{
-    region: string;
-    time: string;
-  }>
+  jurisdictionElements: ShippingInfoType["shippingInfo"]["jurisdiction"]
 ): boolean => {
   const validation = jurisdictionElements.some(({ time, region }) => {
     return (

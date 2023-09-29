@@ -165,14 +165,12 @@ export const productInformationValidationSchema = Yup.object({
       .of(Yup.string())
       .default([])
       .min(1, "Please provide at least one tag"),
-    attributes: Yup.array()
-      .of(
-        Yup.object({
-          name: Yup.string(),
-          value: Yup.string()
-        })
-      )
-      .default([{ name: "", value: "" }]),
+    attributes: Yup.array(
+      Yup.object({
+        name: Yup.string(),
+        value: Yup.string()
+      })
+    ).default([{ name: "", value: "" }]),
     description: Yup.string().required(validationMessage.required),
     sku: Yup.string(),
     id: Yup.string(),
