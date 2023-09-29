@@ -28,6 +28,7 @@ import {
   getOptionsCurrencies,
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
+  OPTIONS_LENGTH,
   OPTIONS_UNIT,
   ProductTypeValues,
   SUPPORTED_FILE_FORMATS,
@@ -193,13 +194,13 @@ function loadExistingProduct<T extends CreateProductForm>(
             (product.details_category ?? product.category?.name)
         ) ?? product.category,
       tags: product.details_tags ?? [],
-      attributes: [] /* // TODO: load attributes?
-      (
-        firstOffer.metadata as subgraph.ProductV1MetadataEntity
-      ).attributes?.map((attribute) => ({
-        name: attribute.traitType,
-        value: attribute.value ?? ""
-      }))*/,
+      attributes:
+        (
+          firstOffer.metadata as subgraph.ProductV1MetadataEntity
+        ).attributes?.map((attribute) => ({
+          name: attribute.traitType,
+          value: attribute.value ?? ""
+        })) ?? [],
       sku: product.identification_sKU ?? "",
       id: product.identification_productId ?? "",
       idType: product.identification_productIdType ?? "",
@@ -387,9 +388,11 @@ function loadExistingProduct<T extends CreateProductForm>(
       redemptionPointName: cloneBaseValues.shippingInfo.redemptionPointName, // not saved
       weight:
         product?.packaging_weight_value ?? cloneBaseValues.shippingInfo.weight,
-      measurementUnit:
-        product?.packaging_dimensions_unit ??
-        cloneBaseValues.shippingInfo.measurementUnit,
+      measurementUnit: product?.packaging_dimensions_unit
+        ? OPTIONS_LENGTH.find(
+            (option) => option.value === product.packaging_dimensions_unit
+          ) ?? cloneBaseValues.shippingInfo.measurementUnit
+        : cloneBaseValues.shippingInfo.measurementUnit,
       height:
         product?.packaging_dimensions_height ??
         cloneBaseValues.shippingInfo.height,

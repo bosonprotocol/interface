@@ -12,6 +12,7 @@ import { SelectDataProps } from "./../../form/types";
 import {
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
+  OPTIONS_LENGTH,
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
   TOKEN_CRITERIA,
@@ -339,15 +340,18 @@ export const shippingInfoValidationSchema = Yup.object({
     length: Yup.string(),
     redemptionPointName: Yup.string(),
     redemptionPointUrl: Yup.string(),
-    measurementUnit: Yup.mixed().required(validationMessage.required),
+    measurementUnit: Yup.object({
+      value: Yup.string().oneOf(OPTIONS_LENGTH.map(({ value }) => value)),
+      label: Yup.string()
+    }).required(validationMessage.required),
     country: Yup.object({
       value: Yup.string(),
       label: Yup.string()
     }).default([{ value: "", label: "" }]),
     jurisdiction: Yup.array(
       Yup.object({
-        region: Yup.string(),
-        time: Yup.string()
+        region: Yup.string().required(validationMessage.required),
+        time: Yup.string().required(validationMessage.required)
       })
     ).default([{ region: "", time: "" }]),
     returnPeriod: Yup.string()

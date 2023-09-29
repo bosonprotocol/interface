@@ -55,7 +55,7 @@ const AdditionalContainer = styled.div`
   }
 `;
 
-const checkLastElementIsPristine = (elements: any): boolean => {
+const checkLastElementIsPristine = (elements: any[]): boolean => {
   const element = elements[elements.length - 1];
   return element?.region.length === 0 || element?.time.length === 0;
 };
@@ -63,7 +63,7 @@ const checkLastElementIsPristine = (elements: any): boolean => {
 const AddSupportedJurisdictions = () => {
   const { values } = useForm();
 
-  const elements = useMemo(
+  const jurisdictions = useMemo(
     () => values?.shippingInfo?.jurisdiction,
     [values?.shippingInfo?.jurisdiction]
   );
@@ -76,33 +76,33 @@ const AddSupportedJurisdictions = () => {
       <FieldArray
         name="shippingInfo.jurisdiction"
         render={(arrayHelpers) => {
-          const render = elements && elements.length > 0;
+          const render = jurisdictions && jurisdictions.length > 0;
 
           return (
             <>
               {render && (
                 <>
-                  {elements.map((el: unknown, key: number) => (
+                  {jurisdictions.map((jurisdiction, index) => (
                     <FieldContainerJurisdictions
-                      key={`field_container_jurisdictions_${key}`}
+                      key={`field_container_jurisdictions_${index}_${jurisdiction.region}_${jurisdiction.time}`}
                     >
                       <div>
                         <Input
                           placeholder="Region"
-                          name={`shippingInfo.jurisdiction[${key}].region`}
+                          name={`shippingInfo.jurisdiction[${index}].region`}
                         />
                       </div>
                       <div>
                         <Input
                           placeholder="Time"
-                          name={`shippingInfo.jurisdiction[${key}].time`}
+                          name={`shippingInfo.jurisdiction[${index}].time`}
                         />
                       </div>
                     </FieldContainerJurisdictions>
                   ))}
                 </>
               )}
-              {!checkLastElementIsPristine(elements) && (
+              {!checkLastElementIsPristine(jurisdictions) && (
                 <Button
                   onClick={() => arrayHelpers.push({ region: "", time: "" })}
                   theme="blankSecondary"

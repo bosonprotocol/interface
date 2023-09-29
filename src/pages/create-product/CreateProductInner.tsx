@@ -609,25 +609,19 @@ function CreateProductInner({
       );
 
       const supportedJurisdictions: Array<SupportedJuridiction> =
-        shippingInfo.jurisdiction.reduce(
-          (
-            prev: Array<SupportedJuridiction>,
-            { region, time }: { region: string; time: string }
-          ) => {
-            if (region.length === 0 || time.length === 0) {
-              return prev;
-            } else {
-              return [
-                ...prev,
-                {
-                  label: region,
-                  deliveryTime: time
-                }
-              ];
-            }
-          },
-          []
-        );
+        shippingInfo.jurisdiction.reduce((prev, { region, time }) => {
+          if (region.length === 0 || time.length === 0) {
+            return prev;
+          } else {
+            return [
+              ...prev,
+              {
+                label: region,
+                deliveryTime: time
+              }
+            ];
+          }
+        }, [] as Array<SupportedJuridiction>);
 
       // filter empty attributes
       const additionalAttributes = productAttributes.filter((attribute) => {
