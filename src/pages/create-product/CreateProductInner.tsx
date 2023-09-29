@@ -420,17 +420,6 @@ function CreateProductInner({
     setIsPreviewVisible(false);
   };
 
-  const onViewMyItem = (id: string | null) => {
-    hideModal();
-    setCurrentStepWithHistory(FIRST_STEP);
-    setIsPreviewVisible(false);
-    const pathname = id
-      ? generatePath(ProductRoutes.ProductDetail, {
-          [UrlParameters.uuid]: id
-        })
-      : generatePath(ProductRoutes.Root);
-    navigate({ pathname });
-  };
   const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
   const { account: address } = useWeb3React();
 
@@ -449,6 +438,18 @@ function CreateProductInner({
       );
     }) || null;
 
+  const onViewMyItem = (id: string | null) => {
+    hideModal();
+    setCurrentStepWithHistory(FIRST_STEP);
+    setIsPreviewVisible(false);
+    const pathname = id
+      ? generatePath(ProductRoutes.ProductDetail, {
+          [UrlParameters.sellerId]: currentAssistant?.id || null,
+          [UrlParameters.uuid]: id
+        })
+      : generatePath(ProductRoutes.Root);
+    navigate({ pathname });
+  };
   const handleOpenSuccessModal = async ({
     offerInfo,
     values
@@ -694,8 +695,13 @@ function CreateProductInner({
       // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
       const offerUuid = uuid();
 
-      const externalUrl = `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
-      const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
+      // Ddd sellerId in the license and offer-uuid routes (if known)
+      const externalUrl = currentAssistant
+        ? `${redemptionPointUrl}/#/offer-uuid/${currentAssistant.id}/${offerUuid}`
+        : `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
+      const licenseUrl = currentAssistant
+        ? `${window.origin}/#/license/${currentAssistant.id}/${offerUuid}`
+        : `${window.origin}/#/license/${offerUuid}`;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
       const productAnimation = values.productAnimation?.[0];
