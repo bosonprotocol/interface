@@ -9,10 +9,11 @@ export default function useProductsByFilteredOffers(
 ) {
   const { data, isLoading, isError } = useOffers({ ...props, first: 200 });
   const productsIds = useMemo(
+    // use product ids instead of uuids
     () =>
       Array.from(
         new Set(
-          data?.map((d) => d?.metadata?.product?.uuid || null).filter(isTruthy)
+          data?.map((d) => d?.metadata?.product?.id || null).filter(isTruthy)
         )
       ) || [],
     [data]

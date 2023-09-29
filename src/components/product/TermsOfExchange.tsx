@@ -91,8 +91,8 @@ export default function TermsOfExchange() {
       : values.coreTermsOfSale?.price;
   const currency: string =
     values.productType?.productVariant === ProductTypeValues.differentVariants
-      ? values.productVariants?.variants?.[0]?.currency?.label
-      : values.coreTermsOfSale?.currency?.label;
+      ? values.productVariants?.variants?.[0]?.currency?.label || ""
+      : values.coreTermsOfSale?.currency?.label || "";
   const exchangeToken = config.envConfig.defaultTokens?.find(
     (n: Token) =>
       n.symbol ===

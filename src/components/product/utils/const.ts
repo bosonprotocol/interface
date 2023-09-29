@@ -63,7 +63,7 @@ export const CATEGORY_OPTIONS = [
     value: "other",
     label: "Other"
   }
-];
+] as const;
 
 export const getOptionsCurrencies = (envConfig: ProtocolConfig) =>
   envConfig.defaultTokens?.length
@@ -121,14 +121,14 @@ export const OPTIONS_EXCHANGE_POLICY = [
     value: CONFIG.buyerSellerAgreementTemplate as string,
     label: onlyFairExchangePolicyLabel
   }
-];
+] as const;
 
 export const OPTIONS_DISPUTE_RESOLVER = [
   {
     value: "redeemeum",
     label: "Redeemeum"
   }
-];
+] as const;
 
 export const OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE = [
   {
@@ -174,7 +174,7 @@ export const OPTIONS_PERIOD = [
     value: "days",
     label: "Days"
   }
-];
+] as const;
 
 export const OPTIONS_COUNTRIES = countries;
 
@@ -195,7 +195,7 @@ export const OPTIONS_LENGTH = [
     value: "ft",
     label: "Feet"
   }
-];
+] as const;
 
 export const OPTIONS_WEIGHT = [
   {
@@ -206,7 +206,7 @@ export const OPTIONS_WEIGHT = [
     value: "kg",
     label: "Kilogram"
   }
-];
+] as const;
 
 export enum ProductTypeValues {
   oneItemType = "oneItemType",

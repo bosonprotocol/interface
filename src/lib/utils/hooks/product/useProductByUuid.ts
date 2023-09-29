@@ -3,7 +3,8 @@ import { useQuery } from "react-query";
 import { useCoreSDK } from "../../useCoreSdk";
 
 export default function useProductByUuid(
-  uuid: string | null | undefined,
+  sellerId: string | undefined | null,
+  uuid: string | undefined | null,
   options: {
     enabled?: boolean;
   } = {}
@@ -11,12 +12,12 @@ export default function useProductByUuid(
   const coreSDK = useCoreSDK();
 
   return useQuery(
-    ["get-product-by-uuid", uuid, coreSDK.uuid],
+    ["get-product-by-uuid", uuid, coreSDK.uuid, sellerId],
     async () => {
-      if (!uuid) {
+      if (!uuid || !sellerId) {
         return;
       }
-      return await coreSDK?.getProductWithVariants(uuid);
+      return await coreSDK?.getProductWithVariants(sellerId, uuid);
     },
     {
       ...options,

@@ -160,19 +160,17 @@ export const imagesSpecificOrAllValidationSchema = Yup.object({
 export const productInformationValidationSchema = Yup.object({
   productInformation: Yup.object({
     productTitle: Yup.string().required(validationMessage.required),
-    category: Yup.object()
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
-      .required(validationMessage.required),
+    category: Yup.object({
+      value: Yup.string(),
+      label: Yup.string()
+    }).required(validationMessage.required),
     tags: Yup.array()
       .of(Yup.string())
       .default([])
       .min(1, "Please provide at least one tag"),
     attributes: Yup.array()
       .of(
-        Yup.object().shape({
+        Yup.object({
           name: Yup.string(),
           value: Yup.string()
         })
@@ -211,12 +209,11 @@ export const tokenGatingValidationSchema = Yup.object({
     maxCommits: Yup.string()
       .required(validationMessage.required)
       .matches(/^\+?[1-9]\d*$/, "Value must greater than 0"),
-    tokenType: Yup.object()
+    tokenType: Yup.object({
+      value: Yup.string(),
+      label: Yup.string()
+    })
       .required(validationMessage.required)
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
       .default([{ value: "", label: "" }]),
     tokenCriteria: Yup.object({
       value: Yup.string(),
@@ -276,12 +273,10 @@ export const getCoreTermsOfSaleValidationSchema = (config: DappConfig) =>
           message: "Price is not valid",
           test: testPrice(config)
         }),
-      currency: Yup.object()
-        .shape({
-          value: Yup.string(),
-          label: Yup.string()
-        })
-        .required(validationMessage.required),
+      currency: Yup.object({
+        value: Yup.string(),
+        label: Yup.string()
+      }).required(validationMessage.required),
       quantity: Yup.number()
         .min(1, "Quantity must be greater than or equal to 1")
         .required(validationMessage.required),
@@ -300,12 +295,10 @@ export const variantsCoreTermsOfSaleValidationSchema = Yup.object({
 
 export const termsOfExchangeValidationSchema = Yup.object({
   termsOfExchange: Yup.object({
-    exchangePolicy: Yup.object()
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
-      .required(validationMessage.required),
+    exchangePolicy: Yup.object({
+      value: Yup.string(),
+      label: Yup.string()
+    }).required(validationMessage.required),
     buyerCancellationPenalty: Yup.string().required(validationMessage.required),
     buyerCancellationPenaltyUnit: Yup.object({
       value: Yup.string().oneOf(OPTIONS_UNIT.map(({ value }) => value)),
@@ -351,15 +344,13 @@ export const shippingInfoValidationSchema = Yup.object({
     redemptionPointName: Yup.string(),
     redemptionPointUrl: Yup.string(),
     measurementUnit: Yup.mixed().required(validationMessage.required),
-    country: Yup.object()
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
-      .default([{ value: "", label: "" }]),
+    country: Yup.object({
+      value: Yup.string(),
+      label: Yup.string()
+    }).default([{ value: "", label: "" }]),
     jurisdiction: Yup.array()
       .of(
-        Yup.object().shape({
+        Yup.object({
           region: Yup.string(),
           time: Yup.string()
         })

@@ -39,14 +39,17 @@ import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
 
 export default function ProductDetail() {
-  const { [UrlParameters.uuid]: productUuid = "" } = useParams();
+  const {
+    [UrlParameters.uuid]: productUuid = "",
+    [UrlParameters.sellerId]: sellerId = ""
+  } = useParams();
   const textColor = useCustomStoreQueryParameter("textColor");
 
   const {
     data: productResult,
     isError,
     isLoading
-  } = useProductByUuid(productUuid, { enabled: !!productUuid });
+  } = useProductByUuid(sellerId, productUuid, { enabled: !!productUuid });
 
   const product = productResult?.product;
   const variants = productResult?.variants;
@@ -78,9 +81,6 @@ export default function ProductDetail() {
       setSelectedVariant(defaultVariant);
     }
   }, [defaultVariant]);
-
-  const seller = product?.productV1Seller?.seller;
-  const sellerId = seller?.id;
 
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 

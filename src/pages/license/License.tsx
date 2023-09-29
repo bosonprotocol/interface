@@ -14,14 +14,16 @@ const Container = styled.div`
 `;
 
 export default function License() {
-  const { [UrlParameters.uuid]: uuid } = useParams();
+  const { [UrlParameters.uuid]: uuid, [UrlParameters.sellerId]: sellerId } =
+    useParams();
+
   // Note: ideally the license is referring to the tNFT token; However, the
   //  token only exists after a commit and the token metadata are built just
   //  before the offer creation. So, here we are referring to an offer
-  //  identified by its uuid (offerId is not even known before the offer is
+  //  identified by its uuid and sellerId (offerId is not even known before the offer is
   //  created)
 
-  const { offerId } = useOfferByUuid(uuid);
+  const { offerId } = useOfferByUuid(uuid, sellerId);
 
   if (!offerId) {
     return <div data-testid="notFound">This offer does not exist</div>;

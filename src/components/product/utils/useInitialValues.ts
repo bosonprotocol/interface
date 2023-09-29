@@ -1,10 +1,14 @@
 import { useConfigContext } from "components/config/ConfigContext";
+import dayjs from "dayjs";
 import { utils } from "ethers";
 import { isTruthy } from "lib/types/helpers";
+import { getDateTimestamp } from "lib/utils/getDateTimestamp";
 import useProductByUuid, {
   ReturnUseProductByUuid
 } from "lib/utils/hooks/product/useProductByUuid";
+import { useCurrentSellers } from "lib/utils/hooks/useCurrentSellers";
 import uniqBy from "lodash.uniqby";
+import { getDisputePeriodDurationFromSubgraphInDays } from "pages/create-product/utils/helpers";
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -23,6 +27,7 @@ import {
   getOptionsCurrencies,
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
+  OPTIONS_UNIT,
   ProductTypeValues,
   SUPPORTED_FILE_FORMATS,
   TypeKeys
@@ -33,6 +38,8 @@ import type { CreateProductForm } from "./types";
 
 const MAIN_KEY = "create-product";
 export function useInitialValues() {
+  const { sellers: currentSellers } = useCurrentSellers();
+  const sellerId = currentSellers?.[0]?.id;
   const { config } = useConfigContext();
   const [searchParams] = useSearchParams();
   const isTokenGated = searchParams.get(
@@ -57,8 +64,8 @@ export function useInitialValues() {
     []
   );
 
-  const { data: product } = useProductByUuid(fromProductUuid, {
-    enabled: !!fromProductUuid
+  const { data: product } = useProductByUuid(sellerId, fromProductUuid, {
+    enabled: !!fromProductUuid && !!sellerId
   });
 
   console.log("product", product); // TODO: remove
@@ -124,10 +131,7 @@ function loadExistingProduct<T extends CreateProductForm>(
     return (
       variant.offer.metadata &&
       "productOverrides" in variant.offer.metadata &&
-      // TODO: remove comments below
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      !!variant.offer.metadata.productOverrides.visuals_images.length
+      !!variant.offer.metadata.productOverrides?.visuals_images.length
     );
   });
   const getProductImages = () => {
@@ -136,16 +140,18 @@ function loadExistingProduct<T extends CreateProductForm>(
       return () => {
         const visualImages = product.visuals_images;
         if (!visualImages) {
-          return;
+          return [];
         }
         const image = visualImages[index++];
         if (!image) {
-          return;
+          return [];
         }
-        return {
-          src: image.url,
-          type: SUPPORTED_FILE_FORMATS[0]
-        };
+        return [
+          {
+            src: image.url,
+            type: SUPPORTED_FILE_FORMATS[0]
+          }
+        ];
       };
     };
     const getNextImg = buildGetNextImg();
@@ -247,59 +253,117 @@ function loadExistingProduct<T extends CreateProductForm>(
         };
       })
     },
-    productVariantsImages: [
-      hasVariantSpecificImages
-        ? variants.map((variant) => {
-            const variantImages =
-              variant.offer.metadata &&
-              "productOverrides" in variant.offer.metadata &&
-              // TODO: remove comments below
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              (variant.offer.metadata.productOverrides
-                .visuals_images as typeof product["visuals_images"]);
-            const buildGetImg = () => {
-              let index = 0;
-              return () => {
-                if (!variantImages) {
-                  return;
-                }
-                const image = variantImages[index++];
-                if (!image) {
-                  return;
-                }
-                return {
+    productVariantsImages: hasVariantSpecificImages
+      ? variants.map((variant) => {
+          const variantImages =
+            variant.offer.metadata &&
+            "productOverrides" in variant.offer.metadata &&
+            (variant.offer.metadata.productOverrides
+              ?.visuals_images as typeof product["visuals_images"]);
+          const buildGetImg = () => {
+            let index = 0;
+            return () => {
+              if (!variantImages) {
+                return [];
+              }
+              const image = variantImages[index++];
+              if (!image) {
+                return [];
+              }
+              return [
+                {
                   src: image.url,
                   type: SUPPORTED_FILE_FORMATS[0]
-                };
-              };
+                }
+              ];
             };
-            const getImg = buildGetImg();
-            return {
-              productAnimation: firstOffer.metadata?.animationUrl
-                ? {
-                    src: firstOffer.metadata?.animationUrl
-                  }
-                : undefined,
-              productImages: {
-                thumbnail: getImg(),
-                secondary: getImg(),
-                everyAngle: getImg(),
-                details: getImg(),
-                inUse: getImg(),
-                styledScene: getImg(),
-                sizeAndScale: getImg(),
-                more: getImg()
-              }
-            };
-          })
-        : cloneBaseValues.productVariantsImages ?? []
-    ],
-    imagesSpecificOrAll: IMAGE_SPECIFIC_OR_ALL_OPTIONS.find((option) =>
-      hasVariantSpecificImages
-        ? option.value === ImageSpecificOrAll.specific
-        : option.value === ImageSpecificOrAll.all
-    ),
-    productImages: getProductImages()
+          };
+          const getImg = buildGetImg();
+          return {
+            productAnimation: firstOffer.metadata?.animationUrl
+              ? {
+                  src: firstOffer.metadata?.animationUrl
+                }
+              : undefined,
+            productImages: {
+              thumbnail: getImg(),
+              secondary: getImg(),
+              everyAngle: getImg(),
+              details: getImg(),
+              inUse: getImg(),
+              styledScene: getImg(),
+              sizeAndScale: getImg(),
+              more: getImg()
+            }
+          };
+        })
+      : cloneBaseValues.productVariantsImages ?? [],
+    imagesSpecificOrAll:
+      IMAGE_SPECIFIC_OR_ALL_OPTIONS.find((option) =>
+        hasVariantSpecificImages
+          ? option.value === ImageSpecificOrAll.specific
+          : option.value === ImageSpecificOrAll.all
+      ) ?? cloneBaseValues.imagesSpecificOrAll,
+    productImages: getProductImages() ?? cloneBaseValues.productImages,
+    variantsCoreTermsOfSale: {
+      ...cloneBaseValues.variantsCoreTermsOfSale,
+      offerValidityPeriod: [
+        dayjs(getDateTimestamp(firstOffer.validFromDate)),
+        dayjs(getDateTimestamp(firstOffer.validUntilDate))
+      ],
+      redemptionPeriod: [
+        dayjs(getDateTimestamp(firstOffer.voucherRedeemableFromDate)),
+        dayjs(getDateTimestamp(firstOffer.voucherRedeemableUntilDate))
+      ]
+    },
+    coreTermsOfSale: {
+      ...cloneBaseValues.coreTermsOfSale,
+      offerValidityPeriod: [
+        dayjs(getDateTimestamp(firstOffer.validFromDate)),
+        dayjs(getDateTimestamp(firstOffer.validUntilDate))
+      ],
+      redemptionPeriod: [
+        dayjs(getDateTimestamp(firstOffer.voucherRedeemableFromDate)),
+        dayjs(getDateTimestamp(firstOffer.voucherRedeemableUntilDate))
+      ],
+      currency: {
+        value: OPTIONS_CURRENCIES.find(
+          (currency) => currency.value === firstOffer.exchangeToken.symbol
+        ),
+        label: OPTIONS_CURRENCIES.find(
+          (currency) => currency.value === firstOffer.exchangeToken.symbol
+        )
+      },
+      price: utils.formatUnits(
+        firstOffer.price,
+        firstOffer.exchangeToken.decimals
+      ),
+      quantity: firstOffer.quantityInitial
+    },
+    termsOfExchange: {
+      ...cloneBaseValues.termsOfExchange,
+      exchangePolicy: cloneBaseValues.termsOfExchange.exchangePolicy, // default exchange policy
+      buyerCancellationPenalty: utils.formatUnits(
+        firstOffer.buyerCancelPenalty,
+        firstOffer.exchangeToken.decimals
+      ),
+      buyerCancellationPenaltyUnit: {
+        value: OPTIONS_UNIT.find((option) => option.value === "fixed")?.value,
+        label: firstOffer.exchangeToken.symbol
+      },
+      sellerDeposit: utils.formatUnits(
+        firstOffer.sellerDeposit,
+        firstOffer.exchangeToken.decimals
+      ),
+      sellerDepositUnit: {
+        value: OPTIONS_UNIT.find((option) => option.value === "fixed")?.value,
+        label: firstOffer.exchangeToken.symbol
+      },
+      disputeResolver: cloneBaseValues.termsOfExchange.disputeResolver, // even if dispute resolver in the offer is different from redeemeum, it will be set to redeemeum
+      disputePeriod: getDisputePeriodDurationFromSubgraphInDays(
+        firstOffer.disputePeriodDuration
+      ),
+      disputePeriodUnit: cloneBaseValues.termsOfExchange.disputePeriodUnit
+    }
   };
 }
