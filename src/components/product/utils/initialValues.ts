@@ -46,7 +46,8 @@ export const productInformationInitialValues = {
   productInformation: {
     productTitle: "",
     description: "",
-    category: null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    category: null as any,
     tags: [],
     attributes: [
       {
@@ -95,7 +96,8 @@ export const productImagesInitialValues = {
 export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {
   coreTermsOfSale: {
     price: null as unknown as number,
-    currency: null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    currency: null as any,
     quantity: 1,
     redemptionPeriod: [],
     offerValidityPeriod: []

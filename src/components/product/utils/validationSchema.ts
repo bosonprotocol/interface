@@ -348,20 +348,22 @@ export const shippingInfoValidationSchema = Yup.object({
       value: Yup.string(),
       label: Yup.string()
     }).default([{ value: "", label: "" }]),
-    jurisdiction: Yup.array()
-      .of(
-        Yup.object({
-          region: Yup.string(),
-          time: Yup.string()
-        })
-      )
-      .default([{ region: "", time: "" }]),
+    jurisdiction: Yup.array(
+      Yup.object({
+        region: Yup.string(),
+        time: Yup.string()
+      })
+    ).default([{ region: "", time: "" }]),
     returnPeriod: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .required(validationMessage.required)
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      .returnPeriodValue()
+      .returnPeriodValue(),
+    returnPeriodUnit: Yup.object({
+      value: Yup.string().oneOf(OPTIONS_PERIOD.map(({ value }) => value)),
+      label: Yup.string()
+    })
   })
 });
 

@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import dayjs from "dayjs";
 import { utils } from "ethers";
@@ -126,7 +127,9 @@ function loadExistingProduct<T extends CreateProductForm>(
   const { product, variants = [] } = productWithVariants;
   const [firstOfferAndVariations] = variants;
   const { offer: firstOffer } = firstOfferAndVariations;
-
+  const firstOfferMetadata = firstOffer.metadata as
+    | subgraph.ProductV1MetadataEntity
+    | undefined;
   const hasVariantSpecificImages = variants.some((variant) => {
     return (
       variant.offer.metadata &&
@@ -364,6 +367,41 @@ function loadExistingProduct<T extends CreateProductForm>(
         firstOffer.disputePeriodDuration
       ),
       disputePeriodUnit: cloneBaseValues.termsOfExchange.disputePeriodUnit
+    },
+    shippingInfo: {
+      ...cloneBaseValues.shippingInfo,
+      jurisdiction:
+        firstOfferMetadata?.shipping?.supportedJurisdictions?.map(
+          ({ label, deliveryTime }) => ({
+            region: label,
+            time: deliveryTime
+          })
+        ) ?? cloneBaseValues.shippingInfo.jurisdiction,
+      returnPeriod:
+        firstOfferMetadata?.shipping?.returnPeriodInDays ??
+        cloneBaseValues.shippingInfo.returnPeriod,
+      returnPeriodUnit: cloneBaseValues.shippingInfo.returnPeriodUnit, // saved in days
+      redemptionPointUrl:
+        firstOfferMetadata?.shipping?.redemptionPoint ??
+        cloneBaseValues.shippingInfo.redemptionPointUrl,
+      redemptionPointName: cloneBaseValues.shippingInfo.redemptionPointName, // not saved
+      weight:
+        product?.packaging_weight_value ?? cloneBaseValues.shippingInfo.weight,
+      measurementUnit:
+        product?.packaging_dimensions_unit ??
+        cloneBaseValues.shippingInfo.measurementUnit,
+      height:
+        product?.packaging_dimensions_height ??
+        cloneBaseValues.shippingInfo.height,
+      width:
+        product?.packaging_dimensions_width ??
+        cloneBaseValues.shippingInfo.width,
+      length:
+        product?.packaging_dimensions_length ??
+        cloneBaseValues.shippingInfo.length
+    },
+    confirmProductDetails: {
+      ...cloneBaseValues.confirmProductDetails
     }
   };
 }
