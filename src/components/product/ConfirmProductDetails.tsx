@@ -216,7 +216,7 @@ export default function ConfirmProductDetails({
                   values.productInformation.attributes[0].name !== "" && (
                     <GridBox $minWidth="6.9rem">
                       <FormFieldContainer>
-                        <FormField title="Product Attribute">
+                        <FormField title="Product Attributes">
                           <ContentValue tag="p">
                             {map(
                               values.productInformation.attributes,
@@ -268,14 +268,11 @@ export default function ConfirmProductDetails({
                         values.productVariantsImages?.[idx]?.productImages;
                       return (
                         <tr key={variant.name}>
-                          <Grid
-                            data-name
-                            as="td"
-                            flexDirection="row"
-                            alignItems="flex-start"
-                          >
-                            {variant.name}
-                          </Grid>
+                          <td data-name>
+                            <Typography justifyContent="flex-start">
+                              {variant.name}
+                            </Typography>
+                          </td>
                           <td data-price>
                             <Typography justifyContent="center">
                               {variant.price}
