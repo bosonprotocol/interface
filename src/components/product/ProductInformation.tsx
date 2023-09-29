@@ -6,6 +6,7 @@ import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { FormField, Input, Select, TagsInput, Textarea } from "../form";
 import Error from "../form/Error";
 import BosonButton from "../ui/BosonButton";
@@ -17,7 +18,6 @@ import {
   SectionTitle
 } from "./Product.styles";
 import { CATEGORY_OPTIONS } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const StyledTextarea = styled(Textarea)`
   min-width: 100%;
@@ -65,7 +65,7 @@ const AddAttributesContainer = ({
   setHasDuplicated: (hadDuplicated: boolean) => void;
   hasDuplicated: boolean;
 }) => {
-  const { values } = useCreateForm();
+  const { values } = useForm();
 
   const elements: ElementType[] = useMemo(
     () => values?.productInformation?.attributes || [],
@@ -130,7 +130,7 @@ const AddAttributesContainer = ({
 };
 
 export default function ProductInformation() {
-  const { nextIsDisabled } = useCreateForm();
+  const { nextIsDisabled } = useForm();
 
   const [hasDuplicated, setHasDuplicated] = useState<boolean>(false);
 

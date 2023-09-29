@@ -22,6 +22,7 @@ import {
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
+import { PERCENTAGE_FACTOR } from "../../../../lib/constants/percentages";
 import { colors } from "../../../../lib/styles/colors";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
@@ -43,7 +44,6 @@ import { useModal } from "../../useModal";
 import { DisputeSplit } from "./components/DisputeSplit";
 import ExchangePreview from "./components/ExchangePreview";
 import ProposalTypeSummary from "./components/ProposalTypeSummary";
-import { PERCENTAGE_FACTOR } from "./const";
 
 interface Props {
   exchange: Exchange;

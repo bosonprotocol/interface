@@ -2,13 +2,13 @@ import { BigNumber } from "ethers";
 import { Check as CheckComponent } from "phosphor-react";
 import styled from "styled-components";
 
+import { PERCENTAGE_FACTOR } from "../../../../../lib/constants/percentages";
 import { colors } from "../../../../../lib/styles/colors";
 import { displayFloat } from "../../../../../lib/utils/calcPrice";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { ProposalItem } from "../../../../../pages/chat/types";
 import { useConvertedPrice } from "../../../../price/useConvertedPrice";
 import Grid from "../../../../ui/Grid";
-import { PERCENTAGE_FACTOR } from "../const";
 
 const Line = styled.div`
   border-right: 2px solid ${colors.border};

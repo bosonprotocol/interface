@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import bytesToSize from "../../lib/utils/bytesToSize";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { Select, Upload } from "../form";
 import FormField from "../form/FormField";
 import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
@@ -15,7 +16,6 @@ import {
   ImageSpecificOrAll,
   ProductTypeValues
 } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
 
@@ -107,7 +107,7 @@ interface Props {
 }
 const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
-  const { nextIsDisabled, values } = useCreateForm();
+  const { nextIsDisabled, values } = useForm();
   const [isVideoLoading, setVideoLoading] = useState<boolean>();
   const hasVariants =
     values.productType.productVariant === ProductTypeValues.differentVariants;

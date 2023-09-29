@@ -5,6 +5,7 @@ import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 
 import { isTruthy } from "../../lib/types/helpers";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { Error, FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import BosonButton from "../ui/BosonButton";
@@ -20,7 +21,6 @@ import {
   ProductVariants as ProductVariantsType
 } from "./utils";
 import { getVariantName } from "./utils/getVariantName";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const variantsColorsKey = "productVariants.colors";
 const variantsSizesKey = "productVariants.sizes";
@@ -126,7 +126,7 @@ export default function ProductVariants() {
   const { config } = useConfigContext();
   const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
 
-  const { nextIsDisabled } = useCreateForm();
+  const { nextIsDisabled } = useForm();
   const [fieldColors, , helpersColors] =
     useField<ProductVariantsType["productVariants"]["colors"]>(
       variantsColorsKey

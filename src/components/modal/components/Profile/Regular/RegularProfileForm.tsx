@@ -1,10 +1,10 @@
 import { ReactElement, ReactNode } from "react";
 
 import { BosonRoutes } from "../../../../../lib/routing/routes";
+import { useForm } from "../../../../../lib/utils/hooks/useForm";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { Spinner } from "../../../../loading/Spinner";
 import { CreateProfile } from "../../../../product/utils";
-import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
@@ -23,7 +23,7 @@ export default function RegularProfileForm({
   forceDirty,
   switchButton: SwitchButton
 }: Props) {
-  const { nextIsDisabled, dirty, isSubmitting, touched } = useCreateForm<
+  const { nextIsDisabled, dirty, isSubmitting, touched } = useForm<
     CreateProfile | LensProfileType
   >();
   const navigate = useKeepQueryParamsNavigate();

@@ -4,12 +4,8 @@ import { ethers } from "ethers";
 import { validationMessage } from "../../../lib/const/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
 import Yup from "../../../lib/validation/index";
-import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../form/Upload/types";
-import { MIN_VALUE } from "../../modal/components/Chat/const";
-import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
-import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { getCommonFieldsValidation } from "../../modal/components/Profile/valitationSchema";
 import { CONFIG, DappConfig } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
@@ -366,52 +362,6 @@ export const shippingInfoValidationSchema = Yup.object({
     })
   })
 });
-
-export const disputeCentreValidationSchemaGetStarted = Yup.object({
-  [DisputeFormModel.formFields.getStarted.name]: Yup.string().required(
-    validationMessage.required
-  )
-});
-
-export const disputeCentreValidationSchemaTellUsMore = Yup.object({
-  [DisputeFormModel.formFields.tellUsMore.name]: Yup.string().required(
-    validationMessage.required
-  )
-});
-
-export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({
-  [FormModel.formFields.description.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.description.requiredErrorMessage),
-  [FormModel.formFields.upload.name]: validationOfFile({ isOptional: true })
-});
-
-export const disputeCentreValidationSchemaMakeProposal = Yup.object({
-  [FormModel.formFields.proposalType.name]: Yup.object({
-    label: Yup.string().required(validationMessage.required),
-    value: Yup.string().required(validationMessage.required)
-  }).nullable(),
-  [FormModel.formFields.refundPercentage.name]: Yup.number().when(
-    FormModel.formFields.proposalType.name,
-    (proposalType) => {
-      if (proposalType) {
-        return Yup.number()
-          .min(
-            MIN_VALUE,
-            FormModel.formFields.refundPercentage.moreThanErrorMessage(
-              MIN_VALUE
-            )
-          )
-          .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
-          .defined(FormModel.formFields.refundPercentage.emptyErrorMessage);
-      } else {
-        return Yup.number();
-      }
-    }
-  )
-});
-
-export const disputeCentreValidationSchemaProposalSummary = Yup.object({});
 
 export const confirmProductDetailsSchema = Yup.object({
   confirmProductDetails: Yup.object({

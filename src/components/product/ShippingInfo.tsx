@@ -6,6 +6,7 @@ import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { FormField, Input, Select } from "../form";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
@@ -16,7 +17,6 @@ import {
   SectionTitle
 } from "./Product.styles";
 import { OPTIONS_LENGTH, OPTIONS_PERIOD, OPTIONS_WEIGHT } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;
@@ -61,7 +61,7 @@ const checkLastElementIsPristine = (elements: any): boolean => {
 };
 
 const AddSupportedJurisdictions = () => {
-  const { values } = useCreateForm();
+  const { values } = useForm();
 
   const elements = useMemo(
     () => values?.shippingInfo?.jurisdiction,
@@ -135,7 +135,7 @@ const validJurisdiction = (
 };
 
 export default function ShippingInfo() {
-  const { values, nextIsDisabled } = useCreateForm();
+  const { values, nextIsDisabled } = useForm();
   const [isValidJurisdiction, setIsValidJurisdiction] = useState<boolean>(true);
 
   const unit = useMemo(

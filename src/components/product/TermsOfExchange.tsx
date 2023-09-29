@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { Token } from "../convertion-rate/ConvertionRateContext";
 import FairExchangePolicy from "../exchangePolicy/FairExchangePolicy";
 import { FormField, Input, Select } from "../form";
@@ -23,7 +24,6 @@ import {
   PERCENT_OPTIONS_UNIT,
   ProductTypeValues
 } from "./utils/const";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -74,7 +74,7 @@ const InfoWrapperList = styled.div`
 
 export default function TermsOfExchange() {
   const { config } = useConfigContext();
-  const { values, setFieldValue, nextIsDisabled } = useCreateForm();
+  const { values, setFieldValue, nextIsDisabled } = useForm();
   const isMultiVariant =
     values.productType?.productVariant ===
       ProductTypeValues.differentVariants &&

@@ -10,7 +10,7 @@ import { getTermsOfExchange } from "pages/create-product/utils/getTermsOfExchang
 import { getDisputeResolverContactMethod } from "pages/create-product/utils/helpers";
 import { useCallback, useMemo } from "react";
 
-import { useCreateForm } from "./useCreateForm";
+import { useForm } from "../../../lib/utils/hooks/useForm";
 
 type UsePreviewOfferProps = {
   isMultiVariant: boolean;
@@ -25,7 +25,7 @@ export const usePreviewOffers = ({
   seller,
   overrides = {}
 }: UsePreviewOfferProps): Offer[] => {
-  const { values } = useCreateForm();
+  const { values } = useForm();
   const { config } = useConfigContext();
   const disputeResolverId = config.envConfig.defaultDisputeResolverId;
   const { disputeResolver } = useDisputeResolver(disputeResolverId);

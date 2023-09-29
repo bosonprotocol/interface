@@ -14,14 +14,6 @@ import styled from "styled-components";
 
 import ExchangePreview from "../../components/modal/components/Chat/components/ExchangePreview";
 import { useModal } from "../../components/modal/useModal";
-import {
-  disputeCentreInitialValues,
-  disputeCentreValidationSchemaAdditionalInformation,
-  disputeCentreValidationSchemaGetStarted,
-  disputeCentreValidationSchemaMakeProposal,
-  disputeCentreValidationSchemaProposalSummary,
-  disputeCentreValidationSchemaTellUsMore
-} from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import Grid from "../../components/ui/Grid";
@@ -43,6 +35,14 @@ import { useChatContext } from "../chat/ChatProvider/ChatContext";
 import { createProposal } from "../chat/utils/create";
 import { sendProposalToChat } from "../chat/utils/send";
 import { poll } from "../create-product/utils";
+import {
+  disputeCentreInitialValues,
+  disputeCentreValidationSchemaAdditionalInformation,
+  disputeCentreValidationSchemaGetStarted,
+  disputeCentreValidationSchemaMakeProposal,
+  disputeCentreValidationSchemaProposalSummary,
+  disputeCentreValidationSchemaTellUsMore
+} from "./const";
 import DisputeCentreForm from "./DisputeCentreForm";
 
 const DISPUTE_STEPS = [

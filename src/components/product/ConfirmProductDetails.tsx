@@ -12,6 +12,7 @@ import { Spinner } from "../../components/loading/Spinner";
 import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
 import { CONFIG } from "../../lib/config";
 import { ChatInitializationStatus } from "../../lib/utils/hooks/chat/useChatStatus";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
 import Tooltip from "../tooltip/Tooltip";
@@ -49,7 +50,6 @@ import oneItemTypeProductSmall from "./img/one-item-product-small.png";
 import physicalProductSmall from "./img/physical-product-small.png";
 import { SectionTitle } from "./Product.styles";
 import { optionUnitValues, ProductTypeValues } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const VariantsTable = styled.table`
   th:not(:first-child),
@@ -91,7 +91,7 @@ export default function ConfirmProductDetails({
   isOneSetOfImages
 }: Props) {
   const { bosonXmtp } = useChatContext();
-  const { values } = useCreateForm();
+  const { values } = useForm();
   const { account: address } = useWeb3React();
 
   const showSuccessInitialization =

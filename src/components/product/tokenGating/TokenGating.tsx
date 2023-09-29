@@ -2,13 +2,13 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../../lib/styles/breakpoint";
+import { useForm } from "../../../lib/utils/hooks/useForm";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { FormField, Input, Select } from "../../form";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "../Product.styles";
 import { TOKEN_CRITERIA, TOKEN_TYPES } from "../utils";
-import { useCreateForm } from "../utils/useCreateForm";
 
 const ContainerProductPage = styled.div`
   width: 100%;
@@ -62,7 +62,7 @@ const [{ value: minBalance }] = TOKEN_CRITERIA;
 const [{ value: erc20 }, { value: erc721 }, { value: erc1155 }] = TOKEN_TYPES;
 
 export default function TokenGating() {
-  const { nextIsDisabled, values, handleBlur } = useCreateForm();
+  const { nextIsDisabled, values, handleBlur } = useForm();
   const { tokenGating } = values;
   const core = useCoreSDK();
   const [symbol, setSymbol] = useState<string | undefined>(undefined);
