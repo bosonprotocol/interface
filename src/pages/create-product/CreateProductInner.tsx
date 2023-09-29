@@ -47,6 +47,7 @@ import {
   CreateProductForm,
   ImageSpecificOrAll,
   OPTIONS_EXCHANGE_POLICY,
+  ProductMetadataAttributeKeys,
   ProductTypeValues,
   TOKEN_TYPES,
   TypeKeys
@@ -665,24 +666,27 @@ function CreateProductInner({
       const resolutionPeriodDurationInMS = getResolutionPeriodDurationInMS();
 
       const nftAttributes = [];
-      nftAttributes.push({ trait_type: "Token Type", value: "BOSON rNFT" });
       nftAttributes.push({
-        trait_type: "Redeemable At",
+        trait_type: ProductMetadataAttributeKeys["Token Type"],
+        value: "BOSON rNFT"
+      });
+      nftAttributes.push({
+        trait_type: ProductMetadataAttributeKeys["Redeemable At"],
         value: redemptionPointUrl
       });
       nftAttributes.push({
-        trait_type: "Redeemable Until",
+        trait_type: ProductMetadataAttributeKeys["Redeemable Until"],
         value: voucherRedeemableUntilDateInMS.toString(),
         display_type: "date"
       });
       if (assistantLens?.name || assistantLens?.handle) {
         nftAttributes.push({
-          trait_type: "Seller",
+          trait_type: ProductMetadataAttributeKeys["Seller"],
           value: assistantLens?.name || assistantLens?.handle
         });
       } else {
         nftAttributes.push({
-          trait_type: "Seller",
+          trait_type: ProductMetadataAttributeKeys["Seller"],
           value: createYourProfile.name
         });
       }
@@ -793,7 +797,7 @@ function CreateProductInner({
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map((metadata, index) => {
             const exchangeToken = config.envConfig.defaultTokens?.find(
-              (n: Token) => n.symbol === variants[index].currency.label
+              (n) => n.symbol === variants[index].currency.label
             );
             const decimals = Number(exchangeToken?.decimals || 18);
             const price = variants[index].price;

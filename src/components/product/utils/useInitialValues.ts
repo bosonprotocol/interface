@@ -30,6 +30,7 @@ import {
   ImageSpecificOrAll,
   OPTIONS_LENGTH,
   OPTIONS_UNIT,
+  ProductMetadataAttributeKeys,
   ProductTypeValues,
   SUPPORTED_FILE_FORMATS,
   TypeKeys
@@ -195,10 +196,18 @@ function loadExistingProduct<T extends CreateProductForm>(
         ) ?? product.category,
       tags: product.details_tags ?? [],
       attributes:
-        firstOfferMetadata?.attributes?.map((attribute) => ({
-          name: attribute.traitType,
-          value: attribute.value ?? ""
-        })) ?? [],
+        firstOfferMetadata?.attributes
+          ?.filter(
+            // filter out our attributes
+            (attribute) =>
+              !ProductMetadataAttributeKeys[
+                attribute.traitType as keyof typeof ProductMetadataAttributeKeys
+              ]
+          )
+          .map((attribute) => ({
+            name: attribute.traitType,
+            value: attribute.value ?? ""
+          })) ?? [],
       sku: product.identification_sKU ?? "",
       id: product.identification_productId ?? "",
       idType: product.identification_productIdType ?? "",

@@ -233,3 +233,12 @@ export const IMAGE_SPECIFIC_OR_ALL_OPTIONS = [
     label: "Specific"
   }
 ] as const;
+
+export const ProductMetadataAttributeKeys = {
+  "Token Type": "Token Type",
+  "Redeemable At": "Redeemable At",
+  "Redeemable Until": "Redeemable Until",
+  Seller: "Seller",
+  [TypeKeys.Size]: TypeKeys.Size,
+  [TypeKeys.Color]: TypeKeys.Color
+} as const;
