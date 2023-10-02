@@ -118,6 +118,7 @@ type GetProductV1MetadataProps = {
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
+  redemptionPointUrl: string;
 };
 async function getProductV1Metadata({
   contactPreference,
@@ -134,7 +135,8 @@ async function getProductV1Metadata({
   visualImages,
   shippingInfo,
   termsOfExchange,
-  supportedJurisdictions
+  supportedJurisdictions,
+  redemptionPointUrl
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
   const profileImage = createYourProfile?.logo?.[0];
   const coverImage = createYourProfile?.coverPicture?.[0];
@@ -238,7 +240,8 @@ async function getProductV1Metadata({
       countryOfOrigin: shippingInfo.country.label || "",
       supportedJurisdictions:
         supportedJurisdictions.length > 0 ? supportedJurisdictions : undefined,
-      returnPeriod: shippingInfo.returnPeriod.toString()
+      returnPeriod: shippingInfo.returnPeriod.toString(),
+      redemptionPoint: redemptionPointUrl
     }
   };
 }
@@ -767,7 +770,8 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions
+          supportedJurisdictions,
+          redemptionPointUrl
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -842,7 +846,8 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions
+          supportedJurisdictions,
+          redemptionPointUrl
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);

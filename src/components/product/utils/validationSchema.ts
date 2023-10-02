@@ -1,4 +1,8 @@
 import { parseUnits } from "@ethersproject/units";
+import {
+  maxLengthErrorMessage,
+  METADATA_LENGTH_LIMIT
+} from "components/modal/components/Profile/const";
 import { ethers } from "ethers";
 
 import { validationMessage } from "../../../lib/const/validationMessage";
@@ -156,13 +160,14 @@ export const imagesSpecificOrAllValidationSchema = Yup.object({
 
 export const productInformationValidationSchema = Yup.object({
   productInformation: Yup.object({
-    productTitle: Yup.string().required(validationMessage.required),
+    productTitle: Yup.string()
+      .max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
+      .required(validationMessage.required),
     category: Yup.object({
       value: Yup.string(),
       label: Yup.string()
     }).required(validationMessage.required),
-    tags: Yup.array()
-      .of(Yup.string())
+    tags: Yup.array(Yup.string().required(validationMessage.required))
       .default([])
       .min(1, "Please provide at least one tag"),
     attributes: Yup.array(
@@ -171,7 +176,9 @@ export const productInformationValidationSchema = Yup.object({
         value: Yup.string()
       })
     ).default([{ name: "", value: "" }]),
-    description: Yup.string().required(validationMessage.required),
+    description: Yup.string()
+      .max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
+      .required(validationMessage.required),
     sku: Yup.string(),
     id: Yup.string(),
     idType: Yup.string(),

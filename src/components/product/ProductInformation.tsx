@@ -142,10 +142,21 @@ const AddAttributesContainer = ({
 };
 
 export default function ProductInformation() {
-  const { nextIsDisabled } = useForm();
+  const {
+    nextIsDisabled,
+    values: { productInformation }
+  } = useForm();
 
   const [hasDuplicated, setHasDuplicated] = useState<boolean>(false);
-
+  const hasAdditionalInformation =
+    !!productInformation.sku ||
+    !!productInformation.id ||
+    !!productInformation.idType ||
+    !!productInformation.brandName ||
+    !!productInformation.materials ||
+    !!productInformation.manufacture ||
+    !!productInformation.manufactureModelName ||
+    !!productInformation.partNumber;
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Information</SectionTitle>
@@ -199,6 +210,7 @@ export default function ProductInformation() {
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
+          isInitiallyOpen={hasAdditionalInformation}
         >
           <FormField title="SKU" subTitle="Input product serial number.">
             <Input placeholder="SKU" name="productInformation.sku" />
@@ -216,7 +228,7 @@ export default function ProductInformation() {
             />
           </FormField>
           <FormField title="Material" subTitle="Input material of product">
-            <Input placeholder="Material" name="productInformation.material" />
+            <Input placeholder="Material" name="productInformation.materials" />
           </FormField>
           <FormField title="Manufacturer name">
             <Input

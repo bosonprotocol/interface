@@ -139,6 +139,13 @@ function loadExistingProduct<T extends CreateProductForm>(
       !!variant.offer.metadata.productOverrides?.visuals_images.length
     );
   });
+  const productAnimation = firstOffer.metadata?.animationUrl
+    ? [
+        {
+          src: firstOffer.metadata?.animationUrl
+        }
+      ]
+    : undefined;
   const getProductImages = () => {
     const buildGetNextImg = () => {
       let index = 0;
@@ -290,11 +297,7 @@ function loadExistingProduct<T extends CreateProductForm>(
           };
           const getImg = buildGetImg();
           return {
-            productAnimation: firstOffer.metadata?.animationUrl
-              ? {
-                  src: firstOffer.metadata?.animationUrl
-                }
-              : undefined,
+            productAnimation,
             productImages: {
               thumbnail: getImg(),
               secondary: getImg(),
@@ -315,6 +318,7 @@ function loadExistingProduct<T extends CreateProductForm>(
           : option.value === ImageSpecificOrAll.all
       ) ?? cloneBaseValues.imagesSpecificOrAll,
     productImages: getProductImages() ?? cloneBaseValues.productImages,
+    productAnimation,
     variantsCoreTermsOfSale: {
       ...cloneBaseValues.variantsCoreTermsOfSale,
       offerValidityPeriod: [
@@ -339,10 +343,10 @@ function loadExistingProduct<T extends CreateProductForm>(
       currency: {
         value: OPTIONS_CURRENCIES.find(
           (currency) => currency.value === firstOffer.exchangeToken.symbol
-        ),
+        )?.value,
         label: OPTIONS_CURRENCIES.find(
           (currency) => currency.value === firstOffer.exchangeToken.symbol
-        )
+        )?.label
       },
       price: utils.formatUnits(
         firstOffer.price,
@@ -389,6 +393,11 @@ function loadExistingProduct<T extends CreateProductForm>(
         cloneBaseValues.shippingInfo.returnPeriod,
       returnPeriodUnit: cloneBaseValues.shippingInfo.returnPeriodUnit, // saved in days
       redemptionPointUrl:
+        firstOfferMetadata?.attributes?.find(
+          (attribute) =>
+            attribute.traitType.toLowerCase() ===
+            ProductMetadataAttributeKeys["Redeemable At"].toLowerCase()
+        )?.value ??
         firstOfferMetadata?.shipping?.redemptionPoint ??
         cloneBaseValues.shippingInfo.redemptionPointUrl,
       redemptionPointName: cloneBaseValues.shippingInfo.redemptionPointName, // not saved

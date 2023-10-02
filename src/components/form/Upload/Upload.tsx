@@ -86,7 +86,7 @@ function Upload({
   useEffect(() => {
     onFilesSelect?.(files);
     helpers.setValue(files);
-
+    console.log("name", name, files, multiple);
     if (!multiple && files && files?.length !== 0) {
       if (isImageOnly) {
         if (withUpload) {
@@ -307,10 +307,12 @@ function Upload({
                     {isVideoOnly ? (
                       <VideoPreview
                         src={
-                          "data:video/mp4;base64," +
-                          preview?.substring(
-                            "data:application/octet-stream;base64,".length
-                          )
+                          preview?.startsWith("http")
+                            ? preview
+                            : "data:video/mp4;base64," +
+                              preview?.substring(
+                                "data:application/octet-stream;base64,".length
+                              )
                         }
                         autoPlay
                         muted

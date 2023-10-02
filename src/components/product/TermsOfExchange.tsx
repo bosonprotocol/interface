@@ -39,6 +39,7 @@ const FieldContainer = styled.div`
   display: grid;
   grid-template-columns: 3fr minmax(8.75rem, 1fr);
   grid-gap: 1rem;
+  width: 100%;
 `;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`

@@ -89,9 +89,9 @@ const AddSupportedJurisdictions = () => {
             <>
               {render && (
                 <>
-                  {jurisdictions.map((jurisdiction, index) => (
+                  {jurisdictions.map((_, index) => (
                     <FieldContainerJurisdictions
-                      key={`field_container_jurisdictions_${index}_${jurisdiction.region}_${jurisdiction.time}`}
+                      key={`field_container_jurisdictions_${index}`}
                     >
                       <div>
                         <Input
@@ -168,7 +168,13 @@ export default function ShippingInfo() {
       }`,
     [values?.shippingInfo]
   );
-
+  const hasAdditionalInformation =
+    !!values?.shippingInfo.weight ||
+    !!values?.shippingInfo.weightUnit ||
+    !!values?.shippingInfo.measurementUnit ||
+    !!values?.shippingInfo.height ||
+    !!values?.shippingInfo.width ||
+    !!values?.shippingInfo.length;
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Shipping Info</SectionTitle>
@@ -231,6 +237,7 @@ export default function ShippingInfo() {
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
+          isInitiallyOpen={hasAdditionalInformation}
         >
           <FormField
             title={`Dimensions L x W x H in ${unit}`}

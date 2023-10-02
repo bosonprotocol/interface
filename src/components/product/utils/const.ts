@@ -65,7 +65,12 @@ export const CATEGORY_OPTIONS = [
   }
 ] as const;
 
-export const getOptionsCurrencies = (envConfig: ProtocolConfig) =>
+export const getOptionsCurrencies = (
+  envConfig: ProtocolConfig
+): {
+  value: string;
+  label: string;
+}[] =>
   envConfig.defaultTokens?.length
     ? [
         ...(envConfig.defaultTokens?.map((token: Token) => ({

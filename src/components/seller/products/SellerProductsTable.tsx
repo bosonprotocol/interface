@@ -24,8 +24,11 @@ import {
 import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
-import { UrlParameters } from "../../../lib/routing/parameters";
-import { ProductRoutes } from "../../../lib/routing/routes";
+import {
+  SellerHubQueryParameters,
+  UrlParameters
+} from "../../../lib/routing/parameters";
+import { ProductRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
@@ -820,13 +823,15 @@ export default function SellerProductsTable({
                             disabled={!offer || !sellerRoles?.isAssistant}
                             onClick={async (event) => {
                               event.stopPropagation();
-                              if (!offer) {
+                              if (!offer || !offer.uuid) {
                                 return;
                               }
-                              showModal(modalTypes.RELIST_OFFER, {
-                                title: `Relist Offer "${offer.metadata.name}"`,
-                                offer,
-                                onRelistedSuccessfully: refetch
+                              navigate({
+                                pathname: SellerCenterRoutes.CreateProduct,
+                                search: {
+                                  [SellerHubQueryParameters.fromProductUuid]:
+                                    offer.uuid
+                                }
                               });
                             }}
                           >
