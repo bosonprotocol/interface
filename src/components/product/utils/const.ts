@@ -1,3 +1,4 @@
+import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
 import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 
@@ -110,14 +111,22 @@ export const TOKEN_TYPES = [
   }
 ] as const;
 
+export const TokenTypeEnumToString = {
+  [TokenType.FungibleToken]: "erc20",
+  [TokenType.NonFungibleToken]: "erc721",
+  [TokenType.MultiToken]: "erc1155"
+} as const;
+
 export const TOKEN_CRITERIA = [
   {
     value: "minbalance",
-    label: "Collection balance"
+    label: "Collection balance",
+    method: EvaluationMethod.Threshold
   },
   {
     value: "tokenid",
-    label: "Specific token"
+    label: "Specific token",
+    method: EvaluationMethod.SpecificToken
   }
 ] as const;
 

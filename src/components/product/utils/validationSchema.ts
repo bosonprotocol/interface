@@ -232,7 +232,7 @@ export const tokenGatingValidationSchema = Yup.object({
           .required(validationMessage.required)
           .matches(
             /^\+?[1-9]\d*$/,
-            "Min balance must be greater than or equal to 1"
+            "Min balance must be greater than or equal to 1 (do not include commas/periods)"
           )
           .typeError("Value must be an integer greater than or equal to 1")
     }),

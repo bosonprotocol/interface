@@ -402,11 +402,14 @@ export function useCreateOffers() {
 
           const txReceipt = await txResponse.wait();
           const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
+          if (!offerId) {
+            return;
+          }
           let createdOffer: OfferFieldsFragment | null = null;
           toastId = getOfferCreationToast();
           await poll(
             async () => {
-              createdOffer = await coreSDK.getOfferById(offerId as string);
+              createdOffer = await coreSDK.getOfferById(offerId);
               return createdOffer;
             },
             (offer) => {

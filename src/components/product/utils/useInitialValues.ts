@@ -8,9 +8,11 @@ import useProductByUuid, {
   ReturnUseProductByUuid
 } from "lib/utils/hooks/product/useProductByUuid";
 import { useCurrentSellers } from "lib/utils/hooks/useCurrentSellers";
+import { useCoreSDK } from "lib/utils/useCoreSdk";
 import uniqBy from "lodash.uniqby";
 import { getDisputePeriodDurationFromSubgraphInDays } from "pages/create-product/utils/helpers";
 import { useMemo } from "react";
+import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 
 import {
@@ -30,9 +32,13 @@ import {
   ImageSpecificOrAll,
   OPTIONS_LENGTH,
   OPTIONS_UNIT,
+  OPTIONS_WEIGHT,
   ProductMetadataAttributeKeys,
   ProductTypeValues,
   SUPPORTED_FILE_FORMATS,
+  TOKEN_CRITERIA,
+  TOKEN_TYPES,
+  TokenTypeEnumToString,
   TypeKeys
 } from "./const";
 import { getVariantName } from "./getVariantName";
@@ -41,6 +47,8 @@ import type { CreateProductForm } from "./types";
 
 const MAIN_KEY = "create-product";
 export function useInitialValues() {
+  const core = useCoreSDK();
+
   const { sellers: currentSellers } = useCurrentSellers();
   const sellerId = currentSellers?.[0]?.id;
   const { config } = useConfigContext();
@@ -77,14 +85,30 @@ export function useInitialValues() {
     [config.envConfig]
   );
 
+  const conditionTokenAddress =
+    product?.variants[0].offer.condition?.tokenAddress;
+  const { data: tokenDecimals } = useQuery(
+    ["token-info", conditionTokenAddress, core.uuid],
+    async () => {
+      if (!conditionTokenAddress) {
+        return;
+      }
+      const { decimals } = await core.getExchangeTokenInfo(
+        conditionTokenAddress
+      );
+      return decimals;
+    }
+  );
+
   const valuesFromExistingProduct: CreateProductForm | null | undefined =
     useMemo(() => {
       return loadExistingProduct<typeof cloneBaseValues>(
         product,
+        tokenDecimals,
         cloneBaseValues,
         OPTIONS_CURRENCIES
       );
-    }, [product, cloneBaseValues, OPTIONS_CURRENCIES]);
+    }, [product, cloneBaseValues, OPTIONS_CURRENCIES, tokenDecimals]);
 
   const cloneInitialValues = useMemo(
     () =>
@@ -116,6 +140,7 @@ export function useInitialValues() {
 }
 function loadExistingProduct<T extends CreateProductForm>(
   productWithVariants: ReturnUseProductByUuid,
+  tokenDecimals: number | undefined,
   cloneBaseValues: T,
   OPTIONS_CURRENCIES: {
     value: string;
@@ -180,6 +205,25 @@ function loadExistingProduct<T extends CreateProductForm>(
           more: getNextImg()
         };
   };
+  const getMinBalance = () => {
+    if (
+      !firstOffer.condition ||
+      !tokenDecimals ||
+      !firstOffer.condition.threshold
+    ) {
+      return cloneBaseValues.tokenGating.minBalance;
+    }
+    try {
+      const formatted = utils.formatUnits(
+        firstOffer.condition.threshold,
+        tokenDecimals
+      );
+      return Number(formatted).toString();
+    } catch (error) {
+      return cloneBaseValues.tokenGating.minBalance;
+    }
+  };
+
   return {
     ...cloneBaseValues,
     productType: {
@@ -403,6 +447,12 @@ function loadExistingProduct<T extends CreateProductForm>(
       redemptionPointName: cloneBaseValues.shippingInfo.redemptionPointName, // not saved
       weight:
         product?.packaging_weight_value ?? cloneBaseValues.shippingInfo.weight,
+      weightUnit: product?.packaging_weight_unit
+        ? OPTIONS_WEIGHT.find(
+            (weightOption) =>
+              weightOption.value === product.packaging_weight_unit
+          ) ?? cloneBaseValues.shippingInfo.weightUnit
+        : cloneBaseValues.shippingInfo.weightUnit,
       measurementUnit: product?.packaging_dimensions_unit
         ? OPTIONS_LENGTH.find(
             (option) => option.value === product.packaging_dimensions_unit
@@ -420,6 +470,34 @@ function loadExistingProduct<T extends CreateProductForm>(
     },
     confirmProductDetails: {
       ...cloneBaseValues.confirmProductDetails
+    },
+    tokenGating: {
+      ...cloneBaseValues.tokenGating,
+      ...(firstOffer.condition && {
+        maxCommits:
+          firstOffer.condition.maxCommits ??
+          cloneBaseValues.tokenGating.maxCommits,
+        minBalance: getMinBalance(),
+        tokenContract:
+          firstOffer.condition.tokenAddress ??
+          cloneBaseValues.tokenGating.tokenContract,
+        tokenCriteria:
+          TOKEN_CRITERIA.find(
+            (criterion) => criterion.method === firstOffer.condition?.method
+          ) ?? cloneBaseValues.tokenGating.tokenCriteria,
+        tokenId:
+          firstOffer.condition.minTokenId ??
+          cloneBaseValues.tokenGating.tokenId,
+        tokenType:
+          TOKEN_TYPES.find(
+            (tokenType) =>
+              tokenType.value ===
+              TokenTypeEnumToString[
+                firstOffer.condition
+                  ?.tokenType as keyof typeof TokenTypeEnumToString
+              ]
+          ) ?? cloneBaseValues.tokenGating.tokenType
+      })
     }
   };
 }

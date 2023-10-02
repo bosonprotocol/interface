@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -30,14 +30,6 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563px;
 `;
 
-// const TokengatedTextarea = styled(Textarea)`
-//   padding: 0.5rem;
-//   min-width: 100%;
-//   max-width: 100%;
-//   min-height: 54px;
-//   max-height: 500px;
-// `;
-
 const StyledGrid = styled(Grid)`
   > * {
     min-width: fit-content;
@@ -67,6 +59,30 @@ export default function TokenGating() {
   const core = useCoreSDK();
   const [symbol, setSymbol] = useState<string | undefined>(undefined);
 
+  useEffect(() => {
+    (async () => {
+      const tokenContract = tokenGating.tokenContract;
+      const tokenType = tokenGating.tokenType;
+      if (
+        tokenContract &&
+        tokenContract?.length > 0 &&
+        tokenType?.value === erc20
+      ) {
+        try {
+          const { symbol: symbolLocal } = await core.getExchangeTokenInfo(
+            tokenContract
+          );
+          if (symbolLocal.length > 0) {
+            setSymbol(symbolLocal);
+          } else {
+            setSymbol(undefined);
+          }
+        } catch (error) {
+          setSymbol(undefined);
+        }
+      }
+    })();
+  }, [core, tokenGating.tokenContract, tokenGating.tokenType]);
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Token Gating</SectionTitle>
@@ -97,25 +113,6 @@ export default function TokenGating() {
                 type="string"
                 onBlur={async (e) => {
                   handleBlur(e);
-                  const tokenContract = tokenGating.tokenContract;
-                  const tokenType = tokenGating.tokenType;
-                  if (
-                    tokenContract &&
-                    tokenContract?.length > 0 &&
-                    tokenType?.value === erc20
-                  ) {
-                    try {
-                      const { symbol: symbolLocal } =
-                        await core.getExchangeTokenInfo(tokenContract);
-                      if (symbolLocal.length > 0) {
-                        setSymbol(symbolLocal);
-                      } else {
-                        setSymbol(undefined);
-                      }
-                    } catch (error) {
-                      setSymbol(undefined);
-                    }
-                  }
                 }}
               />
             </FormField>

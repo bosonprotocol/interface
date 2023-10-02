@@ -61,7 +61,7 @@ export const productInformationInitialValues = {
     partNumber: undefined,
     materials: undefined
   }
-} as const;
+};
 
 export const productVariantsInitialValues = {
   productVariants: {
