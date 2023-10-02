@@ -180,19 +180,21 @@ async function getProductV1Metadata({
     product: {
       uuid: uuid(),
       version: 1,
-      title: productInformation.productTitle,
-      description: productInformation.description,
-      identification_sKU: productInformation.sku,
-      identification_productId: productInformation.id,
-      identification_productIdType: productInformation.idType,
+      title: productInformation.productTitle?.toString(),
+      description: productInformation.description?.toString(),
+      identification_sKU: productInformation.sku?.toString(),
+      identification_productId: productInformation.id?.toString(),
+      identification_productIdType: productInformation.idType?.toString(),
       productionInformation_brandName:
-        productInformation.brandName || createYourProfile.name,
-      productionInformation_manufacturer: productInformation.manufacture,
+        productInformation.brandName?.toString() || createYourProfile.name,
+      productionInformation_manufacturer:
+        productInformation.manufacture?.toString(),
       productionInformation_manufacturerPartNumber:
-        productInformation.manufactureModelName,
-      productionInformation_modelNumber: productInformation.partNumber,
+        productInformation.manufactureModelName?.toString(),
+      productionInformation_modelNumber:
+        productInformation.partNumber?.toString(),
       productionInformation_materials: productInformation.materials?.split(","),
-      details_category: productInformation.category.value,
+      details_category: productInformation.category.value?.toString(),
       details_subCategory: undefined, // no entry in the UI
       details_subCategory2: undefined, // no entry in the UI
       details_offerCategory: productType.productType.toUpperCase(),
@@ -202,12 +204,12 @@ async function getProductV1Metadata({
       visuals_images: visualImages,
       visuals_videos: undefined, // no entry in the UI
       packaging_packageQuantity: undefined, // no entry in the UI
-      packaging_dimensions_length: shippingInfo.length,
-      packaging_dimensions_width: shippingInfo.width,
-      packaging_dimensions_height: shippingInfo.height,
-      packaging_dimensions_unit: shippingInfo.measurementUnit.value,
-      packaging_weight_value: shippingInfo?.weight || "",
-      packaging_weight_unit: shippingInfo?.weightUnit.value || ""
+      packaging_dimensions_length: shippingInfo.length?.toString(),
+      packaging_dimensions_width: shippingInfo.width?.toString(),
+      packaging_dimensions_height: shippingInfo.height?.toString(),
+      packaging_dimensions_unit: shippingInfo.measurementUnit.value?.toString(),
+      packaging_weight_value: shippingInfo?.weight?.toString() || "",
+      packaging_weight_unit: shippingInfo?.weightUnit.value?.toString() || ""
     },
     seller: {
       defaultVersion: 1,
