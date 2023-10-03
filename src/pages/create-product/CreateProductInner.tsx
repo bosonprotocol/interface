@@ -750,10 +750,7 @@ function CreateProductInner({
             visualImages.push(...variantVisualImages);
           } else {
             variantsForMetadataCreation.push({
-              productVariant: typeOptions,
-              productOverrides: {
-                visuals_images: visualImages
-              }
+              productVariant: typeOptions
             });
           }
         }

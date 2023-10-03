@@ -75,7 +75,7 @@ export function useInitialValues() {
     []
   );
 
-  const { data: product } = useProductByUuid(sellerId, fromProductUuid, {
+  const { data: product } = useProductByUuid("26", fromProductUuid, {
     enabled: !!fromProductUuid && !!sellerId
   });
 
@@ -236,6 +236,7 @@ function loadExistingProduct<T extends CreateProductForm>(
 
   return {
     ...cloneBaseValues,
+    createYourProfile: cloneBaseValues.createYourProfile,
     productType: {
       ...cloneBaseValues.productType,
       productType: product.details_offerCategory.toLowerCase(),
@@ -308,20 +309,24 @@ function loadExistingProduct<T extends CreateProductForm>(
           (string) => string
         ) ?? [],
       variants: variants.map(({ offer, variations }) => {
+        const colorVariation = variations.find(
+          (variation) => variation.type.toLowerCase() === "color"
+        );
+        const sizeVariation = variations.find(
+          (variation) => variation.type.toLowerCase() === "size"
+        );
         return {
           name: getVariantName({
-            color: variations.find(
-              (variation) => variation.type.toLowerCase() === "color"
-            )?.option,
-            size: variations.find(
-              (variation) => variation.type.toLowerCase() === "size"
-            )?.option
+            color: colorVariation?.option,
+            size: sizeVariation?.option
           }),
           price: utils.formatUnits(offer.price, offer.exchangeToken.decimals),
           currency: OPTIONS_CURRENCIES.find(
             (currency) => currency.value === offer.exchangeToken.symbol
           ),
-          quantity: offer.quantityInitial
+          quantity: offer.quantityInitial,
+          color: colorVariation?.option,
+          size: sizeVariation?.option
         };
       })
     },

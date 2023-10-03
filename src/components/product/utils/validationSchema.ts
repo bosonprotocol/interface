@@ -349,10 +349,11 @@ export const shippingInfoValidationSchema = Yup.object({
       value: Yup.string().oneOf(OPTIONS_LENGTH.map(({ value }) => value)),
       label: Yup.string()
     }).required(validationMessage.required),
-    country: Yup.object({
-      value: Yup.string(),
-      label: Yup.string()
-    }).default([{ value: "", label: "" }]),
+    /* TODO: NOTE: we might add it back in the future */
+    // country: Yup.object({
+    //   value: Yup.string(),
+    //   label: Yup.string()
+    // }).default([{ value: "", label: "" }]),
     jurisdiction: Yup.array(
       Yup.object({
         region: Yup.string().required(validationMessage.required),
