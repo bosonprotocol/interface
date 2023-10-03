@@ -205,6 +205,14 @@ function loadExistingProduct<T extends CreateProductForm>(
           more: getNextImg()
         };
   };
+  const tokenType =
+    TOKEN_TYPES.find(
+      (tokenType) =>
+        tokenType.value ===
+        TokenTypeEnumToString[
+          firstOffer.condition?.tokenType as keyof typeof TokenTypeEnumToString
+        ]
+    ) ?? cloneBaseValues.tokenGating.tokenType;
   const getMinBalance = () => {
     if (
       !firstOffer.condition ||
@@ -212,6 +220,9 @@ function loadExistingProduct<T extends CreateProductForm>(
       !firstOffer.condition.threshold
     ) {
       return cloneBaseValues.tokenGating.minBalance;
+    }
+    if (tokenType.value !== "erc20") {
+      return firstOffer.condition.threshold;
     }
     try {
       const formatted = utils.formatUnits(
@@ -488,15 +499,7 @@ function loadExistingProduct<T extends CreateProductForm>(
         tokenId:
           firstOffer.condition.minTokenId ??
           cloneBaseValues.tokenGating.tokenId,
-        tokenType:
-          TOKEN_TYPES.find(
-            (tokenType) =>
-              tokenType.value ===
-              TokenTypeEnumToString[
-                firstOffer.condition
-                  ?.tokenType as keyof typeof TokenTypeEnumToString
-              ]
-          ) ?? cloneBaseValues.tokenGating.tokenType
+        tokenType
       })
     }
   };
