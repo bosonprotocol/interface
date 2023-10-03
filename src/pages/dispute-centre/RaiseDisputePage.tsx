@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
+import { poll } from "lib/utils/promises";
 import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -34,7 +35,6 @@ import { goToViewMode, ViewMode } from "../../lib/viewMode";
 import { useChatContext } from "../chat/ChatProvider/ChatContext";
 import { createProposal } from "../chat/utils/create";
 import { sendProposalToChat } from "../chat/utils/send";
-import { poll } from "../create-product/utils";
 import {
   disputeCentreInitialValues,
   disputeCentreValidationSchemaAdditionalInformation,

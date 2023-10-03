@@ -1,12 +1,12 @@
 import { accounts, offers, subgraph } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import { poll } from "lib/utils/promises";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 
 import { useModal } from "../../../../components/modal/useModal";
 import { TOKEN_TYPES } from "../../../../components/product/utils";
 import LoadingToast from "../../../../components/toasts/common/LoadingToast";
-import { poll } from "../../../../pages/create-product/utils";
 import {
   buildCondition,
   PartialTokenGating

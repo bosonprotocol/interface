@@ -11,6 +11,7 @@ import * as Sentry from "@sentry/browser";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, utils } from "ethers";
+import { poll } from "lib/utils/promises";
 import { Info as InfoComponent } from "phosphor-react";
 import {
   Dispatch,
@@ -33,7 +34,6 @@ import {
   MessageDataWithInfo,
   ProposalItem
 } from "../../../../pages/chat/types";
-import { poll } from "../../../../pages/create-product/utils";
 import SimpleError from "../../../error/SimpleError";
 import { useConvertedPrice } from "../../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";

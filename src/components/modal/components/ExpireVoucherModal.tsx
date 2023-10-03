@@ -1,6 +1,7 @@
 import { ExpireButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import { poll } from "lib/utils/promises";
 import qs from "query-string";
 import { useState } from "react";
 import styled from "styled-components";
@@ -15,7 +16,6 @@ import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import useRefundData from "../../../lib/utils/hooks/useRefundData";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-import { poll } from "../../../pages/create-product/utils";
 import DetailTable from "../../detail/DetailTable";
 import SimpleError from "../../error/SimpleError";
 import { Spinner } from "../../loading/Spinner";

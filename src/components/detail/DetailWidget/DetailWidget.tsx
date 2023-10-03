@@ -27,6 +27,7 @@ import {
 import { swapQueryParameters } from "lib/routing/parameters";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
+import { poll } from "lib/utils/promises";
 import {
   ArrowRight,
   ArrowSquareOut,
@@ -65,7 +66,6 @@ import {
   saveItemInStorage
 } from "../../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-import { poll } from "../../../pages/create-product/utils";
 import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
 import Price from "../../price/index";
