@@ -11,6 +11,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
+import { useSignMessage } from "lib/utils/hooks/ethers/useEthersSigner";
 import { poll } from "lib/utils/promises";
 import {
   Dispatch,
@@ -23,7 +24,6 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSignMessage } from "wagmi";
 import * as Yup from "yup";
 
 import { colors } from "../../../../../../../lib/styles/colors";
@@ -79,54 +79,46 @@ const UnsignedMessageWrapper = styled.div`
   }
 `;
 
+const requiredErrorMessage = "This field is required";
 const FormModel = {
   formFields: {
     message: {
       name: "message",
-      requiredErrorMessage: "This field is required",
       placeholder:
         "“I, 0xabc123, wish to escalate the dispute relating to exchange with ID: X”"
     },
     email_test: {
       name: "email",
-      requiredErrorMessage: "This field is required",
       value: "disputes-test@redeemeum.com",
       disabled: true
     },
     email: {
       name: "email",
-      requiredErrorMessage: "This field is required",
       value: "disputes@redeemeum.com",
       disabled: true
     },
     subject: {
       name: "subject",
-      requiredErrorMessage: "This field is required",
       disabled: true
     },
     exchangeId: {
       name: "exchangeId",
-      requiredErrorMessage: "This field is required",
       disabled: true
     },
     disputeId: {
       name: "disputeId",
-      requiredErrorMessage: "This field is required",
       disabled: true
     },
     signature: {
       name: "signature",
-      requiredErrorMessage: "This field is required",
       disabled: true
     },
     confirm: {
       name: "confirm",
-      requiredErrorMessage: "This field must be checked",
       text: "I confirm that I've sent the required email to the Dispute Resolver."
     },
     buyerAddress: {
       name: "buyerAddress",
-      requiredErrorMessage: "This field is required",
       text: "0x000",
       disabled: true
     }
@@ -137,27 +129,27 @@ const validationSchemaPerStep = [
   Yup.object({
     [FormModel.formFields.message.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.message.requiredErrorMessage)
+      .required(requiredErrorMessage)
   }),
   Yup.object({
     [FormModel.formFields.exchangeId.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.exchangeId.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.subject.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.subject.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.buyerAddress.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.buyerAddress.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.disputeId.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.disputeId.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.signature.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.signature.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.confirm.name]: Yup.bool().oneOf(
       [true],
-      FormModel.formFields.message.requiredErrorMessage
+      "This field must be checked"
     )
   }),
   Yup.object({})
@@ -201,12 +193,7 @@ function EscalateStepTwo({
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
   const { account: address } = useWeb3React();
-  const { isLoading, signMessage } = useSignMessage({
-    onSuccess(data) {
-      setActiveStep(1);
-      setSignature(data);
-    }
-  });
+  const { isLoading, mutateAsync: signMessage } = useSignMessage();
 
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
@@ -456,9 +443,13 @@ function EscalateStepTwo({
                     style={{ color: "white" }}
                     disabled={!!errors?.message || isLoading}
                     loading={isLoading}
-                    onClick={() => {
+                    onClick={async () => {
                       const message = values?.message as string;
-                      signMessage({ message });
+                      const signature = await signMessage({ message });
+                      if (signature) {
+                        setActiveStep(1);
+                        setSignature(signature);
+                      }
                     }}
                   >
                     Sign
