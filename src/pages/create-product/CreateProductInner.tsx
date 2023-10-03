@@ -239,7 +239,8 @@ async function getProductV1Metadata({
     },
     shipping: {
       defaultVersion: 1,
-      countryOfOrigin: shippingInfo.country.label || "",
+      countryOfOrigin:
+        /*TODO: NOTE: we might add it back in the future: shippingInfo.country?.label || */ "",
       supportedJurisdictions:
         supportedJurisdictions.length > 0 ? supportedJurisdictions : undefined,
       returnPeriod: shippingInfo.returnPeriod.toString(),
