@@ -170,8 +170,6 @@ export default function ShippingInfo() {
   );
   const hasAdditionalInformation =
     !!values?.shippingInfo.weight ||
-    !!values?.shippingInfo.weightUnit ||
-    !!values?.shippingInfo.measurementUnit ||
     !!values?.shippingInfo.height ||
     !!values?.shippingInfo.width ||
     !!values?.shippingInfo.length;
