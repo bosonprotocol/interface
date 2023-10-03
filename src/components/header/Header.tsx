@@ -213,7 +213,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
-    const { isLteS, isLteL, isLteM, isM, isLteXS } = useBreakpoints();
+    const { isLteS, isLteL, isLteM, isM, isLteXS, isXXS } = useBreakpoints();
     const logoUrl = useCustomStoreQueryParameter("logoUrl");
     const navigationBarPosition = useCustomStoreQueryParameter(
       "navigationBarPosition"
@@ -265,7 +265,11 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
       return (
         <>
           {isFetching ? (
-            <BosonButton variant="accentInverted">
+            <BosonButton
+              variant="accentInverted"
+              size="regular"
+              {...(!isLteS && { style: { minWidth: "200px" } })}
+            >
               <Spinner />
             </BosonButton>
           ) : (
@@ -280,7 +284,8 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                     whiteSpace: "pre",
                     marginLeft: isLteXS ? "1rem" : ""
                   }}
-                  size={"regular"}
+                  {...(!isLteS && { style: { minWidth: "200px" } })}
+                  size="regular"
                   onClick={() => {
                     navigate({ pathname: sellUrl });
                   }}
@@ -359,7 +364,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   <>
                     <CTA />
                     {!isLteXS && <ChainSelector />}
-                    <ConnectButton showOnlyIcon />
+                    {!isXXS && <ConnectButton showOnlyIcon />}
                     <BurgerButton onClick={toggleMenu} />
                   </>
                 )}

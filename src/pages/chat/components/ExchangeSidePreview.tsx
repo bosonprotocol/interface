@@ -3,13 +3,12 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
-import { includingBuyerSellerAgreement } from "lib/constants/policies";
-import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import {
-  ArrowSquareOut,
-  CircleWavyQuestion,
-  WarningCircle
-} from "phosphor-react";
+  buyerAndSellerAgreementIncluding,
+  customisedExchangePolicy
+} from "lib/constants/policies";
+import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
+import { ArrowSquareOut } from "phosphor-react";
 import {
   Dispatch,
   ReactNode,
@@ -188,7 +187,7 @@ const HistorySection = styled(Section)`
     padding-bottom: 5rem;
   }
 `;
-
+const fontSizeExchangePolicy = "0.625rem";
 const getOfferDetailData = (
   offer: Offer,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -257,8 +256,8 @@ const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            <span style={{ fontSize: "0.5rem" }}>
-              {exchangePolicyLabel + " " + includingBuyerSellerAgreement}
+            <span style={{ fontSize: fontSizeExchangePolicy }}>
+              {`${buyerAndSellerAgreementIncluding} ${exchangePolicyLabel}`}
             </span>
             <ArrowSquareOut
               size={20}
@@ -267,13 +266,12 @@ const getOfferDetailData = (
             />
           </Typography>
         ) : (
-          <Typography tag="p" color={colors.orange}>
-            <WarningCircle
-              size={20}
-              style={{ minWidth: "20px" }}
-            ></WarningCircle>{" "}
-            Non-standard
-            {` ${includingBuyerSellerAgreement}`}
+          <Typography
+            tag="p"
+            color={colors.orange}
+            $fontSize={fontSizeExchangePolicy}
+          >
+            {customisedExchangePolicy}
             <ArrowSquareOut
               size={20}
               onClick={() => handleShowExchangePolicy()}
@@ -282,13 +280,8 @@ const getOfferDetailData = (
           </Typography>
         )
       ) : (
-        <Typography tag="p" color="purple">
-          <CircleWavyQuestion
-            size={20}
-            style={{ minWidth: "20px" }}
-          ></CircleWavyQuestion>{" "}
+        <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
           Unknown
-          {` ${includingBuyerSellerAgreement}`}
           <ArrowSquareOut
             size={20}
             onClick={() => handleShowExchangePolicy()}

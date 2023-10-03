@@ -1094,7 +1094,8 @@ export default function SellerProductsTable({
                                 ProductRoutes.ProductDetail,
                                 {
                                   [UrlParameters.uuid]:
-                                    row?.original?.uuid ?? ""
+                                    row?.original?.uuid ?? "",
+                                  [UrlParameters.sellerId]: sellerId
                                 }
                               );
                               navigate({ pathname });

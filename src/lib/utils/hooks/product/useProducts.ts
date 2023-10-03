@@ -58,7 +58,7 @@ export default function useProducts(
       ...omit(props, ["productsIds", "quantityAvailable_gte"]),
       productsFirst: OFFERS_PER_PAGE,
       productsFilter: {
-        uuid_in: props?.productsIds || undefined,
+        id_in: props?.productsIds || undefined,
         disputeResolverId: defaultDisputeResolverId,
         sellerId_in: options.enableCurationList
           ? curationLists.sellerCurationList

@@ -50,7 +50,8 @@ interface TokenInfo {
 }
 
 const getBuildMessage =
-  (config: DappConfig) => (condition: Condition, tokenInfo: TokenInfo) => {
+  (config: DappConfig) =>
+  (condition: Condition, tokenInfo: TokenInfo): JSX.Element => {
     const {
       method,
       tokenType,
@@ -114,7 +115,7 @@ const getBuildMessage =
         </>
       );
     }
-    return "";
+    return <></>;
   };
 
 const TokenGated = ({
@@ -296,6 +297,7 @@ const LockInfoTitle = styled.span`
 const LockInfoDesc = styled.div`
   font-size: 0.75rem;
   color: ${colors.grey2};
+  word-break: break-word;
   a {
     font-size: 0.75rem;
     color: ${colors.grey2};

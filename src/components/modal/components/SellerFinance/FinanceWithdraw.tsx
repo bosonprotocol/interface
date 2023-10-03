@@ -4,16 +4,16 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
+import {
+  getNumberWithDecimals,
+  getNumberWithoutDecimals
+} from "lib/utils/number";
 import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import { useSigner } from "../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
-import {
-  getNumberWithDecimals,
-  getNumberWithoutDecimals
-} from "../../../../pages/account/funds/FundItem";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";

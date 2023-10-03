@@ -1,6 +1,7 @@
 import { EvaluationMethod } from "@bosonprotocol/common";
 import { offers, productV1, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { BigNumber } from "ethers";
 import { Form, Formik } from "formik";
 import { extractUserFriendlyError } from "lib/utils/errors";
 import React from "react";
@@ -90,12 +91,20 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
                   `${origin}/#/license/${metadataUuid}`
                 )
                 .replaceAll(
+                  `${origin}/#/license/${offer.seller.id}/${originalMetadata.uuid}`,
+                  `${origin}/#/license/${offer.seller.id}/${metadataUuid}`
+                )
+                .replaceAll(
                   `${origin}/#/variant-uuid/${originalMetadata.uuid}`,
                   `${origin}/#/variant-uuid/${metadataUuid}`
                 )
                 .replaceAll(
                   `${origin}/#/offer-uuid/${originalMetadata.uuid}`,
                   `${origin}/#/offer-uuid/${metadataUuid}`
+                )
+                .replaceAll(
+                  `${origin}/#/offer-uuid/${offer.seller.id}/${originalMetadata.uuid}`,
+                  `${origin}/#/offer-uuid/${offer.seller.id}/${metadataUuid}`
                 )
             ) as productV1.ProductV1Metadata;
             const metadataHash = await coreSDK.storeMetadata({
@@ -126,18 +135,23 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
               price: variant.price.toString(),
               sellerDeposit: variant.sellerDeposit.toString(),
               buyerCancelPenalty: variant.buyerCancelPenalty.toString(),
-              quantityAvailable: variant.quantityAvailable.toString(),
+              quantityAvailable: variant.quantityInitial.toString(),
               voucherRedeemableFromDateInMS:
                 voucherRedeemableFromDate.toString(),
               voucherRedeemableUntilDateInMS: voucherRedeemableUntilDate,
               voucherValidDurationInMS: variant.voucherValidDuration.toString(),
               validFromDateInMS: validFromDate.toString(),
               validUntilDateInMS: validUntilDate.toString(),
-              disputePeriodDurationInMS: (
-                Number(variant.disputePeriodDuration) * 1000
-              ).toString(),
-              resolutionPeriodDurationInMS:
-                variant.resolutionPeriodDuration.toString(),
+              disputePeriodDurationInMS: BigNumber.from(
+                variant.disputePeriodDuration
+              )
+                .mul(1000)
+                .toString(),
+              resolutionPeriodDurationInMS: BigNumber.from(
+                variant.resolutionPeriodDuration
+              )
+                .mul(1000)
+                .toString(),
               exchangeToken: variant.exchangeToken?.address,
               disputeResolverId: variant.disputeResolverId,
               agentId: variant.agentId, // no agent
@@ -157,6 +171,7 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
               hideModal();
               const id = productUuid;
               const pathname = generatePath(ProductRoutes.ProductDetail, {
+                [UrlParameters.sellerId]: offer?.seller?.id,
                 [UrlParameters.uuid]: id
               });
               navigate({ pathname });

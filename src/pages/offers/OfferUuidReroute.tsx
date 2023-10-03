@@ -6,9 +6,10 @@ import { OffersRoutes } from "../../lib/routing/routes";
 import useOfferByUuid from "../../lib/utils/hooks/product/useOfferByUuid";
 
 export default function OfferUuidReroute() {
-  const { [UrlParameters.uuid]: uuid } = useParams();
+  const { [UrlParameters.uuid]: uuid, [UrlParameters.sellerId]: sellerId } =
+    useParams();
 
-  const { offerId } = useOfferByUuid(uuid);
+  const { offerId } = useOfferByUuid(uuid, sellerId);
 
   if (!offerId) {
     return <div data-testid="notFound">This offer does not exist</div>;

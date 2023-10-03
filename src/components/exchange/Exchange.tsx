@@ -153,7 +153,8 @@ export default function Exchange({ offer, exchange }: Props) {
             window.bosonWidgetShowRedeem({
               exchangeId: exchange?.id || "",
               bypassMode: "REDEEM",
-              configId: config.envConfig.configId
+              configId: config.envConfig.configId,
+              account: address
             });
           } catch (e) {
             console.error(e);
@@ -167,7 +168,8 @@ export default function Exchange({ offer, exchange }: Props) {
             window.bosonWidgetShowRedeem({
               exchangeId: exchange?.id || "",
               bypassMode: "CANCEL",
-              configId: config.envConfig.configId
+              configId: config.envConfig.configId,
+              account: address
             });
           } catch (e) {
             console.error(e);

@@ -19,7 +19,10 @@ import {
   ethers,
   utils
 } from "ethers";
-import { includingBuyerSellerAgreement } from "lib/constants/policies";
+import {
+  buyerAndSellerAgreementIncluding,
+  customisedExchangePolicy
+} from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
@@ -27,9 +30,8 @@ import {
   ArrowRight,
   ArrowSquareOut,
   Check,
-  CircleWavyQuestion,
-  Question,
-  WarningCircle
+  Info,
+  Question
 } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -166,6 +168,7 @@ interface IDetailWidget {
   exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
 }
 
+const fontSizeExchangePolicy = "0.625rem";
 export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
@@ -323,8 +326,8 @@ export const getOfferDetailData = (
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
           <Typography tag="p">
-            <span style={{ fontSize: "0.5rem" }}>
-              {exchangePolicyLabel + " " + includingBuyerSellerAgreement}
+            <span style={{ fontSize: fontSizeExchangePolicy }}>
+              {`${buyerAndSellerAgreementIncluding} ${exchangePolicyLabel}`}
             </span>
             {modalTypes && showModal && (
               <ArrowSquareOut
@@ -335,12 +338,12 @@ export const getOfferDetailData = (
             )}
           </Typography>
         ) : (
-          <Typography tag="p" color={colors.orange} $fontSize="0.5rem">
-            <WarningCircle
-              size={20}
-              style={{ minWidth: "20px" }}
-            ></WarningCircle>{" "}
-            Non-standard{` ${includingBuyerSellerAgreement}`}
+          <Typography
+            tag="p"
+            color={colors.orange}
+            $fontSize={fontSizeExchangePolicy}
+          >
+            {customisedExchangePolicy}
             {modalTypes && showModal && (
               <ArrowSquareOut
                 size={20}
@@ -351,12 +354,8 @@ export const getOfferDetailData = (
           </Typography>
         )
       ) : (
-        <Typography tag="p" color="purple" $fontSize="0.5rem">
-          <CircleWavyQuestion
-            size={20}
-            style={{ minWidth: "20px" }}
-          ></CircleWavyQuestion>{" "}
-          Unknown{` ${includingBuyerSellerAgreement}`}
+        <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
+          Unknown
           {modalTypes && showModal && (
             <ArrowSquareOut
               size={20}
@@ -989,54 +988,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 {!isPreview && notCommittableOfferStatus}
               </DetailTopRightLabel>
             )}
-            {isOffer && (
-              <Typography
-                $fontSize="0.8rem"
-                style={{ gridColumn: "1 / -1", display: "block" }}
-                className="by-proceeding"
-              >
-                By proceeding to Commit, I agree to the{" "}
-                <span
-                  style={{
-                    color: colors.blue,
-                    fontSize: "inherit",
-                    cursor: "pointer"
-                  }}
-                  onClick={() => {
-                    showModal("REDEEMABLE_NFT_TERMS", {
-                      offerData: offer
-                    });
-                  }}
-                >
-                  rNFT Terms
-                </span>
-                .
-              </Typography>
-            )}
-            {isToRedeem && !isRedeemDisabled && (
-              <Typography
-                $fontSize="0.8rem"
-                style={{ gridColumn: "1 / -1", display: "block" }}
-                className="by-proceeding"
-              >
-                By proceeding to Redeem, I agree to the{" "}
-                <span
-                  style={{
-                    color: colors.blue,
-                    fontSize: "inherit",
-                    cursor: "pointer"
-                  }}
-                  onClick={() => {
-                    showModal("BUYER_SELLER_AGREEMENT", {
-                      offerData: offer
-                    });
-                  }}
-                >
-                  Buyer & Seller Agreement
-                </span>
-                .
-              </Typography>
-            )}
+
             {isOffer && (
               <CommitButtonWrapper
                 role="button"
@@ -1086,27 +1038,31 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </CommitButtonWrapper>
             )}
             {isToRedeem && (
-              <RedeemButton
-                variant="primaryFill"
-                size="large"
-                disabled={isRedeemDisabled}
-                id="boson-redeem-redeem"
-                data-exchange-id={exchange?.id}
-                data-bypass-mode="REDEEM"
-                data-config-id={config.envConfig.configId}
-                withBosonStyle
-              >
-                <span>Redeem</span>
-                <Typography
-                  tag="small"
-                  $fontSize="0.75rem"
-                  lineHeight="1.125rem"
-                  fontWeight="600"
-                  margin="0"
+              <>
+                {!isRedeemDisabled && <div />}
+                <RedeemButton
+                  variant="primaryFill"
+                  size="large"
+                  disabled={isRedeemDisabled}
+                  id="boson-redeem-redeem"
+                  data-exchange-id={exchange?.id}
+                  data-bypass-mode="REDEEM"
+                  data-config-id={config.envConfig.configId}
+                  data-account={address}
+                  withBosonStyle
                 >
-                  Step 2/2
-                </Typography>
-              </RedeemButton>
+                  <span>Redeem</span>
+                  <Typography
+                    tag="small"
+                    $fontSize="0.75rem"
+                    lineHeight="1.125rem"
+                    fontWeight="600"
+                    margin="0"
+                  >
+                    Step 2/2
+                  </Typography>
+                </RedeemButton>
+              </>
             )}
             {!isToRedeem && (
               <Button theme="outline" disabled>
@@ -1114,24 +1070,76 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 <Check size={24} />
               </Button>
             )}
+
+            {isToRedeem && !isRedeemDisabled && (
+              <Typography $fontSize="0.8rem" style={{ display: "block" }}>
+                By proceeding to Redeem, I agree to the{" "}
+                <span
+                  style={{
+                    color: colors.blue,
+                    fontSize: "inherit",
+                    cursor: "pointer"
+                  }}
+                  onClick={() => {
+                    showModal("BUYER_SELLER_AGREEMENT", {
+                      offerData: offer
+                    });
+                  }}
+                >
+                  Buyer & Seller Agreement
+                </span>
+                .
+              </Typography>
+            )}
           </WidgetUpperGrid>
+          {isOffer && (
+            <Typography
+              $fontSize="0.8rem"
+              style={{ display: "block", paddingBottom: "0.5rem" }}
+            >
+              By proceeding to Commit, I agree to the{" "}
+              <span
+                style={{
+                  color: colors.blue,
+                  fontSize: "inherit",
+                  cursor: "pointer"
+                }}
+                onClick={() => {
+                  showModal("REDEEMABLE_NFT_TERMS", {
+                    offerData: offer
+                  });
+                }}
+              >
+                rNFT Terms
+              </span>
+              .
+            </Typography>
+          )}
         </div>
-        <Grid justifyContent="center">
-          {isBeforeRedeem ? (
-            <CommitAndRedeemButton
-              tag="p"
-              onClick={handleRedeemModal}
-              style={{ fontSize: "0.75rem", marginTop: 0 }}
-            >
-              {isOffer ? "What is commit and redeem?" : "What is redeem?"}
-            </CommitAndRedeemButton>
-          ) : (
-            <CommitAndRedeemButton
-              tag="p"
-              style={{ fontSize: "0.75rem", marginTop: 0 }}
-            >
-              &nbsp;
-            </CommitAndRedeemButton>
+        {isBeforeRedeem && <Break />}
+        <Grid
+          justifyContent="center"
+          alignItems="center"
+          marginTop="12px"
+          marginBottom="12px"
+        >
+          {isBeforeRedeem && (
+            <>
+              <div
+                style={{
+                  cursor: "pointer",
+                  display: "flex",
+                  gap: "0.1rem",
+                  alignItems: "center"
+                }}
+                onClick={handleRedeemModal}
+              >
+                <CommitAndRedeemButton>
+                  {isOffer ? "What is commit and redeem?" : "What is redeem?"}
+                </CommitAndRedeemButton>
+                <Info color={colors.secondary} size={15} />
+              </div>
+            </>
           )}
         </Grid>
         <Break />
@@ -1145,7 +1153,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             isConditionMet={isConditionMet}
           />
         )}
-        <div style={{ paddingTop: "2rem" }}>
+        <div style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
           <DetailTable
             align
             noBorder
@@ -1189,6 +1197,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       id="boson-redeem-cancel"
                       data-exchange-id={exchange?.id}
                       data-config-id={config.envConfig.configId}
+                      data-account={address}
                       data-bypass-mode="CANCEL"
                     >
                       Cancel

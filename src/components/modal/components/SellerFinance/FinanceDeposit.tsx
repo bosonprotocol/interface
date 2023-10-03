@@ -5,11 +5,11 @@ import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
 import { extractUserFriendlyError } from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
+import { getNumberWithoutDecimals } from "lib/utils/number";
 import { useState } from "react";
 
 import { useSigner } from "../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
-import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";

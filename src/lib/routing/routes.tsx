@@ -14,7 +14,6 @@ export const BosonRoutes = addViewModePrefixToPaths(
     Sell: "/sell",
     Exchange: `/exchange/:${UrlParameters.exchangeId}`,
     YourAccount: `/account`,
-    Account: `/account/:${UrlParameters.accountId}`,
     CreateStorefront: "/custom-store",
     ManageStorefronts: "/custom-store/manage",
     PrivacyPolicy: "/privacy-policy",
@@ -24,7 +23,8 @@ export const BosonRoutes = addViewModePrefixToPaths(
     ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
     BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
     SellerPage: `/seller/:${UrlParameters.sellerId}`,
-    License: `/license/:${UrlParameters.uuid}`,
+    LicenseLegacy: `/license/:${UrlParameters.uuid}`,
+    License: `/license/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`,
     ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
     DRAdmin: "/dr-admin",
     DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,
@@ -63,7 +63,7 @@ export const ProductRoutes = addViewModePrefixToPaths(
   ViewMode.DAPP,
   {
     Root: "/products",
-    ProductDetail: `/products/:${UrlParameters.uuid}`
+    ProductDetail: `/products/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`
   } as const
 );
 
@@ -73,7 +73,8 @@ export const OffersRoutes = addViewModePrefixToPaths(
   {
     Root: "/offers",
     OfferDetail: `/offers/:${UrlParameters.offerId}`,
-    OfferUuid: `/offer-uuid/:${UrlParameters.uuid}`
+    OfferUuidLegacy: `/offer-uuid/:${UrlParameters.uuid}`, // keep old route for existing offers
+    OfferUuid: `/offer-uuid/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`
   } as const
 );
 

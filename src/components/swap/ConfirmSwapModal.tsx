@@ -1,6 +1,5 @@
 import { Currency, Percent } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
-import { CloseIcon } from "components/icons";
 import Modal from "components/modal/Modal";
 import { AutoColumn } from "components/ui/column";
 import Grid from "components/ui/Grid";
@@ -46,12 +45,10 @@ const BottomSection = styled(AutoColumn)`
 function ConfirmationModalContent({
   title,
   bottomContent,
-  onDismiss,
   topContent,
   headerContent
 }: {
   title: ReactNode;
-  onDismiss: () => void;
   topContent: () => ReactNode;
   bottomContent?: () => ReactNode;
   headerContent?: () => ReactNode;
@@ -64,10 +61,6 @@ function ConfirmationModalContent({
           <Grid justifyContent="center" marginLeft="24px">
             <Typography>{title}</Typography>
           </Grid>
-          <CloseIcon
-            onClick={onDismiss}
-            data-testid="confirmation-close-icon"
-          />
         </Grid>
         {topContent()}
       </AutoColumn>
@@ -500,8 +493,11 @@ export default function ConfirmSwapModal({
   return (
     <Modal
       hideModal={onModalDismiss}
-      style={{ maxHeight: 90 }}
       modalType={"CONFIRM_SWAP"}
+      maxWidths={{
+        m: "35rem"
+      }}
+      size="auto"
     >
       {approvalError || swapFailed ? (
         <ErrorModalContent
@@ -515,7 +511,6 @@ export default function ConfirmSwapModal({
               <>Review swap</>
             ) : undefined
           }
-          onDismiss={onModalDismiss}
           topContent={modalHeader}
           bottomContent={modalBottom}
           headerContent={l2Badge}
