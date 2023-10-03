@@ -107,7 +107,7 @@ interface Props {
 }
 const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
-  const { nextIsDisabled, values, setFieldValue } = useForm();
+  const { nextIsDisabled, values } = useForm();
   const [isVideoLoading, setVideoLoading] = useState<boolean>();
   const hasVariants =
     values.productType.productVariant === ProductTypeValues.differentVariants;
