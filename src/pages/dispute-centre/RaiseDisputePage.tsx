@@ -329,7 +329,11 @@ function RaiseDisputePage() {
                   } else {
                     Sentry.captureException(error);
                     showModal("TRANSACTION_FAILED", {
-                      errorMessage: "Something went wrong"
+                      errorMessage: "Something went wrong",
+                      detailedErrorMessage:
+                        (error as Error)?.message === "message too big"
+                          ? "Please use a smaller image or fewer images"
+                          : "Something went wrong"
                     });
                   }
 
