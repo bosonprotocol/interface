@@ -49,7 +49,7 @@ export const usePreviewOffers = ({
   const voucherRedeemableUntilDateInMS = commonTermsOfSale.redemptionPeriod[1]
     .toDate()
     .getTime();
-  const exchangeDate = Date.now().toString();
+
   const buildOffer = useCallback(
     ({
       quantityAvailable,
@@ -93,6 +93,7 @@ export const usePreviewOffers = ({
           price,
           decimals
         });
+      const exchangeDate = Date.now().toString();
       const offer = {
         price: priceBN.toString(),
         sellerDeposit,
@@ -164,7 +165,6 @@ export const usePreviewOffers = ({
       disputeResolver,
       disputeResolverId,
       escalationResponsePeriod,
-      exchangeDate,
       overrides.decimals,
       seller,
       tokenGating,

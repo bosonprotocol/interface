@@ -79,7 +79,6 @@ export function useInitialValues() {
     enabled: !!fromProductUuid && !!sellerId
   });
 
-  console.log("product", product); // TODO: remove
   const OPTIONS_CURRENCIES = useMemo(
     () => getOptionsCurrencies(config.envConfig),
     [config.envConfig]
@@ -126,7 +125,7 @@ export function useInitialValues() {
       cloneInitialValues.productType.tokenGatedOffer = "true";
     }
   }
-  console.log("valuesFromExistingProduct", valuesFromExistingProduct);
+
   return {
     shouldDisplayModal: cloneInitialValues !== null && !fromProductUuid,
     base: cloneBaseValues,

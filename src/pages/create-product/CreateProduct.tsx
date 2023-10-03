@@ -146,7 +146,7 @@ function CreateProduct() {
   if (!!seller && !isSellerCurated) {
     return <NotFound />;
   }
-  console.log("initial", initial); // TODO: remove
+
   return !nextStepResult && createdOffersIds.length ? (
     <CongratulationsPage
       reset={() => setCreatedOffersIds([])}
