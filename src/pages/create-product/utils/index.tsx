@@ -1,15 +1,12 @@
-import { DappConfig } from "lib/config";
-import React from "react";
-
-import ConfirmProductDetails from "../../../components/product/ConfirmProductDetails";
-import CoreTermsOfSale from "../../../components/product/coreTermsOfSale/CoreTermsOfSale";
-import ProductImages from "../../../components/product/ProductImages";
-import ProductInformation from "../../../components/product/ProductInformation";
-import ProductType from "../../../components/product/ProductType";
-import ProductVariants from "../../../components/product/ProductVariants";
-import ShippingInfo from "../../../components/product/ShippingInfo";
-import TermsOfExchange from "../../../components/product/TermsOfExchange";
-import TokenGating from "../../../components/product/tokenGating/TokenGating";
+import ConfirmProductDetails from "components/product/confirmProductDetailsPage/ConfirmProductDetails";
+import CoreTermsOfSale from "components/product/coreTermsOfSale/CoreTermsOfSale";
+import ProductImages from "components/product/ProductImages";
+import ProductInformation from "components/product/ProductInformation";
+import ProductType from "components/product/ProductType";
+import ProductVariants from "components/product/ProductVariants";
+import ShippingInfo from "components/product/ShippingInfo";
+import TermsOfExchange from "components/product/TermsOfExchange";
+import TokenGating from "components/product/tokenGating/TokenGating";
 import {
   CoreTermsOfSaleValidationSchema,
   getCoreTermsOfSaleValidationSchema,
@@ -22,7 +19,7 @@ import {
   termsOfExchangeValidationSchema,
   tokenGatingValidationSchema,
   variantsCoreTermsOfSaleValidationSchema
-} from "../../../components/product/utils";
+} from "components/product/utils";
 import {
   coreTermsOfSaleHelp,
   productImagesHelp,
@@ -32,10 +29,12 @@ import {
   shippingInfoHelp,
   termsOfExchangeHelp,
   tokenGatingHelp
-} from "../../../components/product/utils/productHelpOptions";
-import { ScroolToID } from "../../../components/utils/Scroll";
-import { isTruthy } from "../../../lib/types/helpers";
-import { ChatInitializationStatus } from "../../../lib/utils/hooks/chat/useChatStatus";
+} from "components/product/utils/productHelpOptions";
+import { ScrollToID } from "components/utils/Scroll";
+import { DappConfig } from "lib/config";
+import { isTruthy } from "lib/types/helpers";
+import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
+import React from "react";
 
 export const poll = async function <T>(
   fn: () => Promise<T>,
@@ -122,7 +121,7 @@ export const createProductSteps = ({
   const productType = {
     ui: (
       <>
-        <ScroolToID id="multisteps_wrapper" />
+        <ScrollToID id="multisteps_wrapper" />
         <ProductType
           showCreateProductDraftModal={showCreateProductDraftModal}
           showInvalidRoleModal={showInvalidRoleModal}
@@ -136,7 +135,7 @@ export const createProductSteps = ({
   const productInformation = {
     ui: (
       <>
-        <ScroolToID id="multisteps_wrapper" />
+        <ScrollToID id="multisteps_wrapper" />
         <ProductInformation />
       </>
     ),
@@ -146,7 +145,7 @@ export const createProductSteps = ({
   const productImages = {
     ui: (
       <>
-        <ScroolToID id="multisteps_wrapper" />
+        <ScrollToID id="multisteps_wrapper" />
         <ProductImages onChangeOneSetOfImages={onChangeOneSetOfImages} />
       </>
     ),
@@ -158,7 +157,7 @@ export const createProductSteps = ({
   const coreTermsOfSale = {
     ui: (
       <>
-        <ScroolToID id="multisteps_wrapper" />
+        <ScrollToID id="multisteps_wrapper" />
         <CoreTermsOfSale isMultiVariant={isMultiVariant} />
       </>
     ),
@@ -170,7 +169,7 @@ export const createProductSteps = ({
   const tokenGating = {
     ui: (
       <>
-        <ScroolToID id="multisteps_wrapper" />
+        <ScrollToID id="multisteps_wrapper" />
         <TokenGating />
       </>
     ),
@@ -180,7 +179,7 @@ export const createProductSteps = ({
   const termsOfExchange = {
     ui: (
       <>
-        <ScroolToID id="multisteps_wrapper" />
+        <ScrollToID id="multisteps_wrapper" />
         <TermsOfExchange />
       </>
     ),
@@ -190,7 +189,7 @@ export const createProductSteps = ({
   const shippingInfo = {
     ui: (
       <>
-        <ScroolToID id="multisteps_wrapper" />
+        <ScrollToID id="multisteps_wrapper" />
         <ShippingInfo />
       </>
     ),
@@ -200,7 +199,7 @@ export const createProductSteps = ({
   const preview = {
     ui: (
       <>
-        <ScroolToID id="multisteps_wrapper" />
+        <ScrollToID id="multisteps_wrapper" />
         <ConfirmProductDetails
           togglePreview={setIsPreviewVisible}
           chatInitializationStatus={chatInitializationStatus}
@@ -232,7 +231,7 @@ export const createProductSteps = ({
     const productVariants = {
       ui: (
         <>
-          <ScroolToID id="multisteps_wrapper" />
+          <ScrollToID id="multisteps_wrapper" />
           <ProductVariants />
         </>
       ),

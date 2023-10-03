@@ -1,26 +1,31 @@
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import Collapse from "components/collapse/Collapse";
+import { FormField } from "components/form";
+import { Spinner } from "components/loading/Spinner";
+import InitializeChat from "components/modal/components/Chat/components/InitializeChat";
+import differentVariantsProduct from "components/product/img/different-variants-product.png";
+import oneItemTypeProductSmall from "components/product/img/one-item-product-small.png";
+import physicalProductSmall from "components/product/img/physical-product-small.png";
+import { optionUnitValues, ProductTypeValues } from "components/product/utils";
+import Tooltip from "components/tooltip/Tooltip";
+import BosonButton from "components/ui/BosonButton";
+import Grid from "components/ui/Grid";
+import Image from "components/ui/Image";
+import Typography from "components/ui/Typography";
+import Video from "components/ui/Video";
 import dayjs from "dayjs";
+import { CONFIG } from "lib/config";
+import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
+import { useForm } from "lib/utils/hooks/useForm";
 import map from "lodash/map";
+import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
 import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTermsAndSellerAgreement";
 import { Warning } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
 
-import Collapse from "../../components/collapse/Collapse";
-import { Spinner } from "../../components/loading/Spinner";
-import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
-import { CONFIG } from "../../lib/config";
-import { ChatInitializationStatus } from "../../lib/utils/hooks/chat/useChatStatus";
-import { useForm } from "../../lib/utils/hooks/useForm";
-import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
-import { FormField } from "../form";
-import Tooltip from "../tooltip/Tooltip";
-import BosonButton from "../ui/BosonButton";
-import Grid from "../ui/Grid";
-import Image from "../ui/Image";
-import Typography from "../ui/Typography";
-import Video from "../ui/Video";
+import { SectionTitle } from "../Product.styles";
 import {
   ChatDotsIcon,
   CheckIcon,
@@ -45,11 +50,6 @@ import {
   TagsWrapper,
   TermsOfSaleContent
 } from "./ConfirmProductDetails.styles";
-import differentVariantsProduct from "./img/different-variants-product.png";
-import oneItemTypeProductSmall from "./img/one-item-product-small.png";
-import physicalProductSmall from "./img/physical-product-small.png";
-import { SectionTitle } from "./Product.styles";
-import { optionUnitValues, ProductTypeValues } from "./utils";
 
 const VariantsTable = styled.table`
   th:not(:first-child),
