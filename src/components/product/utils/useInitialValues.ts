@@ -75,7 +75,7 @@ export function useInitialValues() {
     []
   );
 
-  const { data: product } = useProductByUuid(sellerId, fromProductUuid, {
+  const { data: product } = useProductByUuid("110", fromProductUuid, {
     enabled: !!fromProductUuid && !!sellerId
   });
 
@@ -92,9 +92,11 @@ export function useInitialValues() {
       if (!conditionTokenAddress) {
         return;
       }
-      const { decimals } = await core.getExchangeTokenInfo(
-        conditionTokenAddress
-      );
+      const tokenInfo = await core.getExchangeTokenInfo(conditionTokenAddress);
+      if (!tokenInfo) {
+        return;
+      }
+      const { decimals } = tokenInfo;
       return decimals;
     }
   );
@@ -108,7 +110,7 @@ export function useInitialValues() {
         OPTIONS_CURRENCIES
       );
     }, [product, cloneBaseValues, OPTIONS_CURRENCIES, tokenDecimals]);
-
+  console.log({ product, valuesFromExistingProduct });
   const cloneInitialValues = useMemo(
     () =>
       initialValues
@@ -308,67 +310,71 @@ function loadExistingProduct<T extends CreateProductForm>(
             .filter(isTruthy),
           (string) => string
         ) ?? [],
-      variants: variants.map(({ offer, variations }) => {
-        const colorVariation = variations.find(
-          (variation) => variation.type.toLowerCase() === "color"
-        );
-        const sizeVariation = variations.find(
-          (variation) => variation.type.toLowerCase() === "size"
-        );
-        return {
-          name: getVariantName({
+      variants: variants
+        .filter(({ variations }) => !!variations.length)
+        .map(({ offer, variations }) => {
+          const colorVariation = variations.find(
+            (variation) => variation.type.toLowerCase() === "color"
+          );
+          const sizeVariation = variations.find(
+            (variation) => variation.type.toLowerCase() === "size"
+          );
+          return {
+            name: getVariantName({
+              color: colorVariation?.option,
+              size: sizeVariation?.option
+            }),
+            price: utils.formatUnits(offer.price, offer.exchangeToken.decimals),
+            currency: OPTIONS_CURRENCIES.find(
+              (currency) => currency.value === offer.exchangeToken.symbol
+            ),
+            quantity: offer.quantityInitial,
             color: colorVariation?.option,
             size: sizeVariation?.option
-          }),
-          price: utils.formatUnits(offer.price, offer.exchangeToken.decimals),
-          currency: OPTIONS_CURRENCIES.find(
-            (currency) => currency.value === offer.exchangeToken.symbol
-          ),
-          quantity: offer.quantityInitial,
-          color: colorVariation?.option,
-          size: sizeVariation?.option
-        };
-      })
-    },
-    productVariantsImages: hasVariantSpecificImages
-      ? variants.map((variant) => {
-          const variantImages =
-            variant.offer.metadata &&
-            "productOverrides" in variant.offer.metadata &&
-            variant.offer.metadata.productOverrides?.visuals_images;
-          const buildGetImg = () => {
-            let index = 0;
-            return () => {
-              if (!variantImages) {
-                return [];
-              }
-              const image = variantImages[index++];
-              if (!image) {
-                return [];
-              }
-              return [
-                {
-                  src: image.url,
-                  type: SUPPORTED_FILE_FORMATS[0]
-                }
-              ];
-            };
-          };
-          const getImg = buildGetImg();
-          return {
-            productAnimation,
-            productImages: {
-              thumbnail: getImg(),
-              secondary: getImg(),
-              everyAngle: getImg(),
-              details: getImg(),
-              inUse: getImg(),
-              styledScene: getImg(),
-              sizeAndScale: getImg(),
-              more: getImg()
-            }
           };
         })
+    },
+    productVariantsImages: hasVariantSpecificImages
+      ? variants
+          .filter(({ variations }) => !!variations.length)
+          .map((variant) => {
+            const variantImages =
+              variant.offer.metadata &&
+              "productOverrides" in variant.offer.metadata &&
+              variant.offer.metadata.productOverrides?.visuals_images;
+            const buildGetImg = () => {
+              let index = 0;
+              return () => {
+                if (!variantImages) {
+                  return [];
+                }
+                const image = variantImages[index++];
+                if (!image) {
+                  return [];
+                }
+                return [
+                  {
+                    src: image.url,
+                    type: SUPPORTED_FILE_FORMATS[0]
+                  }
+                ];
+              };
+            };
+            const getImg = buildGetImg();
+            return {
+              productAnimation,
+              productImages: {
+                thumbnail: getImg(),
+                secondary: getImg(),
+                everyAngle: getImg(),
+                details: getImg(),
+                inUse: getImg(),
+                styledScene: getImg(),
+                sizeAndScale: getImg(),
+                more: getImg()
+              }
+            };
+          })
       : cloneBaseValues.productVariantsImages ?? [],
     imagesSpecificOrAll:
       IMAGE_SPECIFIC_OR_ALL_OPTIONS.find((option) =>
