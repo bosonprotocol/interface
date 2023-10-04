@@ -172,11 +172,10 @@ const HeaderContainer = styled(Layout)<{
 `;
 
 const HeaderItems = styled.nav<{
-  fluidHeader?: boolean;
   $navigationBarPosition: string;
 }>`
   gap: 1rem;
-  ${({ $navigationBarPosition, fluidHeader }) => {
+  ${({ $navigationBarPosition }) => {
     if (["left", "right"].includes($navigationBarPosition)) {
       return css`
         display: flex;
@@ -191,7 +190,6 @@ const HeaderItems = styled.nav<{
       align-items: center;
       justify-content: end;
       width: 100%;
-      margin-left: ${fluidHeader ? "2.3rem" : "0"};
     `;
   }}
 `;
@@ -356,10 +354,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   />
                 )}
               </Grid>
-              <HeaderItems
-                fluidHeader={fluidHeader}
-                $navigationBarPosition={navigationBarPosition}
-              >
+              <HeaderItems $navigationBarPosition={navigationBarPosition}>
                 {burgerMenuBreakpoint && (
                   <>
                     <CTA />
