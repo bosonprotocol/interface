@@ -75,7 +75,7 @@ export function useInitialValues() {
     []
   );
 
-  const { data: product } = useProductByUuid("26", fromProductUuid, {
+  const { data: product } = useProductByUuid(sellerId, fromProductUuid, {
     enabled: !!fromProductUuid && !!sellerId
   });
 
