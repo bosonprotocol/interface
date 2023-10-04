@@ -1,5 +1,4 @@
 import { ChainId } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { RPC_PROVIDERS } from "lib/constants/providers";
 import useIsWindowVisible from "lib/utils/hooks/useIsWindowVisible";
 import {
@@ -11,6 +10,8 @@ import {
   useMemo,
   useState
 } from "react";
+
+import { useChainId, useProvider } from "./connection/connection";
 
 const MISSING_PROVIDER = Symbol();
 const BlockNumberContext = createContext<
@@ -42,7 +43,9 @@ export function useMainnetBlockNumber(): number | undefined {
 }
 
 export function BlockNumberProvider({ children }: { children: ReactNode }) {
-  const { chainId: activeChainId, provider } = useWeb3React();
+  const activeChainId = useChainId();
+  const provider = useProvider();
+
   const [{ chainId, block, mainnetBlock }, setChainBlock] = useState<{
     chainId?: number;
     block?: number;

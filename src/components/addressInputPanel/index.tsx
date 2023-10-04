@@ -1,11 +1,11 @@
 // eslint-disable-next-line no-restricted-imports
-import { useWeb3React } from "@web3-react/core";
 import { flexColumnNoWrap } from "components/header/styles";
 import { AutoColumn } from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { ExplorerDataType, getExplorerLink } from "lib/utils/getExplorerLink";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import useENS from "lib/utils/hooks/useENS";
 import { ChangeEvent, ReactNode, useCallback } from "react";
 import styled from "styled-components";
@@ -89,7 +89,7 @@ export default function AddressInputPanel({
   // triggers whenever the typed value changes
   onChange: (value: string) => void;
 }) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
 
   const { address, loading, name } = useENS(value);
 

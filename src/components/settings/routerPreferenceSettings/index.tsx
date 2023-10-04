@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import { Divider } from "components/icons";
 import UniswapXBrandMark from "components/logo/UniswapXBrandMark";
 import Toggle from "components/toggle";
@@ -7,6 +6,7 @@ import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { isUniswapXSupportedChain } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { useAppDispatch } from "state/hooks";
 import { RouterPreference } from "state/routing/types";
 import { useRouterPreference } from "state/user/hooks";
@@ -23,7 +23,7 @@ const InlineLink = styled(Typography)`
 `;
 
 export default function RouterPreferenceSettings() {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const [routerPreference, setRouterPreference] = useRouterPreference();
   const uniswapXEnabled = chainId && isUniswapXSupportedChain(chainId);
   const dispatch = useAppDispatch();

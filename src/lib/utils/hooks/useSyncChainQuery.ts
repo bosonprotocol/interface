@@ -8,7 +8,7 @@ import { useSearchParams } from "react-router-dom";
 
 import { isSupportedChain } from "../../constants/chains";
 import { getConfigsByChainId } from "../config/getConfigsByChainId";
-import { useAccount } from "./connection/connection";
+import { useAccount, useChainId } from "./connection/connection";
 import { useDisconnect } from "./useDisconnect";
 import useParsedQueryString from "./useParsedQueryString";
 import useSelectChain from "./useSelectChain";
@@ -21,7 +21,8 @@ function getParsedConfigId(parsedQs?: ParsedQs) {
 }
 
 export default function useSyncChainQuery() {
-  const { chainId, isActive } = useWeb3React();
+  const { isActive } = useWeb3React();
+  const chainId = useChainId();
   const { account } = useAccount();
   const { config } = useConfigContext();
   const _disconnect = useDisconnect();

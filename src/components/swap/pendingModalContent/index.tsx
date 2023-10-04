@@ -1,11 +1,11 @@
 import { ChainId, Currency } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import Column, { ColumnCenter } from "components/ui/column";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
 import { getExplorerLink } from "lib/utils/getExplorerLink";
 import { ExplorerDataType } from "lib/utils/getExplorerLink";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { UniswapXOrderStatus } from "lib/utils/hooks/orders/types";
 import { SwapResult } from "lib/utils/hooks/useSwapCallback";
 import { useUnmountingAnimation } from "lib/utils/hooks/useUnmountingAnimation";
@@ -293,8 +293,7 @@ export function PendingModalContent({
   tokenApprovalPending = false,
   revocationPending = false
 }: PendingModalContentProps) {
-  const { chainId } = useWeb3React();
-
+  const chainId = useChainId();
   const swapStatus = useSwapTransactionStatus(swapResult);
   const order = useOrder(
     swapResult?.type === TradeFillType.UniswapX

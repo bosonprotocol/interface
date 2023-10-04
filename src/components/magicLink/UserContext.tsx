@@ -1,5 +1,5 @@
+import { useMagic } from "lib/utils/hooks/magic";
 import { getMagicLogout } from "lib/utils/magicLink/logout";
-import { useMagic } from "lib/utils/magicLink/magic";
 import { getProvider } from "lib/utils/magicLink/provider";
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 

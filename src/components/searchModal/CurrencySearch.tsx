@@ -1,5 +1,4 @@
 import { Currency, Token } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { useCachedPortfolioBalancesQuery } from "components/header/accountDrawer/PrefetchBalancesWrapper";
 import Column from "components/ui/column";
 import Grid from "components/ui/Grid";
@@ -7,7 +6,7 @@ import Typography from "components/ui/Typography";
 import { supportedChainIdFromGQLChain } from "graphql/data/util";
 import { UserAddedToken } from "lib/types/tokens";
 import { isAddress } from "lib/utils/address";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useAccount, useChainId } from "lib/utils/hooks/connection/connection";
 import {
   useDefaultActiveTokens,
   useIsUserAddedToken,
@@ -75,7 +74,7 @@ export function CurrencySearch({
   isOpen,
   onlyShowCurrenciesWithBalance
 }: CurrencySearchProps) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const { account } = useAccount();
 
   const [tokenLoaderTimerElapsed, setTokenLoaderTimerElapsed] = useState(false);

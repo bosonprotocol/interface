@@ -1,6 +1,5 @@
 import { Interface } from "@ethersproject/abi";
 import { Currency, CurrencyAmount, Token } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import ERC20ABI from "abis/erc20.json";
 import { Erc20Interface } from "abis/types/Erc20";
 import JSBI from "jsbi";
@@ -13,6 +12,7 @@ import { useMemo } from "react";
 
 import { nativeOnChain } from "../../constants/tokens";
 import { isAddress } from "../address";
+import { useChainId } from "./connection/connection";
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -22,7 +22,7 @@ export function useNativeCurrencyBalances(
 ): {
   [address: string]: CurrencyAmount<Currency> | undefined;
 } {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const multicallContract = useInterfaceMulticall();
 
   const validAddressInputs: [string][] = useMemo(
@@ -70,7 +70,7 @@ export function useTokenBalancesWithLoadingIndicator(
   address?: string,
   tokens?: (Token | undefined)[]
 ): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
-  const { chainId } = useWeb3React(); // we cannot fetch balances cross-chain
+  const chainId = useChainId(); // we cannot fetch balances cross-chain
   const validatedTokens: Token[] = useMemo(
     () =>
       tokens?.filter(
@@ -149,7 +149,7 @@ export function useCurrencyBalances(
     [currencies]
   );
 
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const tokenBalances = useTokenBalances(account, tokens);
   const containsETH: boolean = useMemo(
     () => currencies?.some((currency) => currency?.isNative) ?? false,

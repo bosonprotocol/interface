@@ -1,5 +1,4 @@
 import { Currency } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { WRAPPED_NATIVE_CURRENCY } from "lib/constants/tokens";
 import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
 import tryParseCurrencyAmount from "lib/utils/tryParseCurrencyAmount";
@@ -8,7 +7,7 @@ import { useCurrencyBalance } from "state/connection/hooks";
 import { useTransactionAdder } from "state/transactions/hooks";
 import { TransactionType } from "state/transactions/types";
 
-import { useAccount } from "./connection/connection";
+import { useAccount, useChainId } from "./connection/connection";
 import { useWETHContract } from "./useContract";
 
 export enum WrapType {
@@ -32,7 +31,7 @@ export function WrapErrorText({
 }: {
   wrapInputError: WrapInputError;
 }) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const native = useNativeCurrency(chainId);
   const wrapped = native?.wrapped;
 
@@ -66,7 +65,7 @@ export default function useWrapCallback(
   execute?: () => Promise<string | undefined>;
   inputError?: WrapInputError;
 } {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const { account } = useAccount();
   const wethContract = useWETHContract();
   const balance = useCurrencyBalance(

@@ -1,7 +1,7 @@
-import { useWeb3React } from "@web3-react/core";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { darken, lighten } from "polished";
 import styled, { css } from "styled-components";
@@ -107,7 +107,7 @@ interface OptionProps {
 export default function Option({ connection }: OptionProps) {
   const { activationState, tryActivation } = useActivationState();
   const toggleAccountDrawer = useToggleAccountDrawer();
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const activate = () =>
     tryActivation(connection, toggleAccountDrawer, chainId);
 

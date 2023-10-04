@@ -1,7 +1,6 @@
 import { arrayify } from "@ethersproject/bytes";
 import { parseBytes32String } from "@ethersproject/strings";
 import { ChainId, Currency, Token } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { asSupportedChain, isSupportedChain } from "lib/constants/chains";
 import { NEVER_RELOAD, useSingleCallResult } from "lib/utils/hooks/multicall";
@@ -15,6 +14,7 @@ import { useMemo } from "react";
 import { DEFAULT_ERC20_DECIMALS } from "../../constants/tokens";
 import { TOKEN_SHORTHANDS } from "../../constants/tokens";
 import { isAddress } from "../address";
+import { useChainId } from "./connection/connection";
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/;
@@ -43,7 +43,7 @@ const UNKNOWN_TOKEN_NAME = "Unknown Token";
 function useTokenFromActiveNetwork(
   tokenAddress: string | undefined
 ): Token | null | undefined {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
 
   const formattedAddress = isAddress(tokenAddress);
   const tokenContract = useTokenContract(

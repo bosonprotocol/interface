@@ -8,7 +8,7 @@ import { CHAIN_IDS_TO_FRIENDLY_NAMES } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { getConfigsByChainId } from "lib/utils/config/getConfigsByChainId";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useAccount, useChainId } from "lib/utils/hooks/connection/connection";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
@@ -106,7 +106,8 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   );
   const { account } = useLast(useAccount(), ignoreWhileSwitchingChain);
 
-  const { chainId, isActive } = useWeb3React();
+  const { isActive } = useWeb3React();
+  const chainId = useChainId();
   const accountRef = useRef(account);
   const chainIdRef = useRef(chainId);
   useEffect(() => {

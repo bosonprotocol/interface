@@ -1,5 +1,5 @@
 import Button from "components/ui/Button";
-import { useMagic } from "lib/utils/magicLink/magic";
+import { useMagic } from "lib/utils/hooks/magic";
 import { useState } from "react";
 
 import { useUser } from "./UserContext";

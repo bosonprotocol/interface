@@ -1,7 +1,7 @@
 import { ChainId } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import Grid from "components/ui/Grid";
 import { getChainInfo } from "lib/constants/chainInfo";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { ArrowUpRight } from "phosphor-react";
 import styled from "styled-components";
 
@@ -172,7 +172,7 @@ function shouldShowAlert(
 }
 
 export function NetworkAlert() {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
 
   if (!shouldShowAlert(chainId)) {
     return null;

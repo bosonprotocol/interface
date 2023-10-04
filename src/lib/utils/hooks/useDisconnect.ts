@@ -5,7 +5,7 @@ import { useAppDispatch } from "state/hooks";
 import { updateSelectedWallet } from "state/user/reducer";
 
 import { getMagicLogout } from "../magicLink/logout";
-import { useMagic } from "../magicLink/magic";
+import { useMagic } from "./magic";
 
 export const useDisconnect = () => {
   const { connector } = useWeb3React();

@@ -65,12 +65,13 @@ const MiniWalletIcon = ({
   connection: Connection;
   side: "left" | "right";
 }) => {
+  const icon = connection.getIcon?.(false);
+  if (!icon) {
+    return null;
+  }
   return (
     <MiniIconContainer side={side}>
-      <MiniImg
-        src={connection.getIcon?.(false)}
-        alt={`${connection.getName()} icon`}
-      />
+      <MiniImg src={icon} alt={`${connection.getName()} icon`} />
     </MiniIconContainer>
   );
 };

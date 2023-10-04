@@ -6,7 +6,6 @@ import {
   Token,
   TradeType
 } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import {
   BRIDGED_USDC_ARBITRUM,
   CUSD_CELO,
@@ -20,6 +19,8 @@ import tryParseCurrencyAmount from "lib/utils/tryParseCurrencyAmount";
 import { useMemo, useRef } from "react";
 import { INTERNAL_ROUTER_PREFERENCE_PRICE } from "state/routing/types";
 import { useRoutingAPITrade } from "state/routing/useRoutingAPITrade";
+
+import { useChainId } from "./connection/connection";
 
 // Stablecoin amounts used when calculating spot price for a given currency.
 // The amount is large enough to filter low liquidity pairs.
@@ -106,7 +107,7 @@ export function useStablecoinValue(
 export function useStablecoinAmountFromFiatValue(
   fiatValue: number | null | undefined
 ) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const stablecoin = chainId
     ? STABLECOIN_AMOUNT_OUT[chainId]?.currency
     : undefined;

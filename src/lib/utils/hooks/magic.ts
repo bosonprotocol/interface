@@ -3,6 +3,7 @@ import { CONFIG } from "lib/config";
 import { RPC_URLS } from "lib/constants/networks";
 import { Magic } from "magic-sdk";
 import { useMemo } from "react";
+import { useQuery } from "react-query";
 
 export const useMagic = (): Magic | null => {
   const { config } = useConfigContext();
@@ -18,4 +19,14 @@ export const useMagic = (): Magic | null => {
       }
     });
   }, [chainId]);
+};
+
+export const useWalletInfo = () => {
+  const magic = useMagic();
+  return useQuery(["wallet-info", !!magic], async () => {
+    if (!magic) {
+      return;
+    }
+    return await magic.wallet.getInfo();
+  });
 };

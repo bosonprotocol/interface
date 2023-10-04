@@ -1,6 +1,5 @@
 import { Currency, CurrencyAmount, Percent } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
-import { useWeb3React } from "@web3-react/core";
 import { ReactComponent as DropDown } from "assets/images/dropdown.svg";
 import PrefetchBalancesWrapper from "components/header/accountDrawer/PrefetchBalancesWrapper";
 import { flexColumnNoWrap, flexRowNoWrap } from "components/header/styles";
@@ -17,7 +16,7 @@ import { isSupportedChain } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { opacify } from "lib/styles/opacify";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useAccount, useChainId } from "lib/utils/hooks/connection/connection";
 import { Lock } from "phosphor-react";
 import { darken } from "polished";
 import { ReactNode, useCallback, useState } from "react";
@@ -258,7 +257,7 @@ export default function SwapCurrencyInputPanel({
 }: SwapCurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const { account } = useAccount();
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const selectedCurrencyBalance = useCurrencyBalance(
     account ?? undefined,
     currency ?? undefined

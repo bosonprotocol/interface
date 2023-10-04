@@ -1,10 +1,11 @@
 import { ChainId } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import multicall from "lib/state/multicall";
 import { SkipFirst } from "lib/types/tuple";
 import useBlockNumber, {
   useMainnetBlockNumber
 } from "lib/utils/hooks/useBlockNumber";
+
+import { useChainId } from "./connection/connection";
 
 export type { CallStateResult } from "@uniswap/redux-multicall"; // re-export for convenience
 export { NEVER_RELOAD } from "@uniswap/redux-multicall"; // re-export for convenience
@@ -62,7 +63,7 @@ export function useSingleContractMultipleData(
 }
 
 function useCallContext() {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const latestBlock = useBlockNumber();
   return { chainId, latestBlock };
 }

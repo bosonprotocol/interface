@@ -3,10 +3,10 @@ import { CopyButton } from "components/form/Field.styles";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import copyToClipboard from "lib/utils/copyToClipboard";
+import { useMagic } from "lib/utils/hooks/magic";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { useDisconnect } from "lib/utils/hooks/useDisconnect";
 import useENSName from "lib/utils/hooks/useENSName";
-import { useMagic } from "lib/utils/magicLink/magic";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -322,23 +322,6 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
             )}
           </HeaderButton>
         </FiatLink>
-        <button
-          type="button"
-          onClick={async () => {
-            if (!magic) {
-              return;
-            }
-            // const walletInfo = await magic.user.getInfo();
-            // const walletType = walletInfo.walletType;
-
-            // if (walletType === "magic") {
-            const result = await magic.wallet.showUI();
-            console.log("result", result);
-            // }
-          }}
-        >
-          fiat
-        </button>
         {Boolean(!fiatOnrampAvailable && fiatOnrampAvailabilityChecked) && (
           <FiatOnrampNotAvailableText marginTop="8px">
             Not available in your region

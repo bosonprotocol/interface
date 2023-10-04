@@ -1,5 +1,4 @@
 import { Percent, TradeType } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import Tooltip from "components/tooltip/Tooltip";
 import Button from "components/ui/Button";
 import Column from "components/ui/column";
@@ -14,6 +13,7 @@ import {
   formatTransactionAmount,
   priceToPreciseFloat
 } from "lib/utils/formatNumbers";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
 import { getPriceImpactWarning } from "lib/utils/prices";
 import { Warning as AlertTriangle } from "phosphor-react";
@@ -62,7 +62,7 @@ export default function SwapModalFooter({
   showAcceptChanges: boolean;
   onAcceptChanges: () => void;
 }) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const nativeCurrency = useNativeCurrency(chainId);
 
   const label = `${trade.executionPrice.baseCurrency?.symbol} `;

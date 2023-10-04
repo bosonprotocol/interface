@@ -1,10 +1,10 @@
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import {
   defaultEnvConfig,
   envConfigsFilteredByEnv,
   getDappConfig
 } from "lib/config";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { ReactNode, useEffect, useState } from "react";
 
 import { Context, useConfigContext } from "./ConfigContext";
@@ -16,7 +16,7 @@ type ConfigProviderProps = {
 function SyncCurrentConfigId({
   children
 }: Pick<ConfigProviderProps, "children">) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const { setEnvConfig } = useConfigContext();
   useEffect(() => {
     const newEnvConfig = envConfigsFilteredByEnv.find(

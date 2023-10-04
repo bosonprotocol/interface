@@ -1,5 +1,4 @@
 import { ChainId, SupportedChainsType } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
 import { useCallback } from "react";
 import { useAppDispatch } from "state/hooks";
@@ -13,6 +12,7 @@ import {
 import { getChainInfo } from "../../constants/chainInfo";
 import { isSupportedChain } from "../../constants/chains";
 import { FALLBACK_URLS, RPC_URLS } from "../../constants/networks";
+import { useChainId } from "./connection/connection";
 
 function getRpcUrl(chainId: SupportedChainsType): string {
   switch (chainId) {
@@ -29,7 +29,7 @@ function getRpcUrl(chainId: SupportedChainsType): string {
 }
 
 export function useSwitchChain(doConnect = true) {
-  const { chainId: connectedChain } = useWeb3React();
+  const connectedChain = useChainId();
 
   // if you are connected, all good
   // if you are not, then do nothing if it's from the chainselector (doConnect = false)

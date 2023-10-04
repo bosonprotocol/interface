@@ -1,5 +1,4 @@
 import { Currency, Percent } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import Modal from "components/modal/Modal";
 import { AutoColumn } from "components/ui/column";
 import Grid from "components/ui/Grid";
@@ -9,6 +8,7 @@ import { getChainInfo } from "lib/constants/chainInfo";
 import { USDT as USDT_MAINNET } from "lib/constants/tokens";
 import { isL2ChainId } from "lib/utils/chains";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
 import { Allowance, AllowanceState } from "lib/utils/hooks/usePermit2Allowance";
 import { usePrevious } from "lib/utils/hooks/usePrevious";
@@ -151,8 +151,7 @@ function useConfirmModalState({
     return steps;
   }, [allowance, trade]);
 
-  const { chainId } = useWeb3React();
-
+  const chainId = useChainId();
   const nativeCurrency = useNativeCurrency(chainId);
 
   const [wrapTxHash, setWrapTxHash] = useState<string>();
@@ -340,7 +339,7 @@ export default function ConfirmSwapModal({
   fiatValueInput: { data?: number; isLoading: boolean };
   fiatValueOutput: { data?: number; isLoading: boolean };
 }) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const doesTradeDiffer =
     originalTrade &&
     tradeMeaningfullyDiffers(trade, originalTrade, allowedSlippage);

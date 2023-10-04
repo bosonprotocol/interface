@@ -1,5 +1,4 @@
 import { ChainId, Currency, Token } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { getChainInfo } from "lib/constants/chainInfo";
 import { DEFAULT_INACTIVE_LIST_URLS } from "lib/constants/lists";
 import { isL2ChainId } from "lib/utils/chains";
@@ -14,6 +13,8 @@ import { useAllLists, useCombinedActiveList } from "state/lists/hooks";
 import { useUnsupportedTokenList } from "state/lists/hooks";
 import { WrappedTokenInfo } from "state/lists/wrappedTokenInfo";
 import { useUserAddedTokens } from "state/user/hooks";
+
+import { useChainId } from "./connection/connection";
 
 type Maybe<T> = T | null | undefined;
 
@@ -69,7 +70,7 @@ type BridgeInfo = Record<
 >;
 
 export function useUnsupportedTokens(): { [address: string]: Token } {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const listsByUrl = useAllLists();
   const unsupportedTokensMap = useUnsupportedTokenList();
   const unsupportedTokens = useTokensFromMap(unsupportedTokensMap, chainId);
@@ -122,7 +123,7 @@ export function useSearchInactiveTokenLists(
 ): WrappedTokenInfo[] {
   const lists = useAllLists();
   const inactiveUrls = DEFAULT_INACTIVE_LIST_URLS;
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const activeTokens = useDefaultActiveTokens(chainId);
   return useMemo(() => {
     if (!search || search.trim().length === 0) return [];
@@ -176,7 +177,7 @@ export function useIsUserAddedToken(
 export function useToken(
   tokenAddress?: string | null
 ): Token | null | undefined {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const tokens = useDefaultActiveTokens(chainId);
   return useTokenFromMapOrNetwork(tokens, tokenAddress);
 }
@@ -185,7 +186,7 @@ export function useCurrency(
   currencyId: Maybe<string>,
   chainId?: ChainId
 ): Currency | null | undefined {
-  const { chainId: connectedChainId } = useWeb3React();
+  const connectedChainId = useChainId();
   const tokens = useDefaultActiveTokens(chainId ?? connectedChainId);
   return useCurrencyFromMap(tokens, chainId ?? connectedChainId, currencyId);
 }

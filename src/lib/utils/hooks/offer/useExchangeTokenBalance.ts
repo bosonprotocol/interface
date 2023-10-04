@@ -1,9 +1,8 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Token } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 
-import { useAccount } from "../connection/connection";
+import { useAccount, useChainId } from "../connection/connection";
 import {
   useNativeCurrencyBalances,
   useTokenBalancesWithLoadingIndicator
@@ -15,7 +14,7 @@ export function useExchangeTokenBalance(
     "address" | "decimals"
   >
 ) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const { account: address } = useAccount();
 
   const isNativeCoin = exchangeToken.address === ethers.constants.AddressZero;
