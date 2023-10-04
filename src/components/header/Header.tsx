@@ -375,7 +375,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                 >
                   {burgerMenuBreakpoint && (
                     <Grid justifyContent="flex-start">
-                      <ChainSelector />
+                      <ChainSelector leftAlign={true} />
                       <ConnectButton />
                     </Grid>
                   )}
