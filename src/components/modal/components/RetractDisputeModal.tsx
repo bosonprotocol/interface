@@ -10,6 +10,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -26,7 +27,6 @@ import {
   StringIconTypes
 } from "../../../pages/chat/components/conversation/const";
 import { MessageDataWithInfo } from "../../../pages/chat/types";
-import { poll } from "../../../pages/create-product/utils";
 import SimpleError from "../../error/SimpleError";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import BosonButton from "../../ui/BosonButton";

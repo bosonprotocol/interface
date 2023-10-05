@@ -1,13 +1,13 @@
 import { BigNumber } from "ethers";
 import styled from "styled-components";
 
+import { PERCENTAGE_FACTOR } from "../../../../../lib/constants/percentages";
 import { colors } from "../../../../../lib/styles/colors";
 import { displayFloat } from "../../../../../lib/utils/calcPrice";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { ProposalItem } from "../../../../../pages/chat/types";
 import { useConvertedPrice } from "../../../../price/useConvertedPrice";
 import Grid from "../../../../ui/Grid";
-import { PERCENTAGE_FACTOR } from "../const";
 
 const StyledTable = styled.table`
   width: 100%;

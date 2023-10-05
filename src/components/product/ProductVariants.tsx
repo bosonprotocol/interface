@@ -5,6 +5,7 @@ import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 
 import { isTruthy } from "../../lib/types/helpers";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { Error, FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import BosonButton from "../ui/BosonButton";
@@ -19,7 +20,7 @@ import {
   getOptionsCurrencies,
   ProductVariants as ProductVariantsType
 } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
+import { getVariantName } from "./utils/getVariantName";
 
 const variantsColorsKey = "productVariants.colors";
 const variantsSizesKey = "productVariants.sizes";
@@ -125,7 +126,7 @@ export default function ProductVariants() {
   const { config } = useConfigContext();
   const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
 
-  const { nextIsDisabled } = useCreateForm();
+  const { nextIsDisabled } = useForm();
   const [fieldColors, , helpersColors] =
     useField<ProductVariantsType["productVariants"]["colors"]>(
       variantsColorsKey
@@ -202,7 +203,7 @@ export default function ProductVariants() {
           variantsToAdd.push({
             color,
             size,
-            name: `${color} / ${size}`,
+            name: getVariantName({ color, size }),
             // TODO: yup does not infer currency, price and quantity as nullable, even though they are are defined as such
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore

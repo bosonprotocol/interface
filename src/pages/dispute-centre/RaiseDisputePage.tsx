@@ -6,6 +6,7 @@ import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
 import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -14,14 +15,6 @@ import styled from "styled-components";
 
 import ExchangePreview from "../../components/modal/components/Chat/components/ExchangePreview";
 import { useModal } from "../../components/modal/useModal";
-import {
-  disputeCentreInitialValues,
-  disputeCentreValidationSchemaAdditionalInformation,
-  disputeCentreValidationSchemaGetStarted,
-  disputeCentreValidationSchemaMakeProposal,
-  disputeCentreValidationSchemaProposalSummary,
-  disputeCentreValidationSchemaTellUsMore
-} from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import Grid from "../../components/ui/Grid";
@@ -42,7 +35,14 @@ import { goToViewMode, ViewMode } from "../../lib/viewMode";
 import { useChatContext } from "../chat/ChatProvider/ChatContext";
 import { createProposal } from "../chat/utils/create";
 import { sendProposalToChat } from "../chat/utils/send";
-import { poll } from "../create-product/utils";
+import {
+  disputeCentreInitialValues,
+  disputeCentreValidationSchemaAdditionalInformation,
+  disputeCentreValidationSchemaGetStarted,
+  disputeCentreValidationSchemaMakeProposal,
+  disputeCentreValidationSchemaProposalSummary,
+  disputeCentreValidationSchemaTellUsMore
+} from "./const";
 import DisputeCentreForm from "./DisputeCentreForm";
 
 const DISPUTE_STEPS = [
@@ -329,7 +329,11 @@ function RaiseDisputePage() {
                   } else {
                     Sentry.captureException(error);
                     showModal("TRANSACTION_FAILED", {
-                      errorMessage: "Something went wrong"
+                      errorMessage: "Something went wrong",
+                      detailedErrorMessage:
+                        (error as Error)?.message === "message too big"
+                          ? "Please use a smaller image or fewer images"
+                          : "Something went wrong"
                     });
                   }
 

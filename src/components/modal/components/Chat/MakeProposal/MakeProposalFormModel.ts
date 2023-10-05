@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 
 import { validationMessage } from "../../../../../lib/const/validationMessage";
+import { MIN_VALUE } from "../../../../../lib/constants/percentages";
 import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
-import { MIN_VALUE } from "../const";
 
 export const FormModel = {
   formFields: {

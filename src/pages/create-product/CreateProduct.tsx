@@ -60,7 +60,14 @@ export default function CreateProductWrapper() {
 function CreateProduct() {
   const store = useInitialValues();
   const [searchParams] = useSearchParams();
-  const [initial, setInitial] = useState<CreateProductForm>(store.base);
+  const [initial, setInitial] = useState<CreateProductForm>(
+    store.fromProductUuid ?? store.base
+  );
+  useEffect(() => {
+    if (store.fromProductUuid) {
+      setInitial(store.fromProductUuid);
+    }
+  }, [store.fromProductUuid]);
   const [createdOffersIds, setCreatedOffersIds] = useState<string[]>([]);
   const [isDraftModalClosed, setDraftModalClosed] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();

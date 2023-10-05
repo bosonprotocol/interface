@@ -2,6 +2,7 @@ import { useField, useFormikContext } from "formik";
 import { Check } from "phosphor-react";
 import styled from "styled-components";
 
+import { PERCENTAGE_FACTOR } from "../../../../../../lib/constants/percentages";
 import { colors } from "../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import { useChatContext } from "../../../../../../pages/chat/ChatProvider/ChatContext";
@@ -14,7 +15,6 @@ import Typography from "../../../../../ui/Typography";
 import { DisputeFormModel } from "../../../DisputeModal/DisputeModalFormModel";
 import InitializeChatWithSuccess from "../../components/InitializeChatWithSuccess";
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
-import { PERCENTAGE_FACTOR } from "../../const";
 import { FormModel } from "../MakeProposalFormModel";
 import { RefundLabel } from "./MakeAProposalStep/MakeAProposalStep";
 

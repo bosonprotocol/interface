@@ -1,9 +1,9 @@
 import { Checkbox } from "components/form";
 import { useModal } from "components/modal/useModal";
-import { useCreateForm } from "components/product/utils/useCreateForm";
 import { usePreviewOffers } from "components/product/utils/usePreviewOffer";
 import Grid from "components/ui/Grid";
 import { colors } from "lib/styles/colors";
+import { useForm } from "lib/utils/hooks/useForm";
 import React from "react";
 import styled from "styled-components";
 
@@ -25,7 +25,7 @@ export const AgreeToTermsAndSellerAgreement: React.FC<
   AgreeToTermsAndSellerAgreementProps
 > = ({ isMultiVariant }) => {
   const { showModal } = useModal();
-  const { values } = useCreateForm();
+  const { values } = useForm();
 
   const previewOffers = usePreviewOffers({
     isMultiVariant

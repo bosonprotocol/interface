@@ -2,6 +2,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { wait } from "lib/utils/promises";
 import { Copy, Gear, Trash } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -23,7 +24,6 @@ import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import useUpdateSellerMetadata from "../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
-import { wait } from "../../create-product/utils";
 
 type DeleteButtonProps = {
   salesChannels: NonNullable<

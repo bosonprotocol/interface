@@ -45,8 +45,12 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  ImageSpecificOrAll,
   OPTIONS_EXCHANGE_POLICY,
-  TOKEN_TYPES
+  ProductMetadataAttributeKeys,
+  ProductTypeValues,
+  TOKEN_TYPES,
+  TypeKeys
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
@@ -114,6 +118,7 @@ type GetProductV1MetadataProps = {
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
+  redemptionPointUrl: string;
 };
 async function getProductV1Metadata({
   contactPreference,
@@ -130,7 +135,8 @@ async function getProductV1Metadata({
   visualImages,
   shippingInfo,
   termsOfExchange,
-  supportedJurisdictions
+  supportedJurisdictions,
+  redemptionPointUrl
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
   const profileImage = createYourProfile?.logo?.[0];
   const coverImage = createYourProfile?.coverPicture?.[0];
@@ -174,19 +180,21 @@ async function getProductV1Metadata({
     product: {
       uuid: uuid(),
       version: 1,
-      title: productInformation.productTitle,
-      description: productInformation.description,
-      identification_sKU: productInformation.sku,
-      identification_productId: productInformation.id,
-      identification_productIdType: productInformation.idType,
+      title: productInformation.productTitle?.toString(),
+      description: productInformation.description?.toString(),
+      identification_sKU: productInformation.sku?.toString(),
+      identification_productId: productInformation.id?.toString(),
+      identification_productIdType: productInformation.idType?.toString(),
       productionInformation_brandName:
-        productInformation.brandName || createYourProfile.name,
-      productionInformation_manufacturer: productInformation.manufacture,
+        productInformation.brandName?.toString() || createYourProfile.name,
+      productionInformation_manufacturer:
+        productInformation.manufacture?.toString(),
       productionInformation_manufacturerPartNumber:
-        productInformation.manufactureModelName,
-      productionInformation_modelNumber: productInformation.partNumber,
+        productInformation.manufactureModelName?.toString(),
+      productionInformation_modelNumber:
+        productInformation.partNumber?.toString(),
       productionInformation_materials: productInformation.materials?.split(","),
-      details_category: productInformation.category.value,
+      details_category: productInformation.category.value?.toString(),
       details_subCategory: undefined, // no entry in the UI
       details_subCategory2: undefined, // no entry in the UI
       details_offerCategory: productType.productType.toUpperCase(),
@@ -196,12 +204,12 @@ async function getProductV1Metadata({
       visuals_images: visualImages,
       visuals_videos: undefined, // no entry in the UI
       packaging_packageQuantity: undefined, // no entry in the UI
-      packaging_dimensions_length: shippingInfo.length,
-      packaging_dimensions_width: shippingInfo.width,
-      packaging_dimensions_height: shippingInfo.height,
-      packaging_dimensions_unit: shippingInfo.measurementUnit.value,
-      packaging_weight_value: shippingInfo?.weight || "",
-      packaging_weight_unit: shippingInfo?.weightUnit.value || ""
+      packaging_dimensions_length: shippingInfo.length?.toString(),
+      packaging_dimensions_width: shippingInfo.width?.toString(),
+      packaging_dimensions_height: shippingInfo.height?.toString(),
+      packaging_dimensions_unit: shippingInfo.measurementUnit.value?.toString(),
+      packaging_weight_value: shippingInfo?.weight?.toString() || "",
+      packaging_weight_unit: shippingInfo?.weightUnit.value?.toString() || ""
     },
     seller: {
       defaultVersion: 1,
@@ -225,16 +233,18 @@ async function getProductV1Metadata({
       template:
         termsOfExchange.exchangePolicy.value === "fairExchangePolicy" // if there is data in localstorage, the exchangePolicy.value might be the old 'fairExchangePolicy'
           ? OPTIONS_EXCHANGE_POLICY[0].value
-          : termsOfExchange.exchangePolicy.value,
+          : termsOfExchange.exchangePolicy.value || "",
       sellerContactMethod: CONFIG.defaultSellerContactMethod,
       disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
     },
     shipping: {
       defaultVersion: 1,
-      countryOfOrigin: shippingInfo.country.label || "",
+      countryOfOrigin:
+        /*TODO: NOTE: we might add it back in the future: shippingInfo.country?.label || */ "",
       supportedJurisdictions:
         supportedJurisdictions.length > 0 ? supportedJurisdictions : undefined,
-      returnPeriod: shippingInfo.returnPeriod.toString()
+      returnPeriod: shippingInfo.returnPeriod.toString(),
+      redemptionPoint: redemptionPointUrl
     }
   };
 }
@@ -343,10 +353,10 @@ function CreateProductInner({
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
-    initial?.productType?.productVariant || "oneItemType"
+    initial?.productType?.productVariant || ProductTypeValues.oneItemType
   );
   const isMultiVariant = useMemo(
-    () => productVariant === "differentVariants" || false,
+    () => productVariant === ProductTypeValues.differentVariants || false,
     [productVariant]
   );
   const [isTokenGated, setIsTokenGated] = useState<boolean>(false);
@@ -596,35 +606,27 @@ function CreateProductInner({
       const productAttributes: Array<{
         trait_type: string;
         value: string;
-      }> = productInformation.attributes.map(
-        ({ name, value }: { name: string; value: string }) => {
-          return {
-            trait_type: name,
-            value: value || ""
-          };
-        }
-      );
+      }> = productInformation.attributes.map(({ name, value }) => {
+        return {
+          trait_type: name || "",
+          value: value || ""
+        };
+      });
 
       const supportedJurisdictions: Array<SupportedJuridiction> =
-        shippingInfo.jurisdiction.reduce(
-          (
-            prev: Array<SupportedJuridiction>,
-            { region, time }: { region: string; time: string }
-          ) => {
-            if (region.length === 0 || time.length === 0) {
-              return prev;
-            } else {
-              return [
-                ...prev,
-                {
-                  label: region,
-                  deliveryTime: time
-                }
-              ];
-            }
-          },
-          []
-        );
+        shippingInfo.jurisdiction.reduce((prev, { region, time }) => {
+          if (region.length === 0 || time.length === 0) {
+            return prev;
+          } else {
+            return [
+              ...prev,
+              {
+                label: region,
+                deliveryTime: time
+              }
+            ];
+          }
+        }, [] as Array<SupportedJuridiction>);
 
       // filter empty attributes
       const additionalAttributes = productAttributes.filter((attribute) => {
@@ -664,29 +666,33 @@ function CreateProductInner({
         redemptionPeriod: redemptionPeriod
       });
 
-      const disputePeriodDurationInMS =
-        getDisputePeriodDurationInMS(termsOfExchange);
+      const disputePeriodDurationInMS = getDisputePeriodDurationInMS(
+        termsOfExchange.disputePeriod
+      );
       const resolutionPeriodDurationInMS = getResolutionPeriodDurationInMS();
 
       const nftAttributes = [];
-      nftAttributes.push({ trait_type: "Token Type", value: "BOSON rNFT" });
       nftAttributes.push({
-        trait_type: "Redeemable At",
+        trait_type: ProductMetadataAttributeKeys["Token Type"],
+        value: "BOSON rNFT"
+      });
+      nftAttributes.push({
+        trait_type: ProductMetadataAttributeKeys["Redeemable At"],
         value: redemptionPointUrl
       });
       nftAttributes.push({
-        trait_type: "Redeemable Until",
+        trait_type: ProductMetadataAttributeKeys["Redeemable Until"],
         value: voucherRedeemableUntilDateInMS.toString(),
         display_type: "date"
       });
       if (assistantLens?.name || assistantLens?.handle) {
         nftAttributes.push({
-          trait_type: "Seller",
+          trait_type: ProductMetadataAttributeKeys["Seller"],
           value: assistantLens?.name || assistantLens?.handle
         });
       } else {
         nftAttributes.push({
-          trait_type: "Seller",
+          trait_type: ProductMetadataAttributeKeys["Seller"],
           value: createYourProfile.name
         });
       }
@@ -712,7 +718,7 @@ function CreateProductInner({
         >[1] = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =
-          values.imagesSpecificOrAll?.value === "all";
+          values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
         if (allVariationsWithSameImages) {
           const variantVisualImages = extractVisualImages(productImages);
 
@@ -724,11 +730,11 @@ function CreateProductInner({
           const { color, size } = variant;
           const typeOptions = [
             {
-              type: "Size",
+              type: TypeKeys.Size,
               option: size || "-"
             },
             {
-              type: "Color",
+              type: TypeKeys.Color,
               option: color || "-"
             }
           ];
@@ -745,10 +751,7 @@ function CreateProductInner({
             visualImages.push(...variantVisualImages);
           } else {
             variantsForMetadataCreation.push({
-              productVariant: typeOptions,
-              productOverrides: {
-                visuals_images: visualImages
-              }
+              productVariant: typeOptions
             });
           }
         }
@@ -767,7 +770,8 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions
+          supportedJurisdictions,
+          redemptionPointUrl
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -797,7 +801,7 @@ function CreateProductInner({
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map((metadata, index) => {
             const exchangeToken = config.envConfig.defaultTokens?.find(
-              (n: Token) => n.symbol === variants[index].currency.label
+              (n) => n.symbol === variants[index].currency.label
             );
             const decimals = Number(exchangeToken?.decimals || 18);
             const price = variants[index].price;
@@ -842,7 +846,8 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions
+          supportedJurisdictions,
+          redemptionPointUrl
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);

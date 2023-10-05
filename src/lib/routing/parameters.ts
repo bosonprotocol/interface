@@ -48,3 +48,7 @@ export const swapQueryParameters = {
   exactAmount: "exactAmount",
   exactField: "exactField"
 };
+
+export const SellerHubQueryParameters = {
+  fromProductUuid: "fromProductUuid"
+};

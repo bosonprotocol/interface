@@ -1,11 +1,11 @@
 import { FieldArray } from "formik";
+import { useDisputeForm } from "pages/dispute-centre/const";
 import { ArrowRight } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { DisputeFormModel } from "../modal/components/DisputeModal/DisputeModalFormModel";
-import { useCreateForm } from "../product/utils/useCreateForm";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 
@@ -46,7 +46,7 @@ function TellUsMore({
     }[]
   >;
 }) {
-  const formValues = useCreateForm();
+  const formValues = useDisputeForm();
 
   return (
     <>

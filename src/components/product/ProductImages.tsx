@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import bytesToSize from "../../lib/utils/bytesToSize";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { Select, Upload } from "../form";
 import FormField from "../form/FormField";
 import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
@@ -10,7 +11,11 @@ import Tabs from "../tabs/Tabs";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
-import { useCreateForm } from "./utils/useCreateForm";
+import {
+  IMAGE_SPECIFIC_OR_ALL_OPTIONS,
+  ImageSpecificOrAll,
+  ProductTypeValues
+} from "./utils";
 
 const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
 
@@ -102,11 +107,13 @@ interface Props {
 }
 const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
-  const { nextIsDisabled, values } = useCreateForm();
+  const { nextIsDisabled, values } = useForm();
   const [isVideoLoading, setVideoLoading] = useState<boolean>();
-  const hasVariants = values.productType.productVariant === "differentVariants";
+  const hasVariants =
+    values.productType.productVariant === ProductTypeValues.differentVariants;
   const oneSetOfImages =
-    !hasVariants || values.imagesSpecificOrAll?.value === "all";
+    !hasVariants ||
+    values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
   const tabsData = useMemo(() => {
     return (
       values.productVariants?.variants?.map((variant, index) => {
@@ -129,6 +136,29 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     onChangeOneSetOfImages(oneSetOfImages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oneSetOfImages]);
+  useEffect(() => {
+    if (
+      !oneSetOfImages &&
+      values.productVariants &&
+      values.productVariantsImages &&
+      values.productVariants.variants.length <
+        values.productVariantsImages.length
+    ) {
+      const difference =
+        values.productVariantsImages.length -
+        values.productVariants.variants.length;
+      values.productVariantsImages.splice(
+        values.productVariants.variants.length,
+        difference
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.productVariants?.variants, oneSetOfImages]);
+
+  const areSpecificImagesCorrect = oneSetOfImages
+    ? true
+    : values.productVariants.variants.length ===
+      values.productVariantsImages?.length;
   return (
     <ContainerProductImage>
       <Grid>
@@ -137,16 +167,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
           <>
             <StyledSelect
               name="imagesSpecificOrAll"
-              options={[
-                {
-                  value: "all",
-                  label: "All"
-                },
-                {
-                  value: "specific",
-                  label: "Specific"
-                }
-              ]}
+              options={IMAGE_SPECIFIC_OR_ALL_OPTIONS}
             />
           </>
         )}
@@ -195,7 +216,9 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         <BosonButton
           variant="primaryFill"
           type="submit"
-          disabled={nextIsDisabled || isVideoLoading}
+          disabled={
+            nextIsDisabled || isVideoLoading || !areSpecificImagesCorrect
+          }
         >
           Next
         </BosonButton>

@@ -14,6 +14,7 @@ import {
   useAccount,
   useSignMessage
 } from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
 import {
   Dispatch,
   SetStateAction,
@@ -39,7 +40,6 @@ import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
 import { useChatContext } from "../../../../../../../pages/chat/ChatProvider/ChatContext";
 import { ICON_KEYS } from "../../../../../../../pages/chat/components/conversation/const";
 import { MessageDataWithInfo } from "../../../../../../../pages/chat/types";
-import { poll } from "../../../../../../../pages/create-product/utils";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
 import { FieldInput } from "../../../../../../form/Field.styles";

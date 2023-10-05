@@ -1,7 +1,4 @@
 import { CONFIG } from "../../../lib/config";
-import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
-import { proposals } from "../../modal/components/Chat/MakeProposal/steps/MakeAProposalStep/MakeAProposalStep";
-import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
   OPTIONS_DISPUTE_RESOLVER,
@@ -46,7 +43,8 @@ export const productInformationInitialValues = {
   productInformation: {
     productTitle: "",
     description: "",
-    category: null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    category: null as any,
     tags: [],
     attributes: [
       {
@@ -63,7 +61,7 @@ export const productInformationInitialValues = {
     partNumber: undefined,
     materials: undefined
   }
-} as const;
+};
 
 export const productVariantsInitialValues = {
   productVariants: {
@@ -95,7 +93,8 @@ export const productImagesInitialValues = {
 export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {
   coreTermsOfSale: {
     price: null as unknown as number,
-    currency: null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    currency: null as any,
     quantity: 1,
     redemptionPeriod: [],
     offerValidityPeriod: []
@@ -155,17 +154,7 @@ export const shippingInfoInitialValues = {
     returnPeriod: CONFIG.defaultReturnPeriodInDays.toString(),
     returnPeriodUnit: OPTIONS_PERIOD[0]
   }
-} as const;
-
-export const disputeCentreInitialValues = {
-  [DisputeFormModel.formFields.getStarted.name]: "",
-  [DisputeFormModel.formFields.tellUsMore.name]: "",
-  [FormModel.formFields.description.name]: "",
-  [FormModel.formFields.proposalType.name]: proposals[0],
-  [FormModel.formFields.refundAmount.name]: "0",
-  [FormModel.formFields.refundPercentage.name]: 0,
-  [FormModel.formFields.upload.name]: [] as File[]
-} as const;
+};
 
 export const imagesSpecificOrAllInitialValues = {
   imagesSpecificOrAll: {
@@ -191,7 +180,6 @@ export const initialValues: CreateProductForm = {
   ...variantsCoreTermsOfSaleInitialValues,
   ...termsOfExchangeInitialValues,
   ...shippingInfoInitialValues,
-  ...disputeCentreInitialValues,
   ...imagesSpecificOrAllInitialValues,
   ...tokenGatingInitialValues,
   ...confirmProductDetailsInitalValues

@@ -162,7 +162,7 @@ export const CONFIG = {
   uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
   infuraKey: process.env.REACT_APP_INFURA_KEY as string,
   magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string
-};
+} as const;
 export type GlobalConfig = typeof CONFIG;
 export const lensHandleMaxLength = Math.max(
   ...[".lens", ".test"].map((ext) => ext.length)

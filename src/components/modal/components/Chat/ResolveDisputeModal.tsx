@@ -11,6 +11,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, utils } from "ethers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
 import { Info as InfoComponent } from "phosphor-react";
 import {
   Dispatch,
@@ -22,6 +23,7 @@ import {
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
+import { PERCENTAGE_FACTOR } from "../../../../lib/constants/percentages";
 import { colors } from "../../../../lib/styles/colors";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
@@ -32,7 +34,6 @@ import {
   MessageDataWithInfo,
   ProposalItem
 } from "../../../../pages/chat/types";
-import { poll } from "../../../../pages/create-product/utils";
 import SimpleError from "../../../error/SimpleError";
 import { useConvertedPrice } from "../../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
@@ -43,7 +44,6 @@ import { useModal } from "../../useModal";
 import { DisputeSplit } from "./components/DisputeSplit";
 import ExchangePreview from "./components/ExchangePreview";
 import ProposalTypeSummary from "./components/ProposalTypeSummary";
-import { PERCENTAGE_FACTOR } from "./const";
 
 interface Props {
   exchange: Exchange;

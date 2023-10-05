@@ -1,6 +1,7 @@
 import { CancelButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import { poll } from "lib/utils/promises";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -13,7 +14,6 @@ import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactio
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import useRefundData from "../../../../lib/utils/hooks/useRefundData";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
-import { poll } from "../../../../pages/create-product/utils";
 import DetailTable from "../../../detail/DetailTable";
 import SimpleError from "../../../error/SimpleError";
 import { Spinner } from "../../../loading/Spinner";

@@ -2,6 +2,7 @@ import { BigNumber, utils } from "ethers";
 import { useField, useFormikContext } from "formik";
 import styled from "styled-components";
 
+import { MAX_PERCENTAGE_DECIMALS } from "../../../../../../../lib/constants/percentages";
 import { colors } from "../../../../../../../lib/styles/colors";
 import { Offer } from "../../../../../../../lib/types/offer";
 import { Input } from "../../../../../../form";
@@ -9,7 +10,6 @@ import { InputError } from "../../../../../../form/Input";
 import ConvertedPrice from "../../../../../../price/ConvertedPrice";
 import { useConvertedPrice } from "../../../../../../price/useConvertedPrice";
 import Grid from "../../../../../../ui/Grid";
-import { MAX_PERCENTAGE_DECIMALS } from "../../../const";
 import { FormModel } from "../../MakeProposalFormModel";
 
 const RefundAmountWrapper = styled.div`

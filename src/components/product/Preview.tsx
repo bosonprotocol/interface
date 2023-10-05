@@ -7,6 +7,7 @@ import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { VariantV1 } from "../../pages/products/types";
 import VariationSelects from "../../pages/products/VariationSelects";
 import {
@@ -23,7 +24,6 @@ import BosonButton from "../ui/BosonButton";
 import Typography from "../ui/Typography";
 import Video from "../ui/Video";
 import { ProductButtonGroup } from "./Product.styles";
-import { useCreateForm } from "./utils/useCreateForm";
 import { usePreviewOffers } from "./utils/usePreviewOffer";
 
 interface Props {
@@ -52,7 +52,7 @@ export default function Preview({
   hasMultipleVariants,
   decimals
 }: Props) {
-  const { values } = useCreateForm();
+  const { values } = useForm();
 
   const redemptionPointUrl =
     values.shippingInfo.redemptionPointUrl &&
