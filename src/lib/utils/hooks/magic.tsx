@@ -27,6 +27,10 @@ export const MagicProvider = ({ children }: { children: ReactNode }) => {
       }
     });
     magic.uuid = window.crypto.randomUUID();
+    magic
+      .preload()
+      .then(() => console.info("magic link preloaded"))
+      .catch(() => console.info("magic link could not be preloaded"));
     return magic as typeof magic & { uuid: string };
   }, [chainId]);
   return (
