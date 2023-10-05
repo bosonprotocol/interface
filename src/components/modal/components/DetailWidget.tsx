@@ -29,7 +29,7 @@ import { useModal } from "../useModal";
 
 interface Props {
   id?: string;
-  type: string;
+  type: "ERROR" | "SUCCESS";
   state: string;
   message: string;
   data: Readonly<Array<TableData>>;
@@ -92,12 +92,13 @@ export default function DetailWidget({
               </Typography>
             </Grid>
             <Break />
-            <div style={{ paddingTop: "2rem" }}>
+            <div style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
               <DetailTable align noBorder data={data} />
             </div>
           </Widget>
           <WidgetButtonWrapper>
             <BosonButton
+              disabled={type === "ERROR"}
               variant="primaryFill"
               onClick={() => {
                 const exchangeId = id || false;
