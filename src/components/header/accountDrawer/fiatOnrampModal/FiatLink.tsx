@@ -1,14 +1,43 @@
 import { CONFIG } from "lib/config";
 import { useMagic, useWalletInfo } from "lib/utils/hooks/magic";
 import { sanitizeUrl } from "lib/utils/url";
-import { MouseEventHandler, ReactNode } from "react";
+import {
+  createContext,
+  Dispatch,
+  MouseEventHandler,
+  SetStateAction,
+  useMemo,
+  useState
+} from "react";
 
 type FiatLinkProps = {
-  children: ReactNode;
+  children: JSX.Element;
   onClick?: MouseEventHandler<HTMLAnchorElement> | undefined;
 };
 
+export const FiatLinkContext = createContext({
+  loading: false
+});
+
 export const FiatLink: React.FC<FiatLinkProps> = ({ children, onClick }) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const value = useMemo(() => {
+    return {
+      loading
+    };
+  }, [loading]);
+  return (
+    <FiatLinkContext.Provider value={value}>
+      <InnerFiatLink setLoading={setLoading} onClick={onClick}>
+        {children}
+      </InnerFiatLink>
+    </FiatLinkContext.Provider>
+  );
+};
+
+const InnerFiatLink: React.FC<
+  FiatLinkProps & { setLoading: Dispatch<SetStateAction<boolean>> }
+> = ({ children, onClick, setLoading }) => {
   const magic = useMagic();
   const { data: walletInfo } = useWalletInfo();
   const showMoonpay =
@@ -35,8 +64,13 @@ export const FiatLink: React.FC<FiatLinkProps> = ({ children, onClick }) => {
         const walletType = walletInfo.walletType;
 
         if (walletType === "magic") {
-          const result = await magic.wallet.showUI();
-          console.log("result", result);
+          try {
+            setLoading(true);
+            const result = await magic.wallet.showUI();
+            console.log("result", result);
+          } finally {
+            setLoading(false);
+          }
         }
       }}
     >

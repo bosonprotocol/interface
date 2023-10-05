@@ -3,7 +3,6 @@ import { CopyButton } from "components/form/Field.styles";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import copyToClipboard from "lib/utils/copyToClipboard";
-import { useMagic } from "lib/utils/hooks/magic";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { useDisconnect } from "lib/utils/hooks/useDisconnect";
 import useENSName from "lib/utils/hooks/useENSName";
@@ -30,7 +29,7 @@ import Grid from "../../ui/Grid";
 import { LoadingBubble } from "../../ui/LoadingBubble";
 import Typography from "../../ui/Typography";
 import StatusIcon from "../identicon/StatusIcon";
-import { FiatLink } from "./fiatOnrampModal/FiatLink";
+import { FiatLink, FiatLinkContext } from "./fiatOnrampModal/FiatLink";
 // import FiatOnrampModal from "./fiatOnrampModal";
 import { IconWithConfirmTextButton } from "./IconButton";
 import MiniPortfolio from "./miniPortfolio";
@@ -67,9 +66,13 @@ const HeaderButton = styled.button<{ $color: string }>`
   font-weight: 500;
   line-height: 24px;
 
-  :hover {
+  :hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--buttonBgColor) 90%, black);
     transition: 125ms background-color ease-in;
+  }
+  :disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 const IconHoverText = styled.span`
@@ -165,7 +168,6 @@ export function PortfolioArrow({
 export default function AuthenticatedHeader({ account }: { account: string }) {
   const { connector } = useWeb3React();
   const { ENSName } = useENSName(account);
-  const magic = useMagic();
   const connection = getConnection(connector);
 
   const disconnect = useDisconnect();
@@ -302,25 +304,30 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
           </Column>
         )}
         <FiatLink>
-          <HeaderButton
-            $color={color}
-            // onClick={handleBuyCryptoClick}
-            // disabled={disableBuyCryptoButton}
-            data-testid="wallet-buy-crypto"
-          >
-            {error ? (
-              <Typography>{error}</Typography>
-            ) : (
-              <>
-                {fiatOnrampAvailabilityLoading ? (
-                  <Spinner />
+          <FiatLinkContext.Consumer>
+            {({ loading }) => (
+              <HeaderButton
+                $color={color}
+                // onClick={handleBuyCryptoClick}
+                // disabled={disableBuyCryptoButton}
+                disabled={loading}
+                data-testid="wallet-buy-crypto"
+              >
+                {error ? (
+                  <Typography>{error}</Typography>
                 ) : (
-                  <CreditCard height="20px" width="20px" />
-                )}{" "}
-                Buy crypto
-              </>
+                  <>
+                    {fiatOnrampAvailabilityLoading || loading ? (
+                      <Spinner size={20} />
+                    ) : (
+                      <CreditCard height="20px" width="20px" />
+                    )}{" "}
+                    Buy crypto
+                  </>
+                )}
+              </HeaderButton>
             )}
-          </HeaderButton>
+          </FiatLinkContext.Consumer>
         </FiatLink>
         {Boolean(!fiatOnrampAvailable && fiatOnrampAvailabilityChecked) && (
           <FiatOnrampNotAvailableText marginTop="8px">

@@ -1,5 +1,9 @@
 import { Percent } from "@uniswap/sdk-core";
-import { FiatLink } from "components/header/accountDrawer/fiatOnrampModal/FiatLink";
+import {
+  FiatLink,
+  FiatLinkContext
+} from "components/header/accountDrawer/fiatOnrampModal/FiatLink";
+import { Spinner } from "components/loading/Spinner";
 import { SettingsTab } from "components/settings/index";
 import Button from "components/ui/Button";
 import Grid from "components/ui/Grid";
@@ -55,7 +59,16 @@ export default function SwapHeader({
             }
           }}
         >
-          <StyledTextButton theme="blankSecondary">Buy</StyledTextButton>
+          <FiatLinkContext.Consumer>
+            {({ loading }) => (
+              <Grid>
+                <StyledTextButton theme="blankSecondary" disabled={loading}>
+                  Buy
+                </StyledTextButton>
+                {loading && <Spinner size={15} />}
+              </Grid>
+            )}
+          </FiatLinkContext.Consumer>
         </FiatLink>
       </HeaderButtonContainer>
       <SettingsTab
