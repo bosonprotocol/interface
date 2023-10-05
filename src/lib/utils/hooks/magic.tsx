@@ -2,13 +2,20 @@ import { useConfigContext } from "components/config/ConfigContext";
 import { CONFIG } from "lib/config";
 import { RPC_URLS } from "lib/constants/networks";
 import { Magic } from "magic-sdk";
-import { useMemo } from "react";
+import { createContext, ReactNode, useContext, useMemo } from "react";
 import { useQuery } from "react-query";
 
-export const useMagic = () => {
+const MagicContext = createContext<
+  | (Magic & {
+      uuid: string;
+    })
+  | null
+>(null);
+
+export const MagicProvider = ({ children }: { children: ReactNode }) => {
   const { config } = useConfigContext();
   const chainId = config.envConfig.chainId;
-  return useMemo(() => {
+  const magic = useMemo(() => {
     if (!chainId || !RPC_URLS[chainId as keyof typeof RPC_URLS]?.[0]) {
       return null;
     }
@@ -21,6 +28,17 @@ export const useMagic = () => {
     magic.uuid = window.crypto.randomUUID();
     return magic as typeof magic & { uuid: string };
   }, [chainId]);
+  return (
+    <MagicContext.Provider value={magic}>{children}</MagicContext.Provider>
+  );
+};
+
+export const useMagic = () => {
+  const context = useContext(MagicContext);
+  if (!context) {
+    throw new Error("useMagic must be used within MagicContext");
+  }
+  return context;
 };
 
 export const useWalletInfo = () => {
@@ -29,6 +47,7 @@ export const useWalletInfo = () => {
     if (!magic) {
       return;
     }
-    return await magic.wallet.getInfo();
+    const walletInfo = await magic.wallet.getInfo();
+    return walletInfo;
   });
 };

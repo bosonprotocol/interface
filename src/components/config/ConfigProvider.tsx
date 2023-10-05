@@ -5,6 +5,7 @@ import {
   getDappConfig
 } from "lib/config";
 import { useChainId } from "lib/utils/hooks/connection/connection";
+import { MagicProvider } from "lib/utils/hooks/magic";
 import { ReactNode, useEffect, useState } from "react";
 
 import { Context, useConfigContext } from "./ConfigContext";
@@ -34,7 +35,9 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   const dappConfig = getDappConfig(envConfig || defaultEnvConfig);
   return (
     <Context.Provider value={{ config: dappConfig, setEnvConfig }}>
-      <SyncCurrentConfigId>{children}</SyncCurrentConfigId>
+      <MagicProvider>
+        <SyncCurrentConfigId>{children}</SyncCurrentConfigId>
+      </MagicProvider>
     </Context.Provider>
   );
 }
