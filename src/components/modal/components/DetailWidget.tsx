@@ -98,7 +98,6 @@ export default function DetailWidget({
           </Widget>
           <WidgetButtonWrapper>
             <BosonButton
-              disabled={type === "ERROR"}
               variant="primaryFill"
               onClick={() => {
                 const exchangeId = id || false;

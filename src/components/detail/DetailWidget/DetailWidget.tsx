@@ -761,6 +761,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         message: "An error occurred when trying to commit!",
         type: "ERROR",
         state: "Committed",
+        id: undefined,
         ...BASE_MODAL_DATA
       });
     }
