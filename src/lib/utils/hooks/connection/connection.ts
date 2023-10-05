@@ -8,8 +8,7 @@ import { useMagic } from "lib/utils/hooks/magic";
 import { useMemo } from "react";
 import { useMutation } from "react-query";
 
-export function useProvider() {
-  const { provider } = useWeb3React();
+function useMagicProvider() {
   const magic = useMagic();
   const magicProvider = useMemo(
     () =>
@@ -19,7 +18,13 @@ export function useProvider() {
         : null,
     [magic]
   );
-  return provider || magicProvider;
+  return magicProvider;
+}
+
+export function useProvider() {
+  const { provider } = useWeb3React();
+  const magicProvider = useMagicProvider();
+  return magicProvider ?? provider;
 }
 
 export function useSigner() {
@@ -54,7 +59,9 @@ export function useSignMessage() {
 }
 
 export function useChainId() {
-  const { chainId } = useWeb3React();
-  const provider = useProvider();
-  return chainId || provider?._network?.chainId;
+  const { provider, chainId } = useWeb3React();
+  const magicProvider = useMagicProvider();
+  return (
+    chainId ?? provider?._network?.chainId ?? magicProvider?._network?.chainId
+  );
 }
