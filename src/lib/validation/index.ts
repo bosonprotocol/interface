@@ -2,7 +2,6 @@ import type { Dayjs } from "dayjs";
 import * as Yup from "yup";
 
 import disputePeriodValue from "./disputePeriodValue";
-// TODO: add unit tests for all of these functions
 import isItBeforeNow from "./isItBeforeNow";
 import isOfferValidityDatesValid from "./isOfferValidityDatesValid";
 import isRedemptionDatesValid from "./isRedemptionDatesValid";

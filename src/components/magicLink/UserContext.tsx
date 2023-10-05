@@ -11,8 +11,9 @@ export const UserContext = React.createContext<{
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const magic = useMagic();
-  const [user, setUser] =
-    useState<string>(/* TODO: localStorage.getItem("user")*/);
+  const [user, setUser] = useState<string | undefined>(
+    localStorage.getItem("user") ?? undefined
+  );
   const logout = getMagicLogout(magic);
   const handleUserOnPageLoad = async () => {
     const provider = await getProvider(magic);
@@ -23,9 +24,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       logout(setUser);
     }
     // Set user in localStorage, or clear localStorage if no wallet connected
-    /* TODO: accounts[0]
+    accounts[0]
       ? localStorage.setItem("user", accounts[0])
-      : localStorage.removeItem("user");*/
+      : localStorage.removeItem("user");
     if (typeof accounts[0] === "string") {
       setUser(accounts[0]);
     }

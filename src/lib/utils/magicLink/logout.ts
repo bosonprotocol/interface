@@ -7,8 +7,7 @@ export const getMagicLogout =
     if (!magic) {
       return;
     }
-    // TODO: localStorage.removeItem("user");
+    localStorage.removeItem("user");
     await magic.wallet.disconnect();
     setUser(undefined);
-    // console.log("Successfully disconnected"); // TODO: remove
   };
