@@ -14,6 +14,7 @@ import { useSearchParams } from "react-router-dom";
 import { getConnection } from "../../connection";
 import { didUserReject } from "../../connection/utils";
 import { isSupportedChain } from "../../constants/chains";
+import { useIsMagicLoggedIn } from "./magic";
 import { useSwitchChain } from "./useSwitchChain";
 
 export default function useSelectChain(
@@ -24,6 +25,7 @@ export default function useSelectChain(
 ) {
   const { setEnvConfig } = useConfigContext();
   const { connector } = useWeb3React();
+  const isMagicLoggedIn = useIsMagicLoggedIn();
   const switchChain = useSwitchChain(doConnect);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -42,7 +44,9 @@ export default function useSelectChain(
           return;
         }
         const targetChain = newConfig.chainId as ChainId;
-        await switchChain(connector, targetChain);
+        if (!isMagicLoggedIn) {
+          await switchChain(connector, targetChain);
+        }
         if (isSupportedChain(targetChain)) {
           searchParams.set(configQueryParameters.configId, newConfigId);
           setSearchParams(searchParams);
@@ -76,7 +80,8 @@ export default function useSelectChain(
       searchParams,
       setSearchParams,
       switchChain,
-      throwErrors
+      throwErrors,
+      isMagicLoggedIn
     ]
   );
 }

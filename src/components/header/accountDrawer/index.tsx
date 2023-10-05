@@ -16,7 +16,7 @@ import DefaultMenu from "./DefaultMenu";
 
 const DRAWER_WIDTH_XL = "390px";
 const DRAWER_WIDTH = "330px";
-const DRAWER_MARGIN = "8px";
+const DRAWER_MARGIN = "0px";
 const DRAWER_OFFSET = "10px";
 const DRAWER_TOP_MARGIN_MOBILE_WEB = "72px";
 
@@ -136,6 +136,7 @@ const AccountDrawerWrapper = styled.div<{ open: boolean }>`
       open ? `calc(-1 * (100% - ${DRAWER_TOP_MARGIN_MOBILE_WEB}))` : 0};
 
     width: 100%;
+    border-top-right-radius: 8px;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
     box-shadow: unset;

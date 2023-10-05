@@ -1,10 +1,11 @@
 import { useConfigContext } from "components/config/ConfigContext";
+import { useUser } from "components/magicLink/UserContext";
+import { ethers } from "ethers";
 import { CONFIG } from "lib/config";
 import { RPC_URLS } from "lib/constants/networks";
 import { Magic } from "magic-sdk";
 import { createContext, ReactNode, useContext, useMemo } from "react";
 import { useQuery } from "react-query";
-
 const MagicContext = createContext<
   | (Magic & {
       uuid: string;
@@ -51,3 +52,22 @@ export const useWalletInfo = () => {
     return walletInfo;
   });
 };
+
+export function useMagicProvider() {
+  const magic = useMagic();
+  const magicProvider = useMemo(
+    () =>
+      magic
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          new ethers.providers.Web3Provider(magic.rpcProvider as any)
+        : null,
+    [magic]
+  );
+  return magicProvider;
+}
+
+export function useIsMagicLoggedIn() {
+  const { user } = useUser();
+  const isMagicLoggedIn = !!user;
+  return isMagicLoggedIn;
+}

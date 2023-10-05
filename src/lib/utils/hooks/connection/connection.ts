@@ -3,28 +3,18 @@
 
 import { useWeb3React } from "@web3-react/core";
 import { useUser } from "components/magicLink/UserContext";
-import { ethers } from "ethers";
-import { useMagic } from "lib/utils/hooks/magic";
 import { useMemo } from "react";
 import { useMutation } from "react-query";
 
-function useMagicProvider() {
-  const magic = useMagic();
-  const magicProvider = useMemo(
-    () =>
-      magic
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          new ethers.providers.Web3Provider(magic.rpcProvider as any)
-        : null,
-    [magic]
-  );
-  return magicProvider;
-}
+import { useIsMagicLoggedIn, useMagicProvider } from "../magic";
 
 export function useProvider() {
   const { provider } = useWeb3React();
   const magicProvider = useMagicProvider();
-  return magicProvider ?? provider;
+  const isMagicLoggedIn = useIsMagicLoggedIn();
+  return isMagicLoggedIn
+    ? magicProvider ?? provider
+    : provider ?? magicProvider;
 }
 
 export function useSigner() {
