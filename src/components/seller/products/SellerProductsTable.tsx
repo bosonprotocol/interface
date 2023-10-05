@@ -24,8 +24,11 @@ import {
 import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
-import { UrlParameters } from "../../../lib/routing/parameters";
-import { ProductRoutes } from "../../../lib/routing/routes";
+import {
+  SellerHubQueryParameters,
+  UrlParameters
+} from "../../../lib/routing/parameters";
+import { ProductRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
@@ -513,6 +516,7 @@ export default function SellerProductsTable({
                         ),
                       sku: (
                         <Typography
+                          justifyContent="flex-start"
                           $fontSize="0.75rem"
                           style={{
                             paddingLeft: "2rem"
@@ -530,12 +534,7 @@ export default function SellerProductsTable({
                             paddingRight: "0.5rem"
                           }}
                         >
-                          <Typography
-                            style={{
-                              textTransform: "uppercase"
-                            }}
-                            tag="p"
-                          >
+                          <Typography tag="p">
                             {variant?.metadata?.name}
                           </Typography>
                           <OfferVariation color={color} size={size} />
@@ -557,7 +556,7 @@ export default function SellerProductsTable({
                         />
                       ),
                       quantity: (
-                        <Typography>
+                        <Typography justifyContent="flex-start">
                           {variant?.quantityAvailable}/
                           {variant?.quantityInitial}
                         </Typography>
@@ -570,7 +569,7 @@ export default function SellerProductsTable({
                         />
                       ),
                       offerValidity: variant?.validUntilDate && (
-                        <Typography>
+                        <Typography justifyContent="flex-start">
                           <span>
                             <small style={{ margin: "0" }}>Until</small> <br />
                             {dayjs(
@@ -584,28 +583,30 @@ export default function SellerProductsTable({
                         variantStatus === OffersKit.OfferState.VOIDED ||
                         variant?.quantityAvailable === "0"
                       ) && (
-                        <VoidButton
-                          variant="secondaryInverted"
-                          size="small"
-                          disabled={!sellerRoles?.isAssistant}
-                          tooltip="This action is restricted to only the assistant wallet"
-                          onClick={() => {
-                            if (variant) {
-                              showModal(
-                                modalTypes.VOID_PRODUCT,
-                                {
-                                  title: "Void Confirmation",
-                                  offerId: variant.id,
-                                  offer: variant as Offer,
-                                  refetch
-                                },
-                                "xs"
-                              );
-                            }
-                          }}
-                        >
-                          Void
-                        </VoidButton>
+                        <Grid justifyContent="flex-end">
+                          <VoidButton
+                            variant="secondaryInverted"
+                            size="small"
+                            disabled={!sellerRoles?.isAssistant}
+                            tooltip="This action is restricted to only the assistant wallet"
+                            onClick={() => {
+                              if (variant) {
+                                showModal(
+                                  modalTypes.VOID_PRODUCT,
+                                  {
+                                    title: "Void Confirmation",
+                                    offerId: variant.id,
+                                    offer: variant as Offer,
+                                    refetch
+                                  },
+                                  "xs"
+                                );
+                              }
+                            }}
+                          >
+                            Void
+                          </VoidButton>
+                        </Grid>
                       )
                     };
                   })
@@ -689,7 +690,7 @@ export default function SellerProductsTable({
               />
             ),
             quantity: (
-              <Typography justifyContent="center">
+              <Typography justifyContent="flex-start">
                 {offer?.quantityAvailable}/{offer?.quantityInitial}
               </Typography>
             ),
@@ -820,13 +821,15 @@ export default function SellerProductsTable({
                             disabled={!offer || !sellerRoles?.isAssistant}
                             onClick={async (event) => {
                               event.stopPropagation();
-                              if (!offer) {
+                              if (!offer || !offer.uuid) {
                                 return;
                               }
-                              showModal(modalTypes.RELIST_OFFER, {
-                                title: `Relist Offer "${offer.metadata.name}"`,
-                                offer,
-                                onRelistedSuccessfully: refetch
+                              navigate({
+                                pathname: SellerCenterRoutes.CreateProduct,
+                                search: {
+                                  [SellerHubQueryParameters.fromProductUuid]:
+                                    offer.uuid
+                                }
                               });
                             }}
                           >

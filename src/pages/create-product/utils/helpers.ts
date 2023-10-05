@@ -2,10 +2,16 @@ import { TermsOfExchange } from "components/product/utils";
 import { CONFIG } from "lib/config";
 
 export function getDisputePeriodDurationInMS(
-  termsOfExchange: TermsOfExchange["termsOfExchange"]
+  disputePeriod: TermsOfExchange["termsOfExchange"]["disputePeriod"]
 ): number {
-  const disputePeriodDurationInMS =
-    parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
+  const disputePeriodDurationInMS = parseInt(disputePeriod) * 24 * 3600 * 1000; // day to msec
+  return disputePeriodDurationInMS;
+}
+
+export function getDisputePeriodDurationFromSubgraphInDays(
+  disputePeriod: string
+): number {
+  const disputePeriodDurationInMS = parseInt(disputePeriod) / 24 / 3600; // sec to days
   return disputePeriodDurationInMS;
 }
 

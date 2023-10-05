@@ -14,6 +14,7 @@ import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import {
   getItemFromStorage,
@@ -45,9 +46,9 @@ import {
   CreateProfile,
   CreateYourProfile,
   getOptionsCurrencies,
-  initialValues
+  initialValues,
+  ProductTypeValues
 } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
   xs: 1,
@@ -124,7 +125,7 @@ export default function ProductType({
   const navigate = useKeepQueryParamsNavigate();
   const { account: address, isActivating } = useWeb3React();
   const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
-    useCreateForm();
+    useForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
     useField<CreateYourProfile["createYourProfile"]>("createYourProfile");
   const isProfileSetFromForm = (
@@ -458,8 +459,11 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productVariant"
-                  value="oneItemType"
-                  checked={values.productType?.productVariant === "oneItemType"}
+                  value={ProductTypeValues.oneItemType}
+                  checked={
+                    values.productType?.productVariant ===
+                    ProductTypeValues.oneItemType
+                  }
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -485,9 +489,10 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productVariant"
-                  value="differentVariants"
+                  value={ProductTypeValues.differentVariants}
                   checked={
-                    values.productType?.productVariant === "differentVariants"
+                    values.productType?.productVariant ===
+                    ProductTypeValues.differentVariants
                   }
                   onChange={handleChange}
                   onBlur={handleBlur}

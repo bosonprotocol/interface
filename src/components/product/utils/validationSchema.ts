@@ -1,21 +1,22 @@
 import { parseUnits } from "@ethersproject/units";
+import {
+  maxLengthErrorMessage,
+  METADATA_LENGTH_LIMIT
+} from "components/modal/components/Profile/const";
 import { ethers } from "ethers";
 
 import { validationMessage } from "../../../lib/const/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
 import Yup from "../../../lib/validation/index";
-import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../form/Upload/types";
-import { MIN_VALUE } from "../../modal/components/Chat/const";
-import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
-import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { getCommonFieldsValidation } from "../../modal/components/Profile/valitationSchema";
 import { CONFIG, DappConfig } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
+  OPTIONS_LENGTH,
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
   TOKEN_CRITERIA,
@@ -159,26 +160,25 @@ export const imagesSpecificOrAllValidationSchema = Yup.object({
 
 export const productInformationValidationSchema = Yup.object({
   productInformation: Yup.object({
-    productTitle: Yup.string().required(validationMessage.required),
-    category: Yup.object()
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
+    productTitle: Yup.string()
+      .max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
       .required(validationMessage.required),
-    tags: Yup.array()
-      .of(Yup.string())
+    category: Yup.object({
+      value: Yup.string(),
+      label: Yup.string()
+    }).required(validationMessage.required),
+    tags: Yup.array(Yup.string().required(validationMessage.required))
       .default([])
       .min(1, "Please provide at least one tag"),
-    attributes: Yup.array()
-      .of(
-        Yup.object().shape({
-          name: Yup.string(),
-          value: Yup.string()
-        })
-      )
-      .default([{ name: "", value: "" }]),
-    description: Yup.string().required(validationMessage.required),
+    attributes: Yup.array(
+      Yup.object({
+        name: Yup.string(),
+        value: Yup.string()
+      })
+    ).default([{ name: "", value: "" }]),
+    description: Yup.string()
+      .max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
+      .required(validationMessage.required),
     sku: Yup.string(),
     id: Yup.string(),
     idType: Yup.string(),
@@ -211,12 +211,11 @@ export const tokenGatingValidationSchema = Yup.object({
     maxCommits: Yup.string()
       .required(validationMessage.required)
       .matches(/^\+?[1-9]\d*$/, "Value must greater than 0"),
-    tokenType: Yup.object()
+    tokenType: Yup.object({
+      value: Yup.string(),
+      label: Yup.string()
+    })
       .required(validationMessage.required)
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
       .default([{ value: "", label: "" }]),
     tokenCriteria: Yup.object({
       value: Yup.string(),
@@ -233,7 +232,7 @@ export const tokenGatingValidationSchema = Yup.object({
           .required(validationMessage.required)
           .matches(
             /^\+?[1-9]\d*$/,
-            "Min balance must be greater than or equal to 1"
+            "Min balance must be greater than or equal to 1 (do not include commas/periods)"
           )
           .typeError("Value must be an integer greater than or equal to 1")
     }),
@@ -276,12 +275,10 @@ export const getCoreTermsOfSaleValidationSchema = (config: DappConfig) =>
           message: "Price is not valid",
           test: testPrice(config)
         }),
-      currency: Yup.object()
-        .shape({
-          value: Yup.string(),
-          label: Yup.string()
-        })
-        .required(validationMessage.required),
+      currency: Yup.object({
+        value: Yup.string(),
+        label: Yup.string()
+      }).required(validationMessage.required),
       quantity: Yup.number()
         .min(1, "Quantity must be greater than or equal to 1")
         .required(validationMessage.required),
@@ -300,12 +297,10 @@ export const variantsCoreTermsOfSaleValidationSchema = Yup.object({
 
 export const termsOfExchangeValidationSchema = Yup.object({
   termsOfExchange: Yup.object({
-    exchangePolicy: Yup.object()
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
-      .required(validationMessage.required),
+    exchangePolicy: Yup.object({
+      value: Yup.string(),
+      label: Yup.string()
+    }).required(validationMessage.required),
     buyerCancellationPenalty: Yup.string().required(validationMessage.required),
     buyerCancellationPenaltyUnit: Yup.object({
       value: Yup.string().oneOf(OPTIONS_UNIT.map(({ value }) => value)),
@@ -350,75 +345,33 @@ export const shippingInfoValidationSchema = Yup.object({
     length: Yup.string(),
     redemptionPointName: Yup.string(),
     redemptionPointUrl: Yup.string(),
-    measurementUnit: Yup.mixed().required(validationMessage.required),
-    country: Yup.object()
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
+    measurementUnit: Yup.object({
+      value: Yup.string().oneOf(OPTIONS_LENGTH.map(({ value }) => value)),
+      label: Yup.string()
+    }).required(validationMessage.required),
+    /* TODO: NOTE: we might add it back in the future */
+    // country: Yup.object({
+    //   value: Yup.string(),
+    //   label: Yup.string()
+    // }).default([{ value: "", label: "" }]),
+    jurisdiction: Yup.array(
+      Yup.object({
+        region: Yup.string().required(validationMessage.required),
+        time: Yup.string().required(validationMessage.required)
       })
-      .default([{ value: "", label: "" }]),
-    jurisdiction: Yup.array()
-      .of(
-        Yup.object().shape({
-          region: Yup.string(),
-          time: Yup.string()
-        })
-      )
-      .default([{ region: "", time: "" }]),
+    ).default([{ region: "", time: "" }]),
     returnPeriod: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .required(validationMessage.required)
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      .returnPeriodValue()
+      .returnPeriodValue(),
+    returnPeriodUnit: Yup.object({
+      value: Yup.string().oneOf(OPTIONS_PERIOD.map(({ value }) => value)),
+      label: Yup.string()
+    })
   })
 });
-
-export const disputeCentreValidationSchemaGetStarted = Yup.object({
-  [DisputeFormModel.formFields.getStarted.name]: Yup.string().required(
-    validationMessage.required
-  )
-});
-
-export const disputeCentreValidationSchemaTellUsMore = Yup.object({
-  [DisputeFormModel.formFields.tellUsMore.name]: Yup.string().required(
-    validationMessage.required
-  )
-});
-
-export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({
-  [FormModel.formFields.description.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.description.requiredErrorMessage),
-  [FormModel.formFields.upload.name]: validationOfFile({ isOptional: true })
-});
-
-export const disputeCentreValidationSchemaMakeProposal = Yup.object({
-  [FormModel.formFields.proposalType.name]: Yup.object({
-    label: Yup.string().required(validationMessage.required),
-    value: Yup.string().required(validationMessage.required)
-  }).nullable(),
-  [FormModel.formFields.refundPercentage.name]: Yup.number().when(
-    FormModel.formFields.proposalType.name,
-    (proposalType) => {
-      if (proposalType) {
-        return Yup.number()
-          .min(
-            MIN_VALUE,
-            FormModel.formFields.refundPercentage.moreThanErrorMessage(
-              MIN_VALUE
-            )
-          )
-          .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
-          .defined(FormModel.formFields.refundPercentage.emptyErrorMessage);
-      } else {
-        return Yup.number();
-      }
-    }
-  )
-});
-
-export const disputeCentreValidationSchemaProposalSummary = Yup.object({});
 
 export const confirmProductDetailsSchema = Yup.object({
   confirmProductDetails: Yup.object({

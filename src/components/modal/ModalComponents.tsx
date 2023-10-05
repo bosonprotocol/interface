@@ -30,7 +30,6 @@ import ProgressBarModal from "./components/ProgressBarModal";
 import { RedeemableNftTermsModal } from "./components/RedeemableNftTermsModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
-import { RelistOfferModal } from "./components/RelistOfferModal/RelistOfferModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
 import { SalesChannelsModal } from "./components/SalesChannelsModal/SalesChannelsModal";
@@ -79,7 +78,6 @@ export const MODAL_TYPES = {
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   PROGRESS_BAR: "PROGRESS_BAR",
   EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
-  RELIST_OFFER: "RELIST_OFFER",
   PROFILE_DETAILS: "PROFILE_DETAILS",
   IMAGE_EDITOR: "IMAGE_EDITOR",
   IFRAME_MODAL: "IFRAME_MODAL",
@@ -135,7 +133,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
   [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
     ExportExchangesWithDeliveryModal,
-  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
   [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal,
   [MODAL_TYPES.IMAGE_EDITOR]: ImageEditorModal,
   [MODAL_TYPES.IFRAME_MODAL]: IframeModal,

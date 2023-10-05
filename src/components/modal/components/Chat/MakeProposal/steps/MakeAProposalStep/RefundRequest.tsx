@@ -2,6 +2,7 @@ import { BigNumber } from "ethers";
 import { useFormikContext } from "formik";
 import styled from "styled-components";
 
+import { MIN_VALUE } from "../../../../../../../lib/constants/percentages";
 import { colors } from "../../../../../../../lib/styles/colors";
 import { calcPrice } from "../../../../../../../lib/utils/calcPrice";
 import { useBreakpoints } from "../../../../../../../lib/utils/hooks/useBreakpoints";
@@ -10,7 +11,6 @@ import { Input } from "../../../../../../form";
 import { InputError } from "../../../../../../form/Input";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
-import { MIN_VALUE } from "../../../const";
 import { FormModel } from "../../MakeProposalFormModel";
 import InEscrowInput from "./InEscrowInput";
 import RequestedRefundInput from "./RequestedRefundInput";

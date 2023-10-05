@@ -1,11 +1,11 @@
+import Grid from "components/ui/Grid";
+import Typography from "components/ui/Typography";
+import { breakpoint } from "lib/styles/breakpoint";
+import { colors } from "lib/styles/colors";
 import { ChatDots, CheckCircle } from "phosphor-react";
 import styled from "styled-components";
 
-import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
-import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import { ContainerProductPage, ProductButtonGroup } from "../Product.styles";
 
 export const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
   max-width: 65.588rem;

@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import GetStarted from "../../components/dispute/GetStarted";
 import TellUsMore from "../../components/dispute/TellUsMore";
 import MakeProposalCore from "../../components/modal/components/Chat/components/MakeProposalCore";
-import { useCreateForm } from "../../components/product/utils/useCreateForm";
 import { Exchange } from "../../lib/utils/hooks/useExchanges";
+import { useDisputeForm } from "./const";
 
 const getStartedSteps = [
   { label: "Item was not delivered or delivered late", id: 1 },
@@ -56,7 +56,7 @@ function DisputeCentreForm({
 }) {
   const [tellUsMoreID, setTellUsMoreId] =
     useState<keyof typeof tellUsMoreSteps>(1);
-  const formValues = useCreateForm();
+  const formValues = useDisputeForm();
   const formErrors = Object.keys(formValues.errors).length === 0;
 
   useEffect(() => {

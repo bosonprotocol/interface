@@ -8,6 +8,7 @@ import {
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
+import { poll } from "lib/utils/promises";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -17,7 +18,6 @@ import { Offer } from "../../../lib/types/offer";
 import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import OfferVariation from "../../seller/products/OfferVariation";

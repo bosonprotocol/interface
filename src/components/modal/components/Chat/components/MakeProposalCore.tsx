@@ -1,5 +1,6 @@
+import { useDisputeForm } from "pages/dispute-centre/const";
+
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
-import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import DescribeProblemStep from "../MakeProposal/steps/DescribeProblemStep";
 import MakeAProposalStep from "../MakeProposal/steps/MakeAProposalStep/MakeAProposalStep";
 import ReviewAndSubmitStep from "../MakeProposal/steps/ReviewAndSubmitStep";
@@ -17,7 +18,7 @@ export default function MakeProposalCore({
   activeStep,
   submitError
 }: Props) {
-  const formValues = useCreateForm();
+  const formValues = useDisputeForm();
 
   const isDescribeProblemOK = Object.keys(formValues.errors).length === 0;
 

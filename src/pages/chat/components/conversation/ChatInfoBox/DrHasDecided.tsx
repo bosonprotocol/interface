@@ -6,10 +6,10 @@ import { BigNumber } from "ethers";
 import { Info, X } from "phosphor-react";
 import { useState } from "react";
 
-import { PERCENTAGE_FACTOR } from "../../../../../components/modal/components/Chat/const";
 import { useModal } from "../../../../../components/modal/useModal";
 import Grid from "../../../../../components/ui/Grid";
 import Typography from "../../../../../components/ui/Typography";
+import { PERCENTAGE_FACTOR } from "../../../../../lib/constants/percentages";
 import { colors } from "../../../../../lib/styles/colors";
 import { calcPrice } from "../../../../../lib/utils/calcPrice";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";

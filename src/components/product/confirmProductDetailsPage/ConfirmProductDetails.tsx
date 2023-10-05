@@ -1,25 +1,31 @@
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import Collapse from "components/collapse/Collapse";
+import { FormField } from "components/form";
+import { Spinner } from "components/loading/Spinner";
+import InitializeChat from "components/modal/components/Chat/components/InitializeChat";
+import differentVariantsProduct from "components/product/img/different-variants-product.png";
+import oneItemTypeProductSmall from "components/product/img/one-item-product-small.png";
+import physicalProductSmall from "components/product/img/physical-product-small.png";
+import { optionUnitValues, ProductTypeValues } from "components/product/utils";
+import Tooltip from "components/tooltip/Tooltip";
+import BosonButton from "components/ui/BosonButton";
+import Grid from "components/ui/Grid";
+import Image from "components/ui/Image";
+import Typography from "components/ui/Typography";
+import Video from "components/ui/Video";
 import dayjs from "dayjs";
+import { CONFIG } from "lib/config";
+import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
+import { useForm } from "lib/utils/hooks/useForm";
 import map from "lodash/map";
+import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
 import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTermsAndSellerAgreement";
 import { Warning } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
 
-import Collapse from "../../components/collapse/Collapse";
-import { Spinner } from "../../components/loading/Spinner";
-import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
-import { CONFIG } from "../../lib/config";
-import { ChatInitializationStatus } from "../../lib/utils/hooks/chat/useChatStatus";
-import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
-import { FormField } from "../form";
-import Tooltip from "../tooltip/Tooltip";
-import BosonButton from "../ui/BosonButton";
-import Grid from "../ui/Grid";
-import Image from "../ui/Image";
-import Typography from "../ui/Typography";
-import Video from "../ui/Video";
+import { SectionTitle } from "../Product.styles";
 import {
   ChatDotsIcon,
   CheckIcon,
@@ -44,12 +50,6 @@ import {
   TagsWrapper,
   TermsOfSaleContent
 } from "./ConfirmProductDetails.styles";
-import differentVariantsProduct from "./img/different-variants-product.png";
-import oneItemTypeProductSmall from "./img/one-item-product-small.png";
-import physicalProductSmall from "./img/physical-product-small.png";
-import { SectionTitle } from "./Product.styles";
-import { optionUnitValues } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const VariantsTable = styled.table`
   th:not(:first-child),
@@ -91,7 +91,7 @@ export default function ConfirmProductDetails({
   isOneSetOfImages
 }: Props) {
   const { bosonXmtp } = useChatContext();
-  const { values } = useCreateForm();
+  const { values } = useForm();
   const { account: address } = useWeb3React();
 
   const showSuccessInitialization =
@@ -135,10 +135,12 @@ export default function ConfirmProductDetails({
   const renderProductVariant = useMemo(() => {
     let src = "";
     let description = "";
-    if (values.productType.productVariant === "oneItemType") {
+    if (values.productType.productVariant === ProductTypeValues.oneItemType) {
       src = oneItemTypeProductSmall;
       description = "One item type";
-    } else if (values.productType.productVariant === "differentVariants") {
+    } else if (
+      values.productType.productVariant === ProductTypeValues.differentVariants
+    ) {
       src = differentVariantsProduct;
       description = "Different variants";
     }
@@ -214,7 +216,7 @@ export default function ConfirmProductDetails({
                   values.productInformation.attributes[0].name !== "" && (
                     <GridBox $minWidth="6.9rem">
                       <FormFieldContainer>
-                        <FormField title="Product Attribute">
+                        <FormField title="Product Attributes">
                           <ContentValue tag="p">
                             {map(
                               values.productInformation.attributes,
@@ -266,14 +268,11 @@ export default function ConfirmProductDetails({
                         values.productVariantsImages?.[idx]?.productImages;
                       return (
                         <tr key={variant.name}>
-                          <Grid
-                            data-name
-                            as="td"
-                            flexDirection="row"
-                            alignItems="flex-start"
-                          >
-                            {variant.name}
-                          </Grid>
+                          <td data-name>
+                            <Typography justifyContent="flex-start">
+                              {variant.name}
+                            </Typography>
+                          </td>
                           <td data-price>
                             <Typography justifyContent="center">
                               {variant.price}

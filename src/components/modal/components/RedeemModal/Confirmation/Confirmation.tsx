@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { utils } from "ethers";
 import { useField } from "formik";
+import { poll } from "lib/utils/promises";
 import { Warning } from "phosphor-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -21,7 +22,6 @@ import { useEthersSigner } from "../../../../../lib/utils/hooks/ethers/useEthers
 import { useAddPendingTransaction } from "../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
-import { poll } from "../../../../../pages/create-product/utils";
 import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../toasts/SuccessTransactionToast";

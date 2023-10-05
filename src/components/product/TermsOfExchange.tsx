@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { Token } from "../convertion-rate/ConvertionRateContext";
 import FairExchangePolicy from "../exchangePolicy/FairExchangePolicy";
 import { FormField, Input, Select } from "../form";
@@ -20,9 +21,9 @@ import {
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
   optionUnitKeys,
-  PERCENT_OPTIONS_UNIT
+  PERCENT_OPTIONS_UNIT,
+  ProductTypeValues
 } from "./utils/const";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -38,6 +39,7 @@ const FieldContainer = styled.div`
   display: grid;
   grid-template-columns: 3fr minmax(8.75rem, 1fr);
   grid-gap: 1rem;
+  width: 100%;
 `;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
@@ -73,14 +75,15 @@ const InfoWrapperList = styled.div`
 
 export default function TermsOfExchange() {
   const { config } = useConfigContext();
-  const { values, setFieldValue, nextIsDisabled } = useCreateForm();
+  const { values, setFieldValue, nextIsDisabled } = useForm();
   const isMultiVariant =
-    values.productType?.productVariant === "differentVariants" &&
+    values.productType?.productVariant ===
+      ProductTypeValues.differentVariants &&
     new Set(
       values.productVariants?.variants?.map((variant) => variant.currency.value)
     ).size > 1;
   const maxPricePenOrSellerDeposit =
-    values.productType?.productVariant === "differentVariants"
+    values.productType?.productVariant === ProductTypeValues.differentVariants
       ? Math.min(
           ...(values.productVariants?.variants?.map(
             (variant) => variant.price
@@ -88,13 +91,14 @@ export default function TermsOfExchange() {
         )
       : values.coreTermsOfSale?.price;
   const currency: string =
-    values.productType?.productVariant === "differentVariants"
-      ? values.productVariants?.variants?.[0]?.currency?.label
-      : values.coreTermsOfSale?.currency?.label;
+    values.productType?.productVariant === ProductTypeValues.differentVariants
+      ? values.productVariants?.variants?.[0]?.currency?.label || ""
+      : values.coreTermsOfSale?.currency?.label || "";
   const exchangeToken = config.envConfig.defaultTokens?.find(
     (n: Token) =>
       n.symbol ===
-      (values.productType?.productVariant === "differentVariants"
+      (values.productType?.productVariant ===
+      ProductTypeValues.differentVariants
         ? values.productVariants?.variants?.[0]?.currency?.label
         : values.coreTermsOfSale?.currency?.label)
   );
