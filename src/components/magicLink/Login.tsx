@@ -1,3 +1,4 @@
+import { Spinner } from "components/loading/Spinner";
 import Button from "components/ui/Button";
 import { useMagic } from "lib/utils/hooks/magic";
 import { useState } from "react";
@@ -38,6 +39,7 @@ export const MagicLoginButton = () => {
   const magic = useMagic();
   const { setUser } = useUser();
   const [disabled, setDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const connect = async () => {
     if (!magic) {
@@ -45,14 +47,17 @@ export const MagicLoginButton = () => {
     }
     try {
       setDisabled(true);
+      setLoading(true);
       const accounts = await magic.wallet.connectWithUI();
       setDisabled(false);
       //   TODO: localStorage.setItem("user", accounts[0]);
 
       setUser(accounts[0]);
     } catch (error) {
-      setDisabled(false);
       console.error(error);
+    } finally {
+      setLoading(false);
+      setDisabled(false);
     }
   };
 
@@ -63,6 +68,7 @@ export const MagicLoginButton = () => {
       style={{ borderRadius: "12px" }}
     >
       Login with email or <GoogleLogo />
+      {loading && <Spinner />}
     </Button>
   );
 };
