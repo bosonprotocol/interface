@@ -29,7 +29,7 @@ import Grid from "../../ui/Grid";
 import { LoadingBubble } from "../../ui/LoadingBubble";
 import Typography from "../../ui/Typography";
 import StatusIcon from "../identicon/StatusIcon";
-import { FiatLink, FiatLinkContext } from "./fiatOnrampModal/FiatLink";
+import { FiatLink, useFiatLinkContext } from "./fiatOnrampModal/FiatLink";
 // import FiatOnrampModal from "./fiatOnrampModal";
 import { IconWithConfirmTextButton } from "./IconButton";
 import MiniPortfolio from "./miniPortfolio";
@@ -228,6 +228,7 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
     color2: useCSSVariable("--buttonBgColor") || colors.primary,
     color1: useCSSVariable("--textColor") || colors.black
   });
+  const { isFiatLoading } = useFiatLinkContext();
   return (
     <AuthenticatedHeaderWrapper>
       {/* 
@@ -304,30 +305,26 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
           </Column>
         )}
         <FiatLink>
-          <FiatLinkContext.Consumer>
-            {({ loading }) => (
-              <HeaderButton
-                $color={color}
-                // onClick={handleBuyCryptoClick}
-                // disabled={disableBuyCryptoButton}
-                disabled={loading}
-                data-testid="wallet-buy-crypto"
-              >
-                {error ? (
-                  <Typography>{error}</Typography>
+          <HeaderButton
+            $color={color}
+            // onClick={handleBuyCryptoClick}
+            // disabled={disableBuyCryptoButton}
+            disabled={isFiatLoading}
+            data-testid="wallet-buy-crypto"
+          >
+            {error ? (
+              <Typography>{error}</Typography>
+            ) : (
+              <>
+                {fiatOnrampAvailabilityLoading || isFiatLoading ? (
+                  <Spinner size={20} />
                 ) : (
-                  <>
-                    {fiatOnrampAvailabilityLoading || loading ? (
-                      <Spinner size={20} />
-                    ) : (
-                      <CreditCard height="20px" width="20px" />
-                    )}{" "}
-                    Buy crypto
-                  </>
-                )}
-              </HeaderButton>
+                  <CreditCard height="20px" width="20px" />
+                )}{" "}
+                Buy crypto
+              </>
             )}
-          </FiatLinkContext.Consumer>
+          </HeaderButton>
         </FiatLink>
         {Boolean(!fiatOnrampAvailable && fiatOnrampAvailabilityChecked) && (
           <FiatOnrampNotAvailableText marginTop="8px">

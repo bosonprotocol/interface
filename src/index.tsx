@@ -1,6 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import { ConfigProvider } from "components/config/ConfigProvider";
 import { CoreSDKProvider } from "components/core-sdk/CoreSDKProvider";
+import { FiatLinkProvider } from "components/header/accountDrawer/fiatOnrampModal/FiatLink";
 import { UserProvider } from "components/magicLink/UserContext";
 import { apolloClient } from "graphql/data/apollo";
 import { MulticallUpdater } from "lib/state/multicall";
@@ -88,7 +89,9 @@ root.render(
                 <QueryClientProvider client={queryClient}>
                   <CoreSDKProvider>
                     <ConvertionRateProvider>
-                      <AppRouter />
+                      <FiatLinkProvider>
+                        <AppRouter />
+                      </FiatLinkProvider>
                     </ConvertionRateProvider>
                     <ReactQueryDevtools initialIsOpen={false} />
                   </CoreSDKProvider>

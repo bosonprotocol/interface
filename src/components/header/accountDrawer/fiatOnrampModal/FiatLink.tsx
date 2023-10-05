@@ -5,7 +5,9 @@ import {
   createContext,
   Dispatch,
   MouseEventHandler,
+  ReactNode,
   SetStateAction,
+  useContext,
   useMemo,
   useState
 } from "react";
@@ -15,29 +17,39 @@ type FiatLinkProps = {
   onClick?: MouseEventHandler<HTMLAnchorElement> | undefined;
 };
 
-export const FiatLinkContext = createContext({
-  loading: false
-});
+const FiatLinkContext = createContext<
+  | {
+      isFiatLoading: boolean;
+      setFiatLoading: Dispatch<SetStateAction<boolean>>;
+    }
+  | undefined
+>(undefined);
 
-export const FiatLink: React.FC<FiatLinkProps> = ({ children, onClick }) => {
-  const [loading, setLoading] = useState<boolean>(false);
+export const useFiatLinkContext = () => {
+  const context = useContext(FiatLinkContext);
+  if (context === undefined) {
+    throw new Error("useFiatLinkContext must be within FiatLinkProvider");
+  }
+  return context;
+};
+
+export const FiatLinkProvider = ({ children }: { children: ReactNode }) => {
+  const [isFiatLoading, setFiatLoading] = useState<boolean>(false);
   const value = useMemo(() => {
     return {
-      loading
+      isFiatLoading,
+      setFiatLoading
     };
-  }, [loading]);
+  }, [isFiatLoading, setFiatLoading]);
   return (
     <FiatLinkContext.Provider value={value}>
-      <InnerFiatLink setLoading={setLoading} onClick={onClick}>
-        {children}
-      </InnerFiatLink>
+      {children}
     </FiatLinkContext.Provider>
   );
 };
 
-const InnerFiatLink: React.FC<
-  FiatLinkProps & { setLoading: Dispatch<SetStateAction<boolean>> }
-> = ({ children, onClick, setLoading }) => {
+export const FiatLink: React.FC<FiatLinkProps> = ({ children, onClick }) => {
+  const { setFiatLoading } = useFiatLinkContext();
   const magic = useMagic();
   const { data: walletInfo } = useWalletInfo();
   const showMoonpay =
@@ -65,11 +77,11 @@ const InnerFiatLink: React.FC<
 
         if (walletType === "magic") {
           try {
-            setLoading(true);
+            setFiatLoading(true);
             const result = await magic.wallet.showUI();
             console.log("result", result);
           } finally {
-            setLoading(false);
+            setFiatLoading(false);
           }
         }
       }}
