@@ -75,7 +75,7 @@ export function useInitialValues() {
     []
   );
 
-  const { data: product } = useProductByUuid("110", fromProductUuid, {
+  const { data: product } = useProductByUuid(sellerId, fromProductUuid, {
     enabled: !!fromProductUuid && !!sellerId
   });
 
@@ -110,7 +110,7 @@ export function useInitialValues() {
         OPTIONS_CURRENCIES
       );
     }, [product, cloneBaseValues, OPTIONS_CURRENCIES, tokenDecimals]);
-  console.log({ product, valuesFromExistingProduct });
+
   const cloneInitialValues = useMemo(
     () =>
       initialValues
