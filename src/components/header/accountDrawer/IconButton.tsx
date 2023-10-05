@@ -247,7 +247,7 @@ export const IconWithConfirmTextButton = ({
         }
       })}
     >
-      <Grid style={{ height: "100%" }} gap="4px">
+      <Grid style={{ height: "100%" }} gap="2px">
         <IconWrapper>
           <Icon strokeWidth={1.5} size={16} />
         </IconWrapper>
