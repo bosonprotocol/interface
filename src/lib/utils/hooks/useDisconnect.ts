@@ -20,9 +20,8 @@ export const useDisconnect = () => {
       await connector.deactivate();
     }
     await connector.resetState();
-    magicLogout(setUser);
     remove();
     dispatch(updateSelectedWallet({ wallet: undefined }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connector, dispatch]);
+    await magicLogout(setUser);
+  }, [connector, dispatch, magicLogout, remove, setUser]);
 };

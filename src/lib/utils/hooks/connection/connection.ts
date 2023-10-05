@@ -6,7 +6,11 @@ import { useUser } from "components/magicLink/UserContext";
 import { useMemo } from "react";
 import { useMutation } from "react-query";
 
-import { useIsMagicLoggedIn, useMagicProvider } from "../magic";
+import {
+  useIsMagicLoggedIn,
+  useMagicChainId,
+  useMagicProvider
+} from "../magic";
 
 export function useProvider() {
   const { provider } = useWeb3React();
@@ -49,9 +53,10 @@ export function useSignMessage() {
 }
 
 export function useChainId() {
-  const { provider, chainId } = useWeb3React();
-  const magicProvider = useMagicProvider();
-  return (
-    chainId ?? provider?._network?.chainId ?? magicProvider?._network?.chainId
-  );
+  const { provider: web3ReactProvider, chainId: web3ReactChainId } =
+    useWeb3React();
+  const magicChainId = useMagicChainId();
+  const chainIdToReturn =
+    web3ReactChainId ?? web3ReactProvider?._network?.chainId ?? magicChainId;
+  return chainIdToReturn;
 }

@@ -66,6 +66,11 @@ export function useMagicProvider() {
   return magicProvider;
 }
 
+export function useMagicChainId() {
+  const magicProvider = useMagicProvider();
+  return magicProvider?._network?.chainId;
+}
+
 export function useIsMagicLoggedIn() {
   const { user } = useUser();
   const isMagicLoggedIn = !!user;

@@ -9,6 +9,7 @@ import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { getConfigsByChainId } from "lib/utils/config/getConfigsByChainId";
 import { useAccount, useChainId } from "lib/utils/hooks/connection/connection";
+import { useIsMagicLoggedIn } from "lib/utils/hooks/magic";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
@@ -155,8 +156,10 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   const previousChainId = chainIdRef.current;
   const configsPreviousChain = getConfigsByChainId(previousChainId);
   const configsCurrentChain = getConfigsByChainId(chainId);
-
-  const connectedToWrongChainId = account
+  const isMagicLoggedIn = useIsMagicLoggedIn();
+  const connectedToWrongChainId = isMagicLoggedIn
+    ? false
+    : account
     ? !configsCurrentChain?.length
     : wasConnected && !configsPreviousChain?.length && isActive;
 
