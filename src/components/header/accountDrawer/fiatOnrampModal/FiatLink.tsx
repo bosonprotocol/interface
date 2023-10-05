@@ -78,8 +78,7 @@ export const FiatLink: React.FC<FiatLinkProps> = ({ children, onClick }) => {
         if (walletType === "magic") {
           try {
             setFiatLoading(true);
-            const result = await magic.wallet.showUI();
-            console.log("result", result);
+            await magic.wallet.showUI();
           } finally {
             setFiatLoading(false);
           }

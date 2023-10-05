@@ -67,8 +67,16 @@ export const MagicLoginButton = () => {
       disabled={disabled}
       style={{ borderRadius: "12px" }}
     >
-      Login with email or <GoogleLogo />
-      {loading && <Spinner />}
+      {loading ? (
+        <>
+          Loading
+          <Spinner size={20} />
+        </>
+      ) : (
+        <>
+          Login with email or <GoogleLogo />
+        </>
+      )}
     </Button>
   );
 };

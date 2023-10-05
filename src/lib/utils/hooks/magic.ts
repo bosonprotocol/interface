@@ -5,25 +5,27 @@ import { Magic } from "magic-sdk";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 
-export const useMagic = (): Magic | null => {
+export const useMagic = () => {
   const { config } = useConfigContext();
   const chainId = config.envConfig.chainId;
   return useMemo(() => {
     if (!chainId || !RPC_URLS[chainId as keyof typeof RPC_URLS]?.[0]) {
       return null;
     }
-    return new Magic(CONFIG.magicLinkKey, {
+    const magic = new Magic(CONFIG.magicLinkKey, {
       network: {
         rpcUrl: RPC_URLS[chainId as keyof typeof RPC_URLS][0],
         chainId: chainId
       }
     });
+    magic.uuid = window.crypto.randomUUID();
+    return magic as typeof magic & { uuid: string };
   }, [chainId]);
 };
 
 export const useWalletInfo = () => {
   const magic = useMagic();
-  return useQuery(["wallet-info", !!magic], async () => {
+  return useQuery(["wallet-info", magic?.uuid], async () => {
     if (!magic) {
       return;
     }
