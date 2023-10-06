@@ -100,6 +100,8 @@ on:
         required: true
       REACT_APP_MOONPAY_API_KEY:
         required: true
+      REACT_APP_MAGIC_API_KEY:
+        required: true
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -146,6 +148,7 @@ jobs:
       REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY }}
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY }}
       REACT_APP_MOONPAY_EXTERNAL_LINK: ${{ inputs.REACT_APP_MOONPAY_EXTERNAL_LINK }}
+      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
