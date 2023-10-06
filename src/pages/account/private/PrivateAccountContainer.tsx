@@ -1,5 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useIsMagicLoggedIn } from "lib/utils/hooks/magic";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
@@ -18,7 +19,7 @@ const SpinnerWrapper = styled.div`
 export default function PrivateAccountContainer() {
   const { isActivating } = useWeb3React();
   const { account: address } = useAccount();
-
+  const isMagicLoggedIn = useIsMagicLoggedIn();
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet);
 
   const {
@@ -36,7 +37,7 @@ export default function PrivateAccountContainer() {
 
   const buyerId = buyers?.[0]?.id || "";
 
-  if (isActivating || isLoading || !selectedWallet) {
+  if (isActivating || isLoading || (!selectedWallet && !isMagicLoggedIn)) {
     return (
       <SpinnerWrapper>
         <Spinner size={42} />
