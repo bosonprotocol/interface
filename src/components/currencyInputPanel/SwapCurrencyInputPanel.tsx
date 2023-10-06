@@ -99,6 +99,7 @@ const CurrencySelect = styled(Button)<{
     &:active {
       background-color: ${({ selected }) =>
         selected ? colors.darkGrey : colors.secondary};
+      color: ${colors.white};
     }
 
     &:before {
