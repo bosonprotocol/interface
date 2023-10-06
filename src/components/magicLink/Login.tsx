@@ -51,7 +51,6 @@ export const MagicLoginButton = () => {
       const accounts = await magic.wallet.connectWithUI();
       setDisabled(false);
       localStorage.setItem("user", accounts[0]);
-
       setUser(accounts[0]);
     } catch (error) {
       console.error(error);

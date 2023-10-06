@@ -1,4 +1,5 @@
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
+import { MagicProvider } from "components/magicLink/MagicContext";
 import { UserProvider } from "components/magicLink/UserContext";
 import {
   defaultEnvConfig,
@@ -6,7 +7,6 @@ import {
   getDappConfig
 } from "lib/config";
 import { useChainId } from "lib/utils/hooks/connection/connection";
-import { MagicProvider } from "lib/utils/hooks/magic";
 import { ReactNode, useEffect, useState } from "react";
 
 import { Context, useConfigContext } from "./ConfigContext";
