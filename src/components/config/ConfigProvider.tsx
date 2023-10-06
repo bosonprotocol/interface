@@ -1,6 +1,5 @@
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
 import { MagicProvider } from "components/magicLink/MagicContext";
-import { UserProvider } from "components/magicLink/UserContext";
 import {
   defaultEnvConfig,
   envConfigsFilteredByEnv,
@@ -37,9 +36,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   return (
     <Context.Provider value={{ config: dappConfig, setEnvConfig }}>
       <MagicProvider>
-        <UserProvider>
-          <SyncCurrentConfigId>{children}</SyncCurrentConfigId>
-        </UserProvider>
+        <SyncCurrentConfigId>{children}</SyncCurrentConfigId>
       </MagicProvider>
     </Context.Provider>
   );

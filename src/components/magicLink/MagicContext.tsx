@@ -4,6 +4,8 @@ import { RPC_URLS } from "lib/constants/networks";
 import { Magic } from "magic-sdk";
 import { createContext, ReactNode, useMemo } from "react";
 
+import { UserProvider } from "./UserContext";
+
 export const MagicContext = createContext<
   | (Magic & {
       uuid: string;
@@ -32,6 +34,8 @@ export const MagicProvider = ({ children }: { children: ReactNode }) => {
     return magic as typeof magic & { uuid: string };
   }, [chainId]);
   return (
-    <MagicContext.Provider value={magic}>{children}</MagicContext.Provider>
+    <MagicContext.Provider value={magic}>
+      <UserProvider>{children}</UserProvider>
+    </MagicContext.Provider>
   );
 };
