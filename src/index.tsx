@@ -2,7 +2,6 @@ import { ApolloProvider } from "@apollo/client";
 import { ConfigProvider } from "components/config/ConfigProvider";
 import { CoreSDKProvider } from "components/core-sdk/CoreSDKProvider";
 import { FiatLinkProvider } from "components/header/accountDrawer/fiatOnrampModal/FiatLink";
-import { UserProvider } from "components/magicLink/UserContext";
 import { apolloClient } from "graphql/data/apollo";
 import { MulticallUpdater } from "lib/state/multicall";
 import { BlockNumberProvider } from "lib/utils/hooks/useBlockNumber";
@@ -68,37 +67,35 @@ root.render(
     <Provider store={store}>
       <Web3Provider>
         <ConfigProvider>
-          <UserProvider>
-            <ApolloProvider client={apolloClient}>
-              <BlockNumberProvider>
-                <Updaters />
-                <Toaster
-                  position="top-right"
-                  toastOptions={{
-                    duration: 5000,
-                    style: {
-                      minWidth: "455px",
-                      padding: "24px",
-                      boxShadow:
-                        "0 3px 10px rgb(0 0 0 / 40%), 0 3px 3px rgb(0 0 0 / 5%)",
-                      borderRadius: 0
-                    }
-                  }}
-                />
+          <ApolloProvider client={apolloClient}>
+            <BlockNumberProvider>
+              <Updaters />
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 5000,
+                  style: {
+                    minWidth: "455px",
+                    padding: "24px",
+                    boxShadow:
+                      "0 3px 10px rgb(0 0 0 / 40%), 0 3px 3px rgb(0 0 0 / 5%)",
+                    borderRadius: 0
+                  }
+                }}
+              />
 
-                <QueryClientProvider client={queryClient}>
-                  <CoreSDKProvider>
-                    <ConvertionRateProvider>
-                      <FiatLinkProvider>
-                        <AppRouter />
-                      </FiatLinkProvider>
-                    </ConvertionRateProvider>
-                    <ReactQueryDevtools initialIsOpen={false} />
-                  </CoreSDKProvider>
-                </QueryClientProvider>
-              </BlockNumberProvider>
-            </ApolloProvider>
-          </UserProvider>
+              <QueryClientProvider client={queryClient}>
+                <CoreSDKProvider>
+                  <ConvertionRateProvider>
+                    <FiatLinkProvider>
+                      <AppRouter />
+                    </FiatLinkProvider>
+                  </ConvertionRateProvider>
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </CoreSDKProvider>
+              </QueryClientProvider>
+            </BlockNumberProvider>
+          </ApolloProvider>
         </ConfigProvider>
       </Web3Provider>
     </Provider>
