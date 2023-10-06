@@ -9,6 +9,7 @@ import { UNIVERSAL_ROUTER_ADDRESS } from "@uniswap/universal-router-sdk";
 import { useWeb3React } from "@web3-react/core";
 import AddressInputPanel from "components/addressInputPanel";
 import { GrayCard } from "components/card";
+import { useConfigContext } from "components/config/ConfigContext";
 import SwapCurrencyInputPanel from "components/currencyInputPanel/SwapCurrencyInputPanel";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { useToggleAccountDrawer } from "components/header/accountDrawer";
@@ -155,6 +156,7 @@ function largerPercentValue(a?: Percent, b?: Percent) {
 }
 
 export default function SwapPage({ className }: { className?: string }) {
+  const { config } = useConfigContext();
   const connectedChainId = useChainId();
   const loadedUrlParams = useDefaultsFromURLSearch();
 
@@ -180,7 +182,11 @@ export default function SwapPage({ className }: { className?: string }) {
         )}
         <Swap
           className={className}
-          chainId={supportedChainId ?? ChainId.MAINNET}
+          chainId={
+            supportedChainId ??
+            (config.envConfig.chainId as ChainId) ??
+            ChainId.MAINNET
+          }
           prefilledState={{
             [Field.INPUT]: {
               currencyId: loadedUrlParams?.[Field.INPUT]?.currencyId
