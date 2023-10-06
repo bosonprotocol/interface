@@ -24,7 +24,6 @@ import {
   customisedExchangePolicy
 } from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
-import { useIsMagicLoggedIn } from "lib/utils/hooks/magic";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { poll } from "lib/utils/promises";
@@ -873,7 +872,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       }
     }
   }, [isExchange, exchange]);
-  const isMagicLoggedIn = useIsMagicLoggedIn();
   const isRedeemDisabled =
     isChainUnsupported || isLoading || isOffer || isPreview || !isBuyer;
   return (
