@@ -8,6 +8,6 @@ export const getMagicLogout =
       return;
     }
     localStorage.removeItem("user");
-    await magic.wallet.disconnect();
     setUser(undefined);
+    await magic.wallet.disconnect();
   };

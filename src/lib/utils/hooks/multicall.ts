@@ -19,15 +19,15 @@ type SkipFirstTwoParams<T extends (...args: any) => any> = SkipFirst<
 >;
 
 export function useMultipleContractSingleData(
-  ...args: SkipFirstTwoParams<
-    typeof multicall.hooks.useMultipleContractSingleData
-  >
+  ...args: Parameters<typeof multicall.hooks.useMultipleContractSingleData>
 ) {
-  const { chainId, latestBlock } = useCallContext();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [chainId, _, ...rest] = args;
+  const { latestBlock } = useCallContext();
   return multicall.hooks.useMultipleContractSingleData(
     chainId,
     latestBlock,
-    ...args
+    ...rest
   );
 }
 

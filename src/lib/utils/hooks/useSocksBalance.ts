@@ -16,6 +16,7 @@ export function useHasSocks(): boolean | undefined {
   const { account } = useAccount();
 
   const balance = useTokenBalance(
+    chainId,
     account ?? undefined,
     chainId === ChainId.MAINNET ? SOCKS : undefined
   );
