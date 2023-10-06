@@ -119,7 +119,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const [activeConfigId, setActiveConfigId] = useState<ConfigId>(
     config.envConfig.configId
   );
-  console.log("config.envConfig.configId", config.envConfig.configId);
   useEffect(() => {
     setActiveConfigId(config.envConfig.configId);
   }, [config.envConfig.configId]);
