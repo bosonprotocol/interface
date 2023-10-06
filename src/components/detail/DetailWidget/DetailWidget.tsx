@@ -325,7 +325,7 @@ export const getOfferDetailData = (
       ),
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
-          <Typography tag="p">
+          <Typography tag="p" alignItems="center">
             <span style={{ fontSize: fontSizeExchangePolicy }}>
               {`${buyerAndSellerAgreementIncluding} ${exchangePolicyLabel}`}
             </span>
@@ -342,6 +342,7 @@ export const getOfferDetailData = (
             tag="p"
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
+            alignItems="center"
           >
             {customisedExchangePolicy}
             {modalTypes && showModal && (
@@ -354,7 +355,12 @@ export const getOfferDetailData = (
           </Typography>
         )
       ) : (
-        <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
+        <Typography
+          tag="p"
+          color="purple"
+          $fontSize={fontSizeExchangePolicy}
+          alignItems="center"
+        >
           Unknown
           {modalTypes && showModal && (
             <ArrowSquareOut
@@ -978,7 +984,13 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                         size="small"
                         theme="accentFill"
                         withBosonStyle
-                        style={{ color: colors.white, width: "100%" }}
+                        style={{
+                          color: colors.white,
+                          width: "100%",
+                          height: "auto",
+                          padding: "0 1rem",
+                          minHeight: "2.125rem"
+                        }}
                       >
                         Buy or Swap {tokenOrCoinSymbol}
                       </Button>
