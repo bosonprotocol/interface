@@ -80,10 +80,10 @@ export default function InitializeChat({ isError = false, message }: Props) {
             }}
           >
             {isInitializing ? (
-              <>
+              <Grid alignItems="flex-end" gap="0.5rem">
                 Initializing
-                <Spinner />
-              </>
+                <Spinner size={20} />
+              </Grid>
             ) : (
               <>Initialize</>
             )}
