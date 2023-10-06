@@ -50,7 +50,6 @@ export default function useSelectChain(
         if (isSupportedChain(targetChain)) {
           searchParams.set(configQueryParameters.configId, newConfigId);
           setSearchParams(searchParams);
-          console.log("newConfig", newConfig);
           setEnvConfig(newConfig);
         }
       } catch (error) {
