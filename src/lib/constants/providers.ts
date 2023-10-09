@@ -4,10 +4,11 @@ import { deepCopy } from "@ethersproject/properties";
 import { StaticJsonRpcProvider } from "@ethersproject/providers";
 import { isPlain } from "@reduxjs/toolkit";
 import { ChainId, SupportedChainsType } from "@uniswap/sdk-core";
+import { CONFIG } from "lib/config";
 
 import { AVERAGE_L1_BLOCK_TIME } from "./chainInfo";
 import { CHAIN_IDS_TO_NAMES } from "./chains";
-import { RPC_URLS } from "./networks";
+const RPC_URLS = CONFIG.rpcUrls;
 
 class AppJsonRpcProvider extends StaticJsonRpcProvider {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

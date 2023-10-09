@@ -1,6 +1,7 @@
 import {
   EnvironmentType,
   getEnvConfigs,
+  getRpcUrls,
   ProtocolConfig
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
@@ -16,7 +17,10 @@ export const envName = process.env.REACT_APP_ENV_NAME as EnvironmentType;
 if (!envName) {
   throw new Error("REACT_APP_ENV_NAME is not defined");
 }
-
+const infuraKey = process.env.REACT_APP_INFURA_KEY;
+if (!infuraKey) {
+  throw new Error("REACT_APP_INFURA_KEY is not defined");
+}
 function getMetaTxApiIds(envConfig: ProtocolConfig) {
   const protocolAddress: string = envConfig.contracts.protocolDiamond;
   const defaultTokens: Token[] = envConfig.defaultTokens || [];
@@ -160,8 +164,9 @@ export const CONFIG = {
   },
   awsApiEndpoint: process.env.REACT_APP_AWS_API_ENDPOINT as string,
   uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
-  infuraKey: process.env.REACT_APP_INFURA_KEY as string,
-  magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string
+  infuraKey,
+  magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string,
+  rpcUrls: getRpcUrls(infuraKey)
 } as const;
 export type GlobalConfig = typeof CONFIG;
 export const lensHandleMaxLength = Math.max(

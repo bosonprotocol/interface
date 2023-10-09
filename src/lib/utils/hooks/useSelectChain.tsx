@@ -1,4 +1,4 @@
-import { ConfigId } from "@bosonprotocol/react-kit";
+import { ConfigId, hooks } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
@@ -14,7 +14,6 @@ import { useSearchParams } from "react-router-dom";
 import { getConnection } from "../../connection";
 import { didUserReject } from "../../connection/utils";
 import { isSupportedChain } from "../../constants/chains";
-import { useIsMagicLoggedIn } from "./magic";
 import { useSwitchChain } from "./useSwitchChain";
 
 export default function useSelectChain(
@@ -25,7 +24,7 @@ export default function useSelectChain(
 ) {
   const { setEnvConfig } = useConfigContext();
   const { connector } = useWeb3React();
-  const isMagicLoggedIn = useIsMagicLoggedIn();
+  const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
   const switchChain = useSwitchChain(doConnect);
   const [searchParams, setSearchParams] = useSearchParams();
 

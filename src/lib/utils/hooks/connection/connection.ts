@@ -1,21 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // source: https://wagmi.sh/react/ethers-adapters
 
+import { hooks, useUser } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
-import { useUser } from "components/magicLink/UserContext";
 import { useMemo } from "react";
 import { useMutation } from "react-query";
 
-import {
-  useIsMagicLoggedIn,
-  useMagicChainId,
-  useMagicProvider
-} from "../magic";
-
 export function useProvider() {
   const { provider } = useWeb3React();
-  const magicProvider = useMagicProvider();
-  const isMagicLoggedIn = useIsMagicLoggedIn();
+  const magicProvider = hooks.useMagicProvider();
+  const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
   return isMagicLoggedIn
     ? magicProvider ?? provider
     : provider ?? magicProvider;
@@ -55,7 +49,7 @@ export function useSignMessage() {
 export function useChainId() {
   const { provider: web3ReactProvider, chainId: web3ReactChainId } =
     useWeb3React();
-  const magicChainId = useMagicChainId();
+  const magicChainId = hooks.useMagicChainId();
   const chainIdToReturn =
     web3ReactChainId ?? web3ReactProvider?._network?.chainId ?? magicChainId;
   return chainIdToReturn;

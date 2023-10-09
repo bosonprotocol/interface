@@ -1,6 +1,6 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { useAccount } from "lib/utils/hooks/connection/connection";
-import { useIsMagicLoggedIn } from "lib/utils/hooks/magic";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
@@ -19,7 +19,7 @@ const SpinnerWrapper = styled.div`
 export default function PrivateAccountContainer() {
   const { isActivating } = useWeb3React();
   const { account: address } = useAccount();
-  const isMagicLoggedIn = useIsMagicLoggedIn();
+  const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet);
 
   const {

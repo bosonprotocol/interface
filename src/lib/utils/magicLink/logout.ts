@@ -1,4 +1,4 @@
-import { SetUser } from "components/magicLink/UserContext";
+import { SetUser } from "@bosonprotocol/react-kit";
 import { Magic } from "magic-sdk";
 
 // When a user logs out, disconnect with Magic & re-set web3 provider

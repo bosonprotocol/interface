@@ -1,6 +1,6 @@
+import { MagicLoginButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
-import { MagicLoginButton } from "components/magicLink/Login";
 import { AutoColumn } from "components/ui/column";
 import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
 import { BosonRoutes } from "lib/routing/routes";

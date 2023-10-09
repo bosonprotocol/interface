@@ -1,5 +1,5 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import { CONFIG } from "lib/config";
-import { useMagic, useWalletInfo } from "lib/utils/hooks/magic";
 import { sanitizeUrl } from "lib/utils/url";
 import {
   createContext,
@@ -50,8 +50,8 @@ export const FiatLinkProvider = ({ children }: { children: ReactNode }) => {
 
 export const FiatLink: React.FC<FiatLinkProps> = ({ children, onClick }) => {
   const { setFiatLoading } = useFiatLinkContext();
-  const magic = useMagic();
-  const { data: walletInfo } = useWalletInfo();
+  const magic = hooks.useMagic();
+  const { data: walletInfo } = hooks.useWalletInfo();
   const showMoonpay =
     !magic || !walletInfo || walletInfo.walletType !== "magic";
   if (showMoonpay) {

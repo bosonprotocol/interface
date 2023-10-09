@@ -1,4 +1,4 @@
-import { ConfigId } from "@bosonprotocol/react-kit";
+import { ConfigId, hooks } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { configQueryParameters } from "lib/routing/parameters";
@@ -9,7 +9,6 @@ import { useSearchParams } from "react-router-dom";
 import { isSupportedChain } from "../../constants/chains";
 import { getConfigsByChainId } from "../config/getConfigsByChainId";
 import { useAccount, useChainId } from "./connection/connection";
-import { useIsMagicLoggedIn } from "./magic";
 import { useDisconnect } from "./useDisconnect";
 import useParsedQueryString from "./useParsedQueryString";
 import useSelectChain from "./useSelectChain";
@@ -24,7 +23,7 @@ function getParsedConfigId(parsedQs?: ParsedQs) {
 export default function useSyncChainQuery() {
   const { isActive } = useWeb3React();
   const chainId = useChainId();
-  const isMagicLoggedIn = useIsMagicLoggedIn();
+  const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
   const { account } = useAccount();
   const { config } = useConfigContext();
   const _disconnect = useDisconnect();

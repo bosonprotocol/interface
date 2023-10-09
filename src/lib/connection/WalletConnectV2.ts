@@ -8,9 +8,10 @@ import { CONFIG } from "lib/config";
 
 // import { sendAnalyticsEvent } from "analytics";
 import { L1_CHAIN_IDS, L2_CHAIN_IDS } from "../constants/chains";
-import { RPC_URLS } from "../constants/networks";
 import { zIndex } from "../styles/zIndex";
 import { isIOS } from "../utils/userAgent";
+
+const RPC_URLS = CONFIG.rpcUrls;
 
 // Avoid testing for the best URL by only passing a single URL per chain.
 // Otherwise, WC will not initialize until all URLs have been tested (see getBestUrl in web3-react).
