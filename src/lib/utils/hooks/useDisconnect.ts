@@ -1,10 +1,8 @@
-import { hooks, useUser } from "@bosonprotocol/react-kit";
+import { getMagicLogout, hooks, useUser } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { useCallback } from "react";
 import { useAppDispatch } from "state/hooks";
 import { updateSelectedWallet } from "state/user/reducer";
-
-import { getMagicLogout } from "../magicLink/logout";
 
 export const useDisconnect = () => {
   const { connector } = useWeb3React();
