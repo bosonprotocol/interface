@@ -342,6 +342,7 @@ export const getOfferDetailData = (
             tag="p"
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
+            alignItems="center"
           >
             {customisedExchangePolicy}
             {modalTypes && showModal && (
