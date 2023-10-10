@@ -37,7 +37,8 @@ export default function OfferDetail() {
   const {
     data: offer,
     isError,
-    isLoading
+    isLoading,
+    refetch: reload
   } = useOffer(
     {
       offerId: offerId || ""
@@ -162,6 +163,7 @@ export default function OfferDetail() {
               image={offerImg}
               hasSellerEnoughFunds={hasSellerEnoughFunds}
               exchangePolicyCheckResult={exchangePolicyCheckResult}
+              reload={reload}
             />
           </div>
           <DetailShare />

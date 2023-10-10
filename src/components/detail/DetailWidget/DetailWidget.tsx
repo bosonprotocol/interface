@@ -26,8 +26,9 @@ import {
 } from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
+import { useOnCloseWidget } from "lib/utils/hooks/useOnCloseWidget";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
-import { poll } from "lib/utils/promises";
+import { poll, wait } from "lib/utils/promises";
 import {
   ArrowRight,
   ArrowSquareOut,
@@ -164,6 +165,7 @@ interface IDetailWidget {
   isPreview?: boolean;
   hasMultipleVariants?: boolean;
   exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
+  reload?: () => unknown;
 }
 
 const fontSizeExchangePolicy = "0.625rem";
@@ -340,6 +342,7 @@ export const getOfferDetailData = (
             tag="p"
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
+            alignItems="center"
           >
             {customisedExchangePolicy}
             {modalTypes && showModal && (
@@ -390,7 +393,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   hasSellerEnoughFunds,
   isPreview = false,
   hasMultipleVariants,
-  exchangePolicyCheckResult
+  exchangePolicyCheckResult,
+  reload
 }) => {
   const { config } = useConfigContext();
   const [commitType, setCommitType] = useState<ActionName | undefined | null>(
@@ -863,6 +867,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       }
     }
   }, [isExchange, exchange]);
+  useOnCloseWidget(() => {
+    wait(3000).then(() => {
+      reload?.();
+    });
+  });
   const isRedeemDisabled =
     isChainUnsupported || isLoading || isOffer || isPreview || !isBuyer;
   return (

@@ -48,7 +48,8 @@ export default function ProductDetail() {
   const {
     data: productResult,
     isError,
-    isLoading
+    isLoading,
+    refetch: reload
   } = useProductByUuid(sellerId, productUuid, { enabled: !!productUuid });
 
   const product = productResult?.product;
@@ -211,6 +212,7 @@ export default function ProductDetail() {
               image={offerImg}
               hasSellerEnoughFunds={hasSellerEnoughFunds}
               exchangePolicyCheckResult={exchangePolicyCheckResult}
+              reload={reload}
             />
           </div>
           <DetailShare />
