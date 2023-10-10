@@ -112,10 +112,7 @@ export function useInitialValues() {
     }, [product, cloneBaseValues, OPTIONS_CURRENCIES, tokenDecimals]);
 
   const cloneInitialValues = useMemo(
-    () =>
-      initialValues
-        ? structuredClone(initialValues)
-        : ({} as Partial<NonNullable<typeof initialValues>>),
+    () => (initialValues ? structuredClone(initialValues) : null),
     [initialValues]
   );
 
@@ -123,7 +120,7 @@ export function useInitialValues() {
     if (cloneBaseValues.productType) {
       cloneBaseValues.productType.tokenGatedOffer = "true";
     }
-    if (cloneInitialValues.productType) {
+    if (cloneInitialValues?.productType) {
       cloneInitialValues.productType.tokenGatedOffer = "true";
     }
   }
