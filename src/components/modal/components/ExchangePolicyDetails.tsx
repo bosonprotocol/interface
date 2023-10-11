@@ -61,7 +61,10 @@ export default function ExchangePolicyDetails({
         "Commerce Agreement"
       ) : (
         <>
-          <WarningCircle size={20}></WarningCircle>
+          <WarningCircle
+            size={20}
+            style={{ verticalAlign: "text-bottom" }}
+          ></WarningCircle>
           <span style={{ margin: "0 0 0 0.2rem" }}>{"Commerce Agreement"}</span>
         </>
       ),
@@ -164,10 +167,10 @@ export default function ExchangePolicyDetails({
           }}
           style={{ cursor: "pointer" }}
         >
-          <Typography tag="p" color={exchangePolicy.contractualAgreement.color}>
+          <p style={{ color: exchangePolicy.contractualAgreement.color }}>
             {exchangePolicy.contractualAgreement.title}{" "}
             {exchangePolicy.contractualAgreement.version}{" "}
-          </Typography>
+          </p>
         </div>
         {contractualAgreementVisible ? (
           <CaretUp

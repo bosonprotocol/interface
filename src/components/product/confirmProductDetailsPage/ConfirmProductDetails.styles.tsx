@@ -8,9 +8,9 @@ import styled from "styled-components";
 import { ContainerProductPage, ProductButtonGroup } from "../Product.styles";
 
 export const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
-  max-width: 65.588rem;
-  margin: 0 auto;
-  padding-bottom: 10.875rem;
+  ${breakpoint.m} {
+    max-width: unset;
+  }
 `;
 
 export const CollapseContainer = styled.div`

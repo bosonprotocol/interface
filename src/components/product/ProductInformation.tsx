@@ -149,14 +149,14 @@ export default function ProductInformation() {
 
   const [hasDuplicated, setHasDuplicated] = useState<boolean>(false);
   const hasAdditionalInformation =
-    !!productInformation.sku ||
-    !!productInformation.id ||
-    !!productInformation.idType ||
-    !!productInformation.brandName ||
-    !!productInformation.materials ||
-    !!productInformation.manufacture ||
-    !!productInformation.manufactureModelName ||
-    !!productInformation.partNumber;
+    !!productInformation?.sku ||
+    !!productInformation?.id ||
+    !!productInformation?.idType ||
+    !!productInformation?.brandName ||
+    !!productInformation?.materials ||
+    !!productInformation?.manufacture ||
+    !!productInformation?.manufactureModelName ||
+    !!productInformation?.partNumber;
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Information</SectionTitle>

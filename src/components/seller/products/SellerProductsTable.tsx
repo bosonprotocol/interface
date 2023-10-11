@@ -649,7 +649,8 @@ export default function SellerProductsTable({
                   <Typography
                     tag="p"
                     style={{
-                      marginBottom: 0
+                      marginBottom: 0,
+                      cursor: "pointer"
                     }}
                   >
                     <b>{offer?.metadata?.name}</b>
@@ -668,7 +669,8 @@ export default function SellerProductsTable({
                   <CaretDown
                     size={14}
                     style={{
-                      marginLeft: "0.5rem"
+                      marginLeft: "0.5rem",
+                      cursor: "pointer"
                     }}
                   />
                 )}

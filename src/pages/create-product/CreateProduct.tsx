@@ -82,7 +82,9 @@ function CreateProduct() {
     hideModal();
   };
   const chooseDraft = () => {
-    setInitial(store.draft);
+    if (store.draft) {
+      setInitial(store.draft);
+    }
     setDraftModalClosed(true);
     hideModal();
   };

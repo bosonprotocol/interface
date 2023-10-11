@@ -173,7 +173,7 @@ function AboutPage() {
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Widgets Url:</span>
-        <span>{config.widgetsUrl || "-"}</span>
+        <span>{CONFIG.widgetsUrl || "-"}</span>
       </Text>
     </Wrapper>
   );

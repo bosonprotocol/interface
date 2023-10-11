@@ -32,7 +32,7 @@ export const AgreeToTermsAndSellerAgreement: React.FC<
   });
 
   return (
-    <Grid flexDirection="column">
+    <Grid flexDirection="column" alignItems="flex-start">
       <Checkbox
         name="confirmProductDetails.acceptsTerms"
         text={

@@ -211,8 +211,8 @@ export default function ConfirmProductDetails({
                     </FormField>
                   </FormFieldContainer>
                 </GridBox>
-                {values.productInformation.attributes &&
-                  values.productInformation.attributes.length &&
+                {!!values.productInformation.attributes &&
+                  !!values.productInformation.attributes.length &&
                   values.productInformation.attributes[0].name !== "" && (
                     <GridBox $minWidth="6.9rem">
                       <FormFieldContainer>
@@ -425,8 +425,13 @@ export default function ConfirmProductDetails({
                     <ContentValue tag="p">
                       {redemptionPeriod[0] && redemptionPeriod[1] && (
                         <>
-                          {dayjs(redemptionPeriod[0]).format("MMM DD")} -{" "}
-                          {dayjs(redemptionPeriod[1]).format("MMM DD")}
+                          {dayjs(redemptionPeriod[0]).format(
+                            CONFIG.shortDateFormat
+                          )}{" "}
+                          -{" "}
+                          {dayjs(redemptionPeriod[1]).format(
+                            CONFIG.shortDateFormat
+                          )}
                         </>
                       )}
                     </ContentValue>
@@ -444,11 +449,11 @@ export default function ConfirmProductDetails({
                       {offerValidityPeriod[0] && offerValidityPeriod[1] && (
                         <>
                           {dayjs(offerValidityPeriod[0]).format(
-                            CONFIG.shortMonthWithDay
+                            CONFIG.shortDateFormat
                           )}{" "}
                           -{" "}
                           {dayjs(offerValidityPeriod[1]).format(
-                            CONFIG.shortMonthWithDay
+                            CONFIG.shortDateFormat
                           )}
                         </>
                       )}

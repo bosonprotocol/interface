@@ -21,6 +21,11 @@ const infuraKey = process.env.REACT_APP_INFURA_KEY;
 if (!infuraKey) {
   throw new Error("REACT_APP_INFURA_KEY is not defined");
 }
+const widgetsUrl = process.env.REACT_APP_WIDGETS_URL;
+if (!widgetsUrl) {
+  throw new Error("REACT_APP_WIDGETS_URL is not defined");
+}
+
 function getMetaTxApiIds(envConfig: ProtocolConfig) {
   const protocolAddress: string = envConfig.contracts.protocolDiamond;
   const defaultTokens: Token[] = envConfig.defaultTokens || [];
@@ -166,7 +171,8 @@ export const CONFIG = {
   uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
   infuraKey,
   magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string,
-  rpcUrls: getRpcUrls(infuraKey)
+  rpcUrls: getRpcUrls(infuraKey),
+  widgetsUrl
 } as const;
 export type GlobalConfig = typeof CONFIG;
 export const lensHandleMaxLength = Math.max(
@@ -211,7 +217,6 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
         envConfig.lens?.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
       LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
     },
-    widgetsUrl: process.env.REACT_APP_WIDGETS_URL,
     carouselPromotedSellerId: getCarouselPromotedSellerId(envConfig)
   };
 };
