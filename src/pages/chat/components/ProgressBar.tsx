@@ -1,3 +1,4 @@
+import { darken } from "polished";
 import React, { CSSProperties } from "react";
 import styled, { css } from "styled-components";
 
@@ -25,6 +26,7 @@ const commonStyles = css`
   bottom: 0;
   border: 1px solid ${colors.lightGrey};
   padding: 0.5rem;
+  width: 100%;
 `;
 
 const Back = styled.div<{ $backgroundColor: CSSProperties["background"] }>`
@@ -37,7 +39,7 @@ const Back = styled.div<{ $backgroundColor: CSSProperties["background"] }>`
 const Front = styled.div<{ $progress: number }>`
   ${commonStyles};
   color: ${colors.black};
-  background: ${colors.lightGrey};
+  background: ${darken(0.05, colors.lightGrey)};
   clip-path: inset(0 0 0 ${({ $progress }) => $progress}%);
   transition: clip-path 1s linear;
 `;
