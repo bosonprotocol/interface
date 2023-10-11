@@ -7,11 +7,13 @@ import {
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
-import { useSignMessage } from "lib/utils/hooks/ethers/useEthersSigner";
+import {
+  useAccount,
+  useSignMessage
+} from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import {
   Dispatch,
@@ -192,7 +194,7 @@ function EscalateStepTwo({
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const { isLoading, mutateAsync: signMessage } = useSignMessage();
 
   const threadId = useMemo<ThreadId | null>(() => {

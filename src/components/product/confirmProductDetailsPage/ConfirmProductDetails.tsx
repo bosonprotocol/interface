@@ -1,5 +1,4 @@
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import Collapse from "components/collapse/Collapse";
 import { FormField } from "components/form";
 import { Spinner } from "components/loading/Spinner";
@@ -17,6 +16,7 @@ import Video from "components/ui/Video";
 import dayjs from "dayjs";
 import { CONFIG } from "lib/config";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useForm } from "lib/utils/hooks/useForm";
 import map from "lodash/map";
 import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
@@ -92,7 +92,7 @@ export default function ConfirmProductDetails({
 }: Props) {
   const { bosonXmtp } = useChatContext();
   const { values } = useForm();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   const showSuccessInitialization =
     [

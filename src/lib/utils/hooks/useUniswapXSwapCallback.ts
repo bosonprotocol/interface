@@ -2,7 +2,6 @@ import { BigNumber } from "@ethersproject/bignumber";
 import * as Sentry from "@sentry/react";
 import { signTypedData } from "@uniswap/conedison/provider/signing";
 import { DutchOrder, DutchOrderBuilder } from "@uniswap/uniswapx-sdk";
-import { useWeb3React } from "@web3-react/core";
 import { UserRejectedRequestError } from "lib/utils/errors";
 import {
   didUserReject,
@@ -10,6 +9,8 @@ import {
 } from "lib/utils/swapErrorToUserReadableMessage";
 import { useCallback } from "react";
 import { DutchOrderTrade, TradeFillType } from "state/routing/types";
+
+import { useAccount, useProvider } from "./connection/connection";
 
 const DEFAULT_START_TIME_PADDING_SECONDS = 30;
 
@@ -58,7 +59,8 @@ export function useUniswapXSwapCallback({
 }: {
   trade?: DutchOrderTrade;
 }) {
-  const { account, provider } = useWeb3React();
+  const provider = useProvider();
+  const { account } = useAccount();
 
   return useCallback(async () => {
     if (!account) throw new Error("missing account");

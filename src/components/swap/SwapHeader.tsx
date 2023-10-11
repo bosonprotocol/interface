@@ -1,5 +1,9 @@
 import { Percent } from "@uniswap/sdk-core";
-import { FiatLink } from "components/header/accountDrawer/fiatOnrampModal/FiatLink";
+import {
+  FiatLink,
+  useFiatLinkContext
+} from "components/header/accountDrawer/fiatOnrampModal/FiatLink";
+import { Spinner } from "components/loading/Spinner";
 import { SettingsTab } from "components/settings/index";
 import Button from "components/ui/Button";
 import Grid from "components/ui/Grid";
@@ -37,6 +41,7 @@ export default function SwapHeader({
   chainId?: number;
   trade?: InterfaceTrade;
 }) {
+  const { isFiatLoading } = useFiatLinkContext();
   const navigate = useKeepQueryParamsNavigate();
   const location = useLocation();
   const { state } = location;
@@ -55,7 +60,12 @@ export default function SwapHeader({
             }
           }}
         >
-          <StyledTextButton theme="blankSecondary">Buy</StyledTextButton>
+          <Grid>
+            <StyledTextButton theme="blankSecondary" disabled={isFiatLoading}>
+              Buy
+            </StyledTextButton>
+            {isFiatLoading && <Spinner size={15} />}
+          </Grid>
         </FiatLink>
       </HeaderButtonContainer>
       <SettingsTab

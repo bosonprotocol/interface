@@ -6,7 +6,6 @@ import {
   PermitSingle
 } from "@uniswap/permit2-sdk";
 import { CurrencyAmount, Token } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import PERMIT2_ABI from "abis/permit2.json";
 import { Permit2 } from "abis/types";
 import { toReadableError, UserRejectedRequestError } from "lib/utils/errors";
@@ -15,6 +14,8 @@ import { useContract } from "lib/utils/hooks/useContract";
 import { didUserReject } from "lib/utils/swapErrorToUserReadableMessage";
 import ms from "ms";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { useAccount, useChainId, useProvider } from "./connection/connection";
 
 const PERMIT_EXPIRATION = ms(`30d`);
 const PERMIT_SIG_EXPIRATION = ms(`30m`);
@@ -78,7 +79,9 @@ export function useUpdatePermitAllowance(
   nonce: number | undefined,
   onPermitSignature: (signature: PermitSignature) => void
 ) {
-  const { account, chainId, provider } = useWeb3React();
+  const chainId = useChainId();
+  const provider = useProvider();
+  const { account } = useAccount();
   return useCallback(async () => {
     try {
       if (!chainId) throw new Error("missing chainId");

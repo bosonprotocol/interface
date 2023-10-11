@@ -1,10 +1,10 @@
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useCallback } from "react";
 import create from "zustand";
 
 import { EventLog } from "../../transactions";
+import { useAccount } from "../connection/connection";
 
 type PendingTransaction = Omit<EventLog, "__typename" | "account"> & {
   accountType: "Buyer" | "Seller" | string;
@@ -38,7 +38,7 @@ export function createPendingTx(
 }
 
 export function useAddPendingTransaction() {
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   const { addPendingTransaction } = usePendingTransactionsStore();
 

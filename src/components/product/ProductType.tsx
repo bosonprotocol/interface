@@ -4,6 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useOpenAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
@@ -123,7 +124,8 @@ export default function ProductType({
   );
   const [connectModalOpen, openConnectModal] = useOpenAccountDrawer();
   const navigate = useKeepQueryParamsNavigate();
-  const { account: address, isActivating } = useWeb3React();
+  const { isActivating } = useWeb3React();
+  const { account: address } = useAccount();
   const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
     useForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =

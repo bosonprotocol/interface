@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect, useState } from "react";
 
 import { BosonRoutes } from "../../../../../lib/routing/routes";
@@ -27,7 +27,7 @@ export default function ChooseLensProfile({
   onChooseUseExisting,
   isEdit
 }: Props) {
-  const { account: address = "" } = useWeb3React();
+  const { account: address = "" } = useAccount();
   const navigate = useKeepQueryParamsNavigate();
   const { data: admins } = useSellers(
     {

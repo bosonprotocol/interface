@@ -1,5 +1,4 @@
 import { Currency, CurrencyAmount, TradeType } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { WRAPPED_NATIVE_CURRENCY } from "lib/constants/tokens";
 import { useMemo } from "react";
 import {
@@ -12,6 +11,7 @@ import {
 import { useRoutingAPITrade } from "state/routing/useRoutingAPITrade";
 import { useRouterPreference } from "state/user/hooks";
 
+import { useChainId } from "./connection/connection";
 import useAutoRouterSupported from "./useAutoRouterSupported";
 import useDebounce from "./useDebounce";
 import useIsWindowVisible from "./useIsWindowVisible";
@@ -66,7 +66,7 @@ export function useDebouncedTrade(
   method?: QuoteMethod;
   swapQuoteLatency?: number;
 } {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const autoRouterSupported = useAutoRouterSupported();
   const isWindowVisible = useIsWindowVisible();
 

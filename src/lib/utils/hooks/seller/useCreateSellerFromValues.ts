@@ -1,11 +1,11 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import { useMutation } from "react-query";
 
 import { BosonAccount } from "../../../../components/modal/components/Profile/bosonAccount/validationSchema";
 import { ProfileType } from "../../../../components/modal/components/Profile/const";
 import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
+import { useAccount } from "../connection/connection";
 import useCreateSeller from "./useCreateSeller";
 import useStoreSellerMetadata from "./useStoreSellerMetadata";
 
@@ -17,7 +17,7 @@ type StoreSellerMetadataFn = ReturnType<
 >["mutateAsync"];
 
 export default function useCreateSellerFromValues() {
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const { mutateAsync: createSeller } = useCreateSeller();
   const { mutateAsync: storeSellerMetadata } = useStoreSellerMetadata();
 

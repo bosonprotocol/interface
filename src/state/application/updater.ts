@@ -1,5 +1,9 @@
-import { useWeb3React } from "@web3-react/core";
 import { asSupportedChain } from "lib/constants/chains";
+import {
+  useAccount,
+  useChainId,
+  useProvider
+} from "lib/utils/hooks/connection/connection";
 import useDebounce from "lib/utils/hooks/useDebounce";
 import useIsWindowVisible from "lib/utils/hooks/useIsWindowVisible";
 import { useEffect, useRef, useState } from "react";
@@ -9,7 +13,10 @@ import { useCloseModal } from "./hooks";
 import { updateChainId } from "./reducer";
 
 export function ApplicationUpdater(): null {
-  const { account, chainId, provider } = useWeb3React();
+  const chainId = useChainId();
+  const provider = useProvider();
+  const { account } = useAccount();
+
   const dispatch = useAppDispatch();
   const windowVisible = useIsWindowVisible();
 

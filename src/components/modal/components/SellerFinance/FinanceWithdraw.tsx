@@ -12,7 +12,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
-import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
+import { useSigner } from "../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
@@ -57,7 +57,7 @@ export default function FinanceWithdraw({
   const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(true);
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const addPendingTransaction = useAddPendingTransaction();
 
   const { balance: exchangeTokenBalance } = useExchangeTokenBalance({

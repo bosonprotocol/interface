@@ -1,9 +1,11 @@
-import { useWeb3React } from "@web3-react/core";
 import { ChatDots, Warning } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
-import { useEthersSigner } from "../../../../../lib/utils/hooks/ethers/useEthersSigner";
+import {
+  useAccount,
+  useSigner
+} from "../../../../../lib/utils/hooks/connection/connection";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
 import ConnectButton from "../../../../header/ConnectButton";
 import { Spinner } from "../../../../loading/Spinner";
@@ -34,9 +36,9 @@ interface Props {
   message?: string;
 }
 export default function InitializeChat({ isError = false, message }: Props) {
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const { initialize, bosonXmtp, isInitializing } = useChatContext();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   const isInitializeButtonVisible =
     (address && !bosonXmtp) || (isError && address && !bosonXmtp);
@@ -78,10 +80,10 @@ export default function InitializeChat({ isError = false, message }: Props) {
             }}
           >
             {isInitializing ? (
-              <>
+              <Grid alignItems="flex-end" gap="0.5rem">
                 Initializing
-                <Spinner />
-              </>
+                <Spinner size={20} />
+              </Grid>
             ) : (
               <>Initialize</>
             )}

@@ -6,8 +6,8 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -81,7 +81,7 @@ export default function Exchange({ offer, exchange }: Props) {
     height: 500
   });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
 
   const handleText = useHandleText(offer);

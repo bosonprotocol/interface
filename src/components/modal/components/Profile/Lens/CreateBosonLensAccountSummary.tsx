@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { Warning } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -45,7 +45,7 @@ export default function CreateBosonLensAccountSummary({
   const logoImage = getIpfsGatewayUrl(logo?.src || "");
   const coverPicture = getIpfsGatewayUrl(cover?.src || "");
 
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const { data: admins } = useSellers(
     {
       admin: address

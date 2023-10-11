@@ -1,4 +1,4 @@
-import { ConfigId } from "@bosonprotocol/react-kit";
+import { ConfigId, hooks } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { configQueryParameters } from "lib/routing/parameters";
@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 
 import { isSupportedChain } from "../../constants/chains";
 import { getConfigsByChainId } from "../config/getConfigsByChainId";
+import { useAccount, useChainId } from "./connection/connection";
 import { useDisconnect } from "./useDisconnect";
 import useParsedQueryString from "./useParsedQueryString";
 import useSelectChain from "./useSelectChain";
@@ -20,7 +21,10 @@ function getParsedConfigId(parsedQs?: ParsedQs) {
 }
 
 export default function useSyncChainQuery() {
-  const { chainId, isActive, account } = useWeb3React();
+  const { isActive } = useWeb3React();
+  const chainId = useChainId();
+  const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
+  const { account } = useAccount();
   const { config } = useConfigContext();
   const _disconnect = useDisconnect();
 
@@ -36,7 +40,7 @@ export default function useSyncChainQuery() {
     _disconnect();
   }, [_disconnect]);
   useEffect(() => {
-    if (!isActive) {
+    if (!isActive || isMagicLoggedIn) {
       return;
     }
     const alreadyConnected = !!accountAlreadyConnected.current;
@@ -80,7 +84,7 @@ export default function useSyncChainQuery() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, chainId, isActive]);
+  }, [account, chainId, isActive, isMagicLoggedIn]);
   useEffect(() => {
     if (account && account !== accountRef.current) {
       configIdRef.current = currentConfigId;
@@ -107,11 +111,10 @@ export default function useSyncChainQuery() {
   useEffect(() => {
     // if the connected chainId does not match the query param configId, change the user's chain on pageload
     if (
-      isActive &&
+      ((isActive && !account) || isMagicLoggedIn) &&
       urlConfigId &&
       configIdRef.current === currentConfigId &&
-      currentConfigId !== urlConfigId &&
-      !account
+      currentConfigId !== urlConfigId
     ) {
       selectChain(urlConfigId as ConfigId);
     }
@@ -147,6 +150,7 @@ export default function useSyncChainQuery() {
     account,
     setSearchParams,
     disconnect,
-    currentChainId
+    currentChainId,
+    isMagicLoggedIn
   ]);
 }

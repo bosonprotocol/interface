@@ -1,6 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -65,7 +65,7 @@ export default function CreateProfileModal({
   const { config } = useConfigContext();
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
-  const { account: address = "" } = useWeb3React();
+  const { account: address = "" } = useAccount();
 
   const {
     data: lensData,

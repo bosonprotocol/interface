@@ -2,10 +2,10 @@ import { MessageType } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/defini
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
@@ -120,7 +120,7 @@ function RaiseDisputePage() {
   const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { showModal, hideModal } = useModal();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const coreSDK = useCoreSDK();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);

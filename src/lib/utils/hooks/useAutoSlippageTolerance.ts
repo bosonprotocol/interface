@@ -12,7 +12,6 @@ import {
 } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
 import { Pool } from "@uniswap/v3-sdk";
-import { useWeb3React } from "@web3-react/core";
 import JSBI from "jsbi";
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "lib/constants/chains";
 import { L2_CHAIN_IDS } from "lib/constants/chains";
@@ -20,6 +19,7 @@ import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
 import { useMemo } from "react";
 import { ClassicTrade } from "state/routing/types";
 
+import { useChainId } from "./connection/connection";
 import useGasPrice from "./useGasPrice";
 import useStablecoinPrice, {
   useStablecoinAmountFromFiatValue,
@@ -107,7 +107,7 @@ const MAX_AUTO_SLIPPAGE_TOLERANCE = new Percent(5, 100); // 5%
 export default function useClassicAutoSlippageTolerance(
   trade?: ClassicTrade
 ): Percent {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const onL2 = chainId && L2_CHAIN_IDS.includes(chainId);

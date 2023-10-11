@@ -7,9 +7,9 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
 import { utils } from "ethers";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { ArrowLeft, WarningCircle } from "phosphor-react";
 import {
   ReactNode,
@@ -275,7 +275,7 @@ const ChatConversation = ({
     { enabled: !!exchange }
   );
   const dispute = disputes?.[0];
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;

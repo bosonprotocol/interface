@@ -10,7 +10,7 @@ import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { displayFloat } from "../../../lib/utils/calcPrice";
-import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
+import { useSigner } from "../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -64,7 +64,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
   const { hideModal, showModal } = useModal();
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const navigate = useKeepQueryParamsNavigate();
 
   const { currency, price, penalty, refund } = useRefundData(

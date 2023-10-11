@@ -1,7 +1,6 @@
 import { CSSProperties } from "react";
 
 import { colors } from "../../../lib/styles/colors";
-import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 
@@ -17,14 +16,13 @@ export default function DetailTopRightLabel({
   style,
   typographyStyle
 }: Props) {
-  const { isLteXS } = useBreakpoints();
   return (
     <Grid
       flexDirection="column"
       $height="100%"
       alignItems="flex-end"
       justifyContent="center"
-      style={{ marginTop: isLteXS ? "-7rem" : "0", ...style }}
+      style={style}
     >
       <Typography
         tag="p"

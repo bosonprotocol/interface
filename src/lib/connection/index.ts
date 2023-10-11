@@ -11,12 +11,12 @@ import COINBASE_ICON from "assets/wallets/coinbase-icon.svg";
 import UNIWALLET_ICON from "assets/wallets/uniswap-wallet-icon.png";
 import WALLET_CONNECT_ICON from "assets/wallets/walletconnect-icon.svg";
 import {
+  CONFIG,
   defaultChainId,
   defaultChainId as importedDefaultChainId
 } from "lib/config";
 import { useSyncExternalStore } from "react";
 
-import { RPC_URLS } from "../constants/networks";
 import { RPC_PROVIDERS } from "../constants/providers";
 import { isMobile, isNonIOSPhone } from "../utils/userAgent";
 import { Connection, ConnectionType } from "./types";
@@ -30,6 +30,7 @@ import {
   UniwalletConnect as UniwalletWCV2Connect,
   WalletConnectV2
 } from "./WalletConnectV2";
+const RPC_URLS = CONFIG.rpcUrls;
 
 function onError(error: Error) {
   console.debug(`web3-react error: ${error}`);

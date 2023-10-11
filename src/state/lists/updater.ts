@@ -1,9 +1,9 @@
 import { getVersionUpgrade, VersionUpgrade } from "@uniswap/token-lists";
-import { useWeb3React } from "@web3-react/core";
 import {
   DEFAULT_LIST_OF_LISTS,
   UNSUPPORTED_LIST_URLS
 } from "lib/constants/lists";
+import { useProvider } from "lib/utils/hooks/connection/connection";
 import { useFetchListCallback } from "lib/utils/hooks/useFetchListCallback";
 import useInterval from "lib/utils/hooks/useInterval";
 import useIsWindowVisible from "lib/utils/hooks/useIsWindowVisible";
@@ -16,7 +16,7 @@ import { acceptListUpdate } from "./actions";
 import { shouldAcceptVersionUpdate } from "./utils";
 
 export function ListsUpdater(): null {
-  const { provider } = useWeb3React();
+  const provider = useProvider();
   const dispatch = useAppDispatch();
   const isWindowVisible = useIsWindowVisible();
 

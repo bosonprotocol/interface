@@ -1,5 +1,4 @@
 import { Percent, TradeType } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { currencyId } from "lib/utils/currencyId";
 import { PermitSignature } from "lib/utils/hooks/usePermitAllowance";
 import useTransactionDeadline from "lib/utils/hooks/useTransactionDeadline";
@@ -17,6 +16,8 @@ import {
   TransactionType
 } from "state/transactions/types";
 
+import { useAccount, useChainId } from "./connection/connection";
+
 export type SwapResult = Awaited<
   ReturnType<ReturnType<typeof useSwapCallback>>
 >;
@@ -33,7 +34,8 @@ export function useSwapCallback(
 
   const addTransaction = useTransactionAdder();
   const addOrder = useAddOrder();
-  const { account, chainId } = useWeb3React();
+  const chainId = useChainId();
+  const { account } = useAccount();
 
   const uniswapXSwapCallback = useUniswapXSwapCallback({
     trade: isUniswapXTrade(trade) ? trade : undefined

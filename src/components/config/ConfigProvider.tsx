@@ -1,10 +1,11 @@
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
+import { MagicProvider } from "components/magicLink/MagicContext";
 import {
   defaultEnvConfig,
   envConfigsFilteredByEnv,
   getDappConfig
 } from "lib/config";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { ReactNode, useEffect, useState } from "react";
 
 import { Context, useConfigContext } from "./ConfigContext";
@@ -16,7 +17,7 @@ type ConfigProviderProps = {
 function SyncCurrentConfigId({
   children
 }: Pick<ConfigProviderProps, "children">) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const { setEnvConfig } = useConfigContext();
   useEffect(() => {
     const newEnvConfig = envConfigsFilteredByEnv.find(
@@ -34,7 +35,9 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   const dappConfig = getDappConfig(envConfig || defaultEnvConfig);
   return (
     <Context.Provider value={{ config: dappConfig, setEnvConfig }}>
-      <SyncCurrentConfigId>{children}</SyncCurrentConfigId>
+      <MagicProvider>
+        <SyncCurrentConfigId>{children}</SyncCurrentConfigId>
+      </MagicProvider>
     </Context.Provider>
   );
 }

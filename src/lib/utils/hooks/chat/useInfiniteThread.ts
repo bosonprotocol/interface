@@ -4,12 +4,12 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
-import { useWeb3React } from "@web3-react/core";
 import { utils } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
 import { ThreadObjectWithInfo } from "../../../../pages/chat/types";
+import { useAccount } from "../connection/connection";
 import {
   DateStep,
   getDedupSortedMessages,
@@ -62,7 +62,7 @@ export function useInfiniteThread({
     index: 0,
     trigger: true
   });
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
   const [threadXmtp, setThreadXmtp] = useState<ThreadObjectWithInfo | null>(

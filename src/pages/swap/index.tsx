@@ -9,6 +9,7 @@ import { UNIVERSAL_ROUTER_ADDRESS } from "@uniswap/universal-router-sdk";
 import { useWeb3React } from "@web3-react/core";
 import AddressInputPanel from "components/addressInputPanel";
 import { GrayCard } from "components/card";
+import { useConfigContext } from "components/config/ConfigContext";
 import SwapCurrencyInputPanel from "components/currencyInputPanel/SwapCurrencyInputPanel";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { useToggleAccountDrawer } from "components/header/accountDrawer";
@@ -35,6 +36,7 @@ import { opacify } from "lib/styles/opacify";
 import { PreventCustomStoreStyles } from "lib/styles/preventCustomStoreStyles";
 import { computeFiatValuePriceImpact } from "lib/utils/computeFiatValuePriceImpact";
 import { formatCurrencyAmount, NumberType } from "lib/utils/formatNumbers";
+import { useAccount, useChainId } from "lib/utils/hooks/connection/connection";
 import { useCurrency, useDefaultActiveTokens } from "lib/utils/hooks/Tokens";
 import { useIsSwapUnsupported } from "lib/utils/hooks/useIsSwapUnsupported";
 import { useMaxAmountIn } from "lib/utils/hooks/useMaxAmountIn";
@@ -154,7 +156,8 @@ function largerPercentValue(a?: Percent, b?: Percent) {
 }
 
 export default function SwapPage({ className }: { className?: string }) {
-  const { chainId: connectedChainId } = useWeb3React();
+  const { config } = useConfigContext();
+  const connectedChainId = useChainId();
   const loadedUrlParams = useDefaultsFromURLSearch();
 
   const supportedChainId = asSupportedChain(connectedChainId);
@@ -179,7 +182,11 @@ export default function SwapPage({ className }: { className?: string }) {
         )}
         <Swap
           className={className}
-          chainId={supportedChainId ?? ChainId.MAINNET}
+          chainId={
+            supportedChainId ??
+            (config.envConfig.chainId as ChainId) ??
+            ChainId.MAINNET
+          }
           prefilledState={{
             [Field.INPUT]: {
               currencyId: loadedUrlParams?.[Field.INPUT]?.currencyId
@@ -219,7 +226,10 @@ export function Swap({
   ) => void;
   disableTokenInputs?: boolean;
 }) {
-  const { account, chainId: connectedChainId, connector } = useWeb3React();
+  const connectedChainId = useChainId();
+
+  const { connector } = useWeb3React();
+  const { account } = useAccount();
 
   // token warning stuff
   const prefilledInputCurrency = useCurrency(

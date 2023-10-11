@@ -1,3 +1,4 @@
+import { MagicLoginButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { AutoColumn } from "components/ui/column";
@@ -5,6 +6,7 @@ import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
 import { BosonRoutes } from "lib/routing/routes";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { getCurrentViewMode, ViewMode } from "lib/viewMode";
 import { useEffect } from "react";
 import styled from "styled-components";
@@ -51,7 +53,8 @@ const PrivacyPolicyWrapper = styled.div`
 `;
 
 export default function WalletModal() {
-  const { connector, chainId } = useWeb3React();
+  const chainId = useChainId();
+  const { connector } = useWeb3React();
 
   const { activationState } = useActivationState();
 
@@ -82,6 +85,7 @@ export default function WalletModal() {
                 <Option key={connection.getName()} connection={connection} />
               ))}
           </OptionGrid>
+          <MagicLoginButton />
           <PrivacyPolicyWrapper>
             By connecting a wallet, you agree to{" "}
             {viewMode === ViewMode.DAPP ? "Boson App" : "Boson Dispute Center"}

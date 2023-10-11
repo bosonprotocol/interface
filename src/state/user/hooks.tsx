@@ -1,6 +1,5 @@
 import { Percent, Token, V2_FACTORY_ADDRESSES } from "@uniswap/sdk-core";
 import { computePairAddress, Pair } from "@uniswap/v2-sdk";
-import { useWeb3React } from "@web3-react/core";
 import JSBI from "jsbi";
 import { L2_CHAIN_IDS } from "lib/constants/chains";
 import { SupportedLocale } from "lib/constants/locales";
@@ -10,6 +9,7 @@ import {
   PINNED_PAIRS
 } from "lib/constants/routing";
 import { UserAddedToken } from "lib/types/tokens";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { useDefaultActiveTokens } from "lib/utils/hooks/Tokens";
 import { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "state/hooks";
@@ -178,7 +178,7 @@ export function useUserHideClosedPositions(): [
 }
 
 export function useUserTransactionTTL(): [number, (slippage: number) => void] {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const dispatch = useAppDispatch();
   const userDeadline = useAppSelector((state) => state.user.userDeadline);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -223,7 +223,7 @@ function useUserAddedTokensOnChain(
 }
 
 export function useUserAddedTokens(): Token[] {
-  return useUserAddedTokensOnChain(useWeb3React().chainId);
+  return useUserAddedTokensOnChain(useChainId());
 }
 
 function serializePair(pair: Pair): SerializedPair {
@@ -294,7 +294,7 @@ export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
  * Returns all the pairs of tokens that are tracked by the user for the current chain ID.
  */
 export function useTrackedTokenPairs(): [Token, Token][] {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const tokens = useDefaultActiveTokens(chainId);
 
   // pinned pairs

@@ -1,5 +1,5 @@
-import { useWeb3React } from "@web3-react/core";
 import Column from "components/ui/column";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import styled from "styled-components";
 
 import WalletModal from "../walletModal";
@@ -11,7 +11,7 @@ const DefaultMenuWrap = styled(Column)`
 `;
 
 function DefaultMenu() {
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const isAuthenticated = !!account;
 
   return (

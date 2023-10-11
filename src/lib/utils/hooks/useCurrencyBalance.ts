@@ -1,6 +1,5 @@
 import { Interface } from "@ethersproject/abi";
 import { Currency, CurrencyAmount, Token } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import ERC20ABI from "abis/erc20.json";
 import { Erc20Interface } from "abis/types/Erc20";
 import JSBI from "jsbi";
@@ -13,6 +12,7 @@ import { useMemo } from "react";
 
 import { nativeOnChain } from "../../constants/tokens";
 import { isAddress } from "../address";
+import { useChainId } from "./connection/connection";
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -22,7 +22,7 @@ export function useNativeCurrencyBalances(
 ): {
   [address: string]: CurrencyAmount<Currency> | undefined;
 } {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const multicallContract = useInterfaceMulticall();
 
   const validAddressInputs: [string][] = useMemo(
@@ -67,10 +67,13 @@ const tokenBalancesGasRequirement = { gasRequired: 185_000 };
  * Returns a map of token addresses to their eventually consistent token balances for a single account.
  */
 export function useTokenBalancesWithLoadingIndicator(
+  chainId: number | undefined, // we cannot fetch balances cross-chain
   address?: string,
   tokens?: (Token | undefined)[]
-): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
-  const { chainId } = useWeb3React(); // we cannot fetch balances cross-chain
+): readonly [
+  { [tokenAddress: string]: CurrencyAmount<Token> | undefined },
+  boolean
+] {
   const validatedTokens: Token[] = useMemo(
     () =>
       tokens?.filter(
@@ -85,6 +88,8 @@ export function useTokenBalancesWithLoadingIndicator(
   );
 
   const balances = useMultipleContractSingleData(
+    chainId,
+    0, // not used
     validatedTokenAddresses,
     ERC20Interface,
     "balanceOf",
@@ -97,39 +102,48 @@ export function useTokenBalancesWithLoadingIndicator(
     [balances]
   );
 
-  return useMemo(
-    () => [
-      address && validatedTokens.length > 0
-        ? validatedTokens.reduce<{
-            [tokenAddress: string]: CurrencyAmount<Token> | undefined;
-          }>((memo, token, i) => {
-            const value = balances?.[i]?.result?.[0];
-            const amount = value ? JSBI.BigInt(value.toString()) : undefined;
-            if (amount) {
-              memo[token.address] = CurrencyAmount.fromRawAmount(token, amount);
-            }
-            return memo;
-          }, {})
-        : {},
-      anyLoading
-    ],
+  const result = useMemo(
+    () =>
+      [
+        address && validatedTokens.length > 0
+          ? validatedTokens.reduce<{
+              [tokenAddress: string]: CurrencyAmount<Token> | undefined;
+            }>((memo, token, i) => {
+              const value = balances?.[i]?.result?.[0];
+              const amount = value ? JSBI.BigInt(value.toString()) : undefined;
+              if (amount) {
+                memo[token.address] = CurrencyAmount.fromRawAmount(
+                  token,
+                  amount
+                );
+              }
+              return memo;
+            }, {})
+          : {},
+        anyLoading
+      ] as const,
     [address, validatedTokens, anyLoading, balances]
   );
+
+  return result;
 }
 
 export function useTokenBalances(
+  chainId: number | undefined,
   address?: string,
   tokens?: (Token | undefined)[]
 ): { [tokenAddress: string]: CurrencyAmount<Token> | undefined } {
-  return useTokenBalancesWithLoadingIndicator(address, tokens)[0];
+  return useTokenBalancesWithLoadingIndicator(chainId, address, tokens)[0];
 }
 
 // get the balance for a single token/account combo
 export function useTokenBalance(
+  chainId: number | undefined,
   account?: string,
   token?: Token
 ): CurrencyAmount<Token> | undefined {
   const tokenBalances = useTokenBalances(
+    chainId,
     account,
     useMemo(() => [token], [token])
   );
@@ -149,8 +163,8 @@ export function useCurrencyBalances(
     [currencies]
   );
 
-  const { chainId } = useWeb3React();
-  const tokenBalances = useTokenBalances(account, tokens);
+  const chainId = useChainId();
+  const tokenBalances = useTokenBalances(chainId, account, tokens);
   const containsETH: boolean = useMemo(
     () => currencies?.some((currency) => currency?.isNative) ?? false,
     [currencies]

@@ -3,7 +3,6 @@ import { Check } from "phosphor-react";
 import styled from "styled-components";
 
 import { getChainInfo } from "../../../lib/constants/chainInfo";
-import { breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Spinner } from "../../loading/Spinner";
 
@@ -24,11 +23,8 @@ const Container = styled.button<{ disabled: boolean }>`
   padding: 10px 8px;
   text-align: left;
   transition: 250ms ease background-color;
-  width: 240px;
-
-  @media only screen and (max-width: ${breakpointNumbers.s}px) {
-    width: 100%;
-  }
+  min-width: 240px;
+  width: 100%;
 
   &:hover {
     background-color: ${({ disabled }) =>

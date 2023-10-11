@@ -1,5 +1,4 @@
 import { Percent, TradeType } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { Separator } from "components/icons";
 import { LoadingRows } from "components/loader/styled";
 import Tooltip from "components/tooltip/Tooltip";
@@ -13,6 +12,7 @@ import {
   formatPriceImpact,
   NumberType
 } from "lib/utils/formatNumbers";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import useNativeCurrency from "lib/utils/hooks/useNativeCurrency";
 import { InterfaceTrade } from "state/routing/types";
 import { isClassicTrade } from "state/routing/utils";
@@ -50,7 +50,7 @@ export function AdvancedSwapDetails({
   allowedSlippage,
   syncing = false
 }: AdvancedSwapDetailsProps) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const nativeCurrency = useNativeCurrency(chainId);
 
   const supportsGasEstimate =

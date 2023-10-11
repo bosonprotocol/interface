@@ -1,14 +1,11 @@
 import { TransactionReceipt } from "@ethersproject/abstract-provider";
-import { SwapEventName } from "@uniswap/analytics-events";
-import { useWeb3React } from "@web3-react/core";
-import { sendAnalyticsEvent, useTrace } from "analytics";
-import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from "constants/misc";
-import LibUpdater from "lib/hooks/transactions/updater";
+import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from "lib/constants/misc";
+import LibUpdater from "lib/hooks/transactions/updater"; // TODO:
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { useCallback, useMemo } from "react";
 import { PopupType } from "state/application/reducer";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 
-import { L2_CHAIN_IDS } from "../../constants/chains";
 import { useAddPopup } from "../application/hooks";
 import { isPendingTx } from "./hooks";
 import { checkedTransaction, finalizeTransaction } from "./reducer";
@@ -29,24 +26,11 @@ export function toSerializableReceipt(
   };
 }
 
-// We only log the time-to-swap metric for the first swap of a session.
-let hasReportedTimeToSwap = false;
-
-/**
- * Returns the time elapsed between page load and now,
- * if the time-to-swap mark doesn't already exist.
- */
-function getElapsedTime(): number {
-  const timeToSwap = performance.mark("time-to-swap");
-  return timeToSwap.startTime;
-}
-
 export default function Updater() {
-  const analyticsContext = useTrace();
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const addPopup = useAddPopup();
   // speed up popup dismisall time if on L2
-  const isL2 = Boolean(chainId && L2_CHAIN_IDS.includes(chainId));
+  const isL2 = false;
   const transactions = useAppSelector((state) => state.transactions);
   const pendingTransactions = useMemo(() => {
     if (!chainId || !transactions[chainId]) return {};
@@ -87,18 +71,6 @@ export default function Updater() {
         })
       );
 
-      const elapsedTime = getElapsedTime();
-
-      sendAnalyticsEvent(SwapEventName.SWAP_TRANSACTION_COMPLETED, {
-        // if timeToSwap was already set, we already logged this session
-        time_to_swap: hasReportedTimeToSwap ? undefined : elapsedTime,
-        chainId,
-        hash,
-        ...analyticsContext
-      });
-
-      hasReportedTimeToSwap = true;
-
       addPopup(
         {
           type: PopupType.Transaction,
@@ -108,7 +80,7 @@ export default function Updater() {
         isL2 ? L2_TXN_DISMISS_MS : DEFAULT_TXN_DISMISS_MS
       );
     },
-    [addPopup, analyticsContext, dispatch, isL2]
+    [addPopup, dispatch, isL2]
   );
 
   return (

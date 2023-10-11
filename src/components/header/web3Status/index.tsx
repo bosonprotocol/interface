@@ -1,4 +1,4 @@
-import { Button, ThemedButton } from "@bosonprotocol/react-kit";
+import { Button, hooks, ThemedButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import Tooltip from "components/tooltip/Tooltip";
 import Grid from "components/ui/Grid";
@@ -8,6 +8,7 @@ import { CHAIN_IDS_TO_FRIENDLY_NAMES } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { getConfigsByChainId } from "lib/utils/config/getConfigsByChainId";
+import { useAccount, useChainId } from "lib/utils/hooks/connection/connection";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
@@ -40,6 +41,7 @@ const Web3StatusGeneric = styled.button`
 
 const breakpointWhenConnectButtonOverflows = "1300px";
 const Web3StatusConnected = styled(Web3StatusGeneric)<{ $color: string }>`
+  border: 1px solid transparent;
   font-weight: 500;
   color: ${({ $color }) => $color};
   :hover,
@@ -54,6 +56,20 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ $color: string }>`
   @media (min-width: ${breakpointWhenConnectButtonOverflows}) {
     background-color: var(--buttonBgColor);
     border: 1px solid var(--buttonBgColor);
+  }
+  ${breakpoint.xxs} {
+    border-radius: 8px;
+    margin: initial;
+    * {
+      margin: initial;
+    }
+  }
+  @media (min-width: ${breakpointNumbers.l}px) and (max-width: ${breakpointWhenConnectButtonOverflows}) {
+    border-radius: 8px;
+    margin: initial;
+    * {
+      margin: initial;
+    }
   }
 `;
 
@@ -96,7 +112,17 @@ const getCommonWalletButtonProps = (isXXS: boolean) =>
     }
   } as const);
 function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
-  const { chainId, account, isActive } = useWeb3React();
+  const switchingChain = useAppSelector(
+    (state) => state.wallets.switchingChain
+  );
+  const ignoreWhileSwitchingChain = useCallback(
+    () => !switchingChain,
+    [switchingChain]
+  );
+  const { account } = useLast(useAccount(), ignoreWhileSwitchingChain);
+
+  const { isActive } = useWeb3React();
+  const chainId = useChainId();
   const accountRef = useRef(account);
   const chainIdRef = useRef(chainId);
   useEffect(() => {
@@ -110,13 +136,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
     }
   }, [chainId, account]);
   const { isXXS } = useBreakpoints();
-  const switchingChain = useAppSelector(
-    (state) => state.wallets.switchingChain
-  );
-  const ignoreWhileSwitchingChain = useCallback(
-    () => !switchingChain,
-    [switchingChain]
-  );
+
   const { connector } = useLast(useWeb3React(), ignoreWhileSwitchingChain);
   const connection = getConnection(connector);
   const { ENSName } = useENSName(account);
@@ -135,8 +155,10 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   const previousChainId = chainIdRef.current;
   const configsPreviousChain = getConfigsByChainId(previousChainId);
   const configsCurrentChain = getConfigsByChainId(chainId);
-
-  const connectedToWrongChainId = account
+  const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
+  const connectedToWrongChainId = isMagicLoggedIn
+    ? false
+    : account
     ? !configsCurrentChain?.length
     : wasConnected && !configsPreviousChain?.length && isActive;
 

@@ -1,5 +1,5 @@
-import { useWeb3React } from "@web3-react/core";
 import { useFormikContext } from "formik";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { ReactNode } from "react";
 
 import { getIpfsGatewayUrl } from "../../../../lib/utils/ipfs";
@@ -33,7 +33,7 @@ export function ProfileFormFields({
   disableName,
   disableDescription
 }: Props) {
-  const { account: address = "" } = useWeb3React();
+  const { account: address = "" } = useAccount();
   const { values } = useFormikContext<CreateProfile>();
   const profileImage = getIpfsGatewayUrl(values.logo?.[0]?.src ?? "");
   const coverPicture = values.coverPicture?.[0];

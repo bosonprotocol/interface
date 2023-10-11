@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import styled from "styled-components";
 
 import { Offer } from "../../../lib/types/offer";
-import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
+import { useSigner } from "../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -103,7 +103,7 @@ export default function CompleteExchange({
   const { config } = useConfigContext();
   const coreSdk = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const { hideModal, showModal } = useModal();
 
   const completeExchangePool = useCallback(

@@ -1,7 +1,6 @@
 import { subgraph } from "@bosonprotocol/core-sdk";
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
@@ -13,6 +12,7 @@ import {
 } from "../../../components/modal/components/Profile/Lens/utils";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { useCoreSDK } from "../useCoreSdk";
+import { useAccount } from "./connection/connection";
 import { Profile } from "./lens/graphql/generated";
 import useGetLensProfiles from "./lens/profile/useGetLensProfiles";
 
@@ -115,7 +115,7 @@ export function useCurrentSellers({
   const { subgraphUrl } = config.envConfig;
   const coreSDK = useCoreSDK();
   const fetchSellers = getSellersByIds(subgraphUrl);
-  const { account: loggedInUserAddress } = useWeb3React();
+  const { account: loggedInUserAddress } = useAccount();
   const sellerAddress =
     address || sellerId || lensTokenId || loggedInUserAddress || null;
   const sellerAddressType = useMemo(() => {

@@ -1,10 +1,11 @@
 import { ChainId } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import multicall from "lib/state/multicall";
 import { SkipFirst } from "lib/types/tuple";
 import useBlockNumber, {
   useMainnetBlockNumber
 } from "lib/utils/hooks/useBlockNumber";
+
+import { useChainId } from "./connection/connection";
 
 export type { CallStateResult } from "@uniswap/redux-multicall"; // re-export for convenience
 export { NEVER_RELOAD } from "@uniswap/redux-multicall"; // re-export for convenience
@@ -18,15 +19,15 @@ type SkipFirstTwoParams<T extends (...args: any) => any> = SkipFirst<
 >;
 
 export function useMultipleContractSingleData(
-  ...args: SkipFirstTwoParams<
-    typeof multicall.hooks.useMultipleContractSingleData
-  >
+  ...args: Parameters<typeof multicall.hooks.useMultipleContractSingleData>
 ) {
-  const { chainId, latestBlock } = useCallContext();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [chainId, _, ...rest] = args;
+  const { latestBlock } = useCallContext();
   return multicall.hooks.useMultipleContractSingleData(
     chainId,
     latestBlock,
-    ...args
+    ...rest
   );
 }
 
@@ -62,7 +63,7 @@ export function useSingleContractMultipleData(
 }
 
 function useCallContext() {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const latestBlock = useBlockNumber();
   return { chainId, latestBlock };
 }

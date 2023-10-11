@@ -1,6 +1,5 @@
 import { PERMIT2_ADDRESS } from "@uniswap/permit2-sdk";
 import { CurrencyAmount, Token } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import { AVERAGE_L1_BLOCK_TIME } from "lib/constants/chainInfo";
 import useInterval from "lib/utils/hooks/useInterval";
 import {
@@ -20,6 +19,8 @@ import {
   useHasPendingRevocation,
   useTransactionAdder
 } from "state/transactions/hooks";
+
+import { useAccount } from "./connection/connection";
 
 enum ApprovalState {
   PENDING,
@@ -61,7 +62,7 @@ export default function usePermit2Allowance(
   spender?: string,
   tradeFillType?: TradeFillType
 ): Allowance {
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const token = amount?.currency;
 
   const { tokenAllowance, isSyncing: isApprovalSyncing } = useTokenAllowance(

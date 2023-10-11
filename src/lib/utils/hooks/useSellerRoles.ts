@@ -1,10 +1,10 @@
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 
 import { fetchSubgraph } from "../core-components/subgraph";
+import { useAccount } from "./connection/connection";
 
 function lowerCase(str: string | undefined) {
   return str?.toLowerCase() || "";
@@ -20,7 +20,7 @@ export function useSellerRoles(id: string) {
   const { config } = useConfigContext();
   const { subgraphUrl } = config.envConfig;
 
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
 
   const { data } = useQuery(
     ["seller-roles", id, subgraphUrl],

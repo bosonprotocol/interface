@@ -8,7 +8,7 @@ import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenB
 import { getNumberWithoutDecimals } from "lib/utils/number";
 import { useState } from "react";
 
-import { useEthersSigner } from "../../../../lib/utils/hooks/ethers/useEthersSigner";
+import { useSigner } from "../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
@@ -46,7 +46,7 @@ export default function FinanceDeposit({
   const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(true);
   const [depositError, setDepositError] = useState<unknown>(null);
 
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const { balance: exchangeTokenBalance } = useExchangeTokenBalance({
     address: exchangeToken,
     decimals: tokenDecimals

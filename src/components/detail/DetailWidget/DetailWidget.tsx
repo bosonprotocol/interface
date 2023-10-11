@@ -6,7 +6,6 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { useAccountDrawer } from "components/header/accountDrawer";
@@ -53,7 +52,10 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { getHasExchangeDisputeResolutionElapsed } from "../../../lib/utils/exchange";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { useEthersSigner } from "../../../lib/utils/hooks/ethers/useEthersSigner";
+import {
+  useAccount,
+  useSigner
+} from "../../../lib/utils/hooks/connection/connection";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
 import {
   useAddPendingTransaction,
@@ -325,7 +327,7 @@ export const getOfferDetailData = (
       ),
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
-          <Typography tag="p">
+          <Typography tag="p" alignItems="center">
             <span style={{ fontSize: fontSizeExchangePolicy }}>
               {`${buyerAndSellerAgreementIncluding} ${exchangePolicyLabel}`}
             </span>
@@ -355,7 +357,12 @@ export const getOfferDetailData = (
           </Typography>
         )
       ) : (
-        <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
+        <Typography
+          tag="p"
+          color="purple"
+          $fontSize={fontSizeExchangePolicy}
+          alignItems="center"
+        >
           Unknown
           {modalTypes && showModal && (
             <ArrowSquareOut
@@ -412,7 +419,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
 
   const navigate = useKeepQueryParamsNavigate();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isSeller = exchange?.seller.assistant === address?.toLowerCase();
   const isOffer = pageType === "offer";
@@ -447,7 +454,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       exchangeStatus as unknown as exchanges.ExtendedExchangeState
     );
 
-  const signer = useEthersSigner();
+  const signer = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const isBuyerInsufficientFunds: boolean = useMemo(
@@ -763,6 +770,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         message: "An error occurred when trying to commit!",
         type: "ERROR",
         state: "Committed",
+        id: undefined,
         ...BASE_MODAL_DATA
       });
     }
@@ -984,7 +992,13 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                         size="small"
                         theme="accentFill"
                         withBosonStyle
-                        style={{ color: colors.white, width: "100%" }}
+                        style={{
+                          color: colors.white,
+                          width: "100%",
+                          height: "auto",
+                          padding: "0 1rem",
+                          minHeight: "2.125rem"
+                        }}
                       >
                         Buy or Swap {tokenOrCoinSymbol}
                       </Button>

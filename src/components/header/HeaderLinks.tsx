@@ -1,5 +1,5 @@
-import { useWeb3React } from "@web3-react/core";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { ReactNode } from "react";
 import styled, { css } from "styled-components";
@@ -175,7 +175,7 @@ export default function HeaderLinks({
   children
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });

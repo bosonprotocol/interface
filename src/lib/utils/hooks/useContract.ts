@@ -5,7 +5,6 @@ import {
   MULTICALL_ADDRESSES
 } from "@uniswap/sdk-core";
 import UniswapInterfaceMulticallJson from "@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json";
-import { useWeb3React } from "@web3-react/core";
 import ENS_PUBLIC_RESOLVER_ABI from "abis/ens-public-resolver.json";
 import ENS_ABI from "abis/ens-registrar.json";
 import ERC20_ABI from "abis/erc20.json";
@@ -27,6 +26,8 @@ import { UniswapInterfaceMulticall } from "lib/types/v3/UniswapInterfaceMultical
 import { getContract } from "lib/utils/getContract";
 import { useMemo } from "react";
 
+import { useAccount, useChainId, useProvider } from "./connection/connection";
+
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson;
 
 // returns null on errors
@@ -36,7 +37,9 @@ export function useContract<T extends Contract = Contract>(
   ABI: any,
   withSignerIfPossible = true
 ): T | null {
-  const { provider, account, chainId } = useWeb3React();
+  const chainId = useChainId();
+  const provider = useProvider();
+  const { account } = useAccount();
 
   return useMemo(() => {
     if (!addressOrAddressMap || !ABI || !provider || !chainId) return null;
@@ -70,7 +73,7 @@ function useMainnetContract<T extends Contract = Contract>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ABI: any
 ): T | null {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   const isMainnet = chainId === ChainId.MAINNET;
   const contract = useContract(isMainnet ? address : undefined, ABI, false);
   return useMemo(() => {
@@ -94,7 +97,7 @@ export function useTokenContract(
 }
 
 export function useWETHContract(withSignerIfPossible?: boolean) {
-  const { chainId } = useWeb3React();
+  const chainId = useChainId();
   return useContract<Weth>(
     chainId ? WRAPPED_NATIVE_CURRENCY[chainId]?.address : undefined,
     WETH_ABI,

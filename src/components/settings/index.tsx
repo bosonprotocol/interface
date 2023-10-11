@@ -1,5 +1,4 @@
 import { Percent } from "@uniswap/sdk-core";
-import { useWeb3React } from "@web3-react/core";
 import AnimatedDropdown from "components/animatedDropdown";
 import { Scrim } from "components/header/accountDrawer";
 import { CloseIcon, Divider } from "components/icons";
@@ -10,6 +9,7 @@ import Typography from "components/ui/Typography";
 import { isSupportedChain, L2_CHAIN_IDS } from "lib/constants/chains";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import useDisableScrolling from "lib/utils/hooks/useDisableScrolling";
 import { useOnClickOutside } from "lib/utils/hooks/useOnClickOutside";
@@ -100,7 +100,7 @@ export function SettingsTab({
   chainId?: number;
   trade?: InterfaceTrade;
 }) {
-  const { chainId: connectedChainId } = useWeb3React();
+  const connectedChainId = useChainId();
   const showDeadlineSettings = Boolean(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

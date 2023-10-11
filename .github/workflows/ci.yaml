@@ -67,6 +67,7 @@ jobs:
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_TESTING }}
       REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_TESTING }}
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_TESTING }}
+      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_TESTING }}
 
   call-reusable-workflow-testing:
     uses: ./.github/workflows/ci_reusable.yaml
@@ -106,6 +107,7 @@ jobs:
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_TESTING }}
       REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_TESTING }}
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_TESTING }}
+      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_TESTING }}
 
   call-reusable-workflow-staging:
     uses: ./.github/workflows/ci_reusable.yaml
@@ -145,6 +147,7 @@ jobs:
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_STAGING }}
       REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_STAGING }}
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_STAGING }}
+      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_STAGING }}
 
   call-reusable-workflow-production:
     uses: ./.github/workflows/ci_reusable.yaml
@@ -184,6 +187,7 @@ jobs:
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_PRODUCTION }}
       REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_PRODUCTION }}
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_PRODUCTION }}
+      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_PRODUCTION }}
 
   job-summary:
     name: Create Job Summary

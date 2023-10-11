@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import { LoadingOpacityContainer } from "components/loader/styled";
 import { UniswapXRouterIcon } from "components/routerLabel/UniswapXRouterLabel";
 import Tooltip from "components/tooltip/Tooltip";
@@ -6,6 +5,7 @@ import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "lib/constants/chains";
 import { formatNumber, NumberType } from "lib/utils/formatNumbers";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { InterfaceTrade } from "state/routing/types";
 import { isUniswapXTrade } from "state/routing/utils";
 import styled from "styled-components";
@@ -29,8 +29,7 @@ export default function GasEstimateTooltip({
   trade?: InterfaceTrade;
   loading: boolean;
 }) {
-  const { chainId } = useWeb3React();
-
+  const chainId = useChainId();
   if (
     !trade ||
     !chainId ||

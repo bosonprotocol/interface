@@ -5,7 +5,6 @@ import {
   UNIVERSAL_ROUTER_ADDRESS
 } from "@uniswap/universal-router-sdk";
 import { FeeOptions, toHex } from "@uniswap/v3-sdk";
-import { useWeb3React } from "@web3-react/core";
 import { calculateGasMargin } from "lib/utils/calculateGasMargin";
 import { UserRejectedRequestError } from "lib/utils/errors";
 import {
@@ -16,6 +15,7 @@ import { useCallback } from "react";
 import { ClassicTrade, TradeFillType } from "state/routing/types";
 
 import { isZero } from "../address";
+import { useAccount, useChainId, useProvider } from "./connection/connection";
 import { PermitSignature } from "./usePermitAllowance";
 
 /** Thrown when gas estimation fails. This class of error usually requires an emulator to determine the root cause. */
@@ -49,7 +49,9 @@ export function useUniversalRouterSwapCallback(
   fiatValues: { amountIn?: number; amountOut?: number },
   options: SwapOptions
 ) {
-  const { account, chainId, provider } = useWeb3React();
+  const chainId = useChainId();
+  const provider = useProvider();
+  const { account } = useAccount();
 
   return useCallback(async () => {
     try {

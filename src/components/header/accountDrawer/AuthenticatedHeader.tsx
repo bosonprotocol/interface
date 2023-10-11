@@ -29,7 +29,7 @@ import Grid from "../../ui/Grid";
 import { LoadingBubble } from "../../ui/LoadingBubble";
 import Typography from "../../ui/Typography";
 import StatusIcon from "../identicon/StatusIcon";
-import { FiatLink } from "./fiatOnrampModal/FiatLink";
+import { FiatLink, useFiatLinkContext } from "./fiatOnrampModal/FiatLink";
 // import FiatOnrampModal from "./fiatOnrampModal";
 import { IconWithConfirmTextButton } from "./IconButton";
 import MiniPortfolio from "./miniPortfolio";
@@ -66,9 +66,13 @@ const HeaderButton = styled.button<{ $color: string }>`
   font-weight: 500;
   line-height: 24px;
 
-  :hover {
+  :hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--buttonBgColor) 90%, black);
     transition: 125ms background-color ease-in;
+  }
+  :disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 const IconHoverText = styled.span`
@@ -164,7 +168,6 @@ export function PortfolioArrow({
 export default function AuthenticatedHeader({ account }: { account: string }) {
   const { connector } = useWeb3React();
   const { ENSName } = useENSName(account);
-
   const connection = getConnection(connector);
 
   const disconnect = useDisconnect();
@@ -225,6 +228,7 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
     color2: useCSSVariable("--buttonBgColor") || colors.primary,
     color1: useCSSVariable("--textColor") || colors.black
   });
+  const { isFiatLoading } = useFiatLinkContext();
   return (
     <AuthenticatedHeaderWrapper>
       {/* 
@@ -305,14 +309,15 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
             $color={color}
             // onClick={handleBuyCryptoClick}
             // disabled={disableBuyCryptoButton}
+            disabled={isFiatLoading}
             data-testid="wallet-buy-crypto"
           >
             {error ? (
               <Typography>{error}</Typography>
             ) : (
               <>
-                {fiatOnrampAvailabilityLoading ? (
-                  <Spinner />
+                {fiatOnrampAvailabilityLoading || isFiatLoading ? (
+                  <Spinner size={20} />
                 ) : (
                   <CreditCard height="20px" width="20px" />
                 )}{" "}

@@ -1,9 +1,9 @@
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
 import { fetchSubgraph } from "../../core-components/subgraph";
+import { useAccount } from "../connection/connection";
 import { Disputes } from "../useExchanges";
 
 const buildQuery = (queryString: string, name: string) => {
@@ -80,7 +80,7 @@ const buildQuery = (queryString: string, name: string) => {
 export const GetActiveEscalatedDisputes = () => {
   const { config } = useConfigContext();
   const { subgraphUrl } = config.envConfig;
-  const { account: admin } = useWeb3React();
+  const { account: admin } = useAccount();
 
   const props = { admin };
 
@@ -113,7 +113,7 @@ export const GetActiveEscalatedDisputes = () => {
 export const GetPastEscalatedDisputesWithDecisions = () => {
   const { config } = useConfigContext();
   const { subgraphUrl } = config.envConfig;
-  const { account: admin } = useWeb3React();
+  const { account: admin } = useAccount();
 
   const props = { admin };
 
@@ -143,7 +143,7 @@ export const GetPastEscalatedDisputesWithDecisions = () => {
 export const GetPastEscalatedDisputesWithRefusals = () => {
   const { config } = useConfigContext();
   const { subgraphUrl } = config.envConfig;
-  const { account: admin } = useWeb3React();
+  const { account: admin } = useAccount();
 
   const props = { admin };
 

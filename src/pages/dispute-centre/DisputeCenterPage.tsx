@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useMemo } from "react";
 import styled from "styled-components";
 
@@ -86,7 +86,7 @@ const CustomGridContainer = styled.div`
 function DisputeCenterPage() {
   const { showModal, modalTypes } = useModal();
   const { isLteS } = useBreakpoints();
-  const { account } = useWeb3React();
+  const { account } = useAccount();
   const { buyer, seller } = useBuyerSellerAccounts(account);
   const myBuyerId = buyer.buyerId;
   const mySellerId = seller.sellerId;

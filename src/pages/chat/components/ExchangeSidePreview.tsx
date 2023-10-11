@@ -255,7 +255,7 @@ const getOfferDetailData = (
       ),
       value: exchangePolicyCheckResult ? (
         exchangePolicyCheckResult.isValid ? (
-          <Typography tag="p">
+          <Typography tag="p" alignItems="center">
             <span style={{ fontSize: fontSizeExchangePolicy }}>
               {`${buyerAndSellerAgreementIncluding} ${exchangePolicyLabel}`}
             </span>
@@ -270,6 +270,7 @@ const getOfferDetailData = (
             tag="p"
             color={colors.orange}
             $fontSize={fontSizeExchangePolicy}
+            alignItems="center"
           >
             {customisedExchangePolicy}
             <ArrowSquareOut
@@ -280,7 +281,12 @@ const getOfferDetailData = (
           </Typography>
         )
       ) : (
-        <Typography tag="p" color="purple" $fontSize={fontSizeExchangePolicy}>
+        <Typography
+          tag="p"
+          color="purple"
+          $fontSize={fontSizeExchangePolicy}
+          alignItems="center"
+        >
           Unknown
           <ArrowSquareOut
             size={20}

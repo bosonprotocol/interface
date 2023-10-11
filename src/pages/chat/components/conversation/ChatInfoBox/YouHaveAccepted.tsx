@@ -3,7 +3,7 @@ import {
   MessageData,
   ProposalContent
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { useWeb3React } from "@web3-react/core";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { Info, X } from "phosphor-react";
 import { useState } from "react";
 
@@ -30,7 +30,7 @@ export const YouHaveAccepted: React.FC<YouHaveAcceptedProps> = ({
   iAmTheBuyer
 }) => {
   const { showModal } = useModal();
-  const { account: address } = useWeb3React();
+  const { account: address } = useAccount();
   const proposalAcceptedByYou =
     acceptedProposal.sender.toLowerCase() === address?.toLowerCase();
   const acceptedProposalContent = acceptedProposal.data
