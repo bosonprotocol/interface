@@ -439,14 +439,7 @@ export default function ExchangeSidePreview({
   const isRetracted = !!dispute?.retractedDate;
   const isFinalized = !!dispute?.finalizedDate;
   const { finishedResolutionPeriod } = getDisputeDates(dispute);
-  console.log({
-    exchange,
-    dispute,
-    finishedResolutionPeriod,
-    isInDispute,
-    iAmTheBuyer,
-    isEscalated
-  });
+
   const { totalDaysToResolveDispute, daysLeftToResolveDispute } =
     getExchangeDisputeDates(exchange);
 
