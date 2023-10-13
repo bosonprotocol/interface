@@ -511,9 +511,9 @@ function EscalateStepTwo({
                         values?.disputeId || "",
                       [FormModel.formFields.buyerAddress.name]:
                         values?.buyerAddress ? values?.buyerAddress : "",
-                      [`Unsigned message: ${FormModel.formFields.message.name}`]:
+                      [`Signed message: ${FormModel.formFields.message.name}`]:
                         values?.message
-                          ? `Unsigned message: ${values?.message}`
+                          ? `Signed message: ${values?.message}`
                           : "",
                       [FormModel.formFields.signature.name]:
                         values?.signature || ""
@@ -524,7 +524,7 @@ function EscalateStepTwo({
                     <Input {...FormModel.formFields.buyerAddress} disabled />
                     <UnsignedMessageWrapper>
                       <FieldInput
-                        value="Unsigned message:"
+                        value="Signed message:"
                         disabled
                         id="unsigned_prefix"
                       />

@@ -39,8 +39,8 @@ export const getHasExchangeDisputeResolutionElapsed = (
     return false;
   }
   return (
-    Number(exchange.redeemedDate) * 1000 +
-      Number(offer.disputePeriodDuration) * 1000 <
+    getDateTimestamp(exchange.redeemedDate) +
+      getDateTimestamp(offer.disputePeriodDuration) <
     Date.now()
   );
 };
@@ -69,10 +69,10 @@ export const getExchangeTokenId = (
 };
 
 export const getExchangeDisputeDates = (exchange: Exchange) => {
-  const raisedDisputeAt = new Date(Number(exchange.disputedDate) * 1000);
+  const raisedDisputeAt = new Date(getDateTimestamp(exchange.disputedDate));
   const lastDayToResolveDispute = new Date(
     raisedDisputeAt.getTime() +
-      Number(exchange.offer.resolutionPeriodDuration) * 1000
+      getDateTimestamp(exchange.offer.resolutionPeriodDuration)
   );
   const totalDaysToResolveDispute = dayjs(lastDayToResolveDispute).diff(
     raisedDisputeAt,

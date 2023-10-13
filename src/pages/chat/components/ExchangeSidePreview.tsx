@@ -7,6 +7,7 @@ import {
   buyerAndSellerAgreementIncluding,
   customisedExchangePolicy
 } from "lib/constants/policies";
+import { getDisputeDates } from "lib/utils/dispute";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { ArrowSquareOut } from "phosphor-react";
 import {
@@ -437,7 +438,15 @@ export default function ExchangeSidePreview({
   const isEscalated = !!dispute?.escalatedDate;
   const isRetracted = !!dispute?.retractedDate;
   const isFinalized = !!dispute?.finalizedDate;
-
+  const { finishedResolutionPeriod } = getDisputeDates(dispute);
+  console.log({
+    exchange,
+    dispute,
+    finishedResolutionPeriod,
+    isInDispute,
+    iAmTheBuyer,
+    isEscalated
+  });
   const { totalDaysToResolveDispute, daysLeftToResolveDispute } =
     getExchangeDisputeDates(exchange);
 
@@ -520,7 +529,7 @@ export default function ExchangeSidePreview({
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
+      {isInDispute && iAmTheBuyer && !isRetracted ? (
         <CTASection>
           <Button
             theme="secondary"
@@ -548,26 +557,28 @@ export default function ExchangeSidePreview({
           >
             Retract
           </Button>
-          <Button
-            theme="secondary"
-            onClick={() =>
-              showModal(
-                "ESCALATE_MODAL",
-                {
-                  title: "Escalate",
-                  exchange: exchange,
-                  refetch: refetchItAll,
-                  addMessage,
-                  setHasError,
-                  onSentMessage,
-                  destinationAddress
-                },
-                "l"
-              )
-            }
-          >
-            Escalate
-          </Button>
+          {!finishedResolutionPeriod && !isEscalated && (
+            <Button
+              theme="secondary"
+              onClick={() =>
+                showModal(
+                  "ESCALATE_MODAL",
+                  {
+                    title: "Escalate",
+                    exchange: exchange,
+                    refetch: refetchItAll,
+                    addMessage,
+                    setHasError,
+                    onSentMessage,
+                    destinationAddress
+                  },
+                  "l"
+                )
+              }
+            >
+              Escalate
+            </Button>
+          )}
           <CompleteExchangeButton />
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
