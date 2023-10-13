@@ -1,5 +1,5 @@
 import { ArrowLeft } from "phosphor-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -150,7 +150,7 @@ interface Props {
 
 const getMessageItemKey = (exchange: Exchange) => exchange.id;
 
-export default function MessageList({
+export default memo(function MessageList({
   myBuyerId,
   mySellerId,
   exchanges,
@@ -315,4 +315,4 @@ export default function MessageList({
       </ExchangesThreads>
     </Container>
   );
-}
+});

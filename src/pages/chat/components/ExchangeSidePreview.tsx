@@ -11,6 +11,7 @@ import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { ArrowSquareOut } from "phosphor-react";
 import {
   Dispatch,
+  memo,
   ReactNode,
   SetStateAction,
   useCallback,
@@ -353,7 +354,7 @@ interface Props {
   lastReceivedProposal: MessageData | null;
   lastSentProposal: MessageData | null;
 }
-export default function ExchangeSidePreview({
+export default memo(function ExchangeSidePreview({
   exchange,
   disputeOpen,
   iAmTheBuyer,
@@ -652,4 +653,4 @@ export default function ExchangeSidePreview({
       </HistorySection>
     </Container>
   );
-}
+});
