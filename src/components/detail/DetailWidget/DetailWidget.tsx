@@ -541,8 +541,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     showModal(modalTypes.WHAT_IS_REDEEM, { title: "Commit and Redeem" });
   };
 
-  const isChainUnsupported = getItemFromStorage("isChainUnsupported", false);
-
   const BASE_MODAL_DATA = useMemo(
     () => ({
       data: OFFER_DETAIL_DATA_MODAL,
@@ -570,7 +568,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       if (
         isCommittingFromNotConnectedWallet &&
         address &&
-        !isChainUnsupported &&
         signerAddress &&
         isConnectWalletFromCommit
       ) {
@@ -582,7 +579,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       }
       return signerAddress;
     },
-    [address, isChainUnsupported, isCommittingFromNotConnectedWallet]
+    [address, isCommittingFromNotConnectedWallet]
   );
 
   const userCommittedOffers = useMemo(
@@ -664,7 +661,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       (numSellers === 0 && numOffers === 1)) &&
     !!commitProxyAddress;
   const isCommitDisabled =
-    (address && isChainUnsupported) ||
     !hasSellerEnoughFunds ||
     isExpiredOffer ||
     isLoading ||
@@ -880,8 +876,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       reload?.();
     });
   });
-  const isRedeemDisabled =
-    isChainUnsupported || isLoading || isOffer || isPreview || !isBuyer;
+  const isRedeemDisabled = isLoading || isOffer || isPreview || !isBuyer;
   return (
     <>
       <Widget>
@@ -1194,7 +1189,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }
                 theme="blank"
                 style={{ fontSize: "0.875rem" }}
-                disabled={isChainUnsupported || (!isBuyer && !isSeller)}
+                disabled={!isBuyer && !isSeller}
               >
                 Contact seller
                 <Question size={18} />
@@ -1214,7 +1209,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     <StyledCancelButton
                       theme="blank"
                       style={{ fontSize: "0.875rem" }}
-                      disabled={isChainUnsupported || !isBuyer}
+                      disabled={!isBuyer}
                       id="boson-redeem-cancel"
                       data-exchange-id={exchange?.id}
                       data-config-id={config.envConfig.configId}
