@@ -8,6 +8,7 @@ import {
   customisedExchangePolicy
 } from "lib/constants/policies";
 import { getDisputeDates } from "lib/utils/dispute";
+import { useDisputeResolver } from "lib/utils/hooks/useDisputeResolver";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { ArrowSquareOut } from "phosphor-react";
 import {
@@ -44,6 +45,7 @@ import { calcPercentage } from "../../../lib/utils/calcPrice";
 import {
   getExchangeDisputeDates,
   getHasExchangeDisputeResolutionElapsed,
+  getHasExchangeEscalationPeriodElapsed,
   isExchangeCompletableByBuyer,
   isExchangeCompletableBySeller
 } from "../../../lib/utils/exchange";
@@ -377,7 +379,15 @@ export default function ExchangeSidePreview({
     },
     { enabled: !!exchange }
   );
+  const { disputeResolver } = useDisputeResolver(
+    exchange?.offer.disputeResolverId
+  );
+
   const dispute = disputes?.[0];
+  const isElapsedEscalation = getHasExchangeEscalationPeriodElapsed(
+    disputeResolver?.escalationResponsePeriod,
+    dispute?.escalatedDate
+  );
   const offer = exchange?.offer;
   const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
@@ -522,7 +532,7 @@ export default function ExchangeSidePreview({
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
+      {isInDispute && iAmTheBuyer && !isRetracted && !isElapsedEscalation ? (
         <CTASection>
           <Button
             theme="secondary"

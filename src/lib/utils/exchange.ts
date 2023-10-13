@@ -45,6 +45,22 @@ export const getHasExchangeDisputeResolutionElapsed = (
   );
 };
 
+export const getHasExchangeEscalationPeriodElapsed = (
+  escalationResponsePeriod: string | undefined | null,
+  escalatedDate: string | undefined | null
+): boolean => {
+  if (!escalationResponsePeriod || !escalatedDate) {
+    return false;
+  }
+  const fixedEscalatedDate = getDateTimestamp(escalatedDate);
+  const escalationPeriodSecondsNumber = Number(escalationResponsePeriod);
+  if (!fixedEscalatedDate || isNaN(escalationPeriodSecondsNumber)) {
+    return false;
+  }
+  const escalationPeriodInMs = escalationPeriodSecondsNumber * 1000;
+  return fixedEscalatedDate + escalationPeriodInMs < Date.now();
+};
+
 const PROTOCOL_DEPLOYMENT_TIMES = {
   v221: {
     local: 0,
