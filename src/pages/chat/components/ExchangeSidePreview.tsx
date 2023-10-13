@@ -522,7 +522,7 @@ export default function ExchangeSidePreview({
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && iAmTheBuyer && !isRetracted ? (
+      {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
           <Button
             theme="secondary"
