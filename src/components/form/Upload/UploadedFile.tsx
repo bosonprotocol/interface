@@ -1,5 +1,5 @@
 import { ImageSquare, X } from "phosphor-react";
-import { useCallback } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
@@ -42,7 +42,7 @@ export default function UploadedFile({
   showSize,
   handleRemoveFile
 }: Props) {
-  const FileContent = useCallback(() => {
+  const FileContent = useMemo(() => {
     return (
       <>
         <ImageSquare size={23} />
@@ -66,10 +66,10 @@ export default function UploadedFile({
             href={base64Content}
             download={fileName}
           >
-            <FileContent />
+            {FileContent}
           </a>
         ) : (
-          <FileContent />
+          <>{FileContent}</>
         )}
         {handleRemoveFile && (
           <Button onClick={() => handleRemoveFile()} theme="blank">

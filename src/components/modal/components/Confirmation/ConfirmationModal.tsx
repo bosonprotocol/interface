@@ -2,7 +2,7 @@ import React, {
   cloneElement,
   ReactElement,
   ReactNode,
-  useCallback,
+  useMemo,
   useState
 } from "react";
 
@@ -26,7 +26,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 }) => {
   const [hasError, setError] = useState<boolean>(false);
   const { hideModal } = useModal();
-  const CTA = useCallback(() => {
+  const CTA = useMemo(() => {
     return cloneElement(cta, { setError: setError });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -39,7 +39,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <Button theme="blankSecondaryOutline" onClick={() => hideModal()}>
           Cancel
         </Button>
-        <CTA />
+        {CTA}
       </Grid>
     </Grid>
   );

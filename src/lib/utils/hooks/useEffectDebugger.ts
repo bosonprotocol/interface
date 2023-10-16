@@ -13,7 +13,8 @@ const usePrevious = (value: unknown, initialValue: unknown) => {
 export const useEffectDebugger = (
   effectHook: unknown,
   dependencies: unknown[],
-  dependencyNames = []
+  dependencyNames: string[] = [],
+  logSuffix = ""
 ) => {
   const previousDeps = usePrevious(dependencies, []);
 
@@ -33,7 +34,7 @@ export const useEffectDebugger = (
   }, {});
 
   if (Object.keys(changedDeps).length) {
-    console.log("[use-effect-debugger] ", changedDeps);
+    console.log(`[use-effect-debugger] ${logSuffix}`, changedDeps);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

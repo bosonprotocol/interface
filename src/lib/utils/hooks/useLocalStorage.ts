@@ -16,7 +16,6 @@ export type CreateProductImageProductImages =
   | "create-product-image_productImages.more";
 
 export type GetItemFromStorageKey =
-  | "isChainUnsupported"
   | "create-product"
   | "tracing-url"
   | "convertionRates"

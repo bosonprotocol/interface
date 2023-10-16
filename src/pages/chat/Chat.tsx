@@ -54,16 +54,6 @@ const SimpleMessage = styled.p`
   background: ${colors.lightGrey};
 `;
 
-const getIsSameThread = (
-  exchangeId: string | undefined,
-  textAreaValue: {
-    exchangeId: string;
-    value: string;
-  }
-) => {
-  return textAreaValue.exchangeId === exchangeId;
-};
-
 export default function Chat() {
   const { account: address } = useAccount();
 
@@ -120,16 +110,6 @@ export default function Chat() {
     refetchExchangesAsTheBuyer();
   }, [refetchExchangesAsTheBuyer, refetchExchangesAsTheSeller]);
 
-  const textAreaValueByThread = useMemo(
-    () =>
-      exchanges.map((exchange) => {
-        return {
-          exchangeId: exchange.id,
-          value: ""
-        };
-      }),
-    [exchanges]
-  );
   const [selectedExchange, selectExchange] = useState<Exchange>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
@@ -157,29 +137,23 @@ export default function Chat() {
     }
   }, [exchangeId, exchanges]);
 
-  const [textAreasValues, setTextAreasValues] = useState(textAreaValueByThread);
-  useEffect(() => {
-    setTextAreasValues(textAreaValueByThread);
-  }, [textAreaValueByThread]);
-  const onTextAreaChange = useCallback(
-    (textAreaTargetValue: string) => {
-      const updatedData = textAreasValues.map((textAreaValue) =>
-        getIsSameThread(exchangeId, textAreaValue)
-          ? { ...textAreaValue, value: textAreaTargetValue }
-          : textAreaValue
-      );
-      setTextAreasValues(updatedData);
-    },
-    [exchangeId, textAreasValues]
+  const [mapExchangeIdToInputText, setMapExchangeIdToInputText] = useState(
+    new Map<string, string>()
   );
 
-  const parseInputValue = useMemo(
-    () =>
-      textAreasValues.find((textAreaValue) =>
-        getIsSameThread(exchangeId, textAreaValue)
-      )?.value,
-    [exchangeId, textAreasValues]
+  const onTextAreaChange = useCallback(
+    (textAreaTargetValue: string) => {
+      if (exchangeId) {
+        mapExchangeIdToInputText.set(exchangeId, textAreaTargetValue);
+        setMapExchangeIdToInputText(new Map(mapExchangeIdToInputText));
+      }
+    },
+    [exchangeId, mapExchangeIdToInputText]
   );
+
+  const parseInputValue: string | undefined = useMemo(() => {
+    return exchangeId ? mapExchangeIdToInputText.get(exchangeId) : undefined;
+  }, [exchangeId, mapExchangeIdToInputText]);
   useEffect(() => {
     setPreviousPath(prevPath);
     // eslint-disable-next-line react-hooks/exhaustive-deps

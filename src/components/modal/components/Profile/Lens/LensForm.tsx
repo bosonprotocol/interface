@@ -33,7 +33,7 @@ interface Props {
   onBackClick: () => void;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
   isEdit: boolean;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
   forceDirty?: boolean;
 }
 
@@ -123,7 +123,7 @@ export default function LensForm({
                 disableName
                 disableDescription
               >
-                {isEdit && <SwitchButton />}
+                {isEdit && SwitchButton}
               </LensFormFields>
 
               {error && <SimpleError />}

@@ -20,7 +20,7 @@ interface Props {
   ) => Promise<void>;
   isEdit: boolean;
   forceDirty: boolean;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
 }
 
 export default function CreateYourRegularProfile({

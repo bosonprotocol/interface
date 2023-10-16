@@ -3,7 +3,7 @@ import { useField, useFormikContext } from "formik";
 import { BosonRoutes } from "lib/routing/routes";
 import { getViewModeUrl, ViewMode } from "lib/viewMode";
 import { ArrowsOut } from "phosphor-react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import CollapseWithTrigger from "../../components/collapse/CollapseWithTrigger";
 import SimpleError from "../../components/error/SimpleError";
@@ -447,11 +447,11 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.customStoreUrl]);
 
-  const AdvancedTrigger = useCallback(() => {
+  const AdvancedTrigger = useMemo(() => {
     return <Section>Advanced</Section>;
   }, []);
 
-  const StyleTrigger = useCallback(() => {
+  const StyleTrigger = useMemo(() => {
     return <Section>Style</Section>;
   }, []);
   const [switchField] = useField(storeFields.bannerSwitch);

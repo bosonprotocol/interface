@@ -13,6 +13,7 @@ import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { ArrowSquareOut } from "phosphor-react";
 import {
   Dispatch,
+  memo,
   ReactNode,
   SetStateAction,
   useCallback,
@@ -356,7 +357,7 @@ interface Props {
   lastReceivedProposal: MessageData | null;
   lastSentProposal: MessageData | null;
 }
-export default function ExchangeSidePreview({
+export default memo(function ExchangeSidePreview({
   exchange,
   disputeOpen,
   iAmTheBuyer,
@@ -413,7 +414,7 @@ export default function ExchangeSidePreview({
       ? isExchangeCompletableByBuyer(exchange)
       : isExchangeCompletableBySeller(exchange)
     : false;
-  const CompleteExchangeButton = useCallback(() => {
+  const CompleteExchangeButton = useMemo(() => {
     if (!isVisible) {
       return null;
     }
@@ -582,7 +583,7 @@ export default function ExchangeSidePreview({
               Escalate
             </Button>
           )}
-          <CompleteExchangeButton />
+          {CompleteExchangeButton}
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
@@ -608,12 +609,10 @@ export default function ExchangeSidePreview({
           >
             Raise a dispute
           </Button>
-          <CompleteExchangeButton />
+          {CompleteExchangeButton}
         </CTASection>
       ) : isVisible ? (
-        <CTASection>
-          <CompleteExchangeButton />
-        </CTASection>
+        <CTASection>{CompleteExchangeButton}</CTASection>
       ) : isFinalized && threadId ? (
         <CTASection>
           {iAmTheBuyer && (
@@ -666,4 +665,4 @@ export default function ExchangeSidePreview({
       </HistorySection>
     </Container>
   );
-}
+});

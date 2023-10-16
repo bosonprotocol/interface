@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { colors } from "lib/styles/colors";
 import { CaretDoubleRight } from "phosphor-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useGesture } from "react-use-gesture";
 import styled from "styled-components";
 
@@ -186,7 +186,7 @@ const CloseDrawer = styled.div`
   }
 `;
 
-export function AccountDrawer() {
+export const AccountDrawer = memo(() => {
   const { isLteS: isMobile } = useBreakpoints();
   const [walletDrawerOpen, toggleWalletDrawer] = useAccountDrawer();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -291,4 +291,4 @@ export function AccountDrawer() {
       </AccountDrawerWrapper>
     </Container>
   );
-}
+});
