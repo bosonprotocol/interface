@@ -213,7 +213,7 @@ export default function SellerFinances({
   const offersBackedCell = useCallback(
     (value: number | null) => {
       if (value === null) {
-        return "";
+        return null;
       }
       if (Number(value) < threshold) {
         return (

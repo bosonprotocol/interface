@@ -550,70 +550,75 @@ const ChatConversation = ({
     );
   }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
 
+  const ButtonsAndSeller = useMemo(() => {
+    return (
+      <GridHeader>
+        <NavigationMobile>
+          <HeaderButton
+            type="button"
+            onClick={() => {
+              if (isM && !prevPath) {
+                setChatListOpen(!chatListOpen);
+              } else if (isM && prevPath) {
+                navigate({ pathname: prevPath });
+              } else {
+                navigate({ pathname: chatUrl });
+              }
+            }}
+          >
+            {(isM || isL || isXL) &&
+              prevPath &&
+              !prevPath.includes(chatUrl) &&
+              !prevPath.includes(`${chatUrl}/`) &&
+              !prevPath.includes(location.pathname) && (
+                <span>
+                  <ArrowLeft size={14} />
+                  Back
+                </span>
+              )}
+            {isLteS && !chatListOpen && (
+              <span>
+                <ArrowLeft size={14} />
+                Back
+              </span>
+            )}
+          </HeaderButton>
+        </NavigationMobile>
+        <Header>
+          <SellerComponent
+            size={24}
+            exchange={exchange}
+            buyerOrSeller={buyerOrSellerToShow}
+          />
+        </Header>
+        {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
+      </GridHeader>
+    );
+  }, [
+    buyerOrSellerToShow,
+    chatListOpen,
+    detailsButton,
+    exchange,
+    isL,
+    isLteM,
+    isLteS,
+    isM,
+    isXL,
+    navigate,
+    prevPath,
+    setChatListOpen,
+    location.pathname
+  ]);
   const ContainerWithSellerHeader = useCallback(
     ({ children }: { children: ReactNode }) => {
       return (
         <ConversationContainer>
-          <GridHeader>
-            <NavigationMobile>
-              <HeaderButton
-                type="button"
-                onClick={() => {
-                  if (isM && !prevPath) {
-                    setChatListOpen(!chatListOpen);
-                  } else if (isM && prevPath) {
-                    navigate({ pathname: prevPath });
-                  } else {
-                    navigate({ pathname: chatUrl });
-                  }
-                }}
-              >
-                {(isM || isL || isXL) &&
-                  prevPath &&
-                  !prevPath.includes(chatUrl) &&
-                  !prevPath.includes(`${chatUrl}/`) &&
-                  !prevPath.includes(location.pathname) && (
-                    <span>
-                      <ArrowLeft size={14} />
-                      Back
-                    </span>
-                  )}
-                {isLteS && !chatListOpen && (
-                  <span>
-                    <ArrowLeft size={14} />
-                    Back
-                  </span>
-                )}
-              </HeaderButton>
-            </NavigationMobile>
-            <Header>
-              <SellerComponent
-                size={24}
-                exchange={exchange}
-                buyerOrSeller={buyerOrSellerToShow}
-              />
-            </Header>
-            {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
-          </GridHeader>
+          {ButtonsAndSeller}
           {children}
         </ConversationContainer>
       );
     },
-    [
-      buyerOrSellerToShow,
-      chatListOpen,
-      detailsButton,
-      exchange,
-      isL,
-      isLteM,
-      isLteS,
-      isM,
-      isXL,
-      navigate,
-      prevPath,
-      setChatListOpen,
-      location.pathname
-    ]
+    [ButtonsAndSeller]
   );
 
   const isConversationBeingLoaded = !thread && areThreadsLoading;

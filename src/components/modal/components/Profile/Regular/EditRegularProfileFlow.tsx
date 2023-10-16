@@ -14,7 +14,7 @@ import { RegularProfileMultiSteps } from "./RegularProfileMultiSteps";
 interface EditRegularProfileFlowProps {
   onSubmit: (data: CreateProfile, dirty: boolean) => void;
   profileInitialData: CreateProfile;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
   updateSellerMetadata: ReturnType<
     typeof useUpdateSellerMetadata
   >["mutateAsync"];

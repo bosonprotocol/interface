@@ -3,14 +3,14 @@ import dayjs from "dayjs";
 import { useDisputes } from "lib/utils/hooks/useDisputes";
 import { Exchange } from "lib/utils/hooks/useExchanges";
 import { WarningCircle } from "phosphor-react";
-import { memo, RefObject, useRef } from "react";
+import { memo, RefObject, useMemo, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 
 import { Spinner } from "../../../../components/loading/Spinner";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
-import { BuyerOrSeller, ThreadObjectWithInfo } from "../../types";
+import { ThreadObjectWithInfo } from "../../types";
 import Message from "../Message";
 import MessageSeparator from "../MessageSeparator";
 import { SellerComponent } from "./SellerComponent";
@@ -110,6 +110,26 @@ export const Messages: React.FC<MessagesProps> = memo(
     const dispute = disputes?.[0];
     const hasMoreMessages = !isBeginningOfTimes;
     const dataMessagesRef = useRef<HTMLDivElement>(null);
+    const Buyer = useMemo(() => {
+      return (
+        <SellerComponent
+          size={32}
+          withProfileText={false}
+          exchange={exchange}
+          buyerOrSeller={exchange.buyer}
+        />
+      );
+    }, [exchange]);
+    const Seller = useMemo(() => {
+      return (
+        <SellerComponent
+          size={32}
+          withProfileText={false}
+          exchange={exchange}
+          buyerOrSeller={exchange.seller}
+        />
+      );
+    }, [exchange]);
     return (
       <Container
         data-messages
@@ -170,21 +190,10 @@ export const Messages: React.FC<MessagesProps> = memo(
                 isFirstMessage || isPreviousMessageInADifferentDay;
               const isLastMessage = index === thread.messages.length - 1;
               const wasItMe = getWasItSentByMe(address, message.sender);
-
-              let buyerOrSeller: BuyerOrSeller;
-              if (wasItMe) {
-                if (iAmTheBuyer) {
-                  buyerOrSeller = exchange.buyer;
-                } else {
-                  buyerOrSeller = exchange.seller;
-                }
-              } else {
-                if (iAmTheBuyer) {
-                  buyerOrSeller = exchange.seller;
-                } else {
-                  buyerOrSeller = exchange.buyer;
-                }
-              }
+              const Child =
+                (wasItMe && iAmTheBuyer) || (!wasItMe && !iAmTheBuyer)
+                  ? Buyer
+                  : Seller;
               const leftAligned = !wasItMe;
               const ref = isLastMessage ? lastMessageRef : null;
               return (
@@ -202,12 +211,7 @@ export const Messages: React.FC<MessagesProps> = memo(
                       lastSentProposal={lastSentProposal}
                       ref={ref}
                     >
-                      <SellerComponent
-                        size={32}
-                        withProfileText={false}
-                        exchange={exchange}
-                        buyerOrSeller={buyerOrSeller}
-                      />
+                      {Child}
                     </Message>
                   </>
                 </Conversation>

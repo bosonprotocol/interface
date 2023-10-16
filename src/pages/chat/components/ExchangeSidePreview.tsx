@@ -403,7 +403,7 @@ export default memo(function ExchangeSidePreview({
       ? isExchangeCompletableByBuyer(exchange)
       : isExchangeCompletableBySeller(exchange)
     : false;
-  const CompleteExchangeButton = useCallback(() => {
+  const CompleteExchangeButton = useMemo(() => {
     if (!isVisible) {
       return null;
     }
@@ -569,7 +569,7 @@ export default memo(function ExchangeSidePreview({
           >
             Escalate
           </Button>
-          <CompleteExchangeButton />
+          {CompleteExchangeButton}
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
@@ -595,12 +595,10 @@ export default memo(function ExchangeSidePreview({
           >
             Raise a dispute
           </Button>
-          <CompleteExchangeButton />
+          {CompleteExchangeButton}
         </CTASection>
       ) : isVisible ? (
-        <CTASection>
-          <CompleteExchangeButton />
-        </CTASection>
+        <CTASection>{CompleteExchangeButton}</CTASection>
       ) : isFinalized && threadId ? (
         <CTASection>
           {iAmTheBuyer && (

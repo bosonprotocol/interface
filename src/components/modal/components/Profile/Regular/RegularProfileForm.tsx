@@ -15,7 +15,7 @@ type Props = {
   children: ReactNode;
   isEdit: boolean;
   forceDirty?: boolean;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
 };
 export default function RegularProfileForm({
   children,
@@ -43,9 +43,7 @@ export default function RegularProfileForm({
             {isEdit ? "Regular profile" : "Create your profile"}
           </Typography>
 
-          <div>
-            <SwitchButton />
-          </div>
+          <div>{SwitchButton}</div>
         </Grid>
         {!isEdit && (
           <>
