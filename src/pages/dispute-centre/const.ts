@@ -1,7 +1,7 @@
 import { proposals } from "components/modal/components/Chat/MakeProposal/steps/MakeAProposalStep/MakeAProposalStep";
 import { useFormikContext } from "formik";
-import { validationMessage } from "lib/const/validationMessage";
 import { MIN_VALUE } from "lib/constants/percentages";
+import { validationMessage } from "lib/constants/validationMessage";
 import { validationOfFile } from "pages/chat/components/UploadForm/const";
 import * as Yup from "yup";
 

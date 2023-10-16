@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 import { lensHandleMaxLength } from "../../../../../lib/config";
-import { validationMessage } from "../../../../../lib/const/validationMessage";
+import { validationMessage } from "../../../../../lib/constants/validationMessage";
 import { FileProps } from "../../../../form/Upload/types";
 import { validationOfRequiredIpfsImage } from "../../../../product/utils/validationUtils";
 import { getCommonFieldsValidation } from "../valitationSchema";
