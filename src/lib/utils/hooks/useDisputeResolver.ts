@@ -28,12 +28,15 @@ interface Props {
   };
 }
 
-export function useDisputeResolver(id: string) {
+export function useDisputeResolver(id: string | undefined | null) {
   const { config } = useConfigContext();
   const { subgraphUrl } = config.envConfig;
   const props = { id };
 
   const result = useQuery(["disputeResolver", props, subgraphUrl], async () => {
+    if (!id) {
+      return;
+    }
     const result = await fetchSubgraph<Props>(
       subgraphUrl,
       gql`

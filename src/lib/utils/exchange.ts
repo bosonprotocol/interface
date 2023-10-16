@@ -39,10 +39,26 @@ export const getHasExchangeDisputeResolutionElapsed = (
     return false;
   }
   return (
-    Number(exchange.redeemedDate) * 1000 +
-      Number(offer.disputePeriodDuration) * 1000 <
+    getDateTimestamp(exchange.redeemedDate) +
+      getDateTimestamp(offer.disputePeriodDuration) <
     Date.now()
   );
+};
+
+export const getHasExchangeEscalationPeriodElapsed = (
+  escalationResponsePeriod: string | undefined | null,
+  escalatedDate: string | undefined | null
+): boolean => {
+  if (!escalationResponsePeriod || !escalatedDate) {
+    return false;
+  }
+  const fixedEscalatedDate = getDateTimestamp(escalatedDate);
+  const escalationPeriodSecondsNumber = Number(escalationResponsePeriod);
+  if (!fixedEscalatedDate || isNaN(escalationPeriodSecondsNumber)) {
+    return false;
+  }
+  const escalationPeriodInMs = escalationPeriodSecondsNumber * 1000;
+  return fixedEscalatedDate + escalationPeriodInMs < Date.now();
 };
 
 const PROTOCOL_DEPLOYMENT_TIMES = {
@@ -69,10 +85,10 @@ export const getExchangeTokenId = (
 };
 
 export const getExchangeDisputeDates = (exchange: Exchange) => {
-  const raisedDisputeAt = new Date(Number(exchange.disputedDate) * 1000);
+  const raisedDisputeAt = new Date(getDateTimestamp(exchange.disputedDate));
   const lastDayToResolveDispute = new Date(
     raisedDisputeAt.getTime() +
-      Number(exchange.offer.resolutionPeriodDuration) * 1000
+      getDateTimestamp(exchange.offer.resolutionPeriodDuration)
   );
   const totalDaysToResolveDispute = dayjs(lastDayToResolveDispute).diff(
     raisedDisputeAt,

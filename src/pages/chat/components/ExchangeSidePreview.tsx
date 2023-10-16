@@ -7,6 +7,8 @@ import {
   buyerAndSellerAgreementIncluding,
   customisedExchangePolicy
 } from "lib/constants/policies";
+import { getDisputeDates } from "lib/utils/dispute";
+import { useDisputeResolver } from "lib/utils/hooks/useDisputeResolver";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { ArrowSquareOut } from "phosphor-react";
 import {
@@ -44,6 +46,7 @@ import { calcPercentage } from "../../../lib/utils/calcPrice";
 import {
   getExchangeDisputeDates,
   getHasExchangeDisputeResolutionElapsed,
+  getHasExchangeEscalationPeriodElapsed,
   isExchangeCompletableByBuyer,
   isExchangeCompletableBySeller
 } from "../../../lib/utils/exchange";
@@ -377,7 +380,15 @@ export default memo(function ExchangeSidePreview({
     },
     { enabled: !!exchange }
   );
+  const { disputeResolver } = useDisputeResolver(
+    exchange?.offer.disputeResolverId
+  );
+
   const dispute = disputes?.[0];
+  const isElapsedEscalation = getHasExchangeEscalationPeriodElapsed(
+    disputeResolver?.escalationResponsePeriod,
+    dispute?.escalatedDate
+  );
   const offer = exchange?.offer;
   const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
@@ -438,6 +449,7 @@ export default memo(function ExchangeSidePreview({
   const isEscalated = !!dispute?.escalatedDate;
   const isRetracted = !!dispute?.retractedDate;
   const isFinalized = !!dispute?.finalizedDate;
+  const { finishedResolutionPeriod } = getDisputeDates(dispute);
 
   const { totalDaysToResolveDispute, daysLeftToResolveDispute } =
     getExchangeDisputeDates(exchange);
@@ -521,7 +533,7 @@ export default memo(function ExchangeSidePreview({
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
+      {isInDispute && iAmTheBuyer && !isRetracted && !isElapsedEscalation ? (
         <CTASection>
           <Button
             theme="secondary"
@@ -549,26 +561,28 @@ export default memo(function ExchangeSidePreview({
           >
             Retract
           </Button>
-          <Button
-            theme="secondary"
-            onClick={() =>
-              showModal(
-                "ESCALATE_MODAL",
-                {
-                  title: "Escalate",
-                  exchange: exchange,
-                  refetch: refetchItAll,
-                  addMessage,
-                  setHasError,
-                  onSentMessage,
-                  destinationAddress
-                },
-                "l"
-              )
-            }
-          >
-            Escalate
-          </Button>
+          {!finishedResolutionPeriod && !isEscalated && (
+            <Button
+              theme="secondary"
+              onClick={() =>
+                showModal(
+                  "ESCALATE_MODAL",
+                  {
+                    title: "Escalate",
+                    exchange: exchange,
+                    refetch: refetchItAll,
+                    addMessage,
+                    setHasError,
+                    onSentMessage,
+                    destinationAddress
+                  },
+                  "l"
+                )
+              }
+            >
+              Escalate
+            </Button>
+          )}
           {CompleteExchangeButton}
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
