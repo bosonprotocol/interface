@@ -13,7 +13,7 @@ import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import useENSName from "lib/utils/hooks/useENSName";
 import { useLast } from "lib/utils/hooks/useLast";
-import { useCallback, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
 
@@ -235,7 +235,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   );
 }
 
-export default function Web3Status({
+export default memo(function Web3Status({
   showOnlyIcon
 }: {
   showOnlyIcon?: boolean;
@@ -246,4 +246,4 @@ export default function Web3Status({
       <Web3StatusInner showOnlyIcon={showOnlyIcon} />
     </PrefetchBalancesWrapper>
   );
-}
+});

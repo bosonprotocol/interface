@@ -1,7 +1,7 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useAccount } from "lib/utils/hooks/connection/connection";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
@@ -47,7 +47,7 @@ export default function EditProfileModal() {
     setSwitchChecked(switchToLens);
     setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
   }, []);
-  const SwitchButton = useCallback(() => {
+  const SwitchButton = useMemo(() => {
     return isLensAvailable ? (
       <Switch
         onCheckedChange={(checked) => {

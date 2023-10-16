@@ -17,7 +17,7 @@ import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { X } from "phosphor-react";
-import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
+import { forwardRef, useEffect, useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
 import useUserRoles from "router/useUserRoles";
 import styled, { css } from "styled-components";
@@ -259,7 +259,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
       }
       return SellerCenterRoutes.CreateProduct;
     }, [isSeller, hasSellerOffers]);
-    const CTA = useCallback(() => {
+    const CTA = useMemo(() => {
       return (
         <>
           {isFetching ? (
@@ -357,7 +357,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
               <HeaderItems $navigationBarPosition={navigationBarPosition}>
                 {burgerMenuBreakpoint && (
                   <>
-                    <CTA />
+                    {CTA}
                     {!isLteXS && <ChainSelector />}
                     {!isXXS && <ConnectButton showOnlyIcon />}
                     <BurgerButton onClick={toggleMenu} />
@@ -377,7 +377,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                 </HeaderLinks>
                 {!burgerMenuBreakpoint && (
                   <>
-                    <CTA />
+                    {CTA}
                     <ChainSelector />
                     <ConnectButton />
                   </>

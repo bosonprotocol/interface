@@ -17,7 +17,7 @@ import useWrapCallback from "lib/utils/hooks/useWrapCallback";
 import { didUserReject } from "lib/utils/swapErrorToUserReadableMessage";
 import { tradeMeaningfullyDiffers } from "lib/utils/tradeMeaningFullyDiffer";
 import { Wrapper } from "pages/dispute-resolver/DisputeResolver";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { InterfaceTrade, TradeFillType } from "state/routing/types";
 import { Field } from "state/swap/actions";
 import {
@@ -49,23 +49,23 @@ function ConfirmationModalContent({
   headerContent
 }: {
   title: ReactNode;
-  topContent: () => ReactNode;
-  bottomContent?: () => ReactNode;
-  headerContent?: () => ReactNode;
+  topContent: ReactNode;
+  bottomContent?: ReactNode;
+  headerContent?: ReactNode;
 }) {
   return (
     <Wrapper>
       <AutoColumn gap="sm">
         <Grid>
-          {headerContent?.()}
+          {headerContent}
           <Grid justifyContent="center" marginLeft="24px">
             <Typography>{title}</Typography>
           </Grid>
         </Grid>
-        {topContent()}
+        {topContent}
       </AutoColumn>
       {bottomContent && (
-        <BottomSection gap="12px">{bottomContent()}</BottomSection>
+        <BottomSection gap="12px">{bottomContent}</BottomSection>
       )}
     </Wrapper>
   );
@@ -399,7 +399,7 @@ export default function ConfirmSwapModal({
     }, 0);
   }, [onCancel, onDismiss]);
 
-  const modalHeader = useCallback(() => {
+  const modalHeader = useMemo(() => {
     if (
       confirmModalState !== ConfirmModalState.REVIEWING &&
       !showAcceptChanges
@@ -421,7 +421,7 @@ export default function ConfirmSwapModal({
     inputCurrency
   ]);
 
-  const modalBottom = useCallback(() => {
+  const modalBottom = useMemo(() => {
     if (
       confirmModalState === ConfirmModalState.REVIEWING ||
       showAcceptChanges
@@ -471,7 +471,7 @@ export default function ConfirmSwapModal({
     startSwapFlow
   ]);
 
-  const l2Badge = () => {
+  const l2Badge = useMemo(() => {
     if (
       isL2ChainId(chainId) &&
       confirmModalState !== ConfirmModalState.REVIEWING
@@ -487,7 +487,7 @@ export default function ConfirmSwapModal({
       );
     }
     return undefined;
-  };
+  }, [chainId, confirmModalState]);
 
   return (
     <Modal

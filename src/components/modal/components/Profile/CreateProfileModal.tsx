@@ -1,7 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useAccount } from "lib/utils/hooks/connection/connection";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -99,7 +99,7 @@ export default function CreateProfileModal({
     setSwitchChecked(switchToLens);
     setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
   }, []);
-  const SwitchButton = useCallback(() => {
+  const SwitchButton = useMemo(() => {
     if (!config.lens.availableOnNetwork) {
       return <></>;
     }

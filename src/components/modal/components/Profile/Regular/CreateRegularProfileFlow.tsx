@@ -12,7 +12,7 @@ import RegularProfileSummary from "./RegularProfileSummary";
 interface CreateRegularProfileFlowProps {
   onSubmit: (data: CreateProfile) => Promise<void>;
   initialData?: CreateProfile;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
 }
 
 export const CreateRegularProfileFlow: React.FC<

@@ -2,6 +2,7 @@ import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { memo } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -181,4 +182,4 @@ const SellerID: React.FC<
   );
 };
 
-export default SellerID;
+export default memo(SellerID);

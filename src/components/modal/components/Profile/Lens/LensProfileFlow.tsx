@@ -21,7 +21,7 @@ interface Props {
   lensProfile?: Profile;
   profileDataFromMetadata?: CreateProfile;
   changeToRegularProfile: () => void;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
   updateSellerMetadata: ReturnType<
     typeof useUpdateSellerMetadata
   >["mutateAsync"];
