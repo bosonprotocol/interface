@@ -20,7 +20,6 @@ import styled from "styled-components";
 import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { formatAddress } from "../../../lib/utils/address";
 import { useAccountDrawer } from "../accountDrawer";
-import PrefetchBalancesWrapper from "../accountDrawer/PrefetchBalancesWrapper";
 import StatusIcon from "../identicon/StatusIcon";
 import { flexRowNoWrap } from "../styles";
 
@@ -240,10 +239,9 @@ export default memo(function Web3Status({
 }: {
   showOnlyIcon?: boolean;
 }) {
-  const [isDrawerOpen] = useAccountDrawer();
   return (
-    <PrefetchBalancesWrapper shouldFetchOnAccountUpdate={isDrawerOpen}>
+    <div>
       <Web3StatusInner showOnlyIcon={showOnlyIcon} />
-    </PrefetchBalancesWrapper>
+    </div>
   );
 });

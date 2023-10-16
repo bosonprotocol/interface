@@ -94,6 +94,7 @@ export function CurrencySearch({
   }, [defaultTokens, debouncedQuery]);
 
   const { data, loading: balancesAreLoading } = useCachedPortfolioBalancesQuery(
+    // TODO: remove?
     { account }
   );
   const balances: TokenBalances = useMemo(() => {
