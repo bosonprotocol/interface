@@ -5,7 +5,7 @@ import {
 } from "components/modal/components/Profile/const";
 import { ethers } from "ethers";
 
-import { validationMessage } from "../../../lib/const/validationMessage";
+import { validationMessage } from "../../../lib/constants/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
 import Yup from "../../../lib/validation/index";
 import { Token } from "../../convertion-rate/ConvertionRateContext";

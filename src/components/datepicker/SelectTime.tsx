@@ -9,9 +9,9 @@ dayjs.extend(advancedFormat);
 dayjs.extend(isToday);
 
 import type { Dayjs } from "dayjs";
+import timezones from "lib/constants/timezones.json";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import timezones from "../../lib/const/timezones.json";
 import { isTruthy } from "../../lib/types/helpers";
 import BaseSelect from "../form/BaseSelect";
 import Grid from "../ui/Grid";

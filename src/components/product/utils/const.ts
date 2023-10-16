@@ -1,9 +1,9 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
+import countries from "lib/constants/countries.json";
 import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 
 import { CONFIG } from "../../../lib/config";
-import countries from "../../../lib/const/countries.json";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { ContactPreference } from "../../modal/components/Profile/const";
 
