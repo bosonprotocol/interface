@@ -42,7 +42,7 @@ export default function PortfolioRow({
   );
 }
 
-function PortfolioSkeletonRow({ shrinkRight }: { shrinkRight?: boolean }) {
+function PortfolioSkeletonRow() {
   return (
     <PortfolioRowWrapper>
       <LoadingBubble height="40px" width="40px" round />
@@ -50,32 +50,15 @@ function PortfolioSkeletonRow({ shrinkRight }: { shrinkRight?: boolean }) {
         <LoadingBubble height="16px" width="60px" delay="300ms" />
         <LoadingBubble height="10px" width="90px" delay="300ms" />
       </AutoColumn>
-      <EndColumn gap="xs">
-        {shrinkRight ? (
-          <LoadingBubble height="12px" width="20px" delay="600ms" />
-        ) : (
-          <>
-            <LoadingBubble height="14px" width="70px" delay="600ms" />
-            <LoadingBubble height="14px" width="50px" delay="600ms" />
-          </>
-        )}
-      </EndColumn>
     </PortfolioRowWrapper>
   );
 }
 
-export function PortfolioSkeleton({
-  shrinkRight = false
-}: {
-  shrinkRight?: boolean;
-}) {
+export function PortfolioSkeleton() {
   return (
     <>
       {Array.from({ length: 5 }).map((_, i) => (
-        <PortfolioSkeletonRow
-          shrinkRight={shrinkRight}
-          key={`portfolio loading row${i}`}
-        />
+        <PortfolioSkeletonRow key={`portfolio loading row${i}`} />
       ))}
     </>
   );

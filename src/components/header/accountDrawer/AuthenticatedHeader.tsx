@@ -20,21 +20,15 @@ import styled from "styled-components";
 
 import { getConnection } from "../../../lib/connection";
 import { formatAddress } from "../../../lib/utils/address";
-import { formatDelta } from "../../../lib/utils/formatDelta";
-import { formatNumber, NumberType } from "../../../lib/utils/formatNumbers";
 import { Spinner } from "../../loading/Spinner";
 import Tooltip from "../../tooltip/Tooltip";
 import Column from "../../ui/column";
-import Grid from "../../ui/Grid";
-import { LoadingBubble } from "../../ui/LoadingBubble";
 import Typography from "../../ui/Typography";
 import StatusIcon from "../identicon/StatusIcon";
 import { FiatLink, useFiatLinkContext } from "./fiatOnrampModal/FiatLink";
 // import FiatOnrampModal from "./fiatOnrampModal";
 import { IconWithConfirmTextButton } from "./IconButton";
 import MiniPortfolio from "./miniPortfolio";
-import { portfolioFadeInAnimation } from "./miniPortfolio/PortfolioRow";
-import { useCachedPortfolioBalancesQuery } from "./PrefetchBalancesWrapper";
 
 const AuthenticatedHeaderWrapper = styled.div`
   padding: 20px 16px;
@@ -146,10 +140,6 @@ const HeaderWrapper = styled.div`
   align-items: flex-start;
 `;
 
-const FadeInColumn = styled(Column)`
-  ${portfolioFadeInAnimation}
-`;
-
 const PortfolioDrawerContainer = styled(Column)`
   flex: 1;
 `;
@@ -215,15 +205,6 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
     [setShow]
   );
 
-  const { data: portfolioBalances } = useCachedPortfolioBalancesQuery({
-    account
-  });
-  const portfolio = portfolioBalances?.portfolios?.[0];
-  const totalBalance = portfolio?.tokensTotalDenominatedValue?.value;
-  const absoluteChange =
-    portfolio?.tokensTotalDenominatedValueChange?.absolute?.value;
-  const percentChange =
-    portfolio?.tokensTotalDenominatedValueChange?.percentage?.value;
   const color = getColor1OverColor2WithContrast({
     color2: useCSSVariable("--buttonBgColor") || colors.primary,
     color1: useCSSVariable("--textColor") || colors.black
@@ -276,34 +257,6 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
         </IconContainer>
       </HeaderWrapper>
       <PortfolioDrawerContainer>
-        {totalBalance !== undefined ? (
-          <FadeInColumn gap="xs">
-            <Typography
-              fontWeight={500}
-              $fontSize="36px"
-              data-testid="portfolio-total-balance"
-            >
-              {formatNumber(totalBalance, NumberType.PortfolioBalance)}
-            </Typography>
-            <Grid marginBottom="20px">
-              {absoluteChange !== 0 && percentChange && (
-                <>
-                  <PortfolioArrow change={absoluteChange as number} />
-                  <Typography>
-                    {`${formatNumber(
-                      Math.abs(absoluteChange as number),
-                      NumberType.PortfolioBalance
-                    )} (${formatDelta(percentChange)})`}
-                  </Typography>
-                </>
-              )}
-            </Grid>
-          </FadeInColumn>
-        ) : (
-          <Column gap="xs">
-            <LoadingBubble height="16px" width="100px" margin="4px 0 20px 0" />
-          </Column>
-        )}
         <FiatLink>
           <HeaderButton
             $color={color}
