@@ -36,7 +36,7 @@ export default function CreateProductWrapper() {
       FallbackComponent={() => (
         <div>
           <p>
-            Something when wrong, please refresh the page to try again or go
+            Something went wrong, please refresh the page to try again or go
             back to the home page
           </p>
 

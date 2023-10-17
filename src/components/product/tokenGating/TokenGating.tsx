@@ -8,7 +8,13 @@ import { FormField, Input, Select } from "../../form";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "../Product.styles";
-import { TOKEN_CRITERIA, TOKEN_TYPES } from "../utils";
+import {
+  TOKEN_CRITERIA,
+  TOKEN_GATING_PER_OPTIONS,
+  TOKEN_TYPES,
+  TokenCriteriaTokenRange,
+  TokenGatingPerToken
+} from "../utils";
 
 const ContainerProductPage = styled.div`
   width: 100%;
@@ -52,9 +58,9 @@ const prefix = "tokenGating.";
 
 const [{ value: minBalance }] = TOKEN_CRITERIA;
 const [{ value: erc20 }, { value: erc721 }, { value: erc1155 }] = TOKEN_TYPES;
-
+// logic extracted from https://miro.com/app/board/uXjVMDNFjuw=/
 export default function TokenGating() {
-  const { nextIsDisabled, values, handleBlur } = useForm();
+  const { nextIsDisabled, values, handleBlur, setFieldValue } = useForm();
   const { tokenGating } = values;
   const core = useCoreSDK();
   const [symbol, setSymbol] = useState<string | undefined>(undefined);
@@ -83,6 +89,18 @@ export default function TokenGating() {
       }
     })();
   }, [core, tokenGating.tokenContract, tokenGating.tokenType]);
+
+  useEffect(() => {
+    if (
+      tokenGating.tokenType?.value === erc721 &&
+      tokenGating.gatingType?.value === TokenGatingPerToken.value
+    ) {
+      setFieldValue(`${prefix}tokenCriteria`, TokenCriteriaTokenRange);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokenGating.gatingType?.value, setFieldValue]);
+  const walletOrToken =
+    tokenGating.gatingType?.value === "wallet" ? "wallet" : "token";
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Token Gating</SectionTitle>
@@ -119,81 +137,151 @@ export default function TokenGating() {
           </TokengatedInfoWrapper>
 
           <>
-            {tokenGating.tokenType?.value === erc721 && (
-              <StyledGrid flex="1" flexWrap="wrap" gap="1rem">
-                <FormField
-                  title="Token gating ownership requirements"
-                  subTitle="Target a specific NFT or specify a minimum collection balance"
-                  style={{ margin: "1rem 0 0 0" }}
-                  required
+            {tokenGating.tokenType?.value === erc20 && (
+              <>
+                <StyledGrid
+                  flex="1"
+                  flexWrap="wrap"
+                  gap="1rem"
+                  alignItems="flex-start"
                 >
-                  <StyledSelect
-                    name={`${prefix}tokenCriteria`}
-                    options={TOKEN_CRITERIA}
-                  />
-                </FormField>
-                {tokenGating.tokenCriteria?.value === minBalance ? (
                   <FormField
-                    title="Minimum collection balance"
-                    subTitle="Specify the minimum number of NFTs  that a wallet must hold"
+                    title="Minimum token balance"
+                    subTitle="Specify the minimum token balance a wallet must hold to unlock this gate"
                     style={{ margin: "1rem 0 0 0" }}
                     required
                   >
                     <Input name={`${prefix}minBalance`} type="string" />
                   </FormField>
-                ) : (
+                  {symbol && (
+                    <FormField
+                      title="Currency"
+                      subTitle="Set from the token address"
+                      style={{ margin: "1rem 0 0 0", flex: "0" }}
+                    >
+                      <SymbolInput
+                        type="string"
+                        name={`${prefix}symbol`}
+                        value={symbol}
+                        disabled
+                        style={{ width: "initial" }}
+                      />
+                    </FormField>
+                  )}
+                </StyledGrid>
+                <Grid alignItems="flex-start">
                   <FormField
-                    title="Token ID"
-                    subTitle="Enter the Token ID for the specific NFT"
+                    title="Unlocks per wallet"
+                    subTitle={`Specify the maximum number of times a wallet can unlock the token gate`}
                     style={{ margin: "1rem 0 0 0" }}
+                    required
                   >
-                    <Input name={`${prefix}tokenId`} type="string" />
+                    <Input name={`${prefix}maxCommits`} type="string" />
                   </FormField>
-                )}
-              </StyledGrid>
+                </Grid>
+              </>
             )}
 
-            {tokenGating.tokenType?.value === erc20 && (
-              <StyledGrid flex="1" flexWrap="wrap" gap="1rem">
-                <FormField
-                  title="Minimum token balance"
-                  subTitle="Specify the minimum token balance a wallet must hold to unlock this gate"
-                  style={{ margin: "1rem 0 0 0" }}
-                  required
+            {tokenGating.tokenType?.value === erc721 && (
+              <>
+                <StyledGrid
+                  flex="1"
+                  flexWrap="wrap"
+                  gap="1rem"
+                  alignItems="flex-start"
                 >
-                  <Input name={`${prefix}minBalance`} type="string" />
-                </FormField>
-                {symbol && (
                   <FormField
-                    title="Currency"
-                    subTitle="Set from the token address"
-                    style={{ margin: "1rem 0 0 0", flex: "0" }}
+                    title="Token gating type"
+                    subTitle="Gate per wallet or per token"
+                    style={{ margin: "1rem 0 0 0" }}
+                    required
                   >
-                    <SymbolInput
-                      type="string"
-                      name={`${prefix}symbol`}
-                      value={symbol}
-                      disabled
-                      style={{ width: "initial" }}
+                    <StyledSelect
+                      name={`${prefix}gatingType`}
+                      options={TOKEN_GATING_PER_OPTIONS}
                     />
                   </FormField>
-                )}
-              </StyledGrid>
+                  <FormField
+                    title="Token gating ownership requirements"
+                    subTitle="Specify a minimum collection balance or target a token range"
+                    style={{ margin: "1rem 0 0 0" }}
+                    required
+                  >
+                    <StyledSelect
+                      name={`${prefix}tokenCriteria`}
+                      options={TOKEN_CRITERIA}
+                      disabled={
+                        tokenGating.gatingType?.value ===
+                        TokenGatingPerToken.value
+                      }
+                    />
+                  </FormField>
+
+                  {tokenGating.tokenCriteria?.value === minBalance ? (
+                    <FormField
+                      title="Minimum collection balance"
+                      subTitle="Specify the minimum number of NFTs  that a wallet must hold"
+                      style={{ margin: "1rem 0 0 0" }}
+                      required
+                    >
+                      <Input name={`${prefix}minBalance`} type="string" />
+                    </FormField>
+                  ) : (
+                    <Grid gap="1rem" alignItems="flex-start">
+                      <FormField
+                        title="Minimum token ID in range"
+                        subTitle="Enter the min token ID in the range (it can be the same as the maximum)"
+                        style={{ margin: "1rem 0 0 0" }}
+                      >
+                        <Input name={`${prefix}minTokenId`} type="string" />
+                      </FormField>
+                      <FormField
+                        title="Maximum token ID in range"
+                        subTitle="Enter the max token ID in the range (it can be the same as the minimum)"
+                        style={{ margin: "1rem 0 0 0" }}
+                      >
+                        <Input name={`${prefix}maxTokenId`} type="string" />
+                      </FormField>
+                    </Grid>
+                  )}
+                </StyledGrid>
+                <Grid alignItems="flex-start">
+                  <FormField
+                    title={`Unlocks per ${walletOrToken}`}
+                    subTitle={`Specify the maximum number of times a ${walletOrToken} can unlock the token gate`}
+                    required
+                    style={{ margin: "1rem 0 0 0" }}
+                  >
+                    <Input name={`${prefix}maxCommits`} type="string" />
+                  </FormField>
+                </Grid>
+              </>
             )}
           </>
-          {tokenGating.tokenType?.value === erc1155 ? (
+          {tokenGating.tokenType?.value === erc1155 && (
             <>
-              <Grid>
+              <Grid gap="1rem" alignItems="flex-start">
                 <FormField
-                  title="Token ID"
-                  subTitle="Enter the specific Token ID from the ERC1155"
+                  title="Minimum token ID in range"
+                  subTitle="Enter the min token ID in the range (it can be the same as the maximum)"
                   style={{ margin: "1rem 0 0 0" }}
-                  required
                 >
-                  <Input name={`${prefix}tokenId`} type="string" />
+                  <Input name={`${prefix}minTokenId`} type="string" />
+                </FormField>
+                <FormField
+                  title="Maximum token ID in range"
+                  subTitle="Enter the max token ID in the range (it can be the same as the minimum)"
+                  style={{ margin: "1rem 0 0 0" }}
+                >
+                  <Input name={`${prefix}maxTokenId`} type="string" />
                 </FormField>
               </Grid>
-              <StyledGrid flex="1" flexWrap="wrap" gap="1rem">
+              <StyledGrid
+                flex="1"
+                flexWrap="wrap"
+                gap="1rem"
+                alignItems="flex-start"
+              >
                 <FormField
                   title="Minimum token balance"
                   subTitle="Specify the minimum token balance a wallet must hold to unlock this gate"
@@ -202,10 +290,21 @@ export default function TokenGating() {
                 >
                   <Input name={`${prefix}minBalance`} type="string" />
                 </FormField>
+                <FormField
+                  title="Token gating type"
+                  subTitle="Gate per wallet or per token"
+                  style={{ margin: "1rem 0 0 0" }}
+                  required
+                >
+                  <StyledSelect
+                    name={`${prefix}gatingType`}
+                    options={TOKEN_GATING_PER_OPTIONS}
+                  />
+                </FormField>
 
                 <FormField
-                  title="Unlocks per wallet"
-                  subTitle="Specify the maximum number of times a wallet can unlock the token gate"
+                  title={`Unlocks per ${walletOrToken}`}
+                  subTitle={`Specify the maximum number of times a ${walletOrToken} can unlock the token gate`}
                   required
                   style={{ margin: "1rem 0 0 0" }}
                 >
@@ -213,17 +312,6 @@ export default function TokenGating() {
                 </FormField>
               </StyledGrid>
             </>
-          ) : (
-            <Grid>
-              <FormField
-                title="Unlocks per wallet"
-                subTitle="Specify the maximum number of times a wallet can unlock the token gate"
-                style={{ margin: "1rem 0 0 0" }}
-                required
-              >
-                <Input name={`${prefix}maxCommits`} type="string" />
-              </FormField>
-            </Grid>
           )}
 
           {/* 

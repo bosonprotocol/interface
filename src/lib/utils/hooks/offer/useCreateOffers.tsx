@@ -8,7 +8,7 @@ import { TOKEN_TYPES } from "../../../../components/product/utils";
 import LoadingToast from "../../../../components/toasts/common/LoadingToast";
 import {
   buildCondition,
-  PartialTokenGating
+  FullTokenGating
 } from "../../../../pages/create-product/utils/buildCondition";
 import { useCoreSDK } from "../../useCoreSdk";
 import { useAccount } from "../connection/connection";
@@ -28,7 +28,7 @@ type UseCreateOffersProps = {
   sellerToCreate: accounts.CreateSellerArgs | null;
   offersToCreate: offers.CreateOfferArgs[];
   isMultiVariant: boolean;
-  tokenGatedInfo?: PartialTokenGating | null;
+  tokenGatedInfo?: FullTokenGating | null;
   conditionDecimals?: number;
   onGetExchangeTokenDecimals?: (decimals: number | undefined) => unknown;
   onCreatedOffersWithVariants?: (arg0: {
