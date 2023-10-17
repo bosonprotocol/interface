@@ -288,6 +288,15 @@ const CHAIN_INFO: ChainInfoMap = {
     circleLogoUrl: baseLogo,
     squareLogoUrl: baseSquareLogo,
     nativeCurrency: { name: "Base Goerli Ether", symbol: "ETH", decimals: 18 }
+  },
+  [31337]: {
+    networkType: NetworkType.L1,
+    docs: "https://docs.uniswap.org/",
+    explorer: "https://etherscan.io/",
+    infoLink: "https://info.uniswap.org/#/",
+    label: "Local",
+    logoUrl: ethereumLogoUrl,
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 }
   }
 } as const;
 

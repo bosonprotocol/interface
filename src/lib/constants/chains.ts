@@ -28,7 +28,8 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.BNB]: "bnb",
   [ChainId.AVALANCHE]: "avalanche",
   [ChainId.BASE]: "base",
-  [ChainId.BASE_GOERLI]: "base_goerli"
+  [ChainId.BASE_GOERLI]: "base_goerli",
+  31337: "local"
 } as const;
 
 export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
@@ -46,7 +47,8 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
   [ChainId.BNB]: "Bnb",
   [ChainId.AVALANCHE]: "Avalanche",
   [ChainId.BASE]: "Base",
-  [ChainId.BASE_GOERLI]: "Base Goerli"
+  [ChainId.BASE_GOERLI]: "Base Goerli",
+  31337: "Local Hardhat"
 } as const;
 
 // Include ChainIds in this array if they are not supported by the UX yet, but are already in the SDK.
@@ -54,7 +56,7 @@ const NOT_YET_UX_SUPPORTED_CHAIN_IDS: number[] = [];
 const ACTUALLY_SUPPORTED_CHAINS = SUPPORTED_CHAINS.filter((chainId) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return envChainIds.includes(chainId as any);
-});
+}).concat([31337]);
 
 export function isSupportedChain(
   chainId: number | null | undefined | ChainId,
