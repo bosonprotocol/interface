@@ -8,6 +8,8 @@ import {
 } from "@uniswap/sdk-core";
 import invariant from "tiny-invariant";
 
+import { LocalChainId } from "./chains";
+
 export const NATIVE_CHAIN_ID = "NATIVE";
 
 // When decimals are not specified for an ERC20 token
@@ -439,7 +441,7 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
       "WAVAX",
       "Wrapped AVAX"
     ),
-    [31337]: new Token(
+    [LocalChainId]: new Token(
       ChainId.BASE,
       "0x4200000000000000000000000000000000000006",
       18,

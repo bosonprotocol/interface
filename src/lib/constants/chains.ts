@@ -1,9 +1,11 @@
 import {
   ChainId,
-  SUPPORTED_CHAINS,
+  SUPPORTED_CHAINS as _SUPPORTED_CHAINS,
   SupportedChainsType
 } from "@uniswap/sdk-core";
 import { envChainIds } from "lib/config";
+
+export const LocalChainId = 31337;
 
 export const UniWalletSupportedChains = [
   ChainId.MAINNET,
@@ -29,7 +31,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.AVALANCHE]: "avalanche",
   [ChainId.BASE]: "base",
   [ChainId.BASE_GOERLI]: "base_goerli",
-  31337: "local"
+  [LocalChainId]: "local"
 } as const;
 
 export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
@@ -48,15 +50,17 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
   [ChainId.AVALANCHE]: "Avalanche",
   [ChainId.BASE]: "Base",
   [ChainId.BASE_GOERLI]: "Base Goerli",
-  31337: "Local Hardhat"
+  [LocalChainId]: "Local Hardhat"
 } as const;
+
+const SUPPORTED_CHAINS = [LocalChainId, ..._SUPPORTED_CHAINS];
 
 // Include ChainIds in this array if they are not supported by the UX yet, but are already in the SDK.
 const NOT_YET_UX_SUPPORTED_CHAIN_IDS: number[] = [];
 const ACTUALLY_SUPPORTED_CHAINS = SUPPORTED_CHAINS.filter((chainId) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return envChainIds.includes(chainId as any);
-}).concat([31337]);
+});
 
 export function isSupportedChain(
   chainId: number | null | undefined | ChainId,
@@ -98,7 +102,8 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
 export const TESTNET_CHAIN_IDS = [
   ChainId.GOERLI,
   // ChainId.SEPOLIA,
-  ChainId.POLYGON_MUMBAI
+  ChainId.POLYGON_MUMBAI,
+  LocalChainId
   // ChainId.ARBITRUM_GOERLI,
   // ChainId.OPTIMISM_GOERLI,
   // ChainId.CELO_ALFAJORES
@@ -113,7 +118,8 @@ export const L1_CHAIN_IDS = [
   ChainId.GOERLI,
   // ChainId.SEPOLIA,
   ChainId.POLYGON,
-  ChainId.POLYGON_MUMBAI
+  ChainId.POLYGON_MUMBAI,
+  LocalChainId
   // ChainId.CELO,
   // ChainId.CELO_ALFAJORES
   // ChainId.BNB,

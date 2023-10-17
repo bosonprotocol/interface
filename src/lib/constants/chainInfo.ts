@@ -20,7 +20,7 @@ import polygonSquareLogoUrl from "assets/svg/polygon_square_logo.svg";
 import polygonMaticLogo from "assets/svg/polygon-matic-logo.svg";
 import ms from "ms";
 
-import { SupportedL1ChainId, SupportedL2ChainId } from "./chains";
+import { LocalChainId, SupportedL1ChainId, SupportedL2ChainId } from "./chains";
 import {
   ARBITRUM_LIST,
   AVALANCHE_LIST,
@@ -289,7 +289,7 @@ const CHAIN_INFO: ChainInfoMap = {
     squareLogoUrl: baseSquareLogo,
     nativeCurrency: { name: "Base Goerli Ether", symbol: "ETH", decimals: 18 }
   },
-  [31337]: {
+  [LocalChainId]: {
     networkType: NetworkType.L1,
     docs: "https://docs.uniswap.org/",
     explorer: "https://etherscan.io/",
