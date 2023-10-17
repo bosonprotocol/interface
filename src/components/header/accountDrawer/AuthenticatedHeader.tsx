@@ -29,7 +29,6 @@ import { FiatLink, useFiatLinkContext } from "./fiatOnrampModal/FiatLink";
 // import FiatOnrampModal from "./fiatOnrampModal";
 import { IconWithConfirmTextButton } from "./IconButton";
 import MiniPortfolio from "./miniPortfolio";
-import { portfolioFadeInAnimation } from "./miniPortfolio/PortfolioRow";
 
 const AuthenticatedHeaderWrapper = styled.div`
   padding: 20px 16px;
@@ -139,10 +138,6 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-`;
-
-const FadeInColumn = styled(Column)`
-  ${portfolioFadeInAnimation}
 `;
 
 const PortfolioDrawerContainer = styled(Column)`
