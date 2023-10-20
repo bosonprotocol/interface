@@ -1,7 +1,10 @@
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
 import { BosonRoutes } from "lib/routing/routes";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import {
+  useAccount,
+  useSignMessage
+} from "lib/utils/hooks/connection/connection";
 import { getViewModeUrl, ViewMode } from "lib/viewMode";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -58,6 +61,7 @@ export default function CustomStore() {
   const sellerId = seller?.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
   const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
+  const { mutateAsync: signMessage } = useSignMessage();
 
   if (!address) {
     return (
@@ -113,6 +117,12 @@ export default function CustomStore() {
         onSubmit={async (values) => {
           setHasSubmitError(false);
           try {
+            const signature = await signMessage({
+              message: "Confirm custom store creation"
+            });
+            if (!signature) {
+              throw new Error("Seller did not sign the custom store creation");
+            }
             const dappOrigin = getViewModeUrl(ViewMode.DAPP, BosonRoutes.Root);
             const queryParams = new URLSearchParams(
               formValuesWithOneLogoUrl(values as unknown as StoreFormFields)
