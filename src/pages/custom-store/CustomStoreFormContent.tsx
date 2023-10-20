@@ -937,7 +937,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           variant="primaryFill"
           disabled={!isValid || isSubmitting}
         >
-          {isSubmitting ? "Creating..." : "Create"}
+          {isSubmitting ? "Creating..." : "Sign & Create"}
           {isSubmitting && <Spinner />}
         </BosonButton>
       </Grid>
