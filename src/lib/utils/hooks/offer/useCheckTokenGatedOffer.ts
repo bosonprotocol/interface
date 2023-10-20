@@ -9,13 +9,14 @@ import { useAccount, useSigner } from "../connection/connection";
 
 interface Props {
   commitProxyAddress?: string | undefined;
-  condition?: Offer["condition"] | undefined;
+  offer: Offer;
 }
 
 export default function useCheckTokenGatedOffer({
   commitProxyAddress,
-  condition
+  offer
 }: Props) {
+  const { id, condition } = offer;
   const signer = useSigner();
   const { account: address } = useAccount();
 
@@ -58,7 +59,7 @@ export default function useCheckTokenGatedOffer({
       }
 
       try {
-        const met = await core.checkTokenGatedCondition(condition, address);
+        const met = await core.checkTokenGatedCondition(id, address);
         setConditionMet(met);
       } catch (error) {
         console.error(error);
