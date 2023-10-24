@@ -7,14 +7,14 @@ import { Offer } from "../../../lib/types/offer";
 const UNISWAP_API_URL =
   "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3";
 
-const poolsQuery = gql`
+const getPoolsQuery = (orderBy: "volumeUSD" | "liquidity") => gql`
   query GetPools($token0: String, $token1: String) {
     pools(
       where: {
         token0_: { symbol_contains_nocase: $token0 }
         token1_: { symbol_contains_nocase: $token1 }
       }
-      orderBy: volumeUSD
+      orderBy: ${orderBy}
       orderDirection: desc
     ) {
       token0 {
@@ -71,7 +71,7 @@ function generateQuery(
 ): QueryProps[] | [] {
   return tokens && tokens.length
     ? tokens?.flatMap((token) => ({
-        query: poolsQuery,
+        query: getPoolsQuery("volumeUSD"),
         variables: {
           token0: swap ? "USDC" : token.symbol,
           token1: swap ? token.symbol : "USDC"
@@ -136,7 +136,7 @@ export function useUniswapPools({ tokens }: Props) {
       });
       const allPromises = [
         {
-          query: poolsQuery,
+          query: getPoolsQuery("liquidity"),
           variables: {
             token0: "WETH",
             token1: "BOSON"
