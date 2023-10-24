@@ -1,3 +1,4 @@
+import { GatingType } from "@bosonprotocol/common";
 import { parseUnits } from "@ethersproject/units";
 import {
   maxLengthErrorMessage,
@@ -20,6 +21,7 @@ import {
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
   TOKEN_CRITERIA,
+  TOKEN_GATING_PER_OPTIONS,
   TOKEN_TYPES
 } from "./const";
 import {
@@ -212,7 +214,9 @@ export const tokenGatingValidationSchema = Yup.object({
       .required(validationMessage.required)
       .matches(/^\+?[1-9]\d*$/, "Value must greater than 0"),
     tokenType: Yup.object({
-      value: Yup.string(),
+      value: Yup.mixed<typeof TOKEN_TYPES[number]["value"]>().oneOf(
+        TOKEN_TYPES.map((type) => type.value)
+      ),
       label: Yup.string()
     })
       .required(validationMessage.required)
@@ -236,7 +240,7 @@ export const tokenGatingValidationSchema = Yup.object({
           )
           .typeError("Value must be an integer greater than or equal to 1")
     }),
-    tokenId: Yup.string().when(["tokenType", "tokenCriteria"], {
+    minTokenId: Yup.string().when(["tokenType", "tokenCriteria"], {
       is: (tokenType: SelectDataProps, tokenCriteria: SelectDataProps) =>
         tokenType?.value === TOKEN_TYPES[2].value ||
         (tokenType?.value === TOKEN_TYPES[1].value &&
@@ -258,8 +262,37 @@ export const tokenGatingValidationSchema = Yup.object({
           )
           .typeError("Value must be an integer greater than or equal to 0")
           .required(validationMessage.required)
-    })
-
+    }),
+    maxTokenId: Yup.string().when(["tokenType", "tokenCriteria"], {
+      is: (tokenType: SelectDataProps, tokenCriteria: SelectDataProps) =>
+        tokenType?.value === TOKEN_TYPES[2].value ||
+        (tokenType?.value === TOKEN_TYPES[1].value &&
+          tokenCriteria?.value === TOKEN_CRITERIA[1].value),
+      then: (schema) =>
+        schema
+          .test(
+            "",
+            "Value must greater than or equal to 0 or a hex value up to 64 chars",
+            (value) => {
+              if (!value) {
+                return false;
+              }
+              return (
+                /0[xX][0-9a-fA-F]{1,64}$/.test(value) ||
+                /^(0|\+?[1-9]\d*)$/.test(value)
+              );
+            }
+          )
+          .typeError("Value must be an integer greater than or equal to 0")
+          .required(validationMessage.required)
+    }),
+    gatingType: Yup.object({
+      value: Yup.mixed<
+        typeof TOKEN_GATING_PER_OPTIONS[number]["value"]
+      >().oneOf(TOKEN_GATING_PER_OPTIONS.map((type) => type.value)),
+      label: Yup.string(),
+      gatingType: Yup.number().oneOf(Object.values(GatingType).map(Number))
+    }).required(validationMessage.required)
     // tokenGatingDesc: Yup.string().required(validationMessage.required)
   })
 });

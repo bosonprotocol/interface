@@ -1,4 +1,4 @@
-import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
+import { EvaluationMethod, GatingType, TokenType } from "@bosonprotocol/common";
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
 import countries from "lib/constants/countries.json";
 import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
@@ -117,17 +117,34 @@ export const TokenTypeEnumToString = {
   [TokenType.MultiToken]: "erc1155"
 } as const;
 
+export const TokenCriteriaMinBalance = {
+  value: "minbalance",
+  label: "Collection balance",
+  method: EvaluationMethod.Threshold
+} as const;
+export const TokenCriteriaTokenRange = {
+  value: "tokenrange",
+  label: "Token range",
+  method: EvaluationMethod.SpecificToken
+} as const;
 export const TOKEN_CRITERIA = [
-  {
-    value: "minbalance",
-    label: "Collection balance",
-    method: EvaluationMethod.Threshold
-  },
-  {
-    value: "tokenid",
-    label: "Specific token",
-    method: EvaluationMethod.SpecificToken
-  }
+  TokenCriteriaMinBalance,
+  TokenCriteriaTokenRange
+] as const;
+
+export const TokenGatingPerWallet = {
+  value: "wallet",
+  label: "Per wallet",
+  gatingType: GatingType.PerAddress
+} as const;
+export const TokenGatingPerToken = {
+  value: "token",
+  label: "Per token",
+  gatingType: GatingType.PerTokenId
+} as const;
+export const TOKEN_GATING_PER_OPTIONS = [
+  TokenGatingPerWallet,
+  TokenGatingPerToken
 ] as const;
 
 export const OPTIONS_EXCHANGE_POLICY = [

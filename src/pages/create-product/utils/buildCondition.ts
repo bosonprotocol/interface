@@ -1,69 +1,75 @@
 import {
   ConditionStruct,
   EvaluationMethod,
+  GatingType,
   TokenType
 } from "@bosonprotocol/common";
 import { utils } from "ethers";
 
-import { TokenGating } from "../../../components/product/utils";
+import {
+  TokenCriteriaTokenRange,
+  TokenGating
+} from "../../../components/product/utils";
 
-export type PartialTokenGating = Pick<
-  TokenGating["tokenGating"],
-  | "tokenId"
-  | "minBalance"
-  | "tokenType"
-  | "tokenCriteria"
-  | "tokenContract"
-  | "maxCommits"
->;
+export type FullTokenGating = TokenGating["tokenGating"];
 
 export const buildCondition = (
-  partialTokenGating: PartialTokenGating,
+  tokenGating: FullTokenGating,
   decimals?: number
 ): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
   let method: EvaluationMethod = EvaluationMethod.None;
   let threshold;
-  let tokenId = partialTokenGating.tokenId || "0";
+  let gatingType;
+  let minTokenId;
+  let maxTokenId;
 
   let formatedValue = null;
-  if (decimals && partialTokenGating.minBalance) {
-    formatedValue = utils.parseUnits(partialTokenGating.minBalance, decimals);
+  if (decimals && tokenGating.minBalance) {
+    formatedValue = utils.parseUnits(tokenGating.minBalance, decimals);
   }
 
-  switch (partialTokenGating.tokenType.value) {
+  switch (tokenGating.tokenType.value) {
     case "erc1155":
       tokenType = TokenType.MultiToken;
       method = EvaluationMethod.Threshold;
-      threshold = partialTokenGating.minBalance;
+      threshold = tokenGating.minBalance;
+      minTokenId = tokenGating.minTokenId;
+      maxTokenId = tokenGating.maxTokenId;
+      gatingType = tokenGating.gatingType.gatingType;
       break;
     case "erc721":
       tokenType = TokenType.NonFungibleToken;
-      if (partialTokenGating.tokenCriteria.value === "tokenid") {
-        method = EvaluationMethod.SpecificToken;
-        // if erc721 and SpecificToken we should set the threshold as zero
+      gatingType = tokenGating.gatingType.gatingType;
+      if (tokenGating.tokenCriteria.value === TokenCriteriaTokenRange.value) {
+        method = EvaluationMethod.TokenRange;
+        // if erc721 and TokenRange we should set the threshold as zero
         threshold = "0";
+        minTokenId = tokenGating.minTokenId;
+        maxTokenId = tokenGating.maxTokenId;
       } else {
         method = EvaluationMethod.Threshold;
-        threshold = partialTokenGating.minBalance;
-        tokenId = "0";
+        threshold = tokenGating.minBalance;
+        minTokenId = "0";
+        maxTokenId = "0";
       }
       break;
     default:
       tokenType = TokenType.FungibleToken;
       method = EvaluationMethod.Threshold;
-      threshold = formatedValue || partialTokenGating.minBalance;
-      tokenId = "0";
+      threshold = formatedValue || tokenGating.minBalance;
+      minTokenId = "0";
+      maxTokenId = "0";
       break;
   }
   return {
     method,
     tokenType,
-    tokenAddress: partialTokenGating.tokenContract || "",
-    gatingType: 0, // default: PerAddress (legacy)
-    minTokenId: tokenId,
-    maxTokenId: tokenId,
+    tokenAddress: tokenGating.tokenContract || "",
+    gatingType: gatingType ?? GatingType.PerAddress,
+    minTokenId: minTokenId ?? "0",
+    maxTokenId: maxTokenId ?? "0",
     threshold: threshold || "",
-    maxCommits: partialTokenGating.maxCommits || ""
+    maxCommits: tokenGating.maxCommits || ""
   };
 };

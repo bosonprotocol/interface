@@ -1,4 +1,4 @@
-import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
+import { EvaluationMethod, GatingType, TokenType } from "@bosonprotocol/common";
 import { useConfigContext } from "components/config/ConfigContext";
 import { Check, X } from "phosphor-react";
 import { CSSProperties, useEffect, useMemo, useState } from "react";
@@ -55,22 +55,30 @@ const getBuildMessage =
     const {
       method,
       tokenType,
-      minTokenId: tokenId,
+      minTokenId,
+      maxTokenId,
+      gatingType,
       tokenAddress,
       threshold
     } = condition;
 
+    const perWalletOrPerToken =
+      gatingType === GatingType.PerAddress ? " (per wallet)" : " (per token)";
+
+    const TokenLink = (
+      <a
+        href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
+        target="_blank"
+      >
+        {tokenAddress.slice(0, 10)}...
+      </a>
+    );
+
     if (tokenType === TokenType.FungibleToken) {
       return (
         <>
-          {tokenInfo.convertedValue.price} {tokenInfo.symbol} tokens (
-          <a
-            href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
-            target="_blank"
-          >
-            {tokenAddress.slice(0, 10)}...
-          </a>
-          )
+          {tokenInfo.convertedValue.price} {tokenInfo.symbol} tokens
+          {TokenLink}
         </>
       );
     }
@@ -78,40 +86,39 @@ const getBuildMessage =
       if (method === EvaluationMethod.Threshold) {
         return (
           <>
-            {threshold} tokens from{" "}
-            <a
-              href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
-              target="_blank"
-            >
-              {tokenAddress.slice(0, 10)}...
-            </a>
+            {threshold} tokens {perWalletOrPerToken} from {TokenLink}
           </>
         );
       }
-      if (method === EvaluationMethod.SpecificToken) {
+      if (method === EvaluationMethod.TokenRange) {
+        if (minTokenId === maxTokenId) {
+          return (
+            <>
+              Token ID {perWalletOrPerToken}: {minTokenId} from {TokenLink}
+            </>
+          );
+        }
         return (
           <>
-            Token ID: {tokenId} from{" "}
-            <a
-              href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
-              target="_blank"
-            >
-              {tokenAddress.slice(0, 15)}...
-            </a>
+            From token ID {minTokenId} to token ID {maxTokenId}{" "}
+            {perWalletOrPerToken} from {TokenLink}
           </>
         );
       }
     }
     if (tokenType === TokenType.MultiToken) {
+      if (minTokenId === maxTokenId) {
+        return (
+          <>
+            {threshold} x token(s) with id: {minTokenId} {perWalletOrPerToken}{" "}
+            from {TokenLink}
+          </>
+        );
+      }
       return (
         <>
-          {threshold} x token(s) with id: {tokenId} from{" "}
-          <a
-            href={config.envConfig.getTxExplorerUrl?.(tokenAddress, true)}
-            target="_blank"
-          >
-            {tokenAddress.slice(0, 10)}...
-          </a>
+          {threshold} x token(s) from token ID {minTokenId} to token ID{" "}
+          {maxTokenId} {perWalletOrPerToken} from {TokenLink}
         </>
       );
     }
