@@ -1,5 +1,4 @@
-import React, { lazy } from "react";
-import { RouteProps } from "react-router";
+import { lazy } from "react";
 
 import {
   BosonRoutes,
@@ -7,6 +6,7 @@ import {
   ProductRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
+import { IRoutes } from "./types";
 const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
 const CustomStorePage = lazy(
@@ -70,22 +70,6 @@ export const UserRoles = {
   Seller: "Seller",
   DisputeResolver: "DisputeResolver"
 } as const;
-export interface IRoutes extends RouteProps {
-  component:
-    | React.ComponentType<any> // eslint-disable-line
-    | React.LazyExoticComponent<React.ComponentType<any>>; // eslint-disable-line
-  role: Array<string | null>;
-  componentProps?: {
-    [key: string]: string;
-  };
-  app?: {
-    withLayout?: boolean;
-    withFooter?: boolean;
-    fluidHeader?: boolean;
-    withBosonStyles?: boolean;
-    withBanner?: boolean;
-  };
-}
 
 export default [
   {
