@@ -23,6 +23,7 @@ export type GetItemFromStorageKey =
   | "isConnectWalletFromCommit"
   | "showCookies"
   | "showCookiesDrCenter"
+  | "release-version"
   | CreateProductImageProductImages
   | CreateProductImageCreateYourProfileLogo;
 
@@ -43,7 +44,7 @@ export function getItemFromStorage<T>(
   }
 }
 
-export function saveItemInStorage<T>(key: string, value: T) {
+export function saveItemInStorage<T>(key: GetItemFromStorageKey, value: T) {
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
@@ -54,7 +55,7 @@ export function saveItemInStorage<T>(key: string, value: T) {
   }
 }
 
-export function removeItemInStorage(key: string) {
+export function removeItemInStorage(key: GetItemFromStorageKey) {
   if (typeof window !== "undefined") {
     try {
       Object.keys(localStorage)

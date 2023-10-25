@@ -1,11 +1,11 @@
-import React, { lazy } from "react";
-import { RouteProps } from "react-router";
+import { lazy } from "react";
 
 import { CONFIG } from "../lib/config";
 import { ViewMode } from "../lib/viewMode";
 import ViewModePage from "../pages/viewmode/ViewModePage";
 import dappRoutes from "./dappRoutes";
 import drCenterRoutes from "./drCenterRoutes";
+import { IRoutes } from "./types";
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 
 export const baseAppProps = {
@@ -28,21 +28,7 @@ export const UserRoles = {
   Seller: "Seller",
   DisputeResolver: "DisputeResolver"
 } as const;
-export interface IRoutes extends RouteProps {
-  component:
-    | React.ComponentType<any> // eslint-disable-line
-    | React.LazyExoticComponent<React.ComponentType<any>>; // eslint-disable-line
-  role: Array<string | null>;
-  componentProps?: {
-    [key: string]: string;
-  };
-  app?: {
-    withLayout?: boolean;
-    withFullLayout?: boolean;
-    withFooter?: boolean;
-    fluidHeader?: boolean;
-  };
-}
+
 const viewMode = CONFIG.envViewMode.current;
 
 const viewModeRoutes = {
@@ -74,7 +60,7 @@ const viewModeRoutes = {
       },
       component: NotFoundPage
     }
-  ]
+  ] as IRoutes[]
 } as const;
 
 export default viewModeRoutes[viewMode];
