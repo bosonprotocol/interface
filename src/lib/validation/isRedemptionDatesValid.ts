@@ -1,5 +1,6 @@
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
+import { isTruthy } from "lib/types/helpers";
 
 function isRedemptionDatesValid() {
   return this.test(
@@ -7,6 +8,17 @@ function isRedemptionDatesValid() {
     function (value: (Dayjs | null)[]) {
       if (!value) {
         return false;
+      }
+      if (
+        !this.parent.infiniteExpirationOffers &&
+        Array.isArray(value) &&
+        value.filter(isTruthy).length !== 2
+      ) {
+        throw this.createError({
+          path: this.path,
+          message:
+            "Redemption period has to have a beginning date and an end date"
+        });
       }
       const ovValue = this.parent.offerValidityPeriod;
       const doesItEndBefore =

@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useField } from "formik";
-import Select, {
+import ReactSelect, {
   ActionMeta,
   MultiValue,
   SingleValue,
@@ -9,21 +9,20 @@ import Select, {
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import { zIndex } from "../../lib/styles/zIndex";
 import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Error from "./Error";
 import type { SelectDataProps, SelectProps } from "./types";
 
-const StyledSelect = styled(Select)`
+const StyledSelect = styled(ReactSelect)`
   * {
     font-size: 13.33px;
   }
   [class*="-indicatorContainer"] {
     padding: 6.92px; // to make selects less tall but as tall as inputs
   }
-` as Select;
+` as ReactSelect;
 
-const customStyles = (error: any): StylesConfig<any, true> => ({
+const customStyles = (error: any): StylesConfig<any, boolean> => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   singleValue: (provided: any, state: any) => {
     return {
@@ -59,9 +58,10 @@ const customStyles = (error: any): StylesConfig<any, true> => ({
       ...before
     };
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   container: (provided: any, state: any) => ({
     ...provided,
-    zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
+    // zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
     position: "relative",
     width: "100%",
     height: "25px"
@@ -97,7 +97,7 @@ const customStyles = (error: any): StylesConfig<any, true> => ({
   }
 });
 
-export default function SelectComponent({
+export default function SelectForm({
   name,
   options,
   placeholder = "Choose...",
@@ -187,6 +187,40 @@ export default function SelectComponent({
         isClearable={isClearable}
         isDisabled={disabled}
         isOptionDisabled={(option) => !!option.disabled}
+      />
+      <Error display={displayError} message={displayErrorMessage} />{" "}
+    </>
+  );
+}
+
+export function Select({
+  options,
+  placeholder = "Choose...",
+  isClearable = false,
+  isSearchable = true,
+  disabled = false,
+  isMulti,
+  displayErrorMessage,
+  displayError,
+  ...props
+}: Omit<SelectProps<boolean>, "name"> & {
+  displayError?: boolean;
+  displayErrorMessage?: string;
+  name?: string;
+  value?: typeof options[number];
+}) {
+  return (
+    <>
+      <StyledSelect<typeof options[number], boolean>
+        styles={customStyles(displayErrorMessage)}
+        {...props}
+        placeholder={placeholder}
+        options={options}
+        isSearchable={isSearchable}
+        isClearable={isClearable}
+        isDisabled={disabled}
+        isOptionDisabled={(option) => !!option.disabled}
+        isMulti={!!isMulti}
       />
       <Error display={displayError} message={displayErrorMessage} />{" "}
     </>

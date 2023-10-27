@@ -17,7 +17,9 @@ export default function Datepicker({
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
-  const handleChange = (date: Dayjs | Array<Dayjs | null> | null) => {
+  const handleChange = (
+    date: Dayjs | Array<Dayjs | null> | null | undefined
+  ) => {
     if (!meta.touched) {
       helpers.setTouched(true);
     }
@@ -33,6 +35,7 @@ export default function Datepicker({
         selectTime={selectTime}
         initialValue={field.value}
         {...rest}
+        name={name}
       />
       <Error display={displayError} message={errorMessage} />
     </>

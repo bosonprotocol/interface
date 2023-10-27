@@ -19,6 +19,7 @@ export const offerGraphQl = gql`
     voided
     voucherRedeemableFromDate
     voucherRedeemableUntilDate
+    voucherValidDuration
     numberOfCommits
     numberOfRedemptions
     disputeResolutionTerms {

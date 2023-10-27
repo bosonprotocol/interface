@@ -171,7 +171,8 @@ export default function ConfirmProductDetails({
   const commonTermsOfSale = isMultiVariant
     ? values.variantsCoreTermsOfSale
     : values.coreTermsOfSale;
-  const { offerValidityPeriod, redemptionPeriod } = commonTermsOfSale;
+  const { offerValidityPeriod, redemptionPeriod, voucherValidDurationInDays } =
+    commonTermsOfSale;
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -421,9 +422,18 @@ export default function ConfirmProductDetails({
                     marginBottom: 0
                   }}
                 >
-                  <FormField title="Redemption period" required>
+                  <FormField
+                    title={
+                      Array.isArray(redemptionPeriod)
+                        ? "Redemption period"
+                        : "Redemption from"
+                    }
+                    required
+                  >
                     <ContentValue tag="p">
-                      {redemptionPeriod[0] && redemptionPeriod[1] && (
+                      {Array.isArray(redemptionPeriod) &&
+                      redemptionPeriod[0] &&
+                      redemptionPeriod[1] ? (
                         <>
                           {dayjs(redemptionPeriod[0]).format(
                             CONFIG.shortDateFormat
@@ -433,6 +443,36 @@ export default function ConfirmProductDetails({
                             CONFIG.shortDateFormat
                           )}
                         </>
+                      ) : !Array.isArray(redemptionPeriod) ? (
+                        <>
+                          {redemptionPeriod && voucherValidDurationInDays ? (
+                            <>
+                              From{" "}
+                              {dayjs(redemptionPeriod)
+                                .add(voucherValidDurationInDays ?? 0, "days")
+                                .format(CONFIG.shortDateFormat)}{" "}
+                              (includes +{voucherValidDurationInDays} day(s))
+                            </>
+                          ) : redemptionPeriod &&
+                            !voucherValidDurationInDays ? (
+                            <>
+                              From{" "}
+                              {dayjs(redemptionPeriod).format(
+                                CONFIG.shortDateFormat
+                              )}{" "}
+                            </>
+                          ) : !redemptionPeriod &&
+                            voucherValidDurationInDays ? (
+                            <>
+                              {voucherValidDurationInDays ?? 0} days after
+                              commit
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      ) : (
+                        <></>
                       )}
                     </ContentValue>
                   </FormField>
@@ -446,7 +486,9 @@ export default function ConfirmProductDetails({
                 >
                   <FormField title="Offer validity period" required>
                     <ContentValue tag="p">
-                      {offerValidityPeriod[0] && offerValidityPeriod[1] && (
+                      {Array.isArray(offerValidityPeriod) &&
+                      offerValidityPeriod[0] &&
+                      offerValidityPeriod[1] ? (
                         <>
                           {dayjs(offerValidityPeriod[0]).format(
                             CONFIG.shortDateFormat
@@ -456,6 +498,15 @@ export default function ConfirmProductDetails({
                             CONFIG.shortDateFormat
                           )}
                         </>
+                      ) : !Array.isArray(offerValidityPeriod) ? (
+                        <>
+                          {dayjs(offerValidityPeriod).format(
+                            CONFIG.shortDateFormat
+                          )}
+                          {" - (no expiration)"}
+                        </>
+                      ) : (
+                        <></>
                       )}
                     </ContentValue>
                   </FormField>

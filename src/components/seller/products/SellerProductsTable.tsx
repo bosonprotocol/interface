@@ -1,6 +1,7 @@
 import { offers as OffersKit } from "@bosonprotocol/react-kit";
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { defaultFontFamily } from "lib/styles/fonts";
 import uniqBy from "lodash/uniqBy";
 import {
   CaretDown,
@@ -176,7 +177,7 @@ const Table = styled.table`
   }
   .th,
   .td {
-    font-family: "Plus Jakarta Sans";
+    font-family: ${defaultFontFamily};
     font-style: normal;
     font-size: 0.75rem;
     line-height: 1.5;

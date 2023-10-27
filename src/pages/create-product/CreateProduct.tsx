@@ -3,6 +3,7 @@ import { useConfigContext } from "components/config/ConfigContext";
 import Button from "components/ui/Button";
 import { BosonRoutes } from "lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
+import { removeItemInStorage } from "lib/utils/hooks/useLocalStorage";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSearchParams } from "react-router-dom";
@@ -36,7 +37,7 @@ export default function CreateProductWrapper() {
       FallbackComponent={() => (
         <div>
           <p>
-            Something when wrong, please refresh the page to try again or go
+            Something went wrong, please refresh the page to try again or go
             back to the home page
           </p>
 
@@ -50,6 +51,7 @@ export default function CreateProductWrapper() {
       )}
       onError={(error) => {
         Sentry.captureException(error);
+        removeItemInStorage("create-product");
       }}
     >
       <CreateProduct key={config.envConfig.configId} />

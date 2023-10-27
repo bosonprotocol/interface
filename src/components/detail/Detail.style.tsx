@@ -1,3 +1,4 @@
+import { defaultFontFamily } from "lib/styles/fonts";
 import styled, { css } from "styled-components";
 
 import frameImage from "../../assets/frame.png";
@@ -492,7 +493,7 @@ export const Widget = styled.div`
   flex-wrap: wrap;
   width: 100%;
   background: ${colors.white};
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   > div {
     padding: 0 2rem;
     &:first-of-type {

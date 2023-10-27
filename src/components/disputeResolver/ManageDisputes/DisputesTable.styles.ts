@@ -1,4 +1,5 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { defaultFontFamily } from "lib/styles/fonts";
 import styled, { css } from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
@@ -22,7 +23,7 @@ export const Table = styled.table`
   }
   th,
   td {
-    font-family: "Plus Jakarta Sans";
+    font-family: ${defaultFontFamily};
     font-style: normal;
     font-size: 0.75rem;
     line-height: 1.5;

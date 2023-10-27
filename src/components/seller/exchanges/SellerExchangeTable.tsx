@@ -1,4 +1,5 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
+import { defaultFontFamily } from "lib/styles/fonts";
 import {
   CaretDown,
   CaretLeft,
@@ -115,7 +116,7 @@ const Table = styled.table`
   }
   th,
   td {
-    font-family: "Plus Jakarta Sans";
+    font-family: ${defaultFontFamily};
     font-style: normal;
     font-size: 0.75rem;
     line-height: 1.5;

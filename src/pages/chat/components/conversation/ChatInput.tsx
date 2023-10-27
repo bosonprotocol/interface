@@ -6,6 +6,7 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { defaultFontFamily } from "lib/styles/fonts";
 import { PaperPlaneRight, UploadSimple } from "phosphor-react";
 import React, {
   Dispatch,
@@ -50,7 +51,7 @@ const Input = styled.div`
   font-size: 1rem;
   background: ${colors.lightGrey};
   height: max-content;
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   font-style: normal;
   font-size: 1rem;
   font-weight: 500;

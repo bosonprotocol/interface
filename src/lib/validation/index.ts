@@ -12,8 +12,18 @@ Yup.addMethod<Yup.ArraySchema<Yup.BaseSchema<Dayjs>>>(
   "isRedemptionDatesValid",
   isRedemptionDatesValid
 );
+Yup.addMethod<Yup.MixedSchema<Dayjs[] | undefined>>(
+  Yup.mixed<Dayjs[]>,
+  "isRedemptionDatesValid",
+  isRedemptionDatesValid
+);
 Yup.addMethod<Yup.ArraySchema<Yup.BaseSchema<Dayjs>>>(
   Yup.array<Dayjs>,
+  "isOfferValidityDatesValid",
+  isOfferValidityDatesValid
+);
+Yup.addMethod<Yup.MixedSchema<Dayjs[] | undefined>>(
+  Yup.mixed<Dayjs[]>,
   "isOfferValidityDatesValid",
   isOfferValidityDatesValid
 );

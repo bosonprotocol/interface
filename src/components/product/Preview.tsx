@@ -54,17 +54,6 @@ export default function Preview({
 }: Props) {
   const { values } = useForm();
 
-  const redemptionPointUrl =
-    values.shippingInfo.redemptionPointUrl &&
-    values.shippingInfo.redemptionPointUrl.length > 0
-      ? values.shippingInfo.redemptionPointUrl
-      : window.origin;
-  const commonTermsOfSale = isMultiVariant
-    ? values.variantsCoreTermsOfSale
-    : values.coreTermsOfSale;
-  const voucherRedeemableUntilDateInMS = commonTermsOfSale.redemptionPeriod[1]
-    .toDate()
-    .getTime();
   // if we have variants defined, then we show the first one in the preview
   const variantIndex = 0;
   const productImages =
@@ -89,7 +78,30 @@ export default function Preview({
   });
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const [offer] = previewOffers;
+  /*
+  // TODO: hidden for now
+  const redemptionPointUrl =
+    values.shippingInfo.redemptionPointUrl &&
+    values.shippingInfo.redemptionPointUrl.length > 0
+      ? values.shippingInfo.redemptionPointUrl
+      : window.origin;
+  const commonTermsOfSale = isMultiVariant
+    ? values.variantsCoreTermsOfSale
+    : values.coreTermsOfSale;
+  const {
+    offerValidityPeriod,
+    redemptionPeriod,
+    infiniteExpirationOffers,
+    voucherValidDurationInDays
+  } = commonTermsOfSale;
 
+  const { voucherRedeemableUntilDateInMS, voucherValidDurationInMS } =
+    extractOfferTimestamps({
+      offerValidityPeriod,
+      redemptionPeriod,
+      infiniteExpirationOffers: !!infiniteExpirationOffers,
+      voucherValidDurationInDays
+    });
   const productAttributes = values.productInformation?.attributes?.filter(
     (attribute: { name: string; value: string }) => {
       return attribute.name.length > 0;
@@ -100,11 +112,19 @@ export default function Preview({
     name: "Redeemable At",
     value: redemptionPointUrl
   });
-  productAttributes.push({
-    name: "Redeemable Until",
-    value: new Date(voucherRedeemableUntilDateInMS).toString(),
-    display_type: "date"
-  });
+  if (voucherRedeemableUntilDateInMS) {
+    productAttributes.push({
+      name: "Redeemable Until",
+      value: new Date(voucherRedeemableUntilDateInMS).toString(),
+      display_type: "date"
+    });
+  } else {
+    productAttributes.push({
+      name: ProductMetadataAttributeKeys["Redeemable After X Days"],
+      value: (voucherValidDurationInMS / 86400000).toString()
+    });
+  }
+
   productAttributes.push({
     name: "Seller",
     value: values.createYourProfile?.name || ""
@@ -113,6 +133,7 @@ export default function Preview({
     name: "Offer Category",
     value: values.productType?.productType?.toUpperCase() || ""
   });
+  */
   const animationUrl = values.productAnimation?.[0]?.src;
   const variant: VariantV1 = {
     offer,

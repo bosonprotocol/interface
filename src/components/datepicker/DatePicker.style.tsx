@@ -1,12 +1,33 @@
+import { X } from "phosphor-react";
 import styled, { css } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { transition } from "../ui/styles";
 
+export const ClearButton = styled(X).attrs({
+  size: 18
+})`
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  margin: 0 5px;
+  cursor: pointer;
+  display: none;
+  :hover * {
+    stroke: ${colors.darkGrey};
+  }
+`;
 export const Picker = styled.div`
   width: 100%;
   position: relative;
+  :hover,
+  :focus-within {
+    ${ClearButton} {
+      display: initial;
+    }
+  }
 `;
 export const PickerGrid = styled.div.attrs(
   (props: { selectTime: boolean }) => ({

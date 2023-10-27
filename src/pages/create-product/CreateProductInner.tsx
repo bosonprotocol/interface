@@ -7,7 +7,7 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
@@ -78,7 +78,7 @@ import {
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP } from "./utils";
-import { validateDates } from "./utils/dataValidator";
+import { extractOfferTimestamps } from "./utils/dataValidator";
 import { getTermsOfExchange } from "./utils/getTermsOfExchange";
 import {
   getDisputePeriodDurationInMS,
@@ -258,6 +258,7 @@ type GetOfferDataFromMetadataProps = {
   quantityAvailable: number;
   voucherRedeemableFromDateInMS: number;
   voucherRedeemableUntilDateInMS: number;
+  voucherValidDurationInMS: number;
   validFromDateInMS: number;
   validUntilDateInMS: number;
   disputePeriodDurationInMS: number;
@@ -275,6 +276,7 @@ async function getOfferDataFromMetadata(
     quantityAvailable,
     voucherRedeemableFromDateInMS,
     voucherRedeemableUntilDateInMS,
+    voucherValidDurationInMS,
     validFromDateInMS,
     validUntilDateInMS,
     disputePeriodDurationInMS,
@@ -284,14 +286,14 @@ async function getOfferDataFromMetadata(
 ): Promise<offers.CreateOfferArgs> {
   const metadataHash = await coreSDK.storeMetadata(productV1Metadata);
 
-  const offerData = {
+  const offerData: offers.CreateOfferArgs = {
     price: priceBN.toString(),
     sellerDeposit: sellerDeposit.toString(),
     buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
     quantityAvailable: quantityAvailable,
     voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
     voucherRedeemableUntilDateInMS: voucherRedeemableUntilDateInMS.toString(),
-    voucherValidDurationInMS: 0,
+    voucherValidDurationInMS: voucherValidDurationInMS.toString(),
     validFromDateInMS: validFromDateInMS.toString(),
     validUntilDateInMS: validUntilDateInMS.toString(),
     disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
@@ -654,16 +656,24 @@ function CreateProductInner({
         ? values.variantsCoreTermsOfSale
         : values.coreTermsOfSale;
 
-      const { offerValidityPeriod, redemptionPeriod } = commonTermsOfSale;
+      const {
+        offerValidityPeriod,
+        redemptionPeriod,
+        infiniteExpirationOffers,
+        voucherValidDurationInDays
+      } = commonTermsOfSale;
 
       const {
         voucherRedeemableFromDateInMS,
         voucherRedeemableUntilDateInMS,
+        voucherValidDurationInMS,
         validFromDateInMS,
         validUntilDateInMS
-      } = validateDates({
-        offerValidityPeriod: offerValidityPeriod,
-        redemptionPeriod: redemptionPeriod
+      } = extractOfferTimestamps({
+        offerValidityPeriod,
+        redemptionPeriod,
+        infiniteExpirationOffers: !!infiniteExpirationOffers,
+        voucherValidDurationInDays
       });
 
       const disputePeriodDurationInMS = getDisputePeriodDurationInMS(
@@ -680,11 +690,19 @@ function CreateProductInner({
         trait_type: ProductMetadataAttributeKeys["Redeemable At"],
         value: redemptionPointUrl
       });
-      nftAttributes.push({
-        trait_type: ProductMetadataAttributeKeys["Redeemable Until"],
-        value: voucherRedeemableUntilDateInMS.toString(),
-        display_type: "date"
-      });
+
+      if (voucherRedeemableUntilDateInMS) {
+        nftAttributes.push({
+          trait_type: ProductMetadataAttributeKeys["Redeemable Until"],
+          value: voucherRedeemableUntilDateInMS.toString(),
+          display_type: "date"
+        });
+      } else if (voucherValidDurationInMS) {
+        nftAttributes.push({
+          trait_type: ProductMetadataAttributeKeys["Redeemable After X Days"],
+          value: (voucherValidDurationInMS / 86400000).toString()
+        });
+      }
       if (assistantLens?.name || assistantLens?.handle) {
         nftAttributes.push({
           trait_type: ProductMetadataAttributeKeys["Seller"],
@@ -821,6 +839,7 @@ function CreateProductInner({
               quantityAvailable: variants[index].quantity,
               voucherRedeemableFromDateInMS,
               voucherRedeemableUntilDateInMS,
+              voucherValidDurationInMS,
               validFromDateInMS,
               validUntilDateInMS,
               disputePeriodDurationInMS,
@@ -867,6 +886,7 @@ function CreateProductInner({
           quantityAvailable: coreTermsOfSale.quantity,
           voucherRedeemableFromDateInMS,
           voucherRedeemableUntilDateInMS,
+          voucherValidDurationInMS,
           validFromDateInMS,
           validUntilDateInMS,
           disputePeriodDurationInMS,
@@ -959,18 +979,30 @@ function CreateProductInner({
         ? "variantsCoreTermsOfSale"
         : "coreTermsOfSale";
 
+      const redemptionPeriod = Array.isArray(
+        values?.[coreTermsOfSaleKey]?.redemptionPeriod
+      )
+        ? (
+            values?.[coreTermsOfSaleKey]?.redemptionPeriod as
+              | Dayjs[]
+              | undefined
+          )?.map((d) => dayjs(d).format()) ?? []
+        : values?.[coreTermsOfSaleKey]?.redemptionPeriod;
+      const offerValidityPeriod = Array.isArray(
+        values?.[coreTermsOfSaleKey]?.offerValidityPeriod
+      )
+        ? (
+            values?.[coreTermsOfSaleKey]?.offerValidityPeriod as
+              | Dayjs[]
+              | undefined
+          )?.map((d) => dayjs(d).format()) ?? []
+        : values?.[coreTermsOfSaleKey]?.offerValidityPeriod;
       return {
         ...values,
         [coreTermsOfSaleKey]: {
           ...values[coreTermsOfSaleKey],
-          redemptionPeriod:
-            values?.[coreTermsOfSaleKey]?.redemptionPeriod?.map((d) =>
-              dayjs(d).format()
-            ) ?? [],
-          offerValidityPeriod:
-            values?.[coreTermsOfSaleKey]?.offerValidityPeriod?.map((d) =>
-              dayjs(d).format()
-            ) ?? []
+          redemptionPeriod,
+          offerValidityPeriod
         }
       };
     },
@@ -1023,7 +1055,8 @@ function CreateProductInner({
           validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
-          {({ values }) => {
+          {({ values, ...rest }) => {
+            console.log({ values, ...rest });
             // TODO: fix: these setState calls cause this warning: Warning: Cannot update a component (`CreateProductInner`) while rendering a different component (`Formik`). To locate the bad setState() call inside `Formik`, follow the stack trace as described in
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);

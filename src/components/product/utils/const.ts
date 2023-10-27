@@ -252,6 +252,7 @@ export const ProductMetadataAttributeKeys = {
   "Token Type": "Token Type",
   "Redeemable At": "Redeemable At",
   "Redeemable Until": "Redeemable Until",
+  "Redeemable After X Days": "Redeemable After X Days",
   Seller: "Seller",
   [TypeKeys.Size]: TypeKeys.Size,
   [TypeKeys.Color]: TypeKeys.Color

@@ -1,3 +1,4 @@
+import { defaultFontFamily } from "lib/styles/fonts";
 import { Chats, FilePlus, Handshake } from "phosphor-react";
 import React from "react";
 import { generatePath } from "react-router-dom";
@@ -122,7 +123,7 @@ const ModalGridColumns = styled.div`
 `;
 
 const SubmitStyledButton = styled.button`
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   font-weight: 600;
   font-size: 1rem;
   border: none;

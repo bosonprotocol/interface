@@ -141,7 +141,7 @@ export function useInitialValues() {
     save: saveItemInStorage,
     clear: clearLocalStorage,
     key: MAIN_KEY
-  };
+  } as const;
 }
 function loadExistingProduct<T extends CreateProductForm>(
   productWithVariants: ReturnUseProductByUuid,
@@ -405,10 +405,21 @@ function loadExistingProduct<T extends CreateProductForm>(
         dayjs(getDateTimestamp(firstOffer.validFromDate)),
         dayjs(getDateTimestamp(firstOffer.validUntilDate))
       ],
-      redemptionPeriod: [
-        dayjs(getDateTimestamp(firstOffer.voucherRedeemableFromDate)),
-        dayjs(getDateTimestamp(firstOffer.voucherRedeemableUntilDate))
-      ],
+      infiniteExpirationOffers: firstOffer.voucherValidDuration !== "0",
+      ...(firstOffer.voucherValidDuration !== "0"
+        ? {
+            voucherValidDurationInDays:
+              Number(firstOffer.voucherValidDuration) / 86400,
+            redemptionPeriod: dayjs(
+              getDateTimestamp(firstOffer.voucherRedeemableFromDate)
+            )
+          }
+        : {
+            redemptionPeriod: [
+              dayjs(getDateTimestamp(firstOffer.voucherRedeemableFromDate)),
+              dayjs(getDateTimestamp(firstOffer.voucherRedeemableUntilDate))
+            ]
+          }),
       currency: {
         value: OPTIONS_CURRENCIES.find(
           (currency) => currency.value === firstOffer.exchangeToken.symbol
