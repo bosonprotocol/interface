@@ -21,6 +21,12 @@ function isRedemptionDatesValid() {
         });
       }
       const ovValue = this.parent.offerValidityPeriod;
+      if (!ovValue || (ovValue && ovValue.length !== 2)) {
+        throw this.createError({
+          path: this.path,
+          message: "Please define an offer validity period"
+        });
+      }
       const doesItEndBefore =
         value[1] instanceof dayjs
           ? value[1]?.isBefore(ovValue[1])

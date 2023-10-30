@@ -9,7 +9,7 @@ import Input from "./Input";
 
 const height = "20px";
 const StyledSwitchRoot = styled(ReactSwitch.Root)`
-  width: calc(${height} * 1.68);
+  min-width: calc(${height} * 1.68);
   height: ${height};
   background-color: hsl(0 0% 0% / 0.439);
   border-radius: 9999px;

@@ -8,7 +8,14 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(advancedFormat);
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  FocusEventHandler,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 import { useDidMountEffect } from "../../lib/utils/hooks/useDidMountEffect";
 import { FieldInput } from "../form/Field.styles";
@@ -25,6 +32,8 @@ import SelectTime from "./SelectTime";
 export type DatePickerProps = {
   initialValue?: Dayjs | Array<Dayjs> | null;
   onChange?: (selected: Dayjs | Array<Dayjs | null> | null | undefined) => void;
+  onBlur?: FocusEventHandler<HTMLInputElement> | undefined;
+  onClick?: () => void;
   error?: string;
   period: boolean;
   selectTime: boolean;
@@ -63,9 +72,11 @@ const handleInitialDates = (
   };
 };
 const dateTimeFormat = "MMMM D, YYYY HH:mm";
-export default function DatePicker({
+export default memo(function DatePicker({
   initialValue,
   onChange,
+  onBlur,
+  onClick,
   period,
   selectTime,
   maxDate,
@@ -92,6 +103,7 @@ export default function DatePicker({
 
   const handleShow = () => {
     setShow(!show);
+    onClick?.();
   };
 
   const reset = useCallback(() => {
@@ -168,10 +180,8 @@ export default function DatePicker({
           `${newDate?.format(dateTimeFormat)} - ${newSecondDate?.format(
             dateTimeFormat
           )} ${
-            time
-              ? `(${time.timezone} ${
-                  newDate.isValid() ? `GMT${newDate?.format("Z")}` : ""
-                })`
+            time && newDate.isValid()
+              ? `(${time.timezone} ${`GMT${newDate?.format("Z")}`})`
               : ""
           }`
         );
@@ -190,10 +200,8 @@ export default function DatePicker({
         }
         setShownDate(
           `${newDate?.format(dateTimeFormat)} ${
-            time
-              ? `(${time.timezone} ${
-                  newDate.isValid() ? `GMT${newDate?.format("Z")}` : ""
-                })`
+            time && newDate.isValid()
+              ? `(${time.timezone} ${`GMT${newDate?.format("Z")}`})`
               : ""
           }`
         );
@@ -226,6 +234,7 @@ export default function DatePicker({
       <FieldInput
         value={shownDate}
         onClick={handleShow}
+        onBlur={onBlur}
         {...props}
         readOnly
         placeholder={placeholder}
@@ -263,4 +272,4 @@ export default function DatePicker({
       {isClearable && <ClearButton onClick={reset} />}
     </Picker>
   );
-}
+});

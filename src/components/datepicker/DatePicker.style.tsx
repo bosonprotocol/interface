@@ -9,6 +9,7 @@ export const ClearButton = styled(X).attrs({
   size: 18
 })`
   position: absolute;
+  background-color: ${colors.lightGrey};
   top: 0;
   right: 0;
   height: 100%;
