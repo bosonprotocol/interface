@@ -1,4 +1,4 @@
-import { Button, ButtonProps, ButtonSize } from "@bosonprotocol/react-kit";
+import { Button, ButtonProps } from "@bosonprotocol/react-kit";
 import { Fragment } from "react";
 import styled, { css } from "styled-components";
 
@@ -13,14 +13,14 @@ interface IBosonButton extends ButtonProps {
 const StyledBosonButton = styled(Button)`
   ${(props) => {
     switch (props.size) {
-      case ButtonSize.Small:
+      case "small":
         return css`
           padding: 0.25rem 1rem;
           > * {
             font-size: 12px !important;
           }
         `;
-      case ButtonSize.Large:
+      case "large":
         return css`
           padding: 1.25rem 2rem;
           > * {
@@ -67,7 +67,7 @@ function BosonButton(props: IBosonButton) {
       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
       {/* @ts-ignore */}
       <Wrapper {...wrapperParams}>
-        <StyledBosonButton {...restProps} disabled={disabled}>
+        <StyledBosonButton {...restProps} disabled={disabled} withBosonStyle>
           <ChildWrapperButton data-child-wrapper-button>
             {props.children}
           </ChildWrapperButton>

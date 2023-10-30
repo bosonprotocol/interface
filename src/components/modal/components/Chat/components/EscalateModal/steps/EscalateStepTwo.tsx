@@ -1,33 +1,59 @@
+import {
+  MessageData,
+  MessageType,
+  ThreadId,
+  version
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { useConfigContext } from "components/config/ConfigContext";
+import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useAccount,
+  useSignMessage
+} from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount, useSignMessage } from "wagmi";
 import * as Yup from "yup";
 
-import { CONFIG } from "../../../../../../../lib/config";
 import { colors } from "../../../../../../../lib/styles/colors";
+import {
+  ChatInitializationStatus,
+  useChatStatus
+} from "../../../../../../../lib/utils/hooks/chat/useChatStatus";
 import { useAddPendingTransaction } from "../../../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useDisputeResolvers } from "../../../../../../../lib/utils/hooks/useDisputeResolvers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
-import { poll } from "../../../../../../../pages/create-product/utils";
+import { useChatContext } from "../../../../../../../pages/chat/ChatProvider/ChatContext";
+import { ICON_KEYS } from "../../../../../../../pages/chat/components/conversation/const";
+import { MessageDataWithInfo } from "../../../../../../../pages/chat/types";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
 import { FieldInput } from "../../../../../../form/Field.styles";
 import FormField from "../../../../../../form/FormField";
 import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
-import ErrorToast from "../../../../../../toasts/common/ErrorToast";
+import { Spinner } from "../../../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../../../../ui/BosonButton";
+import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 import { useModal } from "../../../../../useModal";
+import InitializeChatWithSuccess from "../../InitializeChatWithSuccess";
 
 const Container = styled.div`
   display: flex;
@@ -55,54 +81,46 @@ const UnsignedMessageWrapper = styled.div`
   }
 `;
 
+const requiredErrorMessage = "This field is required";
 const FormModel = {
   formFields: {
     message: {
       name: "message",
-      requiredErrorMessage: "This field is required",
       placeholder:
         "“I, 0xabc123, wish to escalate the dispute relating to exchange with ID: X”"
     },
     email_test: {
       name: "email",
-      requiredErrorMessage: "This field is required",
       value: "disputes-test@redeemeum.com",
       disabled: true
     },
     email: {
       name: "email",
-      requiredErrorMessage: "This field is required",
       value: "disputes@redeemeum.com",
       disabled: true
     },
     subject: {
       name: "subject",
-      requiredErrorMessage: "This field is required",
       disabled: true
     },
     exchangeId: {
       name: "exchangeId",
-      requiredErrorMessage: "This field is required",
       disabled: true
     },
     disputeId: {
       name: "disputeId",
-      requiredErrorMessage: "This field is required",
       disabled: true
     },
     signature: {
       name: "signature",
-      requiredErrorMessage: "This field is required",
       disabled: true
     },
     confirm: {
       name: "confirm",
-      requiredErrorMessage: "This field must be checked",
       text: "I confirm that I've sent the required email to the Dispute Resolver."
     },
     buyerAddress: {
       name: "buyerAddress",
-      requiredErrorMessage: "This field is required",
       text: "0x000",
       disabled: true
     }
@@ -113,42 +131,60 @@ const validationSchemaPerStep = [
   Yup.object({
     [FormModel.formFields.message.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.message.requiredErrorMessage)
+      .required(requiredErrorMessage)
   }),
   Yup.object({
     [FormModel.formFields.exchangeId.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.exchangeId.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.subject.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.subject.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.buyerAddress.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.buyerAddress.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.disputeId.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.disputeId.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.signature.name]: Yup.string()
       .trim()
-      .required(FormModel.formFields.signature.requiredErrorMessage),
+      .required(requiredErrorMessage),
     [FormModel.formFields.confirm.name]: Yup.bool().oneOf(
       [true],
-      FormModel.formFields.message.requiredErrorMessage
+      "This field must be checked"
     )
   }),
   Yup.object({})
 ];
 
-interface Props {
+export type EscalateChatProps = {
+  setHasError?: Dispatch<SetStateAction<boolean>>;
+  addMessage?: (
+    newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
+  ) => Promise<void>;
+  onSentMessage?: (messageData: MessageData, uuid: string) => Promise<void>;
+};
+
+type Props = EscalateChatProps & {
   exchange: Exchange;
   refetch: () => void;
-}
-function EscalateStepTwo({ exchange, refetch }: Props) {
+};
+function EscalateStepTwo({
+  exchange,
+  refetch,
+  addMessage,
+  onSentMessage,
+  setHasError
+}: Props) {
+  const { config } = useConfigContext();
+  const { bosonXmtp } = useChatContext();
+  const { chatInitializationStatus } = useChatStatus();
   const { data } = useDisputeResolvers();
-  const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
+  const disputeResolver = data?.disputeResolvers[0];
+  const feeAmount = disputeResolver?.fees[0]?.feeAmount;
   const { hideModal, showModal } = useModal();
   const emailFormField =
-    CONFIG.envName === "production"
+    config.envName === "production"
       ? FormModel.formFields.email
       : FormModel.formFields.email_test;
 
@@ -158,14 +194,23 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
-  const { address } = useAccount();
-  const { isLoading, signMessage } = useSignMessage({
-    onSuccess(data) {
-      setActiveStep(1);
-      setSignature(data);
-    }
-  });
+  const { account: address } = useAccount();
+  const { isLoading, mutateAsync: signMessage } = useSignMessage();
 
+  const threadId = useMemo<ThreadId | null>(() => {
+    if (!exchange) {
+      return null;
+    }
+    return {
+      exchangeId: exchange.id,
+      buyerId: exchange.buyer.id,
+      sellerId: exchange.seller.id
+    };
+  }, [exchange]);
+  const destinationAddressLowerCase = exchange?.offer.seller.assistant;
+  const destinationAddress = destinationAddressLowerCase
+    ? utils.getAddress(destinationAddressLowerCase)
+    : "";
   const validationSchema = validationSchemaPerStep[activeStep];
   const initialValues = useMemo(
     () => ({
@@ -195,6 +240,75 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     }
   }, [activeStep]);
 
+  const handleSendingEscalateMessage = useCallback(async () => {
+    if (bosonXmtp && threadId && address) {
+      try {
+        setHasError?.(false);
+        const newMessage = {
+          threadId,
+          content: {
+            value: {
+              title: "Buyer has escalated the dispute",
+              description:
+                "The dispute has been escalated to the 3rd party dispute resolver. The dispute resolver will decide on the outcome of the dispute.",
+              disputeResolverInfo: [
+                { label: "Name", value: "Redeemeum UK" },
+                { label: "Email address", value: "disputes@redeemeum.com" }
+              ] as { label: string; value: string }[],
+              icon: ICON_KEYS.info,
+              heading: "Dispute has been escalated",
+              body: "The dispute resolver will contact you about the dispute via the email address provided in your profiile."
+            }
+          },
+          contentType: MessageType.EscalateDispute,
+          version
+        } as const;
+        const uuid = window.crypto.randomUUID();
+
+        await addMessage?.({
+          authorityId: "",
+          timestamp: Date.now(),
+          sender: address,
+          recipient: destinationAddress,
+          data: newMessage,
+          isValid: false,
+          isPending: true,
+          uuid
+        });
+
+        const messageData = await bosonXmtp.encodeAndSendMessage(
+          newMessage,
+          destinationAddress
+        );
+        if (!messageData) {
+          throw new Error(
+            "Something went wrong while sending a retract message"
+          );
+        }
+        onSentMessage?.(messageData, uuid);
+      } catch (error) {
+        console.error(error);
+        setHasError?.(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "handleSendingEscalateMessage",
+            location: "EscalateModal"
+          }
+        });
+      }
+    }
+  }, [
+    addMessage,
+    address,
+    bosonXmtp,
+    destinationAddress,
+    onSentMessage,
+    threadId,
+    setHasError
+  ]);
+
   const handleEscalate = useCallback(async () => {
     try {
       setLoading(true);
@@ -209,6 +323,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
           (exchangeTokenAddress !== ethers.constants.AddressZero ||
             BigNumber.from(buyerEscalationDeposit).eq(0))
       );
+      await handleSendingEscalateMessage();
       // in case buyerEscalationDeposit is > 0 and in native currency, meta-tx is not possible (because escalation requires a payment)
       if (isMetaTx) {
         tx = await escalateDisputeWithMetaTx(coreSDK, exchange.id);
@@ -245,26 +360,27 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
         <SuccessTransactionToast
           t={t}
           action={`Escalated dispute: ${exchange?.offer?.metadata?.name}`}
-          url={CONFIG.getTxExplorerUrl?.(tx?.hash || "")}
+          url={config.envConfig.getTxExplorerUrl?.(tx?.hash || "")}
         />
       ));
       refetch();
+      hideModal();
     } catch (error) {
       console.error(error);
-      Sentry.captureException(error);
-      const message = (error as unknown as { message: string }).message;
-      toast((t) => (
-        <ErrorToast t={t}>
-          <Typography tag="p" color={colors.red}>
-            {message
-              ? message?.split("[")?.[0]
-              : "An error occured. Please try again."}
-          </Typography>
-        </ErrorToast>
-      ));
+      hideModal();
+      const hasUserRejectedTx =
+        "code" in (error as Error) &&
+        (error as unknown as { code: string }).code === "ACTION_REJECTED";
+      if (hasUserRejectedTx) {
+        showModal("TRANSACTION_FAILED");
+      } else {
+        Sentry.captureException(error);
+        showModal("TRANSACTION_FAILED", {
+          errorMessage: "Something went wrong"
+        });
+      }
       return false;
     } finally {
-      hideModal();
       setLoading(false);
     }
 
@@ -276,9 +392,15 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     hideModal,
     refetch,
     showModal,
-    addPendingTransaction
+    addPendingTransaction,
+    handleSendingEscalateMessage,
+    config.envConfig
   ]);
-
+  const showSuccessInitialization =
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus) && bosonXmtp;
   return (
     <Formik<typeof initialValues>
       initialValues={{ ...initialValues }}
@@ -323,9 +445,13 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     style={{ color: "white" }}
                     disabled={!!errors?.message || isLoading}
                     loading={isLoading}
-                    onClick={() => {
+                    onClick={async () => {
                       const message = values?.message as string;
-                      signMessage({ message });
+                      const signature = await signMessage({ message });
+                      if (signature) {
+                        setActiveStep(1);
+                        setSignature(signature);
+                      }
                     }}
                   >
                     Sign
@@ -385,9 +511,9 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                         values?.disputeId || "",
                       [FormModel.formFields.buyerAddress.name]:
                         values?.buyerAddress ? values?.buyerAddress : "",
-                      [`Unsigned message: ${FormModel.formFields.message.name}`]:
+                      [`Signed message: ${FormModel.formFields.message.name}`]:
                         values?.message
-                          ? `Unsigned message: ${values?.message}`
+                          ? `Signed message: ${values?.message}`
                           : "",
                       [FormModel.formFields.signature.name]:
                         values?.signature || ""
@@ -398,7 +524,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Input {...FormModel.formFields.buyerAddress} disabled />
                     <UnsignedMessageWrapper>
                       <FieldInput
-                        value="Unsigned message:"
+                        value="Signed message:"
                         disabled
                         id="unsigned_prefix"
                       />
@@ -454,15 +580,18 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     price, seller deposit and escalation deposit) between buyer
                     and seller
                   </Typography>
-                  <BosonButton
-                    variant="secondaryFill"
-                    style={{ color: "black" }}
+                  <InitializeChatWithSuccess />
+                  <Button
+                    theme="secondary"
                     onClick={handleEscalate}
-                    loading={loading}
-                    disabled={loading || values?.confirm !== true}
+                    disabled={
+                      loading ||
+                      values?.confirm !== true ||
+                      !showSuccessInitialization
+                    }
                   >
-                    Escalate
-                  </BosonButton>
+                    Escalate {loading && <Spinner size={20} />}
+                  </Button>
                 </Grid>
               </Collapse>
             </Container>

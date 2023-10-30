@@ -1,27 +1,29 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
+import logo from "assets/logo.svg";
+import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
+import { ChainSelector } from "components/header/selector/ChainSelector";
+import Layout from "components/layout/Layout";
+import { Spinner } from "components/loading/Spinner";
+import { Portal } from "components/portal/Portal";
+import { DEFAULT_SELLER_PAGE } from "components/seller/SellerPages";
+import BosonButton from "components/ui/BosonButton";
+import Grid from "components/ui/Grid";
+import { UrlParameters } from "lib/routing/parameters";
+import { BosonRoutes, SellerCenterRoutes } from "lib/routing/routes";
+import { breakpoint } from "lib/styles/breakpoint";
+import { colors } from "lib/styles/colors";
+import { zIndex } from "lib/styles/zIndex";
+import { useOffers } from "lib/utils/hooks/offers";
+import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
+import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { X } from "phosphor-react";
-import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
+import { forwardRef, useEffect, useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
+import useUserRoles from "router/useUserRoles";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
-import logo from "../../../src/assets/logo.svg";
-import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
-import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
-import { zIndex } from "../../lib/styles/zIndex";
-import { useOffers } from "../../lib/utils/hooks/offers";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
-import useUserRoles from "../../router/useUserRoles";
-import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import Layout from "../layout/Layout";
-import { Spinner } from "../loading/Spinner";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
-import BosonButton from "../ui/BosonButton";
-import Grid from "../ui/Grid";
+import { AccountDrawer } from "./accountDrawer";
+import { BurgerButton } from "./BurgerButton";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
 
@@ -138,25 +140,6 @@ const Header = styled.header<{
   z-index: ${zIndex.Header};
 `;
 
-const BurgerButton = styled.button`
-  all: unset;
-  cursor: pointer;
-
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin: 0.5rem;
-  padding: 0.5rem;
-  > div {
-    width: 1.25rem;
-    height: 2px;
-    border-radius: 5px;
-    background: var(--accent);
-  }
-`;
-
 const HeaderContainer = styled(Layout)<{
   fluidHeader?: boolean;
   $navigationBarPosition: string;
@@ -189,11 +172,10 @@ const HeaderContainer = styled(Layout)<{
 `;
 
 const HeaderItems = styled.nav<{
-  fluidHeader?: boolean;
   $navigationBarPosition: string;
 }>`
   gap: 1rem;
-  ${({ $navigationBarPosition, fluidHeader }) => {
+  ${({ $navigationBarPosition }) => {
     if (["left", "right"].includes($navigationBarPosition)) {
       return css`
         display: flex;
@@ -208,45 +190,34 @@ const HeaderItems = styled.nav<{
       align-items: center;
       justify-content: end;
       width: 100%;
-      margin-left: ${fluidHeader ? "2.3rem" : "0"};
     `;
   }}
 `;
-
+const logoXXSHeightPx = 24;
+const logoSHeightPx = 47;
 const LogoImg = styled.img`
-  height: 24px;
+  height: ${logoXXSHeightPx}px;
   cursor: pointer;
   ${breakpoint.s} {
-    height: 47px;
+    height: ${logoSHeightPx}px;
   }
 `;
 
-const Burger = ({ onClick }: { onClick: () => void }) => {
-  return (
-    <BurgerButton theme="blank" onClick={onClick}>
-      <div />
-      <div />
-      <div />
-    </BurgerButton>
-  );
-};
-
 interface Props {
-  fluidHeader: boolean;
+  fluidHeader: boolean | undefined;
 }
-const HeaderComponent = forwardRef<HTMLElement, Props>(
+export const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false }, ref) => {
-    const { address } = useAccount();
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
-    const { isLteS, isLteM, isM, isLteXS } = useBreakpoints();
+    const { isLteS, isLteL, isLteM, isM, isLteXS, isXXS } = useBreakpoints();
     const logoUrl = useCustomStoreQueryParameter("logoUrl");
     const navigationBarPosition = useCustomStoreQueryParameter(
       "navigationBarPosition"
     );
     const isSideNavBar = ["left", "right"].includes(navigationBarPosition);
-    const burgerMenuBreakpoint = isLteM && !isSideNavBar;
+    const burgerMenuBreakpoint = isLteL && !isSideNavBar;
     const isSideCrossVisible = isSideNavBar && isOpen && isLteS;
     const isSideBurgerVisible = isSideNavBar && !isOpen && isLteS;
 
@@ -288,11 +259,15 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       }
       return SellerCenterRoutes.CreateProduct;
     }, [isSeller, hasSellerOffers]);
-    const CTA = useCallback(() => {
+    const CTA = useMemo(() => {
       return (
         <>
           {isFetching ? (
-            <BosonButton variant="accentInverted">
+            <BosonButton
+              variant="accentInverted"
+              size="regular"
+              {...(!isLteS && { style: { minWidth: "200px" } })}
+            >
               <Spinner />
             </BosonButton>
           ) : (
@@ -307,14 +282,15 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                     whiteSpace: "pre",
                     marginLeft: isLteXS ? "1rem" : ""
                   }}
-                  size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
+                  {...(!isLteS && { style: { minWidth: "200px" } })}
+                  size="regular"
                   onClick={() => {
                     navigate({ pathname: sellUrl });
                   }}
                 >
                   {isSeller
                     ? hasSellerOffers
-                      ? "Seller Center"
+                      ? "Seller Hub"
                       : "Create Products"
                     : "Sell on Boson"}
                 </BosonButton>
@@ -335,73 +311,85 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
     ]);
 
     return (
-      <>
-        <Header
+      <Header
+        $navigationBarPosition={navigationBarPosition}
+        $isSideBarOpen={isOpen}
+        ref={ref}
+      >
+        <HeaderContainer
+          fluidHeader={fluidHeader}
           $navigationBarPosition={navigationBarPosition}
-          $isSideBarOpen={isOpen}
-          ref={ref}
         >
-          <HeaderContainer
-            fluidHeader={fluidHeader}
-            $navigationBarPosition={navigationBarPosition}
-          >
-            {isSideBurgerVisible ? (
-              <Grid justifyContent="center">
-                <Burger onClick={toggleMenu} />
+          {isSideBurgerVisible ? (
+            <Grid justifyContent="center">
+              <BurgerButton onClick={toggleMenu} />
+            </Grid>
+          ) : (
+            <>
+              <Grid flexDirection="row" alignItems="center" $width="initial">
+                <LinkWithQuery
+                  to={BosonRoutes.Root}
+                  style={{ display: "flex" }}
+                >
+                  <LogoImg
+                    src={logoUrl || logo}
+                    alt="logo image"
+                    data-testid="logo"
+                    width={logoUrl ? undefined : isLteXS ? 104 : 204}
+                    height={
+                      logoUrl
+                        ? undefined
+                        : isLteXS
+                        ? logoXXSHeightPx
+                        : logoSHeightPx
+                    }
+                  />
+                </LinkWithQuery>
+                {isSideCrossVisible && (
+                  <X
+                    color={colors.secondary}
+                    onClick={toggleMenu}
+                    style={{ cursor: "pointer" }}
+                    size="24"
+                  />
+                )}
               </Grid>
-            ) : (
-              <>
-                <Grid flexDirection="row" alignItems="center" $width="initial">
-                  <LinkWithQuery
-                    to={BosonRoutes.Root}
-                    style={{ display: "flex" }}
-                  >
-                    <LogoImg
-                      src={logoUrl || logo}
-                      alt="logo image"
-                      data-testid="logo"
-                    />
-                  </LinkWithQuery>
-                  {isSideCrossVisible && (
-                    <X
-                      color={colors.secondary}
-                      onClick={toggleMenu}
-                      style={{ cursor: "pointer" }}
-                      size="24"
-                    />
-                  )}
-                </Grid>
-                <HeaderItems
-                  fluidHeader={fluidHeader}
-                  $navigationBarPosition={navigationBarPosition}
+              <HeaderItems $navigationBarPosition={navigationBarPosition}>
+                {burgerMenuBreakpoint && (
+                  <>
+                    {CTA}
+                    {!isLteXS && <ChainSelector />}
+                    {!isXXS && <ConnectButton showOnlyIcon />}
+                    <BurgerButton onClick={toggleMenu} />
+                  </>
+                )}
+                <HeaderLinks
+                  isMobile={burgerMenuBreakpoint}
+                  isOpen={isOpen}
+                  navigationBarPosition={navigationBarPosition}
                 >
                   {burgerMenuBreakpoint && (
-                    <>
-                      <CTA />
-                      <ConnectButton showAddress={!address} />
-                      <Burger onClick={toggleMenu} />
-                    </>
+                    <Grid justifyContent="flex-start">
+                      <ChainSelector leftAlign={true} />
+                      <ConnectButton />
+                    </Grid>
                   )}
-                  <HeaderLinks
-                    isMobile={burgerMenuBreakpoint}
-                    isOpen={isOpen}
-                    navigationBarPosition={navigationBarPosition}
-                  />
-                  {!burgerMenuBreakpoint && (
-                    <>
-                      <CTA />
-                      <ConnectButton
-                        navigationBarPosition={navigationBarPosition}
-                        showAddress={!address}
-                      />
-                    </>
-                  )}
-                </HeaderItems>
-              </>
-            )}
-          </HeaderContainer>
-        </Header>
-      </>
+                </HeaderLinks>
+                {!burgerMenuBreakpoint && (
+                  <>
+                    {CTA}
+                    <ChainSelector />
+                    <ConnectButton />
+                  </>
+                )}
+              </HeaderItems>
+            </>
+          )}
+        </HeaderContainer>
+        <Portal>
+          <AccountDrawer />
+        </Portal>
+      </Header>
     );
   }
 );

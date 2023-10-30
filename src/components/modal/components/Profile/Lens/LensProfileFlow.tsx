@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useUpdateSellerMetadata from "../../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
+import { CreateProfile } from "../../../../product/utils";
 import SuccessToast from "../../../../toasts/common/SuccessToast";
 import { BosonAccount } from "../bosonAccount/validationSchema";
 import { ProfileType } from "../const";
@@ -18,8 +19,9 @@ interface Props {
   onSubmit: (id: string, values: LensProfileType) => Promise<void>;
   seller: subgraph.SellerFieldsFragment | null;
   lensProfile?: Profile;
+  profileDataFromMetadata?: CreateProfile;
   changeToRegularProfile: () => void;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
   updateSellerMetadata: ReturnType<
     typeof useUpdateSellerMetadata
   >["mutateAsync"];
@@ -31,6 +33,7 @@ export default function LensProfileFlow({
   onSubmit,
   seller,
   lensProfile: selectedProfile,
+  profileDataFromMetadata,
   changeToRegularProfile,
   switchButton,
   updateSellerMetadata,
@@ -84,18 +87,20 @@ export default function LensProfileFlow({
         />
       ) : step === LensStep.USE && lensProfile ? (
         <LensForm
+          profileInitialData={profileDataFromMetadata}
           switchButton={switchButton}
           profile={lensProfile}
           seller={seller}
           formValues={null}
           isEdit={isEdit}
           forceDirty={forceDirty}
-          onSubmit={async (formValues, { dirtyFields }) => {
+          onSubmit={async (formValues, { dirtyFields, coverImageTouched }) => {
             setLensFormValues(formValues);
 
             if (
               isEdit &&
               (forceDirty ||
+                coverImageTouched ||
                 (
                   [
                     "legalTradingName",
@@ -112,7 +117,9 @@ export default function LensProfileFlow({
                   contactPreference: formValues.contactPreference,
                   email: formValues.email,
                   website: formValues.website,
-                  authTokenId: lensProfile.id
+                  authTokenId: lensProfile.id,
+                  coverPicture: formValues.coverPicture,
+                  logo: formValues.logo
                 },
                 kind: ProfileType.LENS
               });

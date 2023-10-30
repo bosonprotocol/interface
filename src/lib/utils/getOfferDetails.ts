@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
-import { subgraph } from "@bosonprotocol/react-kit";
+import { offers, subgraph } from "@bosonprotocol/react-kit";
 
 import { Offer } from "./../types/offer";
 
@@ -14,14 +14,15 @@ interface IShippingInfo {
 interface IGetOfferDetails {
   display: boolean;
   name: string;
-  offerImg: string;
+  offerImg: string | undefined;
   animationUrl: string;
   shippingInfo: IShippingInfo;
   description: string;
   productData: Array<ITable>;
-  artist: subgraph.ProductV1Seller;
+  artist: subgraph.ProductV1Seller | null;
   artistDescription: string;
   images: Array<string>;
+  exchangePolicyCheckResult?: offers.CheckExchangePolicyResult;
 }
 
 export const getOfferAnimationUrl = (

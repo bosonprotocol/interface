@@ -1,19 +1,21 @@
 import { ReactElement, ReactNode } from "react";
 
 import { BosonRoutes } from "../../../../../lib/routing/routes";
+import { useForm } from "../../../../../lib/utils/hooks/useForm";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { Spinner } from "../../../../loading/Spinner";
-import { useCreateForm } from "../../../../product/utils/useCreateForm";
+import { CreateProfile } from "../../../../product/utils";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
+import { LensProfileType } from "../Lens/validationSchema";
 import { ProfileFormFields } from "../ProfileFormFields";
 
 type Props = {
   children: ReactNode;
   isEdit: boolean;
   forceDirty?: boolean;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
 };
 export default function RegularProfileForm({
   children,
@@ -21,7 +23,9 @@ export default function RegularProfileForm({
   forceDirty,
   switchButton: SwitchButton
 }: Props) {
-  const { nextIsDisabled, dirty, isSubmitting } = useCreateForm();
+  const { nextIsDisabled, dirty, isSubmitting, touched } = useForm<
+    CreateProfile | LensProfileType
+  >();
   const navigate = useKeepQueryParamsNavigate();
 
   return (
@@ -39,15 +43,17 @@ export default function RegularProfileForm({
             {isEdit ? "Regular profile" : "Create your profile"}
           </Typography>
 
-          <div>
-            <SwitchButton />
-          </div>
+          <div>{SwitchButton}</div>
         </Grid>
         {!isEdit && (
-          <Typography>
-            To begin selling on Boson, create a profile and a seller account in
-            the steps below.
-          </Typography>
+          <>
+            <div>
+              To begin selling on Boson, create a profile and a seller account
+              in the steps below. The information you provide here is public and
+              accessible on IPFS. Please provide business information only.
+            </div>
+            <div>Do not include personal information.</div>
+          </>
         )}
       </Grid>
 
@@ -60,7 +66,9 @@ export default function RegularProfileForm({
             type="submit"
             disabled={nextIsDisabled || isSubmitting}
           >
-            {dirty || forceDirty ? "Save & continue" : "Next"}
+            {dirty || forceDirty || touched.coverPicture
+              ? "Save & continue"
+              : "Next"}
             {isSubmitting && <Spinner size="20" />}
           </BosonButton>
         ) : (

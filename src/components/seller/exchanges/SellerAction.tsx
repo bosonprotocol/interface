@@ -1,8 +1,4 @@
-import {
-  ButtonSize,
-  exchanges as ExchangesKit,
-  subgraph
-} from "@bosonprotocol/react-kit";
+import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Chat } from "phosphor-react";
 import { useMemo } from "react";
@@ -59,9 +55,9 @@ export const SellerResolveDisputeButton = ({
   if (!exchange || status !== "Resolving") {
     return (
       <BosonButton
-        variant="accentInverted"
+        variant="accentInvertedNoBorder"
         showBorder={false}
-        size={ButtonSize.Small}
+        size="small"
         onClick={() => {
           if (exchange?.id) {
             generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
@@ -76,7 +72,7 @@ export const SellerResolveDisputeButton = ({
   return (
     <BosonButton
       variant="primaryFill"
-      size={ButtonSize.Small}
+      size="small"
       disabled={!sellerRoles?.isAssistant}
       tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {
@@ -112,9 +108,9 @@ export const SellerActionButton = ({
   return (
     <>
       <BosonButton
-        variant="accentInverted"
+        variant="accentInvertedNoBorder"
         showBorder={false}
-        size={ButtonSize.Small}
+        size="small"
         onClick={() => {
           if (exchange?.id) {
             generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
@@ -125,9 +121,9 @@ export const SellerActionButton = ({
       </BosonButton>
       {status === subgraph.ExchangeState.Committed && (
         <StyledBosonButton
-          variant="accentInverted"
+          variant="accentInvertedNoBorder"
           showBorder={false}
-          size={ButtonSize.Small}
+          size="small"
           disabled={!sellerRoles?.isAssistant}
           tooltip="This action is restricted to only the assistant wallet"
           onClick={() => {
@@ -183,7 +179,7 @@ export const SellerCompleteActionButton = ({
   return exchange && shouldShowCompleteCTA ? (
     <BosonButton
       variant="primaryFill"
-      size={ButtonSize.Small}
+      size="small"
       disabled={!sellerRoles?.isAssistant}
       tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {

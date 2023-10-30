@@ -1,5 +1,5 @@
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
@@ -27,7 +27,7 @@ export default function ChooseLensProfile({
   onChooseUseExisting,
   isEdit
 }: Props) {
-  const { address = "" } = useAccount();
+  const { account: address = "" } = useAccount();
   const navigate = useKeepQueryParamsNavigate();
   const { data: admins } = useSellers(
     {

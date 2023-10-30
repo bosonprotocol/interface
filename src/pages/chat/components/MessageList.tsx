@@ -1,7 +1,7 @@
 import { ArrowLeft } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { getSellerCenterPath } from "../../../components/seller/paths";
 import { sellerPageTypes } from "../../../components/seller/SellerPages";
@@ -16,6 +16,7 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { MessagesDisputesToggle } from "./MessagesDisputesToggle";
 
 const messageItemPadding = "1.5rem";
 
@@ -92,9 +93,9 @@ const MessageItem = styled.div<{ $active?: boolean }>`
   border-bottom: 1px solid ${colors.border};
   ${({ $active }) =>
     $active &&
-    `
-    background-color: ${colors.border};
-  `};
+    css`
+      background-color: ${colors.border};
+    `};
   :hover {
     background-color: ${colors.border};
   }
@@ -144,11 +145,12 @@ interface Props {
   isConversationOpened: boolean;
   setChatListOpen: (p: boolean) => void;
   prevPath: string;
+  selectExchange: Dispatch<SetStateAction<Exchange | undefined>>;
 }
 
 const getMessageItemKey = (exchange: Exchange) => exchange.id;
 
-export default function MessageList({
+export default memo(function MessageList({
   myBuyerId,
   mySellerId,
   exchanges,
@@ -157,8 +159,13 @@ export default function MessageList({
   currentExchange,
   isConversationOpened,
   setChatListOpen,
-  prevPath
+  prevPath,
+  selectExchange
 }: Props) {
+  const [showDisputesOnly, setShowDisputesOnly] = useState<boolean>(
+    !!currentExchange?.disputedDate ||
+      exchanges.every((exchange) => !!exchange.disputedDate)
+  );
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentExchange ? getMessageItemKey(currentExchange) : ""
   );
@@ -167,6 +174,7 @@ export default function MessageList({
   useEffect(() => {
     if (currentExchange) {
       setActiveMessageKey(getMessageItemKey(currentExchange));
+      setShowDisputesOnly(!!currentExchange?.disputedDate);
     }
   }, [currentExchange]);
   const comesFromSellerCenter = !!prevPath?.startsWith(`${BosonRoutes.Sell}/`);
@@ -196,17 +204,41 @@ export default function MessageList({
           >
             <div>
               <ArrowLeft size={14} />
-              <span style={{ marginLeft: "0.5rem" }}>
-                Back to Seller Center
-              </span>
+              <span style={{ marginLeft: "0.5rem" }}>Back to Seller Hub</span>
             </div>
           </BackToSellerCenterButton>
         )}
-        Messages
+        <MessagesDisputesToggle
+          leftButtonText="Messages"
+          rightButtonText="Disputes"
+          onLeftButtonClick={() => {
+            setShowDisputesOnly(false);
+            const firstExchangeWithNoDispute = exchanges
+              .filter((exchange) => exchange)
+              .find((exchange) => !exchange.disputedDate);
+            if (firstExchangeWithNoDispute) {
+              selectExchange(firstExchangeWithNoDispute);
+            }
+          }}
+          onRightButtonClick={() => {
+            setShowDisputesOnly(true);
+            const firstDisputedExchange = exchanges
+              .filter((exchange) => exchange)
+              .find((exchange) => !!exchange.disputedDate);
+            if (firstDisputedExchange) {
+              selectExchange(firstDisputedExchange);
+            }
+          }}
+          initiallySelected={showDisputesOnly ? "right" : "left"}
+          isLeftActive={!showDisputesOnly}
+        />
       </Header>
       <ExchangesThreads>
         {exchanges
           .filter((exchange) => exchange)
+          .filter((exchange) =>
+            showDisputesOnly ? !!exchange.disputedDate : !exchange.disputedDate
+          )
           .map((exchange) => {
             const messageKey = getMessageItemKey(exchange);
             const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
@@ -265,7 +297,9 @@ export default function MessageList({
                   )}
 
                   <MessageInfo>
-                    <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
+                    <ExchangeName>
+                      {exchange.id} - {exchange?.offer.metadata.name}
+                    </ExchangeName>
                     <SellerID
                       offer={exchange?.offer}
                       buyerOrSeller={buyerOrSellerToShow}
@@ -281,4 +315,4 @@ export default function MessageList({
       </ExchangesThreads>
     </Container>
   );
-}
+});

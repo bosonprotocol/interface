@@ -1,16 +1,17 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
-import { config } from "../../../config";
+import { useAccount } from "../connection/connection";
 
-export type ChatInitializationStatus =
-  | "PENDING"
-  | "ALREADY_INITIALIZED"
-  | "INITIALIZED"
-  | "NOT_INITIALIZED"
-  | "ERROR";
+export enum ChatInitializationStatus {
+  PENDING = "PENDING",
+  ALREADY_INITIALIZED = "ALREADY_INITIALIZED",
+  INITIALIZED = "INITIALIZED",
+  NOT_INITIALIZED = "NOT_INITIALIZED",
+  ERROR = "ERROR"
+}
 
 export const useChatStatus = (): {
   chatInitializationStatus: ChatInitializationStatus;
@@ -19,34 +20,49 @@ export const useChatStatus = (): {
 } => {
   const [error, setError] = useState<Error | null>(null);
   const [chatInitializationStatus, setChatInitializationStatus] =
-    useState<ChatInitializationStatus>("PENDING");
-  const { bosonXmtp, envName } = useChatContext();
-  const { address } = useAccount();
+    useState<ChatInitializationStatus>(ChatInitializationStatus.PENDING);
+  const { bosonXmtp, chatEnvName } = useChatContext();
+  const { config } = useConfigContext();
+  const { account: address } = useAccount();
 
   useEffect(() => {
-    if (chatInitializationStatus === "PENDING" && !!bosonXmtp) {
-      setChatInitializationStatus("ALREADY_INITIALIZED");
-    } else if (address && chatInitializationStatus !== "ALREADY_INITIALIZED") {
+    if (
+      chatInitializationStatus === ChatInitializationStatus.PENDING &&
+      !!bosonXmtp
+    ) {
+      setChatInitializationStatus(ChatInitializationStatus.ALREADY_INITIALIZED);
+    } else if (
+      address &&
+      chatInitializationStatus !== ChatInitializationStatus.ALREADY_INITIALIZED
+    ) {
       setError(null);
 
       BosonXmtpClient.isXmtpEnabled(
         address,
-        config.envName === "production" ? "production" : "dev",
-        envName
+        config.envConfig.envName === "production" ? "production" : "dev",
+        chatEnvName
       )
         .then((isEnabled) => {
           if (isEnabled) {
-            setChatInitializationStatus("INITIALIZED");
+            setChatInitializationStatus(ChatInitializationStatus.INITIALIZED);
           } else {
-            setChatInitializationStatus("NOT_INITIALIZED");
+            setChatInitializationStatus(
+              ChatInitializationStatus.NOT_INITIALIZED
+            );
           }
         })
         .catch((err) => {
           setError(err);
-          setChatInitializationStatus("ERROR");
+          setChatInitializationStatus(ChatInitializationStatus.ERROR);
         });
     }
-  }, [address, bosonXmtp, chatInitializationStatus, envName]);
+  }, [
+    address,
+    bosonXmtp,
+    chatInitializationStatus,
+    chatEnvName,
+    config.envConfig.envName
+  ]);
   return {
     chatInitializationStatus,
     error,

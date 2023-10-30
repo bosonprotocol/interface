@@ -1,9 +1,10 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { fetchSubgraph } from "../core-components/subgraph";
+import { useAccount } from "./connection/connection";
 
 function lowerCase(str: string | undefined) {
   return str?.toLowerCase() || "";
@@ -12,26 +13,28 @@ export interface SellerRolesProps {
   isSeller: boolean;
   isActive: boolean;
   isAdmin: boolean;
-  isClerk: boolean;
   isAssistant: boolean;
   isTreasury: boolean;
 }
 export function useSellerRoles(id: string) {
-  const { address } = useAccount();
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
+  const { account: address } = useAccount();
 
   const { data } = useQuery(
-    ["seller-roles", { id }],
+    ["seller-roles", id, subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         sellers: {
           id: string;
           admin: string;
-          clerk: string;
           assistant: string;
           treasury: string;
           active: boolean;
         }[];
       }>(
+        subgraphUrl,
         gql`
           query GetSellerByID(
             $id: String
@@ -44,7 +47,6 @@ export function useSellerRoles(id: string) {
               id
               admin
               active
-              clerk
               assistant
               treasury
             }
@@ -66,7 +68,6 @@ export function useSellerRoles(id: string) {
       isSeller: data !== null,
       isActive: data ? data?.active : false,
       isAdmin: data ? lowerCase(data?.admin) === lowerCase(address) : false,
-      isClerk: data ? lowerCase(data?.clerk) === lowerCase(address) : false,
       isAssistant: data
         ? lowerCase(data?.assistant) === lowerCase(address)
         : false,

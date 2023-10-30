@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 
-import { validationMessage } from "../../../../../lib/const/validationMessage";
+import { MIN_VALUE } from "../../../../../lib/constants/percentages";
+import { validationMessage } from "../../../../../lib/constants/validationMessage";
 import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
-import { MIN_VALUE } from "../const";
 
 export const FormModel = {
   formFields: {
@@ -12,9 +12,6 @@ export const FormModel = {
     },
     proposalType: {
       name: "proposalType"
-    },
-    escrow: {
-      name: "escrow"
     },
     refundAmount: {
       name: "refundAmount"
@@ -55,4 +52,4 @@ export const validationSchemaPerStep = [
       .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
   }),
   Yup.object({})
-];
+] as const;

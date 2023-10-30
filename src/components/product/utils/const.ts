@@ -1,5 +1,9 @@
+import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
+import { ProtocolConfig } from "@bosonprotocol/react-kit";
+import countries from "lib/constants/countries.json";
+import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
+
 import { CONFIG } from "../../../lib/config";
-import countries from "../../../lib/const/countries.json";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { ContactPreference } from "../../modal/components/Profile/const";
 
@@ -60,21 +64,27 @@ export const CATEGORY_OPTIONS = [
     value: "other",
     label: "Other"
   }
-];
+] as const;
 
-export const OPTIONS_CURRENCIES = CONFIG.defaultTokens?.length
-  ? [
-      ...(CONFIG.defaultTokens?.map((token: Token) => ({
-        value: token?.symbol || "",
-        label: token?.symbol || ""
-      })) || [])
-    ]
-  : [
-      {
-        value: CONFIG.nativeCoin?.symbol || "",
-        label: CONFIG.nativeCoin?.symbol || ""
-      }
-    ];
+export const getOptionsCurrencies = (
+  envConfig: ProtocolConfig
+): {
+  value: string;
+  label: string;
+}[] =>
+  envConfig.defaultTokens?.length
+    ? [
+        ...(envConfig.defaultTokens?.map((token: Token) => ({
+          value: token?.symbol || "",
+          label: token?.symbol || ""
+        })) || [])
+      ]
+    : [
+        {
+          value: envConfig.nativeCoin?.symbol || "",
+          label: envConfig.nativeCoin?.symbol || ""
+        }
+      ];
 export const OPTIONS_TOKEN_GATED = [
   {
     value: "false",
@@ -101,30 +111,38 @@ export const TOKEN_TYPES = [
   }
 ] as const;
 
+export const TokenTypeEnumToString = {
+  [TokenType.FungibleToken]: "erc20",
+  [TokenType.NonFungibleToken]: "erc721",
+  [TokenType.MultiToken]: "erc1155"
+} as const;
+
 export const TOKEN_CRITERIA = [
   {
     value: "minbalance",
-    label: "Collection balance"
+    label: "Collection balance",
+    method: EvaluationMethod.Threshold
   },
   {
     value: "tokenid",
-    label: "Specific token"
+    label: "Specific token",
+    method: EvaluationMethod.SpecificToken
   }
 ] as const;
 
 export const OPTIONS_EXCHANGE_POLICY = [
   {
     value: CONFIG.buyerSellerAgreementTemplate as string,
-    label: "Fair Exchange Policy"
+    label: onlyFairExchangePolicyLabel
   }
-];
+] as const;
 
 export const OPTIONS_DISPUTE_RESOLVER = [
   {
     value: "redeemeum",
     label: "Redeemeum"
   }
-];
+] as const;
 
 export const OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE = [
   {
@@ -170,7 +188,7 @@ export const OPTIONS_PERIOD = [
     value: "days",
     label: "Days"
   }
-];
+] as const;
 
 export const OPTIONS_COUNTRIES = countries;
 
@@ -191,7 +209,7 @@ export const OPTIONS_LENGTH = [
     value: "ft",
     label: "Feet"
   }
-];
+] as const;
 
 export const OPTIONS_WEIGHT = [
   {
@@ -202,4 +220,39 @@ export const OPTIONS_WEIGHT = [
     value: "kg",
     label: "Kilogram"
   }
-];
+] as const;
+
+export enum ProductTypeValues {
+  oneItemType = "oneItemType",
+  differentVariants = "differentVariants"
+}
+
+export enum TypeKeys {
+  Size = "Size",
+  Color = "Color"
+}
+
+export enum ImageSpecificOrAll {
+  all = "all",
+  specific = "specific"
+}
+
+export const IMAGE_SPECIFIC_OR_ALL_OPTIONS = [
+  {
+    value: ImageSpecificOrAll.all,
+    label: "All"
+  },
+  {
+    value: ImageSpecificOrAll.specific,
+    label: "Specific"
+  }
+] as const;
+
+export const ProductMetadataAttributeKeys = {
+  "Token Type": "Token Type",
+  "Redeemable At": "Redeemable At",
+  "Redeemable Until": "Redeemable Until",
+  Seller: "Seller",
+  [TypeKeys.Size]: TypeKeys.Size,
+  [TypeKeys.Color]: TypeKeys.Color
+} as const;

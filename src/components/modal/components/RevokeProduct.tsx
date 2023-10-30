@@ -1,15 +1,15 @@
 import { Provider, RevokeButton, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { poll } from "lib/utils/promises";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
-import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
+import { useSigner } from "../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
@@ -50,7 +50,8 @@ export default function RevokeProduct({
   exchange,
   refetch
 }: Props) {
-  const { data: signer } = useSigner();
+  const { config } = useConfigContext();
+  const signer = useSigner();
   const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
@@ -134,7 +135,12 @@ export default function RevokeProduct({
           <RevokeButton
             variant="accentInverted"
             exchangeId={exchangeId || 0}
-            envName={CONFIG.envName}
+            coreSdkConfig={{
+              envName: config.envName,
+              configId: config.envConfig.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: config.metaTx
+            }}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
@@ -186,13 +192,13 @@ export default function RevokeProduct({
                 <SuccessTransactionToast
                   t={t}
                   action={`Revoked exchange: ${exchange.offer.metadata.name}`}
-                  url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+                  url={config.envConfig.getTxExplorerUrl?.(
+                    receipt.transactionHash
+                  )}
                 />
               ));
               refetch();
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           />
         </RevokeButtonWrapper>
       </Grid>

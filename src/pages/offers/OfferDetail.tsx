@@ -22,6 +22,7 @@ import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
+import useCheckExchangePolicy from "../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
 import {
   useSellerCurationListFn,
@@ -36,7 +37,8 @@ export default function OfferDetail() {
   const {
     data: offer,
     isError,
-    isLoading
+    isLoading,
+    refetch: reload
   } = useOffer(
     {
       offerId: offerId || ""
@@ -70,6 +72,10 @@ export default function OfferDetail() {
       sellerId && checkIfSellerIsInCurationList(sellerId);
     return isSellerInCurationList;
   }, [sellerId, checkIfSellerIsInCurationList]);
+
+  const exchangePolicyCheckResult = useCheckExchangePolicy({
+    offerId: offer?.id
+  });
 
   if (!offerId) {
     return null;
@@ -156,6 +162,8 @@ export default function OfferDetail() {
               name={name}
               image={offerImg}
               hasSellerEnoughFunds={hasSellerEnoughFunds}
+              exchangePolicyCheckResult={exchangePolicyCheckResult}
+              reload={reload}
             />
           </div>
           <DetailShare />

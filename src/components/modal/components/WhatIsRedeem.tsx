@@ -1,6 +1,6 @@
 import { CaretRight } from "phosphor-react";
 
-import { BosonRoutes } from "../../../lib/routing/routes";
+import { BosonProtocolRoutes } from "../../../lib/routing/routes";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { COMMIT_STEPS } from "../../detail/const";
 import {
@@ -48,7 +48,7 @@ export default function WhatIsRedeem() {
               when redeeming you will either receive the physical good or your
               money back
             </Typography>
-            <LearnMore href={BosonRoutes.LearnMore} target="_blank">
+            <LearnMore href={BosonProtocolRoutes.LearnMore} target="_blank">
               <>
                 Learn more
                 <CaretRight size={32} />

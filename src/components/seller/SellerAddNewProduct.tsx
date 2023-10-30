@@ -1,4 +1,3 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
 import { PlusCircle } from "phosphor-react";
 
 import { SellerCenterRoutes } from "../../lib/routing/routes";
@@ -14,7 +13,7 @@ function SellerAddNewProduct({ sellerRoles }: Props) {
   return (
     <BosonButton
       variant="primaryFill"
-      size={ButtonSize.Small}
+      size="small"
       disabled={!sellerRoles?.isAssistant}
       tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {

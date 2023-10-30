@@ -2,13 +2,13 @@ import { BigNumber } from "ethers";
 import { Check as CheckComponent } from "phosphor-react";
 import styled from "styled-components";
 
+import { PERCENTAGE_FACTOR } from "../../../../../lib/constants/percentages";
 import { colors } from "../../../../../lib/styles/colors";
 import { displayFloat } from "../../../../../lib/utils/calcPrice";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { ProposalItem } from "../../../../../pages/chat/types";
 import { useConvertedPrice } from "../../../../price/useConvertedPrice";
 import Grid from "../../../../ui/Grid";
-import { PERCENTAGE_FACTOR } from "../const";
 
 const Line = styled.div`
   border-right: 2px solid ${colors.border};
@@ -22,7 +22,7 @@ const CheckIcon = styled(CheckComponent)`
 `;
 interface Props {
   exchange: Exchange;
-  proposal: ProposalItem;
+  proposal: Pick<ProposalItem, "percentageAmount" | "type">;
 }
 
 export default function ProposalTypeSummary({ proposal, exchange }: Props) {
@@ -37,10 +37,17 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
 
   const refund = Math.round(
     (Number(inEscrow) * Number(fixedPercentageAmount)) / 100
-  );
+  ).toString();
   const convertedRefund = useConvertedPrice({
-    value: refund.toString(),
+    value: refund,
     decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
+  });
+  const sellerPercentage = 100 - fixedPercentageAmount;
+  const sellerWillReceive = BigNumber.from(inEscrow).sub(refund).toString();
+  const sellerWillReceivePrice = useConvertedPrice({
+    value: sellerWillReceive.toString(),
+    decimals: exchange.offer.exchangeToken.decimals,
     symbol: offer.exchangeToken.symbol
   });
   return (
@@ -50,25 +57,50 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
         <span>{proposal.type}</span>
       </div>
       {percentageAmount && percentageAmount !== "0" ? (
-        <Grid>
-          <CheckIcon size={16} />
-          <Grid justifyContent="flex-start">
-            <span>
-              {convertedRefund.price} {offer.exchangeToken.symbol}
-            </span>
-            {convertedRefund.converted && (
-              <>
-                <Line />
-                <span>
-                  {convertedRefund.currency?.symbol}{" "}
-                  {displayFloat(convertedRefund.converted, { fixed: 2 })}
-                </span>
-              </>
-            )}
-            <Line />
-            <span>{fixedPercentageAmount}%</span>
+        <>
+          <Grid>
+            <CheckIcon size={16} />
+            <Grid justifyContent="flex-start">
+              <span>
+                Buyer will receive: {convertedRefund.price}{" "}
+                {offer.exchangeToken.symbol}
+              </span>
+              {convertedRefund.converted && (
+                <>
+                  <Line />
+                  <span>
+                    {convertedRefund.currency?.symbol}{" "}
+                    {displayFloat(convertedRefund.converted, { fixed: 2 })}
+                  </span>
+                </>
+              )}
+              <Line />
+              <span>{fixedPercentageAmount}%</span>
+            </Grid>
           </Grid>
-        </Grid>
+          <Grid>
+            <CheckIcon size={16} />
+            <Grid justifyContent="flex-start">
+              <span>
+                Seller will receive: {sellerWillReceivePrice.price}{" "}
+                {offer.exchangeToken.symbol}
+              </span>
+              {sellerWillReceivePrice.converted && (
+                <>
+                  <Line />
+                  <span>
+                    {sellerWillReceivePrice.currency?.symbol}{" "}
+                    {displayFloat(sellerWillReceivePrice.converted, {
+                      fixed: 2
+                    })}
+                  </span>
+                </>
+              )}
+              <Line />
+              <span>{sellerPercentage}%</span>
+            </Grid>
+          </Grid>
+        </>
       ) : null}
     </Grid>
   );

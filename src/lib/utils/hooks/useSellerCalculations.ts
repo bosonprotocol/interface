@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -12,8 +13,11 @@ export function useSellerCalculations(
     enabled?: boolean;
   } = {}
 ) {
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   return useQuery(
-    ["offers", "exchanges", props],
+    ["offers", "exchanges", props, subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         offers: {
@@ -26,6 +30,7 @@ export function useSellerCalculations(
           };
         }[];
       }>(
+        subgraphUrl,
         gql`
           query GetSellerCalculations($sellerId: String) {
             offers(where: { sellerId: $sellerId }) {

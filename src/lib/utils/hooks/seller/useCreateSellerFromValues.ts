@@ -1,11 +1,11 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useMutation } from "react-query";
-import { useAccount } from "wagmi";
 
 import { BosonAccount } from "../../../../components/modal/components/Profile/bosonAccount/validationSchema";
 import { ProfileType } from "../../../../components/modal/components/Profile/const";
 import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
+import { useAccount } from "../connection/connection";
 import useCreateSeller from "./useCreateSeller";
 import useStoreSellerMetadata from "./useStoreSellerMetadata";
 
@@ -17,7 +17,7 @@ type StoreSellerMetadataFn = ReturnType<
 >["mutateAsync"];
 
 export default function useCreateSellerFromValues() {
-  const { address } = useAccount();
+  const { account: address } = useAccount();
   const { mutateAsync: createSeller } = useCreateSeller();
   const { mutateAsync: storeSellerMetadata } = useStoreSellerMetadata();
 
@@ -81,7 +81,9 @@ async function createSellerFromValues(
         tag: "cover",
         height: cover?.height ?? undefined,
         type: cover?.type,
-        width: cover?.width ?? undefined
+        width: cover?.width ?? undefined,
+        fit: cover?.fit,
+        position: cover?.position
       }
     ]
   });

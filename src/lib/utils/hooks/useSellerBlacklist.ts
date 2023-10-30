@@ -1,8 +1,8 @@
 import { accounts, subgraph } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 
-import { CONFIG } from "../../config";
 import { fetchTextFile } from "../textFile";
 import { useCurrentSellers } from "./useCurrentSellers";
 
@@ -19,12 +19,15 @@ export function useSellerBlacklist(
   isError: boolean;
   curatedSellerIds: string[] | undefined;
 } {
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   const currentSeller = useCurrentSellers();
   const allSellers = useQuery(
-    ["all-sellers", props],
+    ["all-sellers", props, subgraphUrl],
     async () => {
       const maxSellerPerReq = 1000;
-      const fetched = await accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
+      const fetched = await accounts.subgraph.getSellers(subgraphUrl, {
         sellersFirst: maxSellerPerReq,
         sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
         sellersOrderDirection: subgraph.OrderDirection.Asc
@@ -32,7 +35,7 @@ export function useSellerBlacklist(
       let loop = fetched.length === maxSellerPerReq;
       let sellersSkip = maxSellerPerReq;
       while (loop) {
-        const toAdd = await accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
+        const toAdd = await accounts.subgraph.getSellers(subgraphUrl, {
           sellersFirst: maxSellerPerReq,
           sellersSkip,
           sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
@@ -48,11 +51,12 @@ export function useSellerBlacklist(
       ...options
     }
   );
+  const { sellerBlacklistUrl } = props;
   const blacklist = useQuery(
-    "seller-blacklist",
+    ["seller-blacklist", sellerBlacklistUrl],
     async () => {
-      const blacklistStr = props.sellerBlacklistUrl
-        ? await fetchTextFile(props.sellerBlacklistUrl, false)
+      const blacklistStr = sellerBlacklistUrl
+        ? await fetchTextFile(sellerBlacklistUrl, false)
         : undefined;
       return blacklistStr
         ? (JSON.parse(blacklistStr).map((id: unknown) =>

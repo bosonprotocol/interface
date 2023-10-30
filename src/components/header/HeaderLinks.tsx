@@ -1,16 +1,20 @@
-import { useMemo } from "react";
+import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
+import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
+import { ReactNode } from "react";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
+import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentDisputeResolverId } from "../../lib/utils/hooks/useCurrentDisputeResolverId";
+import { ViewMode } from "../../lib/viewMode";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
-import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
+import { getSellerCenterPath } from "../seller/paths";
 import ViewTxButton from "../transactions/ViewTxButton";
+import { ViewModeLink } from "../viewMode/ViewMode";
 import Search from "./Search";
 
 export const HEADER_HEIGHT = "5.4rem";
@@ -18,7 +22,8 @@ export const HEADER_HEIGHT = "5.4rem";
 const NavigationLinks = styled.div<{
   isMobile: boolean;
   isOpen: boolean;
-  $navigationBarPosition: string;
+  $navigationBarPosition?: string;
+  $hoverHeaderTextColor: string;
 }>`
   background-color: var(--headerBgColor);
   color: var(--headerTextColor);
@@ -31,23 +36,20 @@ const NavigationLinks = styled.div<{
     color: var(--headerTextColor, ${colors.black});
     :hover {
       background-color: ${colors.border};
-      color: var(--accent);
+      color: ${({ $hoverHeaderTextColor }) => $hoverHeaderTextColor};
     }
   }
   ${({ isMobile, isOpen, $navigationBarPosition }) =>
     isMobile
       ? css`
           position: absolute;
-          ${() => {
-            return css`
-              top: calc(${HEADER_HEIGHT} + 2px);
-            `;
-          }}
+          top: calc(${HEADER_HEIGHT} + 1px);
           left: 0;
           right: 0;
           bottom: 0;
           height: 100vh;
           transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
+
           a,
           [data-anchor] {
             display: flex;
@@ -58,7 +60,6 @@ const NavigationLinks = styled.div<{
             font-size: 16px;
             font-weight: 600;
             line-height: 150%;
-            padding: 2rem;
             border-bottom: 2px solid ${colors.border};
             position: relative;
             white-space: pre;
@@ -80,7 +81,7 @@ const NavigationLinks = styled.div<{
         `
       : css`
           ${() => {
-            if (["left", "right"].includes($navigationBarPosition)) {
+            if (["left", "right"].includes($navigationBarPosition ?? "")) {
               return css`
                 display: flex;
                 flex-direction: column;
@@ -98,7 +99,7 @@ const NavigationLinks = styled.div<{
               `;
             }
             return css`
-              margin: 0 1rem;
+              margin-left: 1rem;
               display: flex;
               width: 100%;
               align-items: stretch;
@@ -106,7 +107,10 @@ const NavigationLinks = styled.div<{
               a,
               [data-anchor] {
                 justify-content: center;
-                padding: 1rem 0;
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+                padding-left: 0.1rem;
+                padding-right: 0.1rem;
               }
             `;
           }}
@@ -119,43 +123,63 @@ const NavigationLinks = styled.div<{
             font-weight: 600;
             line-height: 150%;
             height: 100%;
+            white-space: nowrap;
           }
         `};
 `;
 
-const Links = styled.div<{ isMobile: boolean; $navigationBarPosition: string }>`
+const ItemsList = styled.div<{
+  isMobile: boolean;
+  $navigationBarPosition?: string;
+}>`
   display: flex;
   justify-content: end;
-  gap: 1rem;
   flex-direction: ${({ isMobile, $navigationBarPosition }) =>
-    isMobile || ["left", "right"].includes($navigationBarPosition)
+    isMobile || ["left", "right"].includes($navigationBarPosition ?? "")
       ? "column"
       : "row"};
   align-items: ${({ $navigationBarPosition }) =>
-    ["left", "right"].includes($navigationBarPosition) ? "center" : ""};
+    ["left", "right"].includes($navigationBarPosition ?? "") ? "center" : ""};
+  > * {
+    padding: 2rem;
+  }
+  ${({ isMobile }) =>
+    !isMobile &&
+    css`
+      gap: 1rem;
+    `}
 `;
 
 interface Props {
   isMobile: boolean;
   isOpen: boolean;
-  navigationBarPosition: string;
+  navigationBarPosition?: string;
+  withSearch?: boolean;
+  withExploreProducts?: boolean;
+  withMyItems?: boolean;
+  withDisputeAdmin?: boolean;
+  withResolutionCenter?: boolean;
+  withSellerHub?: boolean;
+  children?: ReactNode;
 }
 export default function HeaderLinks({
   isMobile,
   isOpen,
-  navigationBarPosition
+  navigationBarPosition,
+  withSearch = true,
+  withExploreProducts = true,
+  withMyItems = true,
+  withDisputeAdmin = true,
+  withResolutionCenter,
+  withSellerHub,
+  children
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
-  const { address } = useAccount();
+  const { account: address } = useAccount();
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });
 
-  const {
-    buyer: { buyerId }
-  } = useBuyerSellerAccounts(address || "");
-
-  const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
   const { disputeResolverId } = useCurrentDisputeResolverId();
 
   const onlySeller =
@@ -168,31 +192,72 @@ export default function HeaderLinks({
       isMobile={isMobile}
       isOpen={isOpen}
       $navigationBarPosition={navigationBarPosition}
+      $hoverHeaderTextColor={getColor1OverColor2WithContrast({
+        color2: useCSSVariable("--headerBgColor") || colors.white,
+        color1: useCSSVariable("--headerTextColor") || colors.darkGrey
+      })}
     >
-      <Search
+      {withSearch && (
+        <Search
+          isMobile={isMobile}
+          navigationBarPosition={navigationBarPosition}
+        />
+      )}
+      <ItemsList
         isMobile={isMobile}
-        navigationBarPosition={navigationBarPosition}
-      />
-      <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
-        {!onlySeller && (
-          <LinkWithQuery to={BosonRoutes.Explore}>
+        $navigationBarPosition={navigationBarPosition}
+      >
+        {!onlySeller && withExploreProducts && (
+          <ViewModeLink
+            href={BosonRoutes.Explore}
+            destinationViewMode={ViewMode.DAPP}
+          >
             Explore Products
-          </LinkWithQuery>
+          </ViewModeLink>
         )}
-        {isAccountBuyer &&
-          !onlySeller &&
+        {withResolutionCenter && (
+          <ViewModeLink
+            href={DrCenterRoutes.Root}
+            destinationViewMode={ViewMode.DR_CENTER}
+          >
+            Resolution Center
+          </ViewModeLink>
+        )}
+        {address &&
+          withSellerHub &&
+          checkIfUserHaveRole(roles, [UserRoles.Seller], false) && (
+            <ViewModeLink
+              rel="noopener noreferrer"
+              href={getSellerCenterPath("Dashboard")}
+              destinationViewMode={ViewMode.DAPP}
+            >
+              Seller Hub
+            </ViewModeLink>
+          )}
+        {!onlySeller &&
           address &&
+          withMyItems &&
           checkIfUserHaveRole(roles, [UserRoles.Buyer], false) && (
-            <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
+            <ViewModeLink
+              href={BosonRoutes.YourAccount}
+              destinationViewMode={ViewMode.DAPP}
+            >
+              My Items
+            </ViewModeLink>
           )}
         {!!disputeResolverId &&
+          withDisputeAdmin &&
           checkIfUserHaveRole(roles, [UserRoles.DisputeResolver], true) && (
-            <LinkWithQuery to={`${BosonRoutes.DRAdmin}/disputes`}>
+            <ViewModeLink
+              href={`${BosonRoutes.DRAdmin}/disputes`}
+              destinationViewMode={ViewMode.DAPP}
+            >
               Dispute Admin
-            </LinkWithQuery>
+            </ViewModeLink>
           )}
         {address && <ViewTxButton />}
-      </Links>
+        {children}
+      </ItemsList>
     </NavigationLinks>
   );
 }

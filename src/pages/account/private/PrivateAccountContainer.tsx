@@ -1,11 +1,12 @@
+import { hooks } from "@bosonprotocol/react-kit";
+import { useWeb3React } from "@web3-react/core";
+import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { Spinner } from "../../../components/loading/Spinner";
-import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
-import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import NotFound from "../../not-found/NotFound";
 import Buyer from "../../profile/buyer/Buyer";
 
@@ -16,11 +17,16 @@ const SpinnerWrapper = styled.div`
 `;
 
 export default function PrivateAccountContainer() {
-  const { address, isConnecting, isReconnecting, isDisconnected } =
-    useAccount();
+  const { isActivating } = useWeb3React();
+  const { account: address } = useAccount();
+  const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet);
 
-  const navigate = useKeepQueryParamsNavigate();
-  const { data: buyers, isLoading } = useBuyers(
+  const {
+    data: buyers,
+    isLoading,
+    isSuccess
+  } = useBuyers(
     {
       wallet: address
     },
@@ -31,7 +37,7 @@ export default function PrivateAccountContainer() {
 
   const buyerId = buyers?.[0]?.id || "";
 
-  if (isConnecting || isReconnecting || isLoading) {
+  if (isActivating || isLoading || (!selectedWallet && !isMagicLoggedIn)) {
     return (
       <SpinnerWrapper>
         <Spinner size={42} />
@@ -39,13 +45,12 @@ export default function PrivateAccountContainer() {
     );
   }
 
-  if (!address || isDisconnected) {
-    navigate({ pathname: BosonRoutes.Root });
+  if (!address) {
     return <div>Please connect your wallet</div>;
   }
-  if (!buyerId) {
+  if (!buyerId && isSuccess) {
     return <NotFound />;
   }
 
-  return <Buyer manageFundsId={buyerId} />;
+  return <Buyer buyerId={buyerId} />;
 }

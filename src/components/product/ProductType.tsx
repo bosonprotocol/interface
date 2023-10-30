@@ -1,18 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
+import { useWeb3React } from "@web3-react/core";
+import { useConfigContext } from "components/config/ConfigContext";
+import { useOpenAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
-import { BosonRoutes } from "../../lib/routing/routes";
+import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import {
   getItemFromStorage,
@@ -43,9 +46,10 @@ import {
   CreateProductForm,
   CreateProfile,
   CreateYourProfile,
-  initialValues
+  getOptionsCurrencies,
+  initialValues,
+  ProductTypeValues
 } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
   xs: 1,
@@ -84,19 +88,7 @@ export const RadioButton = styled.input`
   }
 `;
 
-export const Box = styled.div`
-  padding: 0.875rem;
-  height: 100%;
-  width: 100%;
-  p {
-    display: block;
-  }
-  p:first {
-    margin: 0.938rem 0 0 0;
-  }
-`;
-
-export const RadioButtonText = styled(Typography).attrs({
+const RadioButtonText = styled(Typography).attrs({
   tag: "p",
   fontWeight: "600",
   $fontSize: "1rem",
@@ -126,11 +118,16 @@ export default function ProductType({
   showInvalidRoleModal,
   isDraftModalClosed
 }: Props) {
-  const { openConnectModal } = useConnectModal();
+  const { config } = useConfigContext();
+  const isWalletConnected = useAppSelector(
+    (state) => state.user.selectedWallet
+  );
+  const [connectModalOpen, openConnectModal] = useOpenAccountDrawer();
   const navigate = useKeepQueryParamsNavigate();
-  const { address } = useAccount();
+  const { isActivating } = useWeb3React();
+  const { account: address } = useAccount();
   const { handleChange, values, nextIsDisabled, handleBlur, errors, touched } =
-    useCreateForm();
+    useForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
     useField<CreateYourProfile["createYourProfile"]>("createYourProfile");
   const isProfileSetFromForm = (
@@ -177,9 +174,8 @@ export default function ProductType({
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isAssistant = currentRoles?.find((role) => role === "assistant");
-  const isClerk = currentRoles?.find((role) => role === "clerk");
   const isAdmin = currentRoles?.find((role) => role === "admin");
-  const isSellerNotAssistant = (isClerk || isAdmin) && !isAssistant;
+  const isSellerNotAssistant = isAdmin && !isAssistant;
 
   const isAdminLinkedToLens =
     !isLoading &&
@@ -187,7 +183,7 @@ export default function ProductType({
     !!currentSellers.some((seller, index) => {
       return (
         seller.authTokenType === authTokenTypes.LENS &&
-        seller.authTokenId === getLensTokenIdDecimal(lens[index].id).toString()
+        seller.authTokenId === getLensTokenIdDecimal(lens[index]?.id).toString()
       );
     });
 
@@ -213,6 +209,10 @@ export default function ProductType({
       );
       const newValues: CreateProductForm = {
         ...initialValues,
+        coreTermsOfSale: {
+          ...initialValues.coreTermsOfSale,
+          currency: getOptionsCurrencies(config.envConfig)[0]
+        },
         ...currentValues,
         createYourProfile: regularProfile
       };
@@ -339,30 +339,29 @@ export default function ProductType({
   const location = useLocation();
   const { state } = location;
   const prevPath = (state as { prevPath: string })?.prevPath;
+
   useEffect(() => {
-    if (!address && openConnectModal) {
+    if (!address && !wasConnectModalOpen) {
       openConnectModal();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, wasConnectModalOpen]);
+  useEffect(() => {
+    if (connectModalOpen && !wasConnectModalOpen) {
       setWasConnectModalOpen(true);
     }
-  }, [address, openConnectModal]);
+  }, [connectModalOpen, wasConnectModalOpen]);
   if (!address) {
-    return (
-      <>
-        <Typography>Please connect your wallet</Typography>
-        <RainbowConnectButton.Custom>
-          {({ connectModalOpen }) => {
-            if (wasConnectModalOpen && !connectModalOpen) {
-              if (prevPath && prevPath !== "/sell/create-product") {
-                reactRouterNavigate(-1);
-              } else {
-                return <Navigate to={{ pathname: BosonRoutes.Root }} />;
-              }
-            }
-            return <></>;
-          }}
-        </RainbowConnectButton.Custom>
-      </>
-    );
+    if (!isActivating && !isWalletConnected) {
+      if (wasConnectModalOpen && !connectModalOpen) {
+        if (prevPath && prevPath !== SellerCenterRoutes.CreateProduct) {
+          reactRouterNavigate(prevPath);
+        } else {
+          return <Navigate to={{ pathname: BosonRoutes.Root }} />;
+        }
+      }
+    }
+    return <Typography>Please connect your wallet</Typography>;
   }
   return (
     <ContainerProductPage>
@@ -462,8 +461,11 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productVariant"
-                  value="oneItemType"
-                  checked={values.productType?.productVariant === "oneItemType"}
+                  value={ProductTypeValues.oneItemType}
+                  checked={
+                    values.productType?.productVariant ===
+                    ProductTypeValues.oneItemType
+                  }
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -489,9 +491,10 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productVariant"
-                  value="differentVariants"
+                  value={ProductTypeValues.differentVariants}
                   checked={
-                    values.productType?.productVariant === "differentVariants"
+                    values.productType?.productVariant ===
+                    ProductTypeValues.differentVariants
                   }
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -608,7 +611,7 @@ export default function ProductType({
               });
             }}
           >
-            Seller Center
+            Seller Hub
           </BosonButton>
           <BosonButton
             variant="primaryFill"

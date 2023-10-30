@@ -1,11 +1,14 @@
+import { useConfigContext } from "components/config/ConfigContext";
+
 import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import { CONFIG } from "../../config";
 import { parseCurationList } from "../curationList";
 import { useSellerBlacklist } from "./useSellerBlacklist";
 
 export function useCurationLists() {
+  const { config } = useConfigContext();
   const sellerBlacklist = useSellerBlacklist({
-    sellerBlacklistUrl: CONFIG.sellerBlacklistUrl,
+    sellerBlacklistUrl: config.envConfig.sellersBlackList,
     allowConnectedSeller: false
   });
   const sellerCurationList = sellerBlacklist.isSuccess
@@ -18,6 +21,15 @@ export function useCurationLists() {
     : [];
   const offerCurationListFromUrl =
     useCustomStoreQueryParameter("offerCurationList");
+  const scl = CONFIG.enableCurationLists
+    ? sellerCurationListFromUrlParam
+      ? sellerCurationList.filter((sellerId) =>
+          sellerCurationListFromUrl?.includes(sellerId)
+        )
+      : sellerCurationList
+    : sellerCurationListFromUrlParam
+    ? sellerCurationListFromUrl
+    : undefined;
 
   return {
     enableCurationLists: CONFIG.enableCurationLists,
@@ -29,15 +41,7 @@ export function useCurationLists() {
     // --> sellerCurationListFromUrl
     // if !enableCurationLists and no custom curation list
     // --> undefined (= no curation list = all sellers)
-    sellerCurationList: CONFIG.enableCurationLists
-      ? sellerCurationListFromUrlParam
-        ? sellerCurationList.filter((sellerId) =>
-            sellerCurationListFromUrl?.includes(sellerId)
-          )
-        : sellerCurationList
-      : sellerCurationListFromUrlParam
-      ? sellerCurationListFromUrl
-      : undefined,
+    sellerCurationList: scl,
     offerCurationList: offerCurationListFromUrl
       ? parseCurationList(offerCurationListFromUrl)
       : CONFIG.enableCurationLists

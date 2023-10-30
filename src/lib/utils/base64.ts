@@ -6,10 +6,6 @@ export async function fetchImageAsBase64(imageUrl: string) {
   return { base64: await blobToBase64(blob), blob };
 }
 
-export function fromBase64ToBinary(base64: string): Buffer {
-  return Buffer.from(base64.replace(/data:image\/.*;base64,/, ""), "base64");
-}
-
 export async function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     loadAndSetMedia(blob, resolve, reject);
@@ -59,24 +55,6 @@ export const fetchIpfsBase64Media = async (
   });
   const base64strList = await Promise.all(fetchPromises);
   return base64strList;
-};
-
-export const getFixedBase64FromUrl = async (
-  url: string,
-  ipfsMetadataStorage: IpfsMetadataStorage
-): Promise<string | undefined> => {
-  const [logoBase64] = await fetchIpfsBase64Media([url], ipfsMetadataStorage);
-  if (!logoBase64) {
-    return; // should never happen
-  }
-  const wrongDataFormat = "data:application/octet-stream;base64,";
-  const indexWrongDataFormat = logoBase64.indexOf(wrongDataFormat);
-  const fixedBase64 =
-    indexWrongDataFormat === -1
-      ? logoBase64
-      : "data:image/jpeg;base64," +
-        logoBase64.substring(indexWrongDataFormat + wrongDataFormat.length);
-  return fixedBase64;
 };
 
 export function dataURItoBlob(dataURI: string): Blob {

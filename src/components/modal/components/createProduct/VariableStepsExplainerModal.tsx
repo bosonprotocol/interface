@@ -1,7 +1,7 @@
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { CheckCircle } from "phosphor-react";
 import React, { useMemo } from "react";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import { SellerLandingPageParameters } from "../../../../lib/routing/parameters";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
@@ -171,7 +171,7 @@ const VariableStepsExplainerModal: React.FC<
   doSetQueryParams,
   buttonText
 }) => {
-  const { isConnected } = useAccount();
+  const { account } = useAccount();
   const { sellers } = useCurrentSellers();
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, store } = useModal();
@@ -233,7 +233,7 @@ const VariableStepsExplainerModal: React.FC<
           })}
         </StepWrapper>
       </Grid>
-      {isConnected ? (
+      {account ? (
         <BosonButton
           onClick={() => {
             if (hasSeller) {

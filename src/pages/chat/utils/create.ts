@@ -1,7 +1,7 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 
-import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
+import { PERCENTAGE_FACTOR } from "../../../lib/constants/percentages";
 import {
   FileWithEncodedData,
   getFilesWithEncodedData

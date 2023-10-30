@@ -1,7 +1,9 @@
 import * as Sentry from "@sentry/browser";
 import { useField, useFormikContext } from "formik";
+import { BosonRoutes } from "lib/routing/routes";
+import { getViewModeUrl, ViewMode } from "lib/viewMode";
 import { ArrowsOut } from "phosphor-react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import CollapseWithTrigger from "../../components/collapse/CollapseWithTrigger";
 import SimpleError from "../../components/error/SimpleError";
@@ -9,6 +11,7 @@ import { Input, Select, Upload } from "../../components/form";
 import InputColor from "../../components/form/InputColor";
 import { SwitchForm } from "../../components/form/Switch";
 import { SelectDataProps } from "../../components/form/types";
+import { Spinner } from "../../components/loading/Spinner";
 import { useModal } from "../../components/modal/useModal";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
@@ -51,7 +54,9 @@ const ignoreStoreFields: ReadonlyArray<keyof InternalOnlyStoreFields> = [
   storeFields.customStoreUrl
 ] as const;
 
-export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
+export const formValuesWithOneLogoUrl = (
+  values: Omit<StoreFormFields, "footerBgColor" | "supportFunctionality">
+) => {
   const entries = Object.entries(values)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .filter(([key]) => !ignoreStoreFields.includes(key as any))
@@ -149,8 +154,9 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
 };
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
+  const dappOrigin = getViewModeUrl(ViewMode.DAPP, BosonRoutes.Root);
   const { showModal } = useModal();
-  const { setFieldValue, values, isValid, setValues } =
+  const { setFieldValue, values, isValid, setValues, isSubmitting } =
     useFormikContext<StoreFormFields>();
   const { sellerIds } = useCurrentSellers();
 
@@ -308,11 +314,11 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   }, [renderCommitProxyField]);
 
   useEffect(() => {
-    if (!values.customStoreUrl) {
-      return;
-    }
     // load data from an existing storefront
     (async () => {
+      if (!values.customStoreUrl) {
+        return;
+      }
       try {
         let iframeSrc = values.customStoreUrl.replace("/#/", "/");
         let url = new URL(iframeSrc);
@@ -394,6 +400,28 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   }
                   return null;
                 }
+                case storeFields.contactInfoLinks: {
+                  const contactInfoLinksList = JSON.parse(
+                    value
+                  ) as unknown as SelectDataProps<string>[];
+                  const listWithLabels = contactInfoLinksList.map((cil) => {
+                    let label = cil.label;
+                    if (!cil.label) {
+                      const matchedOption =
+                        formModel.formFields.contactInfoLinks.options.find(
+                          (option) => option.value === cil.value
+                        );
+                      if (matchedOption) {
+                        label = matchedOption.label;
+                      }
+                    }
+                    return {
+                      ...cil,
+                      label
+                    };
+                  });
+                  return [key, listWithLabels];
+                }
 
                 case storeFields.additionalFooterLinks:
                   return [key, JSON.parse(value)];
@@ -419,11 +447,11 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.customStoreUrl]);
 
-  const AdvancedTrigger = useCallback(() => {
+  const AdvancedTrigger = useMemo(() => {
     return <Section>Advanced</Section>;
   }, []);
 
-  const StyleTrigger = useCallback(() => {
+  const StyleTrigger = useMemo(() => {
     return <Section>Style</Section>;
   }, []);
   const [switchField] = useField(storeFields.bannerSwitch);
@@ -538,6 +566,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 width={1531}
                 height={190}
                 imgPreviewStyle={{ objectFit: "contain" }}
+                wrapperProps={{ style: { width: "100%" } }}
               />
             </Grid>
             <Grid flexDirection="column" alignItems="flex-start">
@@ -560,6 +589,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 width={947}
                 height={218}
                 imgPreviewStyle={{ objectFit: "contain" }}
+                wrapperProps={{ style: { width: "100%" } }}
               />
             </Grid>
           </Grid>
@@ -902,8 +932,13 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </CollapseWithTrigger>
         </Grid>
         {hasSubmitError && <SimpleError />}
-        <BosonButton type="submit" variant="primaryFill" disabled={!isValid}>
-          Create
+        <BosonButton
+          type="submit"
+          variant="primaryFill"
+          disabled={!isValid || isSubmitting}
+        >
+          {isSubmitting ? "Creating..." : "Sign & Create"}
+          {isSubmitting && <Spinner />}
         </BosonButton>
       </Grid>
       <div>
@@ -920,7 +955,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 "IFRAME_MODAL",
                 {
                   title: "Preview",
-                  src: `${window.location.origin}/#/?${queryParams}`
+                  src: `${dappOrigin}?${queryParams}`
                 },
                 "fullscreen"
               );
@@ -936,7 +971,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 "IFRAME_MODAL",
                 {
                   title: "Preview",
-                  src: `${window.location.origin}/#/?${queryParams}`
+                  src: `${dappOrigin}?${queryParams}`
                 },
                 "fullscreen"
               );
@@ -944,7 +979,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           />
         </Grid>
         <iframe
-          src={`${window.location.origin}/#/?${queryParams}`}
+          src={`${dappOrigin}?${queryParams}`}
           style={{
             width: "100%",
             minHeight: "50rem",

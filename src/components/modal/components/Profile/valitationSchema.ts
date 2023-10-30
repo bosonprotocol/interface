@@ -1,15 +1,14 @@
 import * as Yup from "yup";
 
-import { validationMessage } from "../../../../lib/const/validationMessage";
+import { validationMessage } from "../../../../lib/constants/validationMessage";
 import { websitePattern } from "../../../../lib/validation/regex/url";
 import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../product/utils";
+import { maxLengthErrorMessage, METADATA_LENGTH_LIMIT } from "./const";
 
-const METADATA_LENGTH_LIMIT = 2048;
 const contactPreferences = OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.map(
   ({ value }) => value
 );
 
-const maxLengthErrorMessage = `Maximum length is ${METADATA_LENGTH_LIMIT} characters`;
 export const getCommonFieldsValidation = ({
   withMaxLengthValidation
 }: {

@@ -1,23 +1,19 @@
-import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
-import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
-import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { DrCenterRoutes } from "../../../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../../../lib/routing/parameters";
-import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
-import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
-import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
+import { getExchangeDisputeDates } from "../../../../lib/utils/exchange";
 import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import BosonButton from "../../../ui/BosonButton";
+import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
-import { useModal } from "../../useModal";
+import ProposalTypeSummary from "../Chat/components/ProposalTypeSummary";
 
 const OfferImage = styled.div`
   width: 3.75rem;
@@ -57,122 +53,81 @@ const DisputeEndDate = styled(ClockClockwise)`
 function TableElement({ exchange }: { exchange: Exchange }) {
   const { status } = useDisputeSubStatusInfo(exchange);
   const navigate = useKeepQueryParamsNavigate();
-  const { showModal } = useModal();
-  const currentDate = dayjs();
 
-  const { refetch: refetchDisputes } = useDisputes(
-    {
-      disputesFilter: {
-        exchange: exchange?.id
-      }
-    },
-    { enabled: !!exchange }
-  );
+  if (!exchange) {
+    return null;
+  }
 
-  const parseDisputeDate = dayjs(getDateTimestamp(exchange.validUntilDate));
+  const { totalDaysToResolveDispute, daysLeftToResolveDispute } =
+    getExchangeDisputeDates(exchange);
 
-  const deadlineTimeLeft = useMemo(() => {
-    if (parseDisputeDate.diff(currentDate, "days") === 0) {
-      return "Dispute period ended today";
-    }
-    if (parseDisputeDate.diff(currentDate, "days") > 0) {
-      return `${parseDisputeDate.diff(
-        currentDate,
-        "days"
-      )} days until dispute end`;
-    }
-    return `Dispute period ended ${
-      parseDisputeDate.diff(currentDate, "days") * -1
-    } days ago`;
-  }, [currentDate, parseDisputeDate]);
-
-  const { data: disputes = [{} as subgraph.DisputeFieldsFragment] } =
-    useDisputes(
-      {
-        disputesFilter: {
-          exchange: exchange?.id
-        }
-      },
-      { enabled: !!exchange }
-    );
-  const [dispute] = disputes.length
-    ? disputes
-    : [{} as subgraph.DisputeFieldsFragment];
-
-  const isNotEscalatedYet = dispute ? dispute?.escalatedDate === null : false;
-
-  if (exchange) {
-    return (
-      <>
-        <td>
-          <Grid
-            alignItems="center"
-            justifyContent="flex-start"
-            $width="max-content"
-          >
-            <OfferImage>
-              <Image src={exchange?.offer.metadata.image} />
-            </OfferImage>
-            <MessageInfo>
-              <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
-              <SellerID
-                offer={exchange?.offer}
-                buyerOrSeller={exchange?.offer.seller}
-                withProfileImage
-                onClick={() => null}
-              />
-            </MessageInfo>
-          </Grid>
-        </td>
-        <DisputeRaised>{status}</DisputeRaised>
-        <td>
+  const deadlineTimeLeft = `${daysLeftToResolveDispute}/${totalDaysToResolveDispute}`;
+  const isResolved =
+    exchange.dispute?.buyerPercent && exchange.dispute?.buyerPercent !== "0";
+  return (
+    <>
+      <td>{exchange.id}</td>
+      <td>
+        <Grid
+          alignItems="center"
+          justifyContent="flex-start"
+          $width="max-content"
+        >
+          <OfferImage>
+            <Image src={exchange.offer.metadata.image} />
+          </OfferImage>
+          <MessageInfo>
+            <ExchangeName>{exchange.offer.metadata.name}</ExchangeName>
+            <SellerID
+              offer={exchange.offer}
+              buyerOrSeller={exchange.offer.seller}
+              withProfileImage
+              onClick={() => null}
+            />
+          </MessageInfo>
+        </Grid>
+      </td>
+      <DisputeRaised>{status}</DisputeRaised>
+      <td>
+        {isResolved ? (
+          "-"
+        ) : (
           <Grid alignItems="center" $width="max-content">
             <DisputeEndDate size={17} fontWeight="light" color={colors.black} />
-            {deadlineTimeLeft}
+            {deadlineTimeLeft} days left
           </Grid>
-        </td>
-        <td>
-          <Grid justifyContent="flex-end" gap="1rem">
-            {isNotEscalatedYet && status !== "Resolved" && (
-              <BosonButton
-                variant="secondaryInverted"
-                size={ButtonSize.Small}
-                showBorder={false}
-                onClick={() => {
-                  showModal(
-                    "ESCALATE_MODAL",
-                    {
-                      title: "Escalate",
-                      exchange: exchange,
-                      refetch: refetchDisputes
-                    },
-                    "l"
-                  );
-                }}
-              >
-                Escalate dispute
-              </BosonButton>
-            )}
-            <BosonButton
-              type="button"
-              variant="primaryFill"
-              size={ButtonSize.Small}
-              onClick={() => {
-                navigate({
-                  pathname: generatePath(BosonRoutes.ChatMessage, {
-                    [UrlParameters.exchangeId]: exchange?.id
-                  })
-                });
-              }}
-            >
-              Open chat
-            </BosonButton>
-          </Grid>
-        </td>
-      </>
-    );
-  }
-  return null;
+        )}
+      </td>
+      <td>
+        {isResolved && (
+          <ProposalTypeSummary
+            exchange={exchange}
+            proposal={{
+              type: "Refund",
+              percentageAmount: exchange.dispute?.buyerPercent ?? ""
+            }}
+          />
+        )}
+      </td>
+      <td>
+        <Grid justifyContent="flex-end" gap="1rem">
+          <Button
+            type="button"
+            theme="secondary"
+            onClick={() => {
+              navigate({
+                pathname: generatePath(DrCenterRoutes.ChatMessage, {
+                  [UrlParameters.exchangeId]: exchange?.id
+                })
+              });
+            }}
+          >
+            <span style={{ whiteSpace: "pre" }}>Open chat</span>
+          </Button>
+        </Grid>
+      </td>
+    </>
+  );
 }
 
 export default TableElement;

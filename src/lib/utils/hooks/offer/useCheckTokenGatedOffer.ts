@@ -1,11 +1,11 @@
 import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";
 import { useEffect, useState } from "react";
-import { useAccount, useSigner } from "wagmi";
 
 import { BosonSnapshotGate__factory } from "../../../../components/detail/DetailWidget/BosonSnapshotGate/typechain";
 import { Offer } from "../../../types/offer";
 import { useCoreSDK } from "../../useCoreSdk";
+import { useAccount, useSigner } from "../connection/connection";
 
 interface Props {
   commitProxyAddress?: string | undefined;
@@ -16,8 +16,9 @@ export default function useCheckTokenGatedOffer({
   commitProxyAddress,
   condition
 }: Props) {
-  const { data: signer } = useSigner();
-  const { address } = useAccount();
+  const signer = useSigner();
+  const { account: address } = useAccount();
+
   const core = useCoreSDK();
   const [isConditionMet, setConditionMet] = useState<boolean>(false);
 
@@ -37,7 +38,7 @@ export default function useCheckTokenGatedOffer({
             signer
           );
           const [owned, used] = await proxyContract.checkSnapshot(
-            condition.tokenId,
+            condition.minTokenId,
             utils.getAddress(address)
           );
           setConditionMet(owned.sub(used).gt("0"));

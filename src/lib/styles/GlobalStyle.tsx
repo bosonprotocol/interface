@@ -6,20 +6,20 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 const GlobalStyle = createGlobalStyle<{
-  $withBosonStyles: boolean;
-  $headerBgColor: string;
-  $headerTextColor: string;
-  $primaryBgColor: string;
-  $secondaryBgColor: string;
-  $accentColor: string;
-  $textColor: string;
-  $footerBgColor: string;
-  $footerTextColor: string;
-  $fontFamily: string;
-  $buttonBgColor: string;
-  $buttonTextColor: string;
-  $upperCardBgColor: string;
-  $lowerCardBgColor: string;
+  $withBosonStyles?: boolean;
+  $headerBgColor?: string;
+  $headerTextColor?: string;
+  $primaryBgColor?: string;
+  $secondaryBgColor?: string;
+  $accentColor?: string;
+  $textColor?: string;
+  $footerBgColor?: string;
+  $footerTextColor?: string;
+  $fontFamily?: string;
+  $buttonBgColor?: string;
+  $buttonTextColor?: string;
+  $upperCardBgColor?: string;
+  $lowerCardBgColor?: string;
 }>`
   img {
     pointer-events: none;
@@ -58,7 +58,7 @@ const GlobalStyle = createGlobalStyle<{
     --accent: ${(props) =>
       props.$accentColor && !props.$withBosonStyles
         ? props.$accentColor
-        : colors.secondary};
+        : colors.accent};
     --accentNoDefault : ${(props) =>
       props.$accentColor && !props.$withBosonStyles ? props.$accentColor : ""};
     --accentDark: ${(props) =>
@@ -122,6 +122,7 @@ const GlobalStyle = createGlobalStyle<{
 
   button {
     all: unset;
+    box-sizing: border-box;
   }
 
   html, body {

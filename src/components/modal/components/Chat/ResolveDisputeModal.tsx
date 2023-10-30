@@ -1,36 +1,59 @@
+import {
+  AcceptProposalContent,
+  MessageData,
+  MessageType,
+  ThreadId,
+  version
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
-import { BigNumberish, utils } from "ethers";
+import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { BigNumber, BigNumberish, utils } from "ethers";
+import { useAccount } from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
 import { Info as InfoComponent } from "phosphor-react";
-import { useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState
+} from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
-import { CONFIG } from "../../../../lib/config";
+import { PERCENTAGE_FACTOR } from "../../../../lib/constants/percentages";
 import { colors } from "../../../../lib/styles/colors";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
-import { ProposalItem } from "../../../../pages/chat/types";
-import { poll } from "../../../../pages/create-product/utils";
+import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
+import { ICON_KEYS } from "../../../../pages/chat/components/conversation/const";
+import {
+  MessageDataWithInfo,
+  ProposalItem
+} from "../../../../pages/chat/types";
 import SimpleError from "../../../error/SimpleError";
+import { useConvertedPrice } from "../../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../ui/BosonButton";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
-import { ModalProps } from "../../ModalContext";
 import { useModal } from "../../useModal";
+import { DisputeSplit } from "./components/DisputeSplit";
 import ExchangePreview from "./components/ExchangePreview";
 import ProposalTypeSummary from "./components/ProposalTypeSummary";
 
 interface Props {
   exchange: Exchange;
   proposal: ProposalItem;
-
-  // modal props
-  hideModal: NonNullable<ModalProps["hideModal"]>;
-  title: ModalProps["title"];
+  iAmTheBuyer: boolean;
+  setHasError: Dispatch<SetStateAction<boolean>>;
+  addMessage: (
+    newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
+  ) => Promise<void>;
+  onSentMessage: (messageData: MessageData, uuid: string) => Promise<void>;
 }
 
 const ProposedSolution = styled.h4`
@@ -88,27 +111,145 @@ async function resolveDisputeWithMetaTx(
 
 export default function ResolveDisputeModal({
   exchange,
-  hideModal,
-  proposal
+  proposal,
+  iAmTheBuyer,
+  addMessage,
+  onSentMessage,
+  setHasError
 }: Props) {
-  const { showModal } = useModal();
+  const { config } = useConfigContext();
+  const { showModal, hideModal } = useModal();
+  const { bosonXmtp } = useChatContext();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const { address } = useAccount();
+  const { account: address } = useAccount();
+  const threadId = useMemo<ThreadId | null>(() => {
+    if (!exchange) {
+      return null;
+    }
+    return {
+      exchangeId: exchange.id,
+      buyerId: exchange.buyer.id,
+      sellerId: exchange.seller.id
+    };
+  }, [exchange]);
   const [resolveDisputeError, setResolveDisputeError] = useState<Error | null>(
     null
   );
+  const symbol = exchange.offer.exchangeToken.symbol;
+
+  const inEscrow: string = BigNumber.from(exchange.offer.price)
+    .add(BigNumber.from(exchange.offer.sellerDeposit || "0"))
+    .toString();
+  const fixedPercentageAmount: number =
+    Number(proposal.percentageAmount) / PERCENTAGE_FACTOR;
+  const refundBuyerWillReceive = Math.round(
+    (Number(inEscrow) * Number(fixedPercentageAmount)) / 100
+  ).toString();
+
+  const refundBuyerWillReceivePrice = useConvertedPrice({
+    value: refundBuyerWillReceive,
+    decimals: exchange.offer.exchangeToken.decimals,
+    symbol: symbol
+  });
+  const sellerWillReceive = BigNumber.from(inEscrow)
+    .sub(refundBuyerWillReceive)
+    .toString();
+  const sellerWillReceivePrice = useConvertedPrice({
+    value: sellerWillReceive.toString(),
+    decimals: exchange.offer.exchangeToken.decimals,
+    symbol: symbol
+  });
+  const destinationAddressLowerCase = iAmTheBuyer
+    ? exchange?.offer.seller.assistant
+    : exchange?.buyer.wallet;
+  const destinationAddress = destinationAddressLowerCase
+    ? utils.getAddress(destinationAddressLowerCase)
+    : "";
+  const handleSendingAcceptProposalMessage = useCallback(async () => {
+    if (bosonXmtp && threadId && address) {
+      try {
+        setHasError(false);
+        const content: AcceptProposalContent = {
+          value: {
+            icon: ICON_KEYS.checkCircle,
+            title: iAmTheBuyer
+              ? "Buyer accepted the refund proposal"
+              : "Seller accepted the refund proposal",
+            heading: "Dispute has been mutually resolved",
+            body: "Your funds are now available for withdrawal",
+            proposal
+          }
+        };
+        const newMessage = {
+          threadId,
+          content,
+          contentType: MessageType.AcceptProposal,
+          version
+        } as const;
+        const uuid = window.crypto.randomUUID();
+
+        await addMessage({
+          authorityId: "",
+          timestamp: Date.now(),
+          sender: address,
+          recipient: destinationAddress,
+          data: newMessage,
+          isValid: false,
+          isPending: true,
+          uuid
+        });
+
+        const messageData = await bosonXmtp.encodeAndSendMessage(
+          newMessage,
+          destinationAddress
+        );
+        if (!messageData) {
+          throw new Error(
+            "Something went wrong while sending an accept proposal message"
+          );
+        }
+        onSentMessage(messageData, uuid);
+      } catch (error) {
+        console.error(error);
+        setHasError(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "handleSendingRetractMessage",
+            location: "RetractDisputeModal"
+          }
+        });
+      }
+    }
+  }, [
+    bosonXmtp,
+    threadId,
+    address,
+    setHasError,
+    iAmTheBuyer,
+    proposal,
+    addMessage,
+    destinationAddress,
+    onSentMessage
+  ]);
   return (
     <>
       <Grid justifyContent="space-between" padding="0 0 2rem 0">
         <ExchangePreview exchange={exchange} />
       </Grid>
       <ProposedSolution>Proposed solution</ProposedSolution>
-      <ProposalTypeSummary exchange={exchange} proposal={proposal} />
+      <div style={{ marginBottom: "3.44rem" }}>
+        <ProposalTypeSummary exchange={exchange} proposal={proposal} />
+      </div>
+      <DisputeSplit exchange={exchange} proposal={proposal} />
       <Info>
         <InfoIcon />
-        By accepting this proposal the dispute is resolved and the refund is
-        implemented
+        By accepting this proposal the dispute will be resolved and the buyer
+        will be refunded {refundBuyerWillReceivePrice.price} {symbol}. The
+        seller will receive {sellerWillReceivePrice.price} {symbol} for this
+        exchange.
       </Info>
       {resolveDisputeError && <SimpleError />}
       <ButtonsSection>
@@ -120,6 +261,7 @@ export default function ResolveDisputeModal({
               const signature = utils.splitSignature(proposal.signature);
               let tx: TransactionResponse;
               showModal("WAITING_FOR_CONFIRMATION");
+              await handleSendingAcceptProposalMessage();
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
               if (isMetaTx) {
                 tx = await resolveDisputeWithMetaTx(
@@ -168,7 +310,7 @@ export default function ResolveDisputeModal({
                 <SuccessTransactionToast
                   t={t}
                   action={`Raised dispute: ${exchange.offer.metadata.name}`}
-                  url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                  url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
             } catch (error) {

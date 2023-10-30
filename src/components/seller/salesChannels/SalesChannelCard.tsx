@@ -1,5 +1,5 @@
 import { ArrowRight, Clock } from "phosphor-react";
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
@@ -13,6 +13,7 @@ type SalesChannelCardProps = {
   text: string;
   to: string;
   time: string;
+  secondCta?: ReactNode;
 };
 
 const StyledGrid = styled(Grid)`
@@ -33,7 +34,8 @@ export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
   title,
   text,
   to,
-  time
+  time,
+  secondCta
 }) => {
   const navigate = useKeepQueryParamsNavigate();
   return (
@@ -52,17 +54,20 @@ export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
         {title}
       </Typography>
       <Typography tag="p">{text}</Typography>
-      <Button
-        theme="secondary"
-        size="small"
-        onClick={() => {
-          navigate({
-            pathname: to
-          });
-        }}
-      >
-        Setup <ArrowRight size={24} />
-      </Button>
+      <Grid justifyContent="space-between">
+        <Button
+          theme="secondary"
+          size="small"
+          onClick={() => {
+            navigate({
+              pathname: to
+            });
+          }}
+        >
+          Setup <ArrowRight size={24} />
+        </Button>
+        {secondCta}
+      </Grid>
     </StyledGrid>
   );
 };

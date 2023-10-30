@@ -6,6 +6,7 @@ import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { FormField, Input, Select } from "../form";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
@@ -15,8 +16,12 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { OPTIONS_LENGTH, OPTIONS_PERIOD, OPTIONS_WEIGHT } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
+import {
+  OPTIONS_LENGTH,
+  OPTIONS_PERIOD,
+  OPTIONS_WEIGHT,
+  ShippingInfo as ShippingInfoType
+} from "./utils";
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;
@@ -55,15 +60,17 @@ const AdditionalContainer = styled.div`
   }
 `;
 
-const checkLastElementIsPristine = (elements: any): boolean => {
+const checkLastElementIsPristine = (
+  elements: ShippingInfoType["shippingInfo"]["jurisdiction"]
+): boolean => {
   const element = elements[elements.length - 1];
   return element?.region.length === 0 || element?.time.length === 0;
 };
 
 const AddSupportedJurisdictions = () => {
-  const { values } = useCreateForm();
+  const { values } = useForm();
 
-  const elements = useMemo(
+  const jurisdictions = useMemo(
     () => values?.shippingInfo?.jurisdiction,
     [values?.shippingInfo?.jurisdiction]
   );
@@ -76,33 +83,33 @@ const AddSupportedJurisdictions = () => {
       <FieldArray
         name="shippingInfo.jurisdiction"
         render={(arrayHelpers) => {
-          const render = elements && elements.length > 0;
+          const render = jurisdictions && jurisdictions.length > 0;
 
           return (
             <>
               {render && (
                 <>
-                  {elements.map((el: unknown, key: number) => (
+                  {jurisdictions.map((_, index) => (
                     <FieldContainerJurisdictions
-                      key={`field_container_jurisdictions_${key}`}
+                      key={`field_container_jurisdictions_${index}`}
                     >
                       <div>
                         <Input
                           placeholder="Region"
-                          name={`shippingInfo.jurisdiction[${key}].region`}
+                          name={`shippingInfo.jurisdiction[${index}].region`}
                         />
                       </div>
                       <div>
                         <Input
                           placeholder="Time"
-                          name={`shippingInfo.jurisdiction[${key}].time`}
+                          name={`shippingInfo.jurisdiction[${index}].time`}
                         />
                       </div>
                     </FieldContainerJurisdictions>
                   ))}
                 </>
               )}
-              {!checkLastElementIsPristine(elements) && (
+              {!checkLastElementIsPristine(jurisdictions) && (
                 <Button
                   onClick={() => arrayHelpers.push({ region: "", time: "" })}
                   theme="blankSecondary"
@@ -120,10 +127,7 @@ const AddSupportedJurisdictions = () => {
 };
 
 const validJurisdiction = (
-  jurisdictionElements: Array<{
-    region: string;
-    time: string;
-  }>
+  jurisdictionElements: ShippingInfoType["shippingInfo"]["jurisdiction"]
 ): boolean => {
   const validation = jurisdictionElements.some(({ time, region }) => {
     return (
@@ -135,7 +139,7 @@ const validJurisdiction = (
 };
 
 export default function ShippingInfo() {
-  const { values, nextIsDisabled } = useCreateForm();
+  const { values, nextIsDisabled } = useForm();
   const [isValidJurisdiction, setIsValidJurisdiction] = useState<boolean>(true);
 
   const unit = useMemo(
@@ -164,7 +168,11 @@ export default function ShippingInfo() {
       }`,
     [values?.shippingInfo]
   );
-
+  const hasAdditionalInformation =
+    !!values?.shippingInfo.weight ||
+    !!values?.shippingInfo.height ||
+    !!values?.shippingInfo.width ||
+    !!values?.shippingInfo.length;
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Shipping Info</SectionTitle>
@@ -204,30 +212,31 @@ export default function ShippingInfo() {
             </div>
           </FieldContainer>
         </FormField>
+        <FormField
+          title="Redemption point"
+          subTitle="The default redemption point is the Boson app. You can add a specific website from which buyers can redeem the rNFT, for example, your customised Web3 storefront."
+        >
+          {/* <FieldContainer>
+             TODO: not used for now, might come back <div>
+              <Input
+                placeholder="Add Redemption Point Name..."
+                name="shippingInfo.redemptionPointName"
+              />
+            </div> 
+            <div>*/}
+          <Input
+            placeholder="Add Redemption Point Url..."
+            name="shippingInfo.redemptionPointUrl"
+          />
+          {/* </div> 
+          </FieldContainer>*/}
+        </FormField>
       </RequiredContainer>
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
+          isInitiallyOpen={hasAdditionalInformation}
         >
-          <FormField
-            title="Redemption point"
-            subTitle="The website from which buyers can redeem the rNFT. By default the redemption point will be the Boson dApp."
-          >
-            <FieldContainer>
-              <div>
-                <Input
-                  placeholder="Add Redemption Point Name..."
-                  name="shippingInfo.redemptionPointName"
-                />
-              </div>
-              <div>
-                <Input
-                  placeholder="Add Redemption Point Url..."
-                  name="shippingInfo.redemptionPointUrl"
-                />
-              </div>
-            </FieldContainer>
-          </FormField>
           <FormField
             title={`Dimensions L x W x H in ${unit}`}
             subTitle="Specify the dimension and weight of your package"
@@ -266,7 +275,6 @@ export default function ShippingInfo() {
               name="shippingInfo.height"
               type="number"
               min="0"
-              defaultValue={0}
               step="0.001"
             />
           </FormField>
@@ -276,7 +284,6 @@ export default function ShippingInfo() {
               name="shippingInfo.width"
               type="number"
               min="0"
-              defaultValue={0}
               step="0.001"
             />
           </FormField>
@@ -286,7 +293,6 @@ export default function ShippingInfo() {
               name="shippingInfo.length"
               type="number"
               min="0"
-              defaultValue={0}
               step="0.001"
             />
           </FormField>

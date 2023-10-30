@@ -1,9 +1,10 @@
-import { CSSProperties, useMemo, useState } from "react";
+import { CSSProperties, useMemo } from "react";
 import styled from "styled-components";
 
 import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
@@ -105,7 +106,7 @@ const NavigationLinks = styled.nav<INavigationLinks>`
     color: var(--footerTextColor);
   }
   a:hover {
-    color: var(--accent);
+    color: ${colors.accent};
   }
 
   ${breakpoint.xs} {
@@ -113,6 +114,9 @@ const NavigationLinks = styled.nav<INavigationLinks>`
   }
   ${breakpoint.s} {
     max-width: 300px;
+  }
+  ${breakpoint.m} {
+    max-width: initial;
   }
 `;
 const LogoImg = styled.img`
@@ -279,7 +283,7 @@ function ByBoson() {
   );
 }
 
-export default function ({ withFooter }: { withFooter: boolean }) {
+export default function ({ withFooter }: { withFooter: boolean | undefined }) {
   const showFooterValue = useCustomStoreQueryParameter("showFooter");
   const showFooter = ["", "true"].includes(showFooterValue);
   return withFooter ? (
@@ -308,7 +312,7 @@ function FullFooter() {
     }
   );
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
-  const [year] = useState<number>(new Date().getFullYear());
+  const year = new Date().getFullYear();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
   const copyright = useCustomStoreQueryParameter("copyright");
   const supportFunctionality = useCustomStoreQueryParameter<
@@ -376,6 +380,18 @@ function FullFooter() {
     .map((nav) => {
       if (nav) {
         if (nav.url) {
+          if (nav.absolute) {
+            return (
+              <a
+                href={sanitizeUrl(nav.url)}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={`navigation_nav_${nav.name}`}
+              >
+                {nav.name}
+              </a>
+            );
+          }
           return (
             <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
               {nav.name}

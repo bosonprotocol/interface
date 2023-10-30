@@ -1,8 +1,10 @@
 import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
+import { useConfigContext } from "components/config/ConfigContext";
+import { useAccount } from "lib/utils/hooks/connection/connection";
+import { memo } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import Grid, { IGrid } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -83,7 +85,8 @@ const SellerID: React.FC<
   withBosonStyles = false,
   ...rest
 }) => {
-  const { address } = useAccount();
+  const { config } = useConfigContext();
+  const { account: address } = useAccount();
   const { lens: lensProfiles, sellers } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
@@ -106,13 +109,14 @@ const SellerID: React.FC<
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const lensProfilePicture = getLensProfilePictureUrl(lens);
   const productV1SellerProfileImage =
-    artist.images?.find((img) => img.tag === "profile")?.url ?? "";
+    artist?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const profilePicture =
     (useLens ? lensProfilePicture : regularProfilePicture) ??
     productV1SellerProfileImage;
-  const profilePictureToShow = useLens
-    ? getLensImageUrl(profilePicture)
-    : regularProfilePicture;
+  const profilePictureToShow =
+    useLens && config.lens.ipfsGateway
+      ? getLensImageUrl(profilePicture, config.lens.ipfsGateway)
+      : regularProfilePicture;
   const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name;
   return (
     <AddressContainer {...rest} data-address-container>
@@ -178,4 +182,4 @@ const SellerID: React.FC<
   );
 };
 
-export default SellerID;
+export default memo(SellerID);

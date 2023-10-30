@@ -1,10 +1,11 @@
-import { useFormikContext } from "formik";
+import { useConfigContext } from "components/config/ConfigContext";
 import { Check } from "phosphor-react";
 import { useEffect, useMemo } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { Token } from "../convertion-rate/ConvertionRateContext";
 import FairExchangePolicy from "../exchangePolicy/FairExchangePolicy";
 import { FormField, Input, Select } from "../form";
@@ -14,16 +15,15 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import type { CreateProductForm } from "./utils";
 import {
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
   optionUnitKeys,
-  PERCENT_OPTIONS_UNIT
+  PERCENT_OPTIONS_UNIT,
+  ProductTypeValues
 } from "./utils/const";
-import { useCreateForm } from "./utils/useCreateForm";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -39,6 +39,7 @@ const FieldContainer = styled.div`
   display: grid;
   grid-template-columns: 3fr minmax(8.75rem, 1fr);
   grid-gap: 1rem;
+  width: 100%;
 `;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
@@ -73,29 +74,33 @@ const InfoWrapperList = styled.div`
 `;
 
 export default function TermsOfExchange() {
-  const { nextIsDisabled } = useCreateForm();
-  const { values, setFieldValue } = useFormikContext<CreateProductForm>();
+  const { config } = useConfigContext();
+  const { values, setFieldValue, nextIsDisabled } = useForm();
   const isMultiVariant =
-    values.productType.productVariant === "differentVariants" &&
+    values.productType?.productVariant ===
+      ProductTypeValues.differentVariants &&
     new Set(
-      values.productVariants.variants.map((variant) => variant.currency.value)
+      values.productVariants?.variants?.map((variant) => variant.currency.value)
     ).size > 1;
   const maxPricePenOrSellerDeposit =
-    values.productType.productVariant === "differentVariants"
+    values.productType?.productVariant === ProductTypeValues.differentVariants
       ? Math.min(
-          ...values.productVariants.variants.map((variant) => variant.price)
+          ...(values.productVariants?.variants?.map(
+            (variant) => variant.price
+          ) ?? [])
         )
-      : values.coreTermsOfSale.price;
+      : values.coreTermsOfSale?.price;
   const currency: string =
-    values.productType.productVariant === "differentVariants"
-      ? values.productVariants.variants[0].currency.label
-      : values.coreTermsOfSale.currency.label;
-  const exchangeToken = CONFIG.defaultTokens.find(
+    values.productType?.productVariant === ProductTypeValues.differentVariants
+      ? values.productVariants?.variants?.[0]?.currency?.label || ""
+      : values.coreTermsOfSale?.currency?.label || "";
+  const exchangeToken = config.envConfig.defaultTokens?.find(
     (n: Token) =>
       n.symbol ===
-      (values.productType.productVariant === "differentVariants"
-        ? values.productVariants.variants[0].currency.label
-        : values.coreTermsOfSale.currency.label)
+      (values.productType?.productVariant ===
+      ProductTypeValues.differentVariants
+        ? values.productVariants?.variants?.[0]?.currency?.label
+        : values.coreTermsOfSale?.currency?.label)
   );
   const decimals = exchangeToken?.decimals;
   const step = 10 ** -(decimals || 0);
@@ -121,7 +126,7 @@ export default function TermsOfExchange() {
     ).find(
       (option) =>
         option.value ===
-        values.termsOfExchange.buyerCancellationPenaltyUnit?.value
+        values.termsOfExchange?.buyerCancellationPenaltyUnit?.value
     );
     if (optionsUnitToShow.length === 1 && !buyerUnit) {
       setFieldValue(
@@ -131,7 +136,7 @@ export default function TermsOfExchange() {
       setFieldValue("termsOfExchange.buyerCancellationPenalty", "");
     } else if (
       buyerUnit &&
-      values.termsOfExchange.buyerCancellationPenaltyUnit?.label !==
+      values.termsOfExchange?.buyerCancellationPenaltyUnit?.label !==
         buyerUnit.label
     ) {
       setFieldValue("termsOfExchange.buyerCancellationPenaltyUnit", buyerUnit);
@@ -140,8 +145,8 @@ export default function TermsOfExchange() {
   }, [
     optionsUnitToShow,
     setFieldValue,
-    values.termsOfExchange.buyerCancellationPenaltyUnit?.label,
-    values.termsOfExchange.buyerCancellationPenaltyUnit?.value
+    values.termsOfExchange?.buyerCancellationPenaltyUnit?.label,
+    values.termsOfExchange?.buyerCancellationPenaltyUnit?.value
   ]);
 
   useEffect(() => {
@@ -149,14 +154,14 @@ export default function TermsOfExchange() {
       optionsUnitToShow as { value: string; label: string }[]
     ).find(
       (option) =>
-        option.value === values.termsOfExchange.sellerDepositUnit?.value
+        option.value === values.termsOfExchange?.sellerDepositUnit?.value
     );
     if (optionsUnitToShow.length === 1 && !sellerUnit) {
       setFieldValue("termsOfExchange.sellerDepositUnit", optionsUnitToShow[0]);
       setFieldValue("termsOfExchange.sellerDeposit", "");
     } else if (
       sellerUnit &&
-      values.termsOfExchange.sellerDepositUnit?.label !== sellerUnit.label
+      values.termsOfExchange?.sellerDepositUnit?.label !== sellerUnit.label
     ) {
       setFieldValue("termsOfExchange.sellerDepositUnit", sellerUnit);
       setFieldValue("termsOfExchange.sellerDeposit", "");
@@ -164,8 +169,8 @@ export default function TermsOfExchange() {
   }, [
     optionsUnitToShow,
     setFieldValue,
-    values.termsOfExchange.sellerDepositUnit?.label,
-    values.termsOfExchange.sellerDepositUnit?.value
+    values.termsOfExchange?.sellerDepositUnit?.label,
+    values.termsOfExchange?.sellerDepositUnit?.value
   ]);
   return (
     <TermsOfExchangeContainer>
@@ -191,7 +196,7 @@ export default function TermsOfExchange() {
           >
             <FieldContainer>
               <div>
-                {values.termsOfExchange.buyerCancellationPenaltyUnit.value ===
+                {values.termsOfExchange?.buyerCancellationPenaltyUnit?.value ===
                 optionUnitKeys["%"] ? (
                   <Input
                     placeholder="Buyer cancellation penalty"
@@ -228,7 +233,7 @@ export default function TermsOfExchange() {
           >
             <FieldContainer>
               <div>
-                {values.termsOfExchange.sellerDepositUnit.value === "%" ? (
+                {values.termsOfExchange?.sellerDepositUnit?.value === "%" ? (
                   <Input
                     placeholder="Seller deposit"
                     name="termsOfExchange.sellerDeposit"

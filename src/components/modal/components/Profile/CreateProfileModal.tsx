@@ -1,7 +1,8 @@
 import { subgraph } from "@bosonprotocol/react-kit";
-import { useCallback, useEffect, useState } from "react";
+import { useConfigContext } from "components/config/ConfigContext";
+import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
@@ -61,9 +62,10 @@ export default function CreateProfileModal({
   lensProfile: selectedProfile,
   waitUntilIndexed
 }: Props) {
+  const { config } = useConfigContext();
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
-  const { address = "" } = useAccount();
+  const { account: address = "" } = useAccount();
 
   const {
     data: lensData,
@@ -75,7 +77,7 @@ export default function CreateProfileModal({
       limit: 50
     },
     {
-      enabled: !!address
+      enabled: !!address && config.lens.availableOnNetwork
     }
   );
   const hasLensProfile = !!lensData?.items.length;
@@ -86,7 +88,7 @@ export default function CreateProfileModal({
   }, [isSuccess, hasLensProfile]);
   const { hideModal } = useModal();
   const [profileType, setProfileType] = useState<ProfileType | undefined>(
-    undefined
+    config.lens.availableOnNetwork ? undefined : ProfileType.REGULAR
   );
 
   const [switchChecked, setSwitchChecked] = useState<boolean>(
@@ -97,8 +99,11 @@ export default function CreateProfileModal({
     setSwitchChecked(switchToLens);
     setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
   }, []);
-  const SwitchButton = useCallback(
-    () => (
+  const SwitchButton = useMemo(() => {
+    if (!config.lens.availableOnNetwork) {
+      return <></>;
+    }
+    return (
       <Switch
         onCheckedChange={(checked) => {
           setSwitchAndProfileType(checked);
@@ -118,9 +123,8 @@ export default function CreateProfileModal({
           </Typography>
         )}
       />
-    ),
-    [switchChecked, setSwitchAndProfileType]
-  );
+    );
+  }, [config.lens.availableOnNetwork, switchChecked, setSwitchAndProfileType]);
 
   if (!address) {
     return (

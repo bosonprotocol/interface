@@ -1,6 +1,7 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
-import { useCallback, useState } from "react";
-import { useAccount } from "wagmi";
+import { useConfigContext } from "components/config/ConfigContext";
+import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useCallback, useMemo, useState } from "react";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
@@ -21,20 +22,24 @@ import { EditRegularProfileFlow } from "./Regular/EditRegularProfileFlow";
 import { buildRegularProfileFromMetadata } from "./utils";
 
 export default function EditProfileModal() {
+  const { config } = useConfigContext();
+  const { availableOnNetwork: isLensAvailable } = config.lens;
   const { sellers: currentSellers, lens, isLoading } = useCurrentSellers();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
   const lensProfile = lens?.length ? lens[0] : undefined;
   const hasMetadata = !!seller?.metadata;
   const metadata = seller?.metadata;
   const authTokenType = seller?.authTokenType;
-  const useLens = seller?.authTokenType === AuthTokenType.LENS;
+  const useLens =
+    seller?.authTokenType === AuthTokenType.LENS && isLensAvailable;
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
   const { hideModal } = useModal();
   const [profileType, setProfileType] = useState<ProfileType>(
     useLens ? ProfileType.LENS : ProfileType.REGULAR
   );
-  const { address = "" } = useAccount();
+  const { account: address = "" } = useAccount();
+
   const [switchChecked, setSwitchChecked] = useState<boolean>(
     profileType === ProfileType.LENS
   );
@@ -42,8 +47,8 @@ export default function EditProfileModal() {
     setSwitchChecked(switchToLens);
     setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
   }, []);
-  const SwitchButton = useCallback(
-    () => (
+  const SwitchButton = useMemo(() => {
+    return isLensAvailable ? (
       <Switch
         onCheckedChange={(checked) => {
           setSwitchAndProfileType(checked);
@@ -63,9 +68,10 @@ export default function EditProfileModal() {
           </Typography>
         )}
       />
-    ),
-    [switchChecked, setSwitchAndProfileType]
-  );
+    ) : (
+      <></>
+    );
+  }, [switchChecked, setSwitchAndProfileType, isLensAvailable]);
   const Component = useCallback(() => {
     const profileDataFromMetadata: CreateProfile =
       buildRegularProfileFromMetadata(metadata);
@@ -78,6 +84,7 @@ export default function EditProfileModal() {
         authTokenType !== AuthTokenType.NONE);
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
+        profileDataFromMetadata={profileDataFromMetadata}
         onSubmit={async () => {
           hideModal();
         }}

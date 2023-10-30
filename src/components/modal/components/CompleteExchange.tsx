@@ -5,18 +5,18 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
+import { poll } from "lib/utils/promises";
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
-import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
+import { useSigner } from "../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
@@ -100,9 +100,10 @@ export default function CompleteExchange({
   exchanges,
   refetch
 }: Props) {
+  const { config } = useConfigContext();
   const coreSdk = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const { data: signer } = useSigner();
+  const signer = useSigner();
   const { hideModal, showModal } = useModal();
 
   const completeExchangePool = useCallback(
@@ -157,7 +158,7 @@ export default function CompleteExchange({
           <SuccessTransactionToast
             t={t}
             action={`Completed exchange: ${exchange?.offer.metadata.name}`}
-            url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+            url={config.envConfig.getTxExplorerUrl?.(receipt.transactionHash)}
           />
         ));
       } else if (payload.exchangeIds) {
@@ -169,7 +170,7 @@ export default function CompleteExchange({
               ?.map((exchange) => exchange?.id)
               .filter((exchange) => exchange)
               .join(",")}`}
-            url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+            url={config.envConfig.getTxExplorerUrl?.(receipt.transactionHash)}
           />
         ));
       }
@@ -177,6 +178,7 @@ export default function CompleteExchange({
       refetch();
     },
     [
+      config.envConfig,
       completeExchangePool,
       exchange,
       exchanges,
@@ -222,7 +224,12 @@ export default function CompleteExchange({
           <CompleteButton
             variant="primaryFill"
             exchangeId={exchange.id}
-            envName={CONFIG.envName}
+            coreSdkConfig={{
+              envName: config.envName,
+              configId: config.envConfig.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: config.metaTx
+            }}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
@@ -266,8 +273,6 @@ export default function CompleteExchange({
                 }
               );
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           />
         </Grid>
       )}
@@ -276,7 +281,12 @@ export default function CompleteExchange({
           <BatchCompleteButton
             variant="primaryFill"
             exchangeIds={exchangeIds}
-            envName={CONFIG.envName}
+            coreSdkConfig={{
+              envName: config.envName,
+              configId: config.envConfig.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: config.metaTx
+            }}
             onError={(error) => {
               console.error("onError", error);
               const hasUserRejectedTx =
@@ -324,8 +334,6 @@ export default function CompleteExchange({
                 }
               );
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           >
             Batch Complete
           </BatchCompleteButton>

@@ -18,7 +18,7 @@ export interface IPrice {
   converted?: string | null;
   currency?: Currency;
 }
-export interface Props {
+interface Props {
   price: string | null;
   symbol: string;
   currency: Currency;

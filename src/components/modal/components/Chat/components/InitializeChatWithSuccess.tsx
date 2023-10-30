@@ -1,7 +1,10 @@
 import { ChatDots, CheckCircle } from "phosphor-react";
 import styled from "styled-components";
 
-import { useChatStatus } from "../../../../../lib/utils/hooks/chat/useChatStatus";
+import {
+  ChatInitializationStatus,
+  useChatStatus
+} from "../../../../../lib/utils/hooks/chat/useChatStatus";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
@@ -23,14 +26,20 @@ const ChatDotsIcon = styled(ChatDots)`
 export default function InitializeChatWithSuccess() {
   const { bosonXmtp } = useChatContext();
   const { chatInitializationStatus } = useChatStatus();
-  const showInitializeChat = !bosonXmtp || chatInitializationStatus === "ERROR";
+  const showInitializeChat =
+    !bosonXmtp || chatInitializationStatus === ChatInitializationStatus.ERROR;
   const showSuccessInitialization =
-    chatInitializationStatus === "INITIALIZED" && bosonXmtp;
+    chatInitializationStatus === ChatInitializationStatus.INITIALIZED &&
+    bosonXmtp;
   return (
     <>
       {showInitializeChat && (
         <Grid margin="1.5rem 0">
-          <InitializeChat isError={chatInitializationStatus === "ERROR"} />
+          <InitializeChat
+            isError={
+              chatInitializationStatus === ChatInitializationStatus.ERROR
+            }
+          />
         </Grid>
       )}
       {showSuccessInitialization && (

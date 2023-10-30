@@ -1,4 +1,10 @@
+import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import Button from "components/ui/Button";
+import { BosonRoutes } from "lib/routing/routes";
+import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useSearchParams } from "react-router-dom";
 
 import {
@@ -22,10 +28,46 @@ import { CongratulationsType } from "./congratulations/Congratulations";
 import { CongratulationsPage } from "./congratulations/CongratulationsPage";
 import CreateProductInner from "./CreateProductInner";
 
-export default function CreateProduct() {
+export default function CreateProductWrapper() {
+  const { config } = useConfigContext();
+  const navigate = useKeepQueryParamsNavigate();
+  return (
+    <ErrorBoundary
+      FallbackComponent={() => (
+        <div>
+          <p>
+            Something when wrong, please refresh the page to try again or go
+            back to the home page
+          </p>
+
+          <Button
+            theme="warning"
+            onClick={() => navigate({ pathname: BosonRoutes.Root })}
+          >
+            Go back
+          </Button>
+        </div>
+      )}
+      onError={(error) => {
+        Sentry.captureException(error);
+      }}
+    >
+      <CreateProduct key={config.envConfig.configId} />
+    </ErrorBoundary>
+  );
+}
+
+function CreateProduct() {
   const store = useInitialValues();
   const [searchParams] = useSearchParams();
-  const [initial, setInitial] = useState<CreateProductForm>(store.base);
+  const [initial, setInitial] = useState<CreateProductForm>(
+    store.fromProductUuid ?? store.base
+  );
+  useEffect(() => {
+    if (store.fromProductUuid) {
+      setInitial(store.fromProductUuid);
+    }
+  }, [store.fromProductUuid]);
   const [createdOffersIds, setCreatedOffersIds] = useState<string[]>([]);
   const [isDraftModalClosed, setDraftModalClosed] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
@@ -40,7 +82,9 @@ export default function CreateProduct() {
     hideModal();
   };
   const chooseDraft = () => {
-    setInitial(store.draft);
+    if (store.draft) {
+      setInitial(store.draft);
+    }
     setDraftModalClosed(true);
     hideModal();
   };

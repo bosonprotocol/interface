@@ -7,7 +7,7 @@ import Grid from "../ui/Grid";
 const ArrowContainer = styled(Grid)``;
 
 interface Props {
-  trigger: () => JSX.Element;
+  trigger: JSX.Element;
   children: ReactNode;
   isInitiallyOpen?: boolean;
 }
@@ -25,7 +25,7 @@ export default function CollapseWithTrigger({
     <>
       <Grid flexDirection="row" gap="0.5rem">
         <div onClick={toggleCollapsible} style={{ cursor: "pointer" }}>
-          <Trigger />
+          {Trigger}
         </div>
         <ArrowContainer>
           {isOpen ? (

@@ -2,7 +2,7 @@ import "tippy.js/animations/shift-toward.css";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light-border.css";
 
-import Tippy from "@tippyjs/react";
+import Tippy, { TippyProps } from "@tippyjs/react";
 import { IconWeight, Question } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
@@ -10,7 +10,7 @@ import styled from "styled-components";
 import { colors } from "../../lib/styles/colors";
 import { IButton } from "../ui/Button";
 import * as Styles from "../ui/styles";
-interface Props {
+interface Props extends Omit<TippyProps, "children"> {
   content: string | JSX.Element | React.ReactNode;
   children?: React.ReactNode;
   interactive?: boolean;
@@ -47,7 +47,6 @@ const Button = styled.button`
   display: flex;
   color: ${colors.darkGrey};
   background-color: transparent;
-  margin: 0 0.5rem;
   :hover {
     color: ${colors.black};
   }

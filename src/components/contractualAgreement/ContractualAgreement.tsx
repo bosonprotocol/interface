@@ -1,13 +1,12 @@
-import { subgraph } from "@bosonprotocol/react-kit";
-import { Loading } from "@bosonprotocol/react-kit";
+import { Loading, subgraph } from "@bosonprotocol/react-kit";
+import { CONFIG } from "lib/config";
+import { useRenderTemplate } from "lib/utils/hooks/useRenderTemplate";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-import { CONFIG } from "../../lib/config";
 import { ProgressStatus } from "../../lib/types/progressStatus";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
-import { useRenderTemplate } from "../../lib/utils/hooks/useRenderTemplate";
 import SimpleError from "../error/SimpleError";
 
 interface Props {

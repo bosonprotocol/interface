@@ -1,5 +1,7 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import styled from "styled-components";
 
+import { useForm } from "../../../lib/utils/hooks/useForm";
 import { FormField, Input, Select } from "../../form";
 import BosonButton from "../../ui/BosonButton";
 import {
@@ -7,14 +9,14 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "../Product.styles";
-import { OPTIONS_CURRENCIES } from "../utils";
-import { useCreateForm } from "../utils/useCreateForm";
+import { getOptionsCurrencies } from "../utils";
 import { CoreTermsOfSaleDates } from "./CoreTermsOfSaleDates";
 
 const PriceContainer = styled.div`
   display: grid;
   grid-template-columns: 3fr minmax(8.75rem, 1fr);
   grid-gap: 1rem;
+  width: 100%;
 `;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
@@ -26,7 +28,10 @@ interface Props {
 }
 
 export default function CoreTermsOfSale({ isMultiVariant }: Props) {
-  const { nextIsDisabled } = useCreateForm();
+  const { config } = useConfigContext();
+  const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
+
+  const { nextIsDisabled } = useForm();
 
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
 

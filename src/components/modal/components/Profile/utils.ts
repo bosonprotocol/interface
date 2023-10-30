@@ -75,7 +75,14 @@ export function buildRegularProfileFromMetadata(
     legalTradingName: metadata?.legalTradingName ?? undefined,
     website: metadata?.website ?? "",
     coverPicture: coverPicture
-      ? [{ ...coverPicture, src: coverPicture.url }] ?? []
+      ? [
+          {
+            ...coverPicture,
+            fit: coverPicture.fit ?? undefined,
+            position: coverPicture.position ?? undefined,
+            src: coverPicture.url
+          }
+        ] ?? []
       : [],
     logo: profileImage
       ? [{ ...profileImage, src: profileImage.url }] ?? []

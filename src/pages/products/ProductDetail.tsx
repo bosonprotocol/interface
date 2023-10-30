@@ -26,6 +26,7 @@ import {
   getOfferAnimationUrl,
   getOfferDetails
 } from "../../lib/utils/getOfferDetails";
+import useCheckExchangePolicy from "../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
@@ -38,14 +39,18 @@ import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
 
 export default function ProductDetail() {
-  const { [UrlParameters.uuid]: productUuid = "" } = useParams();
+  const {
+    [UrlParameters.uuid]: productUuid = "",
+    [UrlParameters.sellerId]: sellerId = ""
+  } = useParams();
   const textColor = useCustomStoreQueryParameter("textColor");
 
   const {
     data: productResult,
     isError,
-    isLoading
-  } = useProductByUuid(productUuid, { enabled: !!productUuid });
+    isLoading,
+    refetch: reload
+  } = useProductByUuid(sellerId, productUuid, { enabled: !!productUuid });
 
   const product = productResult?.product;
   const variants = productResult?.variants;
@@ -61,6 +66,10 @@ export default function ProductDetail() {
   );
   const selectedOffer = selectedVariant?.offer;
 
+  const exchangePolicyCheckResult = useCheckExchangePolicy({
+    offerId: selectedOffer?.id
+  });
+
   const animationUrl = useMemo(
     () => getOfferAnimationUrl(selectedOffer),
     [selectedOffer]
@@ -73,9 +82,6 @@ export default function ProductDetail() {
       setSelectedVariant(defaultVariant);
     }
   }, [defaultVariant]);
-
-  const seller = product?.productV1Seller?.seller;
-  const sellerId = seller?.id;
 
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
@@ -152,6 +158,7 @@ export default function ProductDetail() {
     artistDescription,
     images
   } = getOfferDetails(selectedOffer);
+
   return (
     <DetailWrapper>
       <LightBackground>
@@ -166,11 +173,11 @@ export default function ProductDetail() {
                   autoPlay: true
                 }}
                 componentWhileLoading={() => (
-                  <Image src={offerImg} alt="Offer image" />
+                  <Image src={offerImg || ""} alt="Offer image" />
                 )}
               />
             ) : (
-              <Image src={offerImg} dataTestId="offerImage" />
+              <Image src={offerImg || ""} dataTestId="offerImage" />
             )}
           </ImageWrapper>
           <div>
@@ -204,6 +211,8 @@ export default function ProductDetail() {
               name={name}
               image={offerImg}
               hasSellerEnoughFunds={hasSellerEnoughFunds}
+              exchangePolicyCheckResult={exchangePolicyCheckResult}
+              reload={reload}
             />
           </div>
           <DetailShare />

@@ -6,8 +6,8 @@ import Typography from "../../ui/Typography";
 
 export const Close = styled(X)`
   line {
-    stroke: ${colors.darkGrey};
-    stroke-width: 18px;
+    stroke: ${colors.darkGrey} !important;
+    stroke-width: 18px !important;
   }
 `;
 

@@ -1,23 +1,23 @@
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { WarningCircle } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
-import { useAccount } from "wagmi";
 
 import frame from "../../assets/frame.png";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import ChatConversation from "./components/ChatConversation";
+import ChatConversation from "./components/conversation/ChatConversation";
 import MessageList from "./components/MessageList";
+import { chatUrl } from "./const";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
@@ -54,18 +54,8 @@ const SimpleMessage = styled.p`
   background: ${colors.lightGrey};
 `;
 
-const getIsSameThread = (
-  exchangeId: string | undefined,
-  textAreaValue: {
-    exchangeId: string;
-    value: string;
-  }
-) => {
-  return textAreaValue.exchangeId === exchangeId;
-};
-
 export default function Chat() {
-  const { address } = useAccount();
+  const { account: address } = useAccount();
 
   const {
     seller: {
@@ -120,16 +110,6 @@ export default function Chat() {
     refetchExchangesAsTheBuyer();
   }, [refetchExchangesAsTheBuyer, refetchExchangesAsTheSeller]);
 
-  const textAreaValueByThread = useMemo(
-    () =>
-      exchanges.map((exchange) => {
-        return {
-          exchangeId: exchange.id,
-          value: ""
-        };
-      }),
-    [exchanges]
-  );
   const [selectedExchange, selectExchange] = useState<Exchange>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
@@ -157,29 +137,23 @@ export default function Chat() {
     }
   }, [exchangeId, exchanges]);
 
-  const [textAreasValues, setTextAreasValues] = useState(textAreaValueByThread);
-  useEffect(() => {
-    setTextAreasValues(textAreaValueByThread);
-  }, [textAreaValueByThread]);
-  const onTextAreaChange = useCallback(
-    (textAreaTargetValue: string) => {
-      const updatedData = textAreasValues.map((textAreaValue) =>
-        getIsSameThread(exchangeId, textAreaValue)
-          ? { ...textAreaValue, value: textAreaTargetValue }
-          : textAreaValue
-      );
-      setTextAreasValues(updatedData);
-    },
-    [exchangeId, textAreasValues]
+  const [mapExchangeIdToInputText, setMapExchangeIdToInputText] = useState(
+    new Map<string, string>()
   );
 
-  const parseInputValue = useMemo(
-    () =>
-      textAreasValues.find((textAreaValue) =>
-        getIsSameThread(exchangeId, textAreaValue)
-      )?.value,
-    [exchangeId, textAreasValues]
+  const onTextAreaChange = useCallback(
+    (textAreaTargetValue: string) => {
+      if (exchangeId) {
+        mapExchangeIdToInputText.set(exchangeId, textAreaTargetValue);
+        setMapExchangeIdToInputText(new Map(mapExchangeIdToInputText));
+      }
+    },
+    [exchangeId, mapExchangeIdToInputText]
   );
+
+  const parseInputValue: string | undefined = useMemo(() => {
+    return exchangeId ? mapExchangeIdToInputText.get(exchangeId) : undefined;
+  }, [exchangeId, mapExchangeIdToInputText]);
   useEffect(() => {
     setPreviousPath(prevPath);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -191,7 +165,7 @@ export default function Chat() {
       }
       selectExchange(exchange);
       navigate({
-        pathname: `${BosonRoutes.Chat}/${exchange.id}`
+        pathname: `${chatUrl}/${exchange.id}`
       });
     },
     [chatListOpen, isS, isXS, isXXS, navigate]
@@ -236,19 +210,20 @@ export default function Chat() {
               exchanges={exchanges}
               prevPath={previousPath}
               isConversationOpened={
-                location.pathname !== `${BosonRoutes.Chat}/` &&
-                location.pathname !== `${BosonRoutes.Chat}`
+                location.pathname !== `${chatUrl}/` &&
+                location.pathname !== `${chatUrl}`
               }
               onChangeConversation={onChangeConversation}
               chatListOpen={chatListOpen}
               setChatListOpen={setChatListOpen}
               currentExchange={selectedExchange}
+              selectExchange={selectExchange}
             />
 
             {exchangeIdNotOwned ? (
               <>
-                {(location.pathname === `${BosonRoutes.Chat}/` ||
-                  location.pathname === `${BosonRoutes.Chat}` ||
+                {(location.pathname === `${chatUrl}/` ||
+                  location.pathname === `${chatUrl}` ||
                   !isSellerOrBuyer) && (
                   <SelectMessageContainer>
                     <SimpleMessage>
@@ -290,7 +265,11 @@ export default function Chat() {
             flexDirection="column"
             gap="1rem"
           >
-            <Typography $fontSize="2rem">You have no exchanges yet</Typography>
+            <Typography $fontSize="2rem">
+              {address
+                ? "You have no exchanges yet"
+                : "Please connect your wallet to display your messages"}
+            </Typography>
 
             <img src={frame} alt="no exchanges images" />
           </Grid>

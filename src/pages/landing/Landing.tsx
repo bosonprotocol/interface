@@ -1,8 +1,8 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { ReactNode, useState } from "react";
 import styled, { css } from "styled-components";
-import useResizeObserver from "use-resize-observer";
 
-import Layout from "../../components/layout/Layout";
+import Layout, { LayoutRoot } from "../../components/layout/Layout";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
@@ -83,6 +83,7 @@ const Div = ({ children }: { children: ReactNode }) => {
   return <div>{children}</div>;
 };
 export default function Landing() {
+  const { config } = useConfigContext();
   const { isLteS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
@@ -93,30 +94,28 @@ export default function Landing() {
   const description = useCustomStoreQueryParameter("description");
   const bannerUrl = useCustomStoreQueryParameter("bannerUrl");
   const [name] = useState("");
-  const { ref, width } = useResizeObserver<HTMLDivElement>();
   const navigateToExplore = () =>
     navigate({
       pathname: BosonRoutes.Explore,
       search: name ? `${ExploreQueryParameters.name}=${name}` : ""
     });
-  const withUnderBanner = bannerUrl && bannerImgPosition === "under";
+  const realBannerImgPosition = title ? bannerImgPosition : "over";
+  const withUnderBanner = bannerUrl && realBannerImgPosition === "under";
   const TitleAndDescriptionWrapper = withUnderBanner ? Layout : Div;
   return (
-    <LandingPage ref={ref} isCustomStoreFront={isCustomStoreFront}>
+    <LandingPage isCustomStoreFront={isCustomStoreFront}>
       {isCustomStoreFront ? (
         <div>
-          {bannerUrl && bannerImgPosition === "over" && (
-            <div
+          {bannerUrl && realBannerImgPosition === "over" && (
+            <img
+              src={bannerUrl}
               style={{
-                backgroundImage: `url(${bannerUrl})`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
+                objectFit: "contain",
                 translate: "-50%",
                 marginLeft: "50%",
-                height: "14rem",
                 width: "100vw"
               }}
+              alt="banner image"
             />
           )}
 
@@ -124,12 +123,11 @@ export default function Landing() {
             style={{
               ...(withUnderBanner && {
                 backgroundImage: `url(${bannerUrl})`,
-                backgroundPosition: "center",
+                backgroundPosition: "top center",
                 backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
+                backgroundSize: "contain",
                 translate: "-50%",
                 marginLeft: "50%",
-                minHeight: "14rem",
                 width: "100vw"
               })
             }}
@@ -181,7 +179,7 @@ export default function Landing() {
                 </ExploreProductsButton>
               </ExploreContainer>
             </GridWithZindex>
-            <Carousel />
+            <Carousel key={config.envConfig.configId} />
           </Grid>
           <Grid
             alignItems="flex-start"
@@ -205,14 +203,14 @@ export default function Landing() {
         </>
       )}
       <DarkerBackground>
-        <div
-          style={{
-            width,
-            padding: "2rem 0"
-          }}
-        >
-          <FeaturedOffers title="Products" />
-        </div>
+        <LayoutRoot>
+          <LandingPage
+            isCustomStoreFront={isCustomStoreFront}
+            style={{ paddingTop: "2rem", paddingBottom: "2rem" }}
+          >
+            <FeaturedOffers title="Products" />
+          </LandingPage>
+        </LayoutRoot>
       </DarkerBackground>
     </LandingPage>
   );

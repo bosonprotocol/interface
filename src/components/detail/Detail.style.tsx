@@ -7,7 +7,6 @@ import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import { buttonText } from "../ui/styles";
-import Typography from "../ui/Typography";
 
 export const ChartWrapper = styled.div`
   canvas {
@@ -15,25 +14,6 @@ export const ChartWrapper = styled.div`
   }
 `;
 
-export const Labels = styled.div`
-  display: flex;
-  margin-left: 1rem;
-`;
-
-export const Label = styled.div<{ $background: string; $color: string }>`
-  background: ${(props) => props.$background || colors.lightGrey};
-  color: ${(props) => props.$color || colors.darkGrey};
-  padding: 0.5rem 1rem;
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.5;
-  text-transform: lowercase;
-  &:first-letter {
-    text-transform: uppercase;
-  }
-`;
 export const CommitStepWrapper = styled.div`
   overflow: hidden;
   margin: 1rem 0;
@@ -216,7 +196,7 @@ export const ImageWrapper = styled.div`
   width: -webkit-fill-available;
 `;
 
-export const GlideWrapper = styled.div`
+export const GlideWrapper = styled.div<{ $afterBackground: string }>`
   &:after {
     content: "";
     position: absolute;
@@ -228,7 +208,7 @@ export const GlideWrapper = styled.div`
     right: 0;
     background: linear-gradient(
       -90deg,
-      ${colors.lightGrey} 0%,
+      ${({ $afterBackground }) => $afterBackground} 0%,
       transparent 100%
     );
     pointer-events: none;
@@ -333,7 +313,7 @@ export const Table = styled.table<{
               font-weight: 600;
               > p, > p > small {
                 font-weight: 600;
-                white-space: pre;
+                white-space: pre-line;
               }
           }
         }
@@ -518,9 +498,6 @@ export const Widget = styled.div`
     &:first-of-type {
       padding-top: 2rem;
     }
-    &:last-of-type {
-      padding-bottom: 2rem;
-    }
   }
 
   box-shadow: 0px 4.318px 107.946px rgba(21, 30, 52, 0.1);
@@ -588,43 +565,45 @@ export const RedeemLeftButton = styled.button`
   color: ${colors.black};
 `;
 
-export const CommitAndRedeemButton = styled(Typography)`
+export const CommitAndRedeemButton = styled.p`
   font-weight: 600;
-  color: ${colors.darkGrey};
-  cursor: pointer;
-  transition: color 150ms ease-in-out;
-  &:hover {
-    color: ${colors.secondary};
-  }
+  font-size: 0.75rem;
+  font-style: normal;
+  margin: 0;
+  color: ${colors.secondary};
 `;
 
 export const RaiseProblemButton = styled(Button)`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  padding: 0.75rem 1rem;
+  && {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0.75rem 1rem;
 
-  font-weight: 600;
-  color: ${colors.orange};
-  cursor: pointer;
-  transition: all 150ms ease-in-out;
-  &:hover:not(:disabled) {
-    color: ${colors.red};
-    background: ${colors.lightGrey};
-  }
-  svg {
-    margin-left: 1rem;
+    font-weight: 600;
+    color: ${colors.orange};
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+    &:hover:not(:disabled) {
+      color: ${colors.red};
+      background: ${colors.lightGrey};
+    }
+    svg {
+      margin-left: 1rem;
+    }
   }
 `;
 export const StyledCancelButton = RaiseProblemButton;
 export const ContactSellerButton = styled(RaiseProblemButton)`
-  color: ${colors.secondary};
+  && {
+    color: ${colors.secondary};
+  }
 `;
 
-export const Break = styled.span`
-  width: 100%;
+export const Break = styled.div`
+  display: block;
   height: 2px;
   background: ${colors.border};
 `;

@@ -9,6 +9,9 @@ on:
       DEPLOY_TO_FLEEK:
         required: true
         type: boolean
+      IS_PREVIEW:
+        required: true
+        type: boolean
       UPDATE_COVERAGE:
         required: true
         type: boolean
@@ -36,6 +39,39 @@ on:
       REACT_APP_RELEASE_NAME:
         required: false
         type: string
+      REACT_APP_DAPP_VIEW_MODE:
+        required: true
+        type: string
+      REACT_APP_DR_CENTER_VIEW_MODE:
+        required: true
+        type: string
+      REACT_APP_WIDGETS_URL:
+        required: true
+        type: string
+      REACT_APP_UNISWAP_API_URL:
+        required: true
+        type: string
+      REACT_APP_AWS_API_ENDPOINT:
+        required: true
+        type: string
+      REACT_APP_MOONPAY_API:
+        required: true
+        type: string
+      REACT_APP_MOONPAY_LINK:
+        required: true
+        type: string
+      REACT_APP_MOONPAY_EXTERNAL_LINK:
+        required: true
+        type: string
+      REACT_APP_META_TX_API_KEY_MAP:
+        required: true
+        type: string
+      REACT_APP_META_TX_API_IDS_MAP:
+        required: true
+        type: string
+      REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_MAP:
+        required: true
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -47,25 +83,17 @@ on:
         required: false
       REACT_APP_INFURA_IPFS_PROJECT_SECRET:
         required: false
-      REACT_APP_DEFAULT_TOKENS_LIST_TESTING:
-        required: false
-      REACT_APP_DEFAULT_TOKENS_LIST_STAGING:
-        required: false
-      REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION:
-        required: false
-      REACT_APP_RNFT_LICENSE_TEMPLATE:
-        required: true
-      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE:
-        required: true
-      REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID:
-        required: true
       REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS:
         required: true
       REACT_APP_GOOGLE_TAG_ID:
         required: false
-      REACT_APP_META_TX_API_KEY:
+      REACT_APP_WALLET_CONNECT_PROJECT_ID:
         required: true
-      REACT_APP_META_TX_API_IDS:
+      REACT_APP_INFURA_KEY:
+        required: true
+      REACT_APP_MOONPAY_API_KEY:
+        required: true
+      REACT_APP_MAGIC_API_KEY:
         required: true
     outputs:
       JOB_LINT:
@@ -82,6 +110,9 @@ jobs:
     name: Build, Test and Deploy the Marketplace Interface
     runs-on: ubuntu-latest
     env:
+      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: "ipfs://QmaNj7vGuCEvaM5vyucp5z1S9VprMnZWmVxYGn6FHhgePF"
+      REACT_APP_RNFT_LICENSE_TEMPLATE: "ipfs://QmdN6tCBkiGiCyr7xEfsEysoYrdkacdU3P2mEdVC5y4nF2"
+      REACT_APP_FAIR_EXCHANGE_POLICY_RULES: "ipfs://QmbVmAspK2wi6Xrm6yB75TLqgfv9PAVv3kWxdsyQpEm79D"
       REACT_APP_ENV_NAME: ${{ inputs.REACT_APP_ENV_NAME }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       REACT_APP_ENABLE_CURATION_LISTS: ${{ inputs.REACT_APP_ENABLE_CURATION_LISTS }}
@@ -89,20 +120,28 @@ jobs:
       REACT_APP_OFFER_CURATION_LIST: ${{ inputs.REACT_APP_OFFER_CURATION_LIST }}
       REACT_APP_IPFS_GATEWAY: ${{ inputs.REACT_APP_IPFS_GATEWAY }}
       REACT_APP_IPFS_IMAGE_GATEWAY: ${{ inputs.REACT_APP_IPFS_IMAGE_GATEWAY }}
-      REACT_APP_RNFT_LICENSE_TEMPLATE: ${{ secrets.REACT_APP_RNFT_LICENSE_TEMPLATE }}
-      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: ${{ secrets.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE }}
-      REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID: ${{ secrets.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID }}
       REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS }}
       REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
-      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
-      REACT_APP_DEFAULT_TOKENS_LIST_STAGING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_STAGING }}
-      REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION }}
+      REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_MAP: ${{ inputs.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_MAP }}
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID }}
-      REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY }}
-      REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS }}
+      REACT_APP_META_TX_API_KEY_MAP: ${{ inputs.REACT_APP_META_TX_API_KEY_MAP }}
+      REACT_APP_META_TX_API_IDS_MAP: ${{ inputs.REACT_APP_META_TX_API_IDS_MAP }}
+      REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID }}
       REACT_APP_RELEASE_TAG: ${{ inputs.REACT_APP_RELEASE_TAG }}
       REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}
+      REACT_APP_VIEW_MODE: "dapp"
+      REACT_APP_DAPP_VIEW_MODE: ${{ inputs.REACT_APP_DAPP_VIEW_MODE }}
+      REACT_APP_DR_CENTER_VIEW_MODE: ${{ inputs.REACT_APP_DR_CENTER_VIEW_MODE }}
+      REACT_APP_WIDGETS_URL: ${{ inputs.REACT_APP_WIDGETS_URL }}
+      REACT_APP_UNISWAP_API_URL: ${{ inputs.REACT_APP_UNISWAP_API_URL }}
+      REACT_APP_AWS_API_ENDPOINT: ${{ inputs.REACT_APP_AWS_API_ENDPOINT }}
+      REACT_APP_MOONPAY_API: ${{ inputs.REACT_APP_MOONPAY_API }}
+      REACT_APP_MOONPAY_LINK: ${{ inputs.REACT_APP_MOONPAY_LINK }}
+      REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY }}
+      REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY }}
+      REACT_APP_MOONPAY_EXTERNAL_LINK: ${{ inputs.REACT_APP_MOONPAY_EXTERNAL_LINK }}
+      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
@@ -163,11 +202,32 @@ jobs:
           path: playwright-report/
       - name: Deploy via fleek
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
-        id: deploy
-        uses: fleekhq/action-deploy@v1
+        id: Deploy
+        run: npx @fleekhq/fleek-cli site:deploy
+        env:
+          FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+      - name: Build dapp to show the dr_center only
+        run: npm run build
+        if: ${{ inputs.IS_PREVIEW == false && inputs.DEPLOY_TO_FLEEK }}
+        env:
+          REACT_APP_VIEW_MODE: "dr_center"
+      - name: (if DR Center 'testing' env) Copy contents from .fleek_dr_center_testing.json to .fleek.json
+        if: ${{ inputs.ENV_NAME == 'testing' }}
+        run: mv .fleek_dr_center_testing.json .fleek.json
+      - name: (if DR Center 'staging' env) Copy contents from .fleek_dr_center_staging.json to .fleek.json
+        if: ${{ inputs.ENV_NAME == 'staging' }}
+        run: mv .fleek_dr_center_staging.json .fleek.json
+      - name: (if DR Center 'production' env) Copy contents from .fleek_dr_center_production.json to .fleek.json
+        if: ${{ inputs.ENV_NAME == 'production' }}
+        run: mv .fleek_dr_center_production.json .fleek.json
+      - uses: actions/upload-artifact@v3
+        if: always()
         with:
-          apiKey: ${{ secrets.FLEEK_API_KEY }}
-          workDir: ./public
-      - name: Get the output url
+          name: playwright-report
+          path: playwright-report/
+      - name: Deploy via fleek
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
-        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+        id: deploy_dr_center
+        run: npx @fleekhq/fleek-cli site:deploy
+        env:
+          FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}

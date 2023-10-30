@@ -8,6 +8,7 @@ import {
 import { ReactElement } from "react";
 import { generatePath } from "react-router-dom";
 
+import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../lib/routing/parameters";
 import {
   BosonRoutes,
@@ -15,6 +16,7 @@ import {
   SocialRoutes
 } from "../../lib/routing/routes";
 import { isTruthy } from "../../lib/types/helpers";
+import { getViewModeUrl, ViewMode } from "../../lib/viewMode";
 import { UserRoles } from "../../router/routes";
 import { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { getSellerCenterPath } from "../seller/paths";
@@ -56,6 +58,24 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
   {
     label: "Terms & Conditions",
     value: BosonRoutes.TermsAndConditions
+  },
+  {
+    label: "Community Guidelines",
+    value: BosonRoutes.CommunityRules
+  }
+];
+
+export const ADDITIONAL_LINKS_DR_CENTER: Array<{
+  label: string;
+  value: string;
+}> = [
+  {
+    label: "Privacy Policy",
+    value: DrCenterRoutes.PrivacyPolicy
+  },
+  {
+    label: "Terms & Conditions",
+    value: DrCenterRoutes.TermsAndConditions
   }
 ];
 
@@ -127,7 +147,7 @@ export const getSellRoutes = ({
   const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
   productRoutes.push({
-    name: "Sell",
+    name: "Templates & Guides",
     url: BosonRoutes.Sell
   });
   productRoutes.push({
@@ -151,7 +171,7 @@ export const getSellRoutes = ({
     isAccountSeller
   ) {
     productRoutes.push({
-      name: "Seller Center",
+      name: "Seller Hub",
       url: getSellerCenterPath("Dashboard")
     });
   }
@@ -188,8 +208,9 @@ export const getHelpLinks = ({
       [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver],
       false
     ) && {
-      name: "Dispute Center",
-      url: BosonRoutes.DisputeCenter
+      name: "Resolution Center",
+      url: getViewModeUrl(ViewMode.DR_CENTER, DrCenterRoutes.Root),
+      absolute: true
     },
     {
       name: "Email",

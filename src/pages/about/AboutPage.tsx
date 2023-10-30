@@ -1,3 +1,5 @@
+import { useConfigContext } from "components/config/ConfigContext";
+import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 import { CheckCircle, XCircle } from "phosphor-react";
 import styled from "styled-components";
 
@@ -38,6 +40,7 @@ const Text = styled(Typography)`
 `;
 
 function AboutPage() {
+  const { config } = useConfigContext();
   const curationLists = useCurationLists();
   return (
     <Wrapper
@@ -48,7 +51,7 @@ function AboutPage() {
     >
       <Text margin="0 0 0.5rem 0">
         <span>Environment name:</span>
-        <span>{CONFIG.envName || "-"}</span>
+        <span>{config.envName || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Release version:</span>
@@ -110,12 +113,16 @@ function AboutPage() {
         <span>Link to rNFT License Template:</span>
         <span>{CONFIG.rNFTLicenseTemplate || "-"}</span>
       </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Link to {onlyFairExchangePolicyLabel} Rules:</span>
+        <span>{CONFIG.fairExchangePolicyRules || "-"}</span>
+      </Text>
       <Grid margin="0 0 0.5rem 0">
         <>
           <Text>
             <span>Default token list:</span>
             <ul>
-              {CONFIG.defaultTokens.map((token, index) => {
+              {config.envConfig.defaultTokens?.map((token, index) => {
                 return (
                   <li key={`token_${token.symbol}_${index}`}>
                     <b>{JSON.stringify(token)}</b>
@@ -134,7 +141,7 @@ function AboutPage() {
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Default Dispute Resolver ID:</span>
-        <span>{CONFIG.defaultDisputeResolverId || "-"}</span>
+        <span>{config.envConfig.defaultDisputeResolverId || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
         <span>IPFS GATEWAY:</span>
@@ -151,6 +158,22 @@ function AboutPage() {
         >
           {CONFIG.ipfsImageGateway}
         </a>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Carousel Promoted SellerId:</span>
+        <span>{config.carouselPromotedSellerId || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>dApp View Mode Url:</span>
+        <span>{CONFIG.envViewMode?.dappViewModeUrl || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>DR Center View Mode Url:</span>
+        <span>{CONFIG.envViewMode?.drCenterViewModeUrl || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Widgets Url:</span>
+        <span>{CONFIG.widgetsUrl || "-"}</span>
       </Text>
     </Wrapper>
   );

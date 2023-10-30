@@ -1,0 +1,151 @@
+import { BigNumber } from "@ethersproject/bignumber";
+import * as Sentry from "@sentry/react";
+import { signTypedData } from "@uniswap/conedison/provider/signing";
+import { DutchOrder, DutchOrderBuilder } from "@uniswap/uniswapx-sdk";
+import { UserRejectedRequestError } from "lib/utils/errors";
+import {
+  didUserReject,
+  swapErrorToUserReadableMessage
+} from "lib/utils/swapErrorToUserReadableMessage";
+import { useCallback } from "react";
+import { DutchOrderTrade, TradeFillType } from "state/routing/types";
+
+import { useAccount, useProvider } from "./connection/connection";
+
+const DEFAULT_START_TIME_PADDING_SECONDS = 30;
+
+type DutchAuctionOrderError = { errorCode?: number; detail?: string };
+type DutchAuctionOrderSuccess = { hash: string };
+type DutchAuctionOrderResponse =
+  | DutchAuctionOrderError
+  | DutchAuctionOrderSuccess;
+
+const isErrorResponse = (
+  res: Response,
+  order: DutchAuctionOrderResponse
+): order is DutchAuctionOrderError => res.status < 200 || res.status > 202;
+
+const UNISWAP_API_URL = process.env.REACT_APP_UNISWAP_API_URL;
+if (UNISWAP_API_URL === undefined) {
+  throw new Error(`UNISWAP_API_URL must be a defined environment variable`);
+}
+
+// getUpdatedNonce queries the UniswapX service for the most up-to-date nonce for a user.
+// The `nonce` exists as part of the Swap quote response already, but if a user submits back-to-back
+// swaps without refreshing the quote (and therefore uses the same nonce), then the subsequent swaps will fail.
+//
+async function getUpdatedNonce(
+  swapper: string,
+  chainId: number
+): Promise<BigNumber | null> {
+  try {
+    const res = await fetch(
+      `${UNISWAP_API_URL}/nonce?address=${swapper}&chainId=${chainId}`
+    );
+    const { nonce } = await res.json();
+    return BigNumber.from(nonce);
+  } catch (e) {
+    Sentry.withScope(function (scope) {
+      scope.setTag("method", "getUpdatedNonce");
+      scope.setLevel("warning");
+      Sentry.captureException(e);
+    });
+    return null;
+  }
+}
+
+export function useUniswapXSwapCallback({
+  trade
+}: {
+  trade?: DutchOrderTrade;
+}) {
+  const provider = useProvider();
+  const { account } = useAccount();
+
+  return useCallback(async () => {
+    if (!account) throw new Error("missing account");
+    if (!provider) throw new Error("missing provider");
+    if (!trade) throw new Error("missing trade");
+
+    const signDutchOrder = async (): Promise<{
+      signature: string;
+      updatedOrder: DutchOrder;
+    }> => {
+      try {
+        const updatedNonce = await getUpdatedNonce(
+          account,
+          trade.order.chainId
+        );
+
+        const startTime =
+          Math.floor(Date.now() / 1000) + DEFAULT_START_TIME_PADDING_SECONDS;
+
+        const endTime = startTime + trade.auctionPeriodSecs;
+
+        const deadline = endTime + trade.deadlineBufferSecs;
+
+        // Set timestamp and account based values when the user clicks 'swap' to make them as recent as possible
+        const updatedOrder = DutchOrderBuilder.fromOrder(trade.order)
+          .decayStartTime(startTime)
+          .decayEndTime(endTime)
+          .deadline(deadline)
+          .swapper(account)
+          .nonFeeRecipient(account)
+          // if fetching the nonce fails for any reason, default to existing nonce from the Swap quote.
+          .nonce(updatedNonce ?? trade.order.info.nonce)
+          .build();
+
+        const { domain, types, values } = updatedOrder.permitData();
+
+        const signature = await signTypedData(
+          provider.getSigner(account),
+          domain,
+          types,
+          values
+        );
+        if (deadline < Math.floor(Date.now() / 1000)) {
+          return signDutchOrder();
+        }
+        return { signature, updatedOrder };
+      } catch (swapError) {
+        if (didUserReject(swapError)) {
+          throw new UserRejectedRequestError(
+            swapErrorToUserReadableMessage(swapError)
+          );
+        }
+        throw new Error(swapErrorToUserReadableMessage(swapError));
+      }
+    };
+
+    const { signature, updatedOrder } = await signDutchOrder();
+
+    const res = await fetch(`${UNISWAP_API_URL}/order`, {
+      method: "POST",
+      body: JSON.stringify({
+        encodedOrder: updatedOrder.serialize(),
+        signature,
+        chainId: updatedOrder.chainId,
+        quoteId: trade.quoteId
+      })
+    });
+
+    const body = (await res.json()) as DutchAuctionOrderResponse;
+
+    // TODO(UniswapX): For now, `errorCode` is not always present in the response, so we have to fallback
+    // check for status code and perform this type narrowing.
+    if (isErrorResponse(res, body)) {
+      // TODO: Sentry
+      // TODO(UniswapX): Provide a similar utility to `swapErrorToUserReadableMessage` once
+      // backend team provides a list of error codes and potential messages
+      throw new Error(`${body.errorCode ?? body.detail ?? "Unknown error"}`);
+    }
+
+    return {
+      type: TradeFillType.UniswapX as const,
+      response: {
+        orderHash: body.hash,
+        deadline: updatedOrder.info.deadline
+      }
+    };
+  }, [account, provider, trade]);
+}

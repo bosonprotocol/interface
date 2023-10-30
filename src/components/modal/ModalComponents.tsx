@@ -1,9 +1,12 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
+import { BuyerSellerAgreementModal } from "./components/BuyerSellerAgreementModal";
 import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
 import EscalateModal from "./components/Chat/components/EscalateModal/EscalateModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
+import { ResolutionSummaryModal } from "./components/Chat/ResolutionSummaryModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CompleteExchange from "./components/CompleteExchange";
+import { ConfirmationModal } from "./components/Confirmation/ConfirmationModal";
 import { AccountCreationModal } from "./components/createProduct/AccountCreationModal";
 import VariableStepsExplainerModal from "./components/createProduct/VariableStepsExplainerModal";
 import CreateProductDraft from "./components/CreateProductDraft";
@@ -24,9 +27,9 @@ import CreateProfileModal from "./components/Profile/CreateProfileModal";
 import EditProfileModal from "./components/Profile/EditProfileModal";
 import { ProfileDetailsModal } from "./components/ProfileDetails/ProfileDetailsModal";
 import ProgressBarModal from "./components/ProgressBarModal";
+import { RedeemableNftTermsModal } from "./components/RedeemableNftTermsModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
-import { RelistOfferModal } from "./components/RelistOfferModal/RelistOfferModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
 import { SalesChannelsModal } from "./components/SalesChannelsModal/SalesChannelsModal";
@@ -75,14 +78,23 @@ export const MODAL_TYPES = {
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   PROGRESS_BAR: "PROGRESS_BAR",
   EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
-  RELIST_OFFER: "RELIST_OFFER",
   PROFILE_DETAILS: "PROFILE_DETAILS",
   IMAGE_EDITOR: "IMAGE_EDITOR",
   IFRAME_MODAL: "IFRAME_MODAL",
   SALES_CHANNELS: "SALES_CHANNELS",
   ACCOUNT_CREATION: "ACCOUNT_CREATION",
   VARIABLE_STEPS_EXPLAINER: "VARIABLE_STEPS_EXPLAINER",
-  PREPARING_TRANSACTION: "PREPARING_TRANSACTION"
+  PREPARING_TRANSACTION: "PREPARING_TRANSACTION",
+  CONFIRMATION: "CONFIRMATION",
+  PROFILE_PREVIEW: "PROFILE_PREVIEW",
+  RESOLUTION_SUMMARY: "RESOLUTION_SUMMARY",
+  MOON_PAY: "MOON_PAY",
+  TOKEN_SAFETY: "TOKEN_SAFETY",
+  CURRENCY_SEARCH: "CURRENCY_SEARCH",
+  PRICE_IMPACT: "PRICE_IMPACT",
+  CONFIRM_SWAP: "CONFIRM_SWAP",
+  BUYER_SELLER_AGREEMENT: "BUYER_SELLER_AGREEMENT",
+  REDEEMABLE_NFT_TERMS: "REDEEMABLE_NFT_TERMS"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -110,6 +122,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.REDEEM_SUCCESS]: RedeemSuccessModal,
   [MODAL_TYPES.REDEEM]: RedeemModal,
   [MODAL_TYPES.RESOLVE_DISPUTE]: ResolveDisputeModal,
+  [MODAL_TYPES.RESOLUTION_SUMMARY]: ResolutionSummaryModal,
   [MODAL_TYPES.RETRACT_DISPUTE]: RetractDisputeModal,
   [MODAL_TYPES.REVOKE_PRODUCT]: RevokeProduct,
   [MODAL_TYPES.TRANSACTION_SUBMITTED]: TransactionSubmittedModal,
@@ -120,12 +133,14 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
   [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
     ExportExchangesWithDeliveryModal,
-  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
   [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal,
   [MODAL_TYPES.IMAGE_EDITOR]: ImageEditorModal,
   [MODAL_TYPES.IFRAME_MODAL]: IframeModal,
   [MODAL_TYPES.SALES_CHANNELS]: SalesChannelsModal,
   [MODAL_TYPES.ACCOUNT_CREATION]: AccountCreationModal,
   [MODAL_TYPES.VARIABLE_STEPS_EXPLAINER]: VariableStepsExplainerModal,
-  [MODAL_TYPES.PREPARING_TRANSACTION]: PreparingTransactionModal
+  [MODAL_TYPES.PREPARING_TRANSACTION]: PreparingTransactionModal,
+  [MODAL_TYPES.CONFIRMATION]: ConfirmationModal,
+  [MODAL_TYPES.BUYER_SELLER_AGREEMENT]: BuyerSellerAgreementModal,
+  [MODAL_TYPES.REDEEMABLE_NFT_TERMS]: RedeemableNftTermsModal
 } as const;

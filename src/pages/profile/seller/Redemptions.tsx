@@ -20,8 +20,7 @@ export default function Redemptions({ sellerId }: Props) {
   const {
     data: exchangesSeller,
     isLoading: isLoadingSeller,
-    isError: isErrorSeller,
-    refetch
+    isError: isErrorSeller
   } = useExchanges(
     {
       ...orderProps,
@@ -67,7 +66,6 @@ export default function Redemptions({ sellerId }: Props) {
           key={exchange.id}
           {...exchange}
           exchange={exchange as IExchange}
-          reload={refetch}
         />
       ))}
     </ProductGridContainer>

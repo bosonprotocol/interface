@@ -1,11 +1,11 @@
 import { FieldArray } from "formik";
+import { useDisputeForm } from "pages/dispute-centre/const";
 import { ArrowRight } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { DisputeFormModel } from "../modal/components/DisputeModal/DisputeModalFormModel";
-import { useCreateForm } from "../product/utils/useCreateForm";
 import Typography from "../ui/Typography";
 
 const FormButton = styled.button`
@@ -30,21 +30,21 @@ const TextContainer = styled.span`
   max-width: 31.25rem;
 `;
 
+const FieldArrayName = DisputeFormModel.formFields.getStarted.name;
+
 function GetStarted({
-  setCurrentStep,
-  currentStep,
+  onClick,
   getStartedSteps
 }: {
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  currentStep: number;
-  getStartedSteps: {
-    label: string;
-    id: number;
-  }[];
+  onClick: (clickedStep: { label: string; id: 1 | 2 }) => void;
+  getStartedSteps: Readonly<
+    {
+      label: string;
+      id: 1 | 2;
+    }[]
+  >;
 }) {
-  const formValues = useCreateForm();
-
-  const FieldArrayName = DisputeFormModel.formFields.getStarted.name;
+  const formValues = useDisputeForm();
 
   return (
     <>
@@ -53,7 +53,7 @@ function GetStarted({
           Get started
         </Typography>
         <Typography $fontSize="1.25rem" color={colors.darkGrey}>
-          First, choose the issue you're facing with your redemption.
+          First, choose the issue you're facing with your exchange.
         </Typography>
       </div>
       <FieldArray
@@ -66,7 +66,7 @@ function GetStarted({
                   type="submit"
                   onClick={() => {
                     formValues.setFieldValue(FieldArrayName, step.label);
-                    setCurrentStep(currentStep + 1);
+                    onClick(step);
                   }}
                 >
                   <TextContainer>{step.label}</TextContainer>{" "}

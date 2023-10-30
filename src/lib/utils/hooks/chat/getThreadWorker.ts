@@ -106,8 +106,8 @@ export async function getThread({
         const currentThread = result.value;
         if (oldestThread) {
           if (
-            oldestThread.messages[0].timestamp >
-            currentThread?.messages[0].timestamp
+            oldestThread.messages[0]?.timestamp >
+            currentThread?.messages[0]?.timestamp
           ) {
             oldestThread = currentThread;
           }
@@ -131,8 +131,10 @@ export async function getThread({
     iDateIndex -= concurrency;
   } while (
     window.navigator.onLine &&
-    !customConditionMet &&
-    (failedTimesArray.length ||
+    ((!customConditionMet &&
+      (failedTimesArray.length ||
+        (!failedTimesArray.length && !isBeginning))) ||
+      failedTimesArray.length ||
       (!failedTimesArray.length && !isBeginning && !anyMessage))
   );
   return {

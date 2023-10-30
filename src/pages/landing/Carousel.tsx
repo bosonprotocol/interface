@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 // inspired by https://3dtransforms.desandro.com/carousel
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
@@ -156,11 +157,11 @@ const CarouselCell = styled.div<{
   ${nthChilds}
   ${(props) =>
     props.$isCurrent
-      ? `
-  > div {
-    transform: scale(1.1);
-  }
-  `
+      ? css`
+          > div {
+            transform: scale(1.1);
+          }
+        `
       : ""};
   [data-testid="offer"] {
     box-shadow: none;
@@ -191,6 +192,7 @@ const NextButton = styled(CaretRight)`
 
 const theta = 360 / numCells;
 export default function Carousel() {
+  const { config } = useConfigContext();
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
@@ -198,7 +200,8 @@ export default function Carousel() {
     voided: false,
     valid: true,
     first: numCells,
-    quantityAvailable_gte: 1
+    quantityAvailable_gte: 1,
+    sellerId: config.carouselPromotedSellerId
   });
 
   const uiOffers = useMemo(() => {
@@ -259,7 +262,11 @@ export default function Carousel() {
     trackMouse: true
   });
   if (isLoading) {
-    return <Loading />;
+    return (
+      <Scene style={{ justifyContent: "center" }}>
+        <Loading />
+      </Scene>
+    );
   }
   if (!uiOffers?.length) {
     return <></>;

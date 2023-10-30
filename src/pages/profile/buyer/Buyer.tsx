@@ -37,7 +37,7 @@ import {
 import Exchanges from "./Exchanges";
 
 interface Props {
-  manageFundsId?: string;
+  buyerId?: string;
 }
 
 const ManageFundMobileWrapper = styled.div`
@@ -77,7 +77,7 @@ const ExchangesWrapper = styled(Typography)`
     padding-right: 0;
   }
 `;
-const MenageFundsButton = styled(BosonButton)<{ $isCustomStoreFront: boolean }>`
+const ManageFundsButton = styled(BosonButton)<{ $isCustomStoreFront: boolean }>`
   ${({ $isCustomStoreFront }) => {
     if (!$isCustomStoreFront) {
       return "";
@@ -92,11 +92,11 @@ const MenageFundsButton = styled(BosonButton)<{ $isCustomStoreFront: boolean }>`
   }};
 `;
 
-export default function Buyer({ manageFundsId }: Props) {
+export default function Buyer({ buyerId: buyerIdProp }: Props) {
   const { [UrlParameters.buyerId]: urlBuyerId = "" } = useParams();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const { isLteXS } = useBreakpoints();
-  const buyerId = manageFundsId || urlBuyerId;
+  const buyerId = buyerIdProp || urlBuyerId;
   const [manageFunds, setManageFundsQueryParam] = useQueryParameter(
     AccountQueryParameters.manageFunds
   );
@@ -118,18 +118,18 @@ export default function Buyer({ manageFundsId }: Props) {
   const currentBuyerAddress = buyers?.[0]?.wallet || "";
 
   const handleManageFunds = useCallback(() => {
-    if (manageFundsId) {
+    if (buyerIdProp) {
       showModal(
         modalTypes.MANAGE_FUNDS_MODAL,
         {
           title: "Manage Funds",
-          id: manageFundsId
+          id: buyerIdProp
         },
         "auto",
         "dark"
       );
     }
-  }, [manageFundsId, modalTypes.MANAGE_FUNDS_MODAL, showModal]);
+  }, [buyerIdProp, modalTypes.MANAGE_FUNDS_MODAL, showModal]);
   useEffect(() => {
     if (openManageFunds) {
       setManageFundsQueryParam(null, {
@@ -156,7 +156,7 @@ export default function Buyer({ manageFundsId }: Props) {
     );
   }
 
-  if (!isBuyerExists && !manageFundsId) {
+  if (!isBuyerExists && !buyerIdProp) {
     return <NotFound />;
   }
 
@@ -202,14 +202,14 @@ export default function Buyer({ manageFundsId }: Props) {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              {manageFundsId && !isLteXS && (
-                <MenageFundsButton
+              {buyerIdProp && !isLteXS && (
+                <ManageFundsButton
                   $isCustomStoreFront={!!isCustomStoreFront}
                   variant="accentInverted"
                   onClick={handleManageFunds}
                 >
                   Manage Funds
-                </MenageFundsButton>
+                </ManageFundsButton>
               )}
               <SocialIconContainer>
                 <DetailShareWrapper>
@@ -218,16 +218,16 @@ export default function Buyer({ manageFundsId }: Props) {
               </SocialIconContainer>
             </Grid>
           </Grid>
-          {manageFundsId && isLteXS && (
+          {buyerIdProp && isLteXS && (
             <ManageFundMobileWrapper>
-              <MenageFundsButton
+              <ManageFundsButton
                 $isCustomStoreFront={!!isCustomStoreFront}
                 variant="accentInverted"
                 onClick={handleManageFunds}
                 data-manage-funds-button
               >
                 Manage Funds
-              </MenageFundsButton>
+              </ManageFundsButton>
             </ManageFundMobileWrapper>
           )}
         </ProfileSectionWrapper>

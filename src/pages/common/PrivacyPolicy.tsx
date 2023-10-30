@@ -132,7 +132,7 @@ export default function PrivacyPolicy() {
     <Wrapper flexDirection="column">
       <Title>PRIVACY POLICY</Title>
       <Typography color={colors.grey} tag="p" fontWeight="400" margin="0">
-        Last updated on 31 October 2022
+        Last updated on 18 August 2023
       </Typography>
       <List>
         <li>
@@ -290,12 +290,10 @@ export default function PrivacyPolicy() {
                 <li>
                   <Text>
                     personal particulars (e.g. name, email, contact details,
-                    residential and/or delivery address, and/or telephone
-                    number);
+                    residential and/or delivery address, EXIF data and/or
+                    personal information in the images, and/or telephone
+                    number); and
                   </Text>
-                </li>
-                <li>
-                  <Text>information about your use of the Services; and</Text>
                 </li>
                 <li>
                   <Text>information about your use of the Services; and</Text>

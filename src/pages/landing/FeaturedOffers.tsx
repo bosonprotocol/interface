@@ -5,15 +5,16 @@ import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
 import OfferList from "../../components/offers/OfferList";
+import Grid from "../../components/ui/Grid";
 import { buttonText } from "../../components/ui/styles";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
 import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import extractUniqueRandomProducts from "../../lib/utils/product/extractUniqueRandomProducts";
 
 const Root = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
 
@@ -21,13 +22,6 @@ const Root = styled.div`
   &:last-of-type {
     margin-bottom: 0rem;
   }
-`;
-
-const TopContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 1rem 0 2rem 0;
 `;
 
 const Title = styled(Typography)`
@@ -51,10 +45,9 @@ const ViewMore = styled(LinkWithQuery)`
     transform: translateX(0);
   }
   &:hover {
-    filter: invert(50%);
+    color: color-mix(in srgb, var(--accent) 50%, black);
     > svg {
       transform: translateX(5px);
-      fill: ${colors.black};
     }
   }
 `;
@@ -88,7 +81,11 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   }, [products, isLteXS]);
   return (
     <Root data-testid={"featureOffers"}>
-      <TopContainer>
+      <Grid
+        justifyContent="space-between"
+        alignItems="center"
+        margin="1rem 0 2rem 0"
+      >
         <Title tag="h3" style={{ margin: "0" }}>
           {title}
         </Title>
@@ -96,7 +93,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
           View more
           <CaretRight size={24} />
         </ViewMore>
-      </TopContainer>
+      </Grid>
       <OfferList
         offers={shuffledOffers?.slice(0, isLteXS ? 6 : 12)}
         isError={isError}

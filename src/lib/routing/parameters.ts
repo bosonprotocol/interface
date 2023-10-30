@@ -28,11 +28,27 @@ export const UrlParameters = {
   buyerId: "id",
   sellerId: "id",
   tokenId: "id",
-  disputeResolverPageId: "disputeResolverPage"
+  disputeResolverPageId: "disputeResolverPage",
+  customStoreUrl: "customStoreUrl"
 } as const;
 
 export const SellerLandingPageParameters = {
   slsteps: "slsteps", // slsteps = seller landing steps
   sltitle: "sltitle",
   sltokenGated: "sltokenGated"
+};
+
+export const configQueryParameters = {
+  configId: "configId"
+};
+
+export const swapQueryParameters = {
+  inputCurrency: "inputCurrency",
+  outputCurrency: "outputCurrency",
+  exactAmount: "exactAmount",
+  exactField: "exactField"
+};
+
+export const SellerHubQueryParameters = {
+  fromProductUuid: "fromProductUuid"
 };

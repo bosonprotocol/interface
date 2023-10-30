@@ -8,9 +8,7 @@ export const ProductButtonGroup = styled.div`
   margin-top: 3.5rem;
   display: flex;
   justify-content: flex-start;
-  button:not(:last-child) {
-    margin-right: 2rem;
-  }
+  gap: 2rem;
   padding-bottom: 2rem;
 `;
 

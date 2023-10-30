@@ -53,13 +53,16 @@ export const buildCondition = (
       tokenType = TokenType.FungibleToken;
       method = EvaluationMethod.Threshold;
       threshold = formatedValue || partialTokenGating.minBalance;
+      tokenId = "0";
       break;
   }
   return {
     method,
     tokenType,
     tokenAddress: partialTokenGating.tokenContract || "",
-    tokenId,
+    gatingType: 0, // default: PerAddress (legacy)
+    minTokenId: tokenId,
+    maxTokenId: tokenId,
     threshold: threshold || "",
     maxCommits: partialTokenGating.maxCommits || ""
   };

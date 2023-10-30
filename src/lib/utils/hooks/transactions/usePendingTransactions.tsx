@@ -1,10 +1,10 @@
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useCallback } from "react";
-import { useAccount } from "wagmi";
 import create from "zustand";
 
 import { EventLog } from "../../transactions";
+import { useAccount } from "../connection/connection";
 
 type PendingTransaction = Omit<EventLog, "__typename" | "account"> & {
   accountType: "Buyer" | "Seller" | string;
@@ -38,7 +38,8 @@ export function createPendingTx(
 }
 
 export function useAddPendingTransaction() {
-  const { address } = useAccount();
+  const { account: address } = useAccount();
+
   const { addPendingTransaction } = usePendingTransactionsStore();
 
   const addPendingTx = useCallback(

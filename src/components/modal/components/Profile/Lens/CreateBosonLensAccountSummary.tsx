@@ -1,7 +1,7 @@
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { Warning } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
@@ -45,7 +45,7 @@ export default function CreateBosonLensAccountSummary({
   const logoImage = getIpfsGatewayUrl(logo?.src || "");
   const coverPicture = getIpfsGatewayUrl(cover?.src || "");
 
-  const { address } = useAccount();
+  const { account: address } = useAccount();
   const { data: admins } = useSellers(
     {
       admin: address
@@ -466,7 +466,6 @@ export default function CreateBosonLensAccountSummary({
           updateSellerAccount={async () =>
             updateSeller({
               admin: address || "",
-              clerk: seller?.clerk || "",
               assistant: seller?.assistant || "",
               treasury: seller?.treasury || "",
               authTokenId: profile?.id,

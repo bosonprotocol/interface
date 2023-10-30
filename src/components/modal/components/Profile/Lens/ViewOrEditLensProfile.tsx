@@ -1,18 +1,25 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useFormikContext } from "formik";
 import { ReactNode, useEffect, useMemo } from "react";
 
-import { CONFIG } from "../../../../../lib/config";
 import {
+  blobToBase64,
   dataURItoBlob,
   fetchImageAsBase64,
   isDataUri
 } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
-import { getLensImageUrl } from "../../../../../lib/utils/images";
+import {
+  getImageMetadata,
+  getLensImageUrl
+} from "../../../../../lib/utils/images";
 import { Spinner } from "../../../../loading/Spinner";
-import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../../product/utils";
+import {
+  CreateProfile,
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
+} from "../../../../product/utils";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
@@ -30,6 +37,7 @@ import { LensProfileType } from "./validationSchema";
 
 interface Props {
   profile: Profile;
+  profileInitialData?: CreateProfile;
   seller: subgraph.SellerFieldsFragment | null;
   children: ReactNode;
   onBackClick: () => void;
@@ -40,6 +48,7 @@ interface Props {
 }
 export default function ViewOrEditLensProfile({
   profile,
+  profileInitialData,
   seller,
   children,
   onBackClick,
@@ -48,10 +57,23 @@ export default function ViewOrEditLensProfile({
   isEdit,
   forceDirty
 }: Props) {
-  const { setValues, setTouched, values, isSubmitting, initialValues } =
-    useFormikContext<LensProfileType>();
-  const profilePictureUrl = getLensImageUrl(getLensProfilePictureUrl(profile));
-  const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
+  const { config } = useConfigContext();
+  const {
+    setValues,
+    setTouched,
+    values,
+    isSubmitting,
+    initialValues,
+    touched
+  } = useFormikContext<LensProfileType>();
+  const lensIpfsGateway = config.lens.ipfsGateway || "";
+  const profilePictureUrl =
+    profileInitialData?.logo?.[0]?.src ??
+    getLensImageUrl(getLensProfilePictureUrl(profile), lensIpfsGateway);
+  const coverPictureMetadata = profileInitialData?.coverPicture?.[0];
+  const coverPictureUrl =
+    coverPictureMetadata?.src ??
+    getLensImageUrl(getLensCoverPictureUrl(profile), lensIpfsGateway);
   const metadata = seller?.metadata;
   const { updateProps, store } = useModal();
   const hasMetadata = !!seller?.metadata;
@@ -152,66 +174,98 @@ export default function ViewOrEditLensProfile({
   }, []);
 
   useEffect(() => {
-    Promise.all([
-      isDataUri(profilePictureUrl)
-        ? dataURItoBlob(profilePictureUrl)
-        : fetchImageAsBase64(profilePictureUrl),
-      isDataUri(coverPictureUrl)
-        ? dataURItoBlob(coverPictureUrl)
-        : fetchImageAsBase64(coverPictureUrl)
-    ])
-      .then(([profilePicture, coverPicture]) => {
-        const profilePictureBlob =
-          profilePicture instanceof Blob ? profilePicture : profilePicture.blob;
-        const coverPictureBlob =
-          coverPicture instanceof Blob ? coverPicture : coverPicture.blob;
-        setValues({
-          logo: profilePicture
-            ? [
-                {
-                  src: profilePictureUrl,
-                  type: profilePictureBlob.type,
-                  size: profilePictureBlob.size
-                }
-              ]
-            : [],
-          coverPicture: coverPicture
-            ? [
-                {
-                  src: coverPictureUrl,
-                  type: coverPictureBlob.type,
-                  size: coverPictureBlob.size
-                }
-              ]
-            : [],
-          name: profile.name || "",
-          handle:
-            profile.handle?.substring(
-              0,
-              profile.handle.lastIndexOf(CONFIG.lens.lensHandleExtension) < 0
-                ? profile.handle.lastIndexOf(CONFIG.lens.lensHandleExtension)
-                : profile.handle.lastIndexOf(".")
-            ) || "",
-          email:
-            metadata?.contactLinks?.find((cl) => cl.tag === "email")?.url ||
-            getLensEmail(profile) ||
-            "",
-          description: profile.bio || "",
-          website: metadata?.website || getLensWebsite(profile) || "",
-          legalTradingName:
-            metadata?.legalTradingName ||
-            getLensLegalTradingName(profile) ||
-            "",
-          contactPreference:
-            OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
-              (obj) => obj.value === seller?.metadata?.contactPreference
-            ) ?? OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
+    try {
+      Promise.all([
+        isDataUri(profilePictureUrl)
+          ? dataURItoBlob(profilePictureUrl)
+          : fetchImageAsBase64(profilePictureUrl),
+        isDataUri(coverPictureUrl)
+          ? dataURItoBlob(coverPictureUrl)
+          : fetchImageAsBase64(coverPictureUrl)
+      ])
+        .then(async ([profilePicture, coverPicture]) => {
+          const profilePictureBlob =
+            profilePicture instanceof Blob
+              ? profilePicture
+              : profilePicture.blob;
+          const coverPictureBlob =
+            coverPicture instanceof Blob ? coverPicture : coverPicture.blob;
+
+          Promise.all([
+            getImageMetadata(await blobToBase64(profilePictureBlob)),
+            getImageMetadata(await blobToBase64(coverPictureBlob))
+          ])
+            .then(([profileMetadata, coverMetadata]) => {
+              setValues({
+                logo: profilePicture
+                  ? [
+                      {
+                        src: profilePictureUrl,
+                        type: profilePictureBlob.type,
+                        size: profilePictureBlob.size,
+                        height: profileMetadata.height,
+                        width: profileMetadata.width
+                      }
+                    ]
+                  : [],
+                coverPicture: coverPicture
+                  ? [
+                      {
+                        src: coverPictureUrl,
+                        type: coverPictureBlob.type,
+                        size: coverPictureBlob.size,
+                        height: coverMetadata.height,
+                        width: coverMetadata.width,
+                        ...(!!coverPictureMetadata?.fit &&
+                          !!coverPictureMetadata.position && {
+                            fit: coverPictureMetadata.fit,
+                            position: coverPictureMetadata.position
+                          })
+                      }
+                    ]
+                  : [],
+                name: profile.name || "",
+                handle:
+                  profile.handle?.substring(
+                    0,
+                    profile.handle.lastIndexOf(
+                      config.lens.lensHandleExtension
+                    ) < 0
+                      ? profile.handle.lastIndexOf(
+                          config.lens.lensHandleExtension
+                        )
+                      : profile.handle.lastIndexOf(".")
+                  ) || "",
+                email:
+                  metadata?.contactLinks?.find((cl) => cl.tag === "email")
+                    ?.url ||
+                  getLensEmail(profile) ||
+                  "",
+                description: profile.bio || "",
+                website: metadata?.website || getLensWebsite(profile) || "",
+                legalTradingName:
+                  metadata?.legalTradingName ||
+                  getLensLegalTradingName(profile) ||
+                  "",
+                contactPreference:
+                  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
+                    (obj) => obj.value === seller?.metadata?.contactPreference
+                  ) ?? OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+              Sentry.captureException(error);
+            });
+        })
+        .catch((error) => {
+          console.error(error);
+          Sentry.captureException(error);
         });
-      })
-      .catch((error) => {
-        console.error(error);
-        Sentry.captureException(error);
-      });
+    } catch (error) {
+      console.error(error);
+      Sentry.captureException(error);
+    }
   }, [
     profile,
     profilePictureUrl,
@@ -220,9 +274,11 @@ export default function ViewOrEditLensProfile({
     seller?.metadata?.contactPreference,
     metadata?.contactLinks,
     metadata?.website,
-    metadata?.legalTradingName
+    metadata?.legalTradingName,
+    coverPictureMetadata?.fit,
+    coverPictureMetadata?.position,
+    config.lens.lensHandleExtension
   ]);
-
   return (
     <div>
       {children}
@@ -241,7 +297,9 @@ export default function ViewOrEditLensProfile({
           type="submit"
           disabled={isSubmitting}
         >
-          {isEdit && (hasChanged || forceDirty) ? "Save & continue" : "Next"}
+          {isEdit && (hasChanged || forceDirty || touched.coverPicture)
+            ? "Save & continue"
+            : "Next"}
           {isSubmitting && <Spinner size="20" />}
         </BosonButton>
       </Grid>

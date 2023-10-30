@@ -1,4 +1,6 @@
-query ProfilePublicationRevenue($request: ProfilePublicationRevenueQueryRequest!) {
+query ProfilePublicationRevenue(
+  $request: ProfilePublicationRevenueQueryRequest!
+) {
   profilePublicationRevenue(request: $request) {
     items {
       publication {

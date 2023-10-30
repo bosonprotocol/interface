@@ -6,7 +6,6 @@ import {
   productV1,
   subgraph
 } from "@bosonprotocol/react-kit";
-import { parseUnits } from "@ethersproject/units";
 import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
@@ -31,12 +30,13 @@ import {
   useSearchParams
 } from "react-router-dom";
 import uuid from "react-uuid";
-import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
+import { useConfigContext } from "components/config/ConfigContext";
+import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { BigNumber, ethers } from "ethers";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 
-import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../components/form/Upload/types";
 import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
@@ -45,17 +45,19 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  ImageSpecificOrAll,
   OPTIONS_EXCHANGE_POLICY,
-  optionUnitKeys,
-  TOKEN_TYPES
+  ProductMetadataAttributeKeys,
+  ProductTypeValues,
+  TOKEN_TYPES,
+  TypeKeys
 } from "../../components/product/utils";
-import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
+import { CONFIG, DappConfig } from "../../lib/config";
 import {
   SellerLandingPageParameters,
   UrlParameters
@@ -68,7 +70,6 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
-import { fixformattedString } from "../../lib/utils/number";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
   CreateProductWrapper,
@@ -78,6 +79,11 @@ import {
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP } from "./utils";
 import { validateDates } from "./utils/dataValidator";
+import { getTermsOfExchange } from "./utils/getTermsOfExchange";
+import {
+  getDisputePeriodDurationInMS,
+  getResolutionPeriodDurationInMS
+} from "./utils/helpers";
 import { CreateProductSteps } from "./utils/index";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
@@ -112,6 +118,7 @@ type GetProductV1MetadataProps = {
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
+  redemptionPointUrl: string;
 };
 async function getProductV1Metadata({
   contactPreference,
@@ -128,7 +135,8 @@ async function getProductV1Metadata({
   visualImages,
   shippingInfo,
   termsOfExchange,
-  supportedJurisdictions
+  supportedJurisdictions,
+  redemptionPointUrl
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
   const profileImage = createYourProfile?.logo?.[0];
   const coverImage = createYourProfile?.coverPicture?.[0];
@@ -172,19 +180,21 @@ async function getProductV1Metadata({
     product: {
       uuid: uuid(),
       version: 1,
-      title: productInformation.productTitle,
-      description: productInformation.description,
-      identification_sKU: productInformation.sku,
-      identification_productId: productInformation.id,
-      identification_productIdType: productInformation.idType,
+      title: productInformation.productTitle?.toString(),
+      description: productInformation.description?.toString(),
+      identification_sKU: productInformation.sku?.toString(),
+      identification_productId: productInformation.id?.toString(),
+      identification_productIdType: productInformation.idType?.toString(),
       productionInformation_brandName:
-        productInformation.brandName || createYourProfile.name,
-      productionInformation_manufacturer: productInformation.manufacture,
+        productInformation.brandName?.toString() || createYourProfile.name,
+      productionInformation_manufacturer:
+        productInformation.manufacture?.toString(),
       productionInformation_manufacturerPartNumber:
-        productInformation.manufactureModelName,
-      productionInformation_modelNumber: productInformation.partNumber,
+        productInformation.manufactureModelName?.toString(),
+      productionInformation_modelNumber:
+        productInformation.partNumber?.toString(),
       productionInformation_materials: productInformation.materials?.split(","),
-      details_category: productInformation.category.value,
+      details_category: productInformation.category.value?.toString(),
       details_subCategory: undefined, // no entry in the UI
       details_subCategory2: undefined, // no entry in the UI
       details_offerCategory: productType.productType.toUpperCase(),
@@ -194,12 +204,12 @@ async function getProductV1Metadata({
       visuals_images: visualImages,
       visuals_videos: undefined, // no entry in the UI
       packaging_packageQuantity: undefined, // no entry in the UI
-      packaging_dimensions_length: shippingInfo.length,
-      packaging_dimensions_width: shippingInfo.width,
-      packaging_dimensions_height: shippingInfo.height,
-      packaging_dimensions_unit: shippingInfo.measurementUnit.value,
-      packaging_weight_value: shippingInfo?.weight || "",
-      packaging_weight_unit: shippingInfo?.weightUnit.value || ""
+      packaging_dimensions_length: shippingInfo.length?.toString(),
+      packaging_dimensions_width: shippingInfo.width?.toString(),
+      packaging_dimensions_height: shippingInfo.height?.toString(),
+      packaging_dimensions_unit: shippingInfo.measurementUnit.value?.toString(),
+      packaging_weight_value: shippingInfo?.weight?.toString() || "",
+      packaging_weight_unit: shippingInfo?.weightUnit.value?.toString() || ""
     },
     seller: {
       defaultVersion: 1,
@@ -223,22 +233,25 @@ async function getProductV1Metadata({
       template:
         termsOfExchange.exchangePolicy.value === "fairExchangePolicy" // if there is data in localstorage, the exchangePolicy.value might be the old 'fairExchangePolicy'
           ? OPTIONS_EXCHANGE_POLICY[0].value
-          : termsOfExchange.exchangePolicy.value,
+          : termsOfExchange.exchangePolicy.value || "",
       sellerContactMethod: CONFIG.defaultSellerContactMethod,
       disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
     },
     shipping: {
       defaultVersion: 1,
-      countryOfOrigin: shippingInfo.country.label || "",
+      countryOfOrigin:
+        /*TODO: NOTE: we might add it back in the future: shippingInfo.country?.label || */ "",
       supportedJurisdictions:
         supportedJurisdictions.length > 0 ? supportedJurisdictions : undefined,
-      returnPeriod: shippingInfo.returnPeriod.toString()
+      returnPeriod: shippingInfo.returnPeriod.toString(),
+      redemptionPoint: redemptionPointUrl
     }
   };
 }
 
 type GetOfferDataFromMetadataProps = {
   coreSDK: CoreSDK;
+  config: DappConfig;
   priceBN: BigNumber;
   sellerDeposit: BigNumber | string;
   buyerCancellationPenaltyValue: BigNumber | string;
@@ -255,6 +268,7 @@ async function getOfferDataFromMetadata(
   productV1Metadata: productV1.ProductV1Metadata,
   {
     coreSDK,
+    config,
     priceBN,
     sellerDeposit,
     buyerCancellationPenaltyValue,
@@ -283,10 +297,11 @@ async function getOfferDataFromMetadata(
     disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
     resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
     exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
-    disputeResolverId: CONFIG.defaultDisputeResolverId,
+    disputeResolverId: config.envConfig.defaultDisputeResolverId,
     agentId: 0, // no agent
     metadataUri: `ipfs://${metadataHash}`,
-    metadataHash: metadataHash
+    metadataHash: metadataHash,
+    collectionIndex: "0"
   };
   return offerData;
 }
@@ -331,16 +346,17 @@ function CreateProductInner({
   setCreatedOffersIds,
   isDraftModalClosed
 }: Props) {
+  const { config } = useConfigContext();
   const history = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
-    initial?.productType?.productVariant || "oneItemType"
+    initial?.productType?.productVariant || ProductTypeValues.oneItemType
   );
   const isMultiVariant = useMemo(
-    () => productVariant === "differentVariants" || false,
+    () => productVariant === ProductTypeValues.differentVariants || false,
     [productVariant]
   );
   const [isTokenGated, setIsTokenGated] = useState<boolean>(false);
@@ -414,19 +430,8 @@ function CreateProductInner({
     setIsPreviewVisible(false);
   };
 
-  const onViewMyItem = (id: string | null) => {
-    hideModal();
-    setCurrentStepWithHistory(FIRST_STEP);
-    setIsPreviewVisible(false);
-    const pathname = id
-      ? generatePath(ProductRoutes.ProductDetail, {
-          [UrlParameters.uuid]: id
-        })
-      : generatePath(ProductRoutes.Root);
-    navigate({ pathname });
-  };
   const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
-  const { address } = useAccount();
+  const { account: address } = useAccount();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
   const { mutateAsync: createOffers } = useCreateOffers();
@@ -438,11 +443,23 @@ function CreateProductInner({
   const assistantLens: Profile | null =
     lensProfiles.find((lensProfile) => {
       return (
-        getLensTokenIdDecimal(lensProfile.id).toString() ===
+        getLensTokenIdDecimal(lensProfile?.id).toString() ===
         currentAssistant?.authTokenId
       );
     }) || null;
 
+  const onViewMyItem = (id: string | null) => {
+    hideModal();
+    setCurrentStepWithHistory(FIRST_STEP);
+    setIsPreviewVisible(false);
+    const pathname = id
+      ? generatePath(ProductRoutes.ProductDetail, {
+          [UrlParameters.sellerId]: currentAssistant?.id || null,
+          [UrlParameters.uuid]: id
+        })
+      : generatePath(ProductRoutes.Root);
+    navigate({ pathname });
+  };
   const handleOpenSuccessModal = async ({
     offerInfo,
     values
@@ -488,7 +505,11 @@ function CreateProductInner({
           seller: offerInfo.seller,
           exchangeToken: offerInfo.exchangeToken,
           metadata: {
-            animationUrl: values.productAnimation?.[0]?.src
+            animationUrl: values.productAnimation?.[0]?.src,
+            exchangePolicy: {
+              label: OPTIONS_EXCHANGE_POLICY[0].label,
+              template: OPTIONS_EXCHANGE_POLICY[0].value
+            }
           },
           condition: offerInfo.condition ?? null
         },
@@ -511,7 +532,8 @@ function CreateProductInner({
       isMultiVariant,
       isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
-      isOneSetOfImages
+      isOneSetOfImages,
+      config
     });
     return {
       currentStep:
@@ -530,7 +552,8 @@ function CreateProductInner({
     isMultiVariant,
     isTokenGated,
     isOneSetOfImages,
-    currentStep
+    currentStep,
+    config
   ]);
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
@@ -583,35 +606,27 @@ function CreateProductInner({
       const productAttributes: Array<{
         trait_type: string;
         value: string;
-      }> = productInformation.attributes.map(
-        ({ name, value }: { name: string; value: string }) => {
-          return {
-            trait_type: name,
-            value: value || ""
-          };
-        }
-      );
+      }> = productInformation.attributes.map(({ name, value }) => {
+        return {
+          trait_type: name || "",
+          value: value || ""
+        };
+      });
 
       const supportedJurisdictions: Array<SupportedJuridiction> =
-        shippingInfo.jurisdiction.reduce(
-          (
-            prev: Array<SupportedJuridiction>,
-            { region, time }: { region: string; time: string }
-          ) => {
-            if (region.length === 0 || time.length === 0) {
-              return prev;
-            } else {
-              return [
-                ...prev,
-                {
-                  label: region,
-                  deliveryTime: time
-                }
-              ];
-            }
-          },
-          []
-        );
+        shippingInfo.jurisdiction.reduce((prev, { region, time }) => {
+          if (region.length === 0 || time.length === 0) {
+            return prev;
+          } else {
+            return [
+              ...prev,
+              {
+                label: region,
+                deliveryTime: time
+              }
+            ];
+          }
+        }, [] as Array<SupportedJuridiction>);
 
       // filter empty attributes
       const additionalAttributes = productAttributes.filter((attribute) => {
@@ -631,7 +646,7 @@ function CreateProductInner({
       const exchangeSymbol = isMultiVariant
         ? firstVariant.currency.value
         : values.coreTermsOfSale.currency.value;
-      const exchangeToken = CONFIG.defaultTokens.find(
+      const exchangeToken = config.envConfig.defaultTokens?.find(
         (n: Token) => n.symbol === exchangeSymbol
       );
 
@@ -651,30 +666,33 @@ function CreateProductInner({
         redemptionPeriod: redemptionPeriod
       });
 
-      const disputePeriodDurationInMS =
-        parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
-      const resolutionPeriodDurationInMS =
-        parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
+      const disputePeriodDurationInMS = getDisputePeriodDurationInMS(
+        termsOfExchange.disputePeriod
+      );
+      const resolutionPeriodDurationInMS = getResolutionPeriodDurationInMS();
 
       const nftAttributes = [];
-      nftAttributes.push({ trait_type: "Token Type", value: "BOSON rNFT" });
       nftAttributes.push({
-        trait_type: "Redeemable At",
+        trait_type: ProductMetadataAttributeKeys["Token Type"],
+        value: "BOSON rNFT"
+      });
+      nftAttributes.push({
+        trait_type: ProductMetadataAttributeKeys["Redeemable At"],
         value: redemptionPointUrl
       });
       nftAttributes.push({
-        trait_type: "Redeemable Until",
+        trait_type: ProductMetadataAttributeKeys["Redeemable Until"],
         value: voucherRedeemableUntilDateInMS.toString(),
         display_type: "date"
       });
       if (assistantLens?.name || assistantLens?.handle) {
         nftAttributes.push({
-          trait_type: "Seller",
+          trait_type: ProductMetadataAttributeKeys["Seller"],
           value: assistantLens?.name || assistantLens?.handle
         });
       } else {
         nftAttributes.push({
-          trait_type: "Seller",
+          trait_type: ProductMetadataAttributeKeys["Seller"],
           value: createYourProfile.name
         });
       }
@@ -683,8 +701,13 @@ function CreateProductInner({
       // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
       const offerUuid = uuid();
 
-      const externalUrl = `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
-      const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
+      // Ddd sellerId in the license and offer-uuid routes (if known)
+      const externalUrl = currentAssistant
+        ? `${redemptionPointUrl}/#/offer-uuid/${currentAssistant.id}/${offerUuid}`
+        : `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
+      const licenseUrl = currentAssistant
+        ? `${window.origin}/#/license/${currentAssistant.id}/${offerUuid}`
+        : `${window.origin}/#/license/${offerUuid}`;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
       const productAnimation = values.productAnimation?.[0];
@@ -695,7 +718,7 @@ function CreateProductInner({
         >[1] = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =
-          values.imagesSpecificOrAll?.value === "all";
+          values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
         if (allVariationsWithSameImages) {
           const variantVisualImages = extractVisualImages(productImages);
 
@@ -707,11 +730,11 @@ function CreateProductInner({
           const { color, size } = variant;
           const typeOptions = [
             {
-              type: "Size",
+              type: TypeKeys.Size,
               option: size || "-"
             },
             {
-              type: "Color",
+              type: TypeKeys.Color,
               option: color || "-"
             }
           ];
@@ -728,10 +751,7 @@ function CreateProductInner({
             visualImages.push(...variantVisualImages);
           } else {
             variantsForMetadataCreation.push({
-              productVariant: typeOptions,
-              productOverrides: {
-                visuals_images: visualImages
-              }
+              productVariant: typeOptions
             });
           }
         }
@@ -750,7 +770,8 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions
+          supportedJurisdictions,
+          redemptionPointUrl
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -779,33 +800,21 @@ function CreateProductInner({
         });
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map((metadata, index) => {
-            const exchangeToken = CONFIG.defaultTokens.find(
-              (n: Token) => n.symbol === variants[index].currency.label
+            const exchangeToken = config.envConfig.defaultTokens?.find(
+              (n) => n.symbol === variants[index].currency.label
             );
             const decimals = Number(exchangeToken?.decimals || 18);
             const price = variants[index].price;
-            const priceBN = parseUnits(
-              price < 0.1 ? fixformattedString(price) : price.toString(),
-              decimals
-            );
 
-            const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
-              priceBN,
-              termsOfExchange.buyerCancellationPenalty,
-              termsOfExchange.buyerCancellationPenaltyUnit
-                .value as keyof typeof optionUnitKeys,
-              decimals
-            );
-
-            const sellerDeposit = getFixedOrPercentageVal(
-              priceBN,
-              termsOfExchange.sellerDeposit,
-              termsOfExchange.sellerDepositUnit
-                .value as keyof typeof optionUnitKeys,
-              decimals
-            );
+            const { priceBN, buyerCancellationPenaltyValue, sellerDeposit } =
+              getTermsOfExchange({
+                termsOfExchange,
+                price,
+                decimals
+              });
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
+              config,
               priceBN,
               sellerDeposit,
               buyerCancellationPenaltyValue,
@@ -837,33 +846,21 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           termsOfExchange,
-          supportedJurisdictions
+          supportedJurisdictions,
+          redemptionPointUrl
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
-        const priceBN = parseUnits(
-          price < 0.1 ? fixformattedString(price) : price.toString(),
-          decimals
-        );
-
-        const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
-          priceBN,
-          termsOfExchange.buyerCancellationPenalty,
-          termsOfExchange.buyerCancellationPenaltyUnit
-            .value as keyof typeof optionUnitKeys,
-          decimals
-        );
-
-        const sellerDeposit = getFixedOrPercentageVal(
-          priceBN,
-          termsOfExchange.sellerDeposit,
-          termsOfExchange.sellerDepositUnit
-            .value as keyof typeof optionUnitKeys,
-          decimals
-        );
+        const { priceBN, buyerCancellationPenaltyValue, sellerDeposit } =
+          getTermsOfExchange({
+            termsOfExchange,
+            price,
+            decimals
+          });
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,
+          config,
           priceBN,
           sellerDeposit,
           buyerCancellationPenaltyValue,

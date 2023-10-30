@@ -2,9 +2,7 @@ import * as Sentry from "@sentry/browser";
 // extracted from https://usehooks.com/useLocalStorage/
 import { useState } from "react";
 
-export const createProductImagePrefix = "create-product-image_";
-
-export type CreateProductImageCreteYourProfileLogo =
+export type CreateProductImageCreateYourProfileLogo =
   "create-product-image_createYourProfile.logo";
 
 export type CreateProductImageProductImages =
@@ -18,16 +16,16 @@ export type CreateProductImageProductImages =
   | "create-product-image_productImages.more";
 
 export type GetItemFromStorageKey =
-  | "wagmi.store"
-  | "isChainUnsupported"
   | "create-product"
   | "tracing-url"
   | "convertionRates"
   | "shouldDisplayOfferBackedWarning"
   | "isConnectWalletFromCommit"
   | "showCookies"
+  | "showCookiesDrCenter"
+  | "release-version"
   | CreateProductImageProductImages
-  | CreateProductImageCreteYourProfileLogo;
+  | CreateProductImageCreateYourProfileLogo;
 
 export function getItemFromStorage<T>(
   key: GetItemFromStorageKey,
@@ -46,7 +44,7 @@ export function getItemFromStorage<T>(
   }
 }
 
-export function saveItemInStorage<T>(key: string, value: T) {
+export function saveItemInStorage<T>(key: GetItemFromStorageKey, value: T) {
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
@@ -57,7 +55,7 @@ export function saveItemInStorage<T>(key: string, value: T) {
   }
 }
 
-export function removeItemInStorage(key: string) {
+export function removeItemInStorage(key: GetItemFromStorageKey) {
   if (typeof window !== "undefined") {
     try {
       Object.keys(localStorage)

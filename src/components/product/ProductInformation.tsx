@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldArray } from "formik";
-import { Plus } from "phosphor-react";
+import { Plus, X } from "phosphor-react";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { FormField, Input, Select, TagsInput, Textarea } from "../form";
 import Error from "../form/Error";
 import BosonButton from "../ui/BosonButton";
@@ -16,8 +17,10 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { CATEGORY_OPTIONS } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
+import {
+  CATEGORY_OPTIONS,
+  ProductInformation as ProductInformationType
+} from "./utils";
 
 const StyledTextarea = styled(Textarea)`
   min-width: 100%;
@@ -28,7 +31,8 @@ const StyledTextarea = styled(Textarea)`
 
 const AddProductContainer = styled.div`
   display: grid;
-  grid-template-columns: minmax(11.25rem, 1fr) 3fr;
+  grid-template-columns: minmax(11.25rem, 1fr) 3fr min-content;
+  align-items: center;
   grid-gap: 1rem;
   margin-bottom: 1rem;
 `;
@@ -41,22 +45,21 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563rem;
 `;
 
-const checkLastElementIsPristine = (elements: ElementType[]): boolean => {
+const checkLastElementIsPristine = (
+  elements: ProductInformationType["productInformation"]["attributes"]
+): boolean => {
   const element = elements[elements.length - 1];
-  return element?.name.length === 0 || element?.value.length === 0;
+  return element?.name?.length === 0 || element?.value?.length === 0;
 };
 
-const checkIfElementIsDuplicated = (elements: ElementType[]): boolean => {
+const checkIfElementIsDuplicated = (
+  elements: ProductInformationType["productInformation"]["attributes"]
+): boolean => {
   const listElements = elements.map((element) => {
     return `${element.name}_${element.value}`.toLowerCase();
   });
   return new Set(listElements).size !== listElements.length;
 };
-
-interface ElementType {
-  name: string;
-  value: string;
-}
 
 const AddAttributesContainer = ({
   setHasDuplicated,
@@ -65,9 +68,9 @@ const AddAttributesContainer = ({
   setHasDuplicated: (hadDuplicated: boolean) => void;
   hasDuplicated: boolean;
 }) => {
-  const { values } = useCreateForm();
+  const { values } = useForm();
 
-  const elements: ElementType[] = useMemo(
+  const elements = useMemo(
     () => values?.productInformation?.attributes || [],
     [values?.productInformation?.attributes]
   );
@@ -89,20 +92,29 @@ const AddAttributesContainer = ({
             <>
               {render && (
                 <>
-                  {elements.map((_el: ElementType, key: number) => (
-                    <AddProductContainer key={`add_product_container_${key}`}>
+                  {elements.map((_el, index, array) => (
+                    <AddProductContainer key={`add_product_container_${index}`}>
                       <div>
                         <Input
                           placeholder="Attribute"
-                          name={`productInformation.attributes[${key}].name`}
+                          name={`productInformation.attributes[${index}].name`}
                         />
                       </div>
                       <div>
                         <Input
                           placeholder="Attribute value"
-                          name={`productInformation.attributes[${key}].value`}
+                          name={`productInformation.attributes[${index}].value`}
                         />
                       </div>
+                      {array.length > 1 && (
+                        <X
+                          size={14}
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            arrayHelpers.remove(index);
+                          }}
+                        />
+                      )}
                     </AddProductContainer>
                   ))}
                 </>
@@ -130,10 +142,21 @@ const AddAttributesContainer = ({
 };
 
 export default function ProductInformation() {
-  const { nextIsDisabled } = useCreateForm();
+  const {
+    nextIsDisabled,
+    values: { productInformation }
+  } = useForm();
 
   const [hasDuplicated, setHasDuplicated] = useState<boolean>(false);
-
+  const hasAdditionalInformation =
+    !!productInformation?.sku ||
+    !!productInformation?.id ||
+    !!productInformation?.idType ||
+    !!productInformation?.brandName ||
+    !!productInformation?.materials ||
+    !!productInformation?.manufacture ||
+    !!productInformation?.manufactureModelName ||
+    !!productInformation?.partNumber;
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Information</SectionTitle>
@@ -187,6 +210,7 @@ export default function ProductInformation() {
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
+          isInitiallyOpen={hasAdditionalInformation}
         >
           <FormField title="SKU" subTitle="Input product serial number.">
             <Input placeholder="SKU" name="productInformation.sku" />
@@ -204,7 +228,7 @@ export default function ProductInformation() {
             />
           </FormField>
           <FormField title="Material" subTitle="Input material of product">
-            <Input placeholder="Material" name="productInformation.material" />
+            <Input placeholder="Material" name="productInformation.materials" />
           </FormField>
           <FormField title="Manufacturer name">
             <Input

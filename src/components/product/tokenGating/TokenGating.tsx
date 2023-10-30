@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../../lib/styles/breakpoint";
+import { useForm } from "../../../lib/utils/hooks/useForm";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { FormField, Input, Select } from "../../form";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "../Product.styles";
 import { TOKEN_CRITERIA, TOKEN_TYPES } from "../utils";
-import { useCreateForm } from "../utils/useCreateForm";
 
 const ContainerProductPage = styled.div`
   width: 100%;
@@ -29,14 +29,6 @@ const StyledSelect = styled(Select)`
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563px;
 `;
-
-// const TokengatedTextarea = styled(Textarea)`
-//   padding: 0.5rem;
-//   min-width: 100%;
-//   max-width: 100%;
-//   min-height: 54px;
-//   max-height: 500px;
-// `;
 
 const StyledGrid = styled(Grid)`
   > * {
@@ -62,11 +54,35 @@ const [{ value: minBalance }] = TOKEN_CRITERIA;
 const [{ value: erc20 }, { value: erc721 }, { value: erc1155 }] = TOKEN_TYPES;
 
 export default function TokenGating() {
-  const { nextIsDisabled, values, handleBlur } = useCreateForm();
+  const { nextIsDisabled, values, handleBlur } = useForm();
   const { tokenGating } = values;
   const core = useCoreSDK();
   const [symbol, setSymbol] = useState<string | undefined>(undefined);
 
+  useEffect(() => {
+    (async () => {
+      const tokenContract = tokenGating.tokenContract;
+      const tokenType = tokenGating.tokenType;
+      if (
+        tokenContract &&
+        tokenContract?.length > 0 &&
+        tokenType?.value === erc20
+      ) {
+        try {
+          const { symbol: symbolLocal } = await core.getExchangeTokenInfo(
+            tokenContract
+          );
+          if (symbolLocal.length > 0) {
+            setSymbol(symbolLocal);
+          } else {
+            setSymbol(undefined);
+          }
+        } catch (error) {
+          setSymbol(undefined);
+        }
+      }
+    })();
+  }, [core, tokenGating.tokenContract, tokenGating.tokenType]);
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Token Gating</SectionTitle>
@@ -97,25 +113,6 @@ export default function TokenGating() {
                 type="string"
                 onBlur={async (e) => {
                   handleBlur(e);
-                  const tokenContract = tokenGating.tokenContract;
-                  const tokenType = tokenGating.tokenType;
-                  if (
-                    tokenContract &&
-                    tokenContract?.length > 0 &&
-                    tokenType?.value === erc20
-                  ) {
-                    try {
-                      const { symbol: symbolLocal } =
-                        await core.getExchangeTokenInfo(tokenContract);
-                      if (symbolLocal.length > 0) {
-                        setSymbol(symbolLocal);
-                      } else {
-                        setSymbol(undefined);
-                      }
-                    } catch (error) {
-                      setSymbol(undefined);
-                    }
-                  }
                 }}
               />
             </FormField>

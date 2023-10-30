@@ -14,7 +14,7 @@ import { RegularProfileMultiSteps } from "./RegularProfileMultiSteps";
 interface EditRegularProfileFlowProps {
   onSubmit: (data: CreateProfile, dirty: boolean) => void;
   profileInitialData: CreateProfile;
-  switchButton: () => ReactElement;
+  switchButton: ReactElement;
   updateSellerMetadata: ReturnType<
     typeof useUpdateSellerMetadata
   >["mutateAsync"];
@@ -57,10 +57,15 @@ export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
         <CreateYourRegularProfile
           forceDirty={forceDirty}
           initial={profileInitialData}
-          onSubmit={async (profile, formDirty, resetDirty) => {
+          onSubmit={async (
+            profile,
+            formDirty,
+            resetDirty,
+            coverImageTouched
+          ) => {
             setRegularProfile(profile);
             setDirty(formDirty);
-            if (formDirty || forceDirty) {
+            if (formDirty || forceDirty || coverImageTouched) {
               await updateSellerMetadata({
                 values: { ...profile, authTokenId: "0" },
                 kind: ProfileType.REGULAR

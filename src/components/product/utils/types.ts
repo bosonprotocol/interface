@@ -1,18 +1,14 @@
 import * as Yup from "yup";
 
 import {
-  coreTermsOfSaleValidationSchema,
-  disputeCentreValidationSchemaAdditionalInformation,
-  disputeCentreValidationSchemaGetStarted,
-  disputeCentreValidationSchemaMakeProposal,
-  disputeCentreValidationSchemaProposalSummary,
-  disputeCentreValidationSchemaTellUsMore,
+  confirmProductDetailsSchema,
+  CoreTermsOfSaleValidationSchema,
   imagesSpecificOrAllValidationSchema,
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
   productVariantsImagesValidationSchema,
-  productVariantsValidationSchema,
+  ProductVariantsValidationSchema,
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
@@ -32,13 +28,9 @@ export type ProductInformation = Yup.InferType<
   typeof productInformationValidationSchema
 >;
 
-export type ProductVariants = Yup.InferType<
-  typeof productVariantsValidationSchema
->;
+export type ProductVariants = Yup.InferType<ProductVariantsValidationSchema>;
 
-export type CoreTermsOfSale = Yup.InferType<
-  typeof coreTermsOfSaleValidationSchema
->;
+export type CoreTermsOfSale = Yup.InferType<CoreTermsOfSaleValidationSchema>;
 
 export type VariantsCoreTermsOfSale = Yup.InferType<
   typeof variantsCoreTermsOfSaleValidationSchema
@@ -58,28 +50,12 @@ export type ProductVariantsImages = Yup.InferType<
   typeof productVariantsImagesValidationSchema
 >;
 
-export type DisputeCentreGetStarted = Yup.InferType<
-  typeof disputeCentreValidationSchemaGetStarted
->;
-
-export type DisputeCentreTellUsMore = Yup.InferType<
-  typeof disputeCentreValidationSchemaTellUsMore
->;
-
-export type DisputeCentreAdditionalInformation = Yup.InferType<
-  typeof disputeCentreValidationSchemaAdditionalInformation
->;
-
-export type DisputeCentreMakeProposal = Yup.InferType<
-  typeof disputeCentreValidationSchemaMakeProposal
->;
-
-export type DisputeCentreValidationSchemaProposalSummary = Yup.InferType<
-  typeof disputeCentreValidationSchemaProposalSummary
->;
-
 export type ImagesSpecificOrAll = Yup.InferType<
   typeof imagesSpecificOrAllValidationSchema
+>;
+
+export type ConfirmProductDetails = Yup.InferType<
+  typeof confirmProductDetailsSchema
 >;
 
 export type CreateProductForm = CreateYourProfile &
@@ -92,10 +68,6 @@ export type CreateProductForm = CreateYourProfile &
   TermsOfExchange &
   ProductImages &
   ProductVariantsImages &
-  DisputeCentreGetStarted &
-  DisputeCentreTellUsMore &
-  DisputeCentreAdditionalInformation &
-  DisputeCentreMakeProposal &
-  DisputeCentreValidationSchemaProposalSummary &
   ImagesSpecificOrAll &
-  TokenGating;
+  TokenGating &
+  ConfirmProductDetails;

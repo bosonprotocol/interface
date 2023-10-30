@@ -1,4 +1,5 @@
 import { gql, request } from "graphql-request";
+import { CONFIG } from "lib/config";
 import { useQuery } from "react-query";
 
 import { Offer } from "../../../lib/types/offer";
@@ -6,14 +7,14 @@ import { Offer } from "../../../lib/types/offer";
 const UNISWAP_API_URL =
   "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3";
 
-const poolsQuery = gql`
+const getPoolsQuery = (orderBy: "volumeUSD" | "liquidity") => gql`
   query GetPools($token0: String, $token1: String) {
     pools(
       where: {
         token0_: { symbol_contains_nocase: $token0 }
         token1_: { symbol_contains_nocase: $token1 }
       }
-      orderBy: volumeUSD
+      orderBy: ${orderBy}
       orderDirection: desc
     ) {
       token0 {
@@ -70,7 +71,7 @@ function generateQuery(
 ): QueryProps[] | [] {
   return tokens && tokens.length
     ? tokens?.flatMap((token) => ({
-        query: poolsQuery,
+        query: getPoolsQuery("volumeUSD"),
         variables: {
           token0: swap ? "USDC" : token.symbol,
           token1: swap ? token.symbol : "USDC"
@@ -101,12 +102,12 @@ export interface IPool {
 
 export function useUniswapPools({ tokens }: Props) {
   const tokensWithoutBoson = tokens?.filter((t) => t.symbol !== "BOSON") || [];
-  const isDev = process.env.NODE_ENV === "development";
+  const mockConversionRates = CONFIG.mockConversionRates;
   const queries = generateQuery(tokensWithoutBoson, false);
   const swapQueries = generateQuery(tokensWithoutBoson, true);
 
   const allTokens = useQuery(
-    ["pools-all"],
+    ["pools-all", queries, swapQueries],
     async () => {
       const allPromises = [...queries, ...swapQueries].map(
         async ({ query, variables }: QueryProps) =>
@@ -122,7 +123,7 @@ export function useUniswapPools({ tokens }: Props) {
       ).filter((n) => n) as IPool[];
     },
     {
-      enabled: !!queries.length && !!swapQueries.length && !isDev
+      enabled: !!queries.length && !!swapQueries.length && !mockConversionRates
     }
   );
 
@@ -135,7 +136,7 @@ export function useUniswapPools({ tokens }: Props) {
       });
       const allPromises = [
         {
-          query: poolsQuery,
+          query: getPoolsQuery("liquidity"),
           variables: {
             token0: "WETH",
             token1: "BOSON"
@@ -165,7 +166,7 @@ export function useUniswapPools({ tokens }: Props) {
       ).filter((n) => n) as IPool[];
     },
     {
-      enabled: !isDev
+      enabled: !mockConversionRates
     }
   );
 

@@ -1,13 +1,13 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { useCoreSDK } from "../../useCoreSdk";
+import { useAccount } from "../connection/connection";
 import { useCurrentBuyer } from "../useCurrentBuyer";
 import { useCurrentSellers } from "../useCurrentSellers";
 
 export const useCompletedTransactions = (page = 0) => {
-  const { address } = useAccount();
+  const { account: address } = useAccount();
 
   const { sellerIds } = useCurrentSellers();
   const { data: currentBuyer } = useCurrentBuyer();
@@ -16,7 +16,15 @@ export const useCompletedTransactions = (page = 0) => {
   const accountIds = [...sellerIds, currentBuyer?.id].filter(Boolean);
 
   return useQuery(
-    ["transactions", "completed", address, page],
+    [
+      "transactions",
+      "completed",
+      address,
+      page,
+      coreSDK.uuid,
+      sellerIds,
+      currentBuyer
+    ],
     async () => {
       const logs = await coreSDK.getEventLogs({
         logsFilter: {

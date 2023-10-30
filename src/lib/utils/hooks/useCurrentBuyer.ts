@@ -1,13 +1,13 @@
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { useCoreSDK } from "../useCoreSdk";
+import { useAccount } from "./connection/connection";
 
 export function useCurrentBuyer() {
   const coreSDK = useCoreSDK();
-  const { address } = useAccount();
+  const { account: address } = useAccount();
   return useQuery(
-    ["current-buyer"],
+    ["current-buyer", coreSDK.uuid, address],
     async () => {
       const buyers = await coreSDK.getBuyers({
         buyersFilter: {

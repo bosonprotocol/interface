@@ -1,13 +1,7 @@
-import { hooks } from "@bosonprotocol/react-kit";
-import { providers } from "ethers";
-import { useSigner } from "wagmi";
+import { useCoreSDKContext } from "components/core-sdk/CoreSDKContext";
 
-import { CONFIG } from "../config";
+export const useCoreSDK = () => {
+  const coreSDK = useCoreSDKContext();
 
-export function useCoreSDK() {
-  const { data: signer } = useSigner();
-  return hooks.useCoreSdk({
-    ...CONFIG,
-    web3Provider: signer?.provider as providers.Web3Provider
-  });
-}
+  return coreSDK;
+};

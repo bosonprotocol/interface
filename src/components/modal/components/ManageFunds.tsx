@@ -1,5 +1,4 @@
 import {
-  ButtonSize,
   Currencies,
   CurrencyDisplay,
   subgraph
@@ -10,7 +9,7 @@ import styled from "styled-components";
 import { colors } from "../../../lib/styles/colors";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
 import { calcPrice } from "../../../lib/utils/calcPrice";
-import useFunds from "../../../pages/account/funds/useFunds";
+import useFunds from "../../../lib/utils/hooks/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { Spinner } from "../../loading/Spinner";
 import Tooltip from "../../tooltip/Tooltip";
@@ -58,7 +57,7 @@ export default function ManageFunds({ id }: Props) {
   const { funds, reload, fundStatus } = useFunds(id, tokens);
   const [uiFunds, setUiFunds] =
     useState<subgraph.FundsEntityFieldsFragment[]>(funds);
-  const { showModal, modalTypes } = useModal();
+  const { showModal } = useModal();
 
   useEffect(() => {
     setUiFunds((prevFunds) => [
@@ -72,7 +71,6 @@ export default function ManageFunds({ id }: Props) {
   }, [funds, id]);
 
   if (fundStatus === ProgressStatus.ERROR) {
-    // TODO: NO FIGMA REPRESENTATIONS
     return <Typography tag="h2">There has been an error...</Typography>;
   }
 
@@ -121,10 +119,10 @@ export default function ManageFunds({ id }: Props) {
               <AmountWrapper>{withdrawable}</AmountWrapper>
               <WithdrawButton
                 variant="primaryFill"
-                size={ButtonSize.Small}
+                size="small"
                 onClick={() => {
                   showModal(
-                    modalTypes.FINANCE_WITHDRAW_MODAL,
+                    "FINANCE_WITHDRAW_MODAL",
                     {
                       title: `Withdraw ${fund.token.symbol}`,
                       protocolBalance: withdrawable,

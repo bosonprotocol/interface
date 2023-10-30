@@ -1,4 +1,4 @@
-import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
@@ -169,9 +169,8 @@ export default function DisputesTable({ disputes }: Props) {
               {emailAddress && (
                 <BosonButton
                   type="button"
-                  variant="accentInverted"
-                  showBorder={false}
-                  size={ButtonSize.Small}
+                  variant="accentInvertedNoBorder"
+                  size="small"
                   style={{
                     whiteSpace: "pre"
                   }}
@@ -188,7 +187,7 @@ export default function DisputesTable({ disputes }: Props) {
                 <>
                   <BosonButton
                     variant="secondaryInverted"
-                    size={ButtonSize.Small}
+                    size="small"
                     onClick={async () => {
                       showModal(
                         modalTypes.DISPUTE_RESOLUTION_REFUSE_MODAL,
@@ -206,7 +205,7 @@ export default function DisputesTable({ disputes }: Props) {
                   </BosonButton>
                   <BosonButton
                     variant="primaryFill"
-                    size={ButtonSize.Small}
+                    size="small"
                     onClick={async () => {
                       showModal(
                         modalTypes.DISPUTE_RESOLUTION_DECIDE_MODAL,

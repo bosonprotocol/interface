@@ -1,3 +1,4 @@
-import { config } from "../../../lib/config";
+import { DappConfig } from "lib/config";
 
-export const envName = `${config.envName}-${config.contracts.protocolDiamond}`;
+export const getChatEnvName = (dappConfig: DappConfig) =>
+  `${dappConfig.envName}-${dappConfig.envConfig.contracts.protocolDiamond}`;

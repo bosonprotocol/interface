@@ -1,19 +1,19 @@
 import { CancelButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { poll } from "lib/utils/promises";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
 
-import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { displayFloat } from "../../../../lib/utils/calcPrice";
+import { useSigner } from "../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import useRefundData from "../../../../lib/utils/hooks/useRefundData";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
-import { poll } from "../../../../pages/create-product/utils";
 import DetailTable from "../../../detail/DetailTable";
 import SimpleError from "../../../error/SimpleError";
 import { Spinner } from "../../../loading/Spinner";
@@ -109,13 +109,14 @@ export default function CancelExchangeModal({
   BASE_MODAL_DATA,
   reload
 }: Props) {
+  const { config } = useConfigContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [cancelError, setCancelError] = useState<Error | null>(null);
   const { offer } = exchange;
 
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const { data: signer } = useSigner();
+  const signer = useSigner();
   const { showModal, modalTypes } = useModal();
 
   const { currency, price, penalty, refund } = useRefundData(
@@ -195,7 +196,12 @@ export default function CancelExchangeModal({
           <CancelButton
             variant="accentInverted"
             exchangeId={exchange.id}
-            envName={CONFIG.envName}
+            coreSdkConfig={{
+              envName: config.envName,
+              configId: config.envConfig.configId,
+              web3Provider: signer?.provider as Provider,
+              metaTx: config.metaTx
+            }}
             disabled={isLoading}
             onError={(error) => {
               console.error(error);
@@ -272,8 +278,6 @@ export default function CancelExchangeModal({
                 />
               ));
             }}
-            web3Provider={signer?.provider as Provider}
-            metaTx={CONFIG.metaTx}
           >
             <Grid gap="0.5rem">
               Confirm cancellation

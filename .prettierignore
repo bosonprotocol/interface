@@ -1,1 +1,2 @@
 src/lib/utils/hooks/lens/graphql/generated.ts
+src/lib/utils/__generated__

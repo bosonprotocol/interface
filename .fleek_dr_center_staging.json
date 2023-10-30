@@ -1,0 +1,15 @@
+{
+  "site": {
+    "id": "11c88bcf-011d-46a8-bf8e-9a6a8fadead9",
+    "team": "3fb24a6e-7168-438e-848a-8b706e8bb76a",
+    "platform": "ipfs",
+    "source": "ipfs",
+    "name": "drcenter-staging"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "build",
+    "command": "npm run build",
+    "rootDir": ""
+  }
+}

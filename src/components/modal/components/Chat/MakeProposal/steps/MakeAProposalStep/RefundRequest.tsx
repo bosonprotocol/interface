@@ -2,15 +2,17 @@ import { BigNumber } from "ethers";
 import { useFormikContext } from "formik";
 import styled from "styled-components";
 
+import { MIN_VALUE } from "../../../../../../../lib/constants/percentages";
+import { colors } from "../../../../../../../lib/styles/colors";
 import { calcPrice } from "../../../../../../../lib/utils/calcPrice";
 import { useBreakpoints } from "../../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { Input } from "../../../../../../form";
-import Price from "../../../../../../price";
+import { InputError } from "../../../../../../form/Input";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
-import { MIN_VALUE } from "../../../const";
 import { FormModel } from "../../MakeProposalFormModel";
+import InEscrowInput from "./InEscrowInput";
 import RequestedRefundInput from "./RequestedRefundInput";
 
 const InEscrowPriceWrapper = styled.div`
@@ -27,28 +29,6 @@ const InEscrowPriceWrapper = styled.div`
     /* change once :has is supported */
     padding: 0;
     width: 100%;
-  }
-`;
-
-const StyledPrice = styled(Price)`
-  position: absolute;
-  top: 0;
-  right: 1rem;
-  bottom: 0;
-
-  > div {
-    align-items: flex-end;
-  }
-
-  small {
-    margin: 0 !important;
-    > * {
-      font-size: 0.75rem;
-    }
-  }
-
-  svg {
-    transform: translate(0, -50%) scale(1);
   }
 `;
 
@@ -69,8 +49,8 @@ export default function RefundRequest({ exchange }: Props) {
   const inEscrow: string = BigNumber.from(offer.price)
     .add(BigNumber.from(offer.sellerDeposit || "0"))
     .toString();
+
   const inEscrowWithDecimals: string = formatIntValueToDecimals(inEscrow);
-  const currencySymbol = offer.exchangeToken.symbol;
   return (
     <>
       <Typography $fontSize="1.5rem" fontWeight="600">
@@ -79,12 +59,8 @@ export default function RefundRequest({ exchange }: Props) {
       <Typography $fontSize="1rem">
         You will keep your purchased product and get a partial refund.
       </Typography>
-      <Grid
-        gap="1rem"
-        alignItems="flex-start"
-        flexDirection={isLteS ? "column" : "row"}
-      >
-        <Grid flexDirection="column" flexBasis="30%">
+      <Grid gap="1rem" alignItems="flex-start" flexDirection="column">
+        <Grid flexDirection="column" flexBasis="40%" alignItems="flex-start">
           <Typography
             $fontSize="1rem"
             fontWeight="600"
@@ -97,24 +73,16 @@ export default function RefundRequest({ exchange }: Props) {
             fontWeight="400"
             margin={isLteS ? "0.625rem auto 0.625rem 0" : "0"}
           >
-            Item price + seller diposit
+            Item price + seller deposit
           </Typography>
           <InEscrowPriceWrapper>
-            <Input
-              name={FormModel.formFields.escrow.name}
-              type="number"
-              readOnly
-            />
-            <StyledPrice
-              currencySymbol={currencySymbol}
-              value={inEscrow}
-              decimals={offer.exchangeToken.decimals}
-              isExchange
-              convert
+            <InEscrowInput
+              exchangeToken={offer.exchangeToken}
+              inEscrow={inEscrow}
             />
           </InEscrowPriceWrapper>
         </Grid>
-        <Grid flexDirection="column" flexBasis="40%">
+        <Grid flexDirection="column" flexBasis="40%" alignItems="flex-start">
           <Typography
             $fontSize="1rem"
             fontWeight="600"
@@ -135,7 +103,7 @@ export default function RefundRequest({ exchange }: Props) {
             inEscrowWithDecimals={inEscrowWithDecimals}
           />
         </Grid>
-        <Grid flexDirection="column" flexBasis="30%">
+        <Grid flexDirection="column" flexBasis="20%" alignItems="flex-start">
           <Typography
             $fontSize="1rem"
             fontWeight="600"
@@ -150,31 +118,47 @@ export default function RefundRequest({ exchange }: Props) {
           >
             Edit as %
           </Typography>
-          <Input
-            step={MIN_VALUE}
-            name={FormModel.formFields.refundPercentage.name}
-            type="number"
-            onChange={(e) => {
-              handleChange(e);
-              const {
-                target: { valueAsNumber }
-              } = e;
-              if (isNaN(valueAsNumber)) {
-                return;
-              }
-              const valueInDecimals: string = formatIntValueToDecimals(
-                BigNumber.from(inEscrow)
-                  .mul(valueAsNumber * 1000)
-                  .div(100 * 1000)
-                  .toString()
-              );
-              setFieldValue(
-                FormModel.formFields.refundAmount.name,
-                valueInDecimals,
-                true
-              );
+          <div
+            style={{
+              width: "100%",
+              background: colors.lightGrey,
+              paddingRight: "1rem",
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              border: `1px solid ${colors.border}`
             }}
-          />
+          >
+            <Input
+              style={{ textAlign: "right", border: "none", paddingRight: "0" }}
+              step={MIN_VALUE}
+              hideError
+              name={FormModel.formFields.refundPercentage.name}
+              type="number"
+              onChange={(e) => {
+                handleChange(e);
+                const {
+                  target: { valueAsNumber }
+                } = e;
+                if (isNaN(valueAsNumber)) {
+                  return;
+                }
+                const valueInDecimals: string = formatIntValueToDecimals(
+                  BigNumber.from(inEscrow)
+                    .mul(valueAsNumber * 1000)
+                    .div(100 * 1000)
+                    .toString()
+                );
+                setFieldValue(
+                  FormModel.formFields.refundAmount.name,
+                  valueInDecimals,
+                  true
+                );
+              }}
+            />
+            <span>%</span>
+          </div>
+          <InputError name={FormModel.formFields.refundPercentage.name} />
         </Grid>
       </Grid>
     </>

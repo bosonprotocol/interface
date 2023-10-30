@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ButtonSize } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { useField } from "formik";
 import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 
 import { isTruthy } from "../../lib/types/helpers";
+import { useForm } from "../../lib/utils/hooks/useForm";
 import { Error, FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import BosonButton from "../ui/BosonButton";
@@ -16,10 +17,10 @@ import {
   SectionTitle
 } from "./Product.styles";
 import {
-  OPTIONS_CURRENCIES,
+  getOptionsCurrencies,
   ProductVariants as ProductVariantsType
 } from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
+import { getVariantName } from "./utils/getVariantName";
 
 const variantsColorsKey = "productVariants.colors";
 const variantsSizesKey = "productVariants.sizes";
@@ -122,7 +123,10 @@ const deleteTagsIfNoVariants = (
 };
 
 export default function ProductVariants() {
-  const { nextIsDisabled } = useCreateForm();
+  const { config } = useConfigContext();
+  const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
+
+  const { nextIsDisabled } = useForm();
   const [fieldColors, , helpersColors] =
     useField<ProductVariantsType["productVariants"]["colors"]>(
       variantsColorsKey
@@ -199,7 +203,7 @@ export default function ProductVariants() {
           variantsToAdd.push({
             color,
             size,
-            name: `${color} / ${size}`,
+            name: getVariantName({ color, size }),
             // TODO: yup does not infer currency, price and quantity as nullable, even though they are are defined as such
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -341,7 +345,7 @@ export default function ProductVariants() {
                     <Grid justifyContent="center">
                       <BosonButton
                         variant="secondaryInverted"
-                        size={ButtonSize.Small}
+                        size="small"
                         onClick={() => {
                           deleteTagsIfNoVariants(
                             variant,

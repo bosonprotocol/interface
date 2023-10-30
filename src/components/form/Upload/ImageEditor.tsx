@@ -1,9 +1,19 @@
 import { ChangeEvent, forwardRef, useState } from "react";
 import AvatarEditor, { AvatarEditorProps } from "react-avatar-editor";
 import Dropzone from "react-dropzone";
+import styled from "styled-components";
 
 import { useIpfsImage } from "../../../lib/utils/hooks/images/useIpfsImage";
 import Grid from "../../ui/Grid";
+
+const StyledCanvasWrapper = styled.div`
+  > :first-child {
+    max-width: 100%;
+    object-fit: contain;
+    width: auto !important;
+    height: auto !important;
+  }
+`;
 
 export type ImageEditorProps = Pick<
   AvatarEditorProps,
@@ -21,38 +31,26 @@ export const ImageEditor = forwardRef<AvatarEditor, ImageEditorProps>(
     };
     const { data } = useIpfsImage({ url: url ?? "" }, { enabled: !!url });
     const image = data?.base64;
-    const w = borderRadius
-      ? undefined
-      : Math.min(width || Number.MAX_SAFE_INTEGER, window.innerWidth);
+    const { width: imageWidth, height: imageHeight } = data || {};
+    const w = borderRadius ? width : width || imageWidth;
+    const h = borderRadius ? height : height || imageHeight;
     return (
       <>
         {image && (
-          <div style={{ margin: "2rem 0" }}>
-            <Dropzone
-              data-dropzone
-              noClick
-              noKeyboard
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              style={{
-                // width: w ? w + "px" : "250px",
-                // width: "100%",
-                // height: height ? height + "px" : "250px",
-                borderRadius: borderRadius ? `${borderRadius}%` : ""
-              }}
-            >
+          <div style={{ margin: "2rem 0", maxWidth: "100%" }}>
+            <Dropzone noClick noKeyboard>
               {({ getRootProps, getInputProps }) => (
-                <div {...getRootProps()}>
+                <StyledCanvasWrapper {...getRootProps()}>
                   <AvatarEditor
                     image={image}
                     ref={editorRef}
                     width={w}
-                    height={height}
+                    height={h}
                     scale={scale}
                     borderRadius={borderRadius}
                   />
                   <input {...getInputProps()} />
-                </div>
+                </StyledCanvasWrapper>
               )}
             </Dropzone>
             <Grid alignItems="center" justifyContent="center">

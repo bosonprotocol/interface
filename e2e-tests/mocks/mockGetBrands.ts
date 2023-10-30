@@ -11,7 +11,7 @@ export interface MockProps {
   };
 }
 
-export async function mockGetBrands({ postData }: MockProps) {
+export async function mockGetBrands() {
   const brands = {
     data: {
       productV1MetadataEntities: [

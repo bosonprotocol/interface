@@ -1,3 +1,4 @@
+import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 import { ReactNode } from "react";
 import styled, { css, IntrinsicElementsKeys } from "styled-components";
 
@@ -57,7 +58,7 @@ export default function FairExchangePolicy({
     <>
       <InfoTitleWrapper>
         <Typography tag={titleTag} data-title>
-          Fair exchange policy
+          {onlyFairExchangePolicyLabel}
         </Typography>
         {policyIcon}
       </InfoTitleWrapper>

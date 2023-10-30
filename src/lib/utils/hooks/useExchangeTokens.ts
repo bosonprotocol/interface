@@ -1,3 +1,4 @@
+import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -17,12 +18,16 @@ export interface ExchangeTokensProps {
   offers: Array<Offer>;
 }
 export function useExchangeTokens(props: Props, { enabled }: Options = {}) {
+  const { config } = useConfigContext();
+  const { subgraphUrl } = config.envConfig;
+
   return useQuery(
-    ["exchangeTokens", props],
+    ["exchangeTokens", props, subgraphUrl],
     async () => {
       const result = await fetchSubgraph<{
         exchangeTokens: ExchangeTokensProps[];
       }>(
+        subgraphUrl,
         gql`
           query GetExchangesTokens($sellerId: String) {
             exchangeTokens {

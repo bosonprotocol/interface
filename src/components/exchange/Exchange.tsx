@@ -5,11 +5,13 @@ import {
   exchanges,
   subgraph
 } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { useAccount } from "lib/utils/hooks/connection/connection";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
-import { useAccount } from "wagmi";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -27,16 +29,13 @@ import {
   getLensImageUrl
 } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
-import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useModal } from "../modal/useModal";
-import { useConvertedPrice } from "../price/useConvertedPrice";
 
 interface Props {
   offer: Offer;
   exchange: IExchange;
   isPrivateProfile?: boolean;
-  reload?: () => void;
 }
 
 const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
@@ -66,12 +65,15 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   }};
 `;
 
-export default function Exchange({ offer, exchange, reload }: Props) {
+export default function Exchange({ offer, exchange }: Props) {
+  const { config } = useConfigContext();
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const avatar = getLensImageUrl(getLensProfilePictureUrl(lens));
+  const avatar = config.lens.ipfsGateway
+    ? getLensImageUrl(getLensProfilePictureUrl(lens), config.lens.ipfsGateway)
+    : null;
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
@@ -79,7 +81,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     height: 500
   });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
-  const { address } = useAccount();
+  const { account: address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
 
   const handleText = useHandleText(offer);
@@ -111,43 +113,22 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     });
   };
 
-  const convertedPrice = useConvertedPrice({
-    value: offer.price,
-    decimals: offer.exchangeToken.decimals,
-    symbol: offer.exchangeToken.symbol
-  });
-
-  const OFFER_DETAIL_DATA_MODAL = useMemo(
-    () => getOfferDetailData(offer, convertedPrice, true),
-    [offer, convertedPrice]
-  );
-
-  const BASE_MODAL_DATA = useMemo(
-    () => ({
-      data: OFFER_DETAIL_DATA_MODAL,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      exchange: exchange!,
-      animationUrl: offer.metadata.animationUrl || "",
-      image: offer.metadata.imageUrl,
-      name: offer.metadata.name
-    }),
-    [
-      OFFER_DETAIL_DATA_MODAL,
-      exchange,
-      offer.metadata.imageUrl,
-      offer.metadata.name,
-      offer.metadata.animationUrl
-    ]
-  );
-
   const createSpecificCardConfig = () => {
     switch (status) {
       case "REDEEMED": {
         const handleDispute = () => {
-          showModal(modalTypes.RAISE_DISPUTE, {
-            title: "Raise a dispute",
-            exchangeId: exchange?.id || ""
-          });
+          showModal(
+            modalTypes.RAISE_DISPUTE,
+            {
+              title: "Dispute mutual resolution process",
+              exchangeId: exchange?.id || ""
+            },
+            "auto",
+            undefined,
+            {
+              l: "1000px"
+            }
+          );
         };
         return {
           status: "REDEEMED" as Extract<ExchangeCardStatus, "REDEEMED">,
@@ -166,31 +147,35 @@ export default function Exchange({ offer, exchange, reload }: Props) {
         };
       case "COMMITTED": {
         const handleRedeem = () => {
-          showModal(
-            modalTypes.REDEEM,
-            {
-              title: "Redeem your item",
+          try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            window.bosonWidgetShowRedeem({
               exchangeId: exchange?.id || "",
-              offerName: offer.metadata.name,
-              offerId: offer.id,
-              buyerId: exchange?.buyer.id || "",
-              sellerId: exchange?.seller.id || "",
-              sellerAddress: exchange?.seller.assistant || "",
-              reload
-            },
-            "s"
-          );
+              widgetAction: "REDEEM_FORM",
+              configId: config.envConfig.configId,
+              account: address
+            });
+          } catch (e) {
+            console.error(e);
+            Sentry.captureException(e);
+          }
         };
         const handleCancel = () => {
-          if (!exchange) {
-            return;
+          try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            window.bosonWidgetShowRedeem({
+              exchangeId: exchange?.id || "",
+              widgetAction: "CANCEL_FORM",
+              showRedemptionOverview: false,
+              configId: config.envConfig.configId,
+              account: address
+            });
+          } catch (e) {
+            console.error(e);
+            Sentry.captureException(e);
           }
-          showModal(modalTypes.CANCEL_EXCHANGE, {
-            title: "Cancel exchange",
-            exchange,
-            BASE_MODAL_DATA,
-            reload
-          });
         };
         return {
           status: "COMMITTED" as Extract<ExchangeCardStatus, "COMMITTED">,

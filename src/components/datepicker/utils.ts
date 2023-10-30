@@ -1,6 +1,5 @@
 import type { Dayjs } from "dayjs";
-
-import { CONFIG } from "../../lib/config";
+import { CONFIG } from "lib/config";
 
 export interface ICalendarCell {
   text: string;
@@ -20,7 +19,7 @@ export function changeMonth(date: Dayjs, isNext: boolean): Dayjs {
   return date.add(isNext ? 1 : -1, "month");
 }
 
-export function getCells(selectedDate: Dayjs, date: Dayjs): ICalendarCell[] {
+function getCells(selectedDate: Dayjs, date: Dayjs): ICalendarCell[] {
   const daysInMonth = date.daysInMonth();
   const cells: ICalendarCell[] = [];
 

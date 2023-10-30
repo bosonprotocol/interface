@@ -1,23 +1,41 @@
+import {
+  MessageData,
+  MessageType,
+  ThreadId,
+  version
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
-import { useState } from "react";
+import { useAccount } from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
 
-import { CONFIG } from "../../../lib/config";
+import {
+  ChatInitializationStatus,
+  useChatStatus
+} from "../../../lib/utils/hooks/chat/useChatStatus";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-import { poll } from "../../../pages/create-product/utils";
+import { useChatContext } from "../../../pages/chat/ChatProvider/ChatContext";
+import {
+  ICON_KEYS,
+  StringIconTypes
+} from "../../../pages/chat/components/conversation/const";
+import { MessageDataWithInfo } from "../../../pages/chat/types";
 import SimpleError from "../../error/SimpleError";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import BosonButton from "../../ui/BosonButton";
-import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 import { ModalProps } from "../ModalContext";
 import { useModal } from "../useModal";
+import ExchangePreview from "./Chat/components/ExchangePreview";
+import InitializeChatWithSuccess from "./Chat/components/InitializeChatWithSuccess";
 
 interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
@@ -25,6 +43,14 @@ interface Props {
   offerName: string;
   disputeId: string;
   refetch: () => void;
+  setHasError: Dispatch<SetStateAction<boolean>>;
+  addMessage: (
+    newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
+  ) => Promise<void>;
+  onSentMessage: (messageData: MessageData, uuid: string) => Promise<void>;
+  destinationAddress: string;
+  threadId: ThreadId | null;
+  exchange: Exchange;
 }
 
 async function retractDisputeWithMetaTx(
@@ -52,29 +78,110 @@ export default function RetractDisputeModal({
   exchangeId,
   offerName,
   disputeId,
-  refetch
+  refetch,
+  addMessage,
+  setHasError,
+  threadId,
+  onSentMessage,
+  destinationAddress,
+  exchange
 }: Props) {
+  const { config } = useConfigContext();
+  const { bosonXmtp } = useChatContext();
+  const { chatInitializationStatus } = useChatStatus();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
   const { showModal } = useModal();
-  const { address } = useAccount();
+  const { account: address } = useAccount();
   const [retractDisputeError, setRetractDisputeError] = useState<Error | null>(
     null
   );
+  const handleSendingRetractMessage = useCallback(async () => {
+    if (bosonXmtp && threadId && address) {
+      try {
+        setHasError(false);
+        const newMessage = {
+          threadId,
+          content: {
+            value: {
+              icon: ICON_KEYS.info,
+              heading: "Buyer has retracted the dispute",
+              body: "The dispute has been cancelled and the exchange will execute as originally intended.",
+              type: StringIconTypes.RETRACT
+            }
+          },
+          contentType: MessageType.StringIcon,
+          version
+        } as const;
+        const uuid = window.crypto.randomUUID();
+
+        await addMessage({
+          authorityId: "",
+          timestamp: Date.now(),
+          sender: address,
+          recipient: destinationAddress,
+          data: newMessage,
+          isValid: false,
+          isPending: true,
+          uuid
+        });
+
+        const messageData = await bosonXmtp.encodeAndSendMessage(
+          newMessage,
+          destinationAddress
+        );
+        if (!messageData) {
+          throw new Error(
+            "Something went wrong while sending a retract message"
+          );
+        }
+        onSentMessage(messageData, uuid);
+      } catch (error) {
+        console.error(error);
+        setHasError(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "handleSendingRetractMessage",
+            location: "RetractDisputeModal"
+          }
+        });
+      }
+    }
+  }, [
+    addMessage,
+    address,
+    bosonXmtp,
+    destinationAddress,
+    onSentMessage,
+    threadId,
+    setHasError
+  ]);
+  const showSuccessInitialization =
+    [
+      ChatInitializationStatus.INITIALIZED,
+      ChatInitializationStatus.ALREADY_INITIALIZED
+    ].includes(chatInitializationStatus) && bosonXmtp;
+
   return (
     <Grid flexDirection="column" gap="5rem">
-      <div>
+      <Grid flexDirection="column" alignItems="flex-start">
+        <Grid marginTop="2rem" marginBottom="2rem">
+          <ExchangePreview exchange={exchange} />
+        </Grid>
         <Typography fontWeight="600">What is Retract?</Typography>
         <Typography>
-          If you Cancel your rNFT you default on your commitment to exchange, at
-          no fault of the seller. This will result in the return of the item
-          price minus the buyer cancelation penalty.
+          By retracting you cancel the dispute and the exchange is executed as
+          originally intended.
         </Typography>
         {retractDisputeError && <SimpleError />}
-      </div>
+      </Grid>
+      <InitializeChatWithSuccess />
       <Grid justifyContent="space-between">
         <BosonButton
           variant="primaryFill"
+          disabled={!showSuccessInitialization}
           onClick={async () => {
             try {
               setRetractDisputeError(null);
@@ -100,6 +207,7 @@ export default function RetractDisputeModal({
                 }
               });
               await tx.wait();
+              await handleSendingRetractMessage();
               await poll(
                 async () => {
                   const retractedDispute = await coreSDK.getDisputeById(
@@ -116,7 +224,7 @@ export default function RetractDisputeModal({
                 <SuccessTransactionToast
                   t={t}
                   action={`Retracted dispute: ${offerName}`}
-                  url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                  url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
               hideModal();
@@ -140,9 +248,6 @@ export default function RetractDisputeModal({
         >
           Confirm Retract
         </BosonButton>
-        <Button theme="blank" onClick={hideModal}>
-          Back
-        </Button>
       </Grid>
     </Grid>
   );

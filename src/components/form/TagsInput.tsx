@@ -70,6 +70,7 @@ const TagsInput = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field.value]);
   const labelRef = useRef<HTMLElement>(null);
+  const hitEnterWidth = useRef<HTMLDivElement>(null);
   return (
     <>
       <Grid gap="0.5rem" alignItems="center">
@@ -86,8 +87,13 @@ const TagsInput = ({
             name={name}
             onBlur={handleBlur}
             error={errorMessage}
+            {...(hitEnterWidth.current?.clientWidth && {
+              style: {
+                paddingRight: `calc(${hitEnterWidth.current.clientWidth}px + 1rem)`
+              }
+            })}
           />
-          <Helper>
+          <Helper ref={hitEnterWidth}>
             Hit Enter <KeyReturn size={13} />
           </Helper>
         </TagContainer>

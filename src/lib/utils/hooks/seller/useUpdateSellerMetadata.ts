@@ -1,7 +1,6 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType, OfferOrSellerMetadata } from "@bosonprotocol/react-kit";
 import { useMutation } from "react-query";
-import { useAccount } from "wagmi";
 
 import {
   ContactPreference,
@@ -11,6 +10,7 @@ import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
 import { decimalToHex } from "../../number";
 import { removeEmpty } from "../../objects";
+import { useAccount } from "../connection/connection";
 import { useCurrentSellers } from "../useCurrentSellers";
 import { useSellers } from "../useSellers";
 import useStoreSellerMetadata from "./useStoreSellerMetadata";
@@ -26,7 +26,7 @@ type StoreSellerMetadataFn = ReturnType<
 
 export default function useUpdateSellerMetadata() {
   const { sellers: currentSellers } = useCurrentSellers();
-  const { address = "" } = useAccount();
+  const { account: address = "" } = useAccount();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
   const sellerId = seller?.id;
   const { refetch: refetchSeller } = useSellers(
@@ -117,7 +117,9 @@ async function updateSellerMedatata(
                   tag: "cover",
                   height: cover?.height ?? undefined,
                   type: cover?.type,
-                  width: cover?.width ?? undefined
+                  width: cover?.width ?? undefined,
+                  fit: cover?.fit,
+                  position: cover?.position
                 }
               ]
             : [])
