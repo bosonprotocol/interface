@@ -205,7 +205,7 @@ export const commonCoreTermsOfSaleValidationSchema = {
         // @ts-ignore
         .isOfferValidityDatesValid()
     })
-    .required(),
+    .required(validationMessage.required),
   redemptionPeriod: Yup.mixed<Dayjs | Dayjs[]>().when(
     "infiniteExpirationOffers",
     {
@@ -415,6 +415,6 @@ export const shippingInfoValidationSchema = Yup.object({
 
 export const confirmProductDetailsSchema = Yup.object({
   confirmProductDetails: Yup.object({
-    acceptsTerms: Yup.boolean().required()
+    acceptsTerms: Yup.boolean().required(validationMessage.required)
   })
 });

@@ -32,17 +32,6 @@ export const CoreTermsOfSaleDates: React.FC<CoreTermsOfSaleDatesProps> = ({
         title="Offer validity period"
         required
         subTitle="The offer validity period is the time in which buyers can commit to your offer."
-      >
-        <Datepicker
-          key={infiniteExpirationOffers + "offerValidityPeriod"}
-          name={`${fixedPrefix}offerValidityPeriod`}
-          period={!infiniteExpirationOffers}
-          selectTime
-          minDate={null}
-        />
-      </FormField>
-      <FormField
-        title="Redemption period"
         titleIcon={
           <SwitchForm
             name={`${fixedPrefix}infiniteExpirationOffers`}
@@ -55,12 +44,23 @@ export const CoreTermsOfSaleDates: React.FC<CoreTermsOfSaleDatesProps> = ({
                 cursor="pointer"
               >
                 {infiniteExpirationOffers
-                  ? "With relative redemption date"
-                  : "With fixed redemption date"}
+                  ? "Offers with no expiration date"
+                  : "Offers with expiration date"}
               </Typography>
             )}
           />
         }
+      >
+        <Datepicker
+          key={infiniteExpirationOffers + "offerValidityPeriod"}
+          name={`${fixedPrefix}offerValidityPeriod`}
+          period={!infiniteExpirationOffers}
+          selectTime
+          minDate={null}
+        />
+      </FormField>
+      <FormField
+        title="Redemption period"
         required
         subTitle="The redemption period is the time in which buyers can redeem the rNFT for the physical item."
       >
