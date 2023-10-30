@@ -41,6 +41,7 @@ export const BosonProtocolRoutes = {
 export const SellerCenterRoutes = {
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
   CreateProduct: `${BosonRoutes.Sell}/create-product`,
+  BatchCreateOffers: `${BosonRoutes.Sell}/batch-create-offers`,
   DCL: `${BosonRoutes.Sell}/dcl`
 } as const;
 
