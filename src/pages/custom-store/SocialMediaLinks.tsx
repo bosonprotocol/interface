@@ -49,7 +49,7 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({
           <Grid flexBasis={firstSubFieldBasis}>
             <Typography>Logo</Typography>
           </Grid>
-          <Grid>
+          <Grid justifyContent="flex-end">
             <Typography>URL</Typography>
           </Grid>
         </Grid>
@@ -64,12 +64,20 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({
                 <Grid flexBasis={firstSubFieldBasis}>
                   <SocialLogo logo={value} size={logoSize} />
                 </Grid>
-                <Grid alignItems="baseline" gap={"0.25rem"}>
+                <Grid
+                  alignItems="baseline"
+                  gap={"0.25rem"}
+                  justifyContent="flex-end"
+                >
                   <span style={{ fontSize: "0.7rem" }}>{prefix}</span>
-                  <Grid flexDirection="column" alignItems="flex-start">
+                  <Grid
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    flexBasis="50%"
+                  >
                     <Input
                       name={`${storeFields.socialMediaLinks}[${index}].url`}
-                      placeholder={`${label} URL`}
+                      placeholder={`${label} handle`}
                     />
                   </Grid>
                 </Grid>
