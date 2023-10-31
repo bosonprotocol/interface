@@ -426,7 +426,7 @@ export default function ConfirmProductDetails({
                     title={
                       Array.isArray(redemptionPeriod)
                         ? "Redemption period"
-                        : "Redemption from"
+                        : "Redemption start date"
                     }
                     required
                   >
