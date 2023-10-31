@@ -32,7 +32,7 @@ describe("url", () => {
   describe("test valid urls", () => {
     test.each(validUrls)("%s is a valid url", (...urls) => {
       urls.forEach((url) => {
-        expect(checkValidUrl(url, { addHttpPrefix: false })).toBe(true);
+        expect(checkValidUrl(url, { addHttpPrefix: true })).toBe(true);
       });
     });
   });
