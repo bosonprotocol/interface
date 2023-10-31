@@ -8,6 +8,7 @@ import useProductByUuid, {
   ReturnUseProductByUuid
 } from "lib/utils/hooks/product/useProductByUuid";
 import { useCurrentSellers } from "lib/utils/hooks/useCurrentSellers";
+import { didReleaseVersionChange } from "lib/utils/release";
 import { useCoreSDK } from "lib/utils/useCoreSdk";
 import uniqBy from "lodash.uniqby";
 import { getDisputePeriodDurationFromSubgraphInDays } from "pages/create-product/utils/helpers";
@@ -70,10 +71,16 @@ export function useInitialValues() {
       }),
     [config.envConfig]
   );
-  const initialValues = useMemo(
-    () => getItemFromStorage<CreateProductForm | null>(MAIN_KEY, null),
-    []
-  );
+  const initialValues = useMemo(() => {
+    const savedProduct = getItemFromStorage<CreateProductForm | null>(
+      MAIN_KEY,
+      null
+    );
+    if (didReleaseVersionChange()) {
+      return null;
+    }
+    return savedProduct;
+  }, []);
 
   const { data: product } = useProductByUuid(sellerId, fromProductUuid, {
     enabled: !!fromProductUuid && !!sellerId

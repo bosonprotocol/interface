@@ -878,7 +878,6 @@ function CreateProductInner({
       const isTokenGated = productType?.tokenGatedOffer === "true";
       await createOffers({
         sellerToCreate: null,
-        isMultiVariant,
         offersToCreate,
         tokenGatedInfo: isTokenGated ? values.tokenGating : null,
         conditionDecimals: decimals,

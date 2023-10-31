@@ -27,7 +27,6 @@ type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 type UseCreateOffersProps = {
   sellerToCreate: accounts.CreateSellerArgs | null;
   offersToCreate: offers.CreateOfferArgs[];
-  isMultiVariant: boolean;
   tokenGatedInfo?: PartialTokenGating | null;
   conditionDecimals?: number;
   onGetExchangeTokenDecimals?: (decimals: number | undefined) => unknown;
@@ -48,7 +47,6 @@ export function useCreateOffers() {
     async ({
       sellerToCreate,
       offersToCreate,
-      isMultiVariant,
       tokenGatedInfo,
       conditionDecimals,
       onGetExchangeTokenDecimals,
@@ -100,7 +98,7 @@ export function useCreateOffers() {
         // seller should always exist at this point as it should have been created in the modal at the beginning of the offer creation flow
         const seller: accounts.CreateSellerArgs | null = sellerToCreate;
         let txResponse;
-        if (isMultiVariant) {
+        if (offersToCreate.length > 1) {
           if (!hasSellerAccount && seller) {
             if (isMetaTx) {
               // createSeller with meta-transaction
@@ -172,7 +170,7 @@ export function useCreateOffers() {
           showModal(
             "TRANSACTION_SUBMITTED",
             {
-              action: "Create offer with variants",
+              action: `Create ${offersToCreate.length} offers`,
               txHash: txResponse.hash
             },
             "auto",
