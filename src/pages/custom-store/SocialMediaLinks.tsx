@@ -9,12 +9,7 @@ import Typography from "../../components/ui/Typography";
 import SocialLogo from "./SocialLogo";
 import { storeFields } from "./store-fields";
 import { StoreFormFields } from "./store-fields-types";
-import {
-  firstSubFieldBasis,
-  gap,
-  logoSize,
-  secondSubFieldBasis
-} from "./styles";
+import { firstSubFieldBasis, gap, logoSize } from "./styles";
 
 const Global = createGlobalStyle`
   .dragged {
@@ -54,7 +49,7 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({
           <Grid flexBasis={firstSubFieldBasis}>
             <Typography>Logo</Typography>
           </Grid>
-          <Grid flexBasis={secondSubFieldBasis}>
+          <Grid>
             <Typography>URL</Typography>
           </Grid>
         </Grid>
@@ -62,23 +57,21 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({
       <Global />
       <StyledSortableList onSortEnd={onSortEnd} draggedItemClassName="dragged">
         {(links || []).map((selection, index) => {
-          const { label, value } = selection || {};
-
+          const { label, value, prefix } = selection || {};
           return (
             <SortableItem key={label}>
-              <Grid gap={gap}>
+              <Grid gap={gap} alignItems="baseline">
                 <Grid flexBasis={firstSubFieldBasis}>
                   <SocialLogo logo={value} size={logoSize} />
                 </Grid>
-                <Grid
-                  flexBasis={secondSubFieldBasis}
-                  flexDirection="column"
-                  alignItems="flex-start"
-                >
-                  <Input
-                    name={`${storeFields.socialMediaLinks}[${index}].url`}
-                    placeholder={`${label} URL`}
-                  />
+                <Grid alignItems="baseline" gap={"0.25rem"}>
+                  <span style={{ fontSize: "0.7rem" }}>{prefix}</span>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <Input
+                      name={`${storeFields.socialMediaLinks}[${index}].url`}
+                      placeholder={`${label} URL`}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </SortableItem>

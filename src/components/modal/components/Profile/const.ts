@@ -11,3 +11,4 @@ export enum ContactPreference {
 }
 export const METADATA_LENGTH_LIMIT = maxLength;
 export const maxLengthErrorMessage = `Maximum length is ${METADATA_LENGTH_LIMIT} characters`;
+export const notUrlErrorMessage = "This is not a URL like: www.example.com";

@@ -8,3 +8,15 @@ export const preAppendHttps = (url: string) => {
     ? url
     : `https://${url}`;
 };
+
+export const checkValidUrl = (
+  url: string,
+  { addHttpPrefix }: { addHttpPrefix: boolean } = { addHttpPrefix: true }
+) => {
+  try {
+    new URL(addHttpPrefix ? preAppendHttps(url) : url);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
