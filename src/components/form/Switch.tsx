@@ -49,16 +49,24 @@ type SwitchProps = Parameters<typeof ReactSwitch.Root>[0] & {
 };
 
 export const SwitchForm: React.FC<
-  Omit<SwitchProps, "checked"> & { name: string; leftChildren?: boolean }
-> = ({ ...props }) => {
+  Omit<SwitchProps, "checked"> & {
+    name: string;
+    leftChildren?: boolean;
+    invertValue?: boolean;
+  }
+> = ({ invertValue, ...props }) => {
   const { name } = props;
   const [field, , helpers] = useField(name ?? "");
   return (
     <Switch
       {...props}
-      onCheckedChange={(checked) => helpers.setValue(checked)}
-      toggleFormValue={() => helpers.setValue(!field.value)}
-      checked={field.value}
+      onCheckedChange={(checked) => {
+        helpers.setValue(invertValue ? !checked : checked);
+      }}
+      toggleFormValue={() => {
+        helpers.setValue(!field.value);
+      }}
+      checked={invertValue ? !field.value : field.value}
     >
       <Input type="hidden" name={name} />
     </Switch>
