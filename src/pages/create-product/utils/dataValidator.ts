@@ -57,16 +57,16 @@ export const extractOfferTimestamps = ({
   let voucherRedeemableUntilDateInMS = Array.isArray(redemptionPeriod)
     ? redemptionPeriod[1].toDate().getTime()
     : undefined;
-  let voucherValidDurationInMS;
+  let voucherValidDurationInMS = 0;
   if (
     voucherRedeemableUntilDateInMS !== undefined &&
-    voucherRedeemableUntilDateInMS < now
+    voucherRedeemableUntilDateInMS <= now
   ) {
     voucherRedeemableUntilDateInMS = new Date(
       now + numberMinutesAdd * 2 * 60000
     ).getTime();
     voucherValidDurationInMS = 0;
-  } else {
+  } else if (voucherRedeemableUntilDateInMS === undefined) {
     voucherValidDurationInMS = (voucherValidDurationInDays ?? 0) * 86400000;
     voucherRedeemableUntilDateInMS = 0;
   }

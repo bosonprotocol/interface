@@ -114,7 +114,7 @@ export default function FiatOnrampModal() {
       const { url } = await res.json();
       setSignedIframeUrl(url);
     } catch (e) {
-      console.log("there was an error fetching the link", e);
+      console.error("there was an error fetching the link", e);
       setError(e?.toString() || "error");
     } finally {
       setLoading(false);

@@ -8,6 +8,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(advancedFormat);
 
+import { getTimeZoneWithGMT } from "lib/utils/time";
 import {
   FocusEventHandler,
   memo,
@@ -41,6 +42,7 @@ export type DatePickerProps = {
   maxDate?: Dayjs | null;
   isClearable?: boolean;
   placeholder?: string;
+  name?: string;
   [x: string]: any;
 };
 export type ChoosenTime = {
@@ -54,21 +56,43 @@ const handleInitialDates = (
 ) => {
   let startDate: Dayjs | null = null;
   let endDate: Dayjs | null = null;
+  let chosenTime: ChoosenTime | null = null;
 
   if (initialValue) {
     if (Array.isArray(initialValue)) {
       if (initialValue.length) {
         startDate = dayjs(initialValue[0]);
         endDate = dayjs(initialValue[1]);
+        chosenTime = {
+          hour: [
+            startDate.toDate().getHours().toString(),
+            endDate.toDate().getHours().toString()
+          ],
+          minute: [
+            startDate.toDate().getMinutes().toString(),
+            endDate.toDate().getMinutes().toString()
+          ],
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          timezone: startDate.$x.$timezone ?? endDate.$x.$timezone
+        };
       }
     } else {
       startDate = dayjs(initialValue);
+      chosenTime = {
+        hour: startDate.toDate().getHours().toString(),
+        minute: startDate.toDate().getMinutes().toString(),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        timezone: startDate.$x.$timezone
+      };
     }
   }
 
   return {
     startDate,
-    endDate
+    endDate,
+    chosenTime
   };
 };
 const dateTimeFormat = "MMMM D, YYYY HH:mm";
@@ -96,9 +120,10 @@ export default memo(function DatePicker({
   const [showTime, setShowTime] = useState<boolean>(false);
 
   useEffect(() => {
-    const { startDate, endDate } = handleInitialDates(initialValue);
+    const { startDate, endDate, chosenTime } = handleInitialDates(initialValue);
     if (date === null) setDate(startDate);
     if (secondDate === null) setSecondDate(endDate);
+    if (chosenTime === null) setTime(chosenTime);
   }, [initialValue]); // eslint-disable-line
 
   const handleShow = () => {
@@ -181,7 +206,7 @@ export default memo(function DatePicker({
             dateTimeFormat
           )} ${
             time && newDate.isValid()
-              ? `(${time.timezone} ${`GMT${newDate?.format("Z")}`})`
+              ? `(${getTimeZoneWithGMT(time.timezone)})`
               : ""
           }`
         );
@@ -201,7 +226,7 @@ export default memo(function DatePicker({
         setShownDate(
           `${newDate?.format(dateTimeFormat)} ${
             time && newDate.isValid()
-              ? `(${time.timezone} ${`GMT${newDate?.format("Z")}`})`
+              ? `(${getTimeZoneWithGMT(time.timezone)})`
               : ""
           }`
         );
