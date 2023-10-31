@@ -263,9 +263,6 @@ export const getOfferDetailData = (
                   will expire and you will receive back the price minus the
                   Buyer cancel penalty
                 </Typography>
-                {
-                  // TODO: change text above?
-                }
               </>
             ),
             value: (
@@ -498,10 +495,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     getHasExchangeDisputeResolutionElapsed(exchange, offer);
 
   const isExchangeExpired =
-    exchangeStatus &&
-    [exchanges.ExtendedExchangeState.Expired].includes(
-      exchangeStatus as unknown as exchanges.ExtendedExchangeState
-    );
+    !!exchangeStatus &&
+    exchanges.ExtendedExchangeState.Expired === exchangeStatus;
 
   const signer = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -931,7 +926,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       reload?.();
     });
   });
-  const isRedeemDisabled = isLoading || isOffer || isPreview || !isBuyer; // TODO: disable if exchange.validUntilDate < now()?
+  const isRedeemDisabled =
+    isLoading || isOffer || isPreview || !isBuyer || isExchangeExpired;
   return (
     <>
       <Widget>
@@ -1016,7 +1012,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 typographyStyle={
                   isBuyerInsufficientFunds ? { fontSize: "0.75rem" } : {}
                 }
-                swapButton={
+                secondChildren={
                   !isPreview && isBuyerInsufficientFunds ? (
                     <LinkWithQuery
                       style={{ width: "100%" }}

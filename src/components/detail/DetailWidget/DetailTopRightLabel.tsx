@@ -6,13 +6,13 @@ import Typography from "../../ui/Typography";
 
 interface Props {
   children?: string | React.ReactNode;
-  swapButton: React.ReactNode | null;
+  secondChildren?: React.ReactNode | null;
   style?: CSSProperties;
   typographyStyle?: CSSProperties;
 }
 export default function DetailTopRightLabel({
   children,
-  swapButton,
+  secondChildren,
   style,
   typographyStyle
 }: Props) {
@@ -30,7 +30,7 @@ export default function DetailTopRightLabel({
       >
         {children}
       </Typography>
-      {swapButton}
+      {secondChildren}
     </Grid>
   );
 }
