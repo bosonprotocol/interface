@@ -3,12 +3,10 @@ import * as Yup from "yup";
 
 import { SelectDataProps } from "../../components/form/types";
 import { colors } from "../../lib/styles/colors";
-import {
-  socialLinkPattern,
-  websitePattern
-} from "../../lib/validation/regex/url";
+import { checkValidUrl } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
 import { AdditionalFooterLink } from "./AdditionalFooterLinksTypes";
+import { StoreFields } from "./store-fields-types";
 
 export const storeFields = {
   isCustomStoreFront: "isCustomStoreFront",
@@ -214,17 +212,72 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
       options: [
-        { label: "Facebook", value: "facebook", url: "" },
-        { label: "Instagram", value: "instagram", url: "" },
-        { label: "LinkedIn", value: "linkedin", url: "" },
-        { label: "Medium", value: "medium", url: "" },
-        { label: "Pinterest", value: "pinterest", url: "" },
-        { label: "Reddit", value: "reddit", url: "" },
-        { label: "Snapchat", value: "snapchat", url: "" },
-        { label: "TikTok", value: "tiktok", url: "" },
-        { label: "Twitch", value: "twitch", url: "" },
-        { label: "Twitter", value: "twitter", url: "" },
-        { label: "Youtube", value: "youtube", url: "" }
+        {
+          label: "Facebook",
+          value: "facebook",
+          url: "",
+          prefix: "https://www.facebook.com/"
+        },
+        {
+          label: "Instagram",
+          value: "instagram",
+          url: "",
+          prefix: "https://www.instagram.com/"
+        },
+        {
+          label: "LinkedIn",
+          value: "linkedin",
+          url: "",
+          prefix: "https://www.linkedin.com/"
+        },
+        {
+          label: "Medium",
+          value: "medium",
+          url: "",
+          prefix: "https://medium.com/"
+        },
+        {
+          label: "Pinterest",
+          value: "pinterest",
+          url: "",
+          prefix: "https://www.pinterest.com/"
+        },
+        {
+          label: "Reddit",
+          value: "reddit",
+          url: "",
+          prefix: "https://www.reddit.com/"
+        },
+        {
+          label: "Snapchat",
+          value: "snapchat",
+          url: "",
+          prefix: "https://www.snapchat.com/"
+        },
+        {
+          label: "TikTok",
+          value: "tiktok",
+          url: "",
+          prefix: "https://www.tiktok.com/"
+        },
+        {
+          label: "Twitch",
+          value: "twitch",
+          url: "",
+          prefix: "https://www.twitch.tv/"
+        },
+        {
+          label: "Twitter",
+          value: "twitter",
+          url: "",
+          prefix: "https://twitter.com/"
+        },
+        {
+          label: "Youtube",
+          value: "youtube",
+          url: "",
+          prefix: "https://www.youtube.com/"
+        }
       ]
     },
     [storeFields.contactInfoLinks]: {
@@ -377,9 +430,13 @@ export const validationSchema = Yup.object({
     Yup.object({
       label: Yup.string().required(standardRequiredErrorMessage),
       value: Yup.string().required(standardRequiredErrorMessage),
+      prefix: Yup.string().required(standardRequiredErrorMessage),
       url: Yup.string()
-        .matches(new RegExp(socialLinkPattern), notUrlErrorMessage)
+        .trim()
         .required(standardRequiredErrorMessage)
+        .test("FORMAT", notUrlErrorMessage, (value, { parent }) => {
+          return checkValidUrl(`${parent.prefix}${value ?? ""}`);
+        })
     })
   ),
   [storeFields.contactInfoLinks]: Yup.array(
@@ -394,11 +451,15 @@ export const validationSchema = Yup.object({
       label: Yup.string().required(standardRequiredErrorMessage),
       value: Yup.string(),
       url: Yup.string()
-        .matches(new RegExp(websitePattern), notUrlErrorMessage)
+        .test("FORMAT", notUrlErrorMessage, (value) =>
+          checkValidUrl(value ?? "")
+        )
         .when("label", (label) => {
           if (label) {
             return Yup.string()
-              .matches(new RegExp(websitePattern), notUrlErrorMessage)
+              .test("FORMAT", notUrlErrorMessage, (value) =>
+                checkValidUrl(value ?? "")
+              )
               .required(standardRequiredErrorMessage);
           }
           return Yup.string();
@@ -419,9 +480,10 @@ export const validationSchema = Yup.object({
     .test("FORMAT", "Must be an address", (value) =>
       value ? ethers.utils.isAddress(value) : true
     ),
-  [storeFields.openseaLinkToOriginalMainnetCollection]: Yup.string().matches(
-    new RegExp(websitePattern),
-    notUrlErrorMessage
+  [storeFields.openseaLinkToOriginalMainnetCollection]: Yup.string().test(
+    "FORMAT",
+    notUrlErrorMessage,
+    (value) => (value ? checkValidUrl(value) : true)
   ),
   [storeFields.metaTransactionsApiKey]: Yup.string()
   // NOTE: we may wish to show it again in the future
@@ -469,15 +531,18 @@ export const initialValues: Yup.InferType<typeof validationSchema> = {
   [storeFields.showFooter]: formModel.formFields.showFooter.options.find(
     (option) => "default" in option && option.default
   ) as SelectDataProps,
-  [storeFields.socialMediaLinks]: [] as (SelectDataProps & { url: string })[],
-  [storeFields.contactInfoLinks]: [] as (SelectDataProps & { text: string })[],
+  [storeFields.socialMediaLinks]: [] as NonNullable<
+    StoreFields["socialMediaLinks"]
+  >,
+  [storeFields.contactInfoLinks]: [] as NonNullable<
+    StoreFields["contactInfoLinks"]
+  >,
   [storeFields.additionalFooterLinks]: [] as AdditionalFooterLink[],
   [storeFields.copyright]: "",
   [storeFields.withOwnProducts]:
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     formModel.formFields.withOwnProducts.options.find(
       (option) => "default" in option && option.default
-    )!,
+    ) ?? formModel.formFields.withOwnProducts.options[0],
   [storeFields.sellerCurationList]: "",
   [storeFields.offerCurationList]: "",
   [storeFields.commitProxyAddress]: "",

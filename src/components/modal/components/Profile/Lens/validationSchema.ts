@@ -4,7 +4,7 @@ import { lensHandleMaxLength } from "../../../../../lib/config";
 import { validationMessage } from "../../../../../lib/constants/validationMessage";
 import { FileProps } from "../../../../form/Upload/types";
 import { validationOfRequiredIpfsImage } from "../../../../product/utils/validationUtils";
-import { getCommonFieldsValidation } from "../valitationSchema";
+import { getCommonFieldsValidation } from "../validationSchema";
 
 // const MAX_LOGO_SIZE = 300 * 1024; // 300 KB
 const maxLensHandleLength = 31 - lensHandleMaxLength;

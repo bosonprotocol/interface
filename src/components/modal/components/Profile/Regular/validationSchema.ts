@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 import { validationOfRequiredIpfsImage } from "../../../../product/utils/validationUtils";
-import { getCommonFieldsValidation } from "../valitationSchema";
+import { getCommonFieldsValidation } from "../validationSchema";
 
 export const createYourProfileSchema = Yup.object({
   logo: validationOfRequiredIpfsImage(),

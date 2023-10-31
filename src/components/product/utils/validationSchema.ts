@@ -10,7 +10,7 @@ import { fixformattedString } from "../../../lib/utils/number";
 import Yup from "../../../lib/validation/index";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../form/Upload/types";
-import { getCommonFieldsValidation } from "../../modal/components/Profile/valitationSchema";
+import { getCommonFieldsValidation } from "../../modal/components/Profile/validationSchema";
 import { CONFIG, DappConfig } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
