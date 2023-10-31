@@ -158,16 +158,9 @@ export const formValuesWithOneLogoUrl = (
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const dappOrigin = getViewModeUrl(ViewMode.DAPP, BosonRoutes.Root);
   const { showModal } = useModal();
-  const { setFieldValue, values, isValid, setValues, isSubmitting, ...rest } =
+  const { setFieldValue, values, isValid, setValues, isSubmitting } =
     useFormikContext<StoreFormFields>();
-  console.log({
-    setFieldValue,
-    values,
-    isValid,
-    setValues,
-    isSubmitting,
-    ...rest
-  });
+
   const { sellerIds } = useCurrentSellers();
 
   const queryParams = new URLSearchParams(
