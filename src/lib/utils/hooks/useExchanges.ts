@@ -153,7 +153,7 @@ export function useExchanges(
     : undefined;
 
   return useQuery(
-    ["exchanges", props, sellerIn, subgraphUrl, OFFERS_PER_PAGE],
+    ["exchanges", props, sellerIn, subgraphUrl, OFFERS_PER_PAGE, curationLists],
     async () => {
       const result = await fetchExchanges({
         ...props,
