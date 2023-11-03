@@ -111,19 +111,19 @@ export const usePreviewOffers = ({
         buyerCancelPenalty: buyerCancellationPenaltyValue,
         quantityAvailable: quantityAvailable.toString(),
         quantityInitial: quantityAvailable.toString(),
-        validFromDate: (validFromDateInMS / 1000).toString(),
-        validUntilDate: (validUntilDateInMS / 1000).toString(),
-        voucherRedeemableFromDate: (
+        validFromDate: Math.floor(validFromDateInMS / 1000).toString(),
+        validUntilDate: Math.floor(validUntilDateInMS / 1000).toString(),
+        voucherRedeemableFromDate: Math.floor(
           voucherRedeemableFromDateInMS / 1000
         ).toString(),
         voucherRedeemableUntilDate: voucherRedeemableUntilDateInMS
-          ? (voucherRedeemableUntilDateInMS / 1000).toString()
+          ? Math.floor(voucherRedeemableUntilDateInMS / 1000).toString()
           : "0",
         disputePeriodDuration: `${
           parseInt(values.termsOfExchange.disputePeriod) * 24 * 3600
         }`, // day to sec
         voucherValidDuration: voucherValidDurationInMS
-          ? (voucherValidDurationInMS / 1000).toString()
+          ? Math.floor(voucherValidDurationInMS / 1000).toString()
           : "0",
         resolutionPeriodDuration: `${
           parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600
