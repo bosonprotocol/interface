@@ -1,6 +1,7 @@
 import { offers as OffersKit } from "@bosonprotocol/react-kit";
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { NO_EXPIRATION } from "lib/constants/offer";
 import { defaultFontFamily } from "lib/styles/fonts";
 import { formatDate } from "lib/utils/date";
 import uniqBy from "lodash/uniqBy";
@@ -575,7 +576,7 @@ export default function SellerProductsTable({
                             <small style={{ margin: "0" }}>Until</small> <br />
                             {formatDate(
                               getDateTimestamp(variant.validUntilDate),
-                              { textIfTooBig: "(no expiration)" }
+                              { textIfTooBig: NO_EXPIRATION }
                             )}
                           </span>
                         </Typography>
@@ -710,7 +711,7 @@ export default function SellerProductsTable({
                 <span>
                   <small style={{ margin: "0" }}>Until</small> <br />
                   {formatDate(getDateTimestamp(offer.validUntilDate), {
-                    textIfTooBig: "(no expiration)"
+                    textIfTooBig: NO_EXPIRATION
                   })}
                 </span>
               </Typography>

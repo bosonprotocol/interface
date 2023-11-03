@@ -410,74 +410,45 @@ export default function ConfirmProductDetails({
                       </FormField>
                     </FormFieldContainer>
                   </GridBox>
+                  <div />
+                  <GridBox $minWidth="16rem">
+                    <FormFieldContainer
+                      style={{
+                        marginBottom: 0
+                      }}
+                    >
+                      <FormField title="Buyer cancellation penalty" required>
+                        <ContentValue tag="p">
+                          {values?.termsOfExchange?.buyerCancellationPenalty ||
+                            0}{" "}
+                          {values?.termsOfExchange?.buyerCancellationPenaltyUnit
+                            .label === optionUnitValues["%"]
+                            ? "%"
+                            : values?.termsOfExchange
+                                ?.buyerCancellationPenaltyUnit.label}
+                        </ContentValue>
+                      </FormField>
+                    </FormFieldContainer>
+                  </GridBox>
+                  <GridBox>
+                    <FormFieldContainer>
+                      <FormField title="Seller deposit" required>
+                        <ContentValue tag="p">
+                          {values?.termsOfExchange?.sellerDeposit || 0}{" "}
+                          {values?.termsOfExchange?.sellerDepositUnit.label ===
+                          optionUnitValues["%"]
+                            ? "%"
+                            : values?.termsOfExchange?.sellerDepositUnit.label}
+                        </ContentValue>
+                      </FormField>
+                    </FormFieldContainer>
+                  </GridBox>
                 </>
               )}
             </div>
             <div
               style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}
             >
-              <GridBox $minWidth="16rem">
-                <FormFieldContainer
-                  style={{
-                    marginBottom: 0
-                  }}
-                >
-                  <FormField
-                    title={
-                      Array.isArray(redemptionPeriod)
-                        ? "Redemption period"
-                        : "Redemption start date"
-                    }
-                    required
-                  >
-                    <ContentValue tag="p">
-                      {Array.isArray(redemptionPeriod) &&
-                      redemptionPeriod[0] &&
-                      redemptionPeriod[1] ? (
-                        <>
-                          {dayjs(redemptionPeriod[0]).format(
-                            CONFIG.shortDateFormat
-                          )}{" "}
-                          -{" "}
-                          {dayjs(redemptionPeriod[1]).format(
-                            CONFIG.shortDateFormat
-                          )}
-                        </>
-                      ) : !Array.isArray(redemptionPeriod) ? (
-                        <>
-                          {redemptionPeriod && voucherValidDurationInDays ? (
-                            <>
-                              From{" "}
-                              {dayjs(redemptionPeriod)
-                                .add(voucherValidDurationInDays ?? 0, "days")
-                                .format(CONFIG.shortDateFormat)}{" "}
-                              (includes +{voucherValidDurationInDays} day(s))
-                            </>
-                          ) : redemptionPeriod &&
-                            !voucherValidDurationInDays ? (
-                            <>
-                              From{" "}
-                              {dayjs(redemptionPeriod).format(
-                                CONFIG.shortDateFormat
-                              )}{" "}
-                            </>
-                          ) : !redemptionPeriod &&
-                            voucherValidDurationInDays ? (
-                            <>
-                              {voucherValidDurationInDays ?? 0} days after
-                              commit
-                            </>
-                          ) : (
-                            <></>
-                          )}
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
               <GridBox>
                 <FormFieldContainer
                   style={{
@@ -518,33 +489,54 @@ export default function ConfirmProductDetails({
                     marginBottom: 0
                   }}
                 >
-                  <FormField title="Buyer cancellation penalty" required>
+                  <FormField
+                    title={
+                      Array.isArray(redemptionPeriod)
+                        ? "Redemption period"
+                        : "Redemption start date"
+                    }
+                    required={Array.isArray(redemptionPeriod)}
+                  >
                     <ContentValue tag="p">
-                      {values?.termsOfExchange?.buyerCancellationPenalty || 0}{" "}
-                      {values?.termsOfExchange?.buyerCancellationPenaltyUnit
-                        .label === optionUnitValues["%"]
-                        ? "%"
-                        : values?.termsOfExchange?.buyerCancellationPenaltyUnit
-                            .label}
+                      {Array.isArray(redemptionPeriod) &&
+                      redemptionPeriod[0] &&
+                      redemptionPeriod[1] ? (
+                        <>
+                          {dayjs(redemptionPeriod[0]).format(
+                            CONFIG.shortDateFormat
+                          )}{" "}
+                          -{" "}
+                          {dayjs(redemptionPeriod[1]).format(
+                            CONFIG.shortDateFormat
+                          )}
+                        </>
+                      ) : !Array.isArray(redemptionPeriod) ? (
+                        <>
+                          {dayjs(redemptionPeriod).format(
+                            CONFIG.shortDateFormat
+                          )}
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
               </GridBox>
-              <GridBox>
+              <GridBox $minWidth="16rem">
                 <FormFieldContainer
                   style={{
                     marginBottom: 0
                   }}
                 >
-                  <FormField title="Seller deposit" required>
-                    <ContentValue tag="p">
-                      {values?.termsOfExchange?.sellerDeposit || 0}{" "}
-                      {values?.termsOfExchange?.sellerDepositUnit.label ===
-                      optionUnitValues["%"]
-                        ? "%"
-                        : values?.termsOfExchange?.sellerDepositUnit.label}
-                    </ContentValue>
-                  </FormField>
+                  {!Array.isArray(redemptionPeriod) &&
+                    voucherValidDurationInDays && (
+                      <FormField title="Redemption duration" required>
+                        <ContentValue tag="p">
+                          {voucherValidDurationInDays} days
+                        </ContentValue>
+                      </FormField>
+                    )}
                 </FormFieldContainer>
               </GridBox>
             </div>
