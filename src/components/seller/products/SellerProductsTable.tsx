@@ -2,6 +2,7 @@ import { offers as OffersKit } from "@bosonprotocol/react-kit";
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { defaultFontFamily } from "lib/styles/fonts";
+import { formatDate } from "lib/utils/date";
 import uniqBy from "lodash/uniqBy";
 import {
   CaretDown,
@@ -24,7 +25,6 @@ import {
 } from "react-table";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
 import {
   SellerHubQueryParameters,
   UrlParameters
@@ -573,9 +573,10 @@ export default function SellerProductsTable({
                         <Typography justifyContent="flex-start">
                           <span>
                             <small style={{ margin: "0" }}>Until</small> <br />
-                            {dayjs(
-                              getDateTimestamp(variant.validUntilDate)
-                            ).format(CONFIG.dateFormat)}
+                            {formatDate(
+                              getDateTimestamp(variant.validUntilDate),
+                              { textIfTooBig: "(no expiration)" }
+                            )}
                           </span>
                         </Typography>
                       ),
@@ -708,9 +709,9 @@ export default function SellerProductsTable({
               <Typography>
                 <span>
                   <small style={{ margin: "0" }}>Until</small> <br />
-                  {dayjs(getDateTimestamp(offer.validUntilDate)).format(
-                    CONFIG.dateFormat
-                  )}
+                  {formatDate(getDateTimestamp(offer.validUntilDate), {
+                    textIfTooBig: "(no expiration)"
+                  })}
                 </span>
               </Typography>
             ),
