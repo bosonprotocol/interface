@@ -28,9 +28,7 @@ export const useDisconnect = () => {
   const dispatch = useAppDispatch();
 
   return useCallback(
-    async (
-      { isUserDisconnecting }: DisconnectProps = { isUserDisconnecting: false }
-    ) => {
+    async ({ isUserDisconnecting }: DisconnectProps) => {
       if (connector && connector.deactivate) {
         await connector.deactivate();
       }
