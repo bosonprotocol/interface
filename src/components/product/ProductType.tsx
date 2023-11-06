@@ -4,6 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useOpenAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
+import { isTruthy } from "lib/types/helpers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -280,7 +281,20 @@ export default function ProductType({
     if (isSellerNotAssistant) {
       // The current wallet is not the assistant of the seller
       showInvalidRoleModal();
-    } else if (!shownDraftModal) {
+    } else if (seller && !seller?.metadata) {
+      showModal("EDIT_PROFILE", {
+        textBeforeEditProfile:
+          "Your seller profile is out of date and needs to be updated in order to proceed. Click 'Next' to proceed.",
+        onClose: async (...argsIfEdited: unknown[]) => {
+          // if the user closed the modal without editing the seller profile, then this array will have 1 undefined value
+          if (!argsIfEdited.filter(isTruthy).length) {
+            return navigate({
+              pathname: BosonRoutes.Root
+            });
+          }
+        }
+      });
+    } else if (!shownDraftModal && !store.modalType) {
       // Show the draft modal to let the user choosing if they wants to use Draft
       setShowDraftModal(true);
       showCreateProductDraftModal();
@@ -331,7 +345,9 @@ export default function ProductType({
     isLoading,
     isRefetching,
     isSuccess,
-    values.createYourProfile
+    values.createYourProfile,
+    seller,
+    seller?.metadata
   ]);
   const [wasConnectModalOpen, setWasConnectModalOpen] =
     useState<boolean>(false);
@@ -598,6 +614,33 @@ export default function ProductType({
             />
           </FormField>
         </GridContainer>
+        {seller && !isProfileSetFromForm && errors.createYourProfile && (
+          <Grid
+            flexDirection="column"
+            alignItems="flex-start"
+            marginTop="1rem"
+            marginBottom="1rem"
+          >
+            <SimpleError
+              display
+              message="Your seller profile has missing information:"
+            />
+            <ul style={{ marginTop: 0 }}>
+              {Object.entries(errors.createYourProfile).map(([key, value]) => {
+                return (
+                  <li key={key}>
+                    <SimpleError
+                      display
+                      message={`${key}: ${
+                        typeof value == "string" ? value : value.label
+                      }`}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </Grid>
+        )}
         <ProductButtonGroup>
           <BosonButton
             variant="accentInverted"

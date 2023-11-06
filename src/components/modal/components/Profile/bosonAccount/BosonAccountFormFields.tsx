@@ -16,6 +16,7 @@ interface Props {
   alreadyHasRoyaltiesDefined: boolean;
   isError: boolean;
   submitButtonText?: string;
+  isEdit: boolean;
 }
 const StyledFormField = styled(FormField)`
   [data-subheader] {
@@ -28,7 +29,8 @@ export default function BosonAccountFormFields({
   onBackClick,
   alreadyHasRoyaltiesDefined,
   isError,
-  submitButtonText
+  submitButtonText,
+  isEdit
 }: Props) {
   const [
     fieldSecondaryRoyalties,
@@ -73,7 +75,7 @@ export default function BosonAccountFormFields({
                   <Input
                     name="secondaryRoyalties"
                     placeholder=""
-                    disabled={alreadyHasRoyaltiesDefined}
+                    disabled={alreadyHasRoyaltiesDefined || isEdit}
                     style={{
                       border: "none",
                       textAlign: "right"
