@@ -13,14 +13,14 @@ import styled from "styled-components";
 import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import {
+  getItemFromStorage,
+  saveItemInStorage
+} from "../../lib/utils/hooks/localstorage/useLocalStorage";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useForm } from "../../lib/utils/hooks/useForm";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import {
-  getItemFromStorage,
-  saveItemInStorage
-} from "../../lib/utils/hooks/useLocalStorage";
 import Navigate from "../customNavigation/Navigate";
 import { Error as SimpleError, FormField } from "../form";
 import { authTokenTypes } from "../modal/components/Profile/Lens/const";

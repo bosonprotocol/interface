@@ -1,5 +1,5 @@
 import { useConfigContext } from "components/config/ConfigContext";
-import { removeItemInStorage } from "lib/utils/hooks/useLocalStorage";
+import { removeItemInStorage } from "lib/utils/hooks/localstorage/useLocalStorage";
 import {
   didReleaseVersionChange,
   saveCurrentReleaseVersion

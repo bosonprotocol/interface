@@ -65,10 +65,10 @@ import {
 import { ProductRoutes } from "../../lib/routing/routes";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
+import { saveItemInStorage } from "../../lib/utils/hooks/localstorage/useLocalStorage";
 import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {

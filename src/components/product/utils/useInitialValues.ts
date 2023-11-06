@@ -25,7 +25,7 @@ import {
   getItemFromStorage,
   removeItemInStorage,
   saveItemInStorage
-} from "../../../lib/utils/hooks/useLocalStorage";
+} from "../../../lib/utils/hooks/localstorage/useLocalStorage";
 import {
   CATEGORY_OPTIONS,
   getOptionsCurrencies,

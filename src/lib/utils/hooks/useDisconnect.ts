@@ -4,6 +4,21 @@ import { useCallback } from "react";
 import { useAppDispatch } from "state/hooks";
 import { updateSelectedWallet } from "state/user/reducer";
 
+import { createProductKeys } from "./localstorage/const";
+import { removeItemInStorage } from "./localstorage/useLocalStorage";
+
+const keysToDeleteMap = new Map<typeof createProductKeys[number], true>();
+createProductKeys.forEach((key) => {
+  keysToDeleteMap.set(key, true);
+});
+
+const cleanLocalStorage = () => {
+  removeItemInStorage(keysToDeleteMap);
+};
+
+type DisconnectProps = {
+  isUserDisconnecting: boolean;
+};
 export const useDisconnect = () => {
   const { connector } = useWeb3React();
   const { setUser } = useUser();
@@ -12,13 +27,19 @@ export const useDisconnect = () => {
   const magicLogout = getMagicLogout(magic);
   const dispatch = useAppDispatch();
 
-  return useCallback(async () => {
-    if (connector && connector.deactivate) {
-      await connector.deactivate();
-    }
-    await connector.resetState();
-    remove();
-    dispatch(updateSelectedWallet({ wallet: undefined }));
-    await magicLogout(setUser);
-  }, [connector, dispatch, magicLogout, remove, setUser]);
+  return useCallback(
+    async ({ isUserDisconnecting }: DisconnectProps) => {
+      if (connector && connector.deactivate) {
+        await connector.deactivate();
+      }
+      await connector.resetState();
+      remove();
+      if (isUserDisconnecting) {
+        cleanLocalStorage();
+      }
+      dispatch(updateSelectedWallet({ wallet: undefined }));
+      await magicLogout(setUser);
+    },
+    [connector, dispatch, magicLogout, remove, setUser]
+  );
 };

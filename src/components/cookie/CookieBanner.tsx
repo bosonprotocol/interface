@@ -9,7 +9,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import {
   getItemFromStorage,
   saveItemInStorage
-} from "../../lib/utils/hooks/useLocalStorage";
+} from "../../lib/utils/hooks/localstorage/useLocalStorage";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";

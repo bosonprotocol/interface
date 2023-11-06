@@ -249,7 +249,7 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
         <IconContainer>
           <IconWithConfirmTextButton
             data-testid="wallet-disconnect"
-            onConfirm={disconnect}
+            onConfirm={() => disconnect({ isUserDisconnecting: true })}
             Icon={SignOut}
             text="Disconnect"
             dismissOnHoverOut

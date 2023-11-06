@@ -1,6 +1,9 @@
 import { CONFIG } from "lib/config";
 
-import { getItemFromStorage, saveItemInStorage } from "./hooks/useLocalStorage";
+import {
+  getItemFromStorage,
+  saveItemInStorage
+} from "./hooks/localstorage/useLocalStorage";
 
 export const didReleaseVersionChange = (): boolean => {
   const releaseVersion = getItemFromStorage("release-version", undefined);
