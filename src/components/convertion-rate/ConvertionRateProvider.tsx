@@ -1,7 +1,7 @@
 import { useConfigContext } from "components/config/ConfigContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { saveItemInStorage } from "../../lib/utils/hooks/localstorage/useLocalStorage";
 import { useTokens } from "../../lib/utils/hooks/useTokens";
 import { useUniswapPools } from "../../lib/utils/hooks/useUniswapPools";
 import ConvertionRateContext, {

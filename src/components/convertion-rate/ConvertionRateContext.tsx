@@ -3,7 +3,7 @@
 import { CONFIG } from "lib/config";
 import { createContext } from "react";
 
-import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { getItemFromStorage } from "../../lib/utils/hooks/localstorage/useLocalStorage";
 
 export type Token = {
   symbol: string;

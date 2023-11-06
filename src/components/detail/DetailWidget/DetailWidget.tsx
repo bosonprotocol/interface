@@ -56,6 +56,10 @@ import {
   useAccount,
   useSigner
 } from "../../../lib/utils/hooks/connection/connection";
+import {
+  getItemFromStorage,
+  saveItemInStorage
+} from "../../../lib/utils/hooks/localstorage/useLocalStorage";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
 import {
   useAddPendingTransaction,
@@ -64,10 +68,6 @@ import {
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import {
-  getItemFromStorage,
-  saveItemInStorage
-} from "../../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";

@@ -37,7 +37,7 @@ export default function useSyncChainQuery() {
   const accountAlreadyConnected = useRef(account);
   const disconnect = useCallback(() => {
     accountAlreadyConnected.current = undefined;
-    _disconnect();
+    _disconnect({ isUserDisconnecting: false });
   }, [_disconnect]);
   useEffect(() => {
     if (!isActive || isMagicLoggedIn) {

@@ -9,7 +9,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { saveItemInStorage } from "../../../lib/utils/hooks/useLocalStorage";
+import { saveItemInStorage } from "../../../lib/utils/hooks/localstorage/useLocalStorage";
 import { SellerExchangeProps } from "../../../lib/utils/hooks/useSellerDeposit";
 import { WithSellerDataProps } from "./WithSellerData";
 
