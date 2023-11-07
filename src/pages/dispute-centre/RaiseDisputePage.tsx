@@ -5,6 +5,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import { ArrowLeft } from "phosphor-react";
@@ -347,9 +348,7 @@ function RaiseDisputePage() {
                   });
                 } catch (error) {
                   console.error(error);
-                  const hasUserRejectedTx =
-                    (error as unknown as { code: string }).code ===
-                    "ACTION_REJECTED";
+                  const hasUserRejectedTx = getHasUserRejectedTx(error);
                   if (hasUserRejectedTx) {
                     showModal("TRANSACTION_FAILED");
                   } else {

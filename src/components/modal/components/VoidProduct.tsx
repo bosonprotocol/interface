@@ -8,6 +8,7 @@ import {
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -343,10 +344,7 @@ export default function VoidProduct({
               offerId={offerId || 0}
               onError={(error) => {
                 console.error("onError", error);
-                const hasUserRejectedTx =
-                  "code" in error &&
-                  (error as unknown as { code: string }).code ===
-                    "ACTION_REJECTED";
+                const hasUserRejectedTx = getHasUserRejectedTx(error);
                 if (hasUserRejectedTx) {
                   showModal("TRANSACTION_FAILED");
                 } else {

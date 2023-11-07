@@ -10,6 +10,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import {
   useAccount,
   useSignMessage
@@ -570,10 +571,7 @@ function EscalateStepTwo({
                       } catch (error) {
                         console.error(error);
                         hideModal();
-                        const hasUserRejectedTx =
-                          "code" in (error as Error) &&
-                          (error as unknown as { code: string }).code ===
-                            "ACTION_REJECTED";
+                        const hasUserRejectedTx = getHasUserRejectedTx(error);
                         if (hasUserRejectedTx) {
                           showModal("TRANSACTION_FAILED");
                         } else {
