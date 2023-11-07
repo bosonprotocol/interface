@@ -11,6 +11,10 @@ import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
+import {
+  sendAndAddMessageToUI,
+  sendErrorMessageIfTxFails
+} from "pages/chat/utils/send";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -186,14 +190,37 @@ export default function RetractDisputeModal({
             try {
               await handleSendingRetractMessage();
               setRetractDisputeError(null);
-              let tx: TransactionResponse;
+              let tx: TransactionResponse | undefined = undefined;
               showModal("WAITING_FOR_CONFIRMATION");
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
-              if (isMetaTx) {
-                tx = await retractDisputeWithMetaTx(coreSDK, exchangeId);
-              } else {
-                tx = await coreSDK.retractDispute(exchangeId);
+
+              await sendErrorMessageIfTxFails({
+                sendsTxFn: async () => {
+                  if (isMetaTx) {
+                    tx = await retractDisputeWithMetaTx(coreSDK, exchangeId);
+                  } else {
+                    tx = await coreSDK.retractDispute(exchangeId);
+                  }
+                },
+                fnAddMessageFn: async (errorMessageObj) => {
+                  bosonXmtp &&
+                    address &&
+                    (await sendAndAddMessageToUI({
+                      bosonXmtp,
+                      addMessage,
+                      onSentMessage,
+                      address,
+                      destinationAddress,
+                      newMessage: errorMessageObj
+                    }));
+                },
+                errorMessage: "Retract dispute transaction failed",
+                threadId
+              });
+              if (!tx) {
+                return;
               }
+              tx = tx as TransactionResponse;
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Retract dispute",
                 txHash: tx.hash
@@ -224,7 +251,7 @@ export default function RetractDisputeModal({
                 <SuccessTransactionToast
                   t={t}
                   action={`Retracted dispute: ${offerName}`}
-                  url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
+                  url={config.envConfig.getTxExplorerUrl?.(tx?.hash)}
                 />
               ));
               hideModal();

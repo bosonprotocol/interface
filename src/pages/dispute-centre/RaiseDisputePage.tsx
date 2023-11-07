@@ -297,7 +297,7 @@ function RaiseDisputePage() {
                           newMessage: errorMessageObj
                         }));
                     },
-                    errorMessage: "Resolution proposal transaction failed",
+                    errorMessage: "Raise dispute transaction failed",
                     threadId
                   });
                   if (!tx) {
