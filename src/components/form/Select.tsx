@@ -64,7 +64,7 @@ const customStyles = (error: any): StylesConfig<any, boolean> => ({
     // zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
     position: "relative",
     width: "100%",
-    height: "25px"
+    minHeight: "25px"
   }),
   option: (provided: any, state: any) => ({
     ...provided,

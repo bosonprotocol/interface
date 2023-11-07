@@ -73,6 +73,7 @@ export default function LensBosonAccountForm({
       onBackClick={onBackClick}
       onSubmit={onSubmit}
       submitButtonText={isEdit ? "Close" : "Next"}
+      isEdit={isEdit}
     />
   );
 }

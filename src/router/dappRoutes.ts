@@ -34,6 +34,9 @@ const DisputeResolverPage = lazy(
 const CreateProductPage = lazy(
   () => import("../pages/create-product/CreateProduct")
 );
+const BatchCreateOffersPage = lazy(
+  () => import("../pages/batch-create-offers/BatchCreateOffers")
+);
 const PrivacyPolicyPage = lazy(() => import("../pages/common/PrivacyPolicy"));
 const TermsAndConditionsPage = lazy(
   () => import("../pages/common/TermsAndConditions")
@@ -121,6 +124,11 @@ export default [
     ...base,
     path: SellerCenterRoutes.CreateProduct,
     component: CreateProductPage
+  },
+  {
+    ...base,
+    path: SellerCenterRoutes.BatchCreateOffers,
+    component: BatchCreateOffersPage
   },
   {
     ...base,

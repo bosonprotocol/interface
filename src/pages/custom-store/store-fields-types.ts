@@ -26,8 +26,13 @@ export type StoreFields = {
   navigationBarPosition?: SelectType;
   copyright: string;
   showFooter?: SelectType;
-  socialMediaLinks?: SelectType<SocialLogoValues>[];
-  contactInfoLinks?: SelectType<ContactInfoLinkIconValues>[];
+  socialMediaLinks?: (SelectType<SocialLogoValues> & {
+    url: string;
+    prefix: string;
+  })[];
+  contactInfoLinks?: (SelectType<ContactInfoLinkIconValues> & {
+    text: string;
+  })[];
   additionalFooterLinks?: AdditionalFooterLink[];
   withOwnProducts?: SelectType<"mine" | "all" | "custom">;
   sellerCurationList?: string;

@@ -92,6 +92,7 @@ export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
             setStep(RegularStep.CREATE);
           }}
           submitButtonText={"Close"}
+          isEdit
         />
       ) : (
         <p>There has been an error, please try again...</p>

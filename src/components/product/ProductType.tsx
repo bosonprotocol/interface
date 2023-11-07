@@ -4,7 +4,9 @@ import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useOpenAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
+import { isTruthy } from "lib/types/helpers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
@@ -13,14 +15,14 @@ import styled from "styled-components";
 import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import {
+  getItemFromStorage,
+  saveItemInStorage
+} from "../../lib/utils/hooks/localstorage/useLocalStorage";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useForm } from "../../lib/utils/hooks/useForm";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import {
-  getItemFromStorage,
-  saveItemInStorage
-} from "../../lib/utils/hooks/useLocalStorage";
 import Navigate from "../customNavigation/Navigate";
 import { Error as SimpleError, FormField } from "../form";
 import { authTokenTypes } from "../modal/components/Profile/Lens/const";
@@ -280,7 +282,64 @@ export default function ProductType({
     if (isSellerNotAssistant) {
       // The current wallet is not the assistant of the seller
       showInvalidRoleModal();
-    } else if (!shownDraftModal) {
+    } else if (seller && !seller?.metadata) {
+      showModal("EDIT_PROFILE", {
+        textBeforeEditProfile:
+          "Your seller profile is out of date and needs to be updated in order to proceed. Click 'Next' to proceed.",
+        onClose: async (...argsIfEdited: unknown[]) => {
+          const userDidUpdateSeller = argsIfEdited.filter(isTruthy).length;
+          if (userDidUpdateSeller) {
+            let attemps = 15;
+            await poll(
+              async () => {
+                attemps--;
+                return await refetch();
+              },
+              (refetchResult) => {
+                const [
+                  resultByAddress,
+                  ,
+                  ,
+                  resultRefetchFetchSellers,
+                  resultSellerById
+                ] = refetchResult;
+                let didSetMetadata = false;
+                if (
+                  resultByAddress.status === "fulfilled" &&
+                  resultByAddress.value
+                ) {
+                  didSetMetadata = !!resultByAddress.value.data?.sellers?.some(
+                    (s) => s.metadata
+                  );
+                }
+                if (
+                  !didSetMetadata &&
+                  resultRefetchFetchSellers.status === "fulfilled" &&
+                  resultRefetchFetchSellers.value
+                ) {
+                  didSetMetadata = !!resultRefetchFetchSellers.value.data?.some(
+                    (s) => s.metadata
+                  );
+                }
+                if (
+                  !didSetMetadata &&
+                  resultSellerById.status === "fulfilled" &&
+                  resultSellerById.value
+                ) {
+                  didSetMetadata = !!resultSellerById.value.data?.metadata;
+                }
+                return attemps > 0 && !didSetMetadata;
+              },
+              600
+            );
+          } else {
+            return navigate({
+              pathname: BosonRoutes.Root
+            });
+          }
+        }
+      });
+    } else if (!shownDraftModal && !store.modalType) {
       // Show the draft modal to let the user choosing if they wants to use Draft
       setShowDraftModal(true);
       showCreateProductDraftModal();
@@ -331,7 +390,9 @@ export default function ProductType({
     isLoading,
     isRefetching,
     isSuccess,
-    values.createYourProfile
+    values.createYourProfile,
+    seller,
+    seller?.metadata
   ]);
   const [wasConnectModalOpen, setWasConnectModalOpen] =
     useState<boolean>(false);
@@ -598,6 +659,33 @@ export default function ProductType({
             />
           </FormField>
         </GridContainer>
+        {seller && !isProfileSetFromForm && errors.createYourProfile && (
+          <Grid
+            flexDirection="column"
+            alignItems="flex-start"
+            marginTop="1rem"
+            marginBottom="1rem"
+          >
+            <SimpleError
+              display
+              message="Your seller profile has missing information:"
+            />
+            <ul style={{ marginTop: 0 }}>
+              {Object.entries(errors.createYourProfile).map(([key, value]) => {
+                return (
+                  <li key={key}>
+                    <SimpleError
+                      display
+                      message={`${key}: ${
+                        typeof value == "string" ? value : value.label
+                      }`}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </Grid>
+        )}
         <ProductButtonGroup>
           <BosonButton
             variant="accentInverted"

@@ -1,31 +1,9 @@
-import * as Sentry from "@sentry/browser";
 // extracted from https://usehooks.com/useLocalStorage/
+
+import * as Sentry from "@sentry/browser";
 import { useState } from "react";
 
-export type CreateProductImageCreateYourProfileLogo =
-  "create-product-image_createYourProfile.logo";
-
-export type CreateProductImageProductImages =
-  | "create-product-image_productImages.thumbnail"
-  | "create-product-image_productImages.secondary"
-  | "create-product-image_productImages.everyAngle"
-  | "create-product-image_productImages.details"
-  | "create-product-image_productImages.inUse"
-  | "create-product-image_productImages.styledScene"
-  | "create-product-image_productImages.sizeAndScale"
-  | "create-product-image_productImages.more";
-
-export type GetItemFromStorageKey =
-  | "create-product"
-  | "tracing-url"
-  | "convertionRates"
-  | "shouldDisplayOfferBackedWarning"
-  | "isConnectWalletFromCommit"
-  | "showCookies"
-  | "showCookiesDrCenter"
-  | "release-version"
-  | CreateProductImageProductImages
-  | CreateProductImageCreateYourProfileLogo;
+import { GetItemFromStorageKey } from "./const";
 
 export function getItemFromStorage<T>(
   key: GetItemFromStorageKey,
@@ -55,12 +33,21 @@ export function saveItemInStorage<T>(key: GetItemFromStorageKey, value: T) {
   }
 }
 
-export function removeItemInStorage(key: GetItemFromStorageKey) {
+export function removeItemInStorage(
+  keyOrKeyMap: GetItemFromStorageKey | Map<GetItemFromStorageKey, true>
+) {
   if (typeof window !== "undefined") {
     try {
       Object.keys(localStorage)
-        .filter((filterKey) => filterKey?.includes(key))
-        .map((finalKey) => localStorage.removeItem(finalKey));
+        .filter((filterKey) => {
+          if (typeof keyOrKeyMap === "string") {
+            return filterKey?.includes(keyOrKeyMap);
+          }
+          return (
+            filterKey && keyOrKeyMap.has(filterKey as GetItemFromStorageKey)
+          );
+        })
+        .forEach((finalKey) => localStorage.removeItem(finalKey));
     } catch (error) {
       console.error(error);
       Sentry.captureException(error);

@@ -111,7 +111,9 @@ export const formValuesWithOneLogoUrl = (
               }
               return {
                 value: val.value.trim(),
-                url: preAppendHttps((val.url as string)?.trim()),
+                url: preAppendHttps(
+                  `${val.prefix ?? ""}${(val.url as string)?.trim() ?? ""}`
+                ),
                 label: val.label.trim()
               };
             }
@@ -132,7 +134,7 @@ export const formValuesWithOneLogoUrl = (
             ) {
               return {
                 label: val.label,
-                value: preAppendHttps(val.value || "")
+                value: preAppendHttps((val.value as string) || "")
               };
             }
             return null;
@@ -158,6 +160,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { showModal } = useModal();
   const { setFieldValue, values, isValid, setValues, isSubmitting } =
     useFormikContext<StoreFormFields>();
+
   const { sellerIds } = useCurrentSellers();
 
   const queryParams = new URLSearchParams(
@@ -387,9 +390,13 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                           }
                         );
                       if (option) {
+                        const urlWithoutPrefix =
+                          socialMediaObject.url.startsWith(option.prefix)
+                            ? socialMediaObject.url.replace(option.prefix, "")
+                            : socialMediaObject.url;
                         return {
                           ...option,
-                          url: socialMediaObject.url
+                          url: urlWithoutPrefix
                         };
                       }
                       return null;

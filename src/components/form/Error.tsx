@@ -1,5 +1,3 @@
-import React from "react";
-
 import { colors } from "../../lib/styles/colors";
 import Typography from "../ui/Typography";
 import type { ErrorProps } from "./types";

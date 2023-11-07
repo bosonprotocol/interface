@@ -3,7 +3,6 @@ import { useAccount } from "lib/utils/hooks/connection/connection";
 import { ReactNode } from "react";
 
 import { getIpfsGatewayUrl } from "../../../../lib/utils/ipfs";
-import { websitePattern } from "../../../../lib/validation/regex/url";
 import { FormField, Input, Select, Textarea, Upload } from "../../../form";
 import {
   CreateProfile,
@@ -128,7 +127,6 @@ export function ProfileFormFields({
         <Input
           name="website"
           placeholder="www.example.com OR www.instagram.com/example"
-          pattern={websitePattern}
         />
       </FormField>
       <FormField

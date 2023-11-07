@@ -302,6 +302,7 @@ export default function CreateBosonLensAccountSummary({
                   <Grid
                     flexDirection="column"
                     alignItems="flex-start"
+                    alignSelf="flex-start"
                     gap="0.25rem"
                   >
                     <Typography
