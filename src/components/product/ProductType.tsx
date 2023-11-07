@@ -6,6 +6,7 @@ import { useOpenAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
 import { isTruthy } from "lib/types/helpers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { poll } from "lib/utils/promises";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
@@ -286,8 +287,52 @@ export default function ProductType({
         textBeforeEditProfile:
           "Your seller profile is out of date and needs to be updated in order to proceed. Click 'Next' to proceed.",
         onClose: async (...argsIfEdited: unknown[]) => {
-          // if the user closed the modal without editing the seller profile, then this array will have 1 undefined value
-          if (!argsIfEdited.filter(isTruthy).length) {
+          const userDidUpdateSeller = argsIfEdited.filter(isTruthy).length;
+          if (userDidUpdateSeller) {
+            let attemps = 15;
+            await poll(
+              async () => {
+                attemps--;
+                return await refetch();
+              },
+              (refetchResult) => {
+                const [
+                  resultByAddress,
+                  ,
+                  ,
+                  resultRefetchFetchSellers,
+                  resultSellerById
+                ] = refetchResult;
+                let didSetMetadata = false;
+                if (
+                  resultByAddress.status === "fulfilled" &&
+                  resultByAddress.value
+                ) {
+                  didSetMetadata = !!resultByAddress.value.data?.sellers?.some(
+                    (s) => s.metadata
+                  );
+                }
+                if (
+                  !didSetMetadata &&
+                  resultRefetchFetchSellers.status === "fulfilled" &&
+                  resultRefetchFetchSellers.value
+                ) {
+                  didSetMetadata = !!resultRefetchFetchSellers.value.data?.some(
+                    (s) => s.metadata
+                  );
+                }
+                if (
+                  !didSetMetadata &&
+                  resultSellerById.status === "fulfilled" &&
+                  resultSellerById.value
+                ) {
+                  didSetMetadata = !!resultSellerById.value.data?.metadata;
+                }
+                return attemps > 0 && !didSetMetadata;
+              },
+              600
+            );
+          } else {
             return navigate({
               pathname: BosonRoutes.Root
             });

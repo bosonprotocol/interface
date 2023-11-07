@@ -192,7 +192,6 @@ const Content = styled.div<{
   }};
   ${({ $modalType }) => {
     switch ($modalType) {
-      case "RELIST_OFFER":
       case "EXPORT_EXCHANGES_WITH_DELIVERY":
       case "REDEEM":
         return css`
@@ -209,23 +208,23 @@ const Content = styled.div<{
       ? css`
           height: 100%;
           overflow: hidden;
-          max-height: calc(100vh - 4.25rem);
+          max-height: calc(100vh - 2 * 4.25rem);
 
           ${breakpoint.s} {
-            max-height: calc(100vh - 4.25rem);
+            max-height: calc(100vh - 2 * 4.25rem);
           }
           ${breakpoint.m} {
-            max-height: calc(100vh - 4.25rem);
+            max-height: calc(100vh - 2 * 4.25rem);
           }
         `
       : css`
-          max-height: calc(100vh - 4.25rem);
+          max-height: calc(100vh - 2 * 4.25rem);
 
           ${breakpoint.s} {
-            max-height: calc(100vh - 4rem - 4.25rem);
+            max-height: calc(100vh - 4rem - 2 * 4.25rem);
           }
           ${breakpoint.m} {
-            max-height: calc(100vh - 8rem - 4.25rem);
+            max-height: calc(100vh - 8rem - 2 * 4.25rem);
           }
         `};
 `;
