@@ -34,7 +34,11 @@ import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import { goToViewMode, ViewMode } from "../../lib/viewMode";
 import { useChatContext } from "../chat/ChatProvider/ChatContext";
 import { createProposal } from "../chat/utils/create";
-import { sendProposalToChat } from "../chat/utils/send";
+import {
+  sendAndAddMessageToUI,
+  sendErrorMessageIfTxFails,
+  sendProposalToChat
+} from "../chat/utils/send";
 import {
   disputeCentreInitialValues,
   disputeCentreValidationSchemaAdditionalInformation,
@@ -241,6 +245,12 @@ function RaiseDisputePage() {
                     Sentry.captureException(err);
                     return;
                   }
+                  const threadId = {
+                    buyerId: exchange.buyer.id,
+                    sellerId: exchange.seller.id,
+                    exchangeId: exchange.id
+                  };
+                  const destinationAddress = exchange.seller.assistant;
                   if (bosonXmtp) {
                     setSubmitError(null);
                     const { proposal, filesWithData } = await createProposal({
@@ -260,25 +270,41 @@ function RaiseDisputePage() {
                       bosonXmtp,
                       proposal,
                       files: filesWithData,
-                      destinationAddress: exchange.seller.assistant,
-                      threadId: {
-                        buyerId: exchange.buyer.id,
-                        sellerId: exchange.seller.id,
-                        exchangeId: exchange.id
-                      },
+                      destinationAddress,
+                      threadId,
                       type: MessageType.Proposal
                     });
                   }
-                  let tx: TransactionResponse;
+                  let tx: TransactionResponse | undefined = undefined;
                   showModal("WAITING_FOR_CONFIRMATION");
                   const isMetaTx = Boolean(
                     coreSDK?.isMetaTxConfigSet && address
                   );
-                  if (isMetaTx) {
-                    tx = await raiseDisputeWithMetaTx(coreSDK, exchange.id);
-                  } else {
-                    tx = await coreSDK.raiseDispute(exchange.id);
+                  await sendErrorMessageIfTxFails({
+                    sendsTxFn: async () => {
+                      if (isMetaTx) {
+                        tx = await raiseDisputeWithMetaTx(coreSDK, exchange.id);
+                      } else {
+                        tx = await coreSDK.raiseDispute(exchange.id);
+                      }
+                    },
+                    fnAddMessageFn: async (errorMessageObj) => {
+                      bosonXmtp &&
+                        (await sendAndAddMessageToUI({
+                          bosonXmtp,
+                          address,
+                          destinationAddress,
+                          newMessage: errorMessageObj
+                        }));
+                    },
+                    errorMessage: "Resolution proposal transaction failed",
+                    threadId
+                  });
+                  if (!tx) {
+                    return;
                   }
+                  tx = tx as TransactionResponse;
+
                   showModal("TRANSACTION_SUBMITTED", {
                     action: "Raise dispute",
                     txHash: tx.hash
@@ -312,7 +338,7 @@ function RaiseDisputePage() {
                     <SuccessTransactionToast
                       t={t}
                       action={`Raised dispute: ${exchange.offer.metadata.name}`}
-                      url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
+                      url={config.envConfig.getTxExplorerUrl?.(tx?.hash)}
                     />
                   ));
                   hideModal();

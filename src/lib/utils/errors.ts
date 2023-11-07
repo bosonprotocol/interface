@@ -24,3 +24,12 @@ export function extractUserFriendlyError(error: Error): string | undefined {
   );
   return details;
 }
+
+export function getHasUserRejectedTx(error: unknown): boolean {
+  const hasUserRejectedTx =
+    !!error &&
+    typeof error === "object" &&
+    "code" in error &&
+    error.code === "ACTION_REJECTED";
+  return hasUserRejectedTx;
+}

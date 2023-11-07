@@ -184,6 +184,7 @@ export default function RetractDisputeModal({
           disabled={!showSuccessInitialization}
           onClick={async () => {
             try {
+              await handleSendingRetractMessage();
               setRetractDisputeError(null);
               let tx: TransactionResponse;
               showModal("WAITING_FOR_CONFIRMATION");
@@ -207,7 +208,6 @@ export default function RetractDisputeModal({
                 }
               });
               await tx.wait();
-              await handleSendingRetractMessage();
               await poll(
                 async () => {
                   const retractedDispute = await coreSDK.getDisputeById(

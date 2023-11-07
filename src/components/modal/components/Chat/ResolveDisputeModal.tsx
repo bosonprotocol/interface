@@ -10,8 +10,13 @@ import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, utils } from "ethers";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
+import {
+  sendAndAddMessageToUI,
+  sendErrorMessageIfTxFails
+} from "pages/chat/utils/send";
 import { Info as InfoComponent } from "phosphor-react";
 import {
   Dispatch,
@@ -187,29 +192,14 @@ export default function ResolveDisputeModal({
           contentType: MessageType.AcceptProposal,
           version
         } as const;
-        const uuid = window.crypto.randomUUID();
-
-        await addMessage({
-          authorityId: "",
-          timestamp: Date.now(),
-          sender: address,
-          recipient: destinationAddress,
-          data: newMessage,
-          isValid: false,
-          isPending: true,
-          uuid
+        await sendAndAddMessageToUI({
+          bosonXmtp,
+          addMessage,
+          onSentMessage,
+          address,
+          destinationAddress,
+          newMessage
         });
-
-        const messageData = await bosonXmtp.encodeAndSendMessage(
-          newMessage,
-          destinationAddress
-        );
-        if (!messageData) {
-          throw new Error(
-            "Something went wrong while sending an accept proposal message"
-          );
-        }
-        onSentMessage(messageData, uuid);
       } catch (error) {
         console.error(error);
         setHasError(true);
@@ -259,26 +249,49 @@ export default function ResolveDisputeModal({
             try {
               setResolveDisputeError(null);
               const signature = utils.splitSignature(proposal.signature);
-              let tx: TransactionResponse;
+              let tx: TransactionResponse | undefined = undefined;
               showModal("WAITING_FOR_CONFIRMATION");
               await handleSendingAcceptProposalMessage();
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
-              if (isMetaTx) {
-                tx = await resolveDisputeWithMetaTx(
-                  coreSDK,
-                  exchange.id,
-                  proposal.percentageAmount,
-                  signature
-                );
-              } else {
-                tx = await coreSDK.resolveDispute({
-                  exchangeId: exchange.id,
-                  buyerPercentBasisPoints: proposal.percentageAmount,
-                  sigR: signature.r,
-                  sigS: signature.s,
-                  sigV: signature.v
-                });
+
+              await sendErrorMessageIfTxFails({
+                sendsTxFn: async () => {
+                  if (isMetaTx) {
+                    tx = await resolveDisputeWithMetaTx(
+                      coreSDK,
+                      exchange.id,
+                      proposal.percentageAmount,
+                      signature
+                    );
+                  } else {
+                    tx = await coreSDK.resolveDispute({
+                      exchangeId: exchange.id,
+                      buyerPercentBasisPoints: proposal.percentageAmount,
+                      sigR: signature.r,
+                      sigS: signature.s,
+                      sigV: signature.v
+                    });
+                  }
+                },
+                fnAddMessageFn: async (errorMessageObj) => {
+                  bosonXmtp &&
+                    address &&
+                    (await sendAndAddMessageToUI({
+                      bosonXmtp,
+                      addMessage,
+                      onSentMessage,
+                      address,
+                      destinationAddress,
+                      newMessage: errorMessageObj
+                    }));
+                },
+                errorMessage: "Resolution proposal transaction failed",
+                threadId
+              });
+              if (!tx) {
+                return;
               }
+              tx = tx as TransactionResponse;
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Raise dispute",
                 txHash: tx.hash
@@ -310,13 +323,11 @@ export default function ResolveDisputeModal({
                 <SuccessTransactionToast
                   t={t}
                   action={`Raised dispute: ${exchange.offer.metadata.name}`}
-                  url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
+                  url={config.envConfig.getTxExplorerUrl?.(tx?.hash)}
                 />
               ));
             } catch (error) {
-              const hasUserRejectedTx =
-                (error as unknown as { code: string }).code ===
-                "ACTION_REJECTED";
+              const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {

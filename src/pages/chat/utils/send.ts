@@ -10,8 +10,11 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { utils } from "ethers";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 
 import { FileWithEncodedData } from "../../../lib/utils/files";
+import { ICON_KEYS, StringIconTypes } from "../components/conversation/const";
+import { MessageDataWithInfo } from "../types";
 
 export const sendFilesToChat = async ({
   bosonXmtp,
@@ -113,4 +116,85 @@ export const sendProposalToChat = async ({
       callback
     });
   }
+};
+
+export const sendErrorMessageIfTxFails = async ({
+  sendsTxFn,
+  fnAddMessageFn,
+  errorMessage,
+  threadId
+}: {
+  sendsTxFn: () => Promise<unknown>;
+  fnAddMessageFn: (errorMessageObj: MessageObject) => Promise<unknown>;
+  errorMessage: string;
+  threadId: ThreadId | null;
+}) => {
+  try {
+    await sendsTxFn();
+  } catch (error) {
+    if (!getHasUserRejectedTx(error) && threadId) {
+      const newMessage: MessageObject = {
+        threadId,
+        content: {
+          value: {
+            icon: ICON_KEYS.warningCircle,
+            heading: "Transaction did not go through",
+            body: errorMessage,
+            type: StringIconTypes.ERROR
+          }
+        },
+        contentType: MessageType.StringIcon,
+        version
+      } as const;
+      await fnAddMessageFn(newMessage);
+    }
+
+    throw error;
+  }
+};
+
+export const sendAndAddMessageToUI = async ({
+  bosonXmtp,
+  addMessage,
+  onSentMessage,
+  address,
+  destinationAddress,
+  newMessage
+}: {
+  bosonXmtp: BosonXmtpClient;
+  addMessage?:
+    | ((
+        newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
+      ) => Promise<void>)
+    | undefined;
+  onSentMessage?:
+    | ((messageData: MessageData, uuid: string) => Promise<void>)
+    | undefined;
+  address: string;
+  destinationAddress: string;
+  newMessage: MessageObject;
+}) => {
+  const uuid = window.crypto.randomUUID();
+
+  await addMessage?.({
+    authorityId: "",
+    timestamp: Date.now(),
+    sender: address,
+    recipient: destinationAddress,
+    data: newMessage,
+    isValid: false,
+    isPending: true,
+    uuid
+  });
+
+  const messageData = await bosonXmtp.encodeAndSendMessage(
+    newMessage,
+    destinationAddress
+  );
+  if (!messageData) {
+    throw new Error(
+      `Something went wrong while sending an ${newMessage.contentType} message`
+    );
+  }
+  onSentMessage?.(messageData, uuid);
 };
