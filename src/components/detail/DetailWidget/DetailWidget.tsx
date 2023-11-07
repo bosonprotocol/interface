@@ -284,9 +284,10 @@ export const getOfferDetailData = (
             <b>Redeemable</b>
           </Typography>
           <Typography tag="p">
-            If you don't redeem your NFT during the redemption period, it will
-            expire and you will receive back the price minus the Buyer cancel
-            penalty.
+            {offer.voucherRedeemableUntilDate !== "0" ||
+            exchange?.validUntilDate
+              ? "If you don't redeem your NFT during the redemption period, it will expire and you will receive back the price minus the Buyer cancel penalty."
+              : "Your NFT is available for redemption during this period, calculated from the date it was committed. If you do not redeem the NFT in this period, it will expire and you will receive back the price minus the buyer cancellation penalty."}
           </Typography>
         </>
       ),
