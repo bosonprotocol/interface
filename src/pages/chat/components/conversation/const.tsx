@@ -18,16 +18,10 @@ const StyledCheckedCircle = styled(CheckCircle)`
   }
 `;
 
-const StyledWarningCircle = styled(WarningCircle)`
-  circle[stroke] {
-    stroke: ${colors.orange};
-  }
-`;
-
 export const ICONS = {
   info: <StyledInfo color={colors.white} />,
   checkCircle: <StyledCheckedCircle color={colors.green} />,
-  warningCircle: <StyledWarningCircle color={colors.orange} />
+  warningCircle: <WarningCircle color={colors.orange} />
 } as const;
 
 export const ICON_KEYS: RecordWithSameKeyAndValue<typeof ICONS> = {
