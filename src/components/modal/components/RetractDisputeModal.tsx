@@ -202,7 +202,7 @@ export default function RetractDisputeModal({
                     tx = await coreSDK.retractDispute(exchangeId);
                   }
                 },
-                fnAddMessageFn: async (errorMessageObj) => {
+                addMessageIfTxFailsFn: async (errorMessageObj) => {
                   bosonXmtp &&
                     address &&
                     (await sendAndAddMessageToUI({

@@ -288,7 +288,7 @@ function RaiseDisputePage() {
                         tx = await coreSDK.raiseDispute(exchange.id);
                       }
                     },
-                    fnAddMessageFn: async (errorMessageObj) => {
+                    addMessageIfTxFailsFn: async (errorMessageObj) => {
                       bosonXmtp &&
                         (await sendAndAddMessageToUI({
                           bosonXmtp,

@@ -509,7 +509,7 @@ function EscalateStepTwo({
                               tx = await coreSDK.escalateDispute(exchange.id);
                             }
                           },
-                          fnAddMessageFn: async (errorMessageObj) => {
+                          addMessageIfTxFailsFn: async (errorMessageObj) => {
                             bosonXmtp &&
                               address &&
                               (await sendAndAddMessageToUI({

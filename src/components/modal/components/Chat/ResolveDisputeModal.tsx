@@ -273,7 +273,7 @@ export default function ResolveDisputeModal({
                     });
                   }
                 },
-                fnAddMessageFn: async (errorMessageObj) => {
+                addMessageIfTxFailsFn: async (errorMessageObj) => {
                   bosonXmtp &&
                     address &&
                     (await sendAndAddMessageToUI({

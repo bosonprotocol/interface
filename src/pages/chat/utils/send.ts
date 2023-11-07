@@ -120,12 +120,12 @@ export const sendProposalToChat = async ({
 
 export const sendErrorMessageIfTxFails = async ({
   sendsTxFn,
-  fnAddMessageFn,
+  addMessageIfTxFailsFn,
   errorMessage,
   threadId
 }: {
   sendsTxFn: () => Promise<unknown>;
-  fnAddMessageFn: (errorMessageObj: MessageObject) => Promise<unknown>;
+  addMessageIfTxFailsFn: (errorMessageObj: MessageObject) => Promise<unknown>;
   errorMessage: string;
   threadId: ThreadId | null;
 }) => {
@@ -146,7 +146,7 @@ export const sendErrorMessageIfTxFails = async ({
         contentType: MessageType.StringIcon,
         version
       } as const;
-      await fnAddMessageFn(newMessage);
+      await addMessageIfTxFailsFn(newMessage);
     }
 
     throw error;
