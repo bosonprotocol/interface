@@ -64,6 +64,7 @@ export const CreateRegularProfileFlow: React.FC<
           onBackClick={() => {
             setStep(RegularStep.CREATE);
           }}
+          isEdit={false}
         />
       ) : step === RegularStep.SUMMARY && regularProfile && bosonAccount ? (
         <RegularProfileSummary

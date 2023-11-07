@@ -14,13 +14,15 @@ interface Props {
   onBackClick: () => void;
   formValues: BosonAccount | null;
   submitButtonText?: string;
+  isEdit: boolean;
 }
 
 export default function BosonAccountForm({
   onSubmit,
   onBackClick,
   formValues,
-  submitButtonText
+  submitButtonText,
+  isEdit
 }: Props) {
   const ipfsMetadataStorage = useIpfsStorage();
   const [isError, setIsError] = useState<boolean>(false);
@@ -68,8 +70,11 @@ export default function BosonAccountForm({
         Boson Account
       </Typography>
       <Typography margin="0 0 1rem 0">
-        You are creating a seller account on Boson Protocol. Input the relevant
-        information relating to your secondary royalties.
+        You are {isEdit ? "updating" : "creating"} a seller account on Boson
+        Protocol.{" "}
+        {isEdit
+          ? "See the relevant information relating to your secondary royalties."
+          : "Input the relevant information relating to your secondary royalties."}
       </Typography>
       <Formik<BosonAccount>
         initialValues={initialValues}
@@ -89,6 +94,7 @@ export default function BosonAccountForm({
             alreadyHasRoyaltiesDefined={alreadyHasRoyaltiesDefined}
             isError={isError}
             submitButtonText={submitButtonText}
+            isEdit={isEdit}
           />
         </Form>
       </Formik>

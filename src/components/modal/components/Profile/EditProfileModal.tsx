@@ -1,6 +1,8 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import Button from "components/ui/Button";
 import { useAccount } from "lib/utils/hooks/connection/connection";
+import { Warning } from "phosphor-react";
 import { useCallback, useMemo, useState } from "react";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -21,7 +23,13 @@ import LensProfileFlow from "./Lens/LensProfileFlow";
 import { EditRegularProfileFlow } from "./Regular/EditRegularProfileFlow";
 import { buildRegularProfileFromMetadata } from "./utils";
 
-export default function EditProfileModal() {
+type EditProfileModalProps = {
+  textBeforeEditProfile?: string;
+};
+export default function EditProfileModal({
+  textBeforeEditProfile
+}: EditProfileModalProps) {
+  const [showBeforeStep, setShowBeforeStep] = useState(!!textBeforeEditProfile);
   const { config } = useConfigContext();
   const { availableOnNetwork: isLensAvailable } = config.lens;
   const { sellers: currentSellers, lens, isLoading } = useCurrentSellers();
@@ -85,8 +93,8 @@ export default function EditProfileModal() {
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
         profileDataFromMetadata={profileDataFromMetadata}
-        onSubmit={async () => {
-          hideModal();
+        onSubmit={async (...args) => {
+          hideModal(args);
         }}
         isEdit
         forceDirty={forceDirty}
@@ -101,8 +109,8 @@ export default function EditProfileModal() {
         profileInitialData={profileDataFromMetadata}
         forceDirty={forceDirty}
         updateSellerMetadata={updateSellerMetadata}
-        onSubmit={async () => {
-          hideModal();
+        onSubmit={async (...args) => {
+          hideModal(args);
         }}
         switchButton={SwitchButton}
       />
@@ -116,7 +124,7 @@ export default function EditProfileModal() {
     return (
       <>
         <Typography>
-          To create a profile you must first connect your wallet
+          To edit a profile you must first connect your wallet
         </Typography>
         <Grid>
           <ConnectButton />
@@ -134,6 +142,18 @@ export default function EditProfileModal() {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (textBeforeEditProfile && showBeforeStep) {
+    return (
+      <Grid flexDirection="column" alignItems="flex-start" gap="1rem">
+        <Grid justifyContent="flex-start" gap="1rem">
+          <Warning color={colors.orange} />
+          <Typography>{textBeforeEditProfile}</Typography>
+        </Grid>
+        <Button onClick={() => setShowBeforeStep(false)}>Next</Button>
+      </Grid>
+    );
   }
 
   return <Component />;

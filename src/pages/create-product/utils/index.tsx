@@ -15,6 +15,7 @@ import {
   productInformationValidationSchema,
   productTypeValidationSchema,
   productVariantsImagesValidationSchema,
+  regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
   tokenGatingValidationSchema,
@@ -110,7 +111,9 @@ export const createProductSteps = ({
         />
       </>
     ),
-    validation: productTypeValidationSchema,
+    validation: regularProfileValidationSchema.concat(
+      productTypeValidationSchema
+    ),
     helpSection: productTypeHelp
   };
   const productInformation = {
