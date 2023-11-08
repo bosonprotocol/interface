@@ -96,26 +96,32 @@ export const OPTIONS_TOKEN_GATED = [
   }
 ] as const;
 
+export enum TokenTypes {
+  "erc20" = "erc20",
+  "erc721" = "erc721",
+  "erc1155" = "erc1155"
+}
+
+export const TokenTypeEnumToString = {
+  [TokenType.FungibleToken]: TokenTypes.erc20,
+  [TokenType.NonFungibleToken]: TokenTypes.erc721,
+  [TokenType.MultiToken]: TokenTypes.erc1155
+} as const;
+
 export const TOKEN_TYPES = [
   {
-    value: "erc20",
+    value: TokenTypes.erc20,
     label: "ERC20"
   },
   {
-    value: "erc721",
+    value: TokenTypes.erc721,
     label: "ERC721"
   },
   {
-    value: "erc1155",
+    value: TokenTypes.erc1155,
     label: "ERC1155"
   }
 ] as const;
-
-export const TokenTypeEnumToString = {
-  [TokenType.FungibleToken]: "erc20",
-  [TokenType.NonFungibleToken]: "erc721",
-  [TokenType.MultiToken]: "erc1155"
-} as const;
 
 export const TOKEN_CRITERIA = [
   {
