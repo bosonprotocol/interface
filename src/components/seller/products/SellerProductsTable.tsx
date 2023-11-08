@@ -1,6 +1,9 @@
 import { offers as OffersKit } from "@bosonprotocol/react-kit";
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { NO_EXPIRATION } from "lib/constants/offer";
+import { defaultFontFamily } from "lib/styles/fonts";
+import { formatDate } from "lib/utils/date";
 import uniqBy from "lodash/uniqBy";
 import {
   CaretDown,
@@ -23,7 +26,6 @@ import {
 } from "react-table";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
 import {
   SellerHubQueryParameters,
   UrlParameters
@@ -176,7 +178,7 @@ const Table = styled.table`
   }
   .th,
   .td {
-    font-family: "Plus Jakarta Sans";
+    font-family: ${defaultFontFamily};
     font-style: normal;
     font-size: 0.75rem;
     line-height: 1.5;
@@ -572,9 +574,10 @@ export default function SellerProductsTable({
                         <Typography justifyContent="flex-start">
                           <span>
                             <small style={{ margin: "0" }}>Until</small> <br />
-                            {dayjs(
-                              getDateTimestamp(variant.validUntilDate)
-                            ).format(CONFIG.dateFormat)}
+                            {formatDate(
+                              getDateTimestamp(variant.validUntilDate),
+                              { textIfTooBig: NO_EXPIRATION }
+                            )}
                           </span>
                         </Typography>
                       ),
@@ -707,9 +710,9 @@ export default function SellerProductsTable({
               <Typography>
                 <span>
                   <small style={{ margin: "0" }}>Until</small> <br />
-                  {dayjs(getDateTimestamp(offer.validUntilDate)).format(
-                    CONFIG.dateFormat
-                  )}
+                  {formatDate(getDateTimestamp(offer.validUntilDate), {
+                    textIfTooBig: NO_EXPIRATION
+                  })}
                 </span>
               </Typography>
             ),

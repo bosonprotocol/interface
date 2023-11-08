@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 import { CONFIG } from "../../../lib/config";
 import {
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
@@ -96,15 +98,19 @@ export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     currency: null as any,
     quantity: 1,
-    redemptionPeriod: [],
-    offerValidityPeriod: []
+    redemptionPeriod: undefined,
+    offerValidityPeriod: undefined as unknown as Dayjs,
+    infiniteExpirationOffers: true,
+    voucherValidDurationInDays: undefined
   }
 };
 
 export const variantsCoreTermsOfSaleInitialValues: VariantsCoreTermsOfSale = {
   variantsCoreTermsOfSale: {
-    redemptionPeriod: [],
-    offerValidityPeriod: []
+    redemptionPeriod: undefined,
+    offerValidityPeriod: undefined as unknown as Dayjs,
+    infiniteExpirationOffers: true,
+    voucherValidDurationInDays: undefined
   }
 };
 

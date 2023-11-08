@@ -8,86 +8,134 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(advancedFormat);
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { getTimeZoneWithGMT } from "lib/utils/time";
+import {
+  FocusEventHandler,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 import { useDidMountEffect } from "../../lib/utils/hooks/useDidMountEffect";
 import { FieldInput } from "../form/Field.styles";
 import Calendar from "./Calendar";
-import { DatePickerWrapper, Picker, PickerGrid } from "./DatePicker.style";
+import {
+  ClearButton,
+  DatePickerWrapper,
+  Picker,
+  PickerGrid
+} from "./DatePicker.style";
 import SelectMonth from "./SelectMonth";
 import SelectTime from "./SelectTime";
 
-interface Props {
+export type DatePickerProps = {
   initialValue?: Dayjs | Array<Dayjs> | null;
-  onChange?: (selected: Dayjs | Array<Dayjs | null> | null) => void;
+  onChange?: (selected: Dayjs | Array<Dayjs | null> | null | undefined) => void;
+  onBlur?: FocusEventHandler<HTMLInputElement> | undefined;
+  onClick?: () => void;
   error?: string;
   period: boolean;
   selectTime: boolean;
   minDate?: Dayjs | null;
   maxDate?: Dayjs | null;
+  isClearable?: boolean;
+  placeholder?: string;
+  name?: string;
   [x: string]: any;
-}
-export interface ChoosenTime {
+};
+export type ChoosenTime = {
   hour: string | Array<string>;
   minute: string | Array<string>;
   timezone: string;
-}
+};
 
 const handleInitialDates = (
   initialValue: Dayjs | Array<Dayjs> | null | undefined
 ) => {
   let startDate: Dayjs | null = null;
   let endDate: Dayjs | null = null;
+  let chosenTime: ChoosenTime | null = null;
 
-  if (Array.isArray(initialValue)) {
-    if (initialValue.length) {
-      startDate = dayjs(initialValue[0]);
-      endDate = dayjs(initialValue[1]);
+  if (initialValue) {
+    if (Array.isArray(initialValue)) {
+      if (initialValue.length) {
+        startDate = dayjs(initialValue[0]);
+        endDate = dayjs(initialValue[1]);
+        chosenTime = {
+          hour: [
+            startDate.toDate().getHours().toString(),
+            endDate.toDate().getHours().toString()
+          ],
+          minute: [
+            startDate.toDate().getMinutes().toString(),
+            endDate.toDate().getMinutes().toString()
+          ],
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          timezone: startDate.$x.$timezone ?? endDate.$x.$timezone
+        };
+      }
+    } else {
+      startDate = dayjs(initialValue);
+      chosenTime = {
+        hour: startDate.toDate().getHours().toString(),
+        minute: startDate.toDate().getMinutes().toString(),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        timezone: startDate.$x.$timezone
+      };
     }
-  } else {
-    startDate = dayjs(initialValue);
   }
 
   return {
     startDate,
-    endDate
+    endDate,
+    chosenTime
   };
 };
 const dateTimeFormat = "MMMM D, YYYY HH:mm";
-export default function DatePicker({
+export default memo(function DatePicker({
   initialValue,
   onChange,
+  onBlur,
+  onClick,
   period,
   selectTime,
   maxDate,
   minDate = dayjs(),
+  isClearable,
+  placeholder = "Choose dates...",
   ...props
-}: Props) {
+}: DatePickerProps) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const [month, setMonth] = useState<Dayjs>(dayjs());
   const [time, setTime] = useState<ChoosenTime | null>(null);
   const [date, setDate] = useState<Dayjs | null>(null);
   const [secondDate, setSecondDate] = useState<Dayjs | null>(null);
-  const [shownDate, setShownDate] = useState<string>("Choose dates...");
+  const [shownDate, setShownDate] = useState<string>();
   const [show, setShow] = useState<boolean>(false);
   const [showTime, setShowTime] = useState<boolean>(false);
 
   useEffect(() => {
-    const { startDate, endDate } = handleInitialDates(initialValue);
+    const { startDate, endDate, chosenTime } = handleInitialDates(initialValue);
     if (date === null) setDate(startDate);
     if (secondDate === null) setSecondDate(endDate);
+    if (chosenTime === null) setTime(chosenTime);
   }, [initialValue]); // eslint-disable-line
 
   const handleShow = () => {
     setShow(!show);
+    onClick?.();
   };
 
   const reset = useCallback(() => {
     setDate(null);
     setSecondDate(null);
     setShowTime(false);
-    setShownDate("Choose dates...");
+    setShownDate("");
   }, []);
 
   const handleDateChange = (inputDate: Dayjs | null) => {
@@ -123,11 +171,11 @@ export default function DatePicker({
       (!period && date === null) ||
       (period && date === null && secondDate === null)
     ) {
-      setShownDate("Choose dates...");
+      setShownDate("");
       if (period) {
         onChange?.([]);
       } else {
-        onChange?.(null);
+        onChange?.(undefined);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,7 +204,11 @@ export default function DatePicker({
         setShownDate(
           `${newDate?.format(dateTimeFormat)} - ${newSecondDate?.format(
             dateTimeFormat
-          )} ${time ? `(${time.timezone} GMT${newDate?.format("Z")})` : ""}`
+          )} ${
+            time && newDate.isValid()
+              ? `(${getTimeZoneWithGMT(time.timezone)})`
+              : ""
+          }`
         );
         onChange?.([newDate, newSecondDate]);
       }
@@ -173,14 +225,20 @@ export default function DatePicker({
         }
         setShownDate(
           `${newDate?.format(dateTimeFormat)} ${
-            time ? `(${time.timezone} GMT${newDate?.format("Z")})` : ""
+            time && newDate.isValid()
+              ? `(${getTimeZoneWithGMT(time.timezone)})`
+              : ""
           }`
         );
         onChange?.(newDate);
       }
     }
   }, [date, secondDate, time]); // eslint-disable-line
-
+  useEffect(() => {
+    if (!period) {
+      setSecondDate(null);
+    }
+  }, [period]);
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const clicksOn =
@@ -198,7 +256,14 @@ export default function DatePicker({
 
   return (
     <Picker>
-      <FieldInput value={shownDate} onClick={handleShow} {...props} readOnly />
+      <FieldInput
+        value={shownDate}
+        onClick={handleShow}
+        onBlur={onBlur}
+        {...props}
+        readOnly
+        placeholder={placeholder}
+      />
       <DatePickerWrapper
         show={show}
         selectTime={selectTime && showTime}
@@ -229,6 +294,7 @@ export default function DatePicker({
           )}
         </PickerGrid>
       </DatePickerWrapper>
+      {isClearable && <ClearButton onClick={reset} />}
     </Picker>
   );
-}
+});

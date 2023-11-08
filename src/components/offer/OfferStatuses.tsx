@@ -1,4 +1,5 @@
 import { offers } from "@bosonprotocol/react-kit";
+import { defaultFontFamily } from "lib/styles/fonts";
 import { useMemo } from "react";
 import styled from "styled-components";
 
@@ -64,7 +65,7 @@ const Status = styled.div<{
       : $size === "small"
       ? "0.4375rem 0.625rem"
       : "0.75rem 1.5rem"};
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   font-style: normal;
   font-size: ${({ $size }) =>
     $size === "regular"

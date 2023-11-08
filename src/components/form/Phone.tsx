@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useField, useFormikContext } from "formik";
+import { defaultFontFamily } from "lib/styles/fonts";
 import { GlobeHemisphereWest } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import type { Country as CountryCode } from "react-phone-number-input";
@@ -115,7 +116,7 @@ export const PhoneWrapper = styled.div`
     border: 1px solid ${colors.border};
     border-radius: 0;
     outline: none;
-    font-family: "Plus Jakarta Sans";
+    font-family: ${defaultFontFamily};
     transition: all 150ms ease-in-out;
   }
 `;

@@ -173,6 +173,7 @@ interface IDetailWidget {
 const fontSizeExchangePolicy = "0.625rem";
 export const getOfferDetailData = (
   offer: Offer,
+  exchange: Exchange | undefined,
   convertedPrice: IPrice | null,
   isModal: boolean,
   modalTypes?: ModalTypes,
@@ -185,8 +186,10 @@ export const getOfferDetailData = (
   );
   const redeemableFrom = redeemableFromDayJs.format(CONFIG.dateFormat);
   const redeemableUntil = dayjs(
-    Number(`${offer.voucherRedeemableUntilDate}000`)
+    Number(`${exchange?.validUntilDate ?? offer.voucherRedeemableUntilDate}000`)
   ).format(CONFIG.dateFormat);
+  const redeemableForXDays =
+    Number(`${offer.voucherValidDuration}000`) / 86400000;
 
   const { deposit, formatted } = calcPercentage(offer, "buyerCancelPenalty");
   const { deposit: sellerDeposit, formatted: sellerFormatted } = calcPercentage(
@@ -224,7 +227,7 @@ export const getOfferDetailData = (
                   <b>Redeemable</b>
                 </Typography>
                 <Typography tag="p">
-                  If you don’t redeem your NFT during the redemption period, it
+                  If you don't redeem your NFT during the redemption period, it
                   will expire and you will receive back the price minus the
                   Buyer cancel penalty
                 </Typography>
@@ -234,23 +237,67 @@ export const getOfferDetailData = (
           }
         ]
       : [];
+
+  const canBeRedeemedFrom = dayjs(
+    getDateTimestamp(
+      Math.max(
+        Number(exchange?.committedDate || "0"),
+        Number(offer.voucherRedeemableFromDate || "0")
+      ).toString()
+    ) + Number(offer.voucherValidDuration || "0")
+  );
+
   return [
     ...redeemableFromValues,
+    ...(offer.voucherRedeemableFromDate !== "0" || !!exchange?.committedDate
+      ? [
+          {
+            name: "Redeemable from",
+            info: (
+              <>
+                <Typography tag="h6">
+                  <b>Redeemable</b>
+                </Typography>
+                <Typography tag="p">
+                  If you don't redeem your NFT during the redemption period, it
+                  will expire and you will receive back the price minus the
+                  Buyer cancel penalty
+                </Typography>
+              </>
+            ),
+            value: (
+              <Typography tag="p">
+                {canBeRedeemedFrom.format(CONFIG.dateFormat)}
+              </Typography>
+            )
+          }
+        ]
+      : []),
     {
-      name: "Redeemable until",
+      name:
+        offer.voucherRedeemableUntilDate !== "0" || exchange?.validUntilDate
+          ? "Redeemable until"
+          : "Redeemable for",
       info: (
         <>
           <Typography tag="h6">
             <b>Redeemable</b>
           </Typography>
           <Typography tag="p">
-            If you don’t redeem your NFT during the redemption period, it will
-            expire and you will receive back the price minus the Buyer cancel
-            penalty
+            {offer.voucherRedeemableUntilDate !== "0" ||
+            exchange?.validUntilDate
+              ? "If you don't redeem your NFT during the redemption period, it will expire and you will receive back the price minus the Buyer cancel penalty."
+              : "Your NFT is available for redemption during this period, calculated from the date it was committed. If you do not redeem the NFT in this period, it will expire and you will receive back the price minus the buyer cancellation penalty."}
           </Typography>
         </>
       ),
-      value: <Typography tag="p">{redeemableUntil}</Typography>
+      value: (
+        <Typography tag="p">
+          {offer.voucherRedeemableUntilDate !== "0" || exchange?.validUntilDate
+            ? redeemableUntil
+            : `${redeemableForXDays} day${redeemableForXDays === 1 ? "" : "s"}`}
+        </Typography>
+      )
     },
     isModal
       ? {
@@ -449,10 +496,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     getHasExchangeDisputeResolutionElapsed(exchange, offer);
 
   const isExchangeExpired =
-    exchangeStatus &&
-    [exchanges.ExtendedExchangeState.Expired].includes(
-      exchangeStatus as unknown as exchanges.ExtendedExchangeState
-    );
+    !!exchangeStatus &&
+    exchanges.ExtendedExchangeState.Expired === exchangeStatus;
 
   const signer = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -475,6 +520,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () =>
       getOfferDetailData(
         offer,
+        exchange,
         convertedPrice,
         false,
         modalTypes,
@@ -484,6 +530,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       ),
     [
       offer,
+      exchange,
       convertedPrice,
       modalTypes,
       showModal,
@@ -495,6 +542,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () =>
       getOfferDetailData(
         offer,
+        exchange,
         convertedPrice,
         true,
         modalTypes,
@@ -504,6 +552,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       ),
     [
       offer,
+      exchange,
       convertedPrice,
       modalTypes,
       showModal,
@@ -529,7 +578,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isVoidedOffer = !!offer.voidedAt;
 
   const voucherRedeemableUntilDate = dayjs(
-    getDateTimestamp(offer.voucherRedeemableUntilDate)
+    getDateTimestamp(
+      exchange?.validUntilDate ?? offer.voucherRedeemableUntilDate
+    )
   );
   const nowDate = dayjs();
 
@@ -876,7 +927,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       reload?.();
     });
   });
-  const isRedeemDisabled = isLoading || isOffer || isPreview || !isBuyer;
+  const isRedeemDisabled =
+    isLoading || isOffer || isPreview || !isBuyer || isExchangeExpired;
   return (
     <>
       <Widget>
@@ -899,14 +951,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 })
               }
             >
-              <Typography
-                tag="p"
-                style={{ color: colors.orange, margin: 0 }}
-                $fontSize="0.75rem"
+              <p
+                style={{ color: colors.orange, margin: 0, fontSize: "0.75rem" }}
               >
                 You already own {userCommittedOffers.length}{" "}
-                {offer.metadata.name} rNFT
-              </Typography>
+                <b>{offer.metadata.name}</b> rNFT
+              </p>
               <ArrowRight size={18} color={colors.orange} />
             </Grid>
           )}
@@ -963,7 +1013,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 typographyStyle={
                   isBuyerInsufficientFunds ? { fontSize: "0.75rem" } : {}
                 }
-                swapButton={
+                secondChildren={
                   !isPreview && isBuyerInsufficientFunds ? (
                     <LinkWithQuery
                       style={{ width: "100%" }}

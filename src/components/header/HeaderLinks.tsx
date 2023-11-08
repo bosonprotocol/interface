@@ -1,4 +1,5 @@
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
+import { defaultFontFamily } from "lib/styles/fonts";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { ReactNode } from "react";
@@ -55,7 +56,7 @@ const NavigationLinks = styled.div<{
             display: flex;
             align-items: center;
             cursor: pointer;
-            font-family: "Plus Jakarta Sans";
+            font-family: ${defaultFontFamily};
             font-style: normal;
             font-size: 16px;
             font-weight: 600;

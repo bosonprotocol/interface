@@ -1,6 +1,7 @@
 import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { useConfigContext } from "components/config/ConfigContext";
+import { defaultFontFamily } from "lib/styles/fonts";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { memo } from "react";
 import { generatePath } from "react-router-dom";
@@ -41,7 +42,7 @@ const SellerInfo = styled.div<{ $withBosonStyles?: boolean }>`
     $withBosonStyles
       ? css`
           color: ${colors.secondary};
-          font-family: "Plus Jakarta Sans";
+          font-family: ${defaultFontFamily};
         `
       : css`
           color: var(--accent);

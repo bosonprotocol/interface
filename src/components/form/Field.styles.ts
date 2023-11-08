@@ -1,4 +1,5 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
+import { defaultFontFamily } from "lib/styles/fonts";
 import styled, { css } from "styled-components";
 
 import { transition } from "../../components/ui/styles";
@@ -22,7 +23,7 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   border: 1px solid ${colors.border};
   border-radius: 0;
   outline: none;
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
 
   ${transition}
 
@@ -175,7 +176,7 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
   width: 100%;
   padding: 1rem;
   gap: 0.5rem;
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
 
   background: ${colors.lightGrey};
   border: 1px solid ${colors.border};

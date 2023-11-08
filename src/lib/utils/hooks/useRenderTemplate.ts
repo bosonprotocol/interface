@@ -105,6 +105,9 @@ function buildOfferData(offerFields: OfferFieldsFragment): {
       )
         .mul(1000)
         .toString(),
+      voucherValidDurationInMS: BigNumber.from(offerFields.voucherValidDuration)
+        .mul(1000)
+        .toString(),
       disputePeriodDurationInMS: BigNumber.from(
         offerFields.disputePeriodDuration
       )

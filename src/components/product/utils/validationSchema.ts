@@ -3,6 +3,7 @@ import {
   maxLengthErrorMessage,
   METADATA_LENGTH_LIMIT
 } from "components/modal/components/Profile/const";
+import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
@@ -191,14 +192,53 @@ export const productInformationValidationSchema = Yup.object({
 });
 
 export const commonCoreTermsOfSaleValidationSchema = {
-  offerValidityPeriod: Yup.array()
-    .required(validationMessage.required)
-    .min(2, validationMessage.required)
-    .isOfferValidityDatesValid(),
-  redemptionPeriod: Yup.array()
-    .required(validationMessage.required)
-    .min(2, validationMessage.required)
-    .isRedemptionDatesValid()
+  infiniteExpirationOffers: Yup.boolean(),
+  offerValidityPeriod: Yup.mixed<Dayjs | Dayjs[]>()
+    .when("infiniteExpirationOffers", {
+      is: true,
+      then: Yup.mixed<Dayjs>()
+        .required(validationMessage.required)
+        .defined(validationMessage.required),
+      otherwise: Yup.mixed<Dayjs[]>()
+        .required(validationMessage.required)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .isOfferValidityDatesValid()
+    })
+    .required(validationMessage.required),
+  redemptionPeriod: Yup.mixed<Dayjs | Dayjs[]>().when(
+    "infiniteExpirationOffers",
+    {
+      is: true,
+      then: Yup.mixed<Dayjs>().optional(),
+      // .required(validationMessage.required)
+      // .defined(validationMessage.required),
+      otherwise: Yup.mixed<Dayjs[]>()
+        // Yup.array<Dayjs>()
+        .required(validationMessage.required)
+        // .min(2, validationMessage.required)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .isRedemptionDatesValid()
+    }
+  ),
+  voucherValidDurationInDays: Yup.number().when("infiniteExpirationOffers", {
+    is: true,
+    then: () => {
+      return Yup.number()
+        .required(validationMessage.required)
+        .min(0, "It cannot be negative")
+        .test({
+          message:
+            "It cannot be 0 if the redemption from date is not specified",
+          test: function (value, context) {
+            const { redemptionPeriod } = context.parent;
+            return redemptionPeriod ? true : value !== 0;
+          }
+        });
+    },
+    otherwise: Yup.number().min(0, "It must be 0").max(0, "It must be 0")
+  })
 };
 
 export const tokenGatingValidationSchema = Yup.object({
@@ -375,6 +415,6 @@ export const shippingInfoValidationSchema = Yup.object({
 
 export const confirmProductDetailsSchema = Yup.object({
   confirmProductDetails: Yup.object({
-    acceptsTerms: Yup.boolean().required()
+    acceptsTerms: Yup.boolean().required(validationMessage.required)
   })
 });

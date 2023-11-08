@@ -14,6 +14,7 @@ import styled from "styled-components";
 dayjs.extend(isBetween);
 
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+import { defaultFontFamily } from "lib/styles/fonts";
 
 import { colors } from "../../../lib/styles/colors";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
@@ -48,7 +49,7 @@ const Table = styled.table`
   }
   th,
   td {
-    font-family: "Plus Jakarta Sans";
+    font-family: ${defaultFontFamily};
     font-style: normal;
     font-size: 0.75rem;
     line-height: 1.5;
