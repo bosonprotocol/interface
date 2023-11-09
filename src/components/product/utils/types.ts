@@ -12,7 +12,7 @@ import {
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
-  tokenGatingValidationSchema,
+  TokenGatingValidationSchema,
   variantsCoreTermsOfSaleValidationSchema
 } from "./validationSchema";
 
@@ -36,7 +36,7 @@ export type VariantsCoreTermsOfSale = Yup.InferType<
   typeof variantsCoreTermsOfSaleValidationSchema
 >;
 
-export type TokenGating = Yup.InferType<typeof tokenGatingValidationSchema>;
+export type TokenGating = Yup.InferType<TokenGatingValidationSchema>;
 
 export type TermsOfExchange = Yup.InferType<
   typeof termsOfExchangeValidationSchema

@@ -14,7 +14,8 @@ export const validationOfRequiredIpfsImage = <T extends FileProps>() =>
         !(value && value.length > 0) ||
         (value &&
           value.length !== 0 &&
-          SUPPORTED_FILE_FORMATS.includes(value[0].type))
+          (value[0].src.startsWith("ipfs://") ||
+            SUPPORTED_FILE_FORMATS.includes(value[0].type)))
       );
     });
 

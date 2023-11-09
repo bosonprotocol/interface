@@ -535,7 +535,8 @@ function CreateProductInner({
       isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
       isOneSetOfImages,
-      config
+      config,
+      coreSDK
     });
     return {
       currentStep:
@@ -555,7 +556,8 @@ function CreateProductInner({
     isTokenGated,
     isOneSetOfImages,
     currentStep,
-    config
+    config,
+    coreSDK
   ]);
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
