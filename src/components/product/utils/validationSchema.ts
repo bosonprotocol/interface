@@ -345,10 +345,7 @@ export const getTokenGatingValidationSchema = ({
             } catch (error) {
               if (
                 !doesImplementFunction(error) ||
-                (error &&
-                  typeof error === "object" &&
-                  "name" in error &&
-                  error.name === "ValidationError")
+                (error && error instanceof Yup.ValidationError)
               ) {
                 throwNotValidContractError();
               }
