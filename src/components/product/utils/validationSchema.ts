@@ -285,10 +285,6 @@ export const getTokenGatingValidationSchema = ({
               switch (tokenType.value) {
                 case TokenTypes.erc20:
                   {
-                    await coreSDK.erc20BalanceOf({
-                      contractAddress: tokenContract,
-                      owner: ethers.constants.AddressZero
-                    });
                     let erc721Supported = false;
                     try {
                       erc721Supported = await coreSDK.erc165SupportsInterface({
@@ -315,6 +311,10 @@ export const getTokenGatingValidationSchema = ({
                         throwNotValidContractError();
                       }
                     }
+                    await coreSDK.erc20BalanceOf({
+                      contractAddress: tokenContract,
+                      owner: ethers.constants.AddressZero
+                    });
                   }
                   break;
                 case TokenTypes.erc721:
