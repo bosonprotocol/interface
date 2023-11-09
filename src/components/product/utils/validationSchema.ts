@@ -1,8 +1,10 @@
+import { CoreSDK } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import {
   maxLengthErrorMessage,
   METADATA_LENGTH_LIMIT
 } from "components/modal/components/Profile/const";
+import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
@@ -20,7 +22,8 @@ import {
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
   TOKEN_CRITERIA,
-  TOKEN_TYPES
+  TOKEN_TYPES,
+  TokenTypes
 } from "./const";
 import {
   validationOfIpfsImage,
@@ -191,78 +194,220 @@ export const productInformationValidationSchema = Yup.object({
 });
 
 export const commonCoreTermsOfSaleValidationSchema = {
-  offerValidityPeriod: Yup.array()
-    .required(validationMessage.required)
-    .min(2, validationMessage.required)
-    .isOfferValidityDatesValid(),
-  redemptionPeriod: Yup.array()
-    .required(validationMessage.required)
-    .min(2, validationMessage.required)
-    .isRedemptionDatesValid()
+  infiniteExpirationOffers: Yup.boolean(),
+  offerValidityPeriod: Yup.mixed<Dayjs | Dayjs[]>()
+    .when("infiniteExpirationOffers", {
+      is: true,
+      then: Yup.mixed<Dayjs>()
+        .required(validationMessage.required)
+        .defined(validationMessage.required),
+      otherwise: Yup.mixed<Dayjs[]>()
+        .required(validationMessage.required)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .isOfferValidityDatesValid()
+    })
+    .required(validationMessage.required),
+  redemptionPeriod: Yup.mixed<Dayjs | Dayjs[]>().when(
+    "infiniteExpirationOffers",
+    {
+      is: true,
+      then: Yup.mixed<Dayjs>().optional(),
+      // .required(validationMessage.required)
+      // .defined(validationMessage.required),
+      otherwise: Yup.mixed<Dayjs[]>()
+        // Yup.array<Dayjs>()
+        .required(validationMessage.required)
+        // .min(2, validationMessage.required)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .isRedemptionDatesValid()
+    }
+  ),
+  voucherValidDurationInDays: Yup.number().when("infiniteExpirationOffers", {
+    is: true,
+    then: () => {
+      return Yup.number()
+        .required(validationMessage.required)
+        .min(0, "It cannot be negative")
+        .test({
+          message:
+            "It cannot be 0 if the redemption from date is not specified",
+          test: function (value, context) {
+            const { redemptionPeriod } = context.parent;
+            return redemptionPeriod ? true : value !== 0;
+          }
+        });
+    },
+    otherwise: Yup.number().min(0, "It must be 0").max(0, "It must be 0")
+  })
 };
 
-export const tokenGatingValidationSchema = Yup.object({
-  tokenGating: Yup.object({
-    tokenContract: Yup.string()
-      .required(validationMessage.required)
-      .test("FORMAT", "Must be a valid address", (value) =>
-        value ? ethers.utils.isAddress(value) : true
-      ),
-    maxCommits: Yup.string()
-      .required(validationMessage.required)
-      .matches(/^\+?[1-9]\d*$/, "Value must greater than 0"),
-    tokenType: Yup.object({
-      value: Yup.string(),
-      label: Yup.string()
-    })
-      .required(validationMessage.required)
-      .default([{ value: "", label: "" }]),
-    tokenCriteria: Yup.object({
-      value: Yup.string(),
-      label: Yup.string()
-    }).required(validationMessage.required),
-    minBalance: Yup.string().when(["tokenType", "tokenCriteria"], {
-      is: (tokenType: SelectDataProps, tokenCriteria: SelectDataProps) =>
-        tokenType?.value === TOKEN_TYPES[0].value ||
-        tokenType?.value === TOKEN_TYPES[2].value ||
-        (tokenType?.value === TOKEN_TYPES[1].value &&
-          tokenCriteria?.value === TOKEN_CRITERIA[0].value),
-      then: (schema) =>
-        schema
-          .required(validationMessage.required)
-          .matches(
-            /^\+?[1-9]\d*$/,
-            "Min balance must be greater than or equal to 1 (do not include commas/periods)"
-          )
-          .typeError("Value must be an integer greater than or equal to 1")
-    }),
-    tokenId: Yup.string().when(["tokenType", "tokenCriteria"], {
-      is: (tokenType: SelectDataProps, tokenCriteria: SelectDataProps) =>
-        tokenType?.value === TOKEN_TYPES[2].value ||
-        (tokenType?.value === TOKEN_TYPES[1].value &&
-          tokenCriteria?.value === TOKEN_CRITERIA[1].value),
-      then: (schema) =>
-        schema
-          .test(
-            "",
-            "Value must greater than or equal to 0 or a hex value up to 64 chars",
-            (value) => {
-              if (!value) {
-                return false;
-              }
-              return (
-                /0[xX][0-9a-fA-F]{1,64}$/.test(value) ||
-                /^(0|\+?[1-9]\d*)$/.test(value)
+export type TokenGatingValidationSchema = ReturnType<
+  typeof getTokenGatingValidationSchema
+>;
+export const getTokenGatingValidationSchema = ({
+  coreSDK
+}: {
+  coreSDK: CoreSDK;
+}) =>
+  Yup.object({
+    tokenGating: Yup.object({
+      tokenContract: Yup.string()
+        .required(validationMessage.required)
+        .test("FORMAT", "Must be a valid address", (value) =>
+          value ? ethers.utils.isAddress(value) : true
+        )
+        .test("wrongTokenAddress", async function (tokenContract) {
+          const { tokenType } = this.parent;
+          if (
+            tokenType.value &&
+            tokenContract &&
+            ethers.utils.isAddress(tokenContract)
+          ) {
+            const doesImplementFunction = (error: unknown): boolean => {
+              return !(
+                error &&
+                typeof error === "object" &&
+                "data" in error &&
+                error.data === "0x"
               );
+            };
+            const erc721InterfaceId = "0x80ac58cd";
+            const erc1155InterfaceId = "0xd9b67a26";
+            const throwNotValidContractError = () => {
+              throw this.createError({
+                path: this.path,
+                message: `This is not an ${tokenType.label} contract address`
+              });
+            };
+            try {
+              switch (tokenType.value) {
+                case TokenTypes.erc20:
+                  {
+                    let erc721Supported = false;
+                    try {
+                      erc721Supported = await coreSDK.erc165SupportsInterface({
+                        contractAddress: tokenContract,
+                        interfaceId: erc721InterfaceId
+                      });
+                    } catch {
+                      // we ignore the error
+                    }
+                    if (erc721Supported) {
+                      throwNotValidContractError();
+                    } else {
+                      let erc1155Supported = false;
+                      try {
+                        erc1155Supported =
+                          await coreSDK.erc165SupportsInterface({
+                            contractAddress: tokenContract,
+                            interfaceId: erc1155InterfaceId
+                          });
+                      } catch {
+                        // we ignore the error
+                      }
+                      if (erc1155Supported) {
+                        throwNotValidContractError();
+                      }
+                    }
+                    await coreSDK.erc20BalanceOf({
+                      contractAddress: tokenContract,
+                      owner: ethers.constants.AddressZero
+                    });
+                  }
+                  break;
+                case TokenTypes.erc721:
+                  {
+                    const erc721Supported =
+                      await coreSDK.erc165SupportsInterface({
+                        contractAddress: tokenContract,
+                        interfaceId: erc721InterfaceId
+                      });
+                    if (!erc721Supported) {
+                      throwNotValidContractError();
+                    }
+                  }
+                  break;
+                case TokenTypes.erc1155:
+                  {
+                    const erc1155Supported =
+                      await coreSDK.erc165SupportsInterface({
+                        contractAddress: tokenContract,
+                        interfaceId: erc1155InterfaceId
+                      });
+                    if (!erc1155Supported) {
+                      throwNotValidContractError();
+                    }
+                  }
+                  break;
+              }
+            } catch (error) {
+              if (
+                !doesImplementFunction(error) ||
+                (error && error instanceof Yup.ValidationError)
+              ) {
+                throwNotValidContractError();
+              }
             }
-          )
-          .typeError("Value must be an integer greater than or equal to 0")
-          .required(validationMessage.required)
-    })
+          }
+          return true;
+        }),
+      maxCommits: Yup.string()
+        .required(validationMessage.required)
+        .matches(/^\+?[1-9]\d*$/, "Value must greater than 0"),
+      tokenType: Yup.object({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+        .required(validationMessage.required)
+        .default([{ value: "", label: "" }]),
+      tokenCriteria: Yup.object({
+        value: Yup.string(),
+        label: Yup.string()
+      }).required(validationMessage.required),
+      minBalance: Yup.string().when(["tokenType", "tokenCriteria"], {
+        is: (tokenType: SelectDataProps, tokenCriteria: SelectDataProps) =>
+          tokenType?.value === TOKEN_TYPES[0].value ||
+          tokenType?.value === TOKEN_TYPES[2].value ||
+          (tokenType?.value === TOKEN_TYPES[1].value &&
+            tokenCriteria?.value === TOKEN_CRITERIA[0].value),
+        then: (schema) =>
+          schema
+            .required(validationMessage.required)
+            .matches(
+              /^\+?[1-9]\d*$/,
+              "Min balance must be greater than or equal to 1 (do not include commas/periods)"
+            )
+            .typeError("Value must be an integer greater than or equal to 1")
+      }),
+      tokenId: Yup.string().when(["tokenType", "tokenCriteria"], {
+        is: (tokenType: SelectDataProps, tokenCriteria: SelectDataProps) =>
+          tokenType?.value === TOKEN_TYPES[2].value ||
+          (tokenType?.value === TOKEN_TYPES[1].value &&
+            tokenCriteria?.value === TOKEN_CRITERIA[1].value),
+        then: (schema) =>
+          schema
+            .test(
+              "",
+              "Value must greater than or equal to 0 or a hex value up to 64 chars",
+              (value) => {
+                if (!value) {
+                  return false;
+                }
+                return (
+                  /0[xX][0-9a-fA-F]{1,64}$/.test(value) ||
+                  /^(0|\+?[1-9]\d*)$/.test(value)
+                );
+              }
+            )
+            .typeError("Value must be an integer greater than or equal to 0")
+            .required(validationMessage.required)
+      })
 
-    // tokenGatingDesc: Yup.string().required(validationMessage.required)
-  })
-});
+      // tokenGatingDesc: Yup.string().required(validationMessage.required)
+    })
+  });
 
 export const getCoreTermsOfSaleValidationSchema = (config: DappConfig) =>
   Yup.object({
@@ -375,6 +520,6 @@ export const shippingInfoValidationSchema = Yup.object({
 
 export const confirmProductDetailsSchema = Yup.object({
   confirmProductDetails: Yup.object({
-    acceptsTerms: Yup.boolean().required()
+    acceptsTerms: Yup.boolean().required(validationMessage.required)
   })
 });

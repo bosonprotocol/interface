@@ -1,37 +1,39 @@
-import { Dayjs } from "dayjs";
+import type { DatePickerProps } from "components/datepicker/DatePicker";
 import { CSSProperties, ReactNode } from "react";
 import { MultiValue, SingleValue } from "react-select";
 
 import { UploadFileType } from "./Upload/types";
 
-interface BaseProps {
+type BaseProps = {
   name: string;
   placeholder?: string;
   disabled?: boolean;
   hideError?: boolean;
-}
+};
 
-export interface DatepickerProps extends BaseProps {
-  data?: string;
-  period?: boolean;
-  selectTime?: boolean;
-  setIsFormValid?: (isValid: boolean) => void;
-  minDate?: Dayjs | null;
-}
+export type DatepickerProps = BaseProps &
+  Pick<
+    DatePickerProps,
+    "period" | "minDate" | "maxDate" | "isClearable" | "placeholder"
+  > & {
+    data?: string;
+    selectTime?: boolean;
+    setIsFormValid?: (isValid: boolean) => void;
+  };
 
-export interface CheckboxProps extends BaseProps {
+export type CheckboxProps = BaseProps & {
   text?: ReactNode;
-}
+};
 
 export type TextareaProps = BaseProps &
   React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-export interface ErrorProps {
+export type ErrorProps = {
   display?: boolean;
   message?: string;
-}
+};
 
-export interface FormFieldProps {
+export type FormFieldProps = {
   title: string;
   titleIcon?: ReactNode;
   subTitle?: ReactNode | false;
@@ -45,7 +47,7 @@ export interface FormFieldProps {
     | {
         [key: string]: unknown;
       };
-}
+};
 
 export type InputColorProps = BaseProps;
 
@@ -61,28 +63,28 @@ export type TagsProps = BaseProps &
     transform?: (tag: string) => string;
   };
 
-export interface SelectDataProps<Value extends string = string> {
+export type SelectDataProps<Value extends string = string> = {
   label: string;
   value: Value;
   disabled?: boolean;
   isFixed?: boolean;
   [others: string]: unknown;
-}
+};
 
-export interface SelectContentProps {
+export type SelectContentProps = {
   children: React.ReactNode | JSX.Element;
-}
+};
 
 type OnChange = (value: SingleValue<SelectDataProps>) => void;
 
-export interface BaseSelectProps {
+export type BaseSelectProps = {
   options: Array<SelectDataProps>;
   placeholder?: string;
   defaultValue?: SelectDataProps | null;
   onChange?: OnChange;
-}
+};
 
-export interface SelectProps<IsMulti extends boolean> extends BaseProps {
+export type SelectProps<IsMulti extends boolean> = BaseProps & {
   isMulti?: IsMulti;
   disabled?: boolean;
   isClearable?: boolean;
@@ -97,9 +99,9 @@ export interface SelectProps<IsMulti extends boolean> extends BaseProps {
   label?: string;
   className?: string;
   classNamePrefix?: string;
-}
+};
 
-export interface UploadProps extends BaseProps {
+export type UploadProps = BaseProps & {
   accept?: string;
   multiple?: boolean;
   trigger?: React.ReactNode | JSX.Element;
@@ -115,4 +117,4 @@ export interface UploadProps extends BaseProps {
   width?: number;
   height?: number;
   imgPreviewStyle?: Pick<CSSProperties, "objectFit">;
-}
+};

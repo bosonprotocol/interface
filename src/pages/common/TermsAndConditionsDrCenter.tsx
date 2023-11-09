@@ -1,4 +1,5 @@
 /* eslint @typescript-eslint/no-var-requires: off */
+import { defaultFontFamily } from "lib/styles/fonts";
 import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
@@ -64,7 +65,7 @@ const List = styled.ol`
 `;
 
 const Title = styled.h1`
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   display: inline-block;
   text-align: center;
 
@@ -73,13 +74,13 @@ const Title = styled.h1`
   font-weight: 800;
 `;
 const SubTitle = styled.h4`
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   display: inline-block;
   font-weight: 800;
   margin-bottom: 0.25rem;
 `;
 const Text = styled.p`
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   display: block;
   margin: 0;
   + p {

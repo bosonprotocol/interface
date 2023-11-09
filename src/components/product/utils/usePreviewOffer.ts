@@ -6,6 +6,7 @@ import { CONFIG } from "lib/config";
 import { Offer } from "lib/types/offer";
 import { useDisputeResolver } from "lib/utils/hooks/useDisputeResolver";
 import { buildCondition } from "pages/create-product/utils/buildCondition";
+import { extractOfferTimestamps } from "pages/create-product/utils/dataValidator";
 import { getTermsOfExchange } from "pages/create-product/utils/getTermsOfExchange";
 import { getDisputeResolverContactMethod } from "pages/create-product/utils/helpers";
 import { useCallback, useMemo } from "react";
@@ -37,18 +38,25 @@ export const usePreviewOffers = ({
     ? values.variantsCoreTermsOfSale
     : values.coreTermsOfSale;
 
-  const validFromDateInMS = commonTermsOfSale.offerValidityPeriod[0]
-    .toDate()
-    .getTime();
-  const validUntilDateInMS = commonTermsOfSale.offerValidityPeriod[1]
-    .toDate()
-    .getTime();
-  const voucherRedeemableFromDateInMS = commonTermsOfSale.redemptionPeriod[0]
-    .toDate()
-    .getTime();
-  const voucherRedeemableUntilDateInMS = commonTermsOfSale.redemptionPeriod[1]
-    .toDate()
-    .getTime();
+  const {
+    offerValidityPeriod,
+    redemptionPeriod,
+    infiniteExpirationOffers,
+    voucherValidDurationInDays
+  } = commonTermsOfSale;
+
+  const {
+    voucherRedeemableFromDateInMS,
+    voucherRedeemableUntilDateInMS,
+    voucherValidDurationInMS,
+    validFromDateInMS,
+    validUntilDateInMS
+  } = extractOfferTimestamps({
+    offerValidityPeriod,
+    redemptionPeriod,
+    infiniteExpirationOffers: !!infiniteExpirationOffers,
+    voucherValidDurationInDays
+  });
 
   const buildOffer = useCallback(
     ({
@@ -103,18 +111,20 @@ export const usePreviewOffers = ({
         buyerCancelPenalty: buyerCancellationPenaltyValue,
         quantityAvailable: quantityAvailable.toString(),
         quantityInitial: quantityAvailable.toString(),
-        validFromDate: (validFromDateInMS / 1000).toString(),
-        validUntilDate: (validUntilDateInMS / 1000).toString(),
-        voucherRedeemableFromDate: (
+        validFromDate: Math.floor(validFromDateInMS / 1000).toString(),
+        validUntilDate: Math.floor(validUntilDateInMS / 1000).toString(),
+        voucherRedeemableFromDate: Math.floor(
           voucherRedeemableFromDateInMS / 1000
         ).toString(),
-        voucherRedeemableUntilDate: (
-          voucherRedeemableUntilDateInMS / 1000
-        ).toString(),
+        voucherRedeemableUntilDate: voucherRedeemableUntilDateInMS
+          ? Math.floor(voucherRedeemableUntilDateInMS / 1000).toString()
+          : "0",
         disputePeriodDuration: `${
           parseInt(values.termsOfExchange.disputePeriod) * 24 * 3600
         }`, // day to sec
-        voucherValidDuration: "0", // we use redeemableFrom/redeemableUntil so should be 0
+        voucherValidDuration: voucherValidDurationInMS
+          ? Math.floor(voucherValidDurationInMS / 1000).toString()
+          : "0",
         resolutionPeriodDuration: `${
           parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600
         }`, // day to sec
@@ -176,7 +186,8 @@ export const usePreviewOffers = ({
       values.shippingInfo.returnPeriod,
       values.termsOfExchange,
       voucherRedeemableFromDateInMS,
-      voucherRedeemableUntilDateInMS
+      voucherRedeemableUntilDateInMS,
+      voucherValidDurationInMS
     ]
   );
   const offerData: Offer[] = useMemo(() => {

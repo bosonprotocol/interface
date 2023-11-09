@@ -1,5 +1,6 @@
 import type { Dayjs } from "dayjs";
 import * as yup from "yup";
+import { MixedSchema as OriginalMixedSchema } from "yup/lib/mixed";
 declare module "yup" {
   interface StringSchema<
     TType extends Maybe<string> = string | undefined,
@@ -19,6 +20,18 @@ declare module "yup" {
     isOfferValidityDatesValid(): ArraySchema<T, C, TIn, Dayjs[]>;
     isRedemptionDatesValid(): ArraySchema<T, C, TIn, Dayjs[]>;
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  interface MixedSchema<TType = any, TContext = AnyObject, TOut = TType>
+    extends OriginalMixedSchema<TType, TContext, TOut> {
+    isOfferValidityDatesValid(): MixedSchema<T, C, TIn, Dayjs[]>;
+    isRedemptionDatesValid(): MixedSchema<T, C, TIn, Dayjs[]>;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  declare function mixed<TType = any>(): MixedSchema<
+    TType | undefined,
+    AnyObject,
+    TType | undefined
+  >;
 }
 
 export default yup;

@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { defaultFontFamily } from "lib/styles/fonts";
 import * as Yup from "yup";
 
 import { SelectDataProps } from "../../components/form/types";
@@ -176,7 +177,7 @@ export const formModel = {
       options: [
         {
           label: "Plus Jakarta Sans",
-          value: "Plus Jakarta Sans",
+          value: defaultFontFamily,
           default: true
         },
         {

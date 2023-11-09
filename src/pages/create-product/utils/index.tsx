@@ -1,3 +1,4 @@
+import { CoreSDK } from "@bosonprotocol/react-kit";
 import ConfirmProductDetails from "components/product/confirmProductDetailsPage/ConfirmProductDetails";
 import CoreTermsOfSale from "components/product/coreTermsOfSale/CoreTermsOfSale";
 import ProductImages from "components/product/ProductImages";
@@ -11,13 +12,14 @@ import {
   CoreTermsOfSaleValidationSchema,
   getCoreTermsOfSaleValidationSchema,
   getProductVariantsValidationSchema,
+  getTokenGatingValidationSchema,
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
   productVariantsImagesValidationSchema,
+  regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
-  tokenGatingValidationSchema,
   variantsCoreTermsOfSaleValidationSchema
 } from "components/product/utils";
 import {
@@ -85,6 +87,7 @@ type CreateProductStepsParams = {
   onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
   isOneSetOfImages: boolean;
   config: DappConfig;
+  coreSDK: CoreSDK;
 };
 
 export const createProductSteps = ({
@@ -97,7 +100,8 @@ export const createProductSteps = ({
   isTokenGated,
   onChangeOneSetOfImages,
   isOneSetOfImages,
-  config
+  config,
+  coreSDK
 }: CreateProductStepsParams) => {
   const productType = {
     ui: (
@@ -110,7 +114,9 @@ export const createProductSteps = ({
         />
       </>
     ),
-    validation: productTypeValidationSchema,
+    validation: regularProfileValidationSchema.concat(
+      productTypeValidationSchema
+    ),
     helpSection: productTypeHelp
   };
   const productInformation = {
@@ -154,7 +160,7 @@ export const createProductSteps = ({
         <TokenGating />
       </>
     ),
-    validation: tokenGatingValidationSchema,
+    validation: getTokenGatingValidationSchema({ coreSDK }),
     helpSection: tokenGatingHelp
   };
   const termsOfExchange = {

@@ -1,3 +1,4 @@
+import { defaultFontFamily } from "lib/styles/fonts";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
@@ -17,7 +18,7 @@ export const Input = styled.input`
   background: transparent;
   border: 0px solid ${colors.border};
 
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   font-style: normal;
   font-size: 1rem;
   font-weight: 500;

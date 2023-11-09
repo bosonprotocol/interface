@@ -1,3 +1,4 @@
+import { defaultFontFamily } from "lib/styles/fonts";
 import { House, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
 
@@ -21,7 +22,7 @@ const GridWrapper = styled.div`
   gap: 0;
   min-height: calc(100vh - 30.25rem);
   margin: 0 -1rem;
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   color: ${colors.black};
 `;
 

@@ -4,6 +4,7 @@ import barlowRegular from "../../assets/fonts/Barlow-Regular.ttf";
 import neuropolitical_rg from "../../assets/fonts/neuropolitical_rg.ttf";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { defaultFontFamily } from "./fonts";
 
 const GlobalStyle = createGlobalStyle<{
   $withBosonStyles?: boolean;
@@ -136,7 +137,7 @@ const GlobalStyle = createGlobalStyle<{
     background-color: var(--primaryBgColor);
     color: var(--textColor);
 
-    font-family: ${(props) => props.$fontFamily || "Plus Jakarta Sans"};
+    font-family: ${(props) => props.$fontFamily || defaultFontFamily};
     font-style: normal;
 
     max-height: 100vh;

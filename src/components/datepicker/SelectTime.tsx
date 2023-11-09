@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import isToday from "dayjs/plugin/isToday";
@@ -9,10 +10,9 @@ dayjs.extend(advancedFormat);
 dayjs.extend(isToday);
 
 import type { Dayjs } from "dayjs";
-import timezones from "lib/constants/timezones.json";
+import { timezones } from "lib/utils/time";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { isTruthy } from "../../lib/types/helpers";
 import BaseSelect from "../form/BaseSelect";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -34,21 +34,8 @@ const BASE_MINUTES = Array.from(Array(60).keys()).map((v) => ({
   label: ("0" + v).slice(-2).toString(),
   value: ("0" + v).slice(-2).toString()
 }));
-const OPTIONS_TIMEZONES = timezones
-  .map((timezone) => {
-    try {
-      return {
-        ...timezone,
-        label: `${timezone.value} (GMT${dayjs()
-          .tz(timezone.value)
-          .format("Z")})`
-      };
-    } catch (error) {
-      return false;
-    }
-  })
-  .filter(isTruthy);
 
+const OPTIONS_TIMEZONES = timezones;
 export default function SelectTime({
   setTime,
   period,
@@ -58,29 +45,24 @@ export default function SelectTime({
   const DEFAULT_HOUR = useMemo(
     () =>
       period
-        ? [date?.isToday() ? dayjs().format("HH") : "00", "23"]
-        : date?.isToday()
-        ? dayjs().format("HH")
-        : "00",
-    [period, date]
+        ? [date?.format("HH") || "00", secondDate?.format("HH") || "23"]
+        : date?.format("HH") || "00",
+    [period, date, secondDate]
   );
   const DEFAULT_MINUTE = useMemo(
     () =>
       period
-        ? [date?.isToday() ? dayjs().add(5, "minute").format("mm") : "00", "59"]
-        : date?.isToday()
-        ? dayjs().add(5, "minute").format("mm")
-        : "00",
-    [period, date]
+        ? [date?.format("mm") || "00", secondDate?.format("mm") || "59"]
+        : date?.format("mm") || "00",
+    [period, date, secondDate]
   );
-  const DEFAULT_TIME = useMemo(() => (period ? ["00", "00"] : "00"), [period]);
-  const [timezone, setTimezone] = useState<string>(dayjs.tz.guess());
-  const [hour, setHour] = useState<string | string[]>(
-    DEFAULT_HOUR || DEFAULT_TIME
+  const [timezone, setTimezone] = useState<string>(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    date?.$x.$timezone ?? secondDate?.$x.$timezone ?? dayjs.tz.guess()
   );
-  const [minute, setMinute] = useState<string | string[]>(
-    DEFAULT_MINUTE || DEFAULT_TIME
-  );
+  const [hour, setHour] = useState<string | string[]>(DEFAULT_HOUR);
+  const [minute, setMinute] = useState<string | string[]>(DEFAULT_MINUTE);
 
   useEffect(() => {
     setTime({

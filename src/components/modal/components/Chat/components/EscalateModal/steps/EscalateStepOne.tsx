@@ -40,7 +40,7 @@ function EscalateStepOne({ exchange }: Props) {
   const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
 
   const parseDisputePeriod = dayjs(
-    getDateTimestamp(exchange.offer.validUntilDate) +
+    getDateTimestamp(exchange.redeemedDate) +
       getDateTimestamp(exchange.offer.disputePeriodDuration)
   );
 

@@ -141,7 +141,7 @@ export function useInitialValues() {
     save: saveItemInStorage,
     clear: clearLocalStorage,
     key: MAIN_KEY
-  };
+  } as const;
 }
 function loadExistingProduct<T extends CreateProductForm>(
   productWithVariants: ReturnUseProductByUuid,
@@ -239,7 +239,29 @@ function loadExistingProduct<T extends CreateProductForm>(
       return cloneBaseValues.tokenGating.minBalance;
     }
   };
-
+  const infiniteExpirationOffers = firstOffer.voucherValidDuration !== "0";
+  const commonCoreTermsOfSale = {
+    infiniteExpirationOffers,
+    ...(infiniteExpirationOffers
+      ? {
+          voucherValidDurationInDays:
+            Number(firstOffer.voucherValidDuration) / 86400,
+          redemptionPeriod: dayjs(
+            getDateTimestamp(firstOffer.voucherRedeemableFromDate)
+          ),
+          offerValidityPeriod: dayjs(getDateTimestamp(firstOffer.validFromDate))
+        }
+      : {
+          offerValidityPeriod: [
+            dayjs(getDateTimestamp(firstOffer.validFromDate)),
+            dayjs(getDateTimestamp(firstOffer.validUntilDate))
+          ],
+          redemptionPeriod: [
+            dayjs(getDateTimestamp(firstOffer.voucherRedeemableFromDate)),
+            dayjs(getDateTimestamp(firstOffer.voucherRedeemableUntilDate))
+          ]
+        })
+  } as const;
   return {
     ...cloneBaseValues,
     createYourProfile: cloneBaseValues.createYourProfile,
@@ -390,25 +412,11 @@ function loadExistingProduct<T extends CreateProductForm>(
     productAnimation,
     variantsCoreTermsOfSale: {
       ...cloneBaseValues.variantsCoreTermsOfSale,
-      offerValidityPeriod: [
-        dayjs(getDateTimestamp(firstOffer.validFromDate)),
-        dayjs(getDateTimestamp(firstOffer.validUntilDate))
-      ],
-      redemptionPeriod: [
-        dayjs(getDateTimestamp(firstOffer.voucherRedeemableFromDate)),
-        dayjs(getDateTimestamp(firstOffer.voucherRedeemableUntilDate))
-      ]
+      ...commonCoreTermsOfSale
     },
     coreTermsOfSale: {
       ...cloneBaseValues.coreTermsOfSale,
-      offerValidityPeriod: [
-        dayjs(getDateTimestamp(firstOffer.validFromDate)),
-        dayjs(getDateTimestamp(firstOffer.validUntilDate))
-      ],
-      redemptionPeriod: [
-        dayjs(getDateTimestamp(firstOffer.voucherRedeemableFromDate)),
-        dayjs(getDateTimestamp(firstOffer.voucherRedeemableUntilDate))
-      ],
+      ...commonCoreTermsOfSale,
       currency: {
         value: OPTIONS_CURRENCIES.find(
           (currency) => currency.value === firstOffer.exchangeToken.symbol

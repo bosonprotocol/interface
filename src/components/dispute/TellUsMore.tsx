@@ -1,4 +1,5 @@
 import { FieldArray } from "formik";
+import { defaultFontFamily } from "lib/styles/fonts";
 import { useDisputeForm } from "pages/dispute-centre/const";
 import { ArrowRight } from "phosphor-react";
 import React from "react";
@@ -20,7 +21,7 @@ const FormButton = styled.button`
   border-bottom: 1px solid ${colors.lightGrey};
   padding: 0;
   font-size: 1rem;
-  font-family: "Plus Jakarta Sans";
+  font-family: ${defaultFontFamily};
   padding-bottom: 1.5rem;
   text-align: left;
   margin-top: 1.5rem;

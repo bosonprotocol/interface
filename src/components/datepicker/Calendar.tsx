@@ -10,7 +10,7 @@ import {
   CalendarHeader,
   CalendarRow
 } from "./DatePicker.style";
-import { getCalenderRow, ICalendarCell } from "./utils";
+import { getCalendarRow, ICalendarCell } from "./utils";
 
 interface Props {
   date: Dayjs | null;
@@ -54,7 +54,7 @@ export default function Calendar({
     return onChange(value);
   };
 
-  const rows = useMemo((): ICalendarCell[] => getCalenderRow(month), [month]);
+  const rows = useMemo((): ICalendarCell[] => getCalendarRow(month), [month]);
 
   return (
     <>
