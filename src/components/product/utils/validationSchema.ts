@@ -265,6 +265,22 @@ export const getTokenGatingValidationSchema = ({
             tokenContract &&
             ethers.utils.isAddress(tokenContract)
           ) {
+            const doesImplementFunction = (error: unknown): boolean => {
+              return !(
+                error &&
+                typeof error === "object" &&
+                "data" in error &&
+                error.data === "0x"
+              );
+            };
+            const erc721InterfaceId = "0x80ac58cd";
+            const erc1155InterfaceId = "0xd9b67a26";
+            const throwNotValidContractError = () => {
+              throw this.createError({
+                path: this.path,
+                message: `This is not an ${tokenType.label} contract address`
+              });
+            };
             try {
               switch (tokenType.value) {
                 case TokenTypes.erc20:
@@ -273,37 +289,62 @@ export const getTokenGatingValidationSchema = ({
                       contractAddress: tokenContract,
                       owner: ethers.constants.AddressZero
                     });
+                    let erc721Supported = false;
+                    try {
+                      erc721Supported = await coreSDK.erc165SupportsInterface({
+                        contractAddress: tokenContract,
+                        interfaceId: erc721InterfaceId
+                      });
+                    } catch {
+                      // we ignore the error
+                    }
+                    if (erc721Supported) {
+                      throwNotValidContractError();
+                    } else {
+                      let erc1155Supported = false;
+                      try {
+                        erc1155Supported =
+                          await coreSDK.erc165SupportsInterface({
+                            contractAddress: tokenContract,
+                            interfaceId: erc1155InterfaceId
+                          });
+                      } catch {
+                        // we ignore the error
+                      }
+                      if (erc1155Supported) {
+                        throwNotValidContractError();
+                      }
+                    }
                   }
                   break;
                 case TokenTypes.erc721:
                   {
-                    await coreSDK.erc721OwnerOf({
-                      contractAddress: tokenContract,
-                      tokenId: "1"
-                    });
+                    const erc721Supported =
+                      await coreSDK.erc165SupportsInterface({
+                        contractAddress: tokenContract,
+                        interfaceId: erc721InterfaceId
+                      });
+                    if (!erc721Supported) {
+                      throwNotValidContractError();
+                    }
                   }
                   break;
                 case TokenTypes.erc1155:
                   {
-                    await coreSDK.erc1155BalanceOf({
-                      contractAddress: tokenContract,
-                      owner: ethers.constants.AddressZero,
-                      tokenId: "1"
-                    });
+                    const erc1155Supported =
+                      await coreSDK.erc165SupportsInterface({
+                        contractAddress: tokenContract,
+                        interfaceId: erc1155InterfaceId
+                      });
+                    if (!erc1155Supported) {
+                      throwNotValidContractError();
+                    }
                   }
                   break;
               }
             } catch (error) {
-              if (
-                error &&
-                typeof error === "object" &&
-                "data" in error &&
-                error.data === "0x"
-              ) {
-                throw this.createError({
-                  path: this.path,
-                  message: `This is not an ${tokenType.label} contract address`
-                });
+              if (!doesImplementFunction(error)) {
+                throwNotValidContractError();
               }
             }
           }
