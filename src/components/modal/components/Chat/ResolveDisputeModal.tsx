@@ -285,7 +285,8 @@ export default function ResolveDisputeModal({
                       newMessage: errorMessageObj
                     }));
                 },
-                errorMessage: "Resolution proposal transaction failed",
+                errorMessage:
+                  "Resolution proposal transaction was not successful",
                 threadId
               });
               if (!tx) {

@@ -138,7 +138,7 @@ export const sendErrorMessageIfTxFails = async ({
         content: {
           value: {
             icon: ICON_KEYS.warningCircle,
-            heading: "Transaction did not go through",
+            heading: "Transaction failed",
             body: errorMessage,
             type: StringIconTypes.ERROR
           }

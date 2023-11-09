@@ -215,7 +215,7 @@ export default function RetractDisputeModal({
                       newMessage: errorMessageObj
                     }));
                 },
-                errorMessage: "Retract dispute transaction failed",
+                errorMessage: "Retract dispute transaction was not successful",
                 threadId
               });
               if (!tx) {

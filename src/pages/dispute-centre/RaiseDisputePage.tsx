@@ -298,7 +298,8 @@ function RaiseDisputePage() {
                           newMessage: errorMessageObj
                         }));
                     },
-                    errorMessage: "Raise dispute transaction failed",
+                    errorMessage:
+                      "Raise dispute transaction was not successful",
                     threadId
                   });
                   if (!tx) {

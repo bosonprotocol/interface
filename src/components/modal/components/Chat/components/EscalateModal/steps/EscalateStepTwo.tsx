@@ -522,7 +522,8 @@ function EscalateStepTwo({
                                 newMessage: errorMessageObj
                               }));
                           },
-                          errorMessage: "Escalate dispute transaction failed",
+                          errorMessage:
+                            "Escalate dispute transaction was not successful",
                           threadId
                         });
                         if (!tx) {
