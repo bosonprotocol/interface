@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { utils } from "ethers";
 import { useField } from "formik";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import { Warning } from "phosphor-react";
 import { useRef, useState } from "react";
@@ -228,10 +229,7 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
               setRedeemError(error);
               setIsLoading(false);
               setLoading?.(false);
-              const hasUserRejectedTx =
-                "code" in error &&
-                (error as unknown as { code: string }).code ===
-                  "ACTION_REJECTED";
+              const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {

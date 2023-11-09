@@ -9,9 +9,14 @@ import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import {
+  sendAndAddMessageToUI,
+  sendErrorMessageIfTxFails
+} from "pages/chat/utils/send";
+import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 
 import {
@@ -96,68 +101,7 @@ export default function RetractDisputeModal({
   const [retractDisputeError, setRetractDisputeError] = useState<Error | null>(
     null
   );
-  const handleSendingRetractMessage = useCallback(async () => {
-    if (bosonXmtp && threadId && address) {
-      try {
-        setHasError(false);
-        const newMessage = {
-          threadId,
-          content: {
-            value: {
-              icon: ICON_KEYS.info,
-              heading: "Buyer has retracted the dispute",
-              body: "The dispute has been cancelled and the exchange will execute as originally intended.",
-              type: StringIconTypes.RETRACT
-            }
-          },
-          contentType: MessageType.StringIcon,
-          version
-        } as const;
-        const uuid = window.crypto.randomUUID();
 
-        await addMessage({
-          authorityId: "",
-          timestamp: Date.now(),
-          sender: address,
-          recipient: destinationAddress,
-          data: newMessage,
-          isValid: false,
-          isPending: true,
-          uuid
-        });
-
-        const messageData = await bosonXmtp.encodeAndSendMessage(
-          newMessage,
-          destinationAddress
-        );
-        if (!messageData) {
-          throw new Error(
-            "Something went wrong while sending a retract message"
-          );
-        }
-        onSentMessage(messageData, uuid);
-      } catch (error) {
-        console.error(error);
-        setHasError(true);
-        Sentry.captureException(error, {
-          extra: {
-            ...threadId,
-            destinationAddress,
-            action: "handleSendingRetractMessage",
-            location: "RetractDisputeModal"
-          }
-        });
-      }
-    }
-  }, [
-    addMessage,
-    address,
-    bosonXmtp,
-    destinationAddress,
-    onSentMessage,
-    threadId,
-    setHasError
-  ]);
   const showSuccessInitialization =
     [
       ChatInitializationStatus.INITIALIZED,
@@ -183,16 +127,97 @@ export default function RetractDisputeModal({
           variant="primaryFill"
           disabled={!showSuccessInitialization}
           onClick={async () => {
+            const handleSendingRetractMessage = async () => {
+              if (bosonXmtp && threadId && address) {
+                try {
+                  setHasError(false);
+                  const newMessage = {
+                    threadId,
+                    content: {
+                      value: {
+                        icon: ICON_KEYS.info,
+                        heading: "Buyer has retracted the dispute",
+                        body: "The dispute has been cancelled and the exchange will execute as originally intended.",
+                        type: StringIconTypes.RETRACT
+                      }
+                    },
+                    contentType: MessageType.StringIcon,
+                    version
+                  } as const;
+                  const uuid = window.crypto.randomUUID();
+
+                  await addMessage({
+                    authorityId: "",
+                    timestamp: Date.now(),
+                    sender: address,
+                    recipient: destinationAddress,
+                    data: newMessage,
+                    isValid: false,
+                    isPending: true,
+                    uuid
+                  });
+
+                  const messageData = await bosonXmtp.encodeAndSendMessage(
+                    newMessage,
+                    destinationAddress
+                  );
+                  if (!messageData) {
+                    throw new Error(
+                      "Something went wrong while sending a retract message"
+                    );
+                  }
+                  onSentMessage(messageData, uuid);
+                } catch (error) {
+                  console.error(error);
+                  setHasError(true);
+                  Sentry.captureException(error, {
+                    extra: {
+                      ...threadId,
+                      destinationAddress,
+                      action: "handleSendingRetractMessage",
+                      location: "RetractDisputeModal"
+                    }
+                  });
+                }
+              }
+            };
             try {
+              await handleSendingRetractMessage();
               setRetractDisputeError(null);
-              let tx: TransactionResponse;
+              let tx: TransactionResponse | undefined = undefined;
               showModal("WAITING_FOR_CONFIRMATION");
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
-              if (isMetaTx) {
-                tx = await retractDisputeWithMetaTx(coreSDK, exchangeId);
-              } else {
-                tx = await coreSDK.retractDispute(exchangeId);
+
+              await sendErrorMessageIfTxFails({
+                sendsTxFn: async () => {
+                  if (isMetaTx) {
+                    tx = await retractDisputeWithMetaTx(coreSDK, exchangeId);
+                  } else {
+                    tx = await coreSDK.retractDispute(exchangeId);
+                  }
+                },
+                addMessageIfTxFailsFn: async (errorMessageObj) => {
+                  bosonXmtp &&
+                    address &&
+                    (await sendAndAddMessageToUI({
+                      bosonXmtp,
+                      addMessage,
+                      onSentMessage,
+                      address,
+                      destinationAddress,
+                      newMessage: errorMessageObj
+                    }));
+                },
+                errorMessage: "Retract dispute transaction was not successful",
+                threadId,
+                sendUserRejectionError: true,
+                userRejectionErrorMessage:
+                  "Retract dispute transaction was not confirmed"
+              });
+              if (!tx) {
+                return;
               }
+              tx = tx as TransactionResponse;
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Retract dispute",
                 txHash: tx.hash
@@ -207,7 +232,6 @@ export default function RetractDisputeModal({
                 }
               });
               await tx.wait();
-              await handleSendingRetractMessage();
               await poll(
                 async () => {
                   const retractedDispute = await coreSDK.getDisputeById(
@@ -224,16 +248,14 @@ export default function RetractDisputeModal({
                 <SuccessTransactionToast
                   t={t}
                   action={`Retracted dispute: ${offerName}`}
-                  url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
+                  url={config.envConfig.getTxExplorerUrl?.(tx?.hash)}
                 />
               ));
               hideModal();
               refetch();
             } catch (error) {
               console.error(error);
-              const hasUserRejectedTx =
-                (error as unknown as { code: string }).code ===
-                "ACTION_REJECTED";
+              const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {

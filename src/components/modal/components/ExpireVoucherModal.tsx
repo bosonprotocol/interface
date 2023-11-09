@@ -1,6 +1,7 @@
 import { ExpireButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import qs from "query-string";
 import { useState } from "react";
@@ -191,10 +192,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               console.error(error);
               setExpireError(error);
               setIsLoading(false);
-              const hasUserRejectedTx =
-                "code" in error &&
-                (error as unknown as { code: string }).code ===
-                  "ACTION_REJECTED";
+              const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {

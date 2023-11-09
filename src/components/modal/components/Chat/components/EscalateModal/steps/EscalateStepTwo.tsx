@@ -10,15 +10,19 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import {
   useAccount,
   useSignMessage
 } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import {
+  sendAndAddMessageToUI,
+  sendErrorMessageIfTxFails
+} from "pages/chat/utils/send";
+import {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -240,162 +244,6 @@ function EscalateStepTwo({
     }
   }, [activeStep]);
 
-  const handleSendingEscalateMessage = useCallback(async () => {
-    if (bosonXmtp && threadId && address) {
-      try {
-        setHasError?.(false);
-        const newMessage = {
-          threadId,
-          content: {
-            value: {
-              title: "Buyer has escalated the dispute",
-              description:
-                "The dispute has been escalated to the 3rd party dispute resolver. The dispute resolver will decide on the outcome of the dispute.",
-              disputeResolverInfo: [
-                { label: "Name", value: "Redeemeum UK" },
-                { label: "Email address", value: "disputes@redeemeum.com" }
-              ] as { label: string; value: string }[],
-              icon: ICON_KEYS.info,
-              heading: "Dispute has been escalated",
-              body: "The dispute resolver will contact you about the dispute via the email address provided in your profiile."
-            }
-          },
-          contentType: MessageType.EscalateDispute,
-          version
-        } as const;
-        const uuid = window.crypto.randomUUID();
-
-        await addMessage?.({
-          authorityId: "",
-          timestamp: Date.now(),
-          sender: address,
-          recipient: destinationAddress,
-          data: newMessage,
-          isValid: false,
-          isPending: true,
-          uuid
-        });
-
-        const messageData = await bosonXmtp.encodeAndSendMessage(
-          newMessage,
-          destinationAddress
-        );
-        if (!messageData) {
-          throw new Error(
-            "Something went wrong while sending a retract message"
-          );
-        }
-        onSentMessage?.(messageData, uuid);
-      } catch (error) {
-        console.error(error);
-        setHasError?.(true);
-        Sentry.captureException(error, {
-          extra: {
-            ...threadId,
-            destinationAddress,
-            action: "handleSendingEscalateMessage",
-            location: "EscalateModal"
-          }
-        });
-      }
-    }
-  }, [
-    addMessage,
-    address,
-    bosonXmtp,
-    destinationAddress,
-    onSentMessage,
-    threadId,
-    setHasError
-  ]);
-
-  const handleEscalate = useCallback(async () => {
-    try {
-      setLoading(true);
-      let tx: TransactionResponse;
-      showModal("WAITING_FOR_CONFIRMATION");
-      const buyerEscalationDeposit =
-        exchange.offer.disputeResolutionTerms.buyerEscalationDeposit;
-      const exchangeTokenAddress = exchange.offer.exchangeToken.address;
-      const isMetaTx = Boolean(
-        coreSDK?.isMetaTxConfigSet &&
-          address &&
-          (exchangeTokenAddress !== ethers.constants.AddressZero ||
-            BigNumber.from(buyerEscalationDeposit).eq(0))
-      );
-      await handleSendingEscalateMessage();
-      // in case buyerEscalationDeposit is > 0 and in native currency, meta-tx is not possible (because escalation requires a payment)
-      if (isMetaTx) {
-        tx = await escalateDisputeWithMetaTx(coreSDK, exchange.id);
-      } else {
-        tx = await coreSDK.escalateDispute(exchange.id);
-      }
-      showModal("TRANSACTION_SUBMITTED", {
-        action: "Escalate dispute",
-        txHash: tx.hash
-      });
-      addPendingTransaction({
-        type: subgraph.EventType.DisputeEscalated,
-        hash: tx.hash,
-        isMetaTx,
-        accountType: "Buyer",
-        exchange: {
-          id: exchange.id
-        }
-      });
-      await tx.wait();
-      await poll(
-        async () => {
-          const escalatedDispute = await coreSDK.getDisputeById(
-            exchange.dispute?.id as BigNumberish
-          );
-          return escalatedDispute.escalatedDate;
-        },
-        (escalatedDate) => {
-          return !escalatedDate;
-        },
-        500
-      );
-      toast((t) => (
-        <SuccessTransactionToast
-          t={t}
-          action={`Escalated dispute: ${exchange?.offer?.metadata?.name}`}
-          url={config.envConfig.getTxExplorerUrl?.(tx?.hash || "")}
-        />
-      ));
-      refetch();
-      hideModal();
-    } catch (error) {
-      console.error(error);
-      hideModal();
-      const hasUserRejectedTx =
-        "code" in (error as Error) &&
-        (error as unknown as { code: string }).code === "ACTION_REJECTED";
-      if (hasUserRejectedTx) {
-        showModal("TRANSACTION_FAILED");
-      } else {
-        Sentry.captureException(error);
-        showModal("TRANSACTION_FAILED", {
-          errorMessage: "Something went wrong"
-        });
-      }
-      return false;
-    } finally {
-      setLoading(false);
-    }
-
-    return true;
-  }, [
-    exchange,
-    coreSDK,
-    address,
-    hideModal,
-    refetch,
-    showModal,
-    addPendingTransaction,
-    handleSendingEscalateMessage,
-    config.envConfig
-  ]);
   const showSuccessInitialization =
     [
       ChatInitializationStatus.INITIALIZED,
@@ -583,7 +431,166 @@ function EscalateStepTwo({
                   <InitializeChatWithSuccess />
                   <Button
                     theme="secondary"
-                    onClick={handleEscalate}
+                    onClick={async () => {
+                      const handleSendingEscalateMessage = async () => {
+                        if (bosonXmtp && threadId && address) {
+                          try {
+                            setHasError?.(false);
+                            const newMessage = {
+                              threadId,
+                              content: {
+                                value: {
+                                  title: "Buyer has escalated the dispute",
+                                  description:
+                                    "The dispute has been escalated to the 3rd party dispute resolver. The dispute resolver will decide on the outcome of the dispute.",
+                                  disputeResolverInfo: [
+                                    { label: "Name", value: "Redeemeum UK" },
+                                    {
+                                      label: "Email address",
+                                      value: "disputes@redeemeum.com"
+                                    }
+                                  ] as { label: string; value: string }[],
+                                  icon: ICON_KEYS.info,
+                                  heading: "Dispute has been escalated",
+                                  body: "The dispute resolver will contact you about the dispute via the email address provided in your profiile."
+                                }
+                              },
+                              contentType: MessageType.EscalateDispute,
+                              version
+                            } as const;
+                            await sendAndAddMessageToUI({
+                              bosonXmtp,
+                              addMessage,
+                              onSentMessage,
+                              address,
+                              destinationAddress,
+                              newMessage
+                            });
+                          } catch (error) {
+                            console.error(error);
+                            setHasError?.(true);
+                            Sentry.captureException(error, {
+                              extra: {
+                                ...threadId,
+                                destinationAddress,
+                                action: "handleSendingEscalateMessage",
+                                location: "EscalateModal"
+                              }
+                            });
+                          }
+                        }
+                      };
+                      try {
+                        setLoading(true);
+                        let tx: TransactionResponse | undefined = undefined;
+                        showModal("WAITING_FOR_CONFIRMATION");
+                        const buyerEscalationDeposit =
+                          exchange.offer.disputeResolutionTerms
+                            .buyerEscalationDeposit;
+                        const exchangeTokenAddress =
+                          exchange.offer.exchangeToken.address;
+                        const isMetaTx = Boolean(
+                          coreSDK?.isMetaTxConfigSet &&
+                            address &&
+                            (exchangeTokenAddress !==
+                              ethers.constants.AddressZero ||
+                              BigNumber.from(buyerEscalationDeposit).eq(0))
+                        );
+                        await handleSendingEscalateMessage();
+
+                        await sendErrorMessageIfTxFails({
+                          sendsTxFn: async () => {
+                            // in case buyerEscalationDeposit is > 0 and in native currency, meta-tx is not possible (because escalation requires a payment)
+                            if (isMetaTx) {
+                              tx = await escalateDisputeWithMetaTx(
+                                coreSDK,
+                                exchange.id
+                              );
+                            } else {
+                              tx = await coreSDK.escalateDispute(exchange.id);
+                            }
+                          },
+                          addMessageIfTxFailsFn: async (errorMessageObj) => {
+                            bosonXmtp &&
+                              address &&
+                              (await sendAndAddMessageToUI({
+                                bosonXmtp,
+                                addMessage,
+                                onSentMessage,
+                                address,
+                                destinationAddress,
+                                newMessage: errorMessageObj
+                              }));
+                          },
+                          errorMessage:
+                            "Escalate dispute transaction was not successful",
+                          threadId,
+                          sendUserRejectionError: true,
+                          userRejectionErrorMessage:
+                            "Escalate dispute transaction was not confirmed"
+                        });
+                        if (!tx) {
+                          return;
+                        }
+                        tx = tx as TransactionResponse;
+
+                        showModal("TRANSACTION_SUBMITTED", {
+                          action: "Escalate dispute",
+                          txHash: tx.hash
+                        });
+                        addPendingTransaction({
+                          type: subgraph.EventType.DisputeEscalated,
+                          hash: tx.hash,
+                          isMetaTx,
+                          accountType: "Buyer",
+                          exchange: {
+                            id: exchange.id
+                          }
+                        });
+                        await tx.wait();
+                        await poll(
+                          async () => {
+                            const escalatedDispute =
+                              await coreSDK.getDisputeById(
+                                exchange.dispute?.id as BigNumberish
+                              );
+                            return escalatedDispute.escalatedDate;
+                          },
+                          (escalatedDate) => {
+                            return !escalatedDate;
+                          },
+                          500
+                        );
+                        toast((t) => (
+                          <SuccessTransactionToast
+                            t={t}
+                            action={`Escalated dispute: ${exchange?.offer?.metadata?.name}`}
+                            url={config.envConfig.getTxExplorerUrl?.(
+                              tx?.hash || ""
+                            )}
+                          />
+                        ));
+                        refetch();
+                        hideModal();
+                      } catch (error) {
+                        console.error(error);
+                        hideModal();
+                        const hasUserRejectedTx = getHasUserRejectedTx(error);
+                        if (hasUserRejectedTx) {
+                          showModal("TRANSACTION_FAILED");
+                        } else {
+                          Sentry.captureException(error);
+                          showModal("TRANSACTION_FAILED", {
+                            errorMessage: "Something went wrong"
+                          });
+                        }
+                        return false;
+                      } finally {
+                        setLoading(false);
+                      }
+
+                      return true;
+                    }}
                     disabled={
                       loading ||
                       values?.confirm !== true ||

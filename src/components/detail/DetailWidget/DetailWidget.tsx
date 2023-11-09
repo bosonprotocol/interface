@@ -24,6 +24,7 @@ import {
   customisedExchangePolicy
 } from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { useOnCloseWidget } from "lib/utils/hooks/useOnCloseWidget";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
@@ -805,9 +806,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const onCommitError = (error: Error) => {
     console.error("onError", error);
     setIsLoading(false);
-    const hasUserRejectedTx =
-      "code" in error &&
-      (error as unknown as { code: string }).code === "ACTION_REJECTED";
+    const hasUserRejectedTx = getHasUserRejectedTx(error);
     if (hasUserRejectedTx) {
       showModal("TRANSACTION_FAILED");
     } else {
