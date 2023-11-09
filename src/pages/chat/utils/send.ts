@@ -117,36 +117,66 @@ export const sendProposalToChat = async ({
     });
   }
 };
+type RejectionProps = {
+  sendUserRejectionError: boolean;
+  userRejectionErrorMessage: string;
+};
 
 export const sendErrorMessageIfTxFails = async ({
   sendsTxFn,
   addMessageIfTxFailsFn,
   errorMessage,
-  threadId
+  threadId,
+  sendUserRejectionError,
+  userRejectionErrorMessage
 }: {
   sendsTxFn: () => Promise<unknown>;
   addMessageIfTxFailsFn: (errorMessageObj: MessageObject) => Promise<unknown>;
   errorMessage: string;
   threadId: ThreadId | null;
-}) => {
+} & RejectionProps) => {
   try {
     await sendsTxFn();
   } catch (error) {
-    if (!getHasUserRejectedTx(error) && threadId) {
-      const newMessage: MessageObject = {
-        threadId,
-        content: {
-          value: {
-            icon: ICON_KEYS.warningCircle,
-            heading: "Transaction failed",
-            body: errorMessage,
-            type: StringIconTypes.ERROR
-          }
-        },
-        contentType: MessageType.StringIcon,
-        version
-      } as const;
-      await addMessageIfTxFailsFn(newMessage);
+    if (threadId) {
+      let newMessage: MessageObject | null = null;
+      const hasUserRejectedTx = getHasUserRejectedTx(error);
+      if (
+        hasUserRejectedTx &&
+        sendUserRejectionError &&
+        userRejectionErrorMessage
+      ) {
+        newMessage = {
+          threadId,
+          content: {
+            value: {
+              icon: ICON_KEYS.warningCircle,
+              heading: "User did not sign the transaction",
+              body: userRejectionErrorMessage,
+              type: StringIconTypes.ERROR
+            }
+          },
+          contentType: MessageType.StringIcon,
+          version
+        } as const;
+      } else if (!hasUserRejectedTx) {
+        newMessage = {
+          threadId,
+          content: {
+            value: {
+              icon: ICON_KEYS.warningCircle,
+              heading: "Transaction failed",
+              body: errorMessage,
+              type: StringIconTypes.ERROR
+            }
+          },
+          contentType: MessageType.StringIcon,
+          version
+        } as const;
+      }
+      if (newMessage) {
+        await addMessageIfTxFailsFn(newMessage);
+      }
     }
 
     throw error;

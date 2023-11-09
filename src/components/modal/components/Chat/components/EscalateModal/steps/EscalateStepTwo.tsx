@@ -524,7 +524,10 @@ function EscalateStepTwo({
                           },
                           errorMessage:
                             "Escalate dispute transaction was not successful",
-                          threadId
+                          threadId,
+                          sendUserRejectionError: true,
+                          userRejectionErrorMessage:
+                            "Escalate dispute transaction was not confirmed"
                         });
                         if (!tx) {
                           return;

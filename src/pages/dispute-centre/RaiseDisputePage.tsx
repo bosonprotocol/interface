@@ -300,7 +300,10 @@ function RaiseDisputePage() {
                     },
                     errorMessage:
                       "Raise dispute transaction was not successful",
-                    threadId
+                    threadId,
+                    sendUserRejectionError: true,
+                    userRejectionErrorMessage:
+                      "Raise dispute transaction was not confirmed"
                   });
                   if (!tx) {
                     return;

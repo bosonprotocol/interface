@@ -18,13 +18,7 @@ import {
   sendErrorMessageIfTxFails
 } from "pages/chat/utils/send";
 import { Info as InfoComponent } from "phosphor-react";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useMemo,
-  useState
-} from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
@@ -171,59 +165,7 @@ export default function ResolveDisputeModal({
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
-  const handleSendingAcceptProposalMessage = useCallback(async () => {
-    if (bosonXmtp && threadId && address) {
-      try {
-        setHasError(false);
-        const content: AcceptProposalContent = {
-          value: {
-            icon: ICON_KEYS.checkCircle,
-            title: iAmTheBuyer
-              ? "Buyer accepted the refund proposal"
-              : "Seller accepted the refund proposal",
-            heading: "Dispute has been mutually resolved",
-            body: "Your funds are now available for withdrawal",
-            proposal
-          }
-        };
-        const newMessage = {
-          threadId,
-          content,
-          contentType: MessageType.AcceptProposal,
-          version
-        } as const;
-        await sendAndAddMessageToUI({
-          bosonXmtp,
-          addMessage,
-          onSentMessage,
-          address,
-          destinationAddress,
-          newMessage
-        });
-      } catch (error) {
-        console.error(error);
-        setHasError(true);
-        Sentry.captureException(error, {
-          extra: {
-            ...threadId,
-            destinationAddress,
-            action: "handleSendingRetractMessage",
-            location: "RetractDisputeModal"
-          }
-        });
-      }
-    }
-  }, [
-    bosonXmtp,
-    threadId,
-    address,
-    setHasError,
-    iAmTheBuyer,
-    proposal,
-    addMessage,
-    destinationAddress,
-    onSentMessage
-  ]);
+
   return (
     <>
       <Grid justifyContent="space-between" padding="0 0 2rem 0">
@@ -246,6 +188,49 @@ export default function ResolveDisputeModal({
         <BosonButton
           variant="primaryFill"
           onClick={async () => {
+            const handleSendingAcceptProposalMessage = async () => {
+              if (bosonXmtp && threadId && address) {
+                try {
+                  setHasError(false);
+                  const content: AcceptProposalContent = {
+                    value: {
+                      icon: ICON_KEYS.checkCircle,
+                      title: iAmTheBuyer
+                        ? "Buyer accepted the refund proposal"
+                        : "Seller accepted the refund proposal",
+                      heading: "Dispute has been mutually resolved",
+                      body: "Your funds are now available for withdrawal",
+                      proposal
+                    }
+                  };
+                  const newMessage = {
+                    threadId,
+                    content,
+                    contentType: MessageType.AcceptProposal,
+                    version
+                  } as const;
+                  await sendAndAddMessageToUI({
+                    bosonXmtp,
+                    addMessage,
+                    onSentMessage,
+                    address,
+                    destinationAddress,
+                    newMessage
+                  });
+                } catch (error) {
+                  console.error(error);
+                  setHasError(true);
+                  Sentry.captureException(error, {
+                    extra: {
+                      ...threadId,
+                      destinationAddress,
+                      action: "handleSendingRetractMessage",
+                      location: "RetractDisputeModal"
+                    }
+                  });
+                }
+              }
+            };
             try {
               setResolveDisputeError(null);
               const signature = utils.splitSignature(proposal.signature);
@@ -287,7 +272,10 @@ export default function ResolveDisputeModal({
                 },
                 errorMessage:
                   "Resolution proposal transaction was not successful",
-                threadId
+                threadId,
+                sendUserRejectionError: true,
+                userRejectionErrorMessage:
+                  "Resolution proposal transaction was not confirmed"
               });
               if (!tx) {
                 return;
