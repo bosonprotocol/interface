@@ -10,16 +10,15 @@ import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, utils } from "ethers";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
-import { Info as InfoComponent } from "phosphor-react";
 import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useMemo,
-  useState
-} from "react";
+  sendAndAddMessageToUI,
+  sendErrorMessageIfTxFails
+} from "pages/chat/utils/send";
+import { Info as InfoComponent } from "phosphor-react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
@@ -166,74 +165,7 @@ export default function ResolveDisputeModal({
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
-  const handleSendingAcceptProposalMessage = useCallback(async () => {
-    if (bosonXmtp && threadId && address) {
-      try {
-        setHasError(false);
-        const content: AcceptProposalContent = {
-          value: {
-            icon: ICON_KEYS.checkCircle,
-            title: iAmTheBuyer
-              ? "Buyer accepted the refund proposal"
-              : "Seller accepted the refund proposal",
-            heading: "Dispute has been mutually resolved",
-            body: "Your funds are now available for withdrawal",
-            proposal
-          }
-        };
-        const newMessage = {
-          threadId,
-          content,
-          contentType: MessageType.AcceptProposal,
-          version
-        } as const;
-        const uuid = window.crypto.randomUUID();
 
-        await addMessage({
-          authorityId: "",
-          timestamp: Date.now(),
-          sender: address,
-          recipient: destinationAddress,
-          data: newMessage,
-          isValid: false,
-          isPending: true,
-          uuid
-        });
-
-        const messageData = await bosonXmtp.encodeAndSendMessage(
-          newMessage,
-          destinationAddress
-        );
-        if (!messageData) {
-          throw new Error(
-            "Something went wrong while sending an accept proposal message"
-          );
-        }
-        onSentMessage(messageData, uuid);
-      } catch (error) {
-        console.error(error);
-        setHasError(true);
-        Sentry.captureException(error, {
-          extra: {
-            ...threadId,
-            destinationAddress,
-            action: "handleSendingRetractMessage",
-            location: "RetractDisputeModal"
-          }
-        });
-      }
-    }
-  }, [
-    bosonXmtp,
-    threadId,
-    address,
-    setHasError,
-    iAmTheBuyer,
-    proposal,
-    addMessage,
-    destinationAddress,
-    onSentMessage
-  ]);
   return (
     <>
       <Grid justifyContent="space-between" padding="0 0 2rem 0">
@@ -256,29 +188,99 @@ export default function ResolveDisputeModal({
         <BosonButton
           variant="primaryFill"
           onClick={async () => {
+            const handleSendingAcceptProposalMessage = async () => {
+              if (bosonXmtp && threadId && address) {
+                try {
+                  setHasError(false);
+                  const content: AcceptProposalContent = {
+                    value: {
+                      icon: ICON_KEYS.checkCircle,
+                      title: iAmTheBuyer
+                        ? "Buyer accepted the refund proposal"
+                        : "Seller accepted the refund proposal",
+                      heading: "Dispute has been mutually resolved",
+                      body: "Your funds are now available for withdrawal",
+                      proposal
+                    }
+                  };
+                  const newMessage = {
+                    threadId,
+                    content,
+                    contentType: MessageType.AcceptProposal,
+                    version
+                  } as const;
+                  await sendAndAddMessageToUI({
+                    bosonXmtp,
+                    addMessage,
+                    onSentMessage,
+                    address,
+                    destinationAddress,
+                    newMessage
+                  });
+                } catch (error) {
+                  console.error(error);
+                  setHasError(true);
+                  Sentry.captureException(error, {
+                    extra: {
+                      ...threadId,
+                      destinationAddress,
+                      action: "handleSendingRetractMessage",
+                      location: "RetractDisputeModal"
+                    }
+                  });
+                }
+              }
+            };
             try {
               setResolveDisputeError(null);
               const signature = utils.splitSignature(proposal.signature);
-              let tx: TransactionResponse;
+              let tx: TransactionResponse | undefined = undefined;
               showModal("WAITING_FOR_CONFIRMATION");
               await handleSendingAcceptProposalMessage();
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
-              if (isMetaTx) {
-                tx = await resolveDisputeWithMetaTx(
-                  coreSDK,
-                  exchange.id,
-                  proposal.percentageAmount,
-                  signature
-                );
-              } else {
-                tx = await coreSDK.resolveDispute({
-                  exchangeId: exchange.id,
-                  buyerPercentBasisPoints: proposal.percentageAmount,
-                  sigR: signature.r,
-                  sigS: signature.s,
-                  sigV: signature.v
-                });
+
+              await sendErrorMessageIfTxFails({
+                sendsTxFn: async () => {
+                  if (isMetaTx) {
+                    tx = await resolveDisputeWithMetaTx(
+                      coreSDK,
+                      exchange.id,
+                      proposal.percentageAmount,
+                      signature
+                    );
+                  } else {
+                    tx = await coreSDK.resolveDispute({
+                      exchangeId: exchange.id,
+                      buyerPercentBasisPoints: proposal.percentageAmount,
+                      sigR: signature.r,
+                      sigS: signature.s,
+                      sigV: signature.v
+                    });
+                  }
+                },
+                addMessageIfTxFailsFn: async (errorMessageObj) => {
+                  bosonXmtp &&
+                    address &&
+                    (await sendAndAddMessageToUI({
+                      bosonXmtp,
+                      addMessage,
+                      onSentMessage,
+                      address,
+                      destinationAddress,
+                      newMessage: errorMessageObj
+                    }));
+                },
+                errorMessage:
+                  "Resolution proposal transaction was not successful",
+                threadId,
+                sendUserRejectionError: true,
+                userRejectionErrorMessage:
+                  "Resolution proposal transaction was not confirmed"
+              });
+              if (!tx) {
+                return;
               }
+              tx = tx as TransactionResponse;
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Raise dispute",
                 txHash: tx.hash
@@ -310,13 +312,11 @@ export default function ResolveDisputeModal({
                 <SuccessTransactionToast
                   t={t}
                   action={`Raised dispute: ${exchange.offer.metadata.name}`}
-                  url={config.envConfig.getTxExplorerUrl?.(tx.hash)}
+                  url={config.envConfig.getTxExplorerUrl?.(tx?.hash)}
                 />
               ));
             } catch (error) {
-              const hasUserRejectedTx =
-                (error as unknown as { code: string }).code ===
-                "ACTION_REJECTED";
+              const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {

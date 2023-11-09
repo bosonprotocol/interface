@@ -192,15 +192,16 @@ const IconMessage = ({
   heading,
   body
 }: {
-  icon: ReactElement;
+  icon: ReactElement | undefined;
   heading: string;
   body: string;
 }) => {
   return (
     <Grid gap="1.5rem">
-      {cloneElement(icon, {
-        size: 75
-      })}
+      {icon &&
+        cloneElement(icon, {
+          size: 75
+        })}
       <Grid flexDirection="column" gap="1rem" alignItems="flex-start">
         {heading && (
           <Typography $fontSize="1.25rem" fontWeight="600">

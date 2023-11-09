@@ -1,4 +1,5 @@
-import { CheckCircle, Info } from "phosphor-react";
+import { RecordWithSameKeyAndValue } from "lib/types/record";
+import { CheckCircle, Info, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
@@ -19,14 +20,17 @@ const StyledCheckedCircle = styled(CheckCircle)`
 
 export const ICONS = {
   info: <StyledInfo color={colors.white} />,
-  checkCircle: <StyledCheckedCircle color={colors.green} />
+  checkCircle: <StyledCheckedCircle color={colors.green} />,
+  warningCircle: <WarningCircle color={colors.orange} />
 } as const;
 
-export const ICON_KEYS = {
+export const ICON_KEYS: RecordWithSameKeyAndValue<typeof ICONS> = {
   info: "info",
-  checkCircle: "checkCircle"
-} as const;
+  checkCircle: "checkCircle",
+  warningCircle: "warningCircle"
+};
 
 export enum StringIconTypes {
-  RETRACT = "RETRACT"
+  RETRACT = "RETRACT",
+  ERROR = "ERROR"
 }

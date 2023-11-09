@@ -34,6 +34,7 @@ dayjs.extend(localizedFormat);
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { BigNumber, ethers } from "ethers";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 
@@ -940,9 +941,7 @@ function CreateProductInner({
       });
     } catch (error: any) {
       console.error("error->", error.errors ?? error);
-      const hasUserRejectedTx =
-        "code" in error &&
-        (error as unknown as { code: string })?.code === "ACTION_REJECTED";
+      const hasUserRejectedTx = getHasUserRejectedTx(error);
       if (hasUserRejectedTx) {
         showModal("TRANSACTION_FAILED", undefined, "auto", undefined, {
           xs: "400px"

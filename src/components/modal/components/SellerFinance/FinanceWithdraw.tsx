@@ -3,6 +3,7 @@ import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import {
   getNumberWithDecimals,
@@ -191,9 +192,7 @@ export default function FinanceWithdraw({
           }}
           onError={(error) => {
             console.error("onError", error);
-            const hasUserRejectedTx =
-              "code" in error &&
-              (error as unknown as { code: string }).code === "ACTION_REJECTED";
+            const hasUserRejectedTx = getHasUserRejectedTx(error);
             if (hasUserRejectedTx) {
               showModal("TRANSACTION_FAILED");
             } else {

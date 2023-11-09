@@ -3,7 +3,10 @@ import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
-import { extractUserFriendlyError } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { getNumberWithoutDecimals } from "lib/utils/number";
 import { useState } from "react";
@@ -182,9 +185,7 @@ export default function FinanceDeposit({
           }}
           onError={(error) => {
             console.error("onError", error);
-            const hasUserRejectedTx =
-              "code" in error &&
-              (error as unknown as { code: string }).code === "ACTION_REJECTED";
+            const hasUserRejectedTx = getHasUserRejectedTx(error);
             if (hasUserRejectedTx) {
               showModal("TRANSACTION_FAILED");
             } else {

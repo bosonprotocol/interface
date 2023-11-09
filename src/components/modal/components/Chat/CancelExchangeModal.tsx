@@ -1,6 +1,7 @@
 import { CancelButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
@@ -207,10 +208,7 @@ export default function CancelExchangeModal({
               console.error(error);
               setCancelError(error);
               setIsLoading(false);
-              const hasUserRejectedTx =
-                "code" in error &&
-                (error as unknown as { code: string }).code ===
-                  "ACTION_REJECTED";
+              const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {

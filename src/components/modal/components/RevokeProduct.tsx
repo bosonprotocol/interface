@@ -1,6 +1,7 @@
 import { Provider, RevokeButton, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -143,10 +144,7 @@ export default function RevokeProduct({
             }}
             onError={(error) => {
               console.error("onError", error);
-              const hasUserRejectedTx =
-                "code" in error &&
-                (error as unknown as { code: string }).code ===
-                  "ACTION_REJECTED";
+              const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {

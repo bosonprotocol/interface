@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { offers } from "@bosonprotocol/react-kit";
 import { Form, Formik } from "formik";
+import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -217,11 +218,8 @@ function BatchCreateOffers() {
         }
       });
     } catch (error: unknown) {
-      // TODO: FAILURE MODAL
       console.error("error->", (error as { errors: unknown }).errors ?? error);
-      const hasUserRejectedTx =
-        "code" in (error as { [key: string]: unknown }) &&
-        (error as { code: string })?.code === "ACTION_REJECTED";
+      const hasUserRejectedTx = getHasUserRejectedTx(error);
       if (hasUserRejectedTx) {
         showModal("TRANSACTION_FAILED");
       } else {
