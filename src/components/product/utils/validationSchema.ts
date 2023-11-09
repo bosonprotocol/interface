@@ -294,10 +294,17 @@ export const getTokenGatingValidationSchema = ({
                   break;
               }
             } catch (error) {
-              throw this.createError({
-                path: this.path,
-                message: `This is not an ${tokenType.label} contract address`
-              });
+              if (
+                error &&
+                typeof error === "object" &&
+                "data" in error &&
+                error.data === "0x"
+              ) {
+                throw this.createError({
+                  path: this.path,
+                  message: `This is not an ${tokenType.label} contract address`
+                });
+              }
             }
           }
           return true;
