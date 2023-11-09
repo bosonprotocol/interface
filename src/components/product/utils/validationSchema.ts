@@ -343,7 +343,13 @@ export const getTokenGatingValidationSchema = ({
                   break;
               }
             } catch (error) {
-              if (!doesImplementFunction(error)) {
+              if (
+                !doesImplementFunction(error) ||
+                (error &&
+                  typeof error === "object" &&
+                  "name" in error &&
+                  error.name === "ValidationError")
+              ) {
                 throwNotValidContractError();
               }
             }
