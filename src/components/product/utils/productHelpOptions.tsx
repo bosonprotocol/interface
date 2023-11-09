@@ -143,7 +143,7 @@ export const tokenGatingHelp = [
         <li>ERC721</li>
         <ul>
           <li>
-            One ca select whether or not they want to target a specific token
+            One can select whether or not they want to target a specific token
             from a collection or any token from a collection
           </li>
           <li>
