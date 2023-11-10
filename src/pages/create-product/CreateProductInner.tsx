@@ -34,7 +34,10 @@ dayjs.extend(localizedFormat);
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { BigNumber, ethers } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 
@@ -950,7 +953,8 @@ function CreateProductInner({
         showModal(
           "TRANSACTION_FAILED",
           {
-            errorMessage: "Something went wrong"
+            errorMessage: "Something went wrong",
+            detailedErrorMessage: extractUserFriendlyError(error)
           },
           "auto",
           undefined,

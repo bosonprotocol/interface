@@ -10,7 +10,10 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import {
   useAccount,
   useSignMessage
@@ -581,7 +584,9 @@ function EscalateStepTwo({
                         } else {
                           Sentry.captureException(error);
                           showModal("TRANSACTION_FAILED", {
-                            errorMessage: "Something went wrong"
+                            errorMessage: "Something went wrong",
+                            detailedErrorMessage:
+                              extractUserFriendlyError(error)
                           });
                         }
                         return false;

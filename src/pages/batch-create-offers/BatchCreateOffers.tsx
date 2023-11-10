@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { offers } from "@bosonprotocol/react-kit";
 import { Form, Formik } from "formik";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -224,7 +227,8 @@ function BatchCreateOffers() {
         showModal("TRANSACTION_FAILED");
       } else {
         showModal("TRANSACTION_FAILED", {
-          errorMessage: "Something went wrong"
+          errorMessage: "Something went wrong",
+          detailedErrorMessage: extractUserFriendlyError(error)
         });
       }
     }

@@ -10,7 +10,10 @@ import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, utils } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import {
@@ -321,7 +324,8 @@ export default function ResolveDisputeModal({
                 showModal("TRANSACTION_FAILED");
               } else {
                 showModal("TRANSACTION_FAILED", {
-                  errorMessage: "Something went wrong"
+                  errorMessage: "Something went wrong",
+                  detailedErrorMessage: extractUserFriendlyError(error)
                 });
               }
               setResolveDisputeError(error as Error);
