@@ -183,9 +183,9 @@ function RaiseDisputePage() {
     return <p>You have to be the buyer of this exchange to raise a dispute</p>;
   }
 
-  // if (exchange.disputed) {
-  //   return <p>This exchange has already been disputed</p>;
-  // }
+  if (exchange.disputed) {
+    return <p>This exchange has already been disputed</p>;
+  }
 
   return (
     <>
