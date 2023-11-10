@@ -27,8 +27,6 @@ import EditProfileModal from "./components/Profile/EditProfileModal";
 import { ProfileDetailsModal } from "./components/ProfileDetails/ProfileDetailsModal";
 import ProgressBarModal from "./components/ProgressBarModal";
 import { RedeemableNftTermsModal } from "./components/RedeemableNftTermsModal";
-import RedeemModal from "./components/RedeemModal/RedeemModal";
-import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
 import { SalesChannelsModal } from "./components/SalesChannelsModal/SalesChannelsModal";
@@ -64,8 +62,6 @@ export const MODAL_TYPES = {
   PRODUCT_CREATE_SUCCESS: "PRODUCT_CREATE_SUCCESS",
   RAISE_DISPUTE: "RAISE_DISPUTE",
   RECENT_TRANSACTIONS: "RECENT_TRANSACTIONS",
-  REDEEM_SUCCESS: "REDEEM_SUCCESS",
-  REDEEM: "REDEEM",
   RESOLVE_DISPUTE: "RESOLVE_DISPUTE",
   RETRACT_DISPUTE: "RETRACT_DISPUTE",
   REVOKE_PRODUCT: "REVOKE_PRODUCT",
@@ -116,8 +112,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.PRODUCT_CREATE_SUCCESS]: ProductCreateSuccess,
   [MODAL_TYPES.RAISE_DISPUTE]: DisputeModal,
   [MODAL_TYPES.RECENT_TRANSACTIONS]: RecentTransactionsModal,
-  [MODAL_TYPES.REDEEM_SUCCESS]: RedeemSuccessModal,
-  [MODAL_TYPES.REDEEM]: RedeemModal,
   [MODAL_TYPES.RESOLVE_DISPUTE]: ResolveDisputeModal,
   [MODAL_TYPES.RESOLUTION_SUMMARY]: ResolutionSummaryModal,
   [MODAL_TYPES.RETRACT_DISPUTE]: RetractDisputeModal,
