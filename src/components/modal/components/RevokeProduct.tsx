@@ -146,7 +146,7 @@ export default function RevokeProduct({
               web3Provider: signer?.provider as Provider,
               metaTx: config.metaTx
             }}
-            onError={(error) => {
+            onError={async (error, { txResponse }) => {
               console.error("onError", error);
               const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
@@ -155,7 +155,10 @@ export default function RevokeProduct({
                 Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
                   errorMessage: "Something went wrong",
-                  detailedErrorMessage: extractUserFriendlyError(error)
+                  detailedErrorMessage: await extractUserFriendlyError(error, {
+                    txResponse,
+                    provider: signer?.provider as Provider
+                  })
                 });
               }
             }}

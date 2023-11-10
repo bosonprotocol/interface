@@ -1,3 +1,6 @@
+import { Provider } from "@bosonprotocol/react-kit";
+import getRevertReason from "eth-revert-reason";
+import { providers } from "ethers";
 // You may throw an instance of this class when the user rejects a request in their wallet.
 // The benefit is that you can distinguish this error from other errors using didUserReject().
 export class UserRejectedRequestError extends Error {
@@ -15,24 +18,43 @@ export function toReadableError(errorText: string, error: unknown) {
   return new Error(`${errorText} 👺 ${error}`);
 }
 
-export function extractUserFriendlyError(
+export async function extractUserFriendlyError(
   error: unknown,
   {
-    defaultError = "Please retry this action"
+    defaultError = "Please retry this action",
+    txResponse,
+    provider
   }: {
     defaultError?: string;
+    txResponse?: providers.TransactionResponse;
+    provider?: Provider;
   } = {}
-): string {
-  if (!error || typeof error !== "object") {
+): Promise<string> {
+  try {
+    if (!error || typeof error !== "object") {
+      return defaultError;
+    }
+    if (txResponse) {
+      const revertReason = await getRevertReason(
+        txResponse.hash,
+        "mainnet", // mumbai is not supported
+        txResponse.blockNumber,
+        provider
+      );
+      return revertReason ?? defaultError;
+    }
+
+    const m = error.toString().match(/(?<=execution reverted: ).*/)?.[0];
+    const endIndex = m?.indexOf(`\\",`);
+    const details = m?.substring(
+      0,
+      endIndex === -1 ? m?.indexOf(`",`) : endIndex
+    );
+    return details ?? defaultError;
+  } catch (error) {
+    console.error("[extractUserFriendlyError]", error);
     return defaultError;
   }
-  const m = error.toString().match(/(?<=execution reverted: ).*/)?.[0];
-  const endIndex = m?.indexOf(`\\",`);
-  const details = m?.substring(
-    0,
-    endIndex === -1 ? m?.indexOf(`",`) : endIndex
-  );
-  return details ?? defaultError;
 }
 
 export function getHasUserRejectedTx(error: unknown): boolean {

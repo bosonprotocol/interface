@@ -345,7 +345,7 @@ export default function VoidProduct({
                 metaTx: config.metaTx
               }}
               offerId={offerId || 0}
-              onError={(error) => {
+              onError={async (error, { txResponse }) => {
                 console.error("onError", error);
                 const hasUserRejectedTx = getHasUserRejectedTx(error);
                 if (hasUserRejectedTx) {
@@ -354,7 +354,13 @@ export default function VoidProduct({
                   Sentry.captureException(error);
                   showModal("TRANSACTION_FAILED", {
                     errorMessage: "Something went wrong",
-                    detailedErrorMessage: extractUserFriendlyError(error)
+                    detailedErrorMessage: await extractUserFriendlyError(
+                      error,
+                      {
+                        txResponse,
+                        provider: signer?.provider as Provider
+                      }
+                    )
                   });
                 }
               }}

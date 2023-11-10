@@ -191,7 +191,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               metaTx: config.metaTx
             }}
             disabled={isLoading}
-            onError={(error) => {
+            onError={async (error, { txResponse }) => {
               console.error(error);
               setExpireError(error);
               setIsLoading(false);
@@ -202,7 +202,10 @@ export default function ExpireVoucherModal({ exchange }: Props) {
                 Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
                   errorMessage: "Something went wrong",
-                  detailedErrorMessage: extractUserFriendlyError(error)
+                  detailedErrorMessage: await extractUserFriendlyError(error, {
+                    txResponse,
+                    provider: signer?.provider as Provider
+                  })
                 });
               }
             }}

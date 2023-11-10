@@ -1,3 +1,4 @@
+import { TransactionResponse } from "@bosonprotocol/common";
 import { accounts, offers, subgraph } from "@bosonprotocol/react-kit";
 import { poll } from "lib/utils/promises";
 import toast from "react-hot-toast";
@@ -52,8 +53,11 @@ export function useCreateOffers() {
       onGetExchangeTokenDecimals,
       onCreatedOffersWithVariants,
       onCreatedSingleOffers
-    }: UseCreateOffersProps) => {
+    }: UseCreateOffersProps): Promise<void | {
+      txResponse: TransactionResponse | undefined;
+    }> => {
       let toastId: string | undefined;
+      let txResponse: TransactionResponse | undefined;
       try {
         const hasSellerAccount = !sellerToCreate;
         const isTokenGated = !!tokenGatedInfo;
@@ -97,7 +101,6 @@ export function useCreateOffers() {
         }
         // seller should always exist at this point as it should have been created in the modal at the beginning of the offer creation flow
         const seller: accounts.CreateSellerArgs | null = sellerToCreate;
-        let txResponse;
         if (offersToCreate.length > 1) {
           if (!hasSellerAccount && seller) {
             if (isMetaTx) {
@@ -431,6 +434,7 @@ export function useCreateOffers() {
           toast.dismiss(toastId);
         }
       }
+      return { txResponse };
     }
   );
 }

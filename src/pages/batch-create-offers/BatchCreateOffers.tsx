@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { offers } from "@bosonprotocol/react-kit";
+import { TransactionResponse } from "@bosonprotocol/common";
+import { offers, Provider } from "@bosonprotocol/react-kit";
+import { providers } from "ethers";
 import { Form, Formik } from "formik";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
 } from "lib/utils/errors";
+import { useSigner } from "lib/utils/hooks/connection/connection";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -86,6 +89,7 @@ const readOffersList = async (
 };
 
 function BatchCreateOffers() {
+  const signer = useSigner();
   const [tableData, setTableData] = useState<Data[]>([]);
   const [offersList, setOffersList] = useState<offers.CreateOfferArgs[]>([]);
   const [offersToBeCreated, setOffersToBeCreated] = useState<
@@ -196,8 +200,9 @@ function BatchCreateOffers() {
 
   const handleCreateOffers = async () => {
     // TODO: take into account the max number of offers that can be created in a batch transaction
+    let txResponse: TransactionResponse | undefined;
     try {
-      await createOffers({
+      const result = await createOffers({
         sellerToCreate: null,
         offersToCreate: offersToBeCreated,
         tokenGatedInfo: null, // TODO: add token gated info
@@ -220,6 +225,7 @@ function BatchCreateOffers() {
           ));
         }
       });
+      txResponse = result?.txResponse;
     } catch (error: unknown) {
       console.error("error->", (error as { errors: unknown }).errors ?? error);
       const hasUserRejectedTx = getHasUserRejectedTx(error);
@@ -228,7 +234,10 @@ function BatchCreateOffers() {
       } else {
         showModal("TRANSACTION_FAILED", {
           errorMessage: "Something went wrong",
-          detailedErrorMessage: extractUserFriendlyError(error)
+          detailedErrorMessage: await extractUserFriendlyError(error, {
+            txResponse: txResponse as providers.TransactionResponse,
+            provider: signer?.provider as Provider
+          })
         });
       }
     }

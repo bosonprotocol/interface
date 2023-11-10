@@ -5,15 +5,15 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumberish } from "ethers";
+import { BigNumberish, providers } from "ethers";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
 } from "lib/utils/errors";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import {
   sendAndAddMessageToUI,
@@ -94,6 +94,7 @@ export default function RetractDisputeModal({
   destinationAddress,
   exchange
 }: Props) {
+  const signer = useSigner();
   const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { chatInitializationStatus } = useChatStatus();
@@ -184,10 +185,10 @@ export default function RetractDisputeModal({
                 }
               }
             };
+            let tx: TransactionResponse | undefined = undefined;
             try {
               await handleSendingRetractMessage();
               setRetractDisputeError(null);
-              let tx: TransactionResponse | undefined = undefined;
               showModal("WAITING_FOR_CONFIRMATION");
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
 
@@ -265,7 +266,10 @@ export default function RetractDisputeModal({
                 Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
                   errorMessage: "Something went wrong",
-                  detailedErrorMessage: extractUserFriendlyError(error)
+                  detailedErrorMessage: await extractUserFriendlyError(error, {
+                    txResponse: tx as providers.TransactionResponse,
+                    provider: signer?.provider as Provider
+                  })
                 });
               }
               setRetractDisputeError(error as Error);

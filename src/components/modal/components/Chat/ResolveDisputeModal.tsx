@@ -6,15 +6,15 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumber, BigNumberish, utils } from "ethers";
+import { BigNumber, BigNumberish, providers, utils } from "ethers";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
 } from "lib/utils/errors";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import {
   sendAndAddMessageToUI,
@@ -119,6 +119,7 @@ export default function ResolveDisputeModal({
   onSentMessage,
   setHasError
 }: Props) {
+  const signer = useSigner();
   const { config } = useConfigContext();
   const { showModal, hideModal } = useModal();
   const { bosonXmtp } = useChatContext();
@@ -234,10 +235,10 @@ export default function ResolveDisputeModal({
                 }
               }
             };
+            let tx: TransactionResponse | undefined = undefined;
             try {
               setResolveDisputeError(null);
               const signature = utils.splitSignature(proposal.signature);
-              let tx: TransactionResponse | undefined = undefined;
               showModal("WAITING_FOR_CONFIRMATION");
               await handleSendingAcceptProposalMessage();
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
@@ -325,7 +326,10 @@ export default function ResolveDisputeModal({
               } else {
                 showModal("TRANSACTION_FAILED", {
                   errorMessage: "Something went wrong",
-                  detailedErrorMessage: extractUserFriendlyError(error)
+                  detailedErrorMessage: await extractUserFriendlyError(error, {
+                    txResponse: tx as providers.TransactionResponse,
+                    provider: signer?.provider as Provider
+                  })
                 });
               }
               setResolveDisputeError(error as Error);

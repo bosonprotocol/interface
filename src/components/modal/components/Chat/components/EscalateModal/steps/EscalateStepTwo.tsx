@@ -5,10 +5,10 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumber, BigNumberish, ethers, utils } from "ethers";
+import { BigNumber, BigNumberish, ethers, providers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import {
   extractUserFriendlyError,
@@ -16,6 +16,7 @@ import {
 } from "lib/utils/errors";
 import {
   useAccount,
+  useSigner,
   useSignMessage
 } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
@@ -183,6 +184,7 @@ function EscalateStepTwo({
   onSentMessage,
   setHasError
 }: Props) {
+  const signer = useSigner();
   const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { chatInitializationStatus } = useChatStatus();
@@ -483,9 +485,9 @@ function EscalateStepTwo({
                           }
                         }
                       };
+                      let tx: TransactionResponse | undefined = undefined;
                       try {
                         setLoading(true);
-                        let tx: TransactionResponse | undefined = undefined;
                         showModal("WAITING_FOR_CONFIRMATION");
                         const buyerEscalationDeposit =
                           exchange.offer.disputeResolutionTerms
@@ -586,7 +588,10 @@ function EscalateStepTwo({
                           showModal("TRANSACTION_FAILED", {
                             errorMessage: "Something went wrong",
                             detailedErrorMessage:
-                              extractUserFriendlyError(error)
+                              await extractUserFriendlyError(error, {
+                                txResponse: tx as providers.TransactionResponse,
+                                provider: signer?.provider as Provider
+                              })
                           });
                         }
                         return false;

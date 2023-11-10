@@ -193,7 +193,7 @@ export default function FinanceWithdraw({
             reload();
             setIsBeingWithdrawn(false);
           }}
-          onError={(error) => {
+          onError={async (error, { txResponse }) => {
             console.error("onError", error);
             const hasUserRejectedTx = getHasUserRejectedTx(error);
             if (hasUserRejectedTx) {
@@ -202,7 +202,10 @@ export default function FinanceWithdraw({
               Sentry.captureException(error);
               showModal("TRANSACTION_FAILED", {
                 errorMessage: "Something went wrong",
-                detailedErrorMessage: extractUserFriendlyError(error)
+                detailedErrorMessage: await extractUserFriendlyError(error, {
+                  txResponse,
+                  provider: signer?.provider as Provider
+                })
               });
             }
             setWithdrawError(error);
