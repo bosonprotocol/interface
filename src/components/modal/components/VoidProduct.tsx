@@ -322,7 +322,7 @@ export default function VoidProduct({
       </Grid>
       <Break />
       {offer && <VoidProductOffer offer={offer} single />}
-      {offers && offers.length && (
+      {offers && !!offers.length && (
         <OverflowOfferWrapper>
           {offers?.map(
             (o: Offer | null) =>
@@ -381,7 +381,7 @@ export default function VoidProduct({
           </VoidButtonWrapper>
         </Grid>
       )}
-      {offers && offers.length && (
+      {offers && !!offers.length && (
         <Grid justifyContent="center">
           <StyledBatchVoidButton
             variant="accentInverted"
