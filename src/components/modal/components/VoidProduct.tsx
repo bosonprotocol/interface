@@ -8,7 +8,10 @@ import {
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -350,7 +353,8 @@ export default function VoidProduct({
                 } else {
                   Sentry.captureException(error);
                   showModal("TRANSACTION_FAILED", {
-                    errorMessage: "Something went wrong"
+                    errorMessage: "Something went wrong",
+                    detailedErrorMessage: extractUserFriendlyError(error)
                   });
                 }
               }}

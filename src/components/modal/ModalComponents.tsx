@@ -1,6 +1,5 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { BuyerSellerAgreementModal } from "./components/BuyerSellerAgreementModal";
-import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
 import EscalateModal from "./components/Chat/components/EscalateModal/EscalateModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import { ResolutionSummaryModal } from "./components/Chat/ResolutionSummaryModal";
@@ -45,7 +44,6 @@ import VoidProduct from "./components/VoidProduct";
 import WhatIsRedeem from "./components/WhatIsRedeem";
 
 export const MODAL_TYPES = {
-  CANCEL_EXCHANGE: "CANCEL_EXCHANGE",
   COMPLETE_EXCHANGE: "COMPLETE_EXCHANGE",
   TRANSACTION_FAILED: "TRANSACTION_FAILED",
   CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
@@ -98,7 +96,6 @@ export const MODAL_TYPES = {
 } as const;
 
 export const MODAL_COMPONENTS = {
-  [MODAL_TYPES.CANCEL_EXCHANGE]: CancelExchangeModal,
   [MODAL_TYPES.COMPLETE_EXCHANGE]: CompleteExchange,
   [MODAL_TYPES.TRANSACTION_FAILED]: TransactionFailedModal,
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,

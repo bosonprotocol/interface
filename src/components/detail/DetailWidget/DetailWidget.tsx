@@ -813,7 +813,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       Sentry.captureException(error);
       showModal(modalTypes.DETAIL_WIDGET, {
         title: "An error occurred",
-        message: "An error occurred when trying to commit!",
+        message: error.message,
         type: "ERROR",
         state: "Committed",
         id: undefined,

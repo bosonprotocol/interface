@@ -56,7 +56,6 @@ export const SellerResolveDisputeButton = ({
     return (
       <BosonButton
         variant="accentInvertedNoBorder"
-        showBorder={false}
         size="small"
         onClick={() => {
           if (exchange?.id) {
@@ -109,7 +108,6 @@ export const SellerActionButton = ({
     <>
       <BosonButton
         variant="accentInvertedNoBorder"
-        showBorder={false}
         size="small"
         onClick={() => {
           if (exchange?.id) {
@@ -122,7 +120,6 @@ export const SellerActionButton = ({
       {status === subgraph.ExchangeState.Committed && (
         <StyledBosonButton
           variant="accentInvertedNoBorder"
-          showBorder={false}
           size="small"
           disabled={!sellerRoles?.isAssistant}
           tooltip="This action is restricted to only the assistant wallet"

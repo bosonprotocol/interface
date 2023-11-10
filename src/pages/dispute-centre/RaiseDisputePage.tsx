@@ -5,7 +5,10 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import { ArrowLeft } from "phosphor-react";
@@ -180,9 +183,9 @@ function RaiseDisputePage() {
     return <p>You have to be the buyer of this exchange to raise a dispute</p>;
   }
 
-  if (exchange.disputed) {
-    return <p>This exchange has already been disputed</p>;
-  }
+  // if (exchange.disputed) {
+  //   return <p>This exchange has already been disputed</p>;
+  // }
 
   return (
     <>
@@ -362,7 +365,7 @@ function RaiseDisputePage() {
                       detailedErrorMessage:
                         (error as Error)?.message === "message too big"
                           ? "Please use a smaller image or fewer images"
-                          : "Something went wrong"
+                          : extractUserFriendlyError(error)
                     });
                   }
 

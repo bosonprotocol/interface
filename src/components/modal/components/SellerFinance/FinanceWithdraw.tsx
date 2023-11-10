@@ -3,7 +3,10 @@ import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import {
   getNumberWithDecimals,
@@ -198,7 +201,8 @@ export default function FinanceWithdraw({
             } else {
               Sentry.captureException(error);
               showModal("TRANSACTION_FAILED", {
-                errorMessage: "Something went wrong"
+                errorMessage: "Something went wrong",
+                detailedErrorMessage: extractUserFriendlyError(error)
               });
             }
             setWithdrawError(error);

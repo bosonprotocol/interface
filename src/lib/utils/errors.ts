@@ -15,14 +15,24 @@ export function toReadableError(errorText: string, error: unknown) {
   return new Error(`${errorText} 👺 ${error}`);
 }
 
-export function extractUserFriendlyError(error: Error): string | undefined {
+export function extractUserFriendlyError(
+  error: unknown,
+  {
+    defaultError = "Please retry this action"
+  }: {
+    defaultError?: string;
+  } = {}
+): string {
+  if (!error || typeof error !== "object") {
+    return defaultError;
+  }
   const m = error.toString().match(/(?<=execution reverted: ).*/)?.[0];
   const endIndex = m?.indexOf(`\\",`);
   const details = m?.substring(
     0,
     endIndex === -1 ? m?.indexOf(`",`) : endIndex
   );
-  return details;
+  return details ?? defaultError;
 }
 
 export function getHasUserRejectedTx(error: unknown): boolean {

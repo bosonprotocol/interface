@@ -7,7 +7,10 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { utils } from "ethers";
 import { useField } from "formik";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import { Warning } from "phosphor-react";
 import { useRef, useState } from "react";
@@ -235,7 +238,8 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
               } else {
                 Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
-                  errorMessage: "Something went wrong"
+                  errorMessage: "Something went wrong",
+                  detailedErrorMessage: extractUserFriendlyError(error)
                 });
               }
             }}

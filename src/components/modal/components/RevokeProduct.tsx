@@ -1,7 +1,10 @@
 import { Provider, RevokeButton, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { getHasUserRejectedTx } from "lib/utils/errors";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -64,8 +67,9 @@ export default function RevokeProduct({
   });
   const conversionRate = Number(convertedPrice?.converted);
   const sellerDepositPercentage =
-    Number(exchange?.offer?.sellerDeposit) / Number(exchange?.offer?.price);
-
+    exchange?.offer?.sellerDeposit === "0"
+      ? 0
+      : Number(exchange?.offer?.sellerDeposit) / Number(exchange?.offer?.price);
   const sellerDeposit = sellerDepositPercentage * 100;
   const sellerDepositDollars = conversionRate
     ? (sellerDepositPercentage * conversionRate).toFixed(2)
@@ -150,7 +154,8 @@ export default function RevokeProduct({
               } else {
                 Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
-                  errorMessage: "Something went wrong"
+                  errorMessage: "Something went wrong",
+                  detailedErrorMessage: extractUserFriendlyError(error)
                 });
               }
             }}
