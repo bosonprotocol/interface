@@ -36,7 +36,7 @@ export function useHandleText(offer: Offer) {
       : getDateTimestamp(offer?.validUntilDate);
     const release = dayjs(earliestValidFromDate);
     const expiry = dayjs(latestValidUntilDate);
-    offer.price === "0" && console.log("offer", offer);
+
     return {
       current,
       release: {
