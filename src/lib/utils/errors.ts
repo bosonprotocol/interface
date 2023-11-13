@@ -1,6 +1,7 @@
-import { Provider } from "@bosonprotocol/react-kit";
-import getRevertReason from "eth-revert-reason";
-import { providers } from "ethers";
+import {
+  extractUserFriendlyError as _extractUserFriendlyError,
+  getHasUserRejectedTx as _getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 // You may throw an instance of this class when the user rejects a request in their wallet.
 // The benefit is that you can distinguish this error from other errors using didUserReject().
 export class UserRejectedRequestError extends Error {
@@ -18,50 +19,6 @@ export function toReadableError(errorText: string, error: unknown) {
   return new Error(`${errorText} 👺 ${error}`);
 }
 
-export async function extractUserFriendlyError(
-  error: unknown,
-  {
-    defaultError = "Please retry this action",
-    txResponse,
-    provider
-  }: {
-    defaultError?: string;
-    txResponse?: providers.TransactionResponse;
-    provider?: Provider;
-  } = {}
-): Promise<string> {
-  try {
-    if (!error || typeof error !== "object") {
-      return defaultError;
-    }
-    if (txResponse) {
-      const revertReason = await getRevertReason(
-        txResponse.hash,
-        "mainnet", // mumbai is not supported
-        txResponse.blockNumber,
-        provider
-      );
-      return revertReason ?? defaultError;
-    }
+export const extractUserFriendlyError = _extractUserFriendlyError;
 
-    const m = error.toString().match(/(?<=execution reverted: ).*/)?.[0];
-    const endIndex = m?.indexOf(`\\",`);
-    const details = m?.substring(
-      0,
-      endIndex === -1 ? m?.indexOf(`",`) : endIndex
-    );
-    return details ?? defaultError;
-  } catch (error) {
-    console.error("[extractUserFriendlyError]", error);
-    return defaultError;
-  }
-}
-
-export function getHasUserRejectedTx(error: unknown): boolean {
-  const hasUserRejectedTx =
-    !!error &&
-    typeof error === "object" &&
-    "code" in error &&
-    error.code === "ACTION_REJECTED";
-  return hasUserRejectedTx;
-}
+export const getHasUserRejectedTx = _getHasUserRejectedTx;
