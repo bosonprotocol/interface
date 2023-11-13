@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useField } from "formik";
+import { zIndex } from "lib/styles/zIndex";
 import ReactSelect, {
   ActionMeta,
   MultiValue,
@@ -61,7 +62,7 @@ const customStyles = (error: any): StylesConfig<any, boolean> => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   container: (provided: any, state: any) => ({
     ...provided,
-    // zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
+    zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
     position: "relative",
     width: "100%",
     minHeight: "25px"
