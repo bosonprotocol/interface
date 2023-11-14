@@ -4,6 +4,7 @@ import {
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import dayjs from "dayjs";
+import JSONfn from "json-fn";
 
 import { DateStep, getSmallerDateStep, getTimes, mergeThreads } from "./common";
 
@@ -15,135 +16,146 @@ const concurrency = 4;
  * @param
  * @returns
  */
-export async function getThread({
-  bosonXmtp,
-  threadId,
-  counterParty,
-  dateIndex,
-  dateStep,
-  dateStepValue,
-  now,
-  genesisDate,
-  onMessageReceived,
-  checkCustomCondition
-}: {
-  bosonXmtp: BosonXmtpClient;
-  threadId: ThreadId;
-  counterParty: string;
-  dateIndex: number;
-  dateStep: DateStep;
-  dateStepValue: number;
-  now: Date;
-  genesisDate: Date;
-  onMessageReceived: (currentThread: ThreadObject | null) => Promise<void>;
-  checkCustomCondition?: (mergedThread: ThreadObject | null) => boolean;
-}): Promise<{
-  thread: ThreadObject | null;
-  dateIndex: number;
-  isBeginning: boolean;
-}> {
-  checkDateStepValue(dateStepValue);
-  let iDateIndex = dateIndex;
+export default () => {
+  self.addEventListener("message", async (e) => {
+    console.log("getthreadworker", e);
+    if (!e) return;
+    const {
+      bosonXmtp: bosonXmtpString,
+      threadId,
+      counterParty,
+      dateIndex,
+      dateStep,
+      dateStepValue,
+      now,
+      genesisDate,
+      checkCustomCondition: checkCustomConditionString
+    } = e.data as {
+      bosonXmtp: string;
+      threadId: ThreadId;
+      counterParty: string;
+      dateIndex: number;
+      dateStep: DateStep;
+      dateStepValue: number;
+      now: Date;
+      genesisDate: Date;
+      checkCustomCondition?: string;
+    };
+    const getThread = JSONfn.parse(
+      bosonXmtpString
+    ) as BosonXmtpClient["getThread"];
+    const checkCustomCondition = JSONfn.parse(checkCustomConditionString) as (
+      mergedThread: ThreadObject | null
+    ) => boolean;
 
-  let threadsWithMessages: ThreadObject[] = [];
+    checkDateStepValue(dateStepValue);
+    let iDateIndex = dateIndex;
 
-  let isBeginning = false;
-  let anyMessage = false;
-  let failedTimesArray: Time[] = [];
-  let oldestThread: ThreadObject | null = null;
-  let customConditionMet = false;
-  do {
-    const failedTimes = getTimesInFailedPeriod(failedTimesArray)
-      .flat()
-      .filter((v): v is Time => !!v);
-    const timesArrayInRange: Time[] =
-      isBeginning || failedTimes.length || !window.navigator.onLine
-        ? []
-        : new Array(concurrency).fill(0).map((_, index) => {
-            return getTimes({
-              dateIndex: iDateIndex - index,
-              dateStep,
-              dateStepValue,
-              from: now,
-              genesisDate
+    let threadsWithMessages: ThreadObject[] = [];
+
+    let isBeginning = false;
+    let anyMessage = false;
+    let failedTimesArray: Time[] = [];
+    let oldestThread: ThreadObject | null = null;
+    let customConditionMet = false;
+    do {
+      const failedTimes = getTimesInFailedPeriod(failedTimesArray)
+        .flat()
+        .filter((v): v is Time => !!v);
+      const timesArrayInRange: Time[] =
+        isBeginning || failedTimes.length || !window.navigator.onLine
+          ? []
+          : new Array(concurrency).fill(0).map((_, index) => {
+              return getTimes({
+                dateIndex: iDateIndex - index,
+                dateStep,
+                dateStepValue,
+                from: now,
+                genesisDate
+              });
             });
+      const timesArray = [...timesArrayInRange, ...failedTimes];
+      failedTimesArray = [];
+      const promises = timesArray.map((times) => {
+        if (times.isBeginning) {
+          return null;
+        }
+        return () => {
+          return getThread(threadId, counterParty, {
+            startTime: times.startTime,
+            endTime: times.endTime
           });
-    const timesArray = [...timesArrayInRange, ...failedTimes];
-    failedTimesArray = [];
-    const promises = timesArray.map((times) => {
-      if (times.isBeginning) {
-        return null;
-      }
-      return () => {
-        return bosonXmtp.getThread(threadId, counterParty, {
-          startTime: times.startTime,
-          endTime: times.endTime
+        };
+      });
+      if (!promises.filter((v) => !!v).length) {
+        return returnPostMessage({
+          thread: null,
+          dateIndex: iDateIndex,
+          isBeginning
         });
-      };
-    });
-    if (!promises.filter((v) => !!v).length) {
-      return { thread: null, dateIndex: iDateIndex, isBeginning };
-    }
-    const settledThreads = await allSettled(
-      promises.map((p) => {
-        if (!p) {
-          return () => null;
-        }
-        return p;
-      })
-    );
-    const threads = settledThreads
-      .filter(
-        (result, index): result is PromiseFulfilledResult<ThreadObject> => {
-          const isFulfilled = result.status === "fulfilled";
-          if (!isFulfilled) {
-            failedTimesArray.push(timesArray[index]);
+      }
+      const settledThreads = await allSettled(
+        promises.map((p) => {
+          if (!p) {
+            return () => null;
           }
-          return isFulfilled;
-        }
-      )
-      .map((result) => {
-        const currentThread = result.value;
-        if (oldestThread) {
-          if (
-            oldestThread.messages[0]?.timestamp >
-            currentThread?.messages[0]?.timestamp
-          ) {
+          return p;
+        })
+      );
+      const threads = settledThreads
+        .filter(
+          (result, index): result is PromiseFulfilledResult<ThreadObject> => {
+            const isFulfilled = result.status === "fulfilled";
+            if (!isFulfilled) {
+              failedTimesArray.push(timesArray[index]);
+            }
+            return isFulfilled;
+          }
+        )
+        .map((result) => {
+          const currentThread = result.value;
+          if (oldestThread) {
+            if (
+              oldestThread.messages[0]?.timestamp >
+              currentThread?.messages[0]?.timestamp
+            ) {
+              oldestThread = currentThread;
+            }
+          } else {
             oldestThread = currentThread;
           }
-        } else {
-          oldestThread = currentThread;
+          return currentThread;
+        });
+      isBeginning =
+        isBeginning || !!timesArray.find((times) => times.isBeginning);
+
+      threadsWithMessages = threads.filter(
+        (thread) => !!thread?.messages.length
+      );
+      if (threadsWithMessages.length) {
+        const merged = mergeListOfThreads(threadsWithMessages);
+        onMessageReceivedPostMessage(merged);
+        if (checkCustomCondition) {
+          customConditionMet = checkCustomCondition(merged);
         }
-        return currentThread;
-      });
-    isBeginning =
-      isBeginning || !!timesArray.find((times) => times.isBeginning);
-
-    threadsWithMessages = threads.filter((thread) => !!thread?.messages.length);
-    if (threadsWithMessages.length) {
-      const merged = mergeListOfThreads(threadsWithMessages);
-      onMessageReceived(merged);
-      if (checkCustomCondition) {
-        customConditionMet = checkCustomCondition(merged);
       }
-    }
-    anyMessage = anyMessage || !!threadsWithMessages.length;
-    iDateIndex -= concurrency;
-  } while (
-    window.navigator.onLine &&
-    ((!customConditionMet &&
-      (failedTimesArray.length ||
-        (!failedTimesArray.length && !isBeginning))) ||
-      failedTimesArray.length ||
-      (!failedTimesArray.length && !isBeginning && !anyMessage))
-  );
-  return {
-    dateIndex: iDateIndex,
-    thread: oldestThread,
-    isBeginning
-  };
-}
-
+      anyMessage = anyMessage || !!threadsWithMessages.length;
+      iDateIndex -= concurrency;
+    } while (
+      window.navigator.onLine &&
+      ((!customConditionMet &&
+        (failedTimesArray.length ||
+          (!failedTimesArray.length && !isBeginning))) ||
+        failedTimesArray.length ||
+        (!failedTimesArray.length && !isBeginning && !anyMessage))
+    );
+    return returnPostMessage({
+      dateIndex: iDateIndex,
+      thread: oldestThread,
+      isBeginning
+    });
+  });
+};
 function mergeListOfThreads(
   threadsObjects: ThreadObject[]
 ): ThreadObject | null {
@@ -219,3 +231,27 @@ async function allSettled(promisesFns: (() => Promise<unknown> | null)[]) {
   await Promise.all(Array.from({ length: concurrency }, recurse));
   return results;
 }
+
+const returnPostMessage = ({
+  dateIndex,
+  thread,
+  isBeginning
+}: {
+  dateIndex: number;
+  thread: ThreadObject | null;
+  isBeginning: boolean;
+}): void => {
+  return postMessage({
+    type: "return",
+    dateIndex,
+    thread,
+    isBeginning
+  });
+};
+
+const onMessageReceivedPostMessage = (currentThread: ThreadObject | null) => {
+  return postMessage({
+    type: "onMessageReceived",
+    currentThread
+  });
+};

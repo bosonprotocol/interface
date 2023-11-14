@@ -106,6 +106,7 @@
     "graphql-request": "^4.3.0",
     "i": "^0.3.7",
     "jotai": "^1.13.1",
+    "json-fn": "^1.1.1",
     "localforage": "^1.10.0",
     "lodash.merge": "^4.6.2",
     "lodash.uniqby": "^4.7.0",

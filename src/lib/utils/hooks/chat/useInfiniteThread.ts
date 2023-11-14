@@ -3,8 +3,8 @@ import {
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
-import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 import { utils } from "ethers";
+import JSONfn from "json-fn";
 import { useCallback, useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
@@ -16,6 +16,8 @@ import {
   getTimes,
   mergeThreads
 } from "./common";
+import worker from "./getThreadWorker";
+import WorkerFactory from "./WorkerFactory";
 
 interface Props {
   dateStep: DateStep;
@@ -31,8 +33,6 @@ interface Props {
   }) => void;
   checkCustomCondition?: (mergedThread: ThreadObject | null) => boolean;
 }
-
-const createWorker = createWorkerFactory(() => import("./getThreadWorker"));
 
 export function useInfiniteThread({
   dateStep,
@@ -54,7 +54,7 @@ export function useInfiniteThread({
   appendMessages: (messages: ThreadObjectWithInfo["messages"]) => void;
   removePendingMessage: (uuid: string) => void;
 } {
-  const worker = useWorker(createWorker);
+  const threadWorker = WorkerFactory.build(worker);
   const [dateIndex, setDateIndex] = useState<{
     index: number;
     trigger: boolean;
@@ -103,68 +103,85 @@ export function useInfiniteThread({
 
     setError(null);
 
-    worker
-      .getThread({
-        bosonXmtp,
-        threadId,
-        counterParty: utils.getAddress(counterParty),
-        dateIndex: dateIndex.index,
-        dateStep,
-        dateStepValue,
-        now,
-        genesisDate,
-        checkCustomCondition,
-        onMessageReceived: async (threadObject) => {
-          if (threadObject) {
-            await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
+    threadWorker.postMessage({
+      bosonXmtp: JSONfn.stringify(bosonXmtp.getThread),
+      threadId,
+      counterParty: utils.getAddress(counterParty),
+      dateIndex: dateIndex.index,
+      dateStep,
+      dateStepValue,
+      now,
+      genesisDate,
+      checkCustomCondition: JSONfn.stringify(checkCustomCondition)
+    });
+    threadWorker.addEventListener("message", async (event) => {
+      const type = event.data.type as "return" | "onMessageReceived";
 
-            setThreadXmtp((prevThread) => {
-              const mergedThreads = mergeThreads(
-                prevThread ? prevThread : null,
-                threadObject
-              );
-              const newThreadXmtp = mergedThreads as ThreadObjectWithInfo;
-
-              return newThreadXmtp;
-            });
-          }
-        }
-      })
-      .then(
-        async ({
+      if (type === "return") {
+        const {
           thread: threadObject,
           dateIndex: iDateIndex,
           isBeginning
-        }) => {
-          setIsBeginningOfTimes(isBeginning);
-          setLastThreadXmtp(threadObject);
-          setDateIndex({
-            index: iDateIndex,
-            trigger: false
-          });
+        } = event.data as {
+          thread: ThreadObject | null;
+          dateIndex: number;
+          isBeginning: boolean;
+        };
+        setIsBeginningOfTimes(isBeginning);
+        setLastThreadXmtp(threadObject);
+        setDateIndex({
+          index: iDateIndex,
+          trigger: false
+        });
 
-          setThreadsLoading(false);
-          onFinishFetching({
-            isBeginningOfTimes: isBeginning,
-            isLoading: false,
-            isError: false,
-            lastData: threadObject
-          });
-        }
-      )
-      .catch((err) => {
-        setError(err);
         setThreadsLoading(false);
         onFinishFetching({
-          isLoading: false,
-          isError: !!err,
           isBeginningOfTimes: isBeginning,
-          lastData: lastThreadXmtp
+          isLoading: false,
+          isError: false,
+          lastData: threadObject
         });
+      } else if (type === "onMessageReceived") {
+        const { currentThread: threadObject } = event.data as {
+          currentThread: ThreadObject | null;
+        };
+        if (threadObject) {
+          await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
+
+          setThreadXmtp((prevThread) => {
+            const mergedThreads = mergeThreads(
+              prevThread ? prevThread : null,
+              threadObject
+            );
+            const newThreadXmtp = mergedThreads as ThreadObjectWithInfo;
+
+            return newThreadXmtp;
+          });
+        }
+      }
+    });
+    threadWorker.addEventListener("error", (event) => {
+      const err = event.error;
+      setError(err);
+      setThreadsLoading(false);
+      onFinishFetching({
+        isLoading: false,
+        isError: !!err,
+        isBeginningOfTimes: isBeginning,
+        lastData: lastThreadXmtp
       });
+    });
+    threadWorker.addEventListener("messageerror", (event) => {
+      console.error("MESSAGE ERROR event received", event);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId, address]);
 
+  useEffect(() => {
+    return () => {
+      threadWorker.terminate();
+    };
+  }, [threadWorker]);
   return {
     data: threadXmtp || null,
     isLoading: areThreadsLoading,

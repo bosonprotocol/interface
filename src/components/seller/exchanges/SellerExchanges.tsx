@@ -277,36 +277,36 @@ export default function SellerExchanges({
 
         const result = await new Promise<ThreadObject | null>(
           (resolve, reject) => {
-            let mergedThread: ThreadObject | null = null;
-            worker
-              .getThread({
-                bosonXmtp,
-                threadId,
-                counterParty: destinationAddress,
-                dateIndex: 0,
-                dateStep: "week",
-                dateStepValue: 1,
-                now: endTime,
-                genesisDate: startTime,
-                onMessageReceived: async (th) => {
-                  mergedThread = th;
-                },
-                checkCustomCondition: (mergedThread) => {
-                  if (!mergedThread) {
-                    return false;
-                  }
-                  return mergedThread.messages.some((message) => {
-                    const deliveryInfo = JSON.stringify(
-                      message?.data?.content?.value || ""
-                    );
-                    return deliveryInfo?.includes("DELIVERY ADDRESS");
-                  });
-                }
-              })
-              .then(() => {
-                resolve(mergedThread);
-              })
-              .catch(reject);
+            const mergedThread: ThreadObject | null = null;
+            // worker
+            //   .getThread({
+            //     bosonXmtp,
+            //     threadId,
+            //     counterParty: destinationAddress,
+            //     dateIndex: 0,
+            //     dateStep: "week",
+            //     dateStepValue: 1,
+            //     now: endTime,
+            //     genesisDate: startTime,
+            //     onMessageReceived: async (th) => {
+            //       mergedThread = th;
+            //     },
+            //     checkCustomCondition: (mergedThread) => {
+            //       if (!mergedThread) {
+            //         return false;
+            //       }
+            //       return mergedThread.messages.some((message) => {
+            //         const deliveryInfo = JSON.stringify(
+            //           message?.data?.content?.value || ""
+            //         );
+            //         return deliveryInfo?.includes("DELIVERY ADDRESS");
+            //       });
+            //     }
+            //   })
+            //   .then(() => {
+            //     resolve(mergedThread);
+            //   })
+            //   .catch(reject);
           }
         );
 
