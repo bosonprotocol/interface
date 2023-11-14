@@ -344,42 +344,6 @@ export default function Seller() {
                     {numProducts || 0}
                   </Typography>
                 </div>
-                <div>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
-                    margin="0"
-                    color={colors.darkGrey}
-                  >
-                    Sold
-                  </Typography>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
-                    margin="0"
-                    fontWeight="600"
-                  >
-                    {numExchanges || 0}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
-                    margin="0"
-                    color={colors.darkGrey}
-                  >
-                    Owners
-                  </Typography>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
-                    margin="0"
-                    fontWeight="600"
-                  >
-                    {owners}
-                  </Typography>
-                </div>
               </Grid>
             </Grid>
           </Grid>
