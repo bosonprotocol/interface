@@ -90,7 +90,7 @@ export default function CollectionsCard({ collection }: Props) {
   const [sellerId] = useState<string>(collection.id);
 
   const {
-    numbers: { exchanges: numExchanges, products: numProducts }
+    numbers: { products: numProducts }
   } = useSellerNumbers(sellerId);
 
   const { lens: lensProfiles, sellers: sellersData } = useCurrentSellers({

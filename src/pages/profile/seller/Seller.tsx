@@ -26,7 +26,6 @@ import {
 import useGetLensProfiles from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
-import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import useSellerNumbers from "../../../lib/utils/hooks/useSellerNumbers";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { getLensImageUrl } from "../../../lib/utils/images";
@@ -178,20 +177,7 @@ export default function Seller() {
   );
 
   const {
-    data: { exchanges } = {},
-    isError: isErrorSellerCalculation,
-    isLoading: isLoadingSellersCalculation
-  } = useSellerCalculations(
-    {
-      sellerId
-    },
-    {
-      enabled: !!sellerId
-    }
-  );
-
-  const {
-    numbers: { exchanges: numExchanges, products: numProducts },
+    numbers: { products: numProducts },
     products,
     isError: isErrorProducts,
     isLoading: isLoadingProducts
@@ -201,29 +187,11 @@ export default function Seller() {
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
   const isSellerExists = isMySeller ? !!sellersData.length : !!sellers?.length;
 
-  const owners = useMemo(() => {
-    return [
-      ...Array.from(
-        new Set((exchanges || []).map((exchange) => exchange.buyer.id))
-      )
-    ].length;
-  }, [exchanges]);
-
-  if (
-    isLoading ||
-    isLoadingSellers ||
-    isLoadingSellersCalculation ||
-    isLoadingProducts
-  ) {
+  if (isLoading || isLoadingSellers || isLoadingProducts) {
     return <Loading />;
   }
 
-  if (
-    isError ||
-    isErrorSellers ||
-    isErrorSellerCalculation ||
-    isErrorProducts
-  ) {
+  if (isError || isErrorSellers || isErrorProducts) {
     // TODO: NO FIGMA REPRESENTATION
     return (
       <BasicInfo>
