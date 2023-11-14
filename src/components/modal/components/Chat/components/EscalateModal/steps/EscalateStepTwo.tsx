@@ -6,14 +6,14 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, providers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
-import {
-  extractUserFriendlyError,
-  getHasUserRejectedTx
-} from "lib/utils/errors";
 import {
   useAccount,
   useSigner,

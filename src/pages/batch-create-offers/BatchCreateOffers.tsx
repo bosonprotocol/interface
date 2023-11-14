@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { TransactionResponse } from "@bosonprotocol/common";
 import { offers, Provider } from "@bosonprotocol/react-kit";
-import { providers } from "ethers";
-import { Form, Formik } from "formik";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
-} from "lib/utils/errors";
+} from "@bosonprotocol/react-kit";
+import { providers } from "ethers";
+import { Form, Formik } from "formik";
 import { useSigner } from "lib/utils/hooks/connection/connection";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";

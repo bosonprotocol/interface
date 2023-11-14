@@ -7,13 +7,13 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
-import * as Sentry from "@sentry/browser";
-import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumber, BigNumberish, providers, utils } from "ethers";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
-} from "lib/utils/errors";
+} from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { BigNumber, BigNumberish, providers, utils } from "ethers";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import {

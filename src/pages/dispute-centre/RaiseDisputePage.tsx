@@ -1,14 +1,14 @@
 import { MessageType } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish, providers } from "ethers";
 import { Formik } from "formik";
-import {
-  extractUserFriendlyError,
-  getHasUserRejectedTx
-} from "lib/utils/errors";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import { ArrowLeft } from "phosphor-react";

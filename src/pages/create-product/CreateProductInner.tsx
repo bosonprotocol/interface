@@ -33,13 +33,13 @@ import {
 } from "react-router-dom";
 import uuid from "react-uuid";
 dayjs.extend(localizedFormat);
-import { useConfigContext } from "components/config/ConfigContext";
-import { Token } from "components/convertion-rate/ConvertionRateContext";
-import { BigNumber, ethers, providers } from "ethers";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
-} from "lib/utils/errors";
+} from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
+import { Token } from "components/convertion-rate/ConvertionRateContext";
+import { BigNumber, ethers, providers } from "ethers";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 

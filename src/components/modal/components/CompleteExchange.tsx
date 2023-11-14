@@ -4,13 +4,13 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
-import * as Sentry from "@sentry/browser";
-import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumberish } from "ethers";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
-} from "lib/utils/errors";
+} from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { BigNumberish } from "ethers";
 import { poll } from "lib/utils/promises";
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";

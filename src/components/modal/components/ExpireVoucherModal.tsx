@@ -1,10 +1,10 @@
 import { ExpireButton, Provider, subgraph } from "@bosonprotocol/react-kit";
-import * as Sentry from "@sentry/browser";
-import { useConfigContext } from "components/config/ConfigContext";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
-} from "lib/utils/errors";
+} from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
 import { poll } from "lib/utils/promises";
 import qs from "query-string";
 import { useState } from "react";

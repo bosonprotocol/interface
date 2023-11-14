@@ -5,6 +5,7 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import { getHasUserRejectedTx } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
@@ -24,7 +25,6 @@ import {
   customisedExchangePolicy
 } from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
-import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { useOnCloseWidget } from "lib/utils/hooks/useOnCloseWidget";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";

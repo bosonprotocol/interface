@@ -1,7 +1,3 @@
-import {
-  extractUserFriendlyError as _extractUserFriendlyError,
-  getHasUserRejectedTx as _getHasUserRejectedTx
-} from "@bosonprotocol/react-kit";
 // You may throw an instance of this class when the user rejects a request in their wallet.
 // The benefit is that you can distinguish this error from other errors using didUserReject().
 export class UserRejectedRequestError extends Error {
@@ -18,7 +14,3 @@ export function toReadableError(errorText: string, error: unknown) {
   }
   return new Error(`${errorText} 👺 ${error}`);
 }
-
-export const extractUserFriendlyError = _extractUserFriendlyError;
-
-export const getHasUserRejectedTx = _getHasUserRejectedTx;

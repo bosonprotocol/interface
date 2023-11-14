@@ -1,12 +1,12 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
-import * as Sentry from "@sentry/browser";
-import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumber } from "ethers";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
-} from "lib/utils/errors";
+} from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { BigNumber } from "ethers";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import {
   getNumberWithDecimals,
