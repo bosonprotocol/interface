@@ -26,7 +26,6 @@ import {
 import useGetLensProfiles from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
-import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import useSellerNumbers from "../../../lib/utils/hooks/useSellerNumbers";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { getLensImageUrl } from "../../../lib/utils/images";
@@ -178,20 +177,7 @@ export default function Seller() {
   );
 
   const {
-    data: { exchanges } = {},
-    isError: isErrorSellerCalculation,
-    isLoading: isLoadingSellersCalculation
-  } = useSellerCalculations(
-    {
-      sellerId
-    },
-    {
-      enabled: !!sellerId
-    }
-  );
-
-  const {
-    numbers: { exchanges: numExchanges, products: numProducts },
+    numbers: { products: numProducts },
     products,
     isError: isErrorProducts,
     isLoading: isLoadingProducts
@@ -201,29 +187,11 @@ export default function Seller() {
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
   const isSellerExists = isMySeller ? !!sellersData.length : !!sellers?.length;
 
-  const owners = useMemo(() => {
-    return [
-      ...Array.from(
-        new Set((exchanges || []).map((exchange) => exchange.buyer.id))
-      )
-    ].length;
-  }, [exchanges]);
-
-  if (
-    isLoading ||
-    isLoadingSellers ||
-    isLoadingSellersCalculation ||
-    isLoadingProducts
-  ) {
+  if (isLoading || isLoadingSellers || isLoadingProducts) {
     return <Loading />;
   }
 
-  if (
-    isError ||
-    isErrorSellers ||
-    isErrorSellerCalculation ||
-    isErrorProducts
-  ) {
+  if (isError || isErrorSellers || isErrorProducts) {
     // TODO: NO FIGMA REPRESENTATION
     return (
       <BasicInfo>
@@ -342,42 +310,6 @@ export default function Seller() {
                     fontWeight="600"
                   >
                     {numProducts || 0}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
-                    margin="0"
-                    color={colors.darkGrey}
-                  >
-                    Sold
-                  </Typography>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
-                    margin="0"
-                    fontWeight="600"
-                  >
-                    {numExchanges || 0}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
-                    margin="0"
-                    color={colors.darkGrey}
-                  >
-                    Owners
-                  </Typography>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
-                    margin="0"
-                    fontWeight="600"
-                  >
-                    {owners}
                   </Typography>
                 </div>
               </Grid>

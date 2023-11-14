@@ -123,7 +123,7 @@ export default function Tabs({
     const tabsData: TabsData[] = [
       {
         id: "offers",
-        title: "Offers",
+        title: "Products",
         content: (
           <Offers
             products={products}

@@ -93,7 +93,7 @@ export default [
       ...base.app,
       fluidHeader: true,
       withLayout: false,
-      withFooter: false
+      withFooter: true
     },
     role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
   },
@@ -115,7 +115,7 @@ export default [
     app: {
       ...base.app,
       withLayout: false,
-      withFooter: false,
+      withFooter: true,
       fluidHeader: true
     },
     role: [UserRoles.Seller, UserRoles.DisputeResolver]
