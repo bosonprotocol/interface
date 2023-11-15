@@ -5,22 +5,28 @@ const offerGraphQl = gql`
     id
     createdAt
     price
-    metadataHash
     sellerDeposit
-    disputePeriodDuration
-    resolutionPeriodDuration
-    metadataUri
+    protocolFee
+    agentFee
+    agentId
     buyerCancelPenalty
     quantityAvailable
     quantityInitial
     validFromDate
     validUntilDate
-    voidedAt
-    voided
-    collectionIndex
     voucherRedeemableFromDate
     voucherRedeemableUntilDate
+    disputePeriodDuration
     voucherValidDuration
+    resolutionPeriodDuration
+    metadataUri
+    metadataHash
+    voided
+    voidedAt
+    collectionIndex
+    disputeResolverId
+    numberOfCommits
+    numberOfRedemptions
     condition {
       id
       method
@@ -56,6 +62,13 @@ const offerGraphQl = gql`
       decimals
       name
       symbol
+    }
+    disputeResolutionTerms {
+      id
+      disputeResolverId
+      escalationResponsePeriod
+      feeAmount
+      buyerEscalationDeposit
     }
     metadata {
       id
@@ -190,7 +203,6 @@ export const getBuildGetOffersQuery =
     offerCurationList: boolean;
     voided: boolean;
   }) => {
-    // TODO: BP421 - Config dispute resolver value
     const disputeResolverId = defaultDisputeResolverId;
 
     return gql`

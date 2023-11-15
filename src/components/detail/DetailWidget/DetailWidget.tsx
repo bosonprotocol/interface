@@ -1171,7 +1171,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }}
                 onClick={() => {
                   showModal("REDEEMABLE_NFT_TERMS", {
-                    offerData: offer
+                    offerData: offer.id ? undefined : offer,
+                    offerId: offer.id ? offer.id : undefined
                   });
                 }}
               >

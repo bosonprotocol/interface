@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/browser";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 
-import { ProgressStatus } from "../../types/progressStatus";
 import { useCoreSDK } from "../useCoreSdk";
 import { useIpfsStorage } from "./useIpfsStorage";
 
@@ -12,13 +11,21 @@ type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 type AdditionalOfferMetadata = offers.AdditionalOfferMetadata;
 type ProductV1MetadataFields = subgraph.ProductV1MetadataEntity;
 
+enum ExtendedProgressStatus {
+  IDLE = "idle",
+  LOADING = "loading",
+  SUCCESS = "success",
+  ERROR = "error",
+  TRY_WITH_OFFER_ID = "try_with_offer_id"
+}
+
 export function useRenderTemplate(
   offerId: string | undefined,
   offerData: OfferFieldsFragment | undefined,
   templateUrl: string
 ) {
-  const [renderStatus, setRenderStatus] = useState<ProgressStatus>(
-    ProgressStatus.IDLE
+  const [renderStatus, setRenderStatus] = useState<ExtendedProgressStatus>(
+    ExtendedProgressStatus.IDLE
   );
   const [renderResult, setRenderResult] = useState<string>("");
   const ipfsMetadataStorage = useIpfsStorage();
@@ -26,7 +33,7 @@ export function useRenderTemplate(
 
   useEffect(() => {
     async function fetchTemplate() {
-      setRenderStatus(ProgressStatus.LOADING);
+      setRenderStatus(ExtendedProgressStatus.LOADING);
       if (ipfsMetadataStorage && coreSDK) {
         try {
           const rawTemplate = await ipfsMetadataStorage.get<Uint8Array>(
@@ -35,8 +42,12 @@ export function useRenderTemplate(
           );
           const template = Buffer.from(rawTemplate).toString("utf-8");
           let theOfferData = offerData;
-          // If the offerData is not specified, retrieve the data from offerId
-          if (!offerData) {
+          if (
+            offerData?.id &&
+            renderStatus === ExtendedProgressStatus.TRY_WITH_OFFER_ID
+          ) {
+            theOfferData = await coreSDK.getOfferById(offerData["id"]);
+          } else if (!offerData) {
             if (!offerId) {
               throw new Error("OfferData or OfferId needs to be defined");
             }
@@ -47,23 +58,36 @@ export function useRenderTemplate(
           const { offerArgs, offerMetadata } = buildOfferData(
             theOfferData as OfferFieldsFragment
           );
-          const result = await coreSDK.renderContractualAgreement(
-            template,
-            offerArgs,
-            offerMetadata
-          );
-          setRenderResult(result);
-          setRenderStatus(ProgressStatus.SUCCESS);
+          try {
+            const result = await coreSDK.renderContractualAgreement(
+              template,
+              offerArgs,
+              offerMetadata
+            );
+            setRenderResult(result);
+            setRenderStatus(ExtendedProgressStatus.SUCCESS);
+          } catch (innerError) {
+            if (
+              innerError instanceof offers.InvalidOfferDataError &&
+              offerData?.id &&
+              !offerId &&
+              renderStatus !== ExtendedProgressStatus.TRY_WITH_OFFER_ID
+            ) {
+              setRenderStatus(ExtendedProgressStatus.TRY_WITH_OFFER_ID); // if using the offerData we got an error, we'll fetch the offer and try again
+            } else {
+              throw innerError;
+            }
+          }
         } catch (error) {
           console.error(error);
           Sentry.captureException(error);
-          setRenderStatus(ProgressStatus.ERROR);
+          setRenderStatus(ExtendedProgressStatus.ERROR);
         }
       }
     }
     if (
-      renderStatus !== ProgressStatus.SUCCESS &&
-      renderStatus !== ProgressStatus.ERROR
+      renderStatus === ExtendedProgressStatus.IDLE ||
+      renderStatus === ExtendedProgressStatus.TRY_WITH_OFFER_ID
     ) {
       fetchTemplate();
     }
