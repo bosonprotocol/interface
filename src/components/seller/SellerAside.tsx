@@ -16,7 +16,6 @@ const Aside = styled.aside`
   background: ${colors.white};
   ul {
     width: 14.375rem;
-    position: fixed;
     list-style: none;
     padding: 0;
     margin: 0;
