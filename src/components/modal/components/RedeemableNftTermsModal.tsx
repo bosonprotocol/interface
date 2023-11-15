@@ -2,10 +2,16 @@ import { subgraph } from "@bosonprotocol/react-kit";
 
 import License from "../../license/License";
 
-interface Props {
-  offerData: subgraph.OfferFieldsFragment;
-}
+type Props =
+  | {
+      offerData: subgraph.OfferFieldsFragment;
+      offerId: undefined;
+    }
+  | {
+      offerData: undefined;
+      offerId: subgraph.OfferFieldsFragment["id"];
+    };
 
-export function RedeemableNftTermsModal({ offerData }: Props) {
-  return <License offerId={undefined} offerData={offerData}></License>;
+export function RedeemableNftTermsModal({ offerData, offerId }: Props) {
+  return <License offerId={offerId} offerData={offerData}></License>;
 }
