@@ -1,3 +1,4 @@
+import { Container as OuterContainer } from "components/app/index.styles";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { WarningCircle } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -22,6 +23,9 @@ import { chatUrl } from "./const";
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
     height: 100%;
+  }
+  #root > ${OuterContainer} {
+    overflow: auto;
   }
   :root {
     --textColor: unset;

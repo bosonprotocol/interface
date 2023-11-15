@@ -8,6 +8,7 @@ export const zIndex = {
   ChatSeparator: 9,
   Carousel: 10,
   LandingTitle: 20,
+  Footer: 30,
   Select: 40,
   Calendar: 50,
   Header: 1000,
