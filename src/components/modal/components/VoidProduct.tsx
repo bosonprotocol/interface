@@ -5,10 +5,13 @@ import {
   subgraph,
   VoidButton
 } from "@bosonprotocol/react-kit";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -319,7 +322,7 @@ export default function VoidProduct({
       </Grid>
       <Break />
       {offer && <VoidProductOffer offer={offer} single />}
-      {offers && offers.length && (
+      {offers && !!offers.length && (
         <OverflowOfferWrapper>
           {offers?.map(
             (o: Offer | null) =>
@@ -342,7 +345,7 @@ export default function VoidProduct({
                 metaTx: config.metaTx
               }}
               offerId={offerId || 0}
-              onError={(error) => {
+              onError={async (error, { txResponse }) => {
                 console.error("onError", error);
                 const hasUserRejectedTx = getHasUserRejectedTx(error);
                 if (hasUserRejectedTx) {
@@ -350,7 +353,14 @@ export default function VoidProduct({
                 } else {
                   Sentry.captureException(error);
                   showModal("TRANSACTION_FAILED", {
-                    errorMessage: "Something went wrong"
+                    errorMessage: "Something went wrong",
+                    detailedErrorMessage: await extractUserFriendlyError(
+                      error,
+                      {
+                        txResponse,
+                        provider: signer?.provider as Provider
+                      }
+                    )
                   });
                 }
               }}
@@ -377,7 +387,7 @@ export default function VoidProduct({
           </VoidButtonWrapper>
         </Grid>
       )}
-      {offers && offers.length && (
+      {offers && !!offers.length && (
         <Grid justifyContent="center">
           <StyledBatchVoidButton
             variant="accentInverted"

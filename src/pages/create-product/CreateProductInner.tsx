@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { TransactionResponse } from "@bosonprotocol/common";
 import {
   CoreSDK,
   MetadataType,
   offers,
   productV1,
+  Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
@@ -31,11 +33,14 @@ import {
 } from "react-router-dom";
 import uuid from "react-uuid";
 dayjs.extend(localizedFormat);
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
-import { BigNumber, ethers } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import { BigNumber, ethers, providers } from "ethers";
+import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 
 import { FileProps } from "../../components/form/Upload/types";
@@ -349,6 +354,7 @@ function CreateProductInner({
   setCreatedOffersIds,
   isDraftModalClosed
 }: Props) {
+  const signer = useSigner();
   const { config } = useConfigContext();
   const history = useNavigate();
   const location = useLocation();
@@ -586,6 +592,7 @@ function CreateProductInner({
   };
 
   const handleSendData = async (values: CreateProductForm) => {
+    let txResponse: TransactionResponse | undefined;
     try {
       showModal("PREPARING_TRANSACTION", undefined, "auto", undefined, {
         xs: "400px"
@@ -899,7 +906,7 @@ function CreateProductInner({
         offersToCreate.push(offerData);
       }
       const isTokenGated = productType?.tokenGatedOffer === "true";
-      await createOffers({
+      const result = await createOffers({
         sellerToCreate: null,
         offersToCreate,
         tokenGatedInfo: isTokenGated ? values.tokenGating : null,
@@ -939,6 +946,7 @@ function CreateProductInner({
           ));
         }
       });
+      txResponse = result?.txResponse;
     } catch (error: any) {
       console.error("error->", error.errors ?? error);
       const hasUserRejectedTx = getHasUserRejectedTx(error);
@@ -950,7 +958,11 @@ function CreateProductInner({
         showModal(
           "TRANSACTION_FAILED",
           {
-            errorMessage: "Something went wrong"
+            errorMessage: "Something went wrong",
+            detailedErrorMessage: await extractUserFriendlyError(error, {
+              txResponse: txResponse as providers.TransactionResponse,
+              provider: signer?.provider as Provider
+            })
           },
           "auto",
           undefined,

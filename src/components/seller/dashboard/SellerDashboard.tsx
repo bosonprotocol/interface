@@ -75,9 +75,8 @@ const calcRevenue = (
     (acc, e) => (e && e !== null ? (acc += Number(e.converted)) : acc),
     0
   );
-  const currency = calc[0]?.currency?.symbol || "$";
 
-  return `${currency} ${price}`;
+  return price;
 };
 const filterItems = (exchanges: Exchange[] | undefined, type: string) => {
   if (!exchanges) {

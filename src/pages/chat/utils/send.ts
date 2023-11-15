@@ -9,8 +9,8 @@ import {
   ThreadId,
   version
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { getHasUserRejectedTx } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
 
 import { FileWithEncodedData } from "../../../lib/utils/files";
 import { ICON_KEYS, StringIconTypes } from "../components/conversation/const";

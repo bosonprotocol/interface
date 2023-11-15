@@ -24,11 +24,11 @@ Each deployment is hosted on IPFS with a custom domain.
 
 For ease of use, each environment has a DNS name that always points to the latest IPFS hash: 
 
-| Env          | Network   | Endpoint                                                        |
+| Env          | Networks   | Endpoint                                                        |
 | ------------ | --------- | --------------------------------------------------------------- |
-| `testing`    | `mumbai` | https://interface-test.on.fleek.co/                             |
-| `staging`    | `mumbai` | https://interface-staging.on.fleek.co/                          |
-| `production` | `polygon` | https://dapp-interface-production.on.fleek.co/                                                           |
+| testing    | mumbai, goerli | https://interface-test.on.fleek.co/                             |
+| staging    | mumbai, goerli | https://interface-staging.on.fleek.co/                          |
+| production | polygon, ethereum | https://dapp-interface-production.on.fleek.co/                                                           |
 
 ## Local development
 

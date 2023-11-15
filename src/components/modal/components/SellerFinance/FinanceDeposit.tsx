@@ -1,12 +1,12 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
-import * as Sentry from "@sentry/browser";
-import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumber } from "ethers";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
-} from "lib/utils/errors";
+} from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
+import { useConfigContext } from "components/config/ConfigContext";
+import { BigNumber } from "ethers";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { getNumberWithoutDecimals } from "lib/utils/number";
 import { useState } from "react";
@@ -183,7 +183,7 @@ export default function FinanceDeposit({
             setIsBeingDeposit(false);
             hideModal();
           }}
-          onError={(error) => {
+          onError={async (error, { txResponse }) => {
             console.error("onError", error);
             const hasUserRejectedTx = getHasUserRejectedTx(error);
             if (hasUserRejectedTx) {
@@ -192,7 +192,10 @@ export default function FinanceDeposit({
               Sentry.captureException(error);
               showModal("TRANSACTION_FAILED", {
                 errorMessage: "Something went wrong",
-                detailedErrorMessage: extractUserFriendlyError(error)
+                detailedErrorMessage: await extractUserFriendlyError(error, {
+                  txResponse,
+                  provider: signer?.provider as Provider
+                })
               });
             }
             setDepositError(error);
