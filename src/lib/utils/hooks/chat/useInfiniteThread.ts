@@ -5,7 +5,7 @@ import {
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 import { utils } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
 import { ThreadObjectWithInfo } from "../../../../pages/chat/types";
@@ -54,6 +54,7 @@ export function useInfiniteThread({
   appendMessages: (messages: ThreadObjectWithInfo["messages"]) => void;
   removePendingMessage: (uuid: string) => void;
 } {
+  const stopRef = useRef<boolean>(false);
   const worker = useWorker(createWorker);
   const [dateIndex, setDateIndex] = useState<{
     index: number;
@@ -128,7 +129,8 @@ export function useInfiniteThread({
               return newThreadXmtp;
             });
           }
-        }
+        },
+        stopRef
       })
       .then(
         async ({
@@ -164,7 +166,12 @@ export function useInfiniteThread({
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId, address]);
-
+  useEffect(() => {
+    stopRef.current = false;
+    return () => {
+      stopRef.current = true;
+    };
+  }, []);
   return {
     data: threadXmtp || null,
     isLoading: areThreadsLoading,
