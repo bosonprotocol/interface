@@ -21,6 +21,7 @@ import {
   OPTIONS_LENGTH,
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
+  ProductTypeValues,
   TOKEN_CRITERIA,
   TOKEN_TYPES,
   TokenTypes
@@ -355,7 +356,42 @@ export const getTokenGatingValidationSchema = ({
         }),
       maxCommits: Yup.string()
         .required(validationMessage.required)
-        .matches(/^\+?[1-9]\d*$/, "Value must greater than 0"),
+        .matches(/^\+?[1-9]\d*$/, "Value must greater than 0")
+        .test("notGreaterThan_initialQuantity", function (value, context) {
+          if (value && Number.isInteger(Number.parseInt(value))) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const formValues = context.from[1].value;
+            const isOneVariant =
+              formValues.productType.productVariant ===
+              ProductTypeValues.oneItemType;
+            const variantsQuantity = isOneVariant
+              ? 0
+              : (
+                  formValues.productVariants
+                    .variants as Yup.InferType<ProductVariantsValidationSchema>["productVariants"]["variants"]
+                ).reduce((acum, current) => {
+                  acum = acum + current.quantity;
+                  return acum;
+                }, 0);
+            const quantity = isOneVariant
+              ? formValues.coreTermsOfSale.quantity
+              : variantsQuantity;
+
+            const asNumber = Number.parseInt(value);
+            const isGreater = asNumber > quantity;
+            if (isGreater) {
+              throw this.createError({
+                path: this.path,
+                message: isOneVariant
+                  ? `This is greater than quantity (${formValues.coreTermsOfSale.quantity})`
+                  : `This is greater than adding up the quantity of all variants (${variantsQuantity})`
+              });
+            }
+            return true;
+          }
+          return false;
+        }),
       tokenType: Yup.object({
         value: Yup.string(),
         label: Yup.string()
