@@ -13,13 +13,12 @@ import { saveItemInStorage } from "../../../lib/utils/hooks/localstorage/useLoca
 import { SellerExchangeProps } from "../../../lib/utils/hooks/useSellerDeposit";
 import { WithSellerDataProps } from "./WithSellerData";
 
+const THRESHOLD = 15;
 export default function useOffersBacked({
   funds: fundsData,
   exchangesTokens: exchangesTokensData,
   sellerDeposit: sellerDepositData
 }: Pick<WithSellerDataProps, "funds" | "exchangesTokens" | "sellerDeposit">) {
-  const THRESHOLD = 15;
-
   const { funds } = fundsData;
   const { data: exchangesTokens } = exchangesTokensData;
   const { data: sellersData } = sellerDepositData;
@@ -101,7 +100,7 @@ export default function useOffersBacked({
         result = Number(
           ((Number(fund.availableAmount) / Number(backedFund)) * 100).toFixed(2)
         );
-        result = Number.isNaN(result) ? 0 : result;
+        result = Number.isNaN(result) ? 100 : result;
       }
       return result;
     },
