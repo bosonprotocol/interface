@@ -64,7 +64,7 @@ const TagWrapper = styled.div`
   padding: 0.5em 0.75em;
   font-size: 0.75rem;
   font-weight: 600;
-  white-space: pre;
+  white-space: pre-line;
 `;
 
 const VoidButton = styled(BosonButton)`

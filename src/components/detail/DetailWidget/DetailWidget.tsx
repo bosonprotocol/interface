@@ -1,6 +1,7 @@
 import {
   CommitButton,
   exchanges,
+  extractUserFriendlyError,
   offers,
   Provider,
   subgraph
@@ -18,6 +19,7 @@ import {
   constants,
   ContractTransaction,
   ethers,
+  providers,
   utils
 } from "ethers";
 import {
@@ -804,7 +806,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     setCommitType(null);
     removePendingTransaction("offerId", offer.id);
   };
-  const onCommitError = (error: Error) => {
+  const onCommitError = async (
+    error: Error,
+    { txResponse }: { txResponse: providers.TransactionResponse | undefined }
+  ) => {
     console.error("onError", error);
     setIsLoading(false);
     const hasUserRejectedTx = getHasUserRejectedTx(error);
@@ -814,7 +819,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       Sentry.captureException(error);
       showModal(modalTypes.DETAIL_WIDGET, {
         title: "An error occurred",
-        message: error.message,
+        message: await extractUserFriendlyError(error, {
+          txResponse,
+          provider: signer?.provider
+        }),
         type: "ERROR",
         state: "Committed",
         id: undefined,
@@ -843,6 +851,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       ) {
         return;
       }
+      let txResponse: providers.TransactionResponse | undefined = undefined;
       try {
         onCommitPendingSignature();
         const proxyContract = BosonSnapshotGate__factory.connect(
@@ -882,6 +891,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 : "0"
           }
         );
+        txResponse = tx;
         onCommitPendingTransaction(tx.hash, false);
         const receipt = await tx.wait();
         const exchangeId = coreSDK.getCommittedExchangeIdFromLogs(
@@ -889,7 +899,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         ) as string;
         onCommitSuccess(receipt, { exchangeId });
       } catch (error) {
-        onCommitError(error as Error);
+        onCommitError(error as Error, { txResponse });
       }
     };
     return (
