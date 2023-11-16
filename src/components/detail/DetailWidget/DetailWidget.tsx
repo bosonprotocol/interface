@@ -481,8 +481,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       ? "Redeem"
       : titleCase(exchangeStatus || "Unsupported");
   const { balance: exchangeTokenBalance, loading: balanceLoading } =
-    useExchangeTokenBalance(offer.exchangeToken);
-
+    useExchangeTokenBalance(offer.exchangeToken, {
+      enabled: offer.price !== "0"
+    });
   const {
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
