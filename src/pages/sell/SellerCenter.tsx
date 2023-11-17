@@ -81,25 +81,6 @@ function SellerCenterWrapper() {
     }
   }, [isSuccess, sellerIds]);
   useEffect(() => {
-    if (address && !sellerIds.length) {
-      showModal("ACCOUNT_CREATION", {
-        onCloseCreateProfile: async () => {
-          setIsSellerLoading(true);
-          try {
-            await refetchSellerPolling({
-              refetch,
-              attempts: 150,
-              msBetweenAttemps: 1000
-            });
-          } finally {
-            setIsSellerLoading(false);
-          }
-        }
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, sellerIds.length]);
-  useEffect(() => {
     const hasSeller = address && !!sellerIds.length;
     const didDisconnect = !address;
     if (
@@ -136,17 +117,42 @@ function SellerCenterWrapper() {
               : "Please connect your wallet"}
           </Typography>
           {address && isSellerLoading && <Spinner />}
-          <Button
-            variant="accentInverted"
-            onClick={() => {
-              navigate({
-                pathname: BosonRoutes.Root
-              });
-            }}
-          >
-            Back home
-            <House size={16} />
-          </Button>
+          <Grid justifyContent="center" gap="1rem">
+            {address && !isSellerLoading && (
+              <Button
+                variant="primaryFill"
+                onClick={() => {
+                  showModal("ACCOUNT_CREATION", {
+                    onCloseCreateProfile: async () => {
+                      setIsSellerLoading(true);
+                      try {
+                        await refetchSellerPolling({
+                          refetch,
+                          attempts: 150,
+                          msBetweenAttemps: 1000
+                        });
+                      } finally {
+                        setIsSellerLoading(false);
+                      }
+                    }
+                  });
+                }}
+              >
+                Create seller account
+              </Button>
+            )}
+            <Button
+              variant="accentInverted"
+              onClick={() => {
+                navigate({
+                  pathname: BosonRoutes.Root
+                });
+              }}
+            >
+              Back home
+              <House size={16} />
+            </Button>
+          </Grid>
         </Grid>
       </Wrapper>
     );
