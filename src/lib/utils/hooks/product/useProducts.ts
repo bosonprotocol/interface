@@ -205,21 +205,21 @@ export default function useProducts(
                 low: {
                   value:
                     orderBy(offers, "price", "asc").find(
-                      (n) => n?.price !== null && Number(n?.price || 0) !== 0
+                      (n) => n?.price !== null
                     )?.price || null,
                   exchangeToken:
                     orderBy(offers, "price", "asc").find(
-                      (n) => n?.price !== null && Number(n?.price || 0) !== 0
+                      (n) => n?.price !== null
                     )?.exchangeToken || null
                 },
                 high: {
                   value:
                     orderBy(offers, "price", "desc").find(
-                      (n) => n?.price !== null && Number(n?.price || 0) !== 0
+                      (n) => n?.price !== null
                     )?.price || null,
                   exchangeToken:
                     orderBy(offers, "price", "desc").find(
-                      (n) => n?.price !== null && Number(n?.price || 0) !== 0
+                      (n) => n?.price !== null
                     )?.exchangeToken || null
                 }
               },
