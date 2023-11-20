@@ -1,5 +1,7 @@
 import { hooks } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import { ConnectWalletErrorMessage } from "components/error/ConnectWalletErrorMessage";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useAppSelector } from "state/hooks";
 import styled from "styled-components";
@@ -7,7 +9,6 @@ import styled from "styled-components";
 import { Spinner } from "../../../components/loading/Spinner";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
-import NotFound from "../../not-found/NotFound";
 import Buyer from "../../profile/buyer/Buyer";
 
 const SpinnerWrapper = styled.div`
@@ -46,10 +47,16 @@ export default function PrivateAccountContainer() {
   }
 
   if (!address) {
-    return <div>Please connect your wallet</div>;
+    return <ConnectWalletErrorMessage />;
   }
+
   if (!buyerId && isSuccess) {
-    return <NotFound />;
+    return (
+      <EmptyErrorMessage
+        title="You have no exchanges yet"
+        message="Commit to some products to see your chat conversations"
+      />
+    );
   }
 
   return <Buyer buyerId={buyerId} />;

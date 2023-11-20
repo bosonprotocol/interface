@@ -1,4 +1,6 @@
 import * as Sentry from "@sentry/browser";
+import { ConnectWalletErrorMessage } from "components/error/ConnectWalletErrorMessage";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { Form, Formik } from "formik";
 import { BosonRoutes } from "lib/routing/routes";
 import {
@@ -11,12 +13,10 @@ import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import * as Yup from "yup";
 
-import ConnectButton from "../../components/header/ConnectButton";
 import Layout from "../../components/layout/Layout";
 import { useRemoveLandingQueryParams } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
 import { getSellerCenterPath } from "../../components/seller/paths";
-import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import {
@@ -64,11 +64,7 @@ export default function CustomStore() {
   const { mutateAsync: signMessage } = useSignMessage();
 
   if (!address) {
-    return (
-      <Grid justifyContent="flex-start" alignItems="center" gap="1rem">
-        <ConnectButton /> Please connect your wallet
-      </Grid>
-    );
+    return <ConnectWalletErrorMessage />;
   }
   if (isLoading) {
     return <Loading />;
@@ -76,9 +72,10 @@ export default function CustomStore() {
 
   if (!seller) {
     return (
-      <div data-testid="notFound">
-        No seller account found for the current wallet.
-      </div>
+      <EmptyErrorMessage
+        title="No account"
+        message="No seller account found for the current wallet."
+      />
     );
   }
 

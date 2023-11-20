@@ -1,9 +1,10 @@
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { Suspense } from "react";
 
 import App from "../components/app";
-import Loading from "../components/ui/Loading";
 import GuardedRoute from "./GuardedRoute";
-import { baseAppProps, IRoutes } from "./routes";
+import { baseAppProps } from "./routes";
+import { IRoutes } from "./types";
 import useUserRoles from "./useUserRoles";
 
 export default function SuspenseRoute({
@@ -20,7 +21,7 @@ export default function SuspenseRoute({
         <Suspense
           fallback={
             <App {...baseAppProps}>
-              <Loading />
+              <LoadingMessage />
             </App>
           }
         >
@@ -36,7 +37,7 @@ export default function SuspenseRoute({
     <Suspense
       fallback={
         <App {...baseAppProps}>
-          <Loading />
+          <LoadingMessage />
         </App>
       }
     >

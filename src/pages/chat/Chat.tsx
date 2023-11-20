@@ -1,11 +1,12 @@
 import { Container as OuterContainer } from "components/app/index.styles";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import ConnectWallet from "components/header/web3Status";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { WarningCircle } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
-import frame from "../../assets/frame.png";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
@@ -267,15 +268,16 @@ export default function Chat() {
             justifyContent="center"
             alignItems="center"
             flexDirection="column"
-            gap="1rem"
           >
-            <Typography $fontSize="2rem">
-              {address
-                ? "You have no exchanges yet"
-                : "Please connect your wallet to display your messages"}
-            </Typography>
-
-            <img src={frame} alt="no exchanges images" />
+            <EmptyErrorMessage
+              message={
+                address
+                  ? "Commit to some products to see your chat conversations"
+                  : "Please connect your wallet to display your messages"
+              }
+              title={address ? "You have no exchanges yet" : "Connect wallet"}
+              cta={address ? undefined : <ConnectWallet />}
+            />
           </Grid>
         )}
       </Container>

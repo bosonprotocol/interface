@@ -7,6 +7,8 @@ import {
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import { ConnectWalletErrorMessage } from "components/error/ConnectWalletErrorMessage";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { BigNumberish, providers } from "ethers";
 import { Formik } from "formik";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
@@ -166,7 +168,7 @@ function RaiseDisputePage() {
   };
 
   if (!address) {
-    return <p>Please connect your wallet</p>;
+    return <ConnectWalletErrorMessage />;
   }
 
   if (!exchange && isLoading) {
@@ -174,18 +176,33 @@ function RaiseDisputePage() {
   }
 
   if (!exchange || isError) {
-    return <p>There has been an error while retrieving this exchange</p>;
+    return (
+      <EmptyErrorMessage
+        title="An error occurred"
+        message="There has been an error while retrieving this exchange"
+      />
+    );
   }
 
   if (
     !buyerId ||
     exchange.buyer.wallet.toLowerCase() !== address?.toLowerCase()
   ) {
-    return <p>You have to be the buyer of this exchange to raise a dispute</p>;
+    return (
+      <EmptyErrorMessage
+        title="Wrong account"
+        message="You have to be the buyer of this exchange to raise a dispute"
+      />
+    );
   }
 
   if (exchange.disputed) {
-    return <p>This exchange has already been disputed</p>;
+    return (
+      <EmptyErrorMessage
+        title="Disputed"
+        message="This exchange has already been disputed"
+      />
+    );
   }
 
   return (

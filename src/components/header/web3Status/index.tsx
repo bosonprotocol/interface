@@ -234,7 +234,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   );
 }
 
-export default memo(function Web3Status({
+export const ConnectWallet = memo(function Web3Status({
   showOnlyIcon
 }: {
   showOnlyIcon?: boolean;
@@ -245,3 +245,5 @@ export default memo(function Web3Status({
     </div>
   );
 });
+
+export default ConnectWallet;
