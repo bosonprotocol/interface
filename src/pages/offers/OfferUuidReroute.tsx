@@ -1,3 +1,4 @@
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { useParams } from "react-router-dom";
 
 import Navigate from "../../components/customNavigation/Navigate";
@@ -12,7 +13,12 @@ export default function OfferUuidReroute() {
   const { offerId } = useOfferByUuid(uuid, sellerId);
 
   if (!offerId) {
-    return <div data-testid="notFound">This offer does not exist</div>;
+    return (
+      <EmptyErrorMessage
+        title="Not found"
+        message="This offer does not exist"
+      />
+    );
   }
 
   return (

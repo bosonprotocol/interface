@@ -1,12 +1,13 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 
 import Exchange from "../../../components/exchange/Exchange";
-import { Spinner } from "../../../components/loading/Spinner";
 import {
   Exchange as IExchange,
   useExchanges
 } from "../../../lib/utils/hooks/useExchanges";
-import { LoadingWrapper, ProductGridContainer } from "../ProfilePage.styles";
+import { ProductGridContainer } from "../ProfilePage.styles";
 interface Props {
   sellerId: string;
 }
@@ -19,8 +20,8 @@ const orderProps = {
 export default function Redemptions({ sellerId }: Props) {
   const {
     data: exchangesSeller,
-    isLoading: isLoadingSeller,
-    isError: isErrorSeller
+    isLoading,
+    isError
   } = useExchanges(
     {
       ...orderProps,
@@ -31,24 +32,26 @@ export default function Redemptions({ sellerId }: Props) {
     { enabled: !!sellerId }
   );
 
-  if (isLoadingSeller) {
-    return (
-      <LoadingWrapper>
-        <Spinner size={42} />
-      </LoadingWrapper>
-    );
+  if (isLoading) {
+    return <LoadingMessage />;
   }
 
-  if (isErrorSeller) {
+  if (isError) {
     return (
-      <div data-testid="errorExchanges">
-        There has been an error, please try again later...
-      </div>
+      <EmptyErrorMessage
+        title="Error"
+        message="There has been an error, please try again later..."
+      />
     );
   }
 
   if (!exchangesSeller?.length) {
-    return <div>There are no redemptions</div>;
+    return (
+      <EmptyErrorMessage
+        title="No exchanges"
+        message="There are no redemptions yet, redeem at least one exchange first"
+      />
+    );
   }
 
   return (

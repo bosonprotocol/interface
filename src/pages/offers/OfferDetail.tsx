@@ -1,3 +1,5 @@
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
@@ -15,7 +17,6 @@ import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
-import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
@@ -82,27 +83,33 @@ export default function OfferDetail() {
   }
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   if (isError) {
     return (
-      <div data-testid="errorOffer">
-        There has been an error, please try again later...
-      </div>
+      <EmptyErrorMessage
+        title="Error"
+        message="There has been an error, please try again later..."
+      />
     );
   }
 
   if (!offer) {
-    return <div data-testid="notFound">This offer does not exist</div>;
+    return (
+      <EmptyErrorMessage
+        title="Not found"
+        message="This offer does not exist"
+      />
+    );
   }
 
   if (!offer.isValid) {
     return (
-      <div data-testid="invalidMetadata">
-        This offer does not match the expected metadata standard this
-        application enforces
-      </div>
+      <EmptyErrorMessage
+        title="Invalid offer"
+        message="This offer does not match the expected metadata standard this application enforces"
+      />
     );
   }
 
@@ -132,11 +139,11 @@ export default function OfferDetail() {
                 dataTestId="offerAnimationUrl"
                 videoProps={{ muted: true, loop: true, autoPlay: true }}
                 componentWhileLoading={() => (
-                  <Image src={offerImg} dataTestId="offerImage" />
+                  <Image src={offerImg ?? ""} dataTestId="offerImage" />
                 )}
               />
             ) : (
-              <Image src={offerImg} dataTestId="offerImage" />
+              <Image src={offerImg ?? ""} dataTestId="offerImage" />
             )}
           </ImageWrapper>
           <div>

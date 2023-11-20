@@ -1,3 +1,4 @@
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -26,7 +27,12 @@ export default function License() {
   const { offerId } = useOfferByUuid(uuid, sellerId);
 
   if (!offerId) {
-    return <div data-testid="notFound">This offer does not exist</div>;
+    return (
+      <EmptyErrorMessage
+        title="Not found"
+        message="This offer does not exist"
+      />
+    );
   }
 
   return (
