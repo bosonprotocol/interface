@@ -11,7 +11,7 @@ type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 type AdditionalOfferMetadata = offers.AdditionalOfferMetadata;
 type ProductV1MetadataFields = subgraph.ProductV1MetadataEntity;
 
-enum ExtendedProgressStatus {
+export enum ExtendedProgressStatus {
   IDLE = "idle",
   LOADING = "loading",
   SUCCESS = "success",
