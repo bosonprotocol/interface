@@ -1,11 +1,13 @@
 import { Loading, subgraph } from "@bosonprotocol/react-kit";
 import { CONFIG } from "lib/config";
-import { useRenderTemplate } from "lib/utils/hooks/useRenderTemplate";
+import {
+  ExtendedProgressStatus,
+  useRenderTemplate
+} from "lib/utils/hooks/useRenderTemplate";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-import { ProgressStatus } from "../../lib/types/progressStatus";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
 import SimpleError from "../error/SimpleError";
 
@@ -43,9 +45,10 @@ export default function ContractualAgreement({ offerId, offerData }: Props) {
   );
 
   const isLoading =
-    renderStatus === ProgressStatus.LOADING ||
-    renderStatus === ProgressStatus.IDLE;
-  const isError = renderStatus === ProgressStatus.ERROR;
+    renderStatus === ExtendedProgressStatus.LOADING ||
+    renderStatus === ExtendedProgressStatus.IDLE ||
+    renderStatus === ExtendedProgressStatus.TRY_WITH_OFFER_ID;
+  const isError = renderStatus === ExtendedProgressStatus.ERROR;
 
   if (isError) {
     return <SimpleError />;
