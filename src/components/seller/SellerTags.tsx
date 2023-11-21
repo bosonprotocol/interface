@@ -17,7 +17,7 @@ const TagsList = styled.ul`
 const TagItem = styled.li<{ $active: boolean; $disabled: boolean }>`
   border-bottom: ${(props) =>
     props.$active ? `1px solid ${colors.black}` : colors.black};
-  color ${(props) =>
+  color: ${(props) =>
     props.$active ? `1px solid ${colors.black}` : colors.darkGrey};
   padding: 1.125rem 1.5rem;
   display: flex;
@@ -25,7 +25,7 @@ const TagItem = styled.li<{ $active: boolean; $disabled: boolean }>`
   font-size: 1rem;
   font-weight: 600;
   cursor: ${(props) => (props.$disabled ? "not-allowed" : "pointer")};
-  opacity ${(props) => (props.$disabled ? "0.5" : "1")};
+  opacity: ${(props) => (props.$disabled ? "0.5" : "1")};
   &:not(:last-child) {
     margin-right: 1.5rem;
   }
