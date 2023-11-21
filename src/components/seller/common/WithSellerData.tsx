@@ -3,6 +3,7 @@ import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
 
 import { subgraph } from "@bosonprotocol/react-kit";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import React, { useMemo } from "react";
 import styled from "styled-components";
 
@@ -26,7 +27,6 @@ import {
 } from "../../../lib/utils/hooks/useSellerRoles";
 import { useSellerCurationListFn } from "../../../lib/utils/hooks/useSellers";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
-import Loading from "../../ui/Loading";
 import useOffersBacked from "./useOffersBacked";
 
 const Wrapper = styled.div`
@@ -167,11 +167,7 @@ export function WithSellerData<
       exchangesTokens.isLoading ||
       sellerDeposit.isLoading
     ) {
-      return (
-        <Wrapper>
-          <Loading />
-        </Wrapper>
-      );
+      return <LoadingMessage />;
     }
 
     return (

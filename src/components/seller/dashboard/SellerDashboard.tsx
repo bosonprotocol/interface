@@ -1,4 +1,5 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -15,7 +16,6 @@ import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import GridContainer from "../../ui/GridContainer";
-import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import { getSellerCenterPath } from "../paths";
@@ -137,7 +137,7 @@ export default function SellerDashboard({
   );
 
   if (isLoadingOffers || isLoadingExchanges) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   return (

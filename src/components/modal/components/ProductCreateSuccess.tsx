@@ -131,6 +131,7 @@ export default function ProductCreateSuccess({
 
     return getOfferDetailData(
       offer,
+      undefined,
       convertedPrice,
       false,
       undefined,
