@@ -697,7 +697,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const offerCurationList = useCustomStoreQueryParameter("offerCurationList");
   const { isConditionMet } = useCheckTokenGatedOffer({
     commitProxyAddress,
-    condition: offer.condition
+    offer
   });
   const numSellers = new Set(
     sellerCurationList

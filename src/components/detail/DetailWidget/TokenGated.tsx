@@ -147,10 +147,11 @@ const TokenGated = ({
     (async () => {
       if (condition?.tokenAddress && condition?.tokenType === 0) {
         try {
-          const { name, decimals, symbol } = await core.getExchangeTokenInfo(
+          const result = await core.getExchangeTokenInfo(
             condition.tokenAddress
           );
-          setTokenInfo({ name, decimals: decimals?.toString(), symbol });
+          const { name = "", decimals, symbol = "" } = result;
+          setTokenInfo({ name, decimals: decimals?.toString() ?? "", symbol });
         } catch (error) {
           setTokenInfo({ name: "", decimals: "", symbol: "" });
         }
