@@ -5,7 +5,6 @@ dayjs.extend(isBetween);
 import { subgraph } from "@bosonprotocol/react-kit";
 import { LoadingMessage } from "components/loading/LoadingMessage";
 import React, { useMemo } from "react";
-import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
@@ -28,10 +27,6 @@ import {
 import { useSellerCurationListFn } from "../../../lib/utils/hooks/useSellers";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import useOffersBacked from "./useOffersBacked";
-
-const Wrapper = styled.div`
-  text-align: center;
-`;
 
 interface QueryProps {
   isLoading: boolean;
