@@ -39,7 +39,7 @@ export async function getThread({
   genesisDate: Date;
   onMessageReceived: (currentThread: ThreadObject | null) => Promise<void>;
   checkCustomCondition?: (mergedThread: ThreadObject | null) => boolean;
-  stopRef: MutableRefObject<boolean>;
+  stopRef?: MutableRefObject<boolean>;
 }): Promise<{
   thread: ThreadObject | null;
   dateIndex: number;
@@ -134,7 +134,7 @@ export async function getThread({
     iDateIndex -= concurrency;
   } while (
     window.navigator.onLine &&
-    !stopRef.current &&
+    !stopRef?.current &&
     ((!customConditionMet &&
       (failedTimesArray.length ||
         (!failedTimesArray.length && !isBeginning))) ||
