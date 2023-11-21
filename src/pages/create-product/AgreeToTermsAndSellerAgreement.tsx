@@ -43,7 +43,12 @@ export const AgreeToTermsAndSellerAgreement: React.FC<
                 style={{ color: colors.blue }}
                 onClick={() =>
                   showModal("REDEEMABLE_NFT_TERMS", {
-                    offerData: previewOffers[0]
+                    offerData: previewOffers?.[0].id
+                      ? undefined
+                      : previewOffers[0],
+                    offerId: previewOffers?.[0].id
+                      ? previewOffers[0].id
+                      : undefined
                   })
                 }
                 type="button"
@@ -88,7 +93,8 @@ export const AgreeToTermsAndSellerAgreement: React.FC<
                   style={{ color: colors.blue }}
                   onClick={() =>
                     showModal("REDEEMABLE_NFT_TERMS", {
-                      offerData: offer
+                      offerData: offer?.id ? undefined : offer,
+                      offerId: offer?.id ? offer.id : undefined
                     })
                   }
                   type="button"

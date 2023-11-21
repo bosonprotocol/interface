@@ -1,9 +1,9 @@
 import ContractualAgreementComponent from "components/contractualAgreement/ContractualAgreement";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import Loading from "../../components/ui/Loading";
 import { UrlParameters } from "../../lib/routing/parameters";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
 
@@ -27,7 +27,7 @@ export default function ContractualAgreement() {
   );
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   if (isError) {

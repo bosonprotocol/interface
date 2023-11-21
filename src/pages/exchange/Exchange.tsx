@@ -1,4 +1,5 @@
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -19,7 +20,6 @@ import DetailTransactions from "../../components/detail/DetailTransactions";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 // DETAILS COMPONENTS ABOVE
 import Image from "../../components/ui/Image";
-import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
@@ -105,7 +105,7 @@ export default function Exchange() {
   });
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   if (isError || !exchangeId) {

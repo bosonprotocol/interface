@@ -14,6 +14,8 @@ import styled from "styled-components";
 dayjs.extend(isBetween);
 
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { defaultFontFamily } from "lib/styles/fonts";
 
 import { colors } from "../../../lib/styles/colors";
@@ -24,7 +26,6 @@ import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
-import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 import PaginationPages from "../common/PaginationPages";
 import { WithSellerDataProps } from "../common/WithSellerData";
@@ -366,7 +367,7 @@ export default function SellerFinances({
   }, [pageCount, pageIndex]);
 
   if (!isFundsInitialized || isLoadingSellerData || isLoadingExchangesTokens) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   if (
@@ -374,7 +375,12 @@ export default function SellerFinances({
     fundStatus === ProgressStatus.ERROR ||
     isErrorExchangesTokens
   ) {
-    // TODO: NO FIGMA REPRESENTATIONS
+    return (
+      <EmptyErrorMessage
+        title="Error"
+        message="There has been an error, please try again later..."
+      />
+    );
   }
 
   return (

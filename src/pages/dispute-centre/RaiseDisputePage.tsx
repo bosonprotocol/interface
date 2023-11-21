@@ -9,6 +9,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { ConnectWalletErrorMessage } from "components/error/ConnectWalletErrorMessage";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { BigNumberish, providers } from "ethers";
 import { Formik } from "formik";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
@@ -172,7 +173,7 @@ function RaiseDisputePage() {
   }
 
   if (!exchange && isLoading) {
-    return <p>Loading exchange info...</p>;
+    return <LoadingMessage message="Loading exchange info..." />;
   }
 
   if (!exchange || isError) {

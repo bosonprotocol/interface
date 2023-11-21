@@ -1,4 +1,5 @@
 import { Button } from "@bosonprotocol/react-kit";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { Spinner } from "components/loading/Spinner";
 import { useModal } from "components/modal/useModal";
 import { defaultFontFamily } from "lib/styles/fonts";
@@ -17,7 +18,6 @@ import SellerInside, {
   SellerInsideProps
 } from "../../components/seller/SellerInside";
 import Grid from "../../components/ui/Grid";
-import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -93,11 +93,7 @@ function SellerCenterWrapper() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, sellerIds.length, store.modalType]);
   if (isLoading) {
-    return (
-      <Wrapper>
-        <Loading />
-      </Wrapper>
-    );
+    return <LoadingMessage />;
   }
   if (!sellerIds.length || !address) {
     return (

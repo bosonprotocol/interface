@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import { ConnectWalletErrorMessage } from "components/error/ConnectWalletErrorMessage";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { Form, Formik } from "formik";
 import { BosonRoutes } from "lib/routing/routes";
 import {
@@ -17,7 +18,6 @@ import Layout from "../../components/layout/Layout";
 import { useRemoveLandingQueryParams } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
 import { getSellerCenterPath } from "../../components/seller/paths";
-import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import {
   SellerLandingPageParameters,
@@ -67,7 +67,7 @@ export default function CustomStore() {
     return <ConnectWalletErrorMessage />;
   }
   if (isLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   if (!seller) {
