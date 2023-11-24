@@ -6,7 +6,10 @@ import { useRef, useState } from "react";
 
 import { WithSellerDataProps } from "../common/WithSellerData";
 import { SellerInsideProps } from "../SellerInside";
-
+declare const constants: {
+  // comes from boson-widgets.js
+  financeUrl: (widgetsHost: string, params: Record<string, unknown>) => string;
+};
 export default function SellerFinances({
   sellerId
 }: SellerInsideProps & WithSellerDataProps) {
@@ -19,8 +22,12 @@ export default function SellerFinances({
     iframeRef,
     isIframeLoaded,
     signer,
-    childIframeOrigin: CONFIG.widgetsUrl as `http:${string}`
+    childIframeOrigin: CONFIG.widgetsUrl as `http${string}`
   });
+  if (!constants) {
+    return <p>There has been an error</p>;
+  }
+
   return (
     <iframe
       ref={iframeRef}
@@ -32,8 +39,12 @@ export default function SellerFinances({
       onLoad={() => {
         setIsIframeLoaded(true);
       }}
-      id="bosonModal"
-      src={`${CONFIG.widgetsUrl}/#/finance?sellerId=${sellerId}&configId=${config.envConfig.configId}&account=${account}`}
+      src={`${constants.financeUrl(CONFIG.widgetsUrl, {
+        sellerId,
+        configId: config.envConfig.configId,
+        account,
+        parentOrigin: window.location.origin
+      })}`}
     ></iframe>
   );
 }
