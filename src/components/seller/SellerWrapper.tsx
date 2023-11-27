@@ -2,11 +2,11 @@ import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import Typography from "../ui/Typography";
-
+const margin = "5.5rem";
 const SellerMain = styled.main`
   padding: 1.375rem 2.5rem 2.75rem 2.5rem;
   background: ${colors.lightGrey};
-  min-height: calc(100vh - 5.5rem);
+  min-height: calc(100vh - ${margin});
   overflow: hidden;
 `;
 const SellerTitle = styled(Typography)`
@@ -18,6 +18,9 @@ const SellerInner = styled.div`
   box-shadow: 0px 0px 5px 0px rgb(0 0 0 / 2%), 0px 0px 10px 0px rgb(0 0 0 / 2%),
     0px 0px 15px 0px rgb(0 0 0 / 5%);
   overflow: auto;
+  height: calc(100% - ${margin});
+  margin-bottom: ${margin};
+  overflow-y: hidden;
 `;
 
 interface Props {
