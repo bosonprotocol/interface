@@ -1,5 +1,7 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { BigNumber } from "ethers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useMemo } from "react";
@@ -14,7 +16,6 @@ import {
 } from "../../../components/modal/components/Profile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
-import Loading from "../../../components/ui/Loading";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -188,17 +189,15 @@ export default function Seller() {
   const isSellerExists = isMySeller ? !!sellersData.length : !!sellers?.length;
 
   if (isLoading || isLoadingSellers || isLoadingProducts) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   if (isError || isErrorSellers || isErrorProducts) {
-    // TODO: NO FIGMA REPRESENTATION
     return (
-      <BasicInfo>
-        <Typography tag="h2" margin="2rem auto">
-          There has been an error...
-        </Typography>
-      </BasicInfo>
+      <EmptyErrorMessage
+        title="Error"
+        message="There has been an error, please try again later..."
+      />
     );
   }
 

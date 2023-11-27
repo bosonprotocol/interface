@@ -3,6 +3,7 @@ import { ThreadObject } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/defin
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import dayjs, { Dayjs } from "dayjs";
 import { utils } from "ethers";
 import { camelCase } from "lodash";
@@ -20,7 +21,6 @@ import { useChatContext } from "../../../pages/chat/ChatProvider/ChatContext";
 import { useModal } from "../../modal/useModal";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import ExportDropdown from "../../ui/ExportDropdown";
-import Loading from "../../ui/Loading";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerBatchComplete from "../SellerBatchComplete";
 import SellerFilters from "../SellerFilters";
@@ -581,7 +581,7 @@ export default function SellerExchanges({
   }, [bosonXmtp, csvData, loading]); // eslint-disable-line
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   return (

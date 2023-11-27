@@ -1,4 +1,5 @@
-import { Loading, subgraph } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
+import Loading from "components/ui/Loading";
 import { CONFIG } from "lib/config";
 import {
   ExtendedProgressStatus,

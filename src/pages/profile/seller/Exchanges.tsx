@@ -1,10 +1,12 @@
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
+
 import Exchange from "../../../components/exchange/Exchange";
-import { Spinner } from "../../../components/loading/Spinner";
 import {
   Exchange as IExchange,
   useExchanges
 } from "../../../lib/utils/hooks/useExchanges";
-import { LoadingWrapper, ProductGridContainer } from "../ProfilePage.styles";
+import { ProductGridContainer } from "../ProfilePage.styles";
 
 interface Props {
   sellerId: string;
@@ -24,25 +26,26 @@ export default function Exchanges({ sellerId }: Props) {
     { ...orderProps, disputed: null, sellerId },
     { enabled: !!sellerId }
   );
-
   if (isLoading) {
-    return (
-      <LoadingWrapper>
-        <Spinner size={42} />
-      </LoadingWrapper>
-    );
+    return <LoadingMessage />;
   }
 
   if (isError) {
     return (
-      <div data-testid="errorExchanges">
-        There has been an error, please try again later...
-      </div>
+      <EmptyErrorMessage
+        title="Error"
+        message="There has been an error, please try again later..."
+      />
     );
   }
 
   if (!exchangesSeller?.length) {
-    return <div>There are no exchanges</div>;
+    return (
+      <EmptyErrorMessage
+        title="No exchanges"
+        message="There are no exchanges yet, commit to at least one product first"
+      />
+    );
   }
 
   return (
