@@ -257,6 +257,9 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
           [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
         });
       }
+      if (!isSeller) {
+        return BosonRoutes.Sell;
+      }
       return SellerCenterRoutes.CreateProduct;
     }, [isSeller, hasSellerOffers]);
     const CTA = useMemo(() => {
