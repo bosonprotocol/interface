@@ -140,7 +140,9 @@ export default function Seller() {
       : null;
 
   const name =
-    (useLens ? sellerLens?.name : metadata?.name) ?? metadata?.name ?? "";
+    (useLens ? sellerLens?.name : metadata?.name) ??
+    metadata?.name ??
+    `Seller ID: ${sellerId}`;
   const description =
     (useLens ? sellerLens?.bio : metadata?.description) ??
     metadata?.description ??
