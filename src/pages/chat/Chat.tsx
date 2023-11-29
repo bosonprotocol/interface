@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { Container as OuterContainer } from "components/app/index.styles";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { WarningCircle } from "phosphor-react";
@@ -12,8 +13,10 @@ import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { isTruthy } from "../../lib/types/helpers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
+import { useDisputes } from "../../lib/utils/hooks/useDisputes";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import ChatConversation from "./components/conversation/ChatConversation";
@@ -108,6 +111,24 @@ export default function Chat() {
       ).values()
     );
   }, [exchangesAsTheBuyer, exchangesAsTheSeller]);
+
+  // Fetch all data about exchanges (dispute data) in a unique request
+  const { data: disputes } = useDisputes(
+    {
+      disputesFilter: {
+        exchange_in: exchanges?.filter(isTruthy).map((exchange) => exchange?.id)
+      }
+    },
+    {
+      enabled: !!exchanges && exchanges.length > 0
+    }
+  );
+  const disputeDataPerExchangeId = (disputes || []).reduce(
+    (_disputeDataPerExchangeId, dispute) => {
+      return _disputeDataPerExchangeId.set(dispute.exchange.id, dispute);
+    },
+    new Map<string, subgraph.DisputeFieldsFragment>()
+  );
 
   const refetchExchanges = useCallback(() => {
     refetchExchangesAsTheSeller();
@@ -250,6 +271,9 @@ export default function Chat() {
                       mySellerId={sellerId}
                       key={selectedExchange?.id || ""}
                       exchange={selectedExchange}
+                      dispute={disputeDataPerExchangeId?.get(
+                        selectedExchange?.id || ""
+                      )}
                       refetchExchanges={refetchExchanges}
                       setChatListOpen={setChatListOpen}
                       chatListOpen={chatListOpen}

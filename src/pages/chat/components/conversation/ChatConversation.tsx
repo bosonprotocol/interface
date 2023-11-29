@@ -6,6 +6,7 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
+import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
@@ -162,6 +163,7 @@ type ChatConversationProps = {
   myBuyerId: string;
   mySellerId: string;
   exchange: Exchange | undefined;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
   prevPath: string;
@@ -173,6 +175,7 @@ const ChatConversation = ({
   myBuyerId,
   mySellerId,
   exchange,
+  dispute,
   chatListOpen,
   setChatListOpen,
   prevPath,
@@ -650,6 +653,7 @@ const ChatConversation = ({
             hasError={hasError}
             isBeginningOfTimes={isBeginningOfTimes}
             exchange={exchange}
+            dispute={dispute}
             loadMoreMessages={loadMoreMessages}
             thread={thread}
             areThreadsLoading={areThreadsLoading}
@@ -664,6 +668,7 @@ const ChatConversation = ({
             isConversationBeingLoaded={isConversationBeingLoaded}
             disableInputs={disableInputs}
             exchange={exchange}
+            dispute={dispute}
             threadId={threadId}
             setHasError={setHasError}
             addMessage={addMessage}
@@ -686,6 +691,7 @@ const ChatConversation = ({
       )}
       <ExchangeSidePreview
         exchange={exchange}
+        dispute={dispute}
         refetchExchanges={refetchExchanges}
         disputeOpen={isExchangePreviewOpen}
         iAmTheBuyer={iAmTheBuyer}
