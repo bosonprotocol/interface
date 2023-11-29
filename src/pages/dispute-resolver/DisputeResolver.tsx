@@ -1,3 +1,4 @@
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { defaultFontFamily } from "lib/styles/fonts";
 import { House, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
@@ -6,7 +7,6 @@ import DRAside from "../../components/disputeResolver/DisputeResolverAside";
 import DisputeResolverInside from "../../components/disputeResolver/DisputeResolverInside";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
-import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
@@ -44,11 +44,7 @@ function DisputeResolverCenterWrapper() {
   const { isLoading, disputeResolverId } = useCurrentDisputeResolverId();
 
   if (isLoading) {
-    return (
-      <Wrapper>
-        <Loading />
-      </Wrapper>
-    );
+    return <LoadingMessage />;
   }
 
   if (disputeResolverId === null) {

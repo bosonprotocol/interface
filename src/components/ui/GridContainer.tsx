@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 
@@ -33,42 +33,49 @@ const GridContainer = styled.div<{
   rowGapPerRow?: Partial<RowGapPerRow>;
   columnGap?: CSSProperties["columnGap"];
   rowGap?: CSSProperties["rowGap"];
+  defaultSize?: string;
 }>`
   display: grid;
   grid-column-gap: ${({ columnGap }) => columnGap || "2rem"};
   grid-row-gap: ${({ rowGap }) => rowGap || "2rem"};
-
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  ${breakpoint.xs} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.xs || "2"}, minmax(0, 1fr))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.xs};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.xs};
-  }
-  ${breakpoint.s} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.s || "3"}, minmax(0, 1fr))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.s};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.s};
-  }
-  ${breakpoint.m} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.m || "3"}, minmax(0, 1fr))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.m};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.m};
-  }
-  ${breakpoint.l} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.l || "3"}, minmax(0, 1fr))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.l};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.l};
-  }
-  ${breakpoint.xl} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.xl || "3"}, minmax(0, 1fr))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.xl};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.xl};
-  }
+  ${({
+    defaultSize = "minmax(0, 1fr)",
+    itemsPerRow,
+    columnGapPerRow,
+    rowGapPerRow
+  }) => css`
+    grid-template-columns: repeat(1, ${defaultSize});
+    ${breakpoint.xs} {
+      grid-template-columns: repeat(${() =>
+        itemsPerRow?.xs || "2"}, ${defaultSize})};
+      grid-column-gap: ${() => columnGapPerRow?.xs};
+      grid-row-gap: ${() => rowGapPerRow?.xs};
+    }
+    ${breakpoint.s} {
+      grid-template-columns: repeat(${() =>
+        itemsPerRow?.s || "3"}, ${defaultSize})};
+      grid-column-gap: ${() => columnGapPerRow?.s};
+      grid-row-gap: ${() => rowGapPerRow?.s};
+    }
+    ${breakpoint.m} {
+      grid-template-columns: repeat(${() =>
+        itemsPerRow?.m || "3"}, ${defaultSize})};
+      grid-column-gap: ${() => columnGapPerRow?.m};
+      grid-row-gap: ${() => rowGapPerRow?.m};
+    }
+    ${breakpoint.l} {
+      grid-template-columns: repeat(${() =>
+        itemsPerRow?.l || "3"}, ${defaultSize})};
+      grid-column-gap: ${() => columnGapPerRow?.l};
+      grid-row-gap: ${() => rowGapPerRow?.l};
+    }
+    ${breakpoint.xl} {
+      grid-template-columns: repeat(${() =>
+        itemsPerRow?.xl || "3"}, ${defaultSize})};
+      grid-column-gap: ${() => columnGapPerRow?.xl};
+      grid-row-gap: ${() => rowGapPerRow?.xl};
+    }
+  `}
 `;
 
 export default GridContainer;

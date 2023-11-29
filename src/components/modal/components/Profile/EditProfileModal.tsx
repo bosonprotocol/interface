@@ -52,6 +52,8 @@ export default function EditProfileModal({
     profileType === ProfileType.LENS
   );
   const setSwitchAndProfileType = useCallback((switchToLens: boolean) => {
+    // allow the seller to unlink the lens profile, but does not allow to switch it back
+    switchToLens = false;
     setSwitchChecked(switchToLens);
     setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
   }, []);

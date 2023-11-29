@@ -49,13 +49,9 @@ export default function ConnectionErrorView() {
         The connection attempt failed. Please click try again and follow the
         steps to connect in your wallet.
       </Typography>
-      <BosonButton $borderRadius="16px" onClick={retry}>
-        Try Again
-      </BosonButton>
-      <BosonButton width="fit-content" padding="0" marginTop={20}>
-        <Typography onClick={cancelActivation} marginBottom={12}>
-          Back to wallet selection
-        </Typography>
+      <BosonButton onClick={retry}>Try Again</BosonButton>
+      <BosonButton onClick={cancelActivation}>
+        <Typography marginBottom={12}>Back to wallet selection</Typography>
       </BosonButton>
     </Wrapper>
   );

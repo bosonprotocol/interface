@@ -1,3 +1,4 @@
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { useMemo, useState } from "react";
 import styled from "styled-components";
 
@@ -155,7 +156,12 @@ export default function Tabs({
   );
   const [indexActiveTab, setIndexActiveTab] = useState(Math.max(tabIndex, 0)); // 0 is the offers tab
   if (isErrorSellers) {
-    return <div>There has been an error...</div>;
+    return (
+      <EmptyErrorMessage
+        title="Error"
+        message="There has been an error, please try again later..."
+      />
+    );
   }
   const handleActive = (index: number, tab: TabsData) => () => {
     setIndexActiveTab(index);

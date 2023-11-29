@@ -1,4 +1,5 @@
 import { offers } from "@bosonprotocol/react-kit";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import uniqBy from "lodash/uniqBy";
@@ -10,7 +11,6 @@ import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
-import Loading from "../../ui/Loading";
 import { UpdateIcon } from "../../ui/UpdateIcon";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerAddNewProduct from "../SellerAddNewProduct";
@@ -187,7 +187,7 @@ export default function SellerProducts({
   }, [prepareCSVData, selected, refetch, sellerRoles, refetchSellers]);
   const anyLoading = isLoading || isLoadingSellers;
   if (anyLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   return (
