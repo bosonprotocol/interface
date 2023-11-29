@@ -14,6 +14,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import type { Offer } from "../../lib/types/offer";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
 import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
@@ -89,6 +90,7 @@ interface SellerAdditional {
   offers?: ExtendedOffer[];
   products?: ExtendedOffer[];
   numExchanges?: number;
+  lensProfile?: Profile;
 }
 export type ExtendedSeller = SellerAdditional & subgraph.ProductV1Seller;
 export interface FilterOptions {

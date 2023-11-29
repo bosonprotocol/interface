@@ -1,4 +1,8 @@
-import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
+import {
+  AuthTokenType,
+  offers as offersSdk,
+  subgraph
+} from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import groupBy from "lodash/groupBy";
@@ -9,6 +13,7 @@ import { useContext, useMemo } from "react";
 import { useQuery } from "react-query";
 
 import ConvertionRateContext from "../../../../components/convertion-rate/ConvertionRateContext";
+import { getLensTokenIdHex } from "../../../../components/modal/components/Profile/Lens/utils";
 import type {
   ExtendedOffer,
   ExtendedSeller
@@ -19,6 +24,8 @@ import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
+import { Profile } from "../lens/graphql/generated";
+import useGetLensProfiles from "../lens/profile/useGetLensProfiles";
 import { useCurationLists } from "../useCurationLists";
 import { Exchange } from "../useExchanges";
 
@@ -127,8 +134,10 @@ export default function useProducts(
     }
   );
 
-  const allProducts = useMemo(() => {
-    return (
+  const { allProducts, allSellers } = useMemo(() => {
+    const sellerIdSet = new Set<string>();
+    const allSellers: subgraph.Seller[] = [];
+    const allProducts =
       (productsVariants?.data || [])
         ?.map((product) => {
           const allVariantsOrOnlyNotVoided:
@@ -139,6 +148,10 @@ export default function useProducts(
             : (product as subgraph.ProductV1Product).variants;
           const offers = (allVariantsOrOnlyNotVoided || [])?.map(
             ({ offer }) => {
+              if (!sellerIdSet.has(offer.seller.id)) {
+                sellerIdSet.add(offer.seller.id);
+                allSellers.push(offer.seller);
+              }
               const status = offersSdk.getOfferStatus(offer);
               const offerPrice = convertPrice({
                 price: calcPrice(
@@ -241,8 +254,8 @@ export default function useProducts(
 
           return null;
         })
-        .filter(isTruthy) || []
-    );
+        .filter(isTruthy) || [];
+    return { allProducts, allSellers };
   }, [
     productsVariants?.data,
     props?.quantityAvailable_gte,
@@ -318,7 +331,60 @@ export default function useProducts(
     }
   );
 
-  const allSellers = useMemo(() => {
+  // fetch Lens profile for all sellers with LENS
+  const { sellerIdPerLensToken, lensProfileIds } = allSellers
+    .filter((seller) => seller.authTokenType === AuthTokenType.LENS)
+    .reduce(
+      (
+        {
+          sellerIdPerLensToken: _sellerIdPerLensToken,
+          lensProfileIds: _lensProfileIds
+        },
+        seller
+      ) => {
+        const sellerId = seller.id;
+        const tokenId = getLensTokenIdHex(seller.authTokenId);
+        if (!_sellerIdPerLensToken.has(tokenId)) {
+          _sellerIdPerLensToken.set(tokenId, sellerId);
+          _lensProfileIds.push(tokenId);
+        }
+        return {
+          sellerIdPerLensToken: _sellerIdPerLensToken,
+          lensProfileIds: _lensProfileIds
+        };
+      },
+      {
+        sellerIdPerLensToken: new Map<string, string>(),
+        lensProfileIds: [] as string[]
+      }
+    );
+  const { data: profileData, isSuccess } = useGetLensProfiles(
+    {
+      profileIds: lensProfileIds
+    },
+    {
+      enabled: lensProfileIds.length > 0
+    }
+  );
+
+  const allExtendedSellers = useMemo(() => {
+    const sellerLensProfilePerSellerId =
+      isSuccess && profileData?.items
+        ? profileData.items.reduce((map, profile) => {
+            if (profile) {
+              console.log(
+                `useProduct - Lookup LENS profile with data ${JSON.stringify(
+                  profile
+                )}`
+              );
+              const sellerId = sellerIdPerLensToken.get(
+                String(profile.id)
+              ) as string;
+              return map.set(sellerId, profile as Profile);
+            }
+            return map;
+          }, new Map<string, Profile>())
+        : new Map<string, Profile>();
     return (
       sellerIds?.map((brandName) => {
         const sellerId = brandName;
@@ -359,17 +425,25 @@ export default function useProducts(
           },
           offers: products, // REASSIGN OFFERS for compatibility with previous code
           products,
-          numExchanges: exchangesBySellers.data?.[sellerId]?.length
+          numExchanges: exchangesBySellers.data?.[sellerId]?.length,
+          lensProfile: sellerLensProfilePerSellerId.get(seller.id)
         };
       }) || []
     );
-  }, [sellerIds, groupedSellers, exchangesBySellers.data]);
+  }, [
+    isSuccess,
+    profileData,
+    sellerIds,
+    sellerIdPerLensToken,
+    groupedSellers,
+    exchangesBySellers.data
+  ]);
 
   return {
     isLoading: productsVariants.isLoading || exchangesBySellers.isLoading,
     isError: productsVariants.isError || exchangesBySellers.isError,
     products: allProducts as unknown as ExtendedOffer[],
-    sellers: allSellers as unknown as ExtendedSeller[],
+    sellers: allExtendedSellers as unknown as ExtendedSeller[],
     refetch: () => {
       productsVariants.refetch();
       if (options.withNumExchanges) {
