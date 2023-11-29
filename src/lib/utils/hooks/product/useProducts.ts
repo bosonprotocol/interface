@@ -73,6 +73,13 @@ export default function useProducts(
 
   const { store } = useContext(ConvertionRateContext);
 
+  // If id_in or sellerId_in are empty list, then no need to fetch, result is necessarily empty
+  const emptyListFilter =
+    (baseProps.productsFilter.id_in &&
+      baseProps.productsFilter.id_in?.length === 0) ||
+    (baseProps.productsFilter.sellerId_in &&
+      baseProps.productsFilter.sellerId_in?.length === 0);
+
   const productsVariants = useQuery(
     [
       "get-all-products-variants",
@@ -89,7 +96,9 @@ export default function useProducts(
           ...baseProps.productsFilter
         }
       };
-      const data = props.onlyNotVoided
+      const data = emptyListFilter
+        ? []
+        : props.onlyNotVoided
         ? await coreSDK.getAllProductsWithNotVoidedVariants({ ...newProps })
         : await coreSDK.getAllProductsWithVariants({ ...newProps });
       let loop = data.length === OFFERS_PER_PAGE;
@@ -263,40 +272,42 @@ export default function useProducts(
           id: string;
         };
       }[] = [];
-      while (!result || result.exchanges.length === numItemsPerRequest) {
-        result = await fetchSubgraph<{
-          exchanges: {
-            seller: {
-              id: string;
-            };
-          }[];
-        }>(
-          subgraphUrl,
-          gql`
-            query GetSellersExchanges(
-              $sellerIds: [String]
-              $first: Int
-              $skip: Int
-            ) {
-              exchanges(
-                where: { seller_in: $sellerIds }
-                first: $first
-                skip: $skip
+      if (!sellerIds || sellerIds.length > 0) {
+        while (!result || result.exchanges.length === numItemsPerRequest) {
+          result = await fetchSubgraph<{
+            exchanges: {
+              seller: {
+                id: string;
+              };
+            }[];
+          }>(
+            subgraphUrl,
+            gql`
+              query GetSellersExchanges(
+                $sellerIds: [String]
+                $first: Int
+                $skip: Int
               ) {
-                seller {
-                  id
+                exchanges(
+                  where: { seller_in: $sellerIds }
+                  first: $first
+                  skip: $skip
+                ) {
+                  seller {
+                    id
+                  }
                 }
               }
+            `,
+            {
+              sellerIds,
+              first: numItemsPerRequest,
+              skip: skip
             }
-          `,
-          {
-            sellerIds,
-            first: numItemsPerRequest,
-            skip: skip
-          }
-        );
-        skip += numItemsPerRequest;
-        allExchanges.push(...result.exchanges);
+          );
+          skip += numItemsPerRequest;
+          allExchanges.push(...result.exchanges);
+        }
       }
 
       return groupBy(allExchanges, "seller.id") || {};
