@@ -37,6 +37,7 @@ async function getLensProfiles(
   lensApiLink: string
 ) {
   return (
-    await fetchLens<ProfilesQuery>(lensApiLink, ProfilesDocument, { request })
-  ).profiles;
+    (await fetchLens<ProfilesQuery>(lensApiLink, ProfilesDocument, { request }))
+      ?.profiles || { items: [], pageInfo: { totalCount: 0 } }
+  );
 }

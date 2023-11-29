@@ -6,7 +6,7 @@ export async function fetchLens<T, V = Record<string, unknown>>(
   document: RequestDocument,
   variables?: V,
   headers?: Record<string, unknown>
-): Promise<T> {
+): Promise<T | null> {
   try {
     const data = await request<T, V>(lensApiLink, document, variables, {
       ...headers,
@@ -17,6 +17,6 @@ export async function fetchLens<T, V = Record<string, unknown>>(
   } catch (error) {
     console.error(error);
     Sentry.captureException(error);
-    throw error;
   }
+  return null;
 }
