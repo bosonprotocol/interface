@@ -1,5 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { NO_EXPIRATION } from "lib/constants/offer";
+import { formatDate } from "lib/utils/date";
 import { ArrowRight } from "phosphor-react";
 
 import { CONFIG } from "../../../lib/config";
@@ -31,18 +33,24 @@ const ItemDates = (item: Exchange, type: string) => {
         first: {
           label: "Expires",
           value: item?.offer?.validUntilDate
-            ? dayjs(getDateTimestamp(item?.offer?.validUntilDate)).format(
-                CONFIG.dateFormat
-              )
+            ? formatDate(getDateTimestamp(item?.offer?.validUntilDate), {
+                textIfTooBig: NO_EXPIRATION
+              })
             : ""
         },
         second: {
-          label: "Redeemable until",
-          value: item?.offer?.voucherRedeemableUntilDate
-            ? dayjs(
-                getDateTimestamp(item?.offer?.voucherRedeemableUntilDate)
-              ).format(CONFIG.dateFormat)
-            : ""
+          label:
+            item?.offer?.voucherRedeemableUntilDate !== "0"
+              ? "Redeemable until"
+              : "Redeemable for",
+          value:
+            item?.offer?.voucherRedeemableUntilDate !== "0"
+              ? dayjs(
+                  getDateTimestamp(item?.offer?.voucherRedeemableUntilDate)
+                ).format(CONFIG.dateFormat)
+              : `${
+                  Number(`${item.offer.voucherValidDuration}000`) / 86400000
+                } days`
         }
       },
       [subgraph.ExchangeState.Redeemed]: {
