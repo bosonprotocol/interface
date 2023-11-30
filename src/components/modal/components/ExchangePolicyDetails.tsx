@@ -1,4 +1,5 @@
 import { offers, subgraph } from "@bosonprotocol/react-kit";
+import ContractualAgreement from "components/contractualAgreement/ContractualAgreement";
 import { customisedExchangePolicy } from "lib/constants/policies";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import {
@@ -10,7 +11,6 @@ import {
 import { useState } from "react";
 
 import { colors } from "../../../lib/styles/colors";
-import ContractualAgreement from "../../contractualAgreement/ContractualAgreement";
 import DetailTable from "../../detail/DetailTable";
 import License from "../../license/License";
 import Grid from "../../ui/Grid";

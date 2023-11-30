@@ -90,7 +90,7 @@ export default function CollectionsCard({ collection }: Props) {
   const [sellerId] = useState<string>(collection.id);
 
   const {
-    numbers: { exchanges: numExchanges, products: numProducts }
+    numbers: { products: numProducts }
   } = useSellerNumbers(sellerId);
 
   const { lens: lensProfiles, sellers: sellersData } = useCurrentSellers({
@@ -163,26 +163,10 @@ export default function CollectionsCard({ collection }: Props) {
             >
               Products
             </Typography>
-            <Typography
-              $fontSize="12px"
-              fontWeight="400"
-              color={colors.darkGrey}
-              margin="0 0 0 25px"
-            >
-              Sold
-            </Typography>
           </StyledGrid>
           <StyledGrid alignItems="flex-start">
             <Typography $fontSize="20px" fontWeight="600" color={colors.black}>
               {numProducts}
-            </Typography>
-            <Typography
-              $fontSize="20px"
-              fontWeight="600"
-              color={colors.black}
-              margin="0 0 0 25px"
-            >
-              {numExchanges}
             </Typography>
           </StyledGrid>
         </div>

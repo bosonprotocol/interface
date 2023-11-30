@@ -1,3 +1,4 @@
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import { useCallback, useMemo, useState } from "react";
@@ -15,7 +16,6 @@ import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import SellerFilters from "../../seller/SellerFilters";
 import SellerTags from "../../seller/SellerTags";
 import ExportDropdown from "../../ui/ExportDropdown";
-import Loading from "../../ui/Loading";
 import { DisputeResolverProps } from "../DisputeResolverInside";
 import DisputesTable from "../ManageDisputes/DisputesTable";
 
@@ -166,7 +166,7 @@ export const DisputesManage: React.FC<DisputeResolverProps> = () => {
   }, [prepareCSVData]);
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   return (

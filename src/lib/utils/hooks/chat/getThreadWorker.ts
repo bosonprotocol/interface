@@ -4,6 +4,7 @@ import {
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import dayjs from "dayjs";
+import { MutableRefObject } from "react";
 
 import { DateStep, getSmallerDateStep, getTimes, mergeThreads } from "./common";
 
@@ -25,7 +26,8 @@ export async function getThread({
   now,
   genesisDate,
   onMessageReceived,
-  checkCustomCondition
+  checkCustomCondition,
+  stopRef
 }: {
   bosonXmtp: BosonXmtpClient;
   threadId: ThreadId;
@@ -37,6 +39,7 @@ export async function getThread({
   genesisDate: Date;
   onMessageReceived: (currentThread: ThreadObject | null) => Promise<void>;
   checkCustomCondition?: (mergedThread: ThreadObject | null) => boolean;
+  stopRef?: MutableRefObject<boolean>;
 }): Promise<{
   thread: ThreadObject | null;
   dateIndex: number;
@@ -131,6 +134,7 @@ export async function getThread({
     iDateIndex -= concurrency;
   } while (
     window.navigator.onLine &&
+    !stopRef?.current &&
     ((!customConditionMet &&
       (failedTimesArray.length ||
         (!failedTimesArray.length && !isBeginning))) ||

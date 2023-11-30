@@ -1,3 +1,5 @@
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -5,7 +7,6 @@ import styled, { css } from "styled-components";
 import whiteImg from "../../../assets/white.jpeg";
 import Avatar from "../../../components/avatar";
 import DetailShare from "../../../components/detail/DetailShare";
-import { Spinner } from "../../../components/loading/Spinner";
 import { useModal } from "../../../components/modal/useModal";
 import AddressText from "../../../components/offer/AddressText";
 import BosonButton from "../../../components/ui/BosonButton";
@@ -20,7 +21,6 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
 import { useCustomStoreQueryParameter } from "../../custom-store/useCustomStoreQueryParameter";
-import NotFound from "../../not-found/NotFound";
 import {
   AddressContainer,
   AvatarContainer,
@@ -30,7 +30,6 @@ import {
   BasicInfo,
   DetailShareWrapper,
   GrayWrapper,
-  LoadingWrapper,
   ProfileSectionWrapper,
   SocialIconContainer
 } from "../ProfilePage.styles";
@@ -139,25 +138,25 @@ export default function Buyer({ buyerId: buyerIdProp }: Props) {
     }
   }, [handleManageFunds, openManageFunds, setManageFundsQueryParam]);
   if (isLoadingBuyers) {
-    return (
-      <LoadingWrapper>
-        <Spinner size={44} />
-      </LoadingWrapper>
-    );
+    return <LoadingMessage />;
   }
 
   if (isErrorBuyers) {
     return (
-      <BasicInfo>
-        <Typography tag="h2" margin="2rem auto">
-          There has been an error...
-        </Typography>
-      </BasicInfo>
+      <EmptyErrorMessage
+        title="Error"
+        message="Please try refreshing this page"
+      />
     );
   }
 
   if (!isBuyerExists && !buyerIdProp) {
-    return <NotFound />;
+    return (
+      <EmptyErrorMessage
+        title="You have no exchanges yet"
+        message="Commit to some products to see your chat conversations"
+      />
+    );
   }
 
   return (

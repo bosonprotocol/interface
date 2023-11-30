@@ -1,12 +1,18 @@
 import { MessageType } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumberish } from "ethers";
+import { ConnectWalletErrorMessage } from "components/error/ConnectWalletErrorMessage";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
+import { BigNumberish, providers } from "ethers";
 import { Formik } from "formik";
-import { getHasUserRejectedTx } from "lib/utils/errors";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
@@ -122,6 +128,7 @@ const validationSchema = [
   disputeCentreValidationSchemaProposalSummary
 ];
 function RaiseDisputePage() {
+  const signer = useSigner();
   const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { showModal, hideModal } = useModal();
@@ -162,26 +169,41 @@ function RaiseDisputePage() {
   };
 
   if (!address) {
-    return <p>Please connect your wallet</p>;
+    return <ConnectWalletErrorMessage />;
   }
 
   if (!exchange && isLoading) {
-    return <p>Loading exchange info...</p>;
+    return <LoadingMessage message="Loading exchange info..." />;
   }
 
   if (!exchange || isError) {
-    return <p>There has been an error while retrieving this exchange</p>;
+    return (
+      <EmptyErrorMessage
+        title="An error occurred"
+        message="There has been an error while retrieving this exchange"
+      />
+    );
   }
 
   if (
     !buyerId ||
     exchange.buyer.wallet.toLowerCase() !== address?.toLowerCase()
   ) {
-    return <p>You have to be the buyer of this exchange to raise a dispute</p>;
+    return (
+      <EmptyErrorMessage
+        title="Wrong account"
+        message="You have to be the buyer of this exchange to raise a dispute"
+      />
+    );
   }
 
   if (exchange.disputed) {
-    return <p>This exchange has already been disputed</p>;
+    return (
+      <EmptyErrorMessage
+        title="Disputed"
+        message="This exchange has already been disputed"
+      />
+    );
   }
 
   return (
@@ -236,6 +258,7 @@ function RaiseDisputePage() {
             <Formik
               initialValues={disputeCentreInitialValues}
               onSubmit={async (values) => {
+                let tx: TransactionResponse | undefined = undefined;
                 try {
                   if (!bosonXmtp && values.proposalType?.label) {
                     const err = new Error(
@@ -276,7 +299,7 @@ function RaiseDisputePage() {
                       type: MessageType.Proposal
                     });
                   }
-                  let tx: TransactionResponse | undefined = undefined;
+
                   showModal("WAITING_FOR_CONFIRMATION");
                   const isMetaTx = Boolean(
                     coreSDK?.isMetaTxConfigSet && address
@@ -362,7 +385,10 @@ function RaiseDisputePage() {
                       detailedErrorMessage:
                         (error as Error)?.message === "message too big"
                           ? "Please use a smaller image or fewer images"
-                          : "Something went wrong"
+                          : await extractUserFriendlyError(error, {
+                              txResponse: tx as providers.TransactionResponse,
+                              provider: signer?.provider as Provider
+                            })
                     });
                   }
 

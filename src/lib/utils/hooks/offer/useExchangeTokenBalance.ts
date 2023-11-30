@@ -14,7 +14,10 @@ export function useExchangeTokenBalance(
   exchangeToken: Pick<
     subgraph.OfferFieldsFragment["exchangeToken"],
     "address" | "decimals"
-  >
+  >,
+  { enabled }: { enabled: boolean } = {
+    enabled: true
+  }
 ) {
   const chainId = useChainId();
   const { config } = useConfigContext();
@@ -34,10 +37,10 @@ export function useExchangeTokenBalance(
   const [tokenCurrencyAmounts, loading] = useTokenBalancesWithLoadingIndicator(
     chainIdToUse,
     address,
-    !isNativeCoin && chainIdToUse ? tokens : []
+    !isNativeCoin && chainIdToUse && enabled ? tokens : []
   );
   const nativeBalances = useNativeCurrencyBalances(
-    isNativeCoin ? [address] : []
+    isNativeCoin && enabled ? [address] : []
   );
 
   return {

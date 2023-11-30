@@ -157,17 +157,6 @@ export const getSellRoutes = ({
   if (
     (!isSupportFunctionalityDefined ||
       (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))) &&
-    isAccountSeller &&
-    sellerId
-  ) {
-    productRoutes.push({
-      name: "Batch Create Products",
-      url: SellerCenterRoutes.BatchCreateOffers
-    });
-  }
-  if (
-    (!isSupportFunctionalityDefined ||
-      (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))) &&
     isAccountSeller
   ) {
     productRoutes.push({

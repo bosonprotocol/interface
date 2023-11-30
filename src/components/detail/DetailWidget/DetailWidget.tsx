@@ -1,10 +1,12 @@
 import {
   CommitButton,
   exchanges,
+  extractUserFriendlyError,
   offers,
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import { getHasUserRejectedTx } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
@@ -17,6 +19,7 @@ import {
   constants,
   ContractTransaction,
   ethers,
+  providers,
   utils
 } from "ethers";
 import {
@@ -24,7 +27,6 @@ import {
   customisedExchangePolicy
 } from "lib/constants/policies";
 import { swapQueryParameters } from "lib/routing/parameters";
-import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import { useOnCloseWidget } from "lib/utils/hooks/useOnCloseWidget";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
@@ -481,8 +483,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       ? "Redeem"
       : titleCase(exchangeStatus || "Unsupported");
   const { balance: exchangeTokenBalance, loading: balanceLoading } =
-    useExchangeTokenBalance(offer.exchangeToken);
-
+    useExchangeTokenBalance(offer.exchangeToken, {
+      enabled: offer.price !== "0"
+    });
   const {
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
@@ -803,7 +806,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     setCommitType(null);
     removePendingTransaction("offerId", offer.id);
   };
-  const onCommitError = (error: Error) => {
+  const onCommitError = async (
+    error: Error,
+    { txResponse }: { txResponse: providers.TransactionResponse | undefined }
+  ) => {
     console.error("onError", error);
     setIsLoading(false);
     const hasUserRejectedTx = getHasUserRejectedTx(error);
@@ -813,7 +819,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       Sentry.captureException(error);
       showModal(modalTypes.DETAIL_WIDGET, {
         title: "An error occurred",
-        message: "An error occurred when trying to commit!",
+        message: await extractUserFriendlyError(error, {
+          txResponse,
+          provider: signer?.provider
+        }),
         type: "ERROR",
         state: "Committed",
         id: undefined,
@@ -842,6 +851,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       ) {
         return;
       }
+      let txResponse: providers.TransactionResponse | undefined = undefined;
       try {
         onCommitPendingSignature();
         const proxyContract = BosonSnapshotGate__factory.connect(
@@ -881,6 +891,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 : "0"
           }
         );
+        txResponse = tx;
         onCommitPendingTransaction(tx.hash, false);
         const receipt = await tx.wait();
         const exchangeId = coreSDK.getCommittedExchangeIdFromLogs(
@@ -888,7 +899,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         ) as string;
         onCommitSuccess(receipt, { exchangeId });
       } catch (error) {
-        onCommitError(error as Error);
+        onCommitError(error as Error, { txResponse });
       }
     };
     return (
@@ -1171,7 +1182,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }}
                 onClick={() => {
                   showModal("REDEEMABLE_NFT_TERMS", {
-                    offerData: offer
+                    offerData: offer.id ? undefined : offer,
+                    offerId: offer.id ? offer.id : undefined
                   });
                 }}
               >

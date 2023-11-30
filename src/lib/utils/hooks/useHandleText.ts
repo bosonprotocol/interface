@@ -10,6 +10,7 @@ import { useMemo } from "react";
 
 import { CONFIG } from "../../config";
 import { Offer } from "../../types/offer";
+import { checkIfTimestampIsToo } from "../date";
 import { getDateTimestamp } from "../getDateTimestamp";
 
 export function useHandleText(offer: Offer) {
@@ -55,7 +56,11 @@ export function useHandleText(offer: Offer) {
           isToday: expiry.isSame(current, "day"),
           isExpired: expiry.isBefore(current),
           hours: expiry.diff(current, "hours"),
-          time: expiry.format("HH:mm")
+          time: expiry.format("HH:mm"),
+          withExpirationDate: !checkIfTimestampIsToo(
+            "too_big",
+            latestValidUntilDate
+          )
         }
       }
     };
@@ -112,7 +117,9 @@ export function useHandleText(offer: Offer) {
             }`
         : `Releases on ${release.date}`;
     } else if (!optionVoided) {
-      return expiry.diff.isExpired
+      return !expiry.diff.withExpirationDate
+        ? "Does not expire"
+        : expiry.diff.isExpired
         ? `Expired`
         : expiry.diff.days <= 10
         ? expiry.diff.days <= 0

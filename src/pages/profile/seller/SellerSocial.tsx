@@ -6,10 +6,7 @@ import { useEffect, useState } from "react";
 
 import DetailShare from "../../../components/detail/DetailShare";
 import { getLensWebsite } from "../../../components/modal/components/Profile/Lens/utils";
-import {
-  Profile,
-  ProfileFieldsFragment
-} from "../../../lib/utils/hooks/lens/graphql/generated";
+import { ProfileFieldsFragment } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { sanitizeUrl } from "../../../lib/utils/url";
 import { preAppendHttps } from "../../../lib/validation/regex/url";
 import {
@@ -56,7 +53,9 @@ export default function SellerSocial({
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
 
   const website = useLens
-    ? getLensWebsite(sellerLens as Profile)
+    ? sellerLens
+      ? getLensWebsite(sellerLens)
+      : null
     : seller.metadata?.website;
   const websiteToShow = website ? preAppendHttps(website) || false : false;
   const { envName } = config;

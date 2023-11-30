@@ -4,10 +4,13 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
@@ -231,7 +234,7 @@ export default function CompleteExchange({
               web3Provider: signer?.provider as Provider,
               metaTx: config.metaTx
             }}
-            onError={(error) => {
+            onError={async (error, { txResponse }) => {
               console.error("onError", error);
               const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
@@ -239,7 +242,11 @@ export default function CompleteExchange({
               } else {
                 Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
-                  errorMessage: "Something went wrong"
+                  errorMessage: "Something went wrong",
+                  detailedErrorMessage: await extractUserFriendlyError(error, {
+                    txResponse,
+                    provider: signer?.provider as Provider
+                  })
                 });
               }
             }}
@@ -285,7 +292,7 @@ export default function CompleteExchange({
               web3Provider: signer?.provider as Provider,
               metaTx: config.metaTx
             }}
-            onError={(error) => {
+            onError={async (error, { txResponse }) => {
               console.error("onError", error);
               const hasUserRejectedTx = getHasUserRejectedTx(error);
               if (hasUserRejectedTx) {
@@ -293,7 +300,11 @@ export default function CompleteExchange({
               } else {
                 Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
-                  errorMessage: "Something went wrong"
+                  errorMessage: "Something went wrong",
+                  detailedErrorMessage: await extractUserFriendlyError(error, {
+                    txResponse,
+                    provider: signer?.provider as Provider
+                  })
                 });
               }
             }}

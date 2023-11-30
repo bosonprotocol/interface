@@ -1,8 +1,9 @@
+import ContractualAgreementComponent from "components/contractualAgreement/ContractualAgreement";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import ContractualAgreementComponent from "../../components/contractualAgreement/ContractualAgreement";
-import Loading from "../../components/ui/Loading";
 import { UrlParameters } from "../../lib/routing/parameters";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
 
@@ -26,38 +27,42 @@ export default function ContractualAgreement() {
   );
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   if (isError) {
     return (
-      <div data-testid="errorExchange">
-        There has been an error, please try again later...
-      </div>
+      <EmptyErrorMessage
+        title="Error"
+        message="There has been an error, please try again later..."
+      />
     );
   }
 
   if (!offer) {
-    return <div data-testid="notFound">This exchange does not exist</div>;
+    return (
+      <EmptyErrorMessage
+        title="Not found"
+        message="This offer does not exist"
+      />
+    );
   }
 
   if (!offer.isValid) {
     return (
-      <div data-testid="invalidMetadata">
-        This offer does not match the expected metadata standard this
-        application enforces
-      </div>
+      <EmptyErrorMessage
+        title="Invalid offer"
+        message="This offer does not match the expected metadata standard this application enforces"
+      />
     );
   }
 
   return (
-    <>
-      <Container>
-        <ContractualAgreementComponent
-          offerId={offer.id}
-          offerData={undefined}
-        ></ContractualAgreementComponent>
-      </Container>
-    </>
+    <Container>
+      <ContractualAgreementComponent
+        offerId={offer.id}
+        offerData={undefined}
+      ></ContractualAgreementComponent>
+    </Container>
   );
 }

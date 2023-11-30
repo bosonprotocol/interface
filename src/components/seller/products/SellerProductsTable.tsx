@@ -64,7 +64,7 @@ const TagWrapper = styled.div`
   padding: 0.5em 0.75em;
   font-size: 0.75rem;
   font-weight: 600;
-  white-space: pre;
+  white-space: pre-line;
 `;
 
 const VoidButton = styled(BosonButton)`
@@ -582,7 +582,6 @@ export default function SellerProductsTable({
                         </Typography>
                       ),
                       action: !(
-                        variantStatus === OffersKit.OfferState.EXPIRED ||
                         variantStatus === OffersKit.OfferState.VOIDED ||
                         variant?.quantityAvailable === "0"
                       ) && (
@@ -753,7 +752,6 @@ export default function SellerProductsTable({
             })(),
             action: (() => {
               const withVoidButton = !(
-                status === OffersKit.OfferState.EXPIRED ||
                 status === OffersKit.OfferState.VOIDED ||
                 offer?.quantityAvailable === "0"
               );
@@ -1118,16 +1116,14 @@ export default function SellerProductsTable({
                 );
               })) || (
               <div>
-                <div>
-                  <Typography
-                    tag="h6"
-                    justifyContent="center"
-                    padding="1rem 0"
-                    margin="0"
-                  >
-                    No data to display
-                  </Typography>
-                </div>
+                <Typography
+                  tag="h6"
+                  justifyContent="center"
+                  padding="1rem 0"
+                  margin="0"
+                >
+                  No data to display
+                </Typography>
               </div>
             )}
           </div>

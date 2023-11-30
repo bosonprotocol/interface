@@ -1,5 +1,7 @@
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { BigNumber } from "ethers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useMemo } from "react";
@@ -14,7 +16,6 @@ import {
 } from "../../../components/modal/components/Profile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
-import Loading from "../../../components/ui/Loading";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -26,7 +27,6 @@ import {
 import useGetLensProfiles from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
-import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import useSellerNumbers from "../../../lib/utils/hooks/useSellerNumbers";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { getLensImageUrl } from "../../../lib/utils/images";
@@ -140,7 +140,9 @@ export default function Seller() {
       : null;
 
   const name =
-    (useLens ? sellerLens?.name : metadata?.name) ?? metadata?.name ?? "";
+    (useLens ? sellerLens?.name : metadata?.name) ??
+    metadata?.name ??
+    `Seller ID: ${sellerId}`;
   const description =
     (useLens ? sellerLens?.bio : metadata?.description) ??
     metadata?.description ??
@@ -178,20 +180,7 @@ export default function Seller() {
   );
 
   const {
-    data: { exchanges } = {},
-    isError: isErrorSellerCalculation,
-    isLoading: isLoadingSellersCalculation
-  } = useSellerCalculations(
-    {
-      sellerId
-    },
-    {
-      enabled: !!sellerId
-    }
-  );
-
-  const {
-    numbers: { exchanges: numExchanges, products: numProducts },
+    numbers: { products: numProducts },
     products,
     isError: isErrorProducts,
     isLoading: isLoadingProducts
@@ -201,36 +190,16 @@ export default function Seller() {
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
   const isSellerExists = isMySeller ? !!sellersData.length : !!sellers?.length;
 
-  const owners = useMemo(() => {
-    return [
-      ...Array.from(
-        new Set((exchanges || []).map((exchange) => exchange.buyer.id))
-      )
-    ].length;
-  }, [exchanges]);
-
-  if (
-    isLoading ||
-    isLoadingSellers ||
-    isLoadingSellersCalculation ||
-    isLoadingProducts
-  ) {
-    return <Loading />;
+  if (isLoading || isLoadingSellers || isLoadingProducts) {
+    return <LoadingMessage />;
   }
 
-  if (
-    isError ||
-    isErrorSellers ||
-    isErrorSellerCalculation ||
-    isErrorProducts
-  ) {
-    // TODO: NO FIGMA REPRESENTATION
+  if (isError || isErrorSellers || isErrorProducts) {
     return (
-      <BasicInfo>
-        <Typography tag="h2" margin="2rem auto">
-          There has been an error...
-        </Typography>
-      </BasicInfo>
+      <EmptyErrorMessage
+        title="Error"
+        message="There has been an error, please try again later..."
+      />
     );
   }
 
@@ -342,42 +311,6 @@ export default function Seller() {
                     fontWeight="600"
                   >
                     {numProducts || 0}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
-                    margin="0"
-                    color={colors.darkGrey}
-                  >
-                    Sold
-                  </Typography>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
-                    margin="0"
-                    fontWeight="600"
-                  >
-                    {numExchanges || 0}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
-                    margin="0"
-                    color={colors.darkGrey}
-                  >
-                    Owners
-                  </Typography>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
-                    margin="0"
-                    fontWeight="600"
-                  >
-                    {owners}
                   </Typography>
                 </div>
               </Grid>

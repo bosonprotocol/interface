@@ -1,7 +1,10 @@
 import { ExpireButton, Provider, subgraph } from "@bosonprotocol/react-kit";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { getHasUserRejectedTx } from "lib/utils/errors";
 import { poll } from "lib/utils/promises";
 import qs from "query-string";
 import { useState } from "react";
@@ -188,7 +191,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               metaTx: config.metaTx
             }}
             disabled={isLoading}
-            onError={(error) => {
+            onError={async (error, { txResponse }) => {
               console.error(error);
               setExpireError(error);
               setIsLoading(false);
@@ -198,7 +201,11 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               } else {
                 Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
-                  errorMessage: "Something went wrong"
+                  errorMessage: "Something went wrong",
+                  detailedErrorMessage: await extractUserFriendlyError(error, {
+                    txResponse,
+                    provider: signer?.provider as Provider
+                  })
                 });
               }
             }}

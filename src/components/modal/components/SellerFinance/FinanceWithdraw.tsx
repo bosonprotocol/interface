@@ -1,9 +1,12 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
+import {
+  extractUserFriendlyError,
+  getHasUserRejectedTx
+} from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber } from "ethers";
-import { getHasUserRejectedTx } from "lib/utils/errors";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import {
   getNumberWithDecimals,
@@ -190,7 +193,7 @@ export default function FinanceWithdraw({
             reload();
             setIsBeingWithdrawn(false);
           }}
-          onError={(error) => {
+          onError={async (error, { txResponse }) => {
             console.error("onError", error);
             const hasUserRejectedTx = getHasUserRejectedTx(error);
             if (hasUserRejectedTx) {
@@ -198,7 +201,11 @@ export default function FinanceWithdraw({
             } else {
               Sentry.captureException(error);
               showModal("TRANSACTION_FAILED", {
-                errorMessage: "Something went wrong"
+                errorMessage: "Something went wrong",
+                detailedErrorMessage: await extractUserFriendlyError(error, {
+                  txResponse,
+                  provider: signer?.provider as Provider
+                })
               });
             }
             setWithdrawError(error);

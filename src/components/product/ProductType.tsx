@@ -6,7 +6,7 @@ import { useOpenAccountDrawer } from "components/header/accountDrawer";
 import { useField } from "formik";
 import { isTruthy } from "lib/types/helpers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
-import { poll } from "lib/utils/promises";
+import { refetchSellerPolling } from "lib/utils/seller";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
@@ -289,49 +289,11 @@ export default function ProductType({
         onClose: async (...argsIfEdited: unknown[]) => {
           const userDidUpdateSeller = argsIfEdited.filter(isTruthy).length;
           if (userDidUpdateSeller) {
-            let attemps = 15;
-            await poll(
-              async () => {
-                attemps--;
-                return await refetch();
-              },
-              (refetchResult) => {
-                const [
-                  resultByAddress,
-                  ,
-                  ,
-                  resultRefetchFetchSellers,
-                  resultSellerById
-                ] = refetchResult;
-                let didSetMetadata = false;
-                if (
-                  resultByAddress.status === "fulfilled" &&
-                  resultByAddress.value
-                ) {
-                  didSetMetadata = !!resultByAddress.value.data?.sellers?.some(
-                    (s) => s.metadata
-                  );
-                }
-                if (
-                  !didSetMetadata &&
-                  resultRefetchFetchSellers.status === "fulfilled" &&
-                  resultRefetchFetchSellers.value
-                ) {
-                  didSetMetadata = !!resultRefetchFetchSellers.value.data?.some(
-                    (s) => s.metadata
-                  );
-                }
-                if (
-                  !didSetMetadata &&
-                  resultSellerById.status === "fulfilled" &&
-                  resultSellerById.value
-                ) {
-                  didSetMetadata = !!resultSellerById.value.data?.metadata;
-                }
-                return attemps > 0 && !didSetMetadata;
-              },
-              600
-            );
+            await refetchSellerPolling({
+              refetch,
+              attempts: 15,
+              propertyToCheck: "metadata"
+            });
           } else {
             return navigate({
               pathname: BosonRoutes.Root

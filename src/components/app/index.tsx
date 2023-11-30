@@ -1,5 +1,5 @@
 import { IconContext } from "phosphor-react";
-import styled, { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components";
 
 import ModalProvider from "../../components/modal/ModalProvider";
 import { getCurrentViewMode, ViewMode } from "../../lib/viewMode";
@@ -7,18 +7,8 @@ import ChatProvider from "../../pages/chat/ChatProvider/ChatProvider";
 import theme from "../../theme";
 import CookieBanner from "../cookie/CookieBanner";
 import { AppView } from "./AppView";
+import { Container } from "./index.styles";
 import { useWrapper } from "./useWrapper";
-
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  position: relative;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-`;
 
 interface Props {
   children: JSX.Element;

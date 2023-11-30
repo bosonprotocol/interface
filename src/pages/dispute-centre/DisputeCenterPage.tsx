@@ -1,9 +1,10 @@
+import { ConnectWalletErrorMessage } from "components/error/ConnectWalletErrorMessage";
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useMemo } from "react";
 import styled from "styled-components";
 
 import disputeResolutionBackground from "../../assets/background1.svg";
-import ConnectButton from "../../components/header/ConnectButton";
 import { LayoutRoot } from "../../components/layout/Layout";
 import DisputeListMobile from "../../components/modal/components/DisputeListMobile/DisputeListMobile";
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
@@ -80,6 +81,12 @@ const CustomGridContainer = styled.div`
     img {
       justify-self: flex-end;
     }
+  }
+`;
+
+const NoDisputes = styled(EmptyErrorMessage)`
+  .title {
+    font-size: 2.5rem;
   }
 `;
 
@@ -244,24 +251,17 @@ function DisputeCenterPage() {
                     )}
                   </>
                 ) : (
-                  <Typography>No disputes found</Typography>
+                  <NoDisputes
+                    title="No disputes found"
+                    message="Once you redeem an exchange, you'll be able to raise a dispute"
+                  />
                 )}
               </>
             )}
           </DisputeListContainer>
         </>
       ) : (
-        <Grid flexDirection="column" gap="1rem">
-          <Typography
-            marginTop="1rem"
-            justifyContent="center"
-            alignItems="center"
-            $fontSize="2rem"
-          >
-            Please connect your wallet to display your disputes
-          </Typography>
-          <ConnectButton />
-        </Grid>
+        <ConnectWalletErrorMessage message="Please connect your wallet to display your disputes" />
       )}
     </>
   );

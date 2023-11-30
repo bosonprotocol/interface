@@ -4,29 +4,33 @@ import {
   Profile
 } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 
-export const getLensEmail = (profile: Profile): string => {
+export const getLensEmail = (profile: Pick<Profile, "attributes">): string => {
   return (
     profile.attributes?.find((attribute) => attribute.key === "email")?.value ??
     ""
   );
 };
 
-export const getLensWebsite = (profile: Profile): string => {
+export const getLensWebsite = (
+  profile: Pick<Profile, "attributes">
+): string => {
   return (
     profile.attributes?.find((attribute) => attribute.key === "website")
       ?.value ?? ""
   );
 };
 
-export const getLensName = (profile: Profile): string => {
+export const getLensName = (profile: Pick<Profile, "name">): string => {
   return profile.name ?? "";
 };
 
-export const getLensDescription = (profile: Profile): string => {
+export const getLensDescription = (profile: Pick<Profile, "bio">): string => {
   return profile.bio ?? "";
 };
 
-export const getLensLegalTradingName = (profile: Profile): string => {
+export const getLensLegalTradingName = (
+  profile: Pick<Profile, "attributes">
+): string => {
   return (
     profile.attributes?.find(
       (attribute) => attribute.key === "legalTradingName"
@@ -35,7 +39,7 @@ export const getLensLegalTradingName = (profile: Profile): string => {
 };
 
 export const getLensProfilePictureUrl = (
-  profile: Profile | undefined
+  profile: Pick<Profile, "picture"> | undefined
 ): string => {
   return (
     (profile?.picture as MediaSet)?.original?.url ||
@@ -44,7 +48,9 @@ export const getLensProfilePictureUrl = (
   );
 };
 
-export const getLensCoverPictureUrl = (profile: Profile): string => {
+export const getLensCoverPictureUrl = (
+  profile: Pick<Profile, "coverPicture">
+): string => {
   return (profile?.coverPicture as MediaSet)?.original?.url || "";
 };
 

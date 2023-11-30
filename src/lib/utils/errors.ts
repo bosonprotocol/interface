@@ -14,22 +14,3 @@ export function toReadableError(errorText: string, error: unknown) {
   }
   return new Error(`${errorText} 👺 ${error}`);
 }
-
-export function extractUserFriendlyError(error: Error): string | undefined {
-  const m = error.toString().match(/(?<=execution reverted: ).*/)?.[0];
-  const endIndex = m?.indexOf(`\\",`);
-  const details = m?.substring(
-    0,
-    endIndex === -1 ? m?.indexOf(`",`) : endIndex
-  );
-  return details;
-}
-
-export function getHasUserRejectedTx(error: unknown): boolean {
-  const hasUserRejectedTx =
-    !!error &&
-    typeof error === "object" &&
-    "code" in error &&
-    error.code === "ACTION_REJECTED";
-  return hasUserRejectedTx;
-}

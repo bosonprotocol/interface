@@ -202,7 +202,7 @@ export const SellerLandingPage: React.FC = () => {
                 </span>
               </BosonButton>
               <Typography fontWeight="600" $fontSize="20px" textAlign="center">
-                or select a template below
+                or select a template
               </Typography>
             </StyledGrid>
           </GridContainer>

@@ -1,3 +1,5 @@
+import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
+import { LoadingMessage } from "components/loading/LoadingMessage";
 import { BigNumber } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -16,7 +18,6 @@ import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
-import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
@@ -126,14 +127,15 @@ export default function ProductDetail() {
     : true;
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingMessage />;
   }
 
   if (isError) {
     return (
-      <div data-testid="errorProduct">
-        There has been an error, please try again later...
-      </div>
+      <EmptyErrorMessage
+        title="Error while retrieving this product"
+        message="There has been an error, please try again later..."
+      />
     );
   }
 
@@ -143,7 +145,12 @@ export default function ProductDetail() {
     !product ||
     !product.id
   ) {
-    return <div data-testid="notFound">This product does not exist</div>;
+    return (
+      <EmptyErrorMessage
+        title="This product does not exist"
+        message="Check if you selected the appropiate chain in the top bar"
+      />
+    );
   }
 
   if (!isSellerCurated) {

@@ -1,3 +1,4 @@
+import { zIndex } from "lib/styles/zIndex";
 import { CSSProperties, useMemo } from "react";
 import styled from "styled-components";
 
@@ -39,6 +40,7 @@ const Footer = styled.footer<{ padding?: CSSProperties["padding"] }>`
 
   padding: ${({ padding }) => padding || "4rem 1rem 2rem 1rem"};
   margin-top: auto;
+  z-index: ${zIndex.Footer};
 `;
 
 const LogoGrid = styled(Grid)`
