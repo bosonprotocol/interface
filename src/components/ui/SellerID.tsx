@@ -61,7 +61,15 @@ const ImageContainer = styled.div`
 `;
 
 type Buyer = Pick<subgraph.Buyer, "id" | "wallet">;
-type Seller = Pick<subgraph.Seller, "id" | "assistant">;
+type Seller = Pick<
+  subgraph.Seller,
+  "id" | "assistant" | "authTokenType" | "authTokenId"
+> & {
+  metadata?: {
+    name?: string | null;
+    images?: { url: string; tag: string }[] | null;
+  } | null;
+};
 
 const SellerID: React.FC<
   {
@@ -101,7 +109,7 @@ const SellerID: React.FC<
       : (buyerOrSeller as Buyer).wallet
     : address;
   const hasCursorPointer = !!onClick || onClick === undefined;
-  const seller = offer?.seller;
+  const seller = isSeller ? (buyerOrSeller as Seller) : offer?.seller;
   const metadata = seller?.metadata;
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const regularProfilePicture =

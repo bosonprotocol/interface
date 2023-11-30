@@ -27,6 +27,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
+import { useLensProfilesPerSellerIds } from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import useCheckExchangePolicy from "../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
@@ -84,11 +85,11 @@ export default function Exchange() {
 
   const { data: sellers } = useSellers(
     {
-      id: offer?.seller.id,
+      id: sellerId,
       includeFunds: true
     },
     {
-      enabled: !!offer?.seller.id
+      enabled: !!sellerId
     }
   );
   const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
@@ -103,6 +104,16 @@ export default function Exchange() {
   const exchangePolicyCheckResult = useCheckExchangePolicy({
     offerId: offer?.id
   });
+
+  // fetch lensProfile for current SellerId
+  const seller = sellers?.[0];
+  const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
+    { sellers: seller ? [seller] : [] },
+    { enabled: !!seller }
+  );
+  const sellerLensProfile = seller
+    ? sellerLensProfilePerSellerId?.get(seller.id)
+    : undefined;
 
   if (isLoading) {
     return <LoadingMessage />;
@@ -174,9 +185,10 @@ export default function Exchange() {
               <>
                 <SellerID
                   offer={offer}
-                  buyerOrSeller={offer?.seller}
+                  buyerOrSeller={exchange?.seller}
                   justifyContent="flex-start"
                   withProfileImage
+                  lensProfile={sellerLensProfile}
                 />
                 <Typography
                   tag="h1"

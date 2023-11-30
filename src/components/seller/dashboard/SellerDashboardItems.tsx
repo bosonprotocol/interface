@@ -4,6 +4,7 @@ import { ArrowRight } from "phosphor-react";
 
 import { CONFIG } from "../../../lib/config";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
@@ -21,6 +22,7 @@ import {
 interface Props {
   name: string;
   items: Exchange[];
+  sellerLensProfile?: Profile;
   onClick?: () => void;
 }
 
@@ -91,7 +93,12 @@ const ItemDates = (item: Exchange, type: string) => {
 
   return component();
 };
-export default function SellerDashboardItems({ items, name, onClick }: Props) {
+export default function SellerDashboardItems({
+  items,
+  name,
+  sellerLensProfile,
+  onClick
+}: Props) {
   return (
     <>
       <ItemsName onClick={onClick}>
@@ -116,10 +123,11 @@ export default function SellerDashboardItems({ items, name, onClick }: Props) {
                 <ExchangeName>{item?.offer?.metadata?.name}</ExchangeName>
                 <SellerID
                   offer={item?.offer}
-                  buyerOrSeller={item?.offer?.seller}
+                  buyerOrSeller={item?.seller}
                   withProfileImage
                   onClick={() => null}
                   withBosonStyles
+                  lensProfile={sellerLensProfile}
                 />
                 <div>
                   {itemDate?.first?.value && (

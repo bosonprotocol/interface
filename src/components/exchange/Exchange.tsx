@@ -1,4 +1,5 @@
 import {
+  AuthTokenType,
   Currencies,
   ExchangeCard,
   ExchangeCardStatus,
@@ -19,7 +20,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { calcPrice } from "../../lib/utils/calcPrice";
-import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -36,6 +37,7 @@ interface Props {
   offer: Offer;
   exchange: IExchange;
   isPrivateProfile?: boolean;
+  sellerLensProfile?: Profile;
 }
 
 const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
@@ -65,15 +67,27 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   }};
 `;
 
-export default function Exchange({ offer, exchange }: Props) {
+export default function Exchange({
+  offer,
+  exchange,
+  sellerLensProfile
+}: Props) {
   const { config } = useConfigContext();
-  const { lens: lensProfiles } = useCurrentSellers({
-    sellerId: offer?.seller?.id
-  });
-  const [lens] = lensProfiles;
-  const avatar = config.lens.ipfsGateway
-    ? getLensImageUrl(getLensProfilePictureUrl(lens), config.lens.ipfsGateway)
-    : null;
+  const seller = exchange?.seller;
+  const metadata = seller?.metadata;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
+  const regularProfilePicture =
+    metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
+  const avatar =
+    (useLens && config.lens.ipfsGateway
+      ? getLensImageUrl(
+          getLensProfilePictureUrl(sellerLensProfile),
+          config.lens.ipfsGateway
+        )
+      : regularProfilePicture) ?? regularProfilePicture;
+  const sellerName =
+    (useLens ? sellerLensProfile?.name : metadata?.name) ??
+    (metadata?.name || `Seller ID: ${seller?.id}`);
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
@@ -204,7 +218,7 @@ export default function Exchange({ offer, exchange }: Props) {
         dataCard="exchange-card"
         id={offer.id}
         title={offer.metadata.name}
-        avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
+        avatarName={sellerName}
         avatar={avatar || mockedAvatar}
         imageProps={{
           src: imageSrc,

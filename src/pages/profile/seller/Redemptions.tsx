@@ -3,6 +3,7 @@ import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
 
 import Exchange from "../../../components/exchange/Exchange";
+import { useLensProfilesPerSellerIds } from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import {
   Exchange as IExchange,
   useExchanges
@@ -30,6 +31,12 @@ export default function Redemptions({ sellerId }: Props) {
       state: subgraph.ExchangeState.Redeemed
     },
     { enabled: !!sellerId }
+  );
+
+  const seller = exchangesSeller?.[0]?.seller;
+  const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
+    { sellers: seller ? [seller] : [] },
+    { enabled: !!seller }
   );
 
   if (isLoading) {
@@ -69,6 +76,7 @@ export default function Redemptions({ sellerId }: Props) {
           key={exchange.id}
           {...exchange}
           exchange={exchange as IExchange}
+          sellerLensProfile={sellerLensProfilePerSellerId?.get(sellerId)}
         />
       ))}
     </ProductGridContainer>

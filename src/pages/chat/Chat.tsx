@@ -15,6 +15,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
+import { useLensProfilesPerSellerIds } from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useDisputes } from "../../lib/utils/hooks/useDisputes";
@@ -103,15 +104,35 @@ export default function Chat() {
     }
   );
 
-  const exchanges = useMemo(() => {
-    return Array.from(
-      new Map(
-        [...(exchangesAsTheBuyer || []), ...(exchangesAsTheSeller || [])].map(
-          (v) => [v.id, v]
-        )
-      ).values()
-    );
+  const { sellers, exchanges } = useMemo(() => {
+    const allSellersWithDup = exchangesAsTheBuyer
+      ? [...exchangesAsTheBuyer.map((e) => e.seller)]
+      : [];
+    if (exchangesAsTheSeller && exchangesAsTheSeller?.length > 0) {
+      allSellersWithDup.push(exchangesAsTheSeller[0].seller);
+    }
+    const sellersMap = allSellersWithDup.reduce((map, seller) => {
+      if (!map.has(seller.id)) {
+        map.set(seller.id, seller);
+      }
+      return map;
+    }, new Map<string, typeof allSellersWithDup[0]>());
+    return {
+      sellers: Array.from(sellersMap.values()),
+      exchanges: Array.from(
+        new Map(
+          [...(exchangesAsTheBuyer || []), ...(exchangesAsTheSeller || [])].map(
+            (v) => [v.id, v]
+          )
+        ).values()
+      )
+    };
   }, [exchangesAsTheBuyer, exchangesAsTheSeller]);
+
+  const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
+    { sellers },
+    { enabled: sellers && sellers.length > 0 }
+  );
 
   // Fetch all data about exchanges (dispute data) in a unique request
   const { data: disputes } = useDisputes(
@@ -234,6 +255,7 @@ export default function Chat() {
               myBuyerId={buyerId}
               mySellerId={sellerId}
               exchanges={exchanges}
+              sellerLensProfilePerSellerId={sellerLensProfilePerSellerId}
               prevPath={previousPath}
               isConversationOpened={
                 location.pathname !== `${chatUrl}/` &&
@@ -272,6 +294,9 @@ export default function Chat() {
                       mySellerId={sellerId}
                       key={selectedExchange?.id || ""}
                       exchange={selectedExchange}
+                      sellerLensProfile={sellerLensProfilePerSellerId?.get(
+                        sellerId
+                      )}
                       dispute={disputeDataPerExchangeId?.get(
                         selectedExchange?.id || ""
                       )}
