@@ -1,19 +1,15 @@
-import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
-import { useMemo } from "react";
 import { useQuery } from "react-query";
 
-import { getLensTokenIdHex } from "../../../components/modal/components/Profile/Lens/utils";
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
-import { Profile } from "./lens/graphql/generated";
-import useGetLensProfiles from "./lens/profile/useGetLensProfiles";
 import { offerGraphQl } from "./offers/graphql";
 import { useCurationLists } from "./useCurationLists";
 
-export type Exchange = subgraph.ExchangeFieldsFragment & { offer: Offer } & {
-  lensProfile?: Profile;
+export type Exchange = subgraph.ExchangeFieldsFragment & {
+  offer: Offer;
 };
 
 export type Disputes = subgraph.DisputeFieldsFragment & {
@@ -91,17 +87,9 @@ const getExchangesFunction = (subgraphUrl: string) => async (props: Props) => {
         }) {
         dispute {
           id
-          exchangeId
-          state
           buyerPercent
-          disputedDate
+          state
           escalatedDate
-          finalizedDate
-          retractedDate
-          resolvedDate
-          decidedDate
-          refusedDate
-          timeout
         }
         cancelledDate
         committedDate
@@ -164,7 +152,7 @@ export function useExchanges(
     ? curationLists.sellerCurationList
     : undefined;
 
-  const queryResult = useQuery(
+  return useQuery(
     ["exchanges", props, sellerIn, subgraphUrl, OFFERS_PER_PAGE, curationLists],
     async () => {
       const result = await fetchExchanges({
@@ -187,14 +175,8 @@ export function useExchanges(
         loop = dataToAdd?.length === OFFERS_PER_PAGE;
         productsSkip += OFFERS_PER_PAGE;
       }
-      const sellerIdSet = new Set<string>();
-      const allSellers: Array<Exchange["seller"]> = [];
-      const allExchanges =
+      return (
         data?.map((exchange) => {
-          if (!sellerIdSet.has(exchange.seller.id)) {
-            sellerIdSet.add(exchange.seller.id);
-            allSellers.push(exchange.seller);
-          }
           const isCuratedSeller =
             !curationLists.sellerCurationList ||
             curationLists.sellerCurationList?.includes(exchange.seller.id);
@@ -214,77 +196,11 @@ export function useExchanges(
               isValid: true
             } as Offer
           };
-        }) ?? [];
-
-      return { allExchanges, allSellers };
+        }) ?? []
+      );
     },
     {
       ...options
     }
   );
-  const { sellerIdPerLensToken, lensProfileIds } = useMemo(() => {
-    const allSellers = queryResult.isSuccess ? queryResult.data.allSellers : [];
-    // fetch Lens profile for all sellers with LENS
-    return allSellers
-      .filter((seller) => seller.authTokenType === AuthTokenType.LENS)
-      .reduce(
-        (
-          {
-            sellerIdPerLensToken: _sellerIdPerLensToken,
-            lensProfileIds: _lensProfileIds
-          },
-          seller
-        ) => {
-          const sellerId = seller.id;
-          const tokenId = getLensTokenIdHex(seller.authTokenId);
-          if (!_sellerIdPerLensToken.has(tokenId)) {
-            _sellerIdPerLensToken.set(tokenId, sellerId);
-            _lensProfileIds.push(tokenId);
-          }
-          return {
-            sellerIdPerLensToken: _sellerIdPerLensToken,
-            lensProfileIds: _lensProfileIds
-          };
-        },
-        {
-          sellerIdPerLensToken: new Map<string, string>(),
-          lensProfileIds: [] as string[]
-        }
-      );
-  }, [queryResult]);
-  const { data: profileData, isSuccess } = useGetLensProfiles(
-    {
-      profileIds: lensProfileIds
-    },
-    {
-      enabled: lensProfileIds.length > 0
-    }
-  );
-  const sellerLensProfilePerSellerId = useMemo(() => {
-    return isSuccess && profileData?.items
-      ? profileData.items.reduce((map, profile) => {
-          if (profile) {
-            console.log(
-              `useExchange - Lookup LENS profile with data ${JSON.stringify(
-                profile
-              )}`
-            );
-            const sellerId = sellerIdPerLensToken.get(
-              String(profile.id)
-            ) as string;
-            return map.set(sellerId, profile as Profile);
-          }
-          return map;
-        }, new Map<string, Profile>())
-      : new Map<string, Profile>();
-  }, [profileData, isSuccess, sellerIdPerLensToken]);
-  return {
-    ...queryResult,
-    data: queryResult.isSuccess
-      ? queryResult.data.allExchanges.map((exchange) => ({
-          ...exchange,
-          lensProfile: sellerLensProfilePerSellerId.get(exchange.seller.id)
-        }))
-      : undefined
-  };
 }
