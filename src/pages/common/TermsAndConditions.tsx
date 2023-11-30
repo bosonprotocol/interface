@@ -307,8 +307,8 @@ export default function TermsAndConditions() {
           <Break />
           <Text>
             <b>Nature of dApp.</b> The dApp is a public software utility that
-            communicates with blockchain, which is accessible through any
-            compatible Ethereum “wallet” application.{" "}
+            communicates with blockchain infrastructure, which is accessible
+            through any EVM compatible “wallet” application.{" "}
           </Text>
           <Text>
             <b>Seller Information.</b> The information you input to create a
@@ -1006,8 +1006,15 @@ export default function TermsAndConditions() {
             and to the art and drawings associated with the dApp and content
             therein) other than those expressly contained in these Terms. The
             software and computer code are released under the Apache v2 License
-            (link) which explains the terms and conditions for use,
-            reproduction, and distribution of the code.{" "}
+            (
+            <a
+              href="https://www.apache.org/licenses/LICENSE-2.0"
+              target="__blank"
+            >
+              link
+            </a>
+            ) which explains the terms and conditions for use, reproduction, and
+            distribution of the code.{" "}
           </Text>
           <Text>
             All the brands, the relative figurative and/or shape trademarks, all
