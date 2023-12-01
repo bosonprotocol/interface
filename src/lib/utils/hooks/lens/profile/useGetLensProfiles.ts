@@ -51,38 +51,22 @@ export function useLensProfilesPerSellerIds(
   const { config } = useConfigContext();
   const lensApiLink = config.lens.apiLink || "";
   const { enabled } = options;
-  const { sellerIdPerLensToken, lensProfileIds } = props.sellers
+  const sellerIdPerLensToken = props.sellers
     .filter((seller) => seller.authTokenType === AuthTokenType.LENS)
-    .reduce(
-      (
-        {
-          sellerIdPerLensToken: _sellerIdPerLensToken,
-          lensProfileIds: _lensProfileIds
-        },
-        seller
-      ) => {
-        const sellerId = seller.id;
-        const tokenId = getLensTokenIdHex(seller.authTokenId);
-        if (!_sellerIdPerLensToken.has(tokenId)) {
-          _sellerIdPerLensToken.set(tokenId, sellerId);
-          _lensProfileIds.push(tokenId);
-        }
-        return {
-          sellerIdPerLensToken: _sellerIdPerLensToken,
-          lensProfileIds: _lensProfileIds
-        };
-      },
-      {
-        sellerIdPerLensToken: new Map<string, string>(),
-        lensProfileIds: [] as string[]
+    .reduce((_sellerIdPerLensToken, seller) => {
+      const sellerId = seller.id;
+      const tokenId = getLensTokenIdHex(seller.authTokenId);
+      if (!_sellerIdPerLensToken.has(tokenId)) {
+        _sellerIdPerLensToken.set(tokenId, sellerId);
       }
-    );
+      return _sellerIdPerLensToken;
+    }, new Map<string, string>());
   const lensProfiles = useQuery(
-    ["get-lens-profiles", lensProfileIds, lensApiLink],
+    ["get-lens-profiles", sellerIdPerLensToken, lensApiLink],
     async () => {
       return getLensProfiles(
         {
-          profileIds: lensProfileIds
+          profileIds: Array.from(sellerIdPerLensToken.keys())
         },
         lensApiLink
       );
@@ -95,11 +79,6 @@ export function useLensProfilesPerSellerIds(
     return lensProfiles.isSuccess && lensProfiles.data?.items
       ? lensProfiles.data?.items.reduce((map, profile) => {
           if (profile) {
-            console.log(
-              `useProduct - Lookup LENS profile with data ${JSON.stringify(
-                profile
-              )}`
-            );
             const sellerId = sellerIdPerLensToken.get(
               String(profile.id)
             ) as string;

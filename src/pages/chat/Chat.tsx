@@ -131,7 +131,7 @@ export default function Chat() {
 
   const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
     { sellers },
-    { enabled: sellers && sellers.length > 0 }
+    { enabled: Boolean(sellers?.length) }
   );
 
   // Fetch all data about exchanges (dispute data) in a unique request
@@ -142,7 +142,7 @@ export default function Chat() {
       }
     },
     {
-      enabled: exchanges?.length
+      enabled: Boolean(exchanges?.length)
     }
   );
   const disputeDataPerExchangeId = (disputes || []).reduce(

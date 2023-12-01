@@ -1,18 +1,15 @@
-import { AuthTokenType } from "@bosonprotocol/react-kit";
 import qs from "query-string";
 import { Fragment, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
-import { getLensTokenIdHex } from "../../components/modal/components/Profile/Lens/utils";
 import { useSortOffers } from "../../components/price/useSortOffers";
 import ProductCard from "../../components/productCard/ProductCard";
 import Grid from "../../components/ui/Grid";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import useGetLensProfiles from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { ProductGridContainer } from "../profile/ProfilePage.styles";
 import ExploreViewMore from "./ExploreViewMore";
@@ -58,59 +55,15 @@ function Explore({
     data: products?.sellers || [],
     ...filterOptions
   });
-  // TODO: search for seller lens profile and map them per sellerId
-  const { sellerIdPerLensToken, lensProfileIds } = offerArray
-    .filter((offer) => offer.seller.authTokenType === AuthTokenType.LENS)
-    .reduce(
-      (
-        {
-          sellerIdPerLensToken: _sellerIdPerLensToken,
-          lensProfileIds: _lensProfileIds
-        },
-        offer
-      ) => {
-        const sellerId = offer.seller.id;
-        const tokenId = getLensTokenIdHex(offer.seller.authTokenId);
-        if (!_sellerIdPerLensToken.has(tokenId)) {
-          console.log(`Adding seller ${sellerId}, with lens token ${tokenId}`);
-          _sellerIdPerLensToken.set(tokenId, sellerId);
-          _lensProfileIds.push(tokenId);
-        }
-        return {
-          sellerIdPerLensToken: _sellerIdPerLensToken,
-          lensProfileIds: _lensProfileIds
-        };
-      },
-      {
-        sellerIdPerLensToken: new Map<string, string>(),
-        lensProfileIds: [] as string[]
+  const sellerLensProfilePerSellerId = (products?.sellers || []).reduce(
+    (map, seller) => {
+      if (!map.has(seller.id) && !!seller.lensProfile) {
+        map.set(seller.id, seller.lensProfile);
       }
-    );
-  const { data: profileData, isSuccess } = useGetLensProfiles(
-    {
-      profileIds: lensProfileIds
+      return map;
     },
-    {
-      enabled: lensProfileIds.length > 0
-    }
+    new Map<string, Profile>()
   );
-  const sellerLensProfilePerSellerId =
-    isSuccess && profileData?.items
-      ? profileData.items.reduce((map, profile) => {
-          if (profile) {
-            console.log(
-              `Explore - Lookup LENS profile with data ${JSON.stringify(
-                profile
-              )}`
-            );
-            const sellerId = sellerIdPerLensToken.get(
-              String(profile.id)
-            ) as string;
-            return map.set(sellerId, profile as Profile);
-          }
-          return map;
-        }, new Map<string, Profile>())
-      : new Map<string, Profile>();
 
   return (
     <Grid flexDirection="column" gap="2rem" justifyContent="flex-start">

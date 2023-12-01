@@ -41,7 +41,7 @@ export default function Exchanges({ sellerId }: Props) {
 
   const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
     { sellers },
-    { enabled: sellers?.length }
+    { enabled: Boolean(sellers?.length) }
   );
 
   if (isLoading) {

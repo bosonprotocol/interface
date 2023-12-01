@@ -1,8 +1,4 @@
-import {
-  AuthTokenType,
-  offers as offersSdk,
-  subgraph
-} from "@bosonprotocol/react-kit";
+import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import groupBy from "lodash/groupBy";
@@ -13,7 +9,6 @@ import { useContext, useMemo } from "react";
 import { useQuery } from "react-query";
 
 import ConvertionRateContext from "../../../../components/convertion-rate/ConvertionRateContext";
-import { getLensTokenIdHex } from "../../../../components/modal/components/Profile/Lens/utils";
 import type {
   ExtendedOffer,
   ExtendedSeller
@@ -24,8 +19,7 @@ import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
-import { Profile } from "../lens/graphql/generated";
-import useGetLensProfiles from "../lens/profile/useGetLensProfiles";
+import { useLensProfilesPerSellerIds } from "../lens/profile/useGetLensProfiles";
 import { useCurationLists } from "../useCurationLists";
 import { Exchange } from "../useExchanges";
 
@@ -331,60 +325,16 @@ export default function useProducts(
     }
   );
 
-  // fetch Lens profile for all sellers with LENS
-  const { sellerIdPerLensToken, lensProfileIds } = allSellers
-    .filter((seller) => seller.authTokenType === AuthTokenType.LENS)
-    .reduce(
-      (
-        {
-          sellerIdPerLensToken: _sellerIdPerLensToken,
-          lensProfileIds: _lensProfileIds
-        },
-        seller
-      ) => {
-        const sellerId = seller.id;
-        const tokenId = getLensTokenIdHex(seller.authTokenId);
-        if (!_sellerIdPerLensToken.has(tokenId)) {
-          _sellerIdPerLensToken.set(tokenId, sellerId);
-          _lensProfileIds.push(tokenId);
-        }
-        return {
-          sellerIdPerLensToken: _sellerIdPerLensToken,
-          lensProfileIds: _lensProfileIds
-        };
-      },
-      {
-        sellerIdPerLensToken: new Map<string, string>(),
-        lensProfileIds: [] as string[]
-      }
-    );
-  const { data: profileData, isSuccess } = useGetLensProfiles(
+  const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
     {
-      profileIds: lensProfileIds
+      sellers: allSellers
     },
     {
-      enabled: lensProfileIds.length > 0
+      enabled: Boolean(allSellers?.length)
     }
   );
 
   const allExtendedSellers = useMemo(() => {
-    const sellerLensProfilePerSellerId =
-      isSuccess && profileData?.items
-        ? profileData.items.reduce((map, profile) => {
-            if (profile) {
-              console.log(
-                `useProduct - Lookup LENS profile with data ${JSON.stringify(
-                  profile
-                )}`
-              );
-              const sellerId = sellerIdPerLensToken.get(
-                String(profile.id)
-              ) as string;
-              return map.set(sellerId, profile as Profile);
-            }
-            return map;
-          }, new Map<string, Profile>())
-        : new Map<string, Profile>();
     return (
       sellerIds?.map((brandName) => {
         const sellerId = brandName;
@@ -426,15 +376,13 @@ export default function useProducts(
           offers: products, // REASSIGN OFFERS for compatibility with previous code
           products,
           numExchanges: exchangesBySellers.data?.[sellerId]?.length ?? 0,
-          lensProfile: sellerLensProfilePerSellerId.get(seller.id)
+          lensProfile: sellerLensProfilePerSellerId?.get(seller.id)
         };
       }) || []
     );
   }, [
-    isSuccess,
-    profileData,
     sellerIds,
-    sellerIdPerLensToken,
+    sellerLensProfilePerSellerId,
     groupedSellers,
     exchangesBySellers.data
   ]);
