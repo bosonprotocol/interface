@@ -425,7 +425,7 @@ export default function useProducts(
           },
           offers: products, // REASSIGN OFFERS for compatibility with previous code
           products,
-          numExchanges: exchangesBySellers.data?.[sellerId]?.length,
+          numExchanges: exchangesBySellers.data?.[sellerId]?.length ?? 0,
           lensProfile: sellerLensProfilePerSellerId.get(seller.id)
         };
       }) || []

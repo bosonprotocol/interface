@@ -138,11 +138,11 @@ export default function Chat() {
   const { data: disputes } = useDisputes(
     {
       disputesFilter: {
-        exchange_in: exchanges?.filter(isTruthy).map((exchange) => exchange?.id)
+        exchange_in: exchanges?.filter(isTruthy).map((exchange) => exchange.id)
       }
     },
     {
-      enabled: !!exchanges && exchanges.length > 0
+      enabled: exchanges?.length
     }
   );
   const disputeDataPerExchangeId = (disputes || []).reduce(

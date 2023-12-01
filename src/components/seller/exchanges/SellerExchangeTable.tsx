@@ -244,7 +244,10 @@ export default function SellerExchangeTable({
     () =>
       data?.map((element) => {
         const status = element ? ExchangesKit.getExchangeState(element) : "";
-        const dispute = element?.dispute as subgraph.DisputeFieldsFragment;
+        const dispute = element?.dispute as
+          | subgraph.DisputeFieldsFragment
+          | null
+          | undefined;
         return {
           exchangeId: element?.id,
           isSelectable: element && isExchangeCompletableBySeller(element),
