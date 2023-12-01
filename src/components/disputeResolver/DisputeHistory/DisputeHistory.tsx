@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -15,9 +16,10 @@ const OfferHistoryStatuses = styled.div`
 
 interface Props {
   exchange: Exchange;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
 }
 
-export const DisputeHistory = ({ exchange }: Props) => {
+export const DisputeHistory = ({ exchange, dispute }: Props) => {
   if (!exchange) {
     return null;
   }
@@ -25,7 +27,11 @@ export const DisputeHistory = ({ exchange }: Props) => {
   return (
     <OfferHistoryStatuses>
       {exchange ? (
-        <ExchangeTimeline exchange={exchange} showDispute={true}>
+        <ExchangeTimeline
+          exchange={exchange}
+          dispute={dispute}
+          showDispute={true}
+        >
           <h4>History</h4>
         </ExchangeTimeline>
       ) : (

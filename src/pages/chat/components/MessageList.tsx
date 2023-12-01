@@ -13,6 +13,7 @@ import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
+import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -139,6 +140,7 @@ interface Props {
   myBuyerId: string;
   mySellerId: string;
   exchanges: Exchange[];
+  sellerLensProfilePerSellerId: Map<string, Profile>;
   onChangeConversation: (exchange: Exchange) => void;
   chatListOpen: boolean;
   currentExchange?: Exchange;
@@ -154,6 +156,7 @@ export default memo(function MessageList({
   myBuyerId,
   mySellerId,
   exchanges,
+  sellerLensProfilePerSellerId,
   onChangeConversation,
   chatListOpen,
   currentExchange,
@@ -245,9 +248,9 @@ export default memo(function MessageList({
             const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
             const iAmBoth = iAmTheBuyer && iAmTheSeller;
             const buyerOrSellerToShow = iAmBoth
-              ? exchange?.offer.seller
+              ? exchange?.seller
               : iAmTheBuyer
-              ? exchange?.offer.seller
+              ? exchange?.seller
               : exchange?.buyer;
             const animationUrl = exchange?.offer.metadata.animationUrl || "";
             const renderProductImage = () => {
@@ -306,6 +309,9 @@ export default memo(function MessageList({
                       withProfileImage
                       onClick={() => null}
                       withBosonStyles={false}
+                      lensProfile={sellerLensProfilePerSellerId?.get(
+                        buyerOrSellerToShow.id
+                      )}
                     />
                   </MessageInfo>
                 </MessageContent>

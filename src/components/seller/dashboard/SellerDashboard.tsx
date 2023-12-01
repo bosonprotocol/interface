@@ -10,6 +10,7 @@ import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPricePassedAsAProp } from "../../../lib/utils/convertPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { useLensProfilesPerSellerIds } from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction";
@@ -109,6 +110,16 @@ export default function SellerDashboard({
   const { data: offers, isLoading: isLoadingOffers } = offersData;
   const { data: exchanges, isLoading: isLoadingExchanges } = exchangesData;
 
+  // fetch lensProfile for current SellerId
+  const seller = exchanges?.[0]?.seller;
+  const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
+    { sellers: seller ? [seller] : [] },
+    { enabled: !!seller }
+  );
+  const sellerLensProfile = seller
+    ? sellerLensProfilePerSellerId?.get(seller.id)
+    : undefined;
+
   const commits = useMemo(() => filterItems(exchanges, "Commits"), [exchanges]);
   const redemptions = useMemo(
     () => filterItems(exchanges, "Redemptions"),
@@ -202,6 +213,7 @@ export default function SellerDashboard({
             <SellerDashboardItems
               name="Commits"
               items={commits.slice(0, 3)}
+              sellerLensProfile={sellerLensProfile}
               onClick={() => {
                 const pathname = getSellerCenterPath("Exchanges");
                 navigate({ pathname }, { state: { currentTag: "live-rnfts" } });
@@ -212,6 +224,7 @@ export default function SellerDashboard({
             <SellerDashboardItems
               name="Redemptions"
               items={redemptions.slice(0, 3)}
+              sellerLensProfile={sellerLensProfile}
               onClick={() => {
                 const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
                   [UrlParameters.sellerPage]: "exchanges"
@@ -227,6 +240,7 @@ export default function SellerDashboard({
             <SellerDashboardItems
               name="Disputes"
               items={disputes.slice(0, 3)}
+              sellerLensProfile={sellerLensProfile}
               onClick={() => {
                 const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
                   [UrlParameters.sellerPage]: "exchanges"

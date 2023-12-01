@@ -1,7 +1,9 @@
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { useMemo } from "react";
 
 import Exchange from "../../../components/exchange/Exchange";
+import { useLensProfilesPerSellerIds } from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import {
   Exchange as IExchange,
   useExchanges
@@ -25,6 +27,22 @@ export default function Exchanges({ buyerId }: Props) {
   } = useExchanges(
     { ...orderProps, disputed: null, buyerId },
     { enabled: !!buyerId }
+  );
+
+  const sellers = useMemo(() => {
+    const sellersMap = (exchangesBuyer || []).reduce((map, exchange) => {
+      const seller = exchange.seller;
+      if (!map.has(seller.id)) {
+        map.set(seller.id, seller);
+      }
+      return map;
+    }, new Map());
+    return Array.from(sellersMap.values());
+  }, [exchangesBuyer]);
+
+  const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
+    { sellers },
+    { enabled: Boolean(sellers?.length) }
   );
 
   if (isLoading) {
@@ -65,6 +83,9 @@ export default function Exchanges({ buyerId }: Props) {
             key={exchange.id}
             {...exchange}
             exchange={exchange as IExchange}
+            sellerLensProfile={sellerLensProfilePerSellerId?.get(
+              exchange.seller.id
+            )}
           />
         );
       })}

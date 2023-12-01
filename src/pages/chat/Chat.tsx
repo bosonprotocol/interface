@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { Container as OuterContainer } from "components/app/index.styles";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import ConnectWallet from "components/header/web3Status";
@@ -13,8 +14,11 @@ import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { isTruthy } from "../../lib/types/helpers";
+import { useLensProfilesPerSellerIds } from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
+import { useDisputes } from "../../lib/utils/hooks/useDisputes";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import ChatConversation from "./components/conversation/ChatConversation";
@@ -100,15 +104,53 @@ export default function Chat() {
     }
   );
 
-  const exchanges = useMemo(() => {
-    return Array.from(
-      new Map(
-        [...(exchangesAsTheBuyer || []), ...(exchangesAsTheSeller || [])].map(
-          (v) => [v.id, v]
-        )
-      ).values()
-    );
+  const { sellers, exchanges } = useMemo(() => {
+    const allSellersWithDup = exchangesAsTheBuyer
+      ? [...exchangesAsTheBuyer.map((e) => e.seller)]
+      : [];
+    if (exchangesAsTheSeller && exchangesAsTheSeller?.length > 0) {
+      allSellersWithDup.push(exchangesAsTheSeller[0].seller);
+    }
+    const sellersMap = allSellersWithDup.reduce((map, seller) => {
+      if (!map.has(seller.id)) {
+        map.set(seller.id, seller);
+      }
+      return map;
+    }, new Map<string, typeof allSellersWithDup[0]>());
+    return {
+      sellers: Array.from(sellersMap.values()),
+      exchanges: Array.from(
+        new Map(
+          [...(exchangesAsTheBuyer || []), ...(exchangesAsTheSeller || [])].map(
+            (v) => [v.id, v]
+          )
+        ).values()
+      )
+    };
   }, [exchangesAsTheBuyer, exchangesAsTheSeller]);
+
+  const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
+    { sellers },
+    { enabled: Boolean(sellers?.length) }
+  );
+
+  // Fetch all data about exchanges (dispute data) in a unique request
+  const { data: disputes } = useDisputes(
+    {
+      disputesFilter: {
+        exchange_in: exchanges?.filter(isTruthy).map((exchange) => exchange.id)
+      }
+    },
+    {
+      enabled: Boolean(exchanges?.length)
+    }
+  );
+  const disputeDataPerExchangeId = (disputes || []).reduce(
+    (_disputeDataPerExchangeId, dispute) => {
+      return _disputeDataPerExchangeId.set(dispute.exchange.id, dispute);
+    },
+    new Map<string, subgraph.DisputeFieldsFragment>()
+  );
 
   const refetchExchanges = useCallback(() => {
     refetchExchangesAsTheSeller();
@@ -213,6 +255,7 @@ export default function Chat() {
               myBuyerId={buyerId}
               mySellerId={sellerId}
               exchanges={exchanges}
+              sellerLensProfilePerSellerId={sellerLensProfilePerSellerId}
               prevPath={previousPath}
               isConversationOpened={
                 location.pathname !== `${chatUrl}/` &&
@@ -251,6 +294,12 @@ export default function Chat() {
                       mySellerId={sellerId}
                       key={selectedExchange?.id || ""}
                       exchange={selectedExchange}
+                      sellerLensProfile={sellerLensProfilePerSellerId?.get(
+                        sellerId
+                      )}
+                      dispute={disputeDataPerExchangeId?.get(
+                        selectedExchange?.id || ""
+                      )}
                       refetchExchanges={refetchExchanges}
                       setChatListOpen={setChatListOpen}
                       chatListOpen={chatListOpen}

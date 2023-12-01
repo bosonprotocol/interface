@@ -61,15 +61,18 @@ export function useSellers(
       curationLists.sellerCurationList
     ],
     async () => {
-      return accounts.subgraph.getSellers(subgraphUrl, {
-        sellersFilter: {
-          ...filter,
-          id_in: curationLists.sellerCurationList
-        },
-        sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-        sellersOrderDirection: subgraph.OrderDirection.Asc,
-        includeFunds: includeFunds
-      });
+      return !curationLists.sellerCurationList ||
+        curationLists.sellerCurationList?.length > 0
+        ? accounts.subgraph.getSellers(subgraphUrl, {
+            sellersFilter: {
+              ...filter,
+              id_in: curationLists.sellerCurationList
+            },
+            sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
+            sellersOrderDirection: subgraph.OrderDirection.Asc,
+            includeFunds: includeFunds
+          })
+        : [];
     },
     {
       ...options

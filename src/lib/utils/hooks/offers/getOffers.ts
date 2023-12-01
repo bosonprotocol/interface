@@ -104,16 +104,20 @@ async function fetchCurationListOffers(
 
   const [sellerCurationListResult, offerCurationListResult] = await Promise.all(
     [
-      fetchSubgraph<CurationListGetOffersResult>(
-        subgraphUrl,
-        getSellerCurationListOffersQuery,
-        queryVars
-      ),
-      fetchSubgraph<CurationListGetOffersResult>(
-        subgraphUrl,
-        getOfferCurationListOffersQuery,
-        queryVars
-      )
+      !sellerCurationList || sellerCurationList.length > 0
+        ? fetchSubgraph<CurationListGetOffersResult>(
+            subgraphUrl,
+            getSellerCurationListOffersQuery,
+            queryVars
+          )
+        : { productV1MetadataEntities: [] },
+      !offerCurationList || offerCurationList.length > 0
+        ? fetchSubgraph<CurationListGetOffersResult>(
+            subgraphUrl,
+            getOfferCurationListOffersQuery,
+            queryVars
+          )
+        : { productV1MetadataEntities: [] }
     ]
   );
 

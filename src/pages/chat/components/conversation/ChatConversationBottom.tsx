@@ -2,6 +2,7 @@ import {
   MessageData,
   MessageType
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import React, { useEffect, useState } from "react";
 
@@ -20,6 +21,7 @@ type ChatConversationBottomProps = Omit<
   Omit<ChatInfoBoxProps, "proposal" | "sendProposal" | "showProposal"> & {
     proposal: MessageData | null;
     isConversationBeingLoaded: boolean;
+    dispute: subgraph.DisputeFieldsFragment | undefined;
   };
 
 export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
@@ -29,6 +31,7 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
   destinationAddress,
   disableInputs,
   exchange,
+  dispute,
   onSentMessage,
   onTextAreaChange,
   prevPath,
@@ -103,6 +106,7 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
     <Grid flexDirection="column">
       <ChatInfoBox
         exchange={exchange}
+        dispute={dispute}
         proposal={proposal}
         sendProposal={sendProposal(MessageType.CounterProposal)}
         iAmTheBuyer={iAmTheBuyer}

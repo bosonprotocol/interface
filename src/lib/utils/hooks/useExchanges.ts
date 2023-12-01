@@ -88,8 +88,17 @@ const getExchangesFunction = (subgraphUrl: string) => async (props: Props) => {
         dispute {
           id
           buyerPercent
+          exchangeId
           state
+          buyerPercent
+          disputedDate
           escalatedDate
+          finalizedDate
+          retractedDate
+          resolvedDate
+          decidedDate
+          refusedDate
+          timeout
         }
         cancelledDate
         committedDate
@@ -111,6 +120,9 @@ const getExchangesFunction = (subgraphUrl: string) => async (props: Props) => {
           authTokenType
           voucherCloneAddress
           active
+          metadata {
+            name
+          }
         }
         buyer {
           id

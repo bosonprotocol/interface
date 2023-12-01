@@ -16,7 +16,7 @@ import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
 import { displayFloat } from "../../lib/utils/calcPrice";
-import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import {
@@ -38,6 +38,7 @@ interface Props {
   exchange?: NonNullable<Offer["exchanges"]>[number];
   dataTestId: string;
   isHoverDisabled?: boolean;
+  lensProfile?: Profile;
 }
 
 const ProductCardWrapper = styled.div<{
@@ -96,23 +97,23 @@ export default function ProductCard({
   offer,
   dataTestId,
   isHoverDisabled = false,
-  filterOptions
+  filterOptions,
+  lensProfile
 }: Props) {
   const { config } = useConfigContext();
   const isTokenGated = !!offer.condition?.id;
 
-  const { lens: lensProfiles } = useCurrentSellers({
-    sellerId: offer?.seller?.id
-  });
   const seller = offer?.seller;
   const metadata = seller?.metadata;
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const regularProfilePicture =
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
-  const [lens] = lensProfiles;
   const avatar =
     (useLens && config.lens.ipfsGateway
-      ? getLensImageUrl(getLensProfilePictureUrl(lens), config.lens.ipfsGateway)
+      ? getLensImageUrl(
+          getLensProfilePictureUrl(lensProfile),
+          config.lens.ipfsGateway
+        )
       : regularProfilePicture) ?? regularProfilePicture;
   const [avatarObj, setAvatarObj] = useState<{
     avatarUrl: string | null | undefined;
@@ -199,7 +200,8 @@ export default function ProductCard({
     offer?.additional?.variants?.length > 1 &&
     !allVariantsHaveSamePrice;
 
-  const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name ?? "";
+  const name =
+    (useLens ? lensProfile?.name : metadata?.name) ?? metadata?.name ?? "";
   const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
   const isLowerCardBgColorDefined = !!lowerCardBgColor;
   return (

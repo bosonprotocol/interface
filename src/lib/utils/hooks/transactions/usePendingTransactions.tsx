@@ -137,11 +137,14 @@ async function getReconciledPendingTransactions(
   pendingTransactions: PendingTransaction[]
 ) {
   try {
-    const logs = await coreSDK.getEventLogs({
-      logsFilter: {
-        hash_in: pendingTransactions.map((tx) => tx.hash)
-      }
-    });
+    const logs =
+      pendingTransactions.length > 0
+        ? await coreSDK.getEventLogs({
+            logsFilter: {
+              hash_in: pendingTransactions.map((tx) => tx.hash)
+            }
+          })
+        : [];
     const completedTxHashes = new Set(logs.map((log) => log.hash));
     return pendingTransactions.filter((tx) => !completedTxHashes.has(tx.hash));
   } catch (error) {

@@ -19,6 +19,7 @@ import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
+import { useLensProfilesPerSellerIds } from "../lens/profile/useGetLensProfiles";
 import { useCurationLists } from "../useCurationLists";
 import { Exchange } from "../useExchanges";
 
@@ -73,6 +74,13 @@ export default function useProducts(
 
   const { store } = useContext(ConvertionRateContext);
 
+  // If id_in or sellerId_in are empty list, then no need to fetch, result is necessarily empty
+  const emptyListFilter =
+    (baseProps.productsFilter.id_in &&
+      baseProps.productsFilter.id_in?.length === 0) ||
+    (baseProps.productsFilter.sellerId_in &&
+      baseProps.productsFilter.sellerId_in?.length === 0);
+
   const productsVariants = useQuery(
     [
       "get-all-products-variants",
@@ -89,7 +97,9 @@ export default function useProducts(
           ...baseProps.productsFilter
         }
       };
-      const data = props.onlyNotVoided
+      const data = emptyListFilter
+        ? []
+        : props.onlyNotVoided
         ? await coreSDK.getAllProductsWithNotVoidedVariants({ ...newProps })
         : await coreSDK.getAllProductsWithVariants({ ...newProps });
       let loop = data.length === OFFERS_PER_PAGE;
@@ -118,8 +128,9 @@ export default function useProducts(
     }
   );
 
-  const allProducts = useMemo(() => {
-    return (
+  const { allProducts, allSellers } = useMemo(() => {
+    const sellerMap = new Map<subgraph.Seller["id"], subgraph.Seller>();
+    const allProducts =
       (productsVariants?.data || [])
         ?.map((product) => {
           const allVariantsOrOnlyNotVoided:
@@ -130,6 +141,9 @@ export default function useProducts(
             : (product as subgraph.ProductV1Product).variants;
           const offers = (allVariantsOrOnlyNotVoided || [])?.map(
             ({ offer }) => {
+              if (!sellerMap.has(offer.seller.id)) {
+                sellerMap.set(offer.seller.id, offer.seller);
+              }
               const status = offersSdk.getOfferStatus(offer);
               const offerPrice = convertPrice({
                 price: calcPrice(
@@ -232,8 +246,8 @@ export default function useProducts(
 
           return null;
         })
-        .filter(isTruthy) || []
-    );
+        .filter(isTruthy) || [];
+    return { allProducts, allSellers: Array.from(sellerMap.values()) };
   }, [
     productsVariants?.data,
     props?.quantityAvailable_gte,
@@ -263,40 +277,42 @@ export default function useProducts(
           id: string;
         };
       }[] = [];
-      while (!result || result.exchanges.length === numItemsPerRequest) {
-        result = await fetchSubgraph<{
-          exchanges: {
-            seller: {
-              id: string;
-            };
-          }[];
-        }>(
-          subgraphUrl,
-          gql`
-            query GetSellersExchanges(
-              $sellerIds: [String]
-              $first: Int
-              $skip: Int
-            ) {
-              exchanges(
-                where: { seller_in: $sellerIds }
-                first: $first
-                skip: $skip
+      if (!sellerIds || sellerIds.length > 0) {
+        while (!result || result.exchanges.length === numItemsPerRequest) {
+          result = await fetchSubgraph<{
+            exchanges: {
+              seller: {
+                id: string;
+              };
+            }[];
+          }>(
+            subgraphUrl,
+            gql`
+              query GetSellersExchanges(
+                $sellerIds: [String]
+                $first: Int
+                $skip: Int
               ) {
-                seller {
-                  id
+                exchanges(
+                  where: { seller_in: $sellerIds }
+                  first: $first
+                  skip: $skip
+                ) {
+                  seller {
+                    id
+                  }
                 }
               }
+            `,
+            {
+              sellerIds,
+              first: numItemsPerRequest,
+              skip: skip
             }
-          `,
-          {
-            sellerIds,
-            first: numItemsPerRequest,
-            skip: skip
-          }
-        );
-        skip += numItemsPerRequest;
-        allExchanges.push(...result.exchanges);
+          );
+          skip += numItemsPerRequest;
+          allExchanges.push(...result.exchanges);
+        }
       }
 
       return groupBy(allExchanges, "seller.id") || {};
@@ -307,7 +323,16 @@ export default function useProducts(
     }
   );
 
-  const allSellers = useMemo(() => {
+  const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
+    {
+      sellers: allSellers
+    },
+    {
+      enabled: Boolean(allSellers?.length)
+    }
+  );
+
+  const allExtendedSellers = useMemo(() => {
     return (
       sellerIds?.map((brandName) => {
         const sellerId = brandName;
@@ -348,17 +373,23 @@ export default function useProducts(
           },
           offers: products, // REASSIGN OFFERS for compatibility with previous code
           products,
-          numExchanges: exchangesBySellers.data?.[sellerId]?.length
+          numExchanges: exchangesBySellers.data?.[sellerId]?.length ?? 0,
+          lensProfile: sellerLensProfilePerSellerId?.get(seller.id)
         };
       }) || []
     );
-  }, [sellerIds, groupedSellers, exchangesBySellers.data]);
+  }, [
+    sellerIds,
+    sellerLensProfilePerSellerId,
+    groupedSellers,
+    exchangesBySellers.data
+  ]);
 
   return {
     isLoading: productsVariants.isLoading || exchangesBySellers.isLoading,
     isError: productsVariants.isError || exchangesBySellers.isError,
     products: allProducts as unknown as ExtendedOffer[],
-    sellers: allSellers as unknown as ExtendedSeller[],
+    sellers: allExtendedSellers as unknown as ExtendedSeller[],
     refetch: () => {
       productsVariants.refetch();
       if (options.withNumExchanges) {

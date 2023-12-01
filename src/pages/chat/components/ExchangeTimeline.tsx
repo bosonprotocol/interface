@@ -3,12 +3,12 @@ import {
   MessageData,
   MessageType
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ReactNode, useMemo } from "react";
 
 import Timeline from "../../../components/timeline/Timeline";
 import { CONFIG } from "../../../lib/config";
-import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 
 const formatShortDate = (date: string) => {
@@ -21,6 +21,7 @@ const formatShortDate = (date: string) => {
 
 interface Props {
   exchange: Exchange | any;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
   children?: ReactNode;
   showDispute?: boolean;
   lastReceivedProposal?: MessageData | null;
@@ -30,20 +31,11 @@ interface Props {
 export default function ExchangeTimeline({
   children,
   exchange,
+  dispute,
   showDispute = true,
   lastReceivedProposal,
   lastSentProposal
 }: Props) {
-  const { data: disputes = [] } = useDisputes(
-    {
-      disputesFilter: {
-        exchange: exchange?.id
-      }
-    },
-    { enabled: !!exchange?.id && showDispute }
-  );
-  const [dispute] = disputes;
-
   const timesteps = useMemo(() => {
     const { committedDate, redeemedDate, cancelledDate, revokedDate } =
       exchange;

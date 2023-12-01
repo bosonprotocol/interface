@@ -2,7 +2,6 @@ import { MessageData } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/defini
 import { subgraph } from "@bosonprotocol/react-kit";
 
 import { getExchangeDisputeDates } from "../../../../../lib/utils/exchange";
-import { useDisputes } from "../../../../../lib/utils/hooks/useDisputes";
 import { DaysLeftToResolve } from "./DaysLeftToResolve";
 import { DrHasDecided } from "./DrHasDecided";
 import { ProposalButtons, ProposalButtonsProps } from "./ProposalButtons";
@@ -12,11 +11,13 @@ export type ChatInfoBoxProps = Omit<ProposalButtonsProps, "proposal"> & {
   showProposal: boolean;
   proposal: MessageData | null;
   acceptedProposal: MessageData | null;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
 };
 
 export const ChatInfoBox: React.FC<ChatInfoBoxProps> = ({
   addMessage,
   exchange,
+  dispute,
   iAmTheBuyer,
   onSentMessage,
   proposal,
@@ -25,16 +26,6 @@ export const ChatInfoBox: React.FC<ChatInfoBoxProps> = ({
   showProposal,
   acceptedProposal
 }) => {
-  const { data: disputes } = useDisputes(
-    {
-      disputesFilter: {
-        exchange: exchange?.id
-      }
-    },
-    { enabled: !!exchange?.id }
-  );
-  const dispute = disputes?.[0];
-
   const isInDispute = exchange.disputed && !dispute?.finalizedDate;
   const isResolved = !!dispute?.resolvedDate;
   const isEscalated = !!dispute?.escalatedDate;

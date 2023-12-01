@@ -13,7 +13,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
-import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getLensImageUrl } from "../../lib/utils/images";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
@@ -61,7 +61,15 @@ const ImageContainer = styled.div`
 `;
 
 type Buyer = Pick<subgraph.Buyer, "id" | "wallet">;
-type Seller = Pick<subgraph.Seller, "id" | "assistant">;
+type Seller = Pick<
+  subgraph.Seller,
+  "id" | "assistant" | "authTokenType" | "authTokenId"
+> & {
+  metadata?: {
+    name?: string | null;
+    images?: { url: string; tag: string }[] | null;
+  } | null;
+};
 
 const SellerID: React.FC<
   {
@@ -73,6 +81,7 @@ const SellerID: React.FC<
     withProfileText?: boolean;
     withBosonStyles?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
+    lensProfile?: Profile;
   } & IGrid &
     Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">
 > = ({
@@ -84,14 +93,11 @@ const SellerID: React.FC<
   accountImageSize,
   withProfileText = true,
   withBosonStyles = false,
+  lensProfile,
   ...rest
 }) => {
   const { config } = useConfigContext();
   const { account: address } = useAccount();
-  const { lens: lensProfiles, sellers } = useCurrentSellers({
-    sellerId: offer?.seller?.id
-  });
-  const [lens] = lensProfiles;
   const navigate = useKeepQueryParamsNavigate();
   const { artist } = getOfferDetails(offer);
 
@@ -103,12 +109,12 @@ const SellerID: React.FC<
       : (buyerOrSeller as Buyer).wallet
     : address;
   const hasCursorPointer = !!onClick || onClick === undefined;
-  const seller = sellers[0] ?? offer?.seller;
+  const seller = isSeller ? (buyerOrSeller as Seller) : offer?.seller;
   const metadata = seller?.metadata;
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const regularProfilePicture =
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
-  const lensProfilePicture = getLensProfilePictureUrl(lens);
+  const lensProfilePicture = getLensProfilePictureUrl(lensProfile);
   const productV1SellerProfileImage =
     artist?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const profilePicture =
@@ -118,7 +124,7 @@ const SellerID: React.FC<
     useLens && config.lens.ipfsGateway
       ? getLensImageUrl(profilePicture, config.lens.ipfsGateway)
       : regularProfilePicture;
-  const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name;
+  const name = (useLens ? lensProfile?.name : metadata?.name) ?? metadata?.name;
   return (
     <AddressContainer {...rest} data-address-container>
       <SellerContainer

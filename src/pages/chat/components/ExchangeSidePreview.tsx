@@ -50,7 +50,6 @@ import {
   isExchangeCompletableByBuyer,
   isExchangeCompletableBySeller
 } from "../../../lib/utils/exchange";
-import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
 import { ViewMode } from "../../../lib/viewMode";
@@ -342,6 +341,7 @@ const ExchangeImage = ({ exchange }: { exchange: Exchange | undefined }) => (
 );
 interface Props {
   exchange: Exchange | undefined;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
   disputeOpen: boolean;
   iAmTheBuyer: boolean;
   iAmTheSeller: boolean;
@@ -359,6 +359,7 @@ interface Props {
 }
 export default memo(function ExchangeSidePreview({
   exchange,
+  dispute,
   disputeOpen,
   iAmTheBuyer,
   exchangePolicyCheckResult,
@@ -372,19 +373,10 @@ export default memo(function ExchangeSidePreview({
   lastReceivedProposal,
   lastSentProposal
 }: Props) {
-  const { data: disputes, refetch: refetchDisputes } = useDisputes(
-    {
-      disputesFilter: {
-        exchange: exchange?.id
-      }
-    },
-    { enabled: !!exchange }
-  );
   const { disputeResolver } = useDisputeResolver(
     exchange?.offer.disputeResolverId
   );
 
-  const dispute = disputes?.[0];
   const isElapsedEscalation = getHasExchangeEscalationPeriodElapsed(
     disputeResolver?.escalationResponsePeriod,
     dispute?.escalatedDate
@@ -405,8 +397,7 @@ export default memo(function ExchangeSidePreview({
 
   const refetchItAll = useCallback(() => {
     refetchExchanges();
-    refetchDisputes();
-  }, [refetchExchanges, refetchDisputes]);
+  }, [refetchExchanges]);
 
   const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
   const isVisible = exchange
@@ -656,6 +647,7 @@ export default memo(function ExchangeSidePreview({
       <HistorySection>
         <ExchangeTimeline
           exchange={exchange}
+          dispute={dispute}
           showDispute={true}
           lastReceivedProposal={lastReceivedProposal}
           lastSentProposal={lastSentProposal}

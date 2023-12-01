@@ -9,6 +9,7 @@ import ProductCard from "../../components/productCard/ProductCard";
 import Grid from "../../components/ui/Grid";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { ProductGridContainer } from "../profile/ProfilePage.styles";
 import ExploreViewMore from "./ExploreViewMore";
@@ -54,6 +55,15 @@ function Explore({
     data: products?.sellers || [],
     ...filterOptions
   });
+  const sellerLensProfilePerSellerId = (products?.sellers || []).reduce(
+    (map, seller) => {
+      if (!map.has(seller.id) && !!seller.lensProfile) {
+        map.set(seller.id, seller.lensProfile);
+      }
+      return map;
+    },
+    new Map<string, Profile>()
+  );
 
   return (
     <Grid flexDirection="column" gap="2rem" justifyContent="flex-start">
@@ -96,6 +106,9 @@ function Explore({
                     offer={offer as ExtendedOffer}
                     filterOptions={filterOptions}
                     dataTestId="offer"
+                    lensProfile={sellerLensProfilePerSellerId.get(
+                      offer.seller.id
+                    )}
                   />
                 </div>
               ))}
@@ -141,7 +154,12 @@ function Explore({
                     collection?.brandName || collection?.id
                   }`}
                 >
-                  <CollectionsCard collection={collection as ExtendedSeller} />
+                  <CollectionsCard
+                    collection={collection as ExtendedSeller}
+                    lensProfile={sellerLensProfilePerSellerId.get(
+                      collection.id
+                    )}
+                  />
                 </Fragment>
               ))}
           </ProductGridContainer>

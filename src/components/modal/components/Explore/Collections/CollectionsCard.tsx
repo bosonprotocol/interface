@@ -1,4 +1,4 @@
-import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { Fragment, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -7,7 +7,7 @@ import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../lib/styles/zIndex";
-import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
+import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import useSellerNumbers from "../../../../../lib/utils/hooks/useSellerNumbers";
 import { useCustomStoreQueryParameter } from "../../../../../pages/custom-store/useCustomStoreQueryParameter";
@@ -84,26 +84,23 @@ const StyledGrid = styled(Grid)`
 
 interface Props {
   collection: ExtendedSeller;
+  lensProfile?: Profile;
 }
 const imagesNumber = 4;
-export default function CollectionsCard({ collection }: Props) {
+export default function CollectionsCard({ collection, lensProfile }: Props) {
   const [sellerId] = useState<string>(collection.id);
 
   const {
     numbers: { products: numProducts }
   } = useSellerNumbers(sellerId);
 
-  const { lens: lensProfiles, sellers: sellersData } = useCurrentSellers({
-    sellerId
-  });
-  const seller = sellersData[0];
+  const seller = collection as unknown as subgraph.Seller;
   const metadata = seller?.metadata;
-  const [lens] = lensProfiles;
 
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
 
   const name =
-    (useLens ? lens?.name : metadata?.name) ??
+    (useLens ? lensProfile?.name : metadata?.name) ??
     metadata?.name ??
     `Seller ID: ${collection.id}`;
   const navigate = useKeepQueryParamsNavigate();

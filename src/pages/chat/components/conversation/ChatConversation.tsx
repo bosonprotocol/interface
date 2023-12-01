@@ -6,6 +6,7 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
+import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
@@ -27,6 +28,7 @@ import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { zIndex } from "../../../../lib/styles/zIndex";
 import { useInfiniteThread } from "../../../../lib/utils/hooks/chat/useInfiniteThread";
+import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
 import useCheckExchangePolicy from "../../../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import { useBreakpoints } from "../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
@@ -162,6 +164,8 @@ type ChatConversationProps = {
   myBuyerId: string;
   mySellerId: string;
   exchange: Exchange | undefined;
+  sellerLensProfile?: Profile;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
   prevPath: string;
@@ -173,6 +177,8 @@ const ChatConversation = ({
   myBuyerId,
   mySellerId,
   exchange,
+  sellerLensProfile,
+  dispute,
   chatListOpen,
   setChatListOpen,
   prevPath,
@@ -189,11 +195,11 @@ const ChatConversation = ({
   const buyerOrSellerToShow: BuyerOrSeller = useMemo(
     () =>
       iAmBoth
-        ? exchange?.offer.seller
+        ? exchange?.seller
         : iAmTheBuyer
-        ? exchange?.offer.seller
+        ? exchange?.seller
         : exchange?.buyer || ({} as BuyerOrSeller),
-    [exchange?.buyer, exchange?.offer.seller, iAmBoth, iAmTheBuyer]
+    [exchange?.buyer, exchange?.seller, iAmBoth, iAmTheBuyer]
   );
   const destinationAddressLowerCase = iAmTheBuyer
     ? exchange?.offer.seller.assistant
@@ -590,6 +596,7 @@ const ChatConversation = ({
             size={24}
             exchange={exchange}
             buyerOrSeller={buyerOrSellerToShow}
+            lensProfile={sellerLensProfile}
           />
         </Header>
         {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
@@ -608,7 +615,8 @@ const ChatConversation = ({
     navigate,
     prevPath,
     setChatListOpen,
-    location.pathname
+    location.pathname,
+    sellerLensProfile
   ]);
   const ContainerWithSellerHeader = useCallback(
     ({ children }: { children: ReactNode }) => {
@@ -650,6 +658,7 @@ const ChatConversation = ({
             hasError={hasError}
             isBeginningOfTimes={isBeginningOfTimes}
             exchange={exchange}
+            dispute={dispute}
             loadMoreMessages={loadMoreMessages}
             thread={thread}
             areThreadsLoading={areThreadsLoading}
@@ -664,6 +673,7 @@ const ChatConversation = ({
             isConversationBeingLoaded={isConversationBeingLoaded}
             disableInputs={disableInputs}
             exchange={exchange}
+            dispute={dispute}
             threadId={threadId}
             setHasError={setHasError}
             addMessage={addMessage}
@@ -686,6 +696,7 @@ const ChatConversation = ({
       )}
       <ExchangeSidePreview
         exchange={exchange}
+        dispute={dispute}
         refetchExchanges={refetchExchanges}
         disputeOpen={isExchangePreviewOpen}
         iAmTheBuyer={iAmTheBuyer}

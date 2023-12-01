@@ -1,6 +1,6 @@
 import { MessageData } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { useDisputes } from "lib/utils/hooks/useDisputes";
 import { Exchange } from "lib/utils/hooks/useExchanges";
 import { WarningCircle } from "phosphor-react";
 import { memo, RefObject, useMemo, useRef } from "react";
@@ -75,6 +75,7 @@ type MessagesProps = {
   hasError: boolean;
   isBeginningOfTimes: boolean;
   exchange: Exchange;
+  dispute: subgraph.DisputeFieldsFragment | undefined;
   loadMoreMessages: (forceDateIndex?: number) => void;
   thread: ThreadObjectWithInfo | null;
   areThreadsLoading: boolean;
@@ -89,6 +90,7 @@ export const Messages: React.FC<MessagesProps> = memo(
   ({
     hasError,
     exchange,
+    dispute,
     isBeginningOfTimes,
     loadMoreMessages,
     thread,
@@ -99,15 +101,6 @@ export const Messages: React.FC<MessagesProps> = memo(
     lastReceivedProposal,
     lastSentProposal
   }) => {
-    const { data: disputes } = useDisputes(
-      {
-        disputesFilter: {
-          exchange: exchange?.id
-        }
-      },
-      { enabled: !!exchange }
-    );
-    const dispute = disputes?.[0];
     const hasMoreMessages = !isBeginningOfTimes;
     const dataMessagesRef = useRef<HTMLDivElement>(null);
     const Buyer = useMemo(() => {

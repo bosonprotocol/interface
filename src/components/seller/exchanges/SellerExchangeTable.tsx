@@ -244,6 +244,10 @@ export default function SellerExchangeTable({
     () =>
       data?.map((element) => {
         const status = element ? ExchangesKit.getExchangeState(element) : "";
+        const dispute = element?.dispute as
+          | subgraph.DisputeFieldsFragment
+          | null
+          | undefined;
         return {
           exchangeId: element?.id,
           isSelectable: element && isExchangeCompletableBySeller(element),
@@ -270,7 +274,7 @@ export default function SellerExchangeTable({
               interactive
               content={
                 <OfferHistoryStatuses>
-                  <ExchangeTimeline exchange={element}>
+                  <ExchangeTimeline exchange={element} dispute={dispute}>
                     <h4>History</h4>
                   </ExchangeTimeline>
                 </OfferHistoryStatuses>
@@ -341,7 +345,11 @@ export default function SellerExchangeTable({
       initialState: {
         pageIndex: 0,
         hiddenColumns: ["exchangeId", "isSelectable"]
-      }
+      },
+      // https://stackoverflow.com/questions/71998920/why-are-react-table-pagination-filter-and-sort-reset-automatically-when-its-t
+      autoResetPage: false,
+      autoResetFilters: false,
+      autoResetSortBy: false
     },
     useSortBy,
     usePagination,

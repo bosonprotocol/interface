@@ -25,11 +25,11 @@ export function useOffers(
   return useQuery(
     ["offers", props, subgraphUrl, defaultDisputeResolverId],
     async () => {
-      const offersList = await getOffers(
-        subgraphUrl,
-        defaultDisputeResolverId,
-        props
-      );
+      const offersList =
+        !curationLists.sellerCurationList ||
+        curationLists.sellerCurationList.length > 0
+          ? await getOffers(subgraphUrl, defaultDisputeResolverId, props)
+          : [];
 
       // sort the offers by price
       const orderedOffers = offersList.sort((a, b) => {
