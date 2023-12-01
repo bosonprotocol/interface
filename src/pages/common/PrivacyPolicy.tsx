@@ -297,7 +297,7 @@ export default function PrivacyPolicy() {
                   </Text>
                 </li>
                 <li>
-                  <Text>information about your use of the Services; and</Text>
+                  <Text>information about your use of the Services.</Text>
                 </li>
               </List>
             </li>

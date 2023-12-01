@@ -91,6 +91,22 @@ export const coreTermsOfSaleHelp = [
       "Typically, the costs of materials, labour, and other business expenses are factored into the price. If you offer free delivery and/or duties & taxes paid, make sure to include those costs so it doesn't eat into your margins."
   } as const,
   {
+    title: "How do I set the validity period for my offers?",
+    description:
+      "All offers must specify a start date, or the date from when buyers can commit to your offer. You can choose to either set a specific end date, or default to no specific end date."
+  } as const,
+  {
+    title:
+      "If I set my offers without a specific end date now, can I change it in the future so that buyers will no longer be able to commit to it?",
+    description:
+      "Yes. You can 'Void' an offer in the Seller Hub so that buyers will no longer be able to commit to the offer."
+  } as const,
+  {
+    title: "Should I set my offers with or without an expiration date?",
+    description:
+      "If you have an offer that you want to make available only for a limited time, or that you want to make exclusive for a specific season or event, setting an offer with an expiration date is likely the better choice. For offers that are more readily available or less seasonal, setting them up without an expiration date is a better option."
+  } as const,
+  {
     title: "What happens when the offer validity period ends?",
     description:
       "When your offer validity period ends, buyers will no longer be able to commit to the offer."
@@ -112,6 +128,18 @@ export const coreTermsOfSaleHelp = [
         </Typography>
       </>
     )
+  } as const,
+  {
+    title:
+      "For offers without an expiration date, what is the redemption start date considered when it has not been specified?",
+    description:
+      "If a redemption start date has not been specified, the buyer will be able to redeem the rNFT as soon as they have committed to the offer."
+  } as const,
+  {
+    title:
+      "For offers without an expiration date, what is the redemption duration period?",
+    description:
+      "The redemption duration period is the number of days a buyer has to redeem the rNFT for the physical item. It is calculated from the later of either the date the buyer commits to the offer or from the redemption start date (if it was specified)."
   } as const
 ];
 export const tokenGatingHelp = [
