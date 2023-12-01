@@ -129,8 +129,7 @@ export default function useProducts(
   );
 
   const { allProducts, allSellers } = useMemo(() => {
-    const sellerIdSet = new Set<string>();
-    const allSellers: subgraph.Seller[] = [];
+    const sellerMap = new Map<subgraph.Seller["id"], subgraph.Seller>();
     const allProducts =
       (productsVariants?.data || [])
         ?.map((product) => {
@@ -142,9 +141,8 @@ export default function useProducts(
             : (product as subgraph.ProductV1Product).variants;
           const offers = (allVariantsOrOnlyNotVoided || [])?.map(
             ({ offer }) => {
-              if (!sellerIdSet.has(offer.seller.id)) {
-                sellerIdSet.add(offer.seller.id);
-                allSellers.push(offer.seller);
+              if (!sellerMap.has(offer.seller.id)) {
+                sellerMap.set(offer.seller.id, offer.seller);
               }
               const status = offersSdk.getOfferStatus(offer);
               const offerPrice = convertPrice({
@@ -249,7 +247,7 @@ export default function useProducts(
           return null;
         })
         .filter(isTruthy) || [];
-    return { allProducts, allSellers };
+    return { allProducts, allSellers: Array.from(sellerMap.values()) };
   }, [
     productsVariants?.data,
     props?.quantityAvailable_gte,
