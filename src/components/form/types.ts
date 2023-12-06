@@ -52,7 +52,7 @@ export type FormFieldProps = {
 export type InputColorProps = BaseProps;
 
 export type InputProps = BaseProps &
-  React.InputHTMLAttributes<HTMLInputElement>;
+  React.InputHTMLAttributes<HTMLInputElement> & { isClearable?: boolean };
 
 export type TagsProps = BaseProps &
   React.InputHTMLAttributes<HTMLInputElement> & {
