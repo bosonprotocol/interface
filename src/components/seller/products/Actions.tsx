@@ -41,7 +41,7 @@ const GlobalStyle = createGlobalStyle`
 .DropdownMenuCheckboxItem,
 .DropdownMenuRadioItem,
 .DropdownMenuSubTrigger {
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1;
   color: ${colors.black};
   border-radius: 3px;
@@ -75,7 +75,7 @@ const GlobalStyle = createGlobalStyle`
 
 .DropdownMenuLabel {
   padding-left: 25px;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 25px;
   color: ${colors.black};
 }

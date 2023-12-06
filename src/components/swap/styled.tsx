@@ -42,7 +42,7 @@ export const UniswapPopoverContainer = styled.div`
   padding: 18px;
   color: ${({ theme }) => theme.textPrimary};
   font-weight: 400;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 16px;
   word-break: break-word;
   background: ${colors.lightGrey};

@@ -50,11 +50,11 @@ export const SearchInput = styled.input`
   border: 1px solid ${colors.lightGrey};
   -webkit-appearance: none;
 
-  font-size: 16px;
+  font-size: 1rem;
 
   ::placeholder {
     color: ${({ theme }) => theme.textTertiary};
-    font-size: 16px;
+    font-size: 1rem;
   }
   transition: border 100ms;
   :focus {

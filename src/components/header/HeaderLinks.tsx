@@ -58,7 +58,7 @@ const NavigationLinks = styled.div<{
             cursor: pointer;
             font-family: ${defaultFontFamily};
             font-style: normal;
-            font-size: 16px;
+            font-size: 1rem;
             font-weight: 600;
             line-height: 150%;
             border-bottom: 2px solid ${colors.border};

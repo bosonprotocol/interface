@@ -10,7 +10,7 @@ import styled from "styled-components";
 
 const Label = styled.div<{ color: string; backgroundColor: string }>`
   padding: 4px 4px;
-  font-size: 12px;
+  font-size: 0.75rem;
   background-color: ${({ backgroundColor }) => backgroundColor};
   border-radius: 8px;
   color: ${({ color }) => color};
@@ -21,7 +21,7 @@ const Label = styled.div<{ color: string; backgroundColor: string }>`
 const Title = styled(Typography)`
   margin-right: 5px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 0.75rem;
 `;
 
 type TokenWarningLabelProps = {

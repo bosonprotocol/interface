@@ -35,7 +35,7 @@ const Container = styled.button<{ disabled: boolean }>`
 const Label = styled.div`
   grid-column: 2;
   grid-row: 1;
-  font-size: 16px;
+  font-size: 1rem;
 `;
 
 const Status = styled.div`
@@ -48,7 +48,7 @@ const Status = styled.div`
 
 const CaptionText = styled.div`
   /* color: ${colors.lightGrey}; */
-  font-size: 12px;
+  font-size: 0.75rem;
   grid-column: 2;
   grid-row: 2;
 `;

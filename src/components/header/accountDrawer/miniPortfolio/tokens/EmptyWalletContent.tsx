@@ -21,7 +21,7 @@ const EmptyWalletText = styled(Typography)`
   margin: 0;
   min-width: 0;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 24px;
 `;
 
@@ -33,7 +33,7 @@ const EmptyWalletSubtitle = styled(Typography)`
   margin: 0;
   min-width: 0;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 0.875rem;
 `;
 
 type EmptyWalletContent = {

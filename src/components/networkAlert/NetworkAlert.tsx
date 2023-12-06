@@ -17,7 +17,7 @@ const BodyText = styled.div`
   align-items: center;
   justify-content: flex-start;
   margin: 8px;
-  font-size: 14px;
+  font-size: 0.875rem;
 `;
 const RootWrapper = styled.div`
   margin-top: 16px;
@@ -126,7 +126,7 @@ const ContentWrapper = styled.div<{
 `;
 const Header = styled.h2`
   font-weight: 600;
-  font-size: 16px;
+  font-size: 1rem;
   margin: 0;
 `;
 
@@ -135,7 +135,7 @@ const LinkOutToBridge = styled.a`
   border-radius: 8px;
   color: white;
   display: flex;
-  font-size: 16px;
+  font-size: 1rem;
   justify-content: space-between;
   padding: 6px 8px;
   text-decoration: none !important;

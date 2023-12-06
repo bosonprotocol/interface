@@ -16,7 +16,7 @@ const QuestionWrapper = styled.div`
   outline: none;
   cursor: default;
   border-radius: 36px;
-  font-size: 12px;
+  font-size: 0.75rem;
   border-radius: 12px;
 
   :hover,
@@ -26,7 +26,7 @@ const QuestionWrapper = styled.div`
 `;
 
 const QuestionMark = styled.span`
-  font-size: 14px;
+  font-size: 0.875rem;
   margin-left: 8px;
   align-items: center;
   color: ${colors.darkGrey};

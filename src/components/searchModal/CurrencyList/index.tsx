@@ -60,7 +60,7 @@ const CurrencyName = styled(Typography)`
 const Tag = styled.div`
   background-color: ${({ theme }) => theme.deprecated_bg3};
   color: ${colors.lightGrey};
-  font-size: 14px;
+  font-size: 0.875rem;
   border-radius: 4px;
   padding: 0.25rem 0.3rem 0.25rem 0.3rem;
   max-width: 6rem;

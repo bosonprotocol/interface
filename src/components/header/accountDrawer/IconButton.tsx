@@ -19,7 +19,7 @@ const IconHoverText = styled.span`
   border-radius: 8px;
   transform: translateX(-50%);
   opacity: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   padding: 5px;
   left: 10px;
 `;

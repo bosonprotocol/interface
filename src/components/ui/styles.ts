@@ -32,14 +32,14 @@ export const boxShadow = css`
 export const text = css`
   letter-spacing: 0.5px;
   font-style: normal;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 24px;
 `;
 
 export const buttonText = css`
   letter-spacing: 0.5px;
   font-style: normal;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   line-height: 24px;
 `;
@@ -47,28 +47,28 @@ export const buttonText = css`
 export const small = css`
   padding: 0.25rem 1rem;
   > * {
-    font-size: 12px !important;
+    font-size: 0.75rem !important;
   }
 `;
 export const regular = css`
   padding: 0.75rem 2rem;
   > * {
-    font-size: 16px !important;
+    font-size: 1rem !important;
   }
   ${breakpoint.xxs} {
     > * {
-      font-size: 14px !important;
+      font-size: 0.875rem !important;
     }
   }
 `;
 export const large = css`
   padding: 1.25rem 2rem;
   > * {
-    font-size: 18px !important;
+    font-size: 1.125rem !important;
   }
   ${breakpoint.xxs} {
     > * {
-      font-size: 16px !important;
+      font-size: 1rem !important;
     }
   }
 `;
