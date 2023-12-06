@@ -72,7 +72,7 @@ export function useLensProfilesPerSellerIds(
       );
     },
     {
-      enabled
+      enabled: enabled && !!sellerIdPerLensToken.size
     }
   );
   return useMemo(() => {
