@@ -17,18 +17,18 @@ const StyledBosonButton = styled(Button)`
         return css`
           padding: 0.25rem 1rem;
           > * {
-            font-size: 12px !important;
+            font-size: 0.75rem !important;
           }
         `;
       case "large":
         return css`
           padding: 1.25rem 2rem;
           > * {
-            font-size: 18px !important;
+            font-size: 1.125rem !important;
           }
           ${breakpoint.xxs} {
             > * {
-              font-size: 16px !important;
+              font-size: 1rem !important;
             }
           }
         `;
@@ -36,11 +36,11 @@ const StyledBosonButton = styled(Button)`
         return css`
           padding: 0.75rem 2rem;
           > * {
-            font-size: 16px !important;
+            font-size: 1rem !important;
           }
           ${breakpoint.xxs} {
             > * {
-              font-size: 14px !important;
+              font-size: 0.875rem !important;
             }
           }
         `;

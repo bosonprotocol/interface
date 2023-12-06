@@ -40,11 +40,10 @@ const InputWrapper = styled(Grid)<{
 
 const Input = styled.input`
   max-width: 100%;
-  font-size: 16px;
   background: transparent;
   border-width: 0;
   font-style: normal;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   line-height: 24px;
   ::placeholder {

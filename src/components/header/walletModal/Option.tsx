@@ -45,7 +45,7 @@ const HeaderText = styled.div<{ $color: string }>`
   align-items: center;
   justify-content: center;
   color: ${({ $color }) => $color};
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   padding: 0 8px;
 `;

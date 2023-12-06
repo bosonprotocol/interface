@@ -82,7 +82,7 @@ const MobileMenuWrapper = styled(Column)<{ open: boolean }>`
   border-radius: 12px;
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
-  font-size: 16px;
+  font-size: 1rem;
   box-shadow: unset;
   /* TODO: z-index: Z_INDEX.modal; */
 `;

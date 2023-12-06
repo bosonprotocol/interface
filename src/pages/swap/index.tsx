@@ -100,7 +100,7 @@ const SwapSection = styled.div`
   /* background-color: ${colors.darkGrey}; */
   border-radius: 16px;
   color: ${colors.lightGrey};
-  font-size: 14px;
+  font-size: 0.875remå;
   font-weight: 500;
   height: 120px;
   line-height: 20px;

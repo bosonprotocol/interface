@@ -55,7 +55,7 @@ const OpaqueBadge = styled.div`
   background-color: ${colors.lightGrey};
   border-radius: 8px;
   display: grid;
-  font-size: 12px;
+  font-size: 0.75rem;
   grid-gap: 4px;
   grid-auto-flow: column;
   justify-content: start;
@@ -66,7 +66,7 @@ const OpaqueBadge = styled.div`
 const ProtocolBadge = styled.div`
   border-radius: 4px;
   color: ${colors.lightGrey};
-  font-size: 10px;
+  font-size: 0.625rem;
   padding: 2px 4px;
   /* z-index: {Z_INDEX.sticky + 1}; */
 `;

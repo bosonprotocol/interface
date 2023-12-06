@@ -150,7 +150,7 @@ export const MultiStepStyle = styled.div<{ isLteS: boolean }>`
     text-align: center;
     margin: 0;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 0.75rem;
     line-height: 1.5;
     color: ${colors.darkGrey};
   }

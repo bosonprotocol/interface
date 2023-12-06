@@ -5,7 +5,7 @@ export const Input = styled.input`
   width: 100%;
   display: flex;
   flex: 1;
-  font-size: 16px;
+  font-size: 1rem;
   border: 0;
   outline: none;
   background: transparent;

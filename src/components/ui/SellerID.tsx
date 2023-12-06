@@ -49,7 +49,7 @@ const SellerInfo = styled.div<{ $withBosonStyles?: boolean }>`
         `};
 
   font-style: normal;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   line-height: 18px;
 `;

@@ -151,7 +151,7 @@ const AccountDrawerWrapper = styled.div<{ open: boolean }>`
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
   width: ${DRAWER_WIDTH};
-  font-size: 16px;
+  font-size: 1rem;
   background-color: var(--primaryBgColor);
 
   border: 1px solid var(--primaryBgColor);

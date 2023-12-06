@@ -12,7 +12,7 @@ const BannerContainer = styled.div`
   bottom: 0px;
   border-bottom: 2px solid ${colors.black}20;
   background: ${colors.white};
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 11px;
   font-weight: 600;
   padding: 0.5rem 1.5rem;

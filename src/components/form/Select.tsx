@@ -16,7 +16,7 @@ import type { SelectDataProps, SelectProps } from "./types";
 
 const StyledSelect = styled(ReactSelect)`
   * {
-    font-size: 13.33px;
+    font-size: 0.8331rem;
   }
   [class*="-indicatorContainer"] {
     padding: 6.92px; // to make selects less tall but as tall as inputs

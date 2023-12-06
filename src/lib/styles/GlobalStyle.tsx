@@ -103,21 +103,21 @@ const GlobalStyle = createGlobalStyle<{
         ? props.$lowerCardBgColor
         : colors.white};
 
-    font-size: 12px;
+    font-size: 0.75rem;
     ${breakpoint.xs} {
-      font-size: 12px;
+      font-size: 0.75rem;
     }
     ${breakpoint.s} {
-      font-size: 14px;
+      font-size: 0.875rem;
     }
     ${breakpoint.m} {
-      font-size: 14px;
+      font-size: 0.875rem;
     }
     ${breakpoint.l} {
-      font-size: 16px;
+      font-size: 1rem;
     }
     ${breakpoint.xl} {
-      font-size: 16px;
+      font-size: 1rem;
     }
   }
 

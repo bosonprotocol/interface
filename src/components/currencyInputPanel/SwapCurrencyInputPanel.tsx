@@ -74,7 +74,7 @@ const CurrencySelect = styled(Button)<{
   outline: none;
   user-select: none;
   border: none;
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 500;
   width: ${({ hideInput }) => (hideInput ? "100%" : "initial")};
   padding: ${({ selected }) =>
@@ -175,7 +175,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
 const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) =>
     active ? "margin: 0 0.25rem 0 0.25rem;" : "margin: 0 0.25rem 0 0.25rem;"}
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
 `;
 
@@ -184,7 +184,7 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   border: none;
   color: ${colors.secondary};
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   padding: 4px 6px;
@@ -202,7 +202,7 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
 const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
   ${loadingOpacityMixin};
   text-align: left;
-  font-size: 36px;
+  font-size: 2.25rem;
   line-height: 44px;
   font-variant: small-caps;
 `;

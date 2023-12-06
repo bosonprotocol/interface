@@ -50,7 +50,7 @@ const ShortColumn = styled(AutoColumn)`
 const InfoText = styled(Typography)`
   display: block;
   padding: 0 12px 0 12px;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 20px;
   text-align: center;
 `;
@@ -64,7 +64,7 @@ const StyledButton = styled(Button)`
 const StyledCancelButton = styled(Button)`
   margin-top: 16px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 0.875rem;
 `;
 
 const StyledCloseButton = styled(StyledButton)`
@@ -128,7 +128,7 @@ const ExplorerContainer = styled.div`
   width: 100%;
   height: 32px;
   margin-top: 10px;
-  font-size: 20px;
+  font-size: 1.25rem;
   background-color: ${colors.blue};
   color: ${lighten(0.5, colors.blue)};
   border-radius: 8px;
@@ -154,7 +154,7 @@ const ExplorerLinkWrapper = styled.div`
 
 const ExplorerLink = styled.div`
   display: block;
-  font-size: 14px;
+  font-size: 0.875rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
