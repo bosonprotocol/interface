@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { Currency } from "@uniswap/sdk-core";
+import CurrencySearchModal from "components/searchModal/CurrencySearchModal";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -54,7 +56,19 @@ const [{ value: minBalance }] = TOKEN_CRITERIA;
 const [{ value: erc20 }, { value: erc721 }, { value: erc1155 }] = TOKEN_TYPES;
 
 export default function TokenGating() {
-  const { nextIsDisabled, values, handleBlur } = useForm();
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleDismissSearch = useCallback(() => {
+    setModalOpen(false);
+  }, [setModalOpen]);
+  const handleOnCurrencySelect = useCallback((currency: Currency) => {
+    if (currency.isToken) {
+      setFieldValue(`${prefix}tokenContract`, currency.address);
+    } else {
+      setFieldValue(`${prefix}tokenContract`, "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const { nextIsDisabled, values, handleBlur, setFieldValue } = useForm();
   const { tokenGating } = values;
   const core = useCoreSDK();
   const [symbol, setSymbol] = useState<string | undefined>(undefined);
@@ -69,10 +83,9 @@ export default function TokenGating() {
         tokenType?.value === erc20
       ) {
         try {
-          const { symbol: symbolLocal } = await core.getExchangeTokenInfo(
-            tokenContract
-          );
-          if (symbolLocal.length > 0) {
+          const result = await core.getExchangeTokenInfo(tokenContract);
+          const { symbol: symbolLocal } = result ?? {};
+          if (symbolLocal && symbolLocal.length > 0) {
             setSymbol(symbolLocal);
           } else {
             setSymbol(undefined);
@@ -114,8 +127,25 @@ export default function TokenGating() {
                 onBlur={async (e) => {
                   handleBlur(e);
                 }}
+                onClick={() => {
+                  setModalOpen(true);
+                }}
+                readOnly
+                isClearable
               />
             </FormField>
+            {tokenGating.tokenType?.value === erc20 && (
+              <CurrencySearchModal
+                isOpen={modalOpen}
+                onDismiss={handleDismissSearch}
+                onCurrencySelect={handleOnCurrencySelect}
+                selectedCurrency={undefined}
+                otherSelectedCurrency={undefined}
+                showCommonBases={false}
+                showCurrencyAmount={false}
+                disableNonToken={true}
+              />
+            )}
           </TokengatedInfoWrapper>
 
           <>
