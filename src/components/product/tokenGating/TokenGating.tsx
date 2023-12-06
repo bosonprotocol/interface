@@ -127,11 +127,15 @@ export default function TokenGating() {
                 onBlur={async (e) => {
                   handleBlur(e);
                 }}
-                onClick={() => {
-                  setModalOpen(true);
-                }}
-                readOnly
-                isClearable
+                onClick={
+                  tokenGating.tokenType?.value === erc20
+                    ? () => {
+                        setModalOpen(true);
+                      }
+                    : undefined
+                }
+                readOnly={tokenGating.tokenType?.value === erc20}
+                isClearable={tokenGating.tokenType?.value === erc20}
               />
             </FormField>
             {tokenGating.tokenType?.value === erc20 && (
