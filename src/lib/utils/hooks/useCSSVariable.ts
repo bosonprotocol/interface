@@ -3,15 +3,22 @@ import { useEffect, useState } from "react";
 // all css variables can be found in src/components/app/index.tsx
 export const useCSSVariable = (
   variableName:
+    | "--headerBgColor"
+    | "--headerTextColor"
     | "--primary"
     | "--secondary"
     | "--accent"
+    | "--accentNoDefault"
     | "--accentDark"
-    | "--buttonBgColor"
     | "--textColor"
-    | "--headerTextColor"
-    | "--headerBgColor"
+    | "--primaryBgColor"
     | "--secondaryBgColor"
+    | "--footerBgColor"
+    | "--footerTextColor"
+    | "--buttonBgColor"
+    | "--buttonTextColor"
+    | "--upperCardBgColor"
+    | "--lowerCardBgColor"
 ) => {
   const [value, setValue] = useState<string>();
   useEffect(() => {

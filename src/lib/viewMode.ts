@@ -26,20 +26,37 @@ export function getViewModeUrl(
   viewMode: ViewMode.DAPP | ViewMode.DR_CENTER,
   path: `/${string}`
 ): string {
+  let origin = window.location.origin;
+  try {
+    // use document.URL to get origin: useful when serving dapp locally with the prod build
+    const documentOrigin = document.URL.substring(
+      0,
+      document.URL.indexOf("#/")
+    );
+    if (documentOrigin.startsWith(origin)) {
+      origin = documentOrigin;
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    if (origin === window.location.origin) {
+      origin = `${origin}/`;
+    }
+  }
   const dappViewModeUrl =
     CONFIG.envViewMode.dappViewModeUrl === "same_origin" ||
     !CONFIG.envViewMode.dappViewModeUrl
-      ? window.location.origin
+      ? origin
       : CONFIG.envViewMode.dappViewModeUrl;
   const drCenterViewModeUrl =
     CONFIG.envViewMode.drCenterViewModeUrl === "same_origin" ||
     !CONFIG.envViewMode.drCenterViewModeUrl
-      ? window.location.origin
+      ? origin
       : CONFIG.envViewMode.drCenterViewModeUrl;
 
   return `${
     viewMode === ViewMode.DAPP ? dappViewModeUrl : drCenterViewModeUrl
-  }/#${path}`;
+  }#${path}`;
 }
 
 export function goToViewMode(

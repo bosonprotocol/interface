@@ -1,6 +1,9 @@
+import { colors } from "lib/styles/colors";
+import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import styled from "styled-components";
 
-const Button = styled.button`
+const Button = styled.button<{ $backgroundColor: string }>`
   all: unset;
   cursor: pointer;
 
@@ -15,7 +18,7 @@ const Button = styled.button`
     width: 1.25rem;
     height: 2px;
     border-radius: 5px;
-    background: var(--accent);
+    background: ${({ $backgroundColor }) => $backgroundColor};
   }
 `;
 
@@ -24,8 +27,13 @@ type BurgerButtonProps = {
 };
 
 export const BurgerButton: React.FC<BurgerButtonProps> = ({ onClick }) => {
+  const backgroundColor = getColor1OverColor2WithContrast({
+    color2: useCSSVariable("--headerBgColor") || colors.white,
+    color1: useCSSVariable("--accent") || colors.darkGrey,
+    contrastThreshold: 4
+  });
   return (
-    <Button theme="blank" onClick={onClick}>
+    <Button theme="blank" onClick={onClick} $backgroundColor={backgroundColor}>
       <div />
       <div />
       <div />

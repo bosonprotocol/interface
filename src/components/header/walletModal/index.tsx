@@ -6,7 +6,9 @@ import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
 import { BosonRoutes } from "lib/routing/routes";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
+import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { useChainId } from "lib/utils/hooks/connection/connection";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { getCurrentViewMode, ViewMode } from "lib/viewMode";
 import { useEffect } from "react";
 import styled from "styled-components";
@@ -69,6 +71,14 @@ export default function WalletModal() {
     }
   }, [chainId, connector]);
   const viewMode = getCurrentViewMode();
+  const magicLoginTextColor = getColor1OverColor2WithContrast({
+    color2: useCSSVariable("--accentNoDefault") || colors.white,
+    color1: useCSSVariable("--textColor") || colors.darkGrey
+  });
+  const privacyTextColor = getColor1OverColor2WithContrast({
+    color2: useCSSVariable("--primaryBgColor") || colors.white,
+    color1: useCSSVariable("--textColor") || colors.darkGrey
+  });
   return (
     <Wrapper data-testid="wallet-modal">
       <Grid justifyContent="space-between" marginBottom="16px">
@@ -85,8 +95,12 @@ export default function WalletModal() {
                 <Option key={connection.getName()} connection={connection} />
               ))}
           </OptionGrid>
-          <MagicLoginButton />
-          <PrivacyPolicyWrapper>
+          <MagicLoginButton
+            style={{
+              color: magicLoginTextColor
+            }}
+          />
+          <PrivacyPolicyWrapper style={{ color: privacyTextColor }}>
             By connecting a wallet, you agree to{" "}
             {viewMode === ViewMode.DAPP ? "Boson App" : "Boson Dispute Center"}
             's{" "}

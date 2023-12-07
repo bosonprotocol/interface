@@ -263,11 +263,10 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     values.withOwnProducts?.value || ""
   );
   useEffect(() => {
-    if (
-      sellerIds?.length &&
-      ["mine"].includes(values.withOwnProducts?.value || "")
-    ) {
+    if ((sellerIds?.length && "mine" === values.withOwnProducts?.value) || "") {
       setFieldValue(storeFields.sellerCurationList, sellerIds.join(","), true);
+    } else if ("all" === values.withOwnProducts?.value || "") {
+      setFieldValue(storeFields.sellerCurationList, "", true);
     }
   }, [values.withOwnProducts?.value, setFieldValue, sellerIds]);
 

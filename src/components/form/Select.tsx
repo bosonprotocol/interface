@@ -1,6 +1,8 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useField } from "formik";
+import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { zIndex } from "lib/styles/zIndex";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import ReactSelect, {
   ActionMeta,
   MultiValue,
@@ -23,11 +25,15 @@ const StyledSelect = styled(ReactSelect)`
   }
 ` as ReactSelect;
 
-const customStyles = (error: any): StylesConfig<any, boolean> => ({
+const customStyles = (
+  error: any,
+  { backgroundColor, textColor }: { backgroundColor: string; textColor: string }
+): StylesConfig<any, boolean> => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   singleValue: (provided: any, state: any) => {
     return {
       ...provided,
+      color: textColor,
       fontSize: "13.33px"
     };
   },
@@ -37,7 +43,8 @@ const customStyles = (error: any): StylesConfig<any, boolean> => ({
           ":before": {
             content: `"${state.selectProps.label}"`,
             fontWeight: "600",
-            paddingLeft: "1rem"
+            paddingLeft: "1rem",
+            color: textColor
           }
         }
       : null;
@@ -50,7 +57,7 @@ const customStyles = (error: any): StylesConfig<any, boolean> => ({
         borderColor: colors.secondary,
         borderWidth: "1px"
       },
-      background: colors.lightGrey,
+      background: backgroundColor,
       border: state.isFocused
         ? `1px solid ${colors.secondary}`
         : !checkIfValueIsEmpty(error)
@@ -85,7 +92,7 @@ const customStyles = (error: any): StylesConfig<any, boolean> => ({
   }),
   multiValue: (base, state) => {
     return (state.data as Record<string, any>).isFixed
-      ? { ...base, backgroundColor: colors.darkGrey }
+      ? { ...base, backgroundColor: backgroundColor }
       : base;
   },
   multiValueLabel: (base, state) => {
@@ -95,8 +102,26 @@ const customStyles = (error: any): StylesConfig<any, boolean> => ({
   },
   multiValueRemove: (base, state) => {
     return state.data.isFixed ? { ...base, display: "none" } : base;
+  },
+  input(base) {
+    return {
+      ...base,
+      color: textColor
+    };
   }
 });
+
+const useSelectColors = () => {
+  const backgroundColor = colors.lightGrey;
+  const textColor = getColor1OverColor2WithContrast({
+    color2: backgroundColor,
+    color1: useCSSVariable("--buttonTextColor") || colors.darkGrey
+  });
+  return {
+    backgroundColor,
+    textColor
+  };
+};
 
 export default function SelectForm({
   name,
@@ -174,7 +199,7 @@ export default function SelectForm({
   return (
     <>
       <StyledSelect
-        styles={customStyles(displayErrorMessage)}
+        styles={customStyles(displayErrorMessage, useSelectColors())}
         {...field}
         {...props}
         placeholder={placeholder}
@@ -213,7 +238,7 @@ export function Select({
   return (
     <>
       <StyledSelect<typeof options[number], boolean>
-        styles={customStyles(displayErrorMessage)}
+        styles={customStyles(displayErrorMessage, useSelectColors())}
         {...props}
         placeholder={placeholder}
         options={options}
