@@ -151,7 +151,7 @@ const RedeemButton = styled(BosonButton)`
 const BlackLogo = styled(Logo)`
   width: 6.25rem;
   height: fit-content;
-  padding: 1.2rem 0 0 0;
+  padding: 1.2rem 0;
   :first-child {
     path:first-child {
       fill: ${colors.black};
@@ -1148,7 +1148,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
 
             {isToRedeem && !isRedeemDisabled && (
-              <Typography $fontSize="0.8rem" style={{ display: "block" }}>
+              <Typography
+                $fontSize="0.8rem"
+                style={{ color: "initial", display: "block" }}
+              >
                 By proceeding to Redeem, I agree to the{" "}
                 <span
                   style={{
@@ -1171,7 +1174,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           {isOffer && (
             <Typography
               $fontSize="0.8rem"
-              style={{ display: "block", paddingBottom: "0.5rem" }}
+              style={{
+                color: "initial",
+                display: "block",
+                paddingBottom: "0.5rem"
+              }}
             >
               By proceeding to Commit, I agree to the{" "}
               <span
@@ -1317,9 +1324,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           </>
         )}
         {isCustomStoreFront && (
-          <Grid justifyContent="center" alignItems="center">
-            <BlackLogo />
-          </Grid>
+          <>
+            <Break />
+            <Grid justifyContent="center" alignItems="center">
+              <BlackLogo />
+            </Grid>
+          </>
         )}
       </Widget>
     </>

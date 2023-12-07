@@ -4,6 +4,8 @@ import {
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
+import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { CameraSlash, Lock } from "phosphor-react";
 import { useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
@@ -44,20 +46,22 @@ interface Props {
 const ProductCardWrapper = styled.div<{
   $isCustomStoreFront: boolean;
   $isLowerCardBgColorDefined: boolean;
+  $bottomCardTextColor: string;
+  $avatarTextColor: string;
 }>`
   [data-card="product-card"] {
     height: 500px;
     background: var(--upperCardBgColor);
-    ${({ $isLowerCardBgColorDefined }) => {
+    ${({ $isLowerCardBgColorDefined, $bottomCardTextColor }) => {
       if ($isLowerCardBgColorDefined) {
         return css`
-          color: var(--textColor);
+          color: ${$bottomCardTextColor};
 
           .bottom {
             background: var(--lowerCardBgColor);
           }
           * {
-            color: var(--textColor);
+            color: ${$bottomCardTextColor};
           }
         `;
       }
@@ -82,10 +86,10 @@ const ProductCardWrapper = styled.div<{
     max-width: 100%;
     word-break: break-word;
 
-    ${({ $isLowerCardBgColorDefined }) => {
+    ${({ $isLowerCardBgColorDefined, $avatarTextColor }) => {
       if ($isLowerCardBgColorDefined) {
         return css`
-          color: var(--accent);
+          color: ${$avatarTextColor};
         `;
       }
       return css``;
@@ -204,10 +208,21 @@ export default function ProductCard({
     (useLens ? lensProfile?.name : metadata?.name) ?? metadata?.name ?? "";
   const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
   const isLowerCardBgColorDefined = !!lowerCardBgColor;
+  const bottomCardTextColor = getColor1OverColor2WithContrast({
+    color2: useCSSVariable("--lowerCardBgColor") || colors.white,
+    color1: useCSSVariable("--textColor") || colors.darkGrey
+  });
+  const avatarTextColor = getColor1OverColor2WithContrast({
+    color2: useCSSVariable("--lowerCardBgColor") || colors.white,
+    color1: colors.accent,
+    contrastThreshold: 4
+  });
   return (
     <ProductCardWrapper
       $isCustomStoreFront={!!isCustomStoreFront}
       $isLowerCardBgColorDefined={isLowerCardBgColorDefined}
+      $bottomCardTextColor={bottomCardTextColor}
+      $avatarTextColor={avatarTextColor}
     >
       {isTokenGated && (
         <LockIcon>
