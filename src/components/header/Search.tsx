@@ -85,7 +85,7 @@ export default function Search({ isMobile, navigationBarPosition }: Props) {
       isMobile={isMobile}
       $navigationBarPosition={navigationBarPosition}
     >
-      {!isMobile && <MagnifyingGlass size={24} />}
+      {!isMobile && <MagnifyingGlass size={24} style={{ minWidth: "24px" }} />}
       <Input
         data-testid="search-by-name-input"
         onChange={handleChange}

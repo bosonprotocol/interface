@@ -329,7 +329,12 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
             </Grid>
           ) : (
             <>
-              <Grid flexDirection="row" alignItems="center" $width="initial">
+              <Grid
+                flexDirection="row"
+                alignItems="center"
+                $width="initial"
+                gap="1rem"
+              >
                 <LinkWithQuery
                   to={BosonRoutes.Root}
                   style={{ display: "flex" }}
@@ -338,6 +343,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                     src={logoUrl || logo}
                     alt="logo image"
                     data-testid="logo"
+                    style={{ maxWidth: "100%" }}
                     width={logoUrl ? undefined : isLteXS ? 104 : 204}
                     height={
                       logoUrl
@@ -352,7 +358,11 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   <X
                     color={colors.secondary}
                     onClick={toggleMenu}
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      minWidth: "24px",
+                      maxWidth: "24px"
+                    }}
                     size="24"
                   />
                 )}
@@ -381,7 +391,9 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                 {!burgerMenuBreakpoint && (
                   <>
                     {CTA}
-                    <ChainSelector />
+                    <ChainSelector
+                      leftAlign={navigationBarPosition === "left"}
+                    />
                     <ConnectButton />
                   </>
                 )}

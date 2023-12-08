@@ -90,7 +90,8 @@ const NavigationLinks = styled.div<{
                 align-items: stretch;
                 justify-content: space-between;
                 gap: 2rem;
-                a {
+                a,
+                [data-anchor] {
                   justify-content: flex-start;
                   padding: 0.5rem;
                 }
