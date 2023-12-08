@@ -384,8 +384,8 @@ export const getTokenGatingValidationSchema = ({
               throw this.createError({
                 path: this.path,
                 message: isOneVariant
-                  ? `This is greater than quantity (${formValues.coreTermsOfSale.quantity})`
-                  : `This is greater than adding up the quantity of all variants (${variantsQuantity})`
+                  ? `Unlocks per wallet need to be greater than or equal to the quantity of the offers specified (${formValues.coreTermsOfSale.quantity})`
+                  : `Unlocks per wallet need to be greater than or equal to the quantity of the offers specified (${variantsQuantity})`
               });
             }
             return true;
