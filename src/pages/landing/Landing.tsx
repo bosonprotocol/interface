@@ -61,7 +61,7 @@ const ExploreContainer = styled.div`
   margin-top: 2rem;
 `;
 
-const DarkerBackground = styled.div`
+const DarkerBackground = styled.div.attrs({ id: "darker-background" })`
   background-color: var(--secondary);
   width: 100vw;
   position: relative;
@@ -90,6 +90,10 @@ export default function Landing() {
   const bannerImgPosition = useCustomStoreQueryParameter(
     "bannerImgPosition"
   ) as unknown as "under" | "over" | "";
+  const navigationBarPosition = useCustomStoreQueryParameter(
+    "navigationBarPosition"
+  );
+  const isSideNavBar = ["left", "right"].includes(navigationBarPosition);
   const title = useCustomStoreQueryParameter("title");
   const description = useCustomStoreQueryParameter("description");
   const bannerUrl = useCustomStoreQueryParameter("bannerUrl");
@@ -102,6 +106,7 @@ export default function Landing() {
   const realBannerImgPosition = title ? bannerImgPosition : "over";
   const withUnderBanner = bannerUrl && realBannerImgPosition === "under";
   const TitleAndDescriptionWrapper = withUnderBanner ? Layout : Div;
+  const LayoutWrapper = isSideNavBar ? Grid : DarkerBackground;
   return (
     <LandingPage isCustomStoreFront={isCustomStoreFront}>
       {isCustomStoreFront ? (
@@ -159,7 +164,6 @@ export default function Landing() {
             flexBasis="50%"
             flexDirection={isLteS ? "column-reverse" : "row"}
             gap="2.5rem"
-            data-hero-wrapper
           >
             <GridWithZindex alignItems="flex-start" flexDirection="column">
               <Title tag="h1" fontWeight="600">
@@ -202,8 +206,8 @@ export default function Landing() {
           </Grid>
         </>
       )}
-      <DarkerBackground>
-        <LayoutRoot>
+      <LayoutWrapper>
+        <LayoutRoot style={{ ...(isSideNavBar && { padding: "initial" }) }}>
           <LandingPage
             isCustomStoreFront={isCustomStoreFront}
             style={{ paddingTop: "2rem", paddingBottom: "2rem" }}
@@ -211,7 +215,7 @@ export default function Landing() {
             <FeaturedOffers title="Products" />
           </LandingPage>
         </LayoutRoot>
-      </DarkerBackground>
+      </LayoutWrapper>
     </LandingPage>
   );
 }
