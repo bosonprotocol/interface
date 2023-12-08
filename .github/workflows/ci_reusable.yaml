@@ -107,9 +107,9 @@ jobs:
     name: Build, Test and Deploy the Marketplace Interface
     runs-on: ubuntu-latest
     env:
-      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: "ipfs://QmbkoWec4NcmxJk7xpooNyfvj9ZarkW6RXq2ZJ9W6UGXZu"
-      REACT_APP_RNFT_LICENSE_TEMPLATE: "ipfs://QmZnkoiGRt9XX5KqyEz1G3UKUXTKfoYECRQz2rxa3m3z3a"
-      REACT_APP_FAIR_EXCHANGE_POLICY_RULES: "ipfs://QmbUskZ7q6Vd4ZUHoZc6iQG5Cu4KUPSndRbTFdccWjEZYH"
+      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: "ipfs://QmaUobgQYrMnm2jZ3WowPtwRs4MpMR2TSinp3ChebjnZwe"
+      REACT_APP_RNFT_LICENSE_TEMPLATE: "ipfs://QmPbzbp7xcSKhQPjT5VacLRMVgM1U6DB4LiF2GVyHhvcA7"
+      REACT_APP_FAIR_EXCHANGE_POLICY_RULES: "ipfs://QmX8Wnq1eWbf7pRhEDQqdAqWp17YSKXQq8ckZVe4YdqAvt"
       REACT_APP_ENV_NAME: ${{ inputs.REACT_APP_ENV_NAME }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       REACT_APP_ENABLE_CURATION_LISTS: ${{ inputs.REACT_APP_ENABLE_CURATION_LISTS }}
