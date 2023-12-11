@@ -537,8 +537,20 @@ export const shippingInfoValidationSchema = Yup.object({
     // }).default([{ value: "", label: "" }]),
     jurisdiction: Yup.array(
       Yup.object({
-        region: Yup.string().required(validationMessage.required),
-        time: Yup.string().required(validationMessage.required)
+        region: Yup.string().test({
+          message: "Region is required if time is defined",
+          test: function (value, context) {
+            const { time } = context.parent;
+            return !(!value && time);
+          }
+        }),
+        time: Yup.string().test({
+          message: "Time is required if region is defined",
+          test: function (value, context) {
+            const { region } = context.parent;
+            return !(!value && region);
+          }
+        })
       })
     ).default([{ region: "", time: "" }]),
     returnPeriod: Yup.string()

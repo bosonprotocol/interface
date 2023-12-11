@@ -246,9 +246,10 @@ function loadExistingProduct<T extends CreateProductForm>(
       ? {
           voucherValidDurationInDays:
             Number(firstOffer.voucherValidDuration) / 86400,
-          redemptionPeriod: dayjs(
-            getDateTimestamp(firstOffer.voucherRedeemableFromDate)
-          ),
+          redemptionPeriod:
+            firstOffer.voucherRedeemableFromDate === "0"
+              ? undefined
+              : dayjs(getDateTimestamp(firstOffer.voucherRedeemableFromDate)),
           offerValidityPeriod: dayjs(getDateTimestamp(firstOffer.validFromDate))
         }
       : {

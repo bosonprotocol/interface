@@ -626,19 +626,22 @@ function CreateProductInner({
       });
 
       const supportedJurisdictions: Array<SupportedJuridiction> =
-        shippingInfo.jurisdiction.reduce((prev, { region, time }) => {
-          if (region.length === 0 || time.length === 0) {
-            return prev;
-          } else {
-            return [
-              ...prev,
-              {
-                label: region,
-                deliveryTime: time
-              }
-            ];
-          }
-        }, [] as Array<SupportedJuridiction>);
+        shippingInfo.jurisdiction
+          .filter((v) => v.time && v.region)
+          .reduce((prev, current) => {
+            const { region, time } = current;
+            if (!region || region.length === 0 || !time || time.length === 0) {
+              return prev;
+            } else {
+              return [
+                ...prev,
+                {
+                  label: region,
+                  deliveryTime: time
+                }
+              ];
+            }
+          }, [] as Array<SupportedJuridiction>);
 
       // filter empty attributes
       const additionalAttributes = productAttributes.filter((attribute) => {
@@ -1036,7 +1039,8 @@ function CreateProductInner({
       tokenType?.value === TOKEN_TYPES[0].value
     ) {
       try {
-        const { decimals } = await coreSDK.getExchangeTokenInfo(tokenContract);
+        const result = await coreSDK.getExchangeTokenInfo(tokenContract);
+        const { decimals } = result ?? {};
         setDecimals(decimals);
       } catch (error) {
         setDecimals(undefined);

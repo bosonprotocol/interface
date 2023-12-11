@@ -241,7 +241,7 @@ export default function Preview({
             <DetailGrid>
               {(values.shippingInfo.returnPeriod ||
                 (values?.shippingInfo?.jurisdiction?.length > 0 &&
-                  values?.shippingInfo?.jurisdiction[0]?.region?.length >
+                  (values?.shippingInfo?.jurisdiction[0]?.region?.length ?? 0) >
                     0)) && (
                 <div>
                   <Typography tag="h3">Shipping information</Typography>
@@ -251,7 +251,9 @@ export default function Preview({
                   </Typography>
                   <DetailTable
                     data={map(
-                      values?.shippingInfo?.jurisdiction,
+                      values?.shippingInfo?.jurisdiction.filter(
+                        (v) => v.time && v.region
+                      ),
                       ({ region, time }) => {
                         return {
                           name: region,

@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { arrayMoveImmutable } from "array-move";
 import { FieldArray } from "formik";
-import { Plus } from "phosphor-react";
-import { useEffect, useMemo, useState } from "react";
+import { Plus, X } from "phosphor-react";
+import { useMemo } from "react";
+import SortableList, { SortableItem } from "react-easy-sort";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -25,7 +27,8 @@ import {
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;
-  grid-template-columns: minmax(150px, 1fr) 3fr;
+  grid-template-columns: minmax(150px, 1fr) 3fr min-content;
+  align-items: start;
   grid-gap: 1rem;
   margin-bottom: 1rem;
 `;
@@ -64,98 +67,112 @@ const checkLastElementIsPristine = (
   elements: ShippingInfoType["shippingInfo"]["jurisdiction"]
 ): boolean => {
   const element = elements[elements.length - 1];
-  return element?.region.length === 0 || element?.time.length === 0;
+  return element?.region?.length === 0 || element?.time?.length === 0;
 };
 
 const AddSupportedJurisdictions = () => {
-  const { values } = useForm();
+  const { values, setFieldValue, setFieldTouched, handleBlur } = useForm();
 
   const jurisdictions = useMemo(
     () => values?.shippingInfo?.jurisdiction,
     [values?.shippingInfo?.jurisdiction]
   );
-
+  const onSortEnd = (oldIndex: number, newIndex: number) => {
+    if (!jurisdictions) {
+      return;
+    }
+    setFieldValue(
+      "shippingInfo.jurisdiction",
+      arrayMoveImmutable(jurisdictions, oldIndex, newIndex)
+    );
+  };
   return (
     <FormField
       title="Supported jurisdictions"
       subTitle="Select the jurisdictions you will ship to."
     >
-      <FieldArray
-        name="shippingInfo.jurisdiction"
-        render={(arrayHelpers) => {
-          const render = jurisdictions && jurisdictions.length > 0;
+      <SortableList onSortEnd={onSortEnd} draggedItemClassName="dragged">
+        <FieldArray
+          name="shippingInfo.jurisdiction"
+          render={(arrayHelpers) => {
+            const render = jurisdictions && jurisdictions.length > 0;
 
-          return (
-            <>
-              {render && (
-                <>
-                  {jurisdictions.map((_, index) => (
-                    <FieldContainerJurisdictions
-                      key={`field_container_jurisdictions_${index}`}
-                    >
-                      <div>
-                        <Input
-                          placeholder="Region"
-                          name={`shippingInfo.jurisdiction[${index}].region`}
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          placeholder="Time"
-                          name={`shippingInfo.jurisdiction[${index}].time`}
-                        />
-                      </div>
-                    </FieldContainerJurisdictions>
-                  ))}
-                </>
-              )}
-              {!checkLastElementIsPristine(jurisdictions) && (
-                <Button
-                  onClick={() => arrayHelpers.push({ region: "", time: "" })}
-                  theme="blankSecondary"
-                  style={{ borderBottom: `1px solid ${colors.border}` }}
-                >
-                  Add new <Plus size={18} />
-                </Button>
-              )}
-            </>
-          );
-        }}
-      />
+            return (
+              <>
+                {render && (
+                  <>
+                    {jurisdictions.map((_, index, array) => (
+                      <SortableItem
+                        key={`field_container_jurisdictions_${index}`}
+                      >
+                        <FieldContainerJurisdictions>
+                          <div>
+                            <Input
+                              placeholder="Region"
+                              name={`shippingInfo.jurisdiction[${index}].region`}
+                              onBlur={(e) => {
+                                handleBlur(e);
+                                setFieldTouched(
+                                  `shippingInfo.jurisdiction[${index}].time`,
+                                  true
+                                );
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              placeholder="Time"
+                              name={`shippingInfo.jurisdiction[${index}].time`}
+                              onBlur={(e) => {
+                                handleBlur(e);
+                                setFieldTouched(
+                                  `shippingInfo.jurisdiction[${index}].region`,
+                                  true
+                                );
+                              }}
+                            />
+                          </div>
+                          {array.length > 1 && (
+                            <div style={{ alignSelf: "center" }}>
+                              <X
+                                size={14}
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  arrayHelpers.remove(index);
+                                }}
+                              />
+                            </div>
+                          )}
+                        </FieldContainerJurisdictions>
+                      </SortableItem>
+                    ))}
+                  </>
+                )}
+                {!checkLastElementIsPristine(jurisdictions) && (
+                  <Button
+                    onClick={() => arrayHelpers.push({ region: "", time: "" })}
+                    theme="blankSecondary"
+                    style={{ borderBottom: `1px solid ${colors.border}` }}
+                  >
+                    Add new <Plus size={18} />
+                  </Button>
+                )}
+              </>
+            );
+          }}
+        />
+      </SortableList>
     </FormField>
   );
 };
 
-const validJurisdiction = (
-  jurisdictionElements: ShippingInfoType["shippingInfo"]["jurisdiction"]
-): boolean => {
-  const validation = jurisdictionElements.some(({ time, region }) => {
-    return (
-      (region.length === 0 && time.length > 0) ||
-      (time.length === 0 && region.length > 0)
-    );
-  });
-  return !validation;
-};
-
 export default function ShippingInfo() {
   const { values, nextIsDisabled } = useForm();
-  const [isValidJurisdiction, setIsValidJurisdiction] = useState<boolean>(true);
 
   const unit = useMemo(
     () => (values?.shippingInfo?.measurementUnit?.value || "").toUpperCase(),
     [values?.shippingInfo?.measurementUnit?.value]
   );
-
-  const jurisdictionElements = useMemo(
-    () => values?.shippingInfo?.jurisdiction,
-    [values?.shippingInfo?.jurisdiction]
-  );
-
-  useEffect(() => {
-    const isValid = validJurisdiction(jurisdictionElements);
-    setIsValidJurisdiction(isValid);
-  }, [jurisdictionElements]);
 
   const lwh = useMemo(
     () =>
@@ -302,7 +319,7 @@ export default function ShippingInfo() {
         <BosonButton
           variant="primaryFill"
           type="submit"
-          disabled={nextIsDisabled || !isValidJurisdiction}
+          disabled={nextIsDisabled}
         >
           Next
         </BosonButton>
