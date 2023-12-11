@@ -241,8 +241,7 @@ export default function Preview({
             <DetailGrid>
               {(values.shippingInfo.returnPeriod ||
                 ((values?.shippingInfo?.jurisdiction?.length > 0 &&
-                  values?.shippingInfo?.jurisdiction[0]?.region?.length) ??
-                  0 > 0)) && (
+                  values?.shippingInfo?.jurisdiction[0]?.region?.length >0))) && (
                 <div>
                   <Typography tag="h3">Shipping information</Typography>
                   <Typography tag="p" style={{ color: colors.darkGrey }}>
