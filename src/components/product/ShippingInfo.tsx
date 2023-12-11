@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { arrayMoveImmutable } from "array-move";
 import { FieldArray } from "formik";
-import { Plus } from "phosphor-react";
+import { Plus, X } from "phosphor-react";
 import { useEffect, useMemo, useState } from "react";
+import SortableList, { SortableItem } from "react-easy-sort";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -25,7 +27,8 @@ import {
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;
-  grid-template-columns: minmax(150px, 1fr) 3fr;
+  grid-template-columns: minmax(150px, 1fr) 3fr min-content;
+  align-items: center;
   grid-gap: 1rem;
   margin-bottom: 1rem;
 `;
@@ -68,60 +71,81 @@ const checkLastElementIsPristine = (
 };
 
 const AddSupportedJurisdictions = () => {
-  const { values } = useForm();
+  const { values, setFieldValue } = useForm();
 
   const jurisdictions = useMemo(
     () => values?.shippingInfo?.jurisdiction,
     [values?.shippingInfo?.jurisdiction]
   );
-
+  const onSortEnd = (oldIndex: number, newIndex: number) => {
+    if (!jurisdictions) {
+      return;
+    }
+    setFieldValue(
+      "shippingInfo.jurisdiction",
+      arrayMoveImmutable(jurisdictions, oldIndex, newIndex)
+    );
+  };
   return (
     <FormField
       title="Supported jurisdictions"
       subTitle="Select the jurisdictions you will ship to."
     >
-      <FieldArray
-        name="shippingInfo.jurisdiction"
-        render={(arrayHelpers) => {
-          const render = jurisdictions && jurisdictions.length > 0;
+      <SortableList onSortEnd={onSortEnd} draggedItemClassName="dragged">
+        <FieldArray
+          name="shippingInfo.jurisdiction"
+          render={(arrayHelpers) => {
+            const render = jurisdictions && jurisdictions.length > 0;
 
-          return (
-            <>
-              {render && (
-                <>
-                  {jurisdictions.map((_, index) => (
-                    <FieldContainerJurisdictions
-                      key={`field_container_jurisdictions_${index}`}
-                    >
-                      <div>
-                        <Input
-                          placeholder="Region"
-                          name={`shippingInfo.jurisdiction[${index}].region`}
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          placeholder="Time"
-                          name={`shippingInfo.jurisdiction[${index}].time`}
-                        />
-                      </div>
-                    </FieldContainerJurisdictions>
-                  ))}
-                </>
-              )}
-              {!checkLastElementIsPristine(jurisdictions) && (
-                <Button
-                  onClick={() => arrayHelpers.push({ region: "", time: "" })}
-                  theme="blankSecondary"
-                  style={{ borderBottom: `1px solid ${colors.border}` }}
-                >
-                  Add new <Plus size={18} />
-                </Button>
-              )}
-            </>
-          );
-        }}
-      />
+            return (
+              <>
+                {render && (
+                  <>
+                    {jurisdictions.map((_, index, array) => (
+                      <SortableItem
+                        key={`field_container_jurisdictions_${index}`}
+                      >
+                        <FieldContainerJurisdictions>
+                          <div>
+                            <Input
+                              placeholder="Region"
+                              name={`shippingInfo.jurisdiction[${index}].region`}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              placeholder="Time"
+                              name={`shippingInfo.jurisdiction[${index}].time`}
+                            />
+                          </div>
+                          {array.length > 1 && (
+                            <X
+                              size={14}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                arrayHelpers.remove(index);
+                              }}
+                            />
+                          )}
+                        </FieldContainerJurisdictions>
+                      </SortableItem>
+                    ))}
+                  </>
+                )}
+                {!checkLastElementIsPristine(jurisdictions) && (
+                  <Button
+                    onClick={() => arrayHelpers.push({ region: "", time: "" })}
+                    theme="blankSecondary"
+                    style={{ borderBottom: `1px solid ${colors.border}` }}
+                  >
+                    Add new <Plus size={18} />
+                  </Button>
+                )}
+              </>
+            );
+          }}
+        />
+      </SortableList>
     </FormField>
   );
 };
