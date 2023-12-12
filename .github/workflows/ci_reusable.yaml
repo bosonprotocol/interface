@@ -92,6 +92,8 @@ on:
         required: true
       REACT_APP_MAGIC_API_KEY:
         required: true
+      SENTRY_AUTH_TOKEN:
+        required: false
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -165,7 +167,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: "boson-protocol"
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_PROJECT: "v2-dapp"
         with:
           environment: ${{ inputs.ENV_NAME }}
           version: ${{ inputs.REACT_APP_RELEASE_NAME }}
