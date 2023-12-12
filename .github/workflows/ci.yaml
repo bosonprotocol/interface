@@ -107,6 +107,7 @@ jobs:
       REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_TESTING }}
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_TESTING }}
       REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_TESTING }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   call-reusable-workflow-staging:
     uses: ./.github/workflows/ci_reusable.yaml
@@ -146,6 +147,7 @@ jobs:
       REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_STAGING }}
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_STAGING }}
       REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_STAGING }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   call-reusable-workflow-production:
     uses: ./.github/workflows/ci_reusable.yaml
@@ -185,6 +187,7 @@ jobs:
       REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_PRODUCTION }}
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_PRODUCTION }}
       REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_PRODUCTION }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   job-summary:
     name: Create Job Summary
