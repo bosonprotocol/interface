@@ -159,6 +159,16 @@ jobs:
           path: ~/.npm
           key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
+      - name: Create Sentry release
+        if: ${{ inputs.IS_PREVIEW == false }}
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: ${{ inputs.ENV_NAME }}
+          version: ${{ inputs.REACT_APP_RELEASE_NAME }}
       - run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
