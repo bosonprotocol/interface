@@ -138,6 +138,7 @@ jobs:
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY }}
       REACT_APP_MOONPAY_EXTERNAL_LINK: ${{ inputs.REACT_APP_MOONPAY_EXTERNAL_LINK }}
       REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
