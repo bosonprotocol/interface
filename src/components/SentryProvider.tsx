@@ -29,7 +29,6 @@ interface Props {
 export default function SentryProvider({ children }: Props) {
   const { config } = useConfigContext();
   useEffect(() => {
-    // TODO: verify this
     Sentry.init({
       debug: config.enableSentryLogging,
       dsn: CONFIG.sentryDSNUrl,
