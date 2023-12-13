@@ -422,90 +422,92 @@ export default function SellerExchangeTable({
 
   return (
     <>
-      <Table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup, key) => (
-            <tr
-              {...headerGroup.getHeaderGroupProps()}
-              key={`seller_table_thead_tr_${key}`}
-            >
-              {headerGroup.headers.map((column, i) => (
-                <th
-                  data-sortable={column.disableSortBy}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  key={`seller_table_thead_th_${i}`}
-                >
-                  {column.render("Header")}
-                  {i > 0 && !column.disableSortBy && (
-                    <HeaderSorter>
-                      {column?.isSorted ? (
-                        column?.isSortedDesc ? (
-                          <CaretDown size={14} />
+      <div style={{ width: "100%", overflow: "auto" }}>
+        <Table {...getTableProps()}>
+          <thead>
+            {headerGroups.map((headerGroup, key) => (
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                key={`seller_table_thead_tr_${key}`}
+              >
+                {headerGroup.headers.map((column, i) => (
+                  <th
+                    data-sortable={column.disableSortBy}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    key={`seller_table_thead_th_${i}`}
+                  >
+                    {column.render("Header")}
+                    {i > 0 && !column.disableSortBy && (
+                      <HeaderSorter>
+                        {column?.isSorted ? (
+                          column?.isSortedDesc ? (
+                            <CaretDown size={14} />
+                          ) : (
+                            <CaretUp size={14} />
+                          )
                         ) : (
-                          <CaretUp size={14} />
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </HeaderSorter>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {(page.length > 0 &&
-            page.map((row) => {
-              prepareRow(row);
-              return (
-                <tr
-                  {...row.getRowProps()}
-                  key={`seller_table_tbody_tr_${row.original.exchangeId}`}
-                >
-                  {row.cells.map((cell) => {
-                    return (
-                      <td
-                        {...cell.getCellProps()}
-                        key={`seller_table_tbody_td_${row.original.exchangeId}-${cell.column.id}`}
-                        onClick={() => {
-                          if (
-                            cell.column.id !== "action" &&
-                            cell.column.id !== "selection"
-                          ) {
-                            const pathname = generatePath(
-                              BosonRoutes.Exchange,
-                              {
-                                [UrlParameters.exchangeId]:
-                                  row?.original?.exchangeId ?? "0"
-                              }
-                            );
-                            navigate({ pathname });
-                          }
-                        }}
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })) || (
-            <tr>
-              <td colSpan={columns.length}>
-                <Typography
-                  tag="h6"
-                  justifyContent="center"
-                  padding="1rem 0"
-                  margin="0"
-                >
-                  No data to display
-                </Typography>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+                          ""
+                        )}
+                      </HeaderSorter>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {(page.length > 0 &&
+              page.map((row) => {
+                prepareRow(row);
+                return (
+                  <tr
+                    {...row.getRowProps()}
+                    key={`seller_table_tbody_tr_${row.original.exchangeId}`}
+                  >
+                    {row.cells.map((cell) => {
+                      return (
+                        <td
+                          {...cell.getCellProps()}
+                          key={`seller_table_tbody_td_${row.original.exchangeId}-${cell.column.id}`}
+                          onClick={() => {
+                            if (
+                              cell.column.id !== "action" &&
+                              cell.column.id !== "selection"
+                            ) {
+                              const pathname = generatePath(
+                                BosonRoutes.Exchange,
+                                {
+                                  [UrlParameters.exchangeId]:
+                                    row?.original?.exchangeId ?? "0"
+                                }
+                              );
+                              navigate({ pathname });
+                            }
+                          }}
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })) || (
+              <tr>
+                <td colSpan={columns.length}>
+                  <Typography
+                    tag="h6"
+                    justifyContent="center"
+                    padding="1rem 0"
+                    margin="0"
+                  >
+                    No data to display
+                  </Typography>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
       <Pagination>
         <Grid>
           <Grid justifyContent="flex-start" gap="1rem">
