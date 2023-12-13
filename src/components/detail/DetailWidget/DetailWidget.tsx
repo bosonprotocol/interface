@@ -4,7 +4,8 @@ import {
   extractUserFriendlyError,
   offers,
   Provider,
-  subgraph
+  subgraph,
+  useCallSignerFromIframe
 } from "@bosonprotocol/react-kit";
 import { getHasUserRejectedTx } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
@@ -915,7 +916,14 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       </BosonButton>
     );
   };
-
+  const iframeRef = useRef<HTMLIFrameElement>();
+  const [isIframeLoaded, setIsIframeLoaded] = useState<boolean>(false);
+  const { reload: reloadIframeListener } = useCallSignerFromIframe({
+    iframeRef,
+    isIframeLoaded,
+    signer,
+    childIframeOrigin: CONFIG.widgetsUrl as `http${string}`
+  });
   useEffect(() => {
     if (isExchange) {
       // Reload the widget script after rendering the component
@@ -925,18 +933,24 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
-        window.bosonWidgetReload();
+        window.bosonWidgetReload(function onLoadIframe({ iframe }) {
+          iframeRef.current = iframe;
+          setIsIframeLoaded(true);
+          reloadIframeListener();
+        });
       } catch (e) {
         console.error(e);
         Sentry.captureException(e);
       }
     }
-  }, [isExchange, exchange]);
+  }, [isExchange, exchange, reloadIframeListener]);
+
   useOnCloseWidget(() => {
     wait(3000).then(() => {
       reload?.();
     });
   });
+
   const isRedeemDisabled =
     isLoading || isOffer || isPreview || !isBuyer || isExchangeExpired;
   return (
@@ -1125,6 +1139,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   data-widget-action="REDEEM_FORM"
                   data-config-id={config.envConfig.configId}
                   data-account={address}
+                  data-parent-origin={window.location.origin}
                   withBosonStyle
                 >
                   <span>Redeem</span>
@@ -1284,6 +1299,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       data-account={address}
                       data-widget-action="CANCEL_FORM"
                       data-show-redemption-overview={false}
+                      data-parent-origin={window.location.origin}
                     >
                       Cancel
                       <Question size={18} />
