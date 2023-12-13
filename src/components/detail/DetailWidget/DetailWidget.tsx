@@ -918,7 +918,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   };
   const iframeRef = useRef<HTMLIFrameElement>();
   const [isIframeLoaded, setIsIframeLoaded] = useState<boolean>(false);
-
+  const { reload: reloadIframeListener } = useCallSignerFromIframe({
+    iframeRef,
+    isIframeLoaded,
+    signer,
+    childIframeOrigin: CONFIG.widgetsUrl as `http${string}`
+  });
   useEffect(() => {
     if (isExchange) {
       // Reload the widget script after rendering the component
@@ -931,28 +936,21 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         window.bosonWidgetReload(function onLoadIframe({ iframe }) {
           iframeRef.current = iframe;
           setIsIframeLoaded(true);
+          reloadIframeListener();
         });
       } catch (e) {
         console.error(e);
         Sentry.captureException(e);
       }
     }
-  }, [isExchange, exchange]);
-  useCallSignerFromIframe({
-    iframeRef,
-    isIframeLoaded,
-    signer,
-    childIframeOrigin: CONFIG.widgetsUrl as `http${string}`
-  });
+  }, [isExchange, exchange, reloadIframeListener]);
 
   useOnCloseWidget(() => {
     wait(3000).then(() => {
       reload?.();
     });
   });
-  if (!constants) {
-    return <p>There has been an error</p>;
-  }
+
   const isRedeemDisabled =
     isLoading || isOffer || isPreview || !isBuyer || isExchangeExpired;
   return (
@@ -1301,6 +1299,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       data-account={address}
                       data-widget-action="CANCEL_FORM"
                       data-show-redemption-overview={false}
+                      data-parent-origin={window.location.origin}
                     >
                       Cancel
                       <Question size={18} />

@@ -4,13 +4,15 @@ import {
   ExchangeCard,
   ExchangeCardStatus,
   exchanges,
-  subgraph
+  subgraph,
+  useCallSignerFromIframe
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import { CONFIG } from "lib/config";
+import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { CameraSlash } from "phosphor-react";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -126,7 +128,20 @@ export default function Exchange({
       })
     });
   };
-
+  const iframeRef = useRef<HTMLIFrameElement>();
+  const [isIframeLoaded, setIsIframeLoaded] = useState<boolean>(false);
+  const signer = useSigner();
+  const { reload: reloadIframeListener } = useCallSignerFromIframe({
+    iframeRef,
+    isIframeLoaded,
+    signer,
+    childIframeOrigin: CONFIG.widgetsUrl as `http${string}`
+  });
+  function onLoadIframe({ iframe }: { iframe: HTMLIFrameElement }) {
+    iframeRef.current = iframe;
+    setIsIframeLoaded(true);
+    reloadIframeListener();
+  }
   const createSpecificCardConfig = () => {
     switch (status) {
       case "REDEEMED": {
@@ -163,13 +178,17 @@ export default function Exchange({
         const handleRedeem = () => {
           try {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-ignore
-            window.bosonWidgetShowRedeem({
-              exchangeId: exchange?.id || "",
-              widgetAction: "REDEEM_FORM",
-              configId: config.envConfig.configId,
-              account: address
-            });
+            // @ts-ignore
+            window.bosonWidgetShowRedeem(
+              {
+                exchangeId: exchange?.id || "",
+                widgetAction: "REDEEM_FORM",
+                configId: config.envConfig.configId,
+                account: address,
+                parentOrigin: window.location.origin
+              },
+              onLoadIframe
+            );
           } catch (e) {
             console.error(e);
             Sentry.captureException(e);
@@ -179,13 +198,17 @@ export default function Exchange({
           try {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            window.bosonWidgetShowRedeem({
-              exchangeId: exchange?.id || "",
-              widgetAction: "CANCEL_FORM",
-              showRedemptionOverview: false,
-              configId: config.envConfig.configId,
-              account: address
-            });
+            window.bosonWidgetShowRedeem(
+              {
+                exchangeId: exchange?.id || "",
+                widgetAction: "CANCEL_FORM",
+                showRedemptionOverview: false,
+                configId: config.envConfig.configId,
+                account: address,
+                parentOrigin: window.location.origin
+              },
+              onLoadIframe
+            );
           } catch (e) {
             console.error(e);
             Sentry.captureException(e);
