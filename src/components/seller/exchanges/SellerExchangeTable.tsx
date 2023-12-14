@@ -16,6 +16,7 @@ import {
   useSortBy,
   useTable
 } from "react-table";
+import { useFlexLayout } from "react-table";
 import styled from "styled-components";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -100,7 +101,7 @@ const IndeterminateCheckbox = forwardRef<
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  th {
+  .th {
     font-weight: 600;
     color: ${colors.darkGrey};
     :not([data-sortable]) {
@@ -110,20 +111,21 @@ const Table = styled.table`
       cursor: pointer !important;
     }
   }
-  td {
+  .td {
     font-weight: 400;
     color: ${colors.black};
   }
-  th,
-  td {
+  .th,
+  .td {
     font-family: ${defaultFontFamily};
     font-style: normal;
     font-size: 0.75rem;
     line-height: 1.5;
   }
-  thead {
-    tr {
-      th {
+  .thead {
+    .tr {
+      display: flex;
+      .th {
         border-bottom: 2px solid ${colors.border};
         text-align: left;
         padding: 0.5rem;
@@ -136,20 +138,21 @@ const Table = styled.table`
       }
     }
   }
-  tbody {
-    tr {
+  .tbody {
+    .tr {
+      display: flex;
       :hover {
-        td {
+        .td {
           background-color: ${colors.darkGrey}08;
           cursor: pointer;
         }
       }
       &:not(:last-child) {
-        td {
+        .td {
           border-bottom: 1px solid ${colors.border};
         }
       }
-      td {
+      .td {
         text-align: left;
         padding: 0.5rem;
         &:first-child {
@@ -206,20 +209,24 @@ export default function SellerExchangeTable({
       {
         Header: "",
         accessor: "image",
-        disableSortBy: true
+        disableSortBy: true,
+        maxWidth: 50
       } as const,
       {
         Header: "ID/SKU",
-        accessor: "sku"
+        accessor: "sku",
+        maxWidth: 50
       } as const,
       {
         Header: "Product name",
-        accessor: "productName"
+        accessor: "productName",
+        minWidth: 180
       } as const,
       {
         Header: "Status",
         accessor: "status",
-        disableSortBy: true
+        disableSortBy: true,
+        maxWidth: 120
       } as const,
       {
         Header: "Price",
@@ -229,12 +236,14 @@ export default function SellerExchangeTable({
       {
         Header: "Time period",
         accessor: "timePeriod",
-        disableSortBy: true
+        disableSortBy: true,
+        maxWidth: 120
       } as const,
       {
         Header: "Action",
         accessor: "action",
-        disableSortBy: true
+        disableSortBy: true,
+        minWidth: 220
       } as const
     ],
     []
@@ -265,7 +274,7 @@ export default function SellerExchangeTable({
           ),
           sku: element?.id,
           productName: (
-            <Typography tag="p">
+            <Typography tag="p" style={{ margin: 0 }}>
               <b>{element?.offer?.metadata?.name}</b>
             </Typography>
           ),
@@ -354,10 +363,12 @@ export default function SellerExchangeTable({
     useSortBy,
     usePagination,
     useRowSelect,
+    useFlexLayout,
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
         {
           id: "selection",
+          width: 35,
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
           ),
@@ -424,17 +435,19 @@ export default function SellerExchangeTable({
     <>
       <div style={{ width: "100%", overflow: "auto" }}>
         <Table {...getTableProps()}>
-          <thead>
+          <div className="thead">
             {headerGroups.map((headerGroup, key) => (
-              <tr
+              <div
                 {...headerGroup.getHeaderGroupProps()}
+                className="tr"
                 key={`seller_table_thead_tr_${key}`}
               >
                 {headerGroup.headers.map((column, i) => (
-                  <th
+                  <div
                     data-sortable={column.disableSortBy}
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     key={`seller_table_thead_th_${i}`}
+                    className="th"
                   >
                     {column.render("Header")}
                     {i > 0 && !column.disableSortBy && (
@@ -450,24 +463,27 @@ export default function SellerExchangeTable({
                         )}
                       </HeaderSorter>
                     )}
-                  </th>
+                  </div>
                 ))}
-              </tr>
+              </div>
             ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
+          </div>
+          <div {...getTableBodyProps()} className="tbody">
             {(page.length > 0 &&
               page.map((row) => {
                 prepareRow(row);
                 return (
-                  <tr
+                  <div
                     {...row.getRowProps()}
                     key={`seller_table_tbody_tr_${row.original.exchangeId}`}
+                    className="tr"
                   >
                     {row.cells.map((cell) => {
+                      console.log("cell.getCellProps()", cell.getCellProps());
                       return (
-                        <td
+                        <div
                           {...cell.getCellProps()}
+                          className="td"
                           key={`seller_table_tbody_td_${row.original.exchangeId}-${cell.column.id}`}
                           onClick={() => {
                             if (
@@ -486,14 +502,14 @@ export default function SellerExchangeTable({
                           }}
                         >
                           {cell.render("Cell")}
-                        </td>
+                        </div>
                       );
                     })}
-                  </tr>
+                  </div>
                 );
               })) || (
-              <tr>
-                <td colSpan={columns.length}>
+              <div className="tr">
+                <div className="td">
                   <Typography
                     tag="h6"
                     justifyContent="center"
@@ -502,10 +518,10 @@ export default function SellerExchangeTable({
                   >
                     No data to display
                   </Typography>
-                </td>
-              </tr>
+                </div>
+              </div>
             )}
-          </tbody>
+          </div>
         </Table>
       </div>
       <Pagination>
