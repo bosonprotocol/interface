@@ -371,7 +371,7 @@ export default function SellerProductsTable({
           Header: "Status",
           accessor: "status",
           disableSortBy: true,
-          maxWidth: 100
+          maxWidth: 120
         } as const,
         {
           id: ProductsTableColumnId.quantity,
@@ -672,6 +672,7 @@ export default function SellerProductsTable({
                     size={14}
                     style={{
                       marginLeft: "0.5rem",
+                      marginRight: "0.5rem",
                       cursor: "pointer"
                     }}
                   />

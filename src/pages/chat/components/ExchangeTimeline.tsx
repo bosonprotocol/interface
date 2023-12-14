@@ -21,7 +21,7 @@ const formatShortDate = (date: string) => {
 
 interface Props {
   exchange: Exchange | any;
-  dispute: subgraph.DisputeFieldsFragment | undefined;
+  dispute: subgraph.DisputeFieldsFragment | undefined | null;
   children?: ReactNode;
   showDispute?: boolean;
   lastReceivedProposal?: MessageData | null;

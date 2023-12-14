@@ -50,8 +50,13 @@ export default function SellerFilters({ setSearch, search, buttons }: Props) {
       justifyContent="space-between"
       flexWrap="wrap"
     >
-      <div>
-        <Grid gap="1rem" padding="0" justifyContent="flex-start">
+      <div style={{ display: "flex", width: "100%", flex: 0 }}>
+        <Grid
+          gap="1rem"
+          padding="0"
+          justifyContent="flex-start"
+          style={{ flex: "1 1" }}
+        >
           {/* <SelectFilterWrapper>
             <SelectTitle>Filter:</SelectTitle>
             <Select

@@ -6,6 +6,7 @@ import { colors } from "../../lib/styles/colors";
 const TagsWrapper = styled.div`
   display: block;
   border-bottom: 1px solid ${colors.border};
+  overflow: auto;
 `;
 const TagsList = styled.ul`
   display: flex;
