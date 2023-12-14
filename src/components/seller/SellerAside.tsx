@@ -115,13 +115,18 @@ export default function SellerAside(
   props: SellerInsideProps & WithSellerDataProps
 ) {
   const { [UrlParameters.sellerPage]: sellerPage } = useParams();
-  const { isLteXS } = useBreakpoints();
+  const { isLteXS, isLteL } = useBreakpoints();
   const [collapsed, setCollapsed] = useState(isLteXS);
   useEffect(() => {
     if (isLteXS) {
       setCollapsed(true);
     }
   }, [isLteXS]);
+  useEffect(() => {
+    if (!isLteL) {
+      setCollapsed(false);
+    }
+  }, [isLteL]);
 
   const handleUrl = useCallback((path: string, externalPath: string | null) => {
     if (externalPath !== null) {
