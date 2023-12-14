@@ -12,11 +12,13 @@ import Grid from "../ui/Grid";
 import { WithSellerDataProps } from "./common/WithSellerData";
 import { SellerInsideProps } from "./SellerInside";
 import { sellerPageTypes } from "./SellerPages";
-
+const iconsPaddingLeft = "1.5625rem";
 const ArrowContainer = styled.div`
   display: grid;
   align-items: center;
   margin: 0.5rem 0.25rem;
+  left: calc(${iconsPaddingLeft} - 1rem);
+  position: relative;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 9999px;
@@ -37,6 +39,14 @@ const Aside = styled.aside`
   .label {
     transition: all 200ms;
     width: 7.5em;
+  }
+  &.collapsed {
+    align-items: center;
+  }
+  &:not(.collapsed) {
+    ${ArrowContainer} {
+      left: 0;
+    }
   }
   &.collapsed .label {
     opacity: 0;
@@ -72,7 +82,7 @@ const AsideLink = styled.li<{ $active?: boolean }>`
     height: 1.5rem;
   }
   a {
-    padding-left: 1.5625rem;
+    padding-left: ${iconsPaddingLeft};
     display: flex;
     width: 100%;
     height: 100%;
