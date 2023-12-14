@@ -152,19 +152,11 @@ export default function SellerAside(
   );
   return (
     <Aside className={collapsed ? "collapsed" : ""}>
-      <ArrowContainer>
+      <ArrowContainer onClick={() => setCollapsed((prev) => !prev)}>
         {collapsed ? (
-          <ArrowLineRight
-            weight="light"
-            size={16}
-            onClick={() => setCollapsed(false)}
-          />
+          <ArrowLineRight weight="light" size={16} />
         ) : (
-          <ArrowLineLeft
-            weight="light"
-            size={16}
-            onClick={() => setCollapsed(true)}
-          />
+          <ArrowLineLeft weight="light" size={16} />
         )}
       </ArrowContainer>
       <ul>
