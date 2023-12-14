@@ -1,6 +1,6 @@
 import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { ArrowLineLeft, ArrowLineRight, WarningCircle } from "phosphor-react";
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -117,6 +117,11 @@ export default function SellerAside(
   const { [UrlParameters.sellerPage]: sellerPage } = useParams();
   const { isLteXS } = useBreakpoints();
   const [collapsed, setCollapsed] = useState(isLteXS);
+  useEffect(() => {
+    if (isLteXS) {
+      setCollapsed(true);
+    }
+  }, [isLteXS]);
 
   const handleUrl = useCallback((path: string, externalPath: string | null) => {
     if (externalPath !== null) {

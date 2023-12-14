@@ -160,8 +160,13 @@ export default function SellerDashboard({
             background={colors.black}
             color={colors.white}
           >
-            <Grid justifyContent="space-between" alignItems="center" gap="1rem">
-              <div style={{ flex: "1 1 100%" }}>
+            <Grid
+              justifyContent="space-between"
+              alignItems="center"
+              gap="1rem"
+              flexWrap="wrap"
+            >
+              <div style={{ flex: "1" }}>
                 <Typography tag="h4" padding="0">
                   Top up your seller deposit pool!
                 </Typography>
