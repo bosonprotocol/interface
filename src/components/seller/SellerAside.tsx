@@ -2,7 +2,7 @@ import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { ArrowLineLeft, ArrowLineRight, WarningCircle } from "phosphor-react";
 import { ReactNode, useCallback, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { UrlParameters } from "../../lib/routing/parameters";
 import { SellerCenterRoutes } from "../../lib/routing/routes";
@@ -12,13 +12,11 @@ import Grid from "../ui/Grid";
 import { WithSellerDataProps } from "./common/WithSellerData";
 import { SellerInsideProps } from "./SellerInside";
 import { sellerPageTypes } from "./SellerPages";
-const iconsPaddingLeft = "1.5625rem";
+
 const ArrowContainer = styled.div`
   display: grid;
   align-items: center;
   margin: 0.5rem 0.25rem;
-  left: calc(${iconsPaddingLeft} - 1rem);
-  position: relative;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 9999px;
@@ -27,7 +25,7 @@ const ArrowContainer = styled.div`
   width: 16px;
   height: 16px;
   :hover {
-    background-color: ${colors.lightGrey};
+    background-color: ${colors.border};
   }
 `;
 
@@ -40,24 +38,37 @@ const Aside = styled.aside`
     transition: all 200ms;
     width: 7.5em;
   }
+  .iconGrid {
+    justify-content: flex-start;
+  }
   &.collapsed {
     align-items: center;
-  }
-  &:not(.collapsed) {
-    ${ArrowContainer} {
-      left: 0;
+    .iconGrid {
+      gap: 0;
+      justify-content: center;
+    }
+    li {
+      padding-left: 0;
     }
   }
+
   &.collapsed .label {
     opacity: 0;
     width: 0;
   }
+
   ul {
     list-style: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     padding: 0;
     margin: 0;
     min-height: 100vh;
     li {
+      width: 100%;
+      padding-left: 0.5rem;
       height: 4.5rem;
       display: flex;
       align-items: center;
@@ -73,6 +84,10 @@ const Aside = styled.aside`
 
 const AsideLink = styled.li<{ $active?: boolean }>`
   background: ${(props) => (props.$active ? colors.border : colors.white)};
+  :hover {
+    background-color: ${colors.border};
+    filter: brightness(-200%);
+  }
   div {
     color: ${colors.black};
   }
@@ -82,11 +97,17 @@ const AsideLink = styled.li<{ $active?: boolean }>`
     height: 1.5rem;
   }
   a {
-    padding-left: ${iconsPaddingLeft};
     display: flex;
     width: 100%;
     height: 100%;
     font-size: 1rem;
+    ${({ $active }) =>
+      $active &&
+      css`
+        .label {
+          font-weight: 600;
+        }
+      `}
   }
 `;
 
@@ -156,11 +177,7 @@ export default function SellerAside(
           return (
             <AsideLink key={`seller_aside_route_${label}`} $active={isActive}>
               <LinkWithQuery to={handleUrl(url, externalPath)}>
-                <Grid
-                  alignItems="center"
-                  justifyContent="flex-start"
-                  gap="1rem"
-                >
+                <Grid alignItems="center" gap="1rem" className="iconGrid">
                   <IconContainer>
                     <Icon
                       size={16}

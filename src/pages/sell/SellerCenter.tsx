@@ -34,7 +34,6 @@ const GridWrapper = styled.div`
   grid-template-columns: min-content 1fr;
   gap: 0;
   min-height: calc(100vh - 30.25rem);
-  margin: 0 -1rem;
   font-family: ${defaultFontFamily};
   color: ${colors.black};
 `;
