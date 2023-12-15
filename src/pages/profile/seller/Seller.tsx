@@ -186,9 +186,6 @@ export default function Seller() {
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
   const isSellerExists = isMySeller ? !!sellersData.length : !!sellers?.length;
   const isAnySellerLoading = isLoading || isLoadingSellers;
-  // if (isLoading || isLoadingSellers || isLoadingProducts) {
-  //   return <LoadingMessage />;
-  // }
 
   if (isError || isErrorSellers || isErrorProducts) {
     return (
