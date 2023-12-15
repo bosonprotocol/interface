@@ -242,7 +242,7 @@ export default function ShippingInfo() {
             </div> 
             <div>*/}
           <Input
-            placeholder="Add Redemption Point Url..."
+            placeholder="Add a redemption URL"
             name="shippingInfo.redemptionPointUrl"
           />
           {/* </div> 
