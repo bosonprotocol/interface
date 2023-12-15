@@ -275,7 +275,7 @@ export default function SellerExchangeTable({
           sku: element?.id,
           productName: (
             <Typography tag="p" style={{ margin: 0 }}>
-              <b>{element?.offer?.metadata?.name}</b>
+              {element?.offer?.metadata?.name}
             </Typography>
           ),
           status: element && (

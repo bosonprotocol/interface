@@ -655,7 +655,7 @@ export default function SellerProductsTable({
                       cursor: "pointer"
                     }}
                   >
-                    <b>{offer?.metadata?.name}</b>
+                    {offer?.metadata?.name}
                   </Typography>
                   {showVariant && (
                     <Typography
