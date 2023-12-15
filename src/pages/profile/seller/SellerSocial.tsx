@@ -39,8 +39,8 @@ function RenderSocial({
 }
 
 interface Props {
-  sellerLens?: ProfileFieldsFragment;
-  seller: SellerFieldsFragment;
+  sellerLens?: ProfileFieldsFragment | undefined;
+  seller: SellerFieldsFragment | undefined;
   voucherCloneAddress?: string;
 }
 export default function SellerSocial({
@@ -56,7 +56,7 @@ export default function SellerSocial({
     ? sellerLens
       ? getLensWebsite(sellerLens)
       : null
-    : seller.metadata?.website;
+    : seller?.metadata?.website;
   const websiteToShow = website ? preAppendHttps(website) || false : false;
   const { envName } = config;
   useEffect(() => {

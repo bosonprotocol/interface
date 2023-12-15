@@ -60,25 +60,25 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   title = "Explore Offers"
 }) => {
   const { isLteXS } = useBreakpoints();
-
+  const numOffers = isLteXS ? 6 : 12;
   const { products, isLoading, isError } = useProductsByFilteredOffers({
     voided: false,
     valid: true,
-    first: isLteXS ? 6 : 12,
+    first: numOffers,
     quantityAvailable_gte: 1
   });
   const shuffledOffers = useMemo(() => {
     try {
       return extractUniqueRandomProducts({
         products,
-        quantity: isLteXS ? 6 : 12
+        quantity: numOffers
       });
     } catch (error) {
       console.error(error);
       Sentry.captureException(error);
       return products;
     }
-  }, [products, isLteXS]);
+  }, [products, numOffers]);
   return (
     <Root data-testid={"featureOffers"}>
       <Grid
@@ -95,9 +95,10 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         </ViewMore>
       </Grid>
       <OfferList
-        offers={shuffledOffers?.slice(0, isLteXS ? 6 : 12)}
+        offers={shuffledOffers?.slice(0, numOffers)}
         isError={isError}
         isLoading={isLoading}
+        numOffers={numOffers}
         action="commit"
         showInvalidOffers={false}
         itemsPerRow={{

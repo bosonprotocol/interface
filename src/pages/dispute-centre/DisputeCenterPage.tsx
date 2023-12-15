@@ -126,7 +126,8 @@ function DisputeCenterPage() {
       ).values()
     ).sort((a, b) => Number(b.disputedDate) - Number(a.disputedDate));
   }, [buyerExchanges, sellerExchanges]);
-
+  const isLoading =
+    isBuyersLoading || isSellersLoading || buyer.isLoading || seller.isLoading;
   return (
     <>
       <DisputeListHeader>
@@ -238,14 +239,17 @@ function DisputeCenterPage() {
             )}
           </Grid>
           <DisputeListContainer>
-            {isBuyersLoading || isSellersLoading ? (
+            {!isLteS && isLoading ? (
               <Loading />
             ) : (
               <>
-                {exchanges.length ? (
+                {isLoading || exchanges.length ? (
                   <>
                     {isLteS ? (
-                      <DisputeListMobile exchanges={exchanges} />
+                      <DisputeListMobile
+                        exchanges={exchanges}
+                        isLoading={isLoading}
+                      />
                     ) : (
                       <DisputeTable exchanges={exchanges} />
                     )}

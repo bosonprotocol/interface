@@ -1,5 +1,5 @@
+import { ProductCardSkeleton } from "@bosonprotocol/react-kit";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
-import { LoadingMessage } from "components/loading/LoadingMessage";
 import { useMemo } from "react";
 
 import Exchange from "../../../components/exchange/Exchange";
@@ -44,10 +44,6 @@ export default function Exchanges({ sellerId }: Props) {
     { enabled: Boolean(sellers?.length) }
   );
 
-  if (isLoading) {
-    return <LoadingMessage />;
-  }
-
   if (isError) {
     return (
       <EmptyErrorMessage
@@ -57,7 +53,7 @@ export default function Exchanges({ sellerId }: Props) {
     );
   }
 
-  if (!exchangesSeller?.length) {
+  if (!isLoading && !exchangesSeller?.length) {
     return (
       <EmptyErrorMessage
         title="No exchanges"
@@ -76,16 +72,20 @@ export default function Exchanges({ sellerId }: Props) {
         xl: 3
       }}
     >
-      {exchangesSeller?.map((exchange) => (
-        <Exchange
-          key={exchange.id}
-          {...exchange}
-          exchange={exchange as IExchange}
-          sellerLensProfile={sellerLensProfilePerSellerId?.get(
-            exchange.seller.id
-          )}
-        />
-      ))}
+      {isLoading
+        ? new Array(12).fill(0).map((_, index) => {
+            return <ProductCardSkeleton key={index} />;
+          })
+        : exchangesSeller?.map((exchange) => (
+            <Exchange
+              key={exchange.id}
+              {...exchange}
+              exchange={exchange as IExchange}
+              sellerLensProfile={sellerLensProfilePerSellerId?.get(
+                exchange.seller.id
+              )}
+            />
+          ))}
     </ProductGridContainer>
   );
 }

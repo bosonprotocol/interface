@@ -10,36 +10,37 @@ interface Props {
   action: Action;
   showInvalidOffers: boolean;
   isPrivateProfile: boolean;
+  isLoading: boolean;
 }
 
 export default function Offers({
   products,
   action,
   showInvalidOffers,
-  isPrivateProfile
+  isPrivateProfile,
+  isLoading
 }: Props) {
   const allOffers = useMemo(() => {
     return products?.offers || [];
   }, [products]);
 
   return (
-    <>
-      <OfferList
-        isLoading={false}
-        offers={allOffers}
-        isError={false}
-        showSeller={false}
-        action={action}
-        showInvalidOffers={showInvalidOffers}
-        isPrivateProfile={isPrivateProfile}
-        itemsPerRow={{
-          xs: 1,
-          s: 2,
-          m: 3,
-          l: 3,
-          xl: 3
-        }}
-      />
-    </>
+    <OfferList
+      isLoading={isLoading}
+      numOffers={12}
+      offers={allOffers}
+      isError={false}
+      showSeller={false}
+      action={action}
+      showInvalidOffers={showInvalidOffers}
+      isPrivateProfile={isPrivateProfile}
+      itemsPerRow={{
+        xs: 1,
+        s: 2,
+        m: 3,
+        l: 3,
+        xl: 3
+      }}
+    />
   );
 }

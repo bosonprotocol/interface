@@ -1,5 +1,6 @@
+import { ProductCardSkeleton } from "@bosonprotocol/react-kit";
 import { ArrowRight } from "phosphor-react";
-import { ReactElement, useMemo } from "react";
+import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -15,14 +16,12 @@ import { Action } from "../offer/OfferCard";
 import ProductCard from "../productCard/ProductCard";
 import Grid from "../ui/Grid";
 import { ItemsPerRow } from "../ui/GridContainer";
-import Loading from "../ui/Loading";
 import Typography from "../ui/Typography";
 
 interface Props {
   offers?: Offer[] | ExtendedOffer[];
   isError: boolean;
   isLoading?: boolean;
-  loadingComponent?: ReactElement;
   showSeller?: boolean;
   action: Action;
   showInvalidOffers: boolean;
@@ -30,6 +29,7 @@ interface Props {
   type?: "gone" | "hot" | "soon" | undefined;
   itemsPerRow?: Partial<ItemsPerRow>;
   breadcrumbs?: boolean;
+  numOffers: number;
 }
 
 const Container = styled.div<{ $isPrimaryBgChanged: boolean }>`
@@ -58,7 +58,7 @@ export default function OfferList({
   offers,
   isLoading,
   isError,
-  loadingComponent,
+  numOffers,
   showInvalidOffers,
   itemsPerRow,
   breadcrumbs
@@ -75,9 +75,6 @@ export default function OfferList({
     () => location.pathname.includes(BosonRoutes.Explore),
     [location]
   );
-  if (isLoading) {
-    return loadingComponent || <Loading />;
-  }
 
   if (isError) {
     return (
@@ -89,7 +86,7 @@ export default function OfferList({
     );
   }
 
-  if (!offers || offers.length === 0) {
+  if (!isLoading && (!offers || offers.length === 0)) {
     return (
       <Grid data-testid="noOffers">
         <Typography tag="h3">No products found</Typography>
@@ -157,13 +154,21 @@ export default function OfferList({
           )}
         </Grid>
         <ProductGridContainer itemsPerRow={itemsPerRow}>
-          {offers.map((offer: Offer | ExtendedOffer) => {
-            return (
-              (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
-                <ProductCard key={offer.id} offer={offer} dataTestId="offer" />
-              )
-            );
-          })}
+          {isLoading
+            ? new Array(numOffers).fill(0).map((_, index) => {
+                return <ProductCardSkeleton withBottomText key={index} />;
+              })
+            : offers?.map((offer: Offer | ExtendedOffer) => {
+                return (
+                  (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
+                    <ProductCard
+                      key={offer.id}
+                      offer={offer}
+                      dataTestId="offer"
+                    />
+                  )
+                );
+              })}
         </ProductGridContainer>
       </Container>
     </>
