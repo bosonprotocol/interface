@@ -1,8 +1,18 @@
+import { ProductCardSkeleton } from "@bosonprotocol/react-kit";
+
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import GridContainer from "../../../ui/GridContainer";
-import DisputeListMobileElement from "./DisputeListMobileElement";
+import DisputeListMobileElement, {
+  containerWidth
+} from "./DisputeListMobileElement";
 
-function DisputeListMobile({ exchanges }: { exchanges: Exchange[] }) {
+function DisputeListMobile({
+  exchanges,
+  isLoading
+}: {
+  exchanges: Exchange[];
+  isLoading: boolean;
+}) {
   return (
     <GridContainer
       itemsPerRow={{
@@ -14,11 +24,20 @@ function DisputeListMobile({ exchanges }: { exchanges: Exchange[] }) {
       }}
       style={{ placeItems: "center" }}
     >
-      {exchanges.map((exchange) => {
-        return (
-          <DisputeListMobileElement exchange={exchange} key={exchange.id} />
-        );
-      })}
+      {isLoading
+        ? new Array(6).fill(0).map((_, index) => {
+            return (
+              <ProductCardSkeleton
+                key={index}
+                style={{ width: containerWidth }}
+              />
+            );
+          })
+        : exchanges.map((exchange) => {
+            return (
+              <DisputeListMobileElement exchange={exchange} key={exchange.id} />
+            );
+          })}
     </GridContainer>
   );
 }

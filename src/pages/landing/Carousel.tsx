@@ -1,3 +1,4 @@
+import { ProductCardSkeleton } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 // inspired by https://3dtransforms.desandro.com/carousel
@@ -7,7 +8,6 @@ import { useSwipeable } from "react-swipeable";
 import styled, { css } from "styled-components";
 
 import ProductCard from "../../components/productCard/ProductCard";
-import Loading from "../../components/ui/Loading";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
@@ -261,47 +261,64 @@ export default function Carousel() {
     preventScrollOnSwipe: true,
     trackMouse: true
   });
-  if (isLoading) {
-    return (
-      <Scene style={{ justifyContent: "center" }}>
-        <Loading />
-      </Scene>
-    );
-  }
-  if (!uiOffers?.length) {
+
+  if (!uiOffers?.length && !isLoading) {
     return <></>;
   }
+
+  const getCells = (idx: number) => {
+    const clampedSelectedIndex =
+      ((selectedIndex % numCells) + numCells) % numCells;
+    const previousCell =
+      clampedSelectedIndex - 1 < 0
+        ? numCells - 1 === idx
+        : idx === clampedSelectedIndex - 1;
+    const currentCell = idx === clampedSelectedIndex;
+    const nextCell =
+      idx === clampedSelectedIndex + 1 ||
+      (clampedSelectedIndex + 1 === numCells && idx === 0);
+    return {
+      previousCell,
+      currentCell,
+      nextCell
+    };
+  };
   return (
     <Scene {...handlers}>
       <CarouselContainer ref={carouselRef} data-testid="carousel">
-        {uiOffers?.map((offer: Offer, idx: number) => {
-          const clampedSelectedIndex =
-            ((selectedIndex % numCells) + numCells) % numCells;
-          const previousCell =
-            clampedSelectedIndex - 1 < 0
-              ? numCells - 1 === idx
-              : idx === clampedSelectedIndex - 1;
-          const currentCell = idx === clampedSelectedIndex;
-          const nextCell =
-            idx === clampedSelectedIndex + 1 ||
-            (clampedSelectedIndex + 1 === numCells && idx === 0);
-          return (
-            <CarouselCell
-              key={idx}
-              $isCurrent={currentCell}
-              $isPrevious={previousCell}
-              $isNext={nextCell}
-              {...(currentCell && { "data-current": true })}
-            >
-              <ProductCard
-                key={offer.id}
-                offer={offer}
-                dataTestId="offer"
-                isHoverDisabled={true}
-              />
-            </CarouselCell>
-          );
-        })}
+        {isLoading
+          ? new Array(numCells).fill(0).map((_, idx) => {
+              const { currentCell, nextCell, previousCell } = getCells(idx);
+              return (
+                <CarouselCell
+                  key={idx}
+                  $isCurrent={currentCell}
+                  $isPrevious={previousCell}
+                  $isNext={nextCell}
+                >
+                  <ProductCardSkeleton withBottomText />
+                </CarouselCell>
+              );
+            })
+          : uiOffers?.map((offer: Offer, idx: number) => {
+              const { currentCell, nextCell, previousCell } = getCells(idx);
+              return (
+                <CarouselCell
+                  key={idx}
+                  $isCurrent={currentCell}
+                  $isPrevious={previousCell}
+                  $isNext={nextCell}
+                  {...(currentCell && { "data-current": true })}
+                >
+                  <ProductCard
+                    key={offer.id}
+                    offer={offer}
+                    dataTestId="offer"
+                    isHoverDisabled={true}
+                  />
+                </CarouselCell>
+              );
+            })}
       </CarouselContainer>
       <CarouselNav>
         <PreviousButton

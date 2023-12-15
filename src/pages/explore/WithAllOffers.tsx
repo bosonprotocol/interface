@@ -7,7 +7,6 @@ import styled from "styled-components";
 
 import { LayoutRoot } from "../../components/layout/Layout";
 import Grid from "../../components/ui/Grid";
-import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -43,9 +42,6 @@ const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
     $isPrimaryBgChanged ? "var(--primaryBgColor)" : colors.lightGrey};
   padding: 3rem 0 4rem 0;
   min-height: 55.5vh;
-`;
-const Wrapper = styled.div`
-  text-align: center;
 `;
 interface PriceDetails {
   value: string;
@@ -258,24 +254,18 @@ export function WithAllOffers<P>(
         </LayoutRoot>
         <ExploreOffersContainer $isPrimaryBgChanged={isPrimaryBgColorChanged}>
           <LayoutRoot>
-            {isLoading ? (
-              <Wrapper>
-                <Loading />
-              </Wrapper>
-            ) : (
-              <WrappedComponent
-                {...props}
-                isLoading={isLoading}
-                isError={isError}
-                showoffPage={4}
-                offersPerPage={10}
-                params={params}
-                handleChange={handleChange}
-                pageOptions={pageOptions}
-                filterOptions={filterOptions}
-                products={products}
-              />
-            )}
+            <WrappedComponent
+              {...props}
+              isLoading={isLoading}
+              isError={isError}
+              showoffPage={4}
+              offersPerPage={10}
+              params={params}
+              handleChange={handleChange}
+              pageOptions={pageOptions}
+              filterOptions={filterOptions}
+              products={products}
+            />
           </LayoutRoot>
         </ExploreOffersContainer>
       </ExploreContainer>

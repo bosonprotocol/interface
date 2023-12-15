@@ -1,5 +1,5 @@
+import { LoadingBubble } from "@bosonprotocol/react-kit";
 import { Percent } from "@uniswap/sdk-core";
-import { LoadingBubble } from "components/tokens/loading";
 import Tooltip from "components/tooltip/Tooltip";
 import Grid from "components/ui/Grid";
 import Typography from "components/ui/Typography";
@@ -11,13 +11,6 @@ import {
 } from "lib/utils/formatNumbers";
 import { warningSeverity } from "lib/utils/prices";
 import { useMemo } from "react";
-import styled from "styled-components";
-
-const FiatLoadingBubble = styled(LoadingBubble)`
-  border-radius: 4px;
-  width: 4rem;
-  height: 1rem;
-`;
 
 export function FiatValue({
   fiatValue,
@@ -36,7 +29,7 @@ export function FiatValue({
   }, [priceImpact]);
 
   if (fiatValue.isLoading) {
-    return <FiatLoadingBubble />;
+    return <LoadingBubble $width="4rem" $height="1rem" $borderRadius="4px" />;
   }
 
   return (

@@ -1,3 +1,7 @@
+import {
+  CollectionsCardSkeleton,
+  ProductCardSkeleton
+} from "@bosonprotocol/react-kit";
 import qs from "query-string";
 import { Fragment, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -29,8 +33,10 @@ function Explore({
   params,
   handleChange,
   pageOptions,
-  filterOptions
+  filterOptions,
+  isLoading
 }: WithAllOffersProps) {
+  const { itemsPerPage } = pageOptions;
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const [pageIndex, setPageIndex] = useState<number | null>(
@@ -90,28 +96,35 @@ function Explore({
               xl: 4
             }}
           >
-            {offerArray
-              ?.slice(
-                pageOptions.pagination
-                  ? (pageIndex || 0) * pageOptions?.itemsPerPage
-                  : 0,
-                pageOptions.pagination
-                  ? (pageIndex || 0) * pageOptions?.itemsPerPage +
-                      pageOptions?.itemsPerPage
-                  : pageOptions?.itemsPerPage
-              )
-              ?.map((offer) => (
-                <div key={`ProductCard_${offer?.id}`} id={`offer_${offer?.id}`}>
-                  <ProductCard
-                    offer={offer as ExtendedOffer}
-                    filterOptions={filterOptions}
-                    dataTestId="offer"
-                    lensProfile={sellerLensProfilePerSellerId.get(
-                      offer.seller.id
-                    )}
-                  />
-                </div>
-              ))}
+            {isLoading
+              ? new Array(itemsPerPage).fill(0).map((_, index) => {
+                  return <ProductCardSkeleton key={index} withBottomText />;
+                })
+              : offerArray
+                  ?.slice(
+                    pageOptions.pagination
+                      ? (pageIndex || 0) * pageOptions?.itemsPerPage
+                      : 0,
+                    pageOptions.pagination
+                      ? (pageIndex || 0) * pageOptions?.itemsPerPage +
+                          pageOptions?.itemsPerPage
+                      : pageOptions?.itemsPerPage
+                  )
+                  ?.map((offer) => (
+                    <div
+                      key={`ProductCard_${offer?.id}`}
+                      id={`offer_${offer?.id}`}
+                    >
+                      <ProductCard
+                        offer={offer as ExtendedOffer}
+                        filterOptions={filterOptions}
+                        dataTestId="offer"
+                        lensProfile={sellerLensProfilePerSellerId.get(
+                          offer.seller.id
+                        )}
+                      />
+                    </div>
+                  ))}
           </ProductGridContainer>
         </GridInner>
       )}
@@ -138,34 +151,38 @@ function Explore({
               xl: 4
             }}
           >
-            {collections
-              ?.slice(
-                pageOptions.pagination
-                  ? (pageIndex || 0) * pageOptions?.itemsPerPage
-                  : 0,
-                pageOptions.pagination
-                  ? (pageIndex || 0) * pageOptions?.itemsPerPage +
-                      pageOptions?.itemsPerPage
-                  : pageOptions?.itemsPerPage
-              )
-              ?.map((collection) => (
-                <Fragment
-                  key={`CollectionsCard_${
-                    collection?.brandName || collection?.id
-                  }`}
-                >
-                  <CollectionsCard
-                    collection={collection as ExtendedSeller}
-                    lensProfile={sellerLensProfilePerSellerId.get(
-                      collection.id
-                    )}
-                  />
-                </Fragment>
-              ))}
+            {isLoading
+              ? new Array(itemsPerPage).fill(0).map((_, index) => {
+                  return <CollectionsCardSkeleton key={index} />;
+                })
+              : collections
+                  ?.slice(
+                    pageOptions.pagination
+                      ? (pageIndex || 0) * pageOptions?.itemsPerPage
+                      : 0,
+                    pageOptions.pagination
+                      ? (pageIndex || 0) * pageOptions?.itemsPerPage +
+                          pageOptions?.itemsPerPage
+                      : pageOptions?.itemsPerPage
+                  )
+                  ?.map((collection) => (
+                    <Fragment
+                      key={`CollectionsCard_${
+                        collection?.brandName || collection?.id
+                      }`}
+                    >
+                      <CollectionsCard
+                        collection={collection as ExtendedSeller}
+                        lensProfile={sellerLensProfilePerSellerId.get(
+                          collection.id
+                        )}
+                      />
+                    </Fragment>
+                  ))}
           </ProductGridContainer>
         </GridInner>
       )}
-      {pageOptions.pagination && (
+      {!isLoading && pageOptions.pagination && (
         <Pagination
           defaultPage={pageIndex || 0}
           isNextEnabled={

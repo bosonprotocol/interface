@@ -1,8 +1,8 @@
+import { LoadingBubble } from "@bosonprotocol/react-kit";
 import styled, { css, keyframes } from "styled-components";
 
 import Column, { AutoColumn } from "../../../ui/column";
 import Grid from "../../../ui/Grid";
-import { LoadingBubble } from "../../../ui/LoadingBubble";
 
 const PortfolioRowWrapper = styled(Grid)`
   gap: 12px;
@@ -45,10 +45,10 @@ export default function PortfolioRow({
 function PortfolioSkeletonRow() {
   return (
     <PortfolioRowWrapper>
-      <LoadingBubble height="40px" width="40px" round />
+      <LoadingBubble $height="40px" $width="40px" $borderRadius="50%" />
       <AutoColumn grow gap="4px">
-        <LoadingBubble height="16px" width="60px" delay="300ms" />
-        <LoadingBubble height="10px" width="90px" delay="300ms" />
+        <LoadingBubble $height="16px" $width="60px" delay="300ms" />
+        <LoadingBubble $height="10px" $width="90px" delay="300ms" />
       </AutoColumn>
     </PortfolioRowWrapper>
   );

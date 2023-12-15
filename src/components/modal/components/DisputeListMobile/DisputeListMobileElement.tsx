@@ -12,10 +12,10 @@ import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
 import Typography from "../../../ui/Typography";
-
+export const containerWidth = "25rem";
 const Container = styled.div`
   background: ${colors.white};
-  width: 25rem;
+  width: ${containerWidth};
   display: block;
   padding: 0 1rem 0.0625rem 1rem;
   border: 1px solid ${colors.lightGrey};

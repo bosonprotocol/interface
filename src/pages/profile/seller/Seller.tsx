@@ -1,7 +1,6 @@
-import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { AuthTokenType, LoadingBubble } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
-import { LoadingMessage } from "components/loading/LoadingMessage";
 import { BigNumber } from "ethers";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useMemo } from "react";
@@ -20,10 +19,7 @@ import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
-import {
-  Profile,
-  ProfileFieldsFragment
-} from "../../../lib/utils/hooks/lens/graphql/generated";
+import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
@@ -142,7 +138,7 @@ export default function Seller() {
   const name =
     (useLens ? sellerLens?.name : metadata?.name) ??
     metadata?.name ??
-    `Seller ID: ${sellerId}`;
+    `Seller ID: ${sellerId || ""}`;
   const description =
     (useLens ? sellerLens?.bio : metadata?.description) ??
     metadata?.description ??
@@ -189,10 +185,7 @@ export default function Seller() {
   const isMySeller =
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
   const isSellerExists = isMySeller ? !!sellersData.length : !!sellers?.length;
-
-  if (isLoading || isLoadingSellers || isLoadingProducts) {
-    return <LoadingMessage />;
-  }
+  const isAnySellerLoading = isLoading || isLoadingSellers;
 
   if (isError || isErrorSellers || isErrorProducts) {
     return (
@@ -203,7 +196,7 @@ export default function Seller() {
     );
   }
 
-  if (!isSellerExists) {
+  if (!isAnySellerLoading && !isSellerExists) {
     return <NotFound />;
   }
   return (
@@ -276,7 +269,7 @@ export default function Seller() {
                 )}
                 <SellerSocial
                   seller={seller}
-                  sellerLens={sellerLens as ProfileFieldsFragment}
+                  sellerLens={sellerLens}
                   voucherCloneAddress={sellersData?.[0]?.voucherCloneAddress}
                 />
               </>
@@ -304,14 +297,18 @@ export default function Seller() {
                   >
                     Products
                   </Typography>
-                  <Typography
-                    tag="p"
-                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
-                    margin="0"
-                    fontWeight="600"
-                  >
-                    {numProducts || 0}
-                  </Typography>
+                  {isLoadingProducts ? (
+                    <LoadingBubble $width="30px" $height="30px" />
+                  ) : (
+                    <Typography
+                      tag="p"
+                      $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
+                      margin="0"
+                      fontWeight="600"
+                    >
+                      {numProducts || 0}
+                    </Typography>
+                  )}
                 </div>
               </Grid>
             </Grid>
@@ -322,6 +319,7 @@ export default function Seller() {
           isPrivateProfile={isMySeller}
           sellerId={sellerId}
           isErrorSellers={isErrorSellers}
+          isLoading={isLoadingProducts}
         />
       </ProfileSectionWrapper>
     </>

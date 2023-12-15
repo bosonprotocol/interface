@@ -113,12 +113,14 @@ interface Props {
   sellerId: string;
   isErrorSellers: boolean;
   isPrivateProfile: boolean;
+  isLoading: boolean;
 }
 export default function Tabs({
   products,
   isPrivateProfile,
   sellerId,
-  isErrorSellers
+  isErrorSellers,
+  isLoading
 }: Props) {
   const tabsData = useMemo(() => {
     const tabsData: TabsData[] = [
@@ -132,6 +134,7 @@ export default function Tabs({
             action={isPrivateProfile ? null : "commit"}
             showInvalidOffers={isPrivateProfile}
             isPrivateProfile={isPrivateProfile}
+            isLoading={isLoading}
           />
         )
       },
@@ -147,7 +150,7 @@ export default function Tabs({
       }
     ];
     return tabsData;
-  }, [sellerId, isPrivateProfile, products]);
+  }, [sellerId, isPrivateProfile, products, isLoading]);
   const [currentTab, setCurrentTab] = useQueryParameter(
     AccountQueryParameters.tab
   );
