@@ -128,7 +128,7 @@ export default function ExchangePolicyDetails({
       )
     },
     {
-      name: "Resolution Period",
+      name: "Escalation Period",
       info: undefined,
       value: period(
         exchangePolicy.resolutionPeriod,
