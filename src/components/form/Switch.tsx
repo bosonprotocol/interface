@@ -8,19 +8,6 @@ import Grid from "../ui/Grid";
 import Input from "./Input";
 
 const height = "20px";
-const StyledSwitchRoot = styled(ReactSwitch.Root)`
-  min-width: calc(${height} * 1.68);
-  height: ${height};
-  background-color: hsl(0 0% 0% / 0.439);
-  border-radius: 9999px;
-  position: relative;
-  box-shadow: 0 2px 10px hsl(0 0% 0% / 0.141);
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  &[data-state="checked"] {
-    background-color: ${colors.secondary};
-  }
-`;
-
 const StyledSwitchThumb = styled(ReactSwitch.Thumb)`
   display: block;
   width: calc(${height} - 4px);
@@ -34,6 +21,30 @@ const StyledSwitchThumb = styled(ReactSwitch.Thumb)`
 
   &[data-state="checked"] {
     transform: translateX(calc(${height} - 4px));
+  }
+`;
+
+const StyledSwitchRoot = styled(ReactSwitch.Root)`
+  min-width: calc(${height} * 1.68);
+  height: ${height};
+  background-color: hsl(0 0% 0% / 0.439);
+  border-radius: 9999px;
+  position: relative;
+  box-shadow: 0 2px 10px hsl(0 0% 0% / 0.141);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  &[data-state="checked"] {
+    background-color: ${colors.secondary};
+  }
+  :disabled {
+    cursor: not-allowed;
+    ~ *,
+    * {
+      color: ${colors.darkGrey};
+      cursor: not-allowed;
+    }
+    ${StyledSwitchThumb} {
+      background-color: ${colors.darkGrey};
+    }
   }
 `;
 

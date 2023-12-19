@@ -113,6 +113,7 @@ export default function CreateProfileModal({
         gridProps={{
           justifyContent: "flex-end"
         }}
+        disabled={!switchChecked}
         checked={switchChecked}
         label={() => (
           <Typography
