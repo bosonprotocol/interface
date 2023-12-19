@@ -50,7 +50,7 @@ export default function ExchangePolicyDetails({
     disputePeriod: offerData?.disputePeriodDuration
       ? parseInt(offerData?.disputePeriodDuration) / (3600 * 24)
       : "unspecified",
-    escalationPeriod: offerData?.resolutionPeriodDuration
+    resolutionPeriod: offerData?.resolutionPeriodDuration
       ? parseInt(offerData?.resolutionPeriodDuration) / (3600 * 24)
       : "unspecified",
     returnPeriod:
@@ -128,10 +128,10 @@ export default function ExchangePolicyDetails({
       )
     },
     {
-      name: "Escalation Period",
+      name: "Resolution Period",
       info: undefined,
       value: period(
-        exchangePolicy.escalationPeriod,
+        exchangePolicy.resolutionPeriod,
         "resolutionPeriodDuration",
         exchangePolicyCheckResult
       )

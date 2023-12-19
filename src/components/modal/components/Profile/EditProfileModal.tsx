@@ -66,6 +66,7 @@ export default function EditProfileModal({
         gridProps={{
           justifyContent: "flex-end"
         }}
+        disabled={!switchChecked}
         checked={switchChecked}
         label={() => (
           <Typography
