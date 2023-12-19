@@ -185,7 +185,7 @@ export default function Exchange({
                 widgetAction: "REDEEM_FORM",
                 configId: config.envConfig.configId,
                 account: address,
-                parentOrigin: window.location.origin
+                withExternalSigner: "true"
               },
               onLoadIframe
             );
@@ -205,7 +205,7 @@ export default function Exchange({
                 showRedemptionOverview: false,
                 configId: config.envConfig.configId,
                 account: address,
-                parentOrigin: window.location.origin
+                withExternalSigner: "true"
               },
               onLoadIframe
             );

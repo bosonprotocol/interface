@@ -1139,7 +1139,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   data-widget-action="REDEEM_FORM"
                   data-config-id={config.envConfig.configId}
                   data-account={address}
-                  data-parent-origin={window.location.origin}
+                  data-with-external-signer="true"
                   withBosonStyle
                 >
                   <span>Redeem</span>
