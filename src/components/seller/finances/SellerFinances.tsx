@@ -43,7 +43,7 @@ export default function SellerFinances({
         sellerId,
         configId: config.envConfig.configId,
         account,
-        parentOrigin: window.location.origin
+        withExternalSigner: "true"
       })}`}
     ></iframe>
   );
