@@ -10,9 +10,11 @@ export function useProvider() {
   const { provider } = useWeb3React();
   const magicProvider = hooks.useMagicProvider();
   const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
-  return isMagicLoggedIn
-    ? magicProvider ?? provider
-    : provider ?? magicProvider;
+  return useMemo(() => {
+    return isMagicLoggedIn
+      ? magicProvider ?? provider
+      : provider ?? magicProvider;
+  }, [provider, magicProvider, isMagicLoggedIn]);
 }
 
 export function useSigner() {
