@@ -1,14 +1,14 @@
 import { hooks } from "@bosonprotocol/react-kit";
-import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import { createContext, useContext } from "react";
 
+import { useProvider } from "../../lib/utils/hooks/connection/connection";
 import { ExtendedCoreSDK } from "./types";
 
 export const CoreSDKContext = createContext<ExtendedCoreSDK | null>(null);
 
 export function useProviderCoreSDK() {
-  const { provider } = useWeb3React();
+  const provider = useProvider();
   const { config } = useConfigContext();
 
   return hooks.useCoreSdk({
