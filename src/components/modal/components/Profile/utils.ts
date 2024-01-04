@@ -30,12 +30,26 @@ export function buildProfileFromMetadata(
     (img) => img.tag === "cover"
   );
   const isLens = useLens && lensProfile;
-  const lensCoverPicture = isLens
-    ? { url: getLensCoverPictureUrl(lensProfile), type: "" } // type is not necessary
-    : null;
-  const lensProfileImage = isLens
-    ? { url: getLensProfilePictureUrl(lensProfile), type: "" }
-    : null;
+  let lensCoverPicture = null,
+    lensProfileImage = null;
+  if (isLens) {
+    const lensCoverPictureUrl = getLensCoverPictureUrl(lensProfile);
+    const lensCoverPictureType = lensCoverPictureUrl
+      ? "image/" + lensCoverPictureUrl.split(".").pop()
+      : "";
+    lensCoverPicture = {
+      url: lensCoverPictureUrl,
+      type: lensCoverPictureType
+    };
+    const lensProfileImageUrl = getLensProfilePictureUrl(lensProfile);
+    const lensProfileImageType = lensProfileImageUrl
+      ? "image/" + lensProfileImageUrl.split(".").pop()
+      : "";
+    lensProfileImage = {
+      url: lensProfileImageUrl,
+      type: lensProfileImageType
+    };
+  }
   const coverPicture = lensCoverPicture || regularCoverPicture;
   const profileImage = lensProfileImage || regularProfileImage;
   const email = isLens
