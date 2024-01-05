@@ -120,10 +120,11 @@ export const CONFIG = {
   offerCurationList: parseCurationList(
     process.env.REACT_APP_OFFER_CURATION_LIST
   ),
-  rNFTLicenseTemplate: process.env.REACT_APP_RNFT_LICENSE_TEMPLATE,
+  rNFTLicenseTemplate: process.env.REACT_APP_RNFT_LICENSE_TEMPLATE ?? "",
   buyerSellerAgreementTemplate:
-    process.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE,
-  fairExchangePolicyRules: process.env.REACT_APP_FAIR_EXCHANGE_POLICY_RULES,
+    process.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE ?? "",
+  fairExchangePolicyRules:
+    process.env.REACT_APP_FAIR_EXCHANGE_POLICY_RULES ?? "",
   enableCurationLists: stringToBoolean(
     process.env.REACT_APP_ENABLE_CURATION_LISTS,
     true

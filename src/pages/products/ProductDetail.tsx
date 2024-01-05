@@ -1,6 +1,10 @@
+import { ExternalDetailView } from "@bosonprotocol/react-kit";
+import { useConfigContext } from "components/config/ConfigContext";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
-import { BigNumber } from "ethers";
+import { MODAL_TYPES } from "components/modal/ModalComponents";
+import { useModal } from "components/modal/useModal";
+import { CONFIG } from "lib/config";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -16,7 +20,7 @@ import DetailChart from "../../components/detail/DetailChart";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
-import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
+// import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -27,13 +31,9 @@ import {
   getOfferAnimationUrl,
   getOfferDetails
 } from "../../lib/utils/getOfferDetails";
-import useCheckExchangePolicy from "../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import {
-  useSellerCurationListFn,
-  useSellers
-} from "../../lib/utils/hooks/useSellers";
+import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "./types";
@@ -45,12 +45,12 @@ export default function ProductDetail() {
     [UrlParameters.sellerId]: sellerId = ""
   } = useParams();
   const textColor = useCustomStoreQueryParameter("textColor");
-
+  const { config } = useConfigContext();
+  const { showModal } = useModal();
   const {
     data: productResult,
     isError,
-    isLoading,
-    refetch: reload
+    isLoading
   } = useProductByUuid(sellerId, productUuid, { enabled: !!productUuid });
 
   const product = productResult?.product;
@@ -66,10 +66,6 @@ export default function ProductDetail() {
     defaultVariant
   );
   const selectedOffer = selectedVariant?.offer;
-
-  const exchangePolicyCheckResult = useCheckExchangePolicy({
-    offerId: selectedOffer?.id
-  });
 
   const animationUrl = useMemo(
     () => getOfferAnimationUrl(selectedOffer),
@@ -106,25 +102,8 @@ export default function ProductDetail() {
     selectedOffer.exchanges = exchanges;
   }
 
-  const { data: sellers } = useSellers(
-    {
-      id: sellerId,
-      includeFunds: true
-    },
-    {
-      enabled: !!sellerId
-    }
-  );
-
-  const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
-    (fund) => fund.token.address === selectedOffer?.exchangeToken.address
-  )?.availableAmount;
-  const offerRequiredDeposit = BigNumber.from(
-    selectedOffer?.sellerDeposit || 0
-  );
-  const hasSellerEnoughFunds = offerRequiredDeposit.gt(0)
-    ? BigNumber.from(sellerAvailableDeposit || 0).gte(offerRequiredDeposit)
-    : true;
+  const isCustomStoreFront =
+    useCustomStoreQueryParameter("isCustomStoreFront") === "true";
 
   if (isLoading) {
     return <LoadingMessage />;
@@ -187,7 +166,7 @@ export default function ProductDetail() {
               <Image src={offerImg || ""} dataTestId="offerImage" />
             )}
           </ImageWrapper>
-          <div>
+          <div style={{ width: "100%" }}>
             <>
               <SellerID
                 offer={selectedOffer}
@@ -212,7 +191,7 @@ export default function ProductDetail() {
               )}
             </>
 
-            <DetailWidget
+            {/* <DetailWidget
               pageType="offer"
               offer={selectedOffer}
               name={name}
@@ -220,7 +199,40 @@ export default function ProductDetail() {
               hasSellerEnoughFunds={hasSellerEnoughFunds}
               exchangePolicyCheckResult={exchangePolicyCheckResult}
               reload={reload}
-            />
+            /> */}
+            <ExternalDetailView
+              providerProps={{
+                ...CONFIG,
+                envName: config.envName,
+                configId: config.envConfig.configId,
+                walletConnectProjectId: CONFIG.walletConnect.projectId,
+                defaultCurrencySymbol: CONFIG.defaultCurrency.symbol,
+                defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
+                licenseTemplate: CONFIG.rNFTLicenseTemplate,
+                minimumDisputeResolutionPeriodDays:
+                  CONFIG.minimumReturnPeriodInDays,
+                contactSellerForExchangeUrl: ""
+              }}
+              selectedVariant={selectedVariant}
+              hasMultipleVariants={false}
+              isPreview={false}
+              showBosonLogo={isCustomStoreFront}
+              onExchangePolicyClick={({ exchangePolicyCheckResult }) => {
+                showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {
+                  title: "Exchange Policy Details",
+                  offerId: selectedOffer.id,
+                  offerData: selectedOffer,
+                  exchangePolicyCheckResult: exchangePolicyCheckResult
+                });
+              }}
+              onPurchaseOverview={() => {
+                showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
+                  title: "Commit and Redeem"
+                });
+              }}
+            >
+              <button>commit</button>
+            </ExternalDetailView>
           </div>
           <DetailShare />
         </MainDetailGrid>

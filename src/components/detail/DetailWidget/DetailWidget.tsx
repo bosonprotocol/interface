@@ -2,10 +2,10 @@ import {
   CommitButton,
   exchanges,
   extractUserFriendlyError,
+  hooks,
   offers,
   Provider,
-  subgraph,
-  useCallSignerFromIframe
+  subgraph
 } from "@bosonprotocol/react-kit";
 import { getHasUserRejectedTx } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
@@ -918,7 +918,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   };
   const iframeRef = useRef<HTMLIFrameElement>();
   const [isIframeLoaded, setIsIframeLoaded] = useState<boolean>(false);
-  const { reload: reloadIframeListener } = useCallSignerFromIframe({
+  const { reload: reloadIframeListener } = hooks.useCallSignerFromIframe({
     iframeRef,
     isIframeLoaded,
     signer,
@@ -1059,7 +1059,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     >
                       <Button
                         size="small"
-                        theme="accentFill"
+                        themeVal="accentFill"
                         withBosonStyle
                         style={{
                           color: colors.white,
@@ -1156,7 +1156,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </>
             )}
             {!isToRedeem && (
-              <Button theme="outline" disabled>
+              <Button themeVal="outline" disabled>
                 {disabledRedeemText}
                 <Check size={24} />
               </Button>

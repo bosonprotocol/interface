@@ -1,4 +1,4 @@
-import { useCallSignerFromIframe } from "@bosonprotocol/react-kit";
+import { hooks } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { CONFIG } from "lib/config";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
@@ -18,7 +18,7 @@ export default function SellerFinances({
   const { account = "" } = useAccount();
   const [isIframeLoaded, setIsIframeLoaded] = useState<boolean>(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  useCallSignerFromIframe({
+  hooks.useCallSignerFromIframe({
     iframeRef,
     isIframeLoaded,
     signer,

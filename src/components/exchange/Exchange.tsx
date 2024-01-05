@@ -4,8 +4,8 @@ import {
   ExchangeCard,
   ExchangeCardStatus,
   exchanges,
-  subgraph,
-  useCallSignerFromIframe
+  hooks,
+  subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
@@ -131,7 +131,7 @@ export default function Exchange({
   const iframeRef = useRef<HTMLIFrameElement>();
   const [isIframeLoaded, setIsIframeLoaded] = useState<boolean>(false);
   const signer = useSigner();
-  const { reload: reloadIframeListener } = useCallSignerFromIframe({
+  const { reload: reloadIframeListener } = hooks.useCallSignerFromIframe({
     iframeRef,
     isIframeLoaded,
     signer,
