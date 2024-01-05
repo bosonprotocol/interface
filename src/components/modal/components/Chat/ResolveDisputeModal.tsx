@@ -239,7 +239,15 @@ export default function ResolveDisputeModal({
             try {
               setResolveDisputeError(null);
               const signature = utils.splitSignature(proposal.signature);
-              showModal("WAITING_FOR_CONFIRMATION");
+              showModal(
+                "WAITING_FOR_CONFIRMATION",
+                undefined,
+                "auto",
+                undefined,
+                {
+                  xs: "400px"
+                }
+              );
               await handleSendingAcceptProposalMessage();
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
 

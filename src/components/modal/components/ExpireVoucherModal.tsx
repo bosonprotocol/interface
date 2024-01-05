@@ -212,7 +212,15 @@ export default function ExpireVoucherModal({ exchange }: Props) {
             onPendingSignature={() => {
               setIsLoading(true);
               setExpireError(null);
-              showModal("WAITING_FOR_CONFIRMATION");
+              showModal(
+                "WAITING_FOR_CONFIRMATION",
+                undefined,
+                "auto",
+                undefined,
+                {
+                  xs: "400px"
+                }
+              );
             }}
             onPendingTransaction={(hash, isMetaTx) => {
               showModal("TRANSACTION_SUBMITTED", {

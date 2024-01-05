@@ -138,7 +138,15 @@ export default function FinanceDeposit({
           onPendingSignature={() => {
             setDepositError(null);
             setIsBeingDeposit(true);
-            showModal("WAITING_FOR_CONFIRMATION");
+            showModal(
+              "WAITING_FOR_CONFIRMATION",
+              undefined,
+              "auto",
+              undefined,
+              {
+                xs: "400px"
+              }
+            );
           }}
           onPendingTransaction={(hash, isMetaTx, actionName) => {
             switch (actionName) {

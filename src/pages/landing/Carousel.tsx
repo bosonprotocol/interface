@@ -125,7 +125,7 @@ const nthChilds = new Array(numCells)
   .fill(0)
   .map((_, idx) => {
     return `
-      :nth-child(${idx + 1}) {
+      &:nth-child(${idx + 1}) {
         transform: rotateY(${
           (360 / numCells) * idx
         }deg) translateZ(${translateZValue}) translateY(50px);

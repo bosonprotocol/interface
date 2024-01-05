@@ -189,7 +189,15 @@ export default function RetractDisputeModal({
             try {
               await handleSendingRetractMessage();
               setRetractDisputeError(null);
-              showModal("WAITING_FOR_CONFIRMATION");
+              showModal(
+                "WAITING_FOR_CONFIRMATION",
+                undefined,
+                "auto",
+                undefined,
+                {
+                  xs: "400px"
+                }
+              );
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
 
               await sendErrorMessageIfTxFails({

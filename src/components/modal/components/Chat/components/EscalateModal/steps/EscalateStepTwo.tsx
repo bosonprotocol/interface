@@ -484,7 +484,15 @@ function EscalateStepTwo({
                       let tx: TransactionResponse | undefined = undefined;
                       try {
                         setLoading(true);
-                        showModal("WAITING_FOR_CONFIRMATION");
+                        showModal(
+                          "WAITING_FOR_CONFIRMATION",
+                          undefined,
+                          "auto",
+                          undefined,
+                          {
+                            xs: "400px"
+                          }
+                        );
                         const buyerEscalationDeposit =
                           exchange.offer.disputeResolutionTerms
                             .buyerEscalationDeposit;

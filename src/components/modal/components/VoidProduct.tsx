@@ -365,7 +365,15 @@ export default function VoidProduct({
                 }
               }}
               onPendingSignature={() => {
-                showModal("WAITING_FOR_CONFIRMATION");
+                showModal(
+                  "WAITING_FOR_CONFIRMATION",
+                  undefined,
+                  "auto",
+                  undefined,
+                  {
+                    xs: "400px"
+                  }
+                );
               }}
               onPendingTransaction={(hash, isMetaTx) => {
                 showModal("TRANSACTION_SUBMITTED", {

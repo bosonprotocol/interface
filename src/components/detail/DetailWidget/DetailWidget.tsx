@@ -728,7 +728,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     (offer.condition && !isConditionMet);
   const onCommitPendingSignature = () => {
     setIsLoading(true);
-    showModal("WAITING_FOR_CONFIRMATION");
+    showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
+      xs: "400px"
+    });
   };
   const onCommitPendingTransaction = (
     hash: string,
