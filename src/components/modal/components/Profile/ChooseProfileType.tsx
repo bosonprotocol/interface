@@ -25,7 +25,7 @@ export function ChooseProfileType({ setProfileType }: Props) {
         </Typography>
         <Button
           onClick={() => setProfileType(ProfileType.REGULAR)}
-          theme="blankOutline"
+          themeVal="blankOutline"
         >
           Sign up without Lens
         </Button>

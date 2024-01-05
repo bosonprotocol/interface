@@ -60,7 +60,7 @@ export default function Pagination({
         disabled={pageIndex < 1 || !isPreviousEnabled}
         $isBack
         onClick={onClick(pageIndex - 1)}
-        theme="outline"
+        themeVal="outline"
       >
         <CaretLeft size={24} />
       </PaginationButton>
@@ -74,7 +74,7 @@ export default function Pagination({
         $isBack={false}
         disabled={!isNextEnabled}
         onClick={onClick(pageIndex + 1)}
-        theme="outline"
+        themeVal="outline"
       >
         <CaretRight size={24} />
       </PaginationButton>

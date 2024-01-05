@@ -189,7 +189,7 @@ export const CreateProductCongratulations: React.FC<
             text="You can now add more Sales Channels to promote and sell your product at different places."
             cta={
               <Button
-                theme="secondary"
+                themeVal="secondary"
                 onClick={() => {
                   navigateTo({
                     pathname: generatePath(SellerCenterRoutes.SellerCenter, {
@@ -209,7 +209,7 @@ export const CreateProductCongratulations: React.FC<
             text="Save time when creating multiple products. You can add new channels and pay your deposits later."
             cta={
               <Button
-                theme="secondary"
+                themeVal="secondary"
                 onClick={() => {
                   goToCreateNewProduct();
                 }}
@@ -225,7 +225,7 @@ export const CreateProductCongratulations: React.FC<
               text="You must provide funds to cover your seller deposit. For multiple products you can do all at once."
               cta={
                 <Button
-                  theme="bosonPrimary"
+                  themeVal="bosonPrimary"
                   onClick={() => {
                     navigateTo({
                       pathname: getSellerCenterPath("Finances")
@@ -236,7 +236,7 @@ export const CreateProductCongratulations: React.FC<
                   <DownloadSimple color={colors.black} size={20} />
                 </Button>
               }
-              theme="dark"
+              themeVal="dark"
             />
           )}
         </GridContainer>

@@ -76,13 +76,12 @@ const CTAsGrid = styled(Grid)`
   }
 `;
 
-const CommitWrapper = styled.div.attrs({ "data-commit-wrapper": true })`
-  width: 100%;
+const CommitWrapper = styled(Grid)`
   flex-direction: column;
   row-gap: 0.5rem;
   column-gap: 1rem;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   @container (width > ${containerBreakpoint}) {
     flex-direction: row;
     > * {
@@ -92,7 +91,6 @@ const CommitWrapper = styled.div.attrs({ "data-commit-wrapper": true })`
 `;
 const CommitButtonWrapper = styled.div<{ $pointerEvents: string }>`
   width: 100%;
-  border: 1px solid red;
   cursor: pointer;
   > button {
     width: 100%;

@@ -23,7 +23,7 @@ interface Props {
 function SellerExport({ csvProps, buttonProps = {} }: Props) {
   return (
     <CSVLink {...csvProps} filename={csvProps.filename ?? "filename"}>
-      <ExportButton theme="outline" size="small" {...buttonProps}>
+      <ExportButton themeVal="outline" size="small" {...buttonProps}>
         Export <DownloadSimple size={16} />
       </ExportButton>
     </CSVLink>

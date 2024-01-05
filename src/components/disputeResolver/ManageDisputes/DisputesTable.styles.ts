@@ -108,11 +108,9 @@ export const Span = styled.span`
   }
 `;
 
-export const DisputeStateWrapper = styled.button.attrs(
-  (props: { state: subgraph.DisputeState }) => ({
-    state: props.state
-  })
-)`
+export const DisputeStateWrapper = styled.button<{
+  state: subgraph.DisputeState;
+}>`
   padding: 0.4rem;
   border-radius: 5%;
   color: ${colors.black};

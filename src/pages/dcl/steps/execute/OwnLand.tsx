@@ -62,7 +62,7 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button theme="secondary">
+              <Button themeVal="secondary">
                 Documentation <ArrowSquareOut size={24} />
               </Button>
             </a>
@@ -71,7 +71,7 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button theme="secondary">
+              <Button themeVal="secondary">
                 GitHub <GithubLogo size={24} />
               </Button>
             </a>

@@ -23,7 +23,7 @@ export const ModalHeaderTitle: React.FC<ModalHeaderTitleProps> = ({
     <HeaderWithTitle tag="h3" $title={title} margin="0">
       {title}
       {closable && (
-        <Button data-close theme="blank" onClick={handleOnClose}>
+        <Button data-close themeVal="blank" onClick={handleOnClose}>
           <Close />
         </Button>
       )}

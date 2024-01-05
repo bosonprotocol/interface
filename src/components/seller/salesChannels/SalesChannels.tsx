@@ -38,7 +38,7 @@ export const SalesChannels: React.FC<SalesChannelsProps> = ({ sellerId }) => {
         {...(hasStoreFrontSaved && {
           secondCta: (
             <Link to={{ pathname: BosonRoutes.ManageStorefronts }}>
-              <Button theme="secondary" size="small">
+              <Button themeVal="secondary" size="small">
                 Manage
               </Button>
             </Link>

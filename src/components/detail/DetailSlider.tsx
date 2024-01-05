@@ -59,10 +59,10 @@ export default function DetailSlider({ images }: Props) {
           Detail images
         </Typography>
         <Grid justifyContent="flex-end">
-          <Button theme="blank" onClick={() => handleSlider("<")}>
+          <Button themeVal="blank" onClick={() => handleSlider("<")}>
             <CaretLeft size={32} />
           </Button>
-          <Button theme="blank" onClick={() => handleSlider(">")}>
+          <Button themeVal="blank" onClick={() => handleSlider(">")}>
             <CaretRight size={32} />
           </Button>
         </Grid>

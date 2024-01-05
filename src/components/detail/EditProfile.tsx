@@ -30,7 +30,7 @@ export const EditProfile: React.FC<{
     return <div onClick={() => openEditModal()}>{children}</div>;
   }
   return (
-    <Button onClick={() => openEditModal()} theme="secondary">
+    <Button onClick={() => openEditModal()} themeVal="secondary">
       Edit profile
     </Button>
   );

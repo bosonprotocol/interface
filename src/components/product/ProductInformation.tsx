@@ -127,7 +127,7 @@ const AddAttributesContainer = ({
               {!checkLastElementIsPristine(elements) && (
                 <Button
                   onClick={() => arrayHelpers.push({ name: "", value: "" })}
-                  theme="blankSecondary"
+                  themeVal="blankSecondary"
                   style={{ borderBottom: `1px solid ${colors.border}` }}
                 >
                   Add new <Plus size={18} />

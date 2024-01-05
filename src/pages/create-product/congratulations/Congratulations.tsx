@@ -231,7 +231,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
             text="Adding more sales channels expands the reach of your products by selling them  across different destinations."
             cta={
               <Button
-                theme="secondary"
+                themeVal="secondary"
                 onClick={() => {
                   navigateTo({
                     pathname: generatePath(SellerCenterRoutes.SellerCenter, {
@@ -251,7 +251,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
             text="Create new products and benefits to grow revenues and engage new audiences."
             cta={
               <Button
-                theme="secondary"
+                themeVal="secondary"
                 onClick={() => {
                   goToCreateNewProduct();
                 }}
@@ -267,7 +267,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
               text="Provide funds  in the seller pool for your offer to go live. Funds in the pool will apply to all your products."
               cta={
                 <Button
-                  theme="bosonPrimary"
+                  themeVal="bosonPrimary"
                   onClick={() => {
                     navigateTo({
                       pathname: getSellerCenterPath("Finances")

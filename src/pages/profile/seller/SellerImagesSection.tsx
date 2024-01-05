@@ -51,7 +51,7 @@ const BannerImageLayer = styled.div`
   }
 `;
 
-const WrapperWrapper = styled.div.attrs({ "data-wrapper-wrapper": true })`
+const WrapperWrapper = styled.div`
   width: 100%;
 
   display: flex;
@@ -249,7 +249,7 @@ const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
               )}
             />
             <Button
-              theme="outline"
+              themeVal="outline"
               onClick={() => {
                 handleReset();
               }}

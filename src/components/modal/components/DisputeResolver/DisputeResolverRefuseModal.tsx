@@ -43,7 +43,11 @@ export default function DisputeResolverRefuseModal({ exchangeId }: Props) {
 
       <Grid>
         <div />
-        <CTAButton theme="primary" size="small" onClick={handleRefuseDispute}>
+        <CTAButton
+          themeVal="primary"
+          size="small"
+          onClick={handleRefuseDispute}
+        >
           {isSubmitingDispute ? (
             <Spinner size={20} />
           ) : (

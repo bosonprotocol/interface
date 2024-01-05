@@ -56,7 +56,7 @@ export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
       <Typography tag="p">{text}</Typography>
       <Grid justifyContent="space-between">
         <Button
-          theme="secondary"
+          themeVal="secondary"
           size="small"
           onClick={() => {
             navigate({

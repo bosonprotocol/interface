@@ -258,7 +258,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               {isLoading && <Spinner size="20" />}
             </Grid>
           </ExpireButton>
-          <Button theme="blankOutline" onClick={hideModal}>
+          <Button themeVal="blankOutline" onClick={hideModal}>
             Back
           </Button>
         </Grid>

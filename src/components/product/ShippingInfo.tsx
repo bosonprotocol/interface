@@ -151,7 +151,7 @@ const AddSupportedJurisdictions = () => {
                 {!checkLastElementIsPristine(jurisdictions) && (
                   <Button
                     onClick={() => arrayHelpers.push({ region: "", time: "" })}
-                    theme="blankSecondary"
+                    themeVal="blankSecondary"
                     style={{ borderBottom: `1px solid ${colors.border}` }}
                   >
                     Add new <Plus size={18} />

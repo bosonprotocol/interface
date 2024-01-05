@@ -167,7 +167,7 @@ const AdditionalFooterLinks: React.FC<AdditionalFooterLinksProps> = ({
       <Button
         disabled={!allFilledOut}
         onClick={addFooterLink}
-        theme="secondary"
+        themeVal="secondary"
       >
         + Add
       </Button>

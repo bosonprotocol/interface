@@ -211,7 +211,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
           <ThemedButton
             {...getCommonWalletButtonProps(isXXS)}
             onClick={handleWalletDropdownClick}
-            theme="orangeInverse"
+            themeVal="orangeInverse"
           >
             Wrong network
           </ThemedButton>

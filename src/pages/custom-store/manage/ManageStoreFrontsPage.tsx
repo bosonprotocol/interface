@@ -145,7 +145,7 @@ export const ManageStoreFrontsPage = () => {
           or not to see them here later;
         </p>
         <Link to={{ pathname: BosonRoutes.CreateStorefront }}>
-          <Button theme="secondary">Create a storefront</Button>
+          <Button themeVal="secondary">Create a storefront</Button>
         </Link>
       </Grid>
       {storeFronts?.length ? (

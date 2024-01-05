@@ -18,7 +18,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
     <Header tag="div" margin="0">
       {HeaderComponent}
       {closable && (
-        <Button data-close theme="blank" onClick={handleOnClose}>
+        <Button data-close themeVal="blank" onClick={handleOnClose}>
           <Close />
         </Button>
       )}

@@ -121,7 +121,7 @@ export default function ChooseLensProfile({
               {lensProfiles.map((profile, index) => {
                 return (
                   <Button
-                    theme="white"
+                    themeVal="white"
                     onClick={() => onChooseUseExisting(profile as Profile)}
                     key={`lens_profile_${profile.id}_${index}`}
                   >
@@ -155,14 +155,17 @@ export default function ChooseLensProfile({
       <Grid justifyContent="flex-start" gap="2rem" margin="2rem 0 0 0">
         {!isEdit && (
           <Button
-            theme="orangeInverse"
+            themeVal="orangeInverse"
             type="button"
             onClick={() => navigate({ pathname: BosonRoutes.Root })}
           >
             Back to home page
           </Button>
         )}
-        <Button onClick={changeToRegularProfile} theme="blankSecondaryOutline">
+        <Button
+          onClick={changeToRegularProfile}
+          themeVal="blankSecondaryOutline"
+        >
           Proceed without Lens
         </Button>
       </Grid>

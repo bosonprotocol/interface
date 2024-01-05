@@ -318,7 +318,7 @@ export default function DisputesTablePast({ disputes }: Props) {
             <Grid justifyContent="flex-end" gap="1rem">
               <Button
                 size="small"
-                theme="blank"
+                themeVal="blank"
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
@@ -328,7 +328,7 @@ export default function DisputesTablePast({ disputes }: Props) {
                 <Button
                   key={`page_btn_${pageNumber}`}
                   size="small"
-                  theme="blank"
+                  themeVal="blank"
                   style={{
                     color:
                       pageNumber === pageIndex
@@ -346,7 +346,7 @@ export default function DisputesTablePast({ disputes }: Props) {
               ))}
               <Button
                 size="small"
-                theme="blank"
+                themeVal="blank"
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
               >

@@ -412,7 +412,7 @@ export default memo(function ExchangeSidePreview({
     const isDisabled = iAmTheBuyer ? false : sellerRoles.isAssistant;
     return (
       <Button
-        theme="secondary"
+        themeVal="secondary"
         disabled={isDisabled}
         onClick={() =>
           showModal(
@@ -527,7 +527,7 @@ export default memo(function ExchangeSidePreview({
       {isInDispute && iAmTheBuyer && !isRetracted && !isElapsedEscalation ? (
         <CTASection>
           <Button
-            theme="secondary"
+            themeVal="secondary"
             onClick={() =>
               showModal(
                 "RETRACT_DISPUTE",
@@ -554,7 +554,7 @@ export default memo(function ExchangeSidePreview({
           </Button>
           {!finishedResolutionPeriod && !isEscalated && (
             <Button
-              theme="secondary"
+              themeVal="secondary"
               onClick={() =>
                 showModal(
                   "ESCALATE_MODAL",
@@ -579,7 +579,7 @@ export default memo(function ExchangeSidePreview({
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
           <Button
-            theme="secondary"
+            themeVal="secondary"
             disabled={hasDisputePeriodElapsed}
             onClick={() =>
               showModal(
@@ -608,7 +608,7 @@ export default memo(function ExchangeSidePreview({
         <CTASection>
           {iAmTheBuyer && (
             <Button
-              theme="secondary"
+              themeVal="secondary"
               onClick={() => {
                 showModal(
                   "MANAGE_FUNDS_MODAL",
@@ -626,7 +626,7 @@ export default memo(function ExchangeSidePreview({
           )}
           {iAmTheSeller && (
             <Button
-              theme="secondary"
+              themeVal="secondary"
               onClick={() => {
                 showModal(
                   "MANAGE_FUNDS_MODAL",

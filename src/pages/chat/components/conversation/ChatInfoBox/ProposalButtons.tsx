@@ -97,7 +97,7 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
       )}
       <Grid gap="1rem" justifyContent="space-between" flex="1">
         <Button
-          theme="secondary"
+          themeVal="secondary"
           onClick={() => {
             const [proposalItem] = (proposal.data.content as ProposalContent)
               .value.proposals;
@@ -126,7 +126,7 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
           <Check size={18} />
         </Button>
         <Button
-          theme="secondary"
+          themeVal="secondary"
           onClick={() =>
             showModal(
               "MAKE_PROPOSAL",

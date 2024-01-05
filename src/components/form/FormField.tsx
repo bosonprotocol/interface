@@ -19,7 +19,6 @@ export default function FormField({
   tooltip,
   children,
   style = {},
-  theme = "",
   valueToCopy,
   ...rest
 }: FormFieldProps) {
@@ -30,7 +29,6 @@ export default function FormField({
       alignItems="flex-start"
       flexGrow="1"
       style={style}
-      theme={theme}
       {...rest}
     >
       <Grid justifyContent="space-between" margin="0 0 0.375rem 0" gap="0.5rem">

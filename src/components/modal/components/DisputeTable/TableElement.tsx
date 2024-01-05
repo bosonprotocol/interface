@@ -113,7 +113,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         <Grid justifyContent="flex-end" gap="1rem">
           <Button
             type="button"
-            theme="secondary"
+            themeVal="secondary"
             onClick={() => {
               navigate({
                 pathname: generatePath(DrCenterRoutes.ChatMessage, {

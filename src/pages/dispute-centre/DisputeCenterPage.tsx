@@ -157,7 +157,7 @@ function DisputeCenterPage() {
               >
                 <Button
                   type="submit"
-                  theme="primary"
+                  themeVal="primary"
                   disabled={!myBuyerId}
                   onClick={() => {
                     goToViewMode(
@@ -170,7 +170,7 @@ function DisputeCenterPage() {
                 </Button>
                 <Button
                   type="button"
-                  theme="secondary"
+                  themeVal="secondary"
                   onClick={() => {
                     showModal(
                       modalTypes.RAISE_DISPUTE,
@@ -203,7 +203,7 @@ function DisputeCenterPage() {
           >
             {myBuyerId && (
               <Button
-                theme="secondary"
+                themeVal="secondary"
                 onClick={() => {
                   showModal(
                     "MANAGE_FUNDS_MODAL",
@@ -221,7 +221,7 @@ function DisputeCenterPage() {
             )}
             {mySellerId && (
               <Button
-                theme="secondary"
+                themeVal="secondary"
                 onClick={() => {
                   showModal(
                     "MANAGE_FUNDS_MODAL",

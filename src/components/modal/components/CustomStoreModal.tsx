@@ -269,7 +269,7 @@ export function CustomStoreModal({
                       />
                     </Grid>
                     <Button
-                      theme="secondary"
+                      themeVal="secondary"
                       type="submit"
                       disabled={isSubmitting}
                     >

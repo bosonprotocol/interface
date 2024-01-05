@@ -95,7 +95,7 @@ export const DaysLeftToResolve: React.FC<DaysLeftToResolveProps> = ({
       <Grid gap="1rem" justifyContent="space-between" flex="1">
         {proposal && (
           <Button
-            theme="secondary"
+            themeVal="secondary"
             onClick={() => {
               const [proposalItem] = (proposal.data.content as ProposalContent)
                 .value.proposals;
@@ -125,7 +125,7 @@ export const DaysLeftToResolve: React.FC<DaysLeftToResolveProps> = ({
           </Button>
         )}
         <Button
-          theme="secondary"
+          themeVal="secondary"
           onClick={() =>
             showModal(
               "MAKE_PROPOSAL",

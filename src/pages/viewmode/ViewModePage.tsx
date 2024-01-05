@@ -24,7 +24,7 @@ export const ViewModePage = () => {
         margin="1rem"
       >
         <Button
-          theme="secondary"
+          themeVal="secondary"
           onClick={() => {
             goToViewMode(ViewMode.DAPP, BosonRoutes.Root);
           }}
@@ -32,7 +32,7 @@ export const ViewModePage = () => {
           Go to the DAPP
         </Button>
         <Button
-          theme="secondary"
+          themeVal="secondary"
           onClick={() => {
             goToViewMode(ViewMode.DR_CENTER, DrCenterRoutes.Root);
           }}

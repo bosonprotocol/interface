@@ -12,9 +12,7 @@ export const CopyButton = styled.button`
   border: none;
 `;
 
-export const FieldInput = styled.input.attrs((props: { error: any }) => ({
-  error: props.error
-}))`
+export const FieldInput = styled.input<{ error: any }>`
   width: 100%;
   padding: 1rem;
   gap: 0.5rem;
@@ -74,12 +72,7 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
         `}
 `;
 
-export const FileUploadWrapper = styled.div.attrs(
-  (props: { choosen: any; error: any }) => ({
-    choosen: props.choosen,
-    error: props.error
-  })
-)`
+export const FileUploadWrapper = styled.div<{ error: unknown }>`
   position: relative;
   overflow: hidden;
   display: flex;
@@ -170,9 +163,7 @@ export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
   }
 `;
 
-export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
-  error: props.error
-}))`
+export const FieldTextArea = styled.textarea<{ error: unknown }>`
   width: 100%;
   padding: 1rem;
   gap: 0.5rem;
@@ -232,36 +223,29 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
         `}
 `;
 
-export const FormFieldWrapper = styled(Grid).attrs(
-  (props: { theme: string }) => ({
-    theme: props.theme
-  })
-)`
+export const FormFieldWrapper = styled(Grid)`
   margin-bottom: 3.5rem;
   p {
     line-height: 150%;
   }
 
-  ${({ theme }) =>
-    theme === "white" &&
-    `
-    margin-bottom: 0.5rem;
-    input, textarea {
-      background: ${colors.white};
-      :disabled {
-        opacity: 1;
-      }
+  margin-bottom: 0.5rem;
+  input,
+  textarea {
+    background: ${colors.white};
+    :disabled {
+      opacity: 1;
     }
-    input {
+  }
+  input {
+    border-width: 0;
+    &:hover {
       border-width: 0;
-      &:hover {
-        border-width: 0;
-      }
     }
-    input + div {
-      background: ${colors.white};
-    }
-  `}
+  }
+  input + div {
+    background: ${colors.white};
+  }
 
   [data-header] {
     margin: 0;
@@ -281,9 +265,7 @@ export const FormFieldWrapper = styled(Grid).attrs(
   }
 `;
 
-export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
-  error: props.error
-}))`
+export const CheckboxWrapper = styled.label<{ error: unknown }>`
   display: flex;
   align-items: center;
   justify-content: flex-start;

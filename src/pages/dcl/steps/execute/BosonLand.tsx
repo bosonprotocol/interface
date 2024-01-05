@@ -51,7 +51,7 @@ export const BosonLand: React.FC<BosonLandProps> = ({ setSuccess }) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button theme="secondary">
+            <Button themeVal="secondary">
               Apply <ArrowSquareOut size={24} />
             </Button>
           </a>

@@ -58,7 +58,7 @@ function ReadMore({ text }: Props) {
       </Typography>
       {text.length > MAX_CHARACTERS && (
         <ReadMoreButton
-          theme="outline"
+          themeVal="outline"
           size="small"
           onClick={handleToggleShowMore}
         >

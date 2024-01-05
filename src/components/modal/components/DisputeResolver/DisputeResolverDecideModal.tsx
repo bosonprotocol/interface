@@ -144,7 +144,7 @@ export default function DisputeResolverDecideModal({
           </RefundAmount>
         </div>
         <CTAButton
-          theme="primary"
+          themeVal="primary"
           size="small"
           onClick={handleSolveDispute}
           disabled={isValidValue}

@@ -338,7 +338,7 @@ export default function ResolveDisputeModal({
         >
           Accept proposal
         </BosonButton>
-        <Button theme="blankOutline" onClick={() => hideModal()}>
+        <Button themeVal="blankOutline" onClick={() => hideModal()}>
           Back
         </Button>
       </ButtonsSection>

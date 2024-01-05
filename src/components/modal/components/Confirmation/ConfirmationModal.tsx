@@ -36,7 +36,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       {children}
       {hasError && <SimpleError />}
       <Grid justifyContent="space-between" marginTop="1rem">
-        <Button theme="blankSecondaryOutline" onClick={() => hideModal()}>
+        <Button themeVal="blankSecondaryOutline" onClick={() => hideModal()}>
           Cancel
         </Button>
         {CTA}

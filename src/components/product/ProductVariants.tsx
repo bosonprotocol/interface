@@ -374,7 +374,7 @@ export default function ProductVariants() {
         <Error display message={metaVariants.error} />
       )}
       <ProductInformationButtonGroup>
-        <Button theme="primary" type="submit" disabled={nextIsDisabled}>
+        <Button themeVal="primary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductInformationButtonGroup>

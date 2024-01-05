@@ -72,7 +72,7 @@ export default function UploadedFile({
           <>{FileContent}</>
         )}
         {handleRemoveFile && (
-          <Button onClick={() => handleRemoveFile()} theme="blank">
+          <Button onClick={() => handleRemoveFile()} themeVal="blank">
             <X size={24} />
           </Button>
         )}

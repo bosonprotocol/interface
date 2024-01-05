@@ -45,7 +45,7 @@ export function MessagesDisputesToggle({
   return (
     <Grid gap="1rem">
       <StyledButton
-        theme="white"
+        themeVal="white"
         onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           setLeftActive(true);
           onLeftButtonClick(e);
@@ -55,7 +55,7 @@ export function MessagesDisputesToggle({
         {leftButtonText}
       </StyledButton>
       <StyledButton
-        theme="white"
+        themeVal="white"
         onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           setLeftActive(false);
           onRightButtonClick(e);

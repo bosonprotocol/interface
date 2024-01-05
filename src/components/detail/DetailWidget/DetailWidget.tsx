@@ -1270,7 +1270,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     pathname: `${BosonRoutes.Chat}/${exchange?.id || ""}`
                   })
                 }
-                theme="blank"
+                themeVal="blank"
                 style={{ fontSize: "0.875rem" }}
                 disabled={!isBuyer && !isSeller}
               >
@@ -1290,7 +1290,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       | subgraph.ExchangeState
                   ) && (
                     <StyledCancelButton
-                      theme="blank"
+                      themeVal="blank"
                       style={{ fontSize: "0.875rem" }}
                       disabled={!isBuyer}
                       id="boson-redeem-cancel"
@@ -1322,7 +1322,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                           { m: "1000px" }
                         );
                       }}
-                      theme="blank"
+                      themeVal="blank"
                       style={{ fontSize: "0.875rem" }}
                       disabled={
                         exchange?.state !== "REDEEMED" ||

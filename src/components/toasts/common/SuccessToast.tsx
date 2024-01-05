@@ -30,7 +30,7 @@ export function SuccessToast({ t, children }: Props) {
       <Grid alignSelf="flex-start" justifyContent="flex-end" flexBasis="0">
         <StyledButton
           data-close
-          theme="blank"
+          themeVal="blank"
           onClick={() => toast.dismiss(t.id)}
         >
           <Close size={20} />

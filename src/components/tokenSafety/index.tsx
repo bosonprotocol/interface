@@ -97,7 +97,7 @@ const Buttons = ({
         {!displayWarningLabel(warning) ? <>Continue</> : <>I understand</>}
       </StyledButton>
       {showCancel && (
-        <StyledCancelButton onClick={onCancel} theme="blank">
+        <StyledCancelButton onClick={onCancel} themeVal="blank">
           Cancel
         </StyledCancelButton>
       )}

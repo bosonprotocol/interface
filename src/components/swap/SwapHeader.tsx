@@ -61,7 +61,10 @@ export default function SwapHeader({
           }}
         >
           <Grid>
-            <StyledTextButton theme="blankSecondary" disabled={isFiatLoading}>
+            <StyledTextButton
+              themeVal="blankSecondary"
+              disabled={isFiatLoading}
+            >
               Buy
             </StyledTextButton>
             {isFiatLoading && <Spinner size={15} />}

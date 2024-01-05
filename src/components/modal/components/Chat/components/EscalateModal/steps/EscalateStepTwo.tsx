@@ -290,7 +290,7 @@ function EscalateStepTwo({
                     your wallet. This will allow the dispute resolver to verify
                     your identity.
                   </Typography>
-                  <FormField theme="white" title="Message">
+                  <FormField title="Message">
                     <Textarea {...FormModel.formFields.message} disabled />
                   </FormField>
                   <BosonButton
@@ -336,7 +336,6 @@ function EscalateStepTwo({
                     attaching any evidence (e.g. Chat Transcript, Files, etc)
                   </Typography>
                   <FormField
-                    theme="white"
                     title="Email Address"
                     valueToCopy={{
                       [emailFormField.name]: values?.email || ""
@@ -345,7 +344,6 @@ function EscalateStepTwo({
                     <Input {...emailFormField} />
                   </FormField>
                   <FormField
-                    theme="white"
                     title="Email Subject"
                     valueToCopy={{
                       [FormModel.formFields.subject
@@ -355,7 +353,6 @@ function EscalateStepTwo({
                     <Input {...FormModel.formFields.subject} />
                   </FormField>
                   <FormField
-                    theme="white"
                     title="Email Body"
                     valueToCopy={{
                       [FormModel.formFields.exchangeId.name]:
@@ -389,7 +386,7 @@ function EscalateStepTwo({
                     </UnsignedMessageWrapper>
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
-                  <FormField theme="white" title="Chat transcript">
+                  <FormField title="Chat transcript">
                     <BosonButton
                       variant="accentFill"
                       style={{ color: "white" }}
@@ -398,7 +395,7 @@ function EscalateStepTwo({
                       Download CSV
                     </BosonButton>
                   </FormField>
-                  <FormField theme="white" title="">
+                  <FormField title="">
                     <Checkbox
                       {...FormModel.formFields.confirm}
                       disabled={activeStep === 0}
@@ -435,7 +432,6 @@ function EscalateStepTwo({
                   </Typography>
                   <InitializeChatWithSuccess />
                   <Button
-                    theme="secondary"
                     onClick={async () => {
                       const handleSendingEscalateMessage = async () => {
                         if (bosonXmtp && threadId && address) {
