@@ -18,7 +18,6 @@ import {
 } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
-import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
@@ -27,17 +26,25 @@ import Typography from "../../ui/Typography";
 import Video from "../../ui/Video";
 import { useModal } from "../useModal";
 
-interface Props {
-  id?: string;
-  type: "ERROR" | "SUCCESS";
+type Props = {
   state: string;
   message: string;
   data: Readonly<Array<TableData>>;
   name: string;
   image: string;
-  exchange: Exchange;
   animationUrl: string;
-}
+} & (
+  | {
+      id: string;
+      type: "SUCCESS";
+      exchange: subgraph.ExchangeFieldsFragment;
+    }
+  | {
+      id?: undefined;
+      type: "ERROR";
+      exchange?: undefined;
+    }
+);
 export default function DetailWidget({
   id,
   type,

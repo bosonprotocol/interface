@@ -71,7 +71,7 @@ const PROTOCOL_DEPLOYMENT_TIMES = {
 };
 
 export const getExchangeTokenId = (
-  exchange: Exchange,
+  exchange: subgraph.ExchangeFieldsFragment,
   envName: EnvironmentType
 ): string => {
   if (

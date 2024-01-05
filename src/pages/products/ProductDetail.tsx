@@ -1,10 +1,6 @@
-import { ExternalDetailView } from "@bosonprotocol/react-kit";
-import { useConfigContext } from "components/config/ConfigContext";
+import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
-import { MODAL_TYPES } from "components/modal/ModalComponents";
-import { useModal } from "components/modal/useModal";
-import { CONFIG } from "lib/config";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -45,8 +41,6 @@ export default function ProductDetail() {
     [UrlParameters.sellerId]: sellerId = ""
   } = useParams();
   const textColor = useCustomStoreQueryParameter("textColor");
-  const { config } = useConfigContext();
-  const { showModal } = useModal();
   const {
     data: productResult,
     isError,
@@ -101,9 +95,6 @@ export default function ProductDetail() {
   if (selectedOffer) {
     selectedOffer.exchanges = exchanges;
   }
-
-  const isCustomStoreFront =
-    useCustomStoreQueryParameter("isCustomStoreFront") === "true";
 
   if (isLoading) {
     return <LoadingMessage />;
@@ -200,39 +191,10 @@ export default function ProductDetail() {
               exchangePolicyCheckResult={exchangePolicyCheckResult}
               reload={reload}
             /> */}
-            <ExternalDetailView
-              providerProps={{
-                ...CONFIG,
-                envName: config.envName,
-                configId: config.envConfig.configId,
-                walletConnectProjectId: CONFIG.walletConnect.projectId,
-                defaultCurrencySymbol: CONFIG.defaultCurrency.symbol,
-                defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
-                licenseTemplate: CONFIG.rNFTLicenseTemplate,
-                minimumDisputeResolutionPeriodDays:
-                  CONFIG.minimumReturnPeriodInDays,
-                contactSellerForExchangeUrl: ""
-              }}
+            <CommitDetailWidget
               selectedVariant={selectedVariant}
-              hasMultipleVariants={false}
               isPreview={false}
-              showBosonLogo={isCustomStoreFront}
-              onExchangePolicyClick={({ exchangePolicyCheckResult }) => {
-                showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {
-                  title: "Exchange Policy Details",
-                  offerId: selectedOffer.id,
-                  offerData: selectedOffer,
-                  exchangePolicyCheckResult: exchangePolicyCheckResult
-                });
-              }}
-              onPurchaseOverview={() => {
-                showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
-                  title: "Commit and Redeem"
-                });
-              }}
-            >
-              <button>commit</button>
-            </ExternalDetailView>
+            />
           </div>
           <DetailShare />
         </MainDetailGrid>

@@ -4,11 +4,10 @@ import { ArrowSquareOut } from "phosphor-react";
 import { useMemo } from "react";
 
 import { getExchangeTokenId } from "../../lib/utils/exchange";
-import { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { OpenSeaButton } from "./Detail.style";
 
 interface Props {
-  exchange?: Exchange;
+  exchange?: subgraph.ExchangeFieldsFragment;
 }
 
 const openSeaUrlMap = new Map([
