@@ -4,12 +4,11 @@ import { transition } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { StepState } from "./Step";
 
-export const StepStyle = styled.div.attrs(
-  (props: { state: StepState; disabled: boolean; isLteS?: boolean }) => ({
-    state: props.state,
-    disabled: props.disabled
-  })
-)`
+export const StepStyle = styled.div<{
+  state: StepState;
+  disabled: boolean;
+  isLteS?: boolean;
+}>`
   position: relative;
   display: flex;
   flex-direction: row;
@@ -23,7 +22,7 @@ export const StepStyle = styled.div.attrs(
     state !== StepState.Active &&
     !disabled &&
     css`
-      :hover {
+      &:hover {
         cursor: pointer;
       }
     `}
@@ -34,7 +33,7 @@ export const StepStyle = styled.div.attrs(
       background: ${colors.white};
       ${transition}
 
-      :before {
+      &:before {
         content: "";
         position: absolute;
         top: 50%;
@@ -50,9 +49,9 @@ export const StepStyle = styled.div.attrs(
       }
       ${!disabled &&
       css`
-        :hover {
+        &:hover {
           background: ${colors.lightGrey};
-          :before {
+          &:before {
             background: ${colors.darkGrey};
             width: 0.5rem;
             height: 0.5rem;
@@ -70,15 +69,15 @@ export const StepStyle = styled.div.attrs(
     css`
       background: ${colors.black};
 
-      :before {
+      &:before {
         margin-left: -0.75rem;
       }
-      :after {
+      &:after {
         margin-left: 0.75rem;
       }
       > div,
-      :before,
-      :after {
+      &:before,
+      &:after {
         content: "";
         position: absolute;
         top: 50%;
@@ -97,8 +96,8 @@ export const StepStyle = styled.div.attrs(
     css`
       background: var(--primary);
 
-      :before,
-      :after {
+      &:before,
+      &:after {
         content: "";
         position: absolute;
         top: 50%;
@@ -106,13 +105,13 @@ export const StepStyle = styled.div.attrs(
         ${transition}
         background: ${colors.black};
       }
-      :before {
+      &:before {
         width: 0.35rem;
         height: 0.125rem;
         transform: translate(calc(-50% - 0.35rem), calc(-50% + 0.15rem))
           rotate(-135deg);
       }
-      :after {
+      &:after {
         width: 0.75rem;
         height: 0.125rem;
         transform: translate(-50%, -50%) rotate(-45deg);
@@ -123,10 +122,10 @@ export const StepStyle = styled.div.attrs(
       }
       ${!disabled &&
       css`
-        :hover {
+        &:hover {
           background: ${colors.black};
-          :before,
-          :after {
+          &:before,
+          &:after {
             background: var(--primary);
           }
         }
@@ -173,10 +172,10 @@ export const StepWrapper = styled.div`
   flex-direction: row;
   flex-wrap: nowrap;
   border: 1px solid ${colors.border};
-  :empty + p {
+  &:empty + p {
     display: none;
   }
-  :empty {
+  &:empty {
     display: none;
   }
 `;

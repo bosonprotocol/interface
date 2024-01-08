@@ -33,7 +33,7 @@ const Web3StatusGeneric = styled.button`
 
   margin-right: 2px;
   margin-left: 2px;
-  :focus {
+  &:focus {
     outline: none;
   }
 `;
@@ -43,8 +43,8 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ $color: string }>`
   border: 1px solid transparent;
   font-weight: 500;
   color: ${({ $color }) => $color};
-  :hover,
-  :focus {
+  &:hover,
+  &:focus {
     border: 1px solid color-mix(in srgb, var(--buttonBgColor) 90%, black);
   }
   @media (min-width: ${breakpointNumbers.xs}px) and (max-width: ${breakpointNumbers.l -

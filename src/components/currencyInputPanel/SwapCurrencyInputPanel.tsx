@@ -190,11 +190,11 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   padding: 4px 6px;
   pointer-events: ${({ disabled }) => (!disabled ? "initial" : "none")};
 
-  :hover {
+  &:hover {
     opacity: ${({ disabled }) => (!disabled ? 0.8 : 0.4)};
   }
 
-  :focus {
+  &:focus {
     outline: none;
   }
 `;

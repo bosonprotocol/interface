@@ -111,7 +111,7 @@ const ContentWrapper = styled.div<{
   position: relative;
   width: 100%;
 
-  :before {
+  &:before {
     background-image: url(${({ logoUrl }) => logoUrl});
     background-repeat: no-repeat;
     background-size: 300px;

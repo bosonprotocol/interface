@@ -1,10 +1,10 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import map from "lodash/map";
 import styled from "styled-components";
 
-import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
-import SellerID from "../../components/ui/SellerID";
+import SellerID, { Seller } from "../../components/ui/SellerID";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { useForm } from "../../lib/utils/hooks/useForm";
@@ -150,11 +150,6 @@ export default function Preview({
       })) ?? [])
     ]
   };
-  // offer is necessarily compliant because created with the dApp
-  const exchangePolicyCheckResult = {
-    isValid: true,
-    errors: []
-  };
   return (
     <PreviewWrapper>
       <PreviewWrapperContent>
@@ -175,10 +170,10 @@ export default function Preview({
                   <Image src={thumbnailImg} dataTestId="offerImage" />
                 )}
               </ImageWrapper>
-              <div>
+              <div style={{ width: "100%" }}>
                 <SellerID
                   offer={offer}
-                  buyerOrSeller={offer?.seller}
+                  buyerOrSeller={offer?.seller as Seller}
                   justifyContent="flex-start"
                   withProfileImage
                   onClick={null}
@@ -198,7 +193,7 @@ export default function Preview({
                     disabled
                   />
                 )}
-                <DetailWidget
+                {/* <DetailWidget
                   isPreview={true}
                   pageType="offer"
                   offer={offer}
@@ -207,6 +202,13 @@ export default function Preview({
                   hasSellerEnoughFunds={true}
                   hasMultipleVariants={hasMultipleVariants}
                   exchangePolicyCheckResult={exchangePolicyCheckResult}
+                /> */}
+                <CommitDetailWidget
+                  selectedVariant={variant}
+                  hasMultipleVariants={hasMultipleVariants}
+                  isPreview={true}
+                  name={name}
+                  image={offerImg}
                 />
               </div>
             </MainDetailGrid>

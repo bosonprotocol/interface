@@ -141,7 +141,7 @@ const Table = styled.table`
   .tbody {
     .tr {
       display: flex;
-      :hover {
+      &:hover {
         .td {
           background-color: ${colors.darkGrey}08;
           cursor: pointer;

@@ -28,7 +28,7 @@ const TableHeader = styled.th`
 
 const TableElementContainer = styled.tr`
   position: relative;
-  :after {
+  &:after {
     position: absolute;
     background: ${colors.darkGreyTimeStamp};
     content: "";

@@ -12,7 +12,7 @@ export const CopyButton = styled.button`
   border: none;
 `;
 
-export const FieldInput = styled.input<{ error: any }>`
+export const FieldInput = styled.input<{ error?: any }>`
   width: 100%;
   padding: 1rem;
   gap: 0.5rem;
@@ -26,8 +26,8 @@ export const FieldInput = styled.input<{ error: any }>`
   ${transition}
 
   :not(:disabled) {
-    :focus,
-    :hover {
+    &:focus,
+    &:hover {
       border: 1px solid var(--secondary);
     }
   }
@@ -42,12 +42,12 @@ export const FieldInput = styled.input<{ error: any }>`
       ? css`
           border: 1px solid ${colors.orange};
           :not(:disabled) {
-            :hover {
+            &:hover {
               border: 1px solid ${colors.orange};
             }
           }
           :not(:disabled) {
-            :focus {
+            &:focus {
               border: 1px solid var(--secondary);
             }
           }
@@ -64,8 +64,8 @@ export const FieldInput = styled.input<{ error: any }>`
         `
       : css`
           :not(:disabled) {
-            :focus,
-            :hover {
+            &:focus,
+            &:hover {
               border: 1px solid var(--secondary);
             }
           }
@@ -116,8 +116,8 @@ export const FileUploadWrapper = styled.div<{ error: unknown }>`
 
   ${transition};
 
-  :focus,
-  :hover {
+  &:focus,
+  &:hover {
     border: 1px solid var(--secondary);
   }
 
@@ -141,7 +141,7 @@ export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
       : css`
           cursor: pointer;
         `}
-  :hover {
+  &:hover {
     [data-remove] {
       display: flex;
     }
@@ -177,8 +177,8 @@ export const FieldTextArea = styled.textarea<{ error: unknown }>`
   ${transition}
 
   :not(:disabled) {
-    :focus,
-    :hover {
+    &:focus,
+    &:hover {
       border: 1px solid var(--secondary);
     }
   }
@@ -203,20 +203,20 @@ export const FieldTextArea = styled.textarea<{ error: unknown }>`
             color: ${colors.orange};
           }
           :not(:disabled) {
-            :hover {
+            &:hover {
               border: 1px solid ${colors.orange};
             }
           }
           :not(:disabled) {
-            :focus {
+            &:focus {
               border: 1px solid var(--secondary);
             }
           }
         `
       : css`
           :not(:disabled) {
-            :focus,
-            :hover {
+            &:focus,
+            &:hover {
               border: 1px solid var(--secondary);
             }
           }
@@ -230,13 +230,13 @@ export const FormFieldWrapper = styled(Grid)`
   }
 
   margin-bottom: 0.5rem;
-  input,
-  textarea {
+  /* TODO: 
+  input, textarea {
     background: ${colors.white};
     :disabled {
       opacity: 1;
     }
-  }
+  } */
   input {
     border-width: 0;
     &:hover {
@@ -265,7 +265,7 @@ export const FormFieldWrapper = styled(Grid)`
   }
 `;
 
-export const CheckboxWrapper = styled.label<{ error: unknown }>`
+export const CheckboxWrapper = styled.label<{ error?: unknown }>`
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -280,7 +280,7 @@ export const CheckboxWrapper = styled.label<{ error: unknown }>`
     :not(:disabled) {
       + div {
         cursor: pointer;
-        :hover {
+        &:hover {
           border: 1px solid ${colors.secondary};
           svg {
             opacity: 0.25;

@@ -19,8 +19,8 @@ const QuestionWrapper = styled.div`
   font-size: 0.75rem;
   border-radius: 12px;
 
-  :hover,
-  :focus {
+  &:hover,
+  &:focus {
     opacity: 0.7;
   }
 `;

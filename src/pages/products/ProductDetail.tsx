@@ -18,7 +18,7 @@ import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 // import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
-import SellerID from "../../components/ui/SellerID";
+import SellerID, { Seller } from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -161,7 +161,7 @@ export default function ProductDetail() {
             <>
               <SellerID
                 offer={selectedOffer}
-                buyerOrSeller={selectedOffer?.seller}
+                buyerOrSeller={selectedOffer?.seller as Seller}
                 justifyContent="flex-start"
                 withProfileImage
               />
@@ -193,6 +193,7 @@ export default function ProductDetail() {
             /> */}
             <CommitDetailWidget
               selectedVariant={selectedVariant}
+              hasMultipleVariants={false}
               isPreview={false}
             />
           </div>

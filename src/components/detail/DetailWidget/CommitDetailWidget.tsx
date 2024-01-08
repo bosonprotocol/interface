@@ -101,6 +101,7 @@ const CommitButtonWrapper = styled.div<{ $pointerEvents: string }>`
 type CommitDetailWidgetProps = {
   selectedVariant: VariantV1;
   isPreview: boolean;
+  hasMultipleVariants: boolean;
   name?: string;
   image?: string;
 };
@@ -109,6 +110,7 @@ type ActionName = "approveExchangeToken" | "depositFunds" | "commit";
 export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   selectedVariant,
   isPreview,
+  hasMultipleVariants,
   name = "",
   image = ""
 }) => {
@@ -243,9 +245,15 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
     ((numSellers === 1 && numOffers === 0) ||
       (numSellers === 0 && numOffers === 1)) &&
     !!commitProxyAddress;
-  const exchangePolicyCheckResult = useCheckExchangePolicy({
-    offerId: offer.id
+  let exchangePolicyCheckResult = useCheckExchangePolicy({
+    offerId: isPreview ? undefined : offer.id
   });
+  exchangePolicyCheckResult = isPreview
+    ? {
+        isValid: true,
+        errors: []
+      }
+    : exchangePolicyCheckResult;
   const convertedPrice = useConvertedPrice({
     value: offer.price,
     decimals: offer.exchangeToken.decimals,
@@ -465,12 +473,12 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         defaultCurrencySymbol: CONFIG.defaultCurrency.symbol,
         defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
         licenseTemplate: CONFIG.rNFTLicenseTemplate,
-        minimumDisputeResolutionPeriodDays: CONFIG.minimumReturnPeriodInDays,
+        minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
         contactSellerForExchangeUrl: ""
       }}
       selectedVariant={selectedVariant}
-      hasMultipleVariants={false}
-      isPreview={false}
+      hasMultipleVariants={hasMultipleVariants}
+      isPreview={isPreview}
       showBosonLogo={isCustomStoreFront}
       onExchangePolicyClick={({ exchangePolicyCheckResult }) => {
         showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {

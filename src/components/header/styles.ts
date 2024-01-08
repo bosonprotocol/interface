@@ -6,10 +6,10 @@ export const ClickableStyle = css`
   cursor: pointer;
   transition-duration: 125ms;
 
-  :hover {
+  &:hover {
     opacity: 0.6;
   }
-  :active {
+  &:active {
     opacity: 0.4;
   }
 `;

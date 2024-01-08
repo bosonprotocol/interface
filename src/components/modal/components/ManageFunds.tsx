@@ -23,7 +23,7 @@ const WithdrawButton = styled(BosonButton)`
   background: transparent;
   color: ${colors.green};
   border: 2px solid ${colors.green};
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     background: ${colors.green};
     border: 2px solid ${colors.green};
   }

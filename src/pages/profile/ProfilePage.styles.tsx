@@ -31,7 +31,7 @@ export const GrayWrapper = styled.div`
   ${breakpoint.s} {
     padding: 5rem 0;
   }
-  &::before {
+  &:before {
     content: "";
     position: absolute;
     top: 0px;

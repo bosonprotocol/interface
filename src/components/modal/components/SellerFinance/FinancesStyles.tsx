@@ -10,7 +10,7 @@ export const CTAButton = styled(Button)`
   :disabled {
     border: 2px solid ${colors.darkGrey};
   }
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     border: 2px solid var(--primary);
   }
 `;

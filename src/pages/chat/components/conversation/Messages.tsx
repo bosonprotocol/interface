@@ -61,7 +61,7 @@ const LoadMoreMessages = styled.button.attrs({ type: "button" })`
   padding: 0.2rem 0.7rem;
   transition: all 300ms;
 
-  :hover {
+  &:hover {
     background-color: ${colors.black};
     color: ${colors.white};
   }

@@ -36,13 +36,13 @@ export const InputContainer = styled(Grid)<{ error?: boolean }>`
     error
       ? `
         border: 1px solid ${theme.accentFailure};
-        :focus-within {
+        &:focus-within {
           border-color: ${theme.accentFailureSoft};
         }
       `
       : `
         border: 1px solid ${theme.backgroundOutline};
-        :focus-within {
+        &:focus-within {
           border-color: ${theme.accentActiveSoft};
         }
       `} */

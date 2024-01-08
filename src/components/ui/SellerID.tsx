@@ -61,7 +61,7 @@ const ImageContainer = styled.div`
 `;
 
 type Buyer = Pick<subgraph.Buyer, "id" | "wallet">;
-type Seller = Pick<
+export type Seller = Pick<
   subgraph.Seller,
   "id" | "assistant" | "authTokenType" | "authTokenId"
 > & {

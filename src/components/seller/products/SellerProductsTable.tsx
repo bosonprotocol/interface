@@ -78,8 +78,6 @@ const VoidButton = styled(BosonButton)`
   }
 `;
 
-const StyledCheckboxWrapper = styled(CheckboxWrapper)``;
-
 export interface SellerProductsTableProps {
   offers: (ExtendedOffer | null)[];
   isError: boolean;
@@ -133,7 +131,7 @@ const IndeterminateCheckbox = forwardRef<
     };
 
     return (
-      <StyledCheckboxWrapper htmlFor={checkboxId} style={style}>
+      <CheckboxWrapper htmlFor={checkboxId} style={style}>
         <input
           hidden
           id={checkboxId}
@@ -146,7 +144,7 @@ const IndeterminateCheckbox = forwardRef<
         <div>
           <Check size={16} />
         </div>
-      </StyledCheckboxWrapper>
+      </CheckboxWrapper>
     );
   }
 );
@@ -214,7 +212,7 @@ const Table = styled.table`
       }
     }
     .tr {
-      :hover {
+      &:hover {
         .td {
           background-color: ${colors.darkGrey}08;
           cursor: pointer;

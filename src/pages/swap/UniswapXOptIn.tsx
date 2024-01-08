@@ -27,7 +27,7 @@ export const Arrow = styled.div`
   height: 8px;
   z-index: 9998;
 
-  ::before {
+  &:before {
     position: absolute;
     width: 8px;
     height: 8px;
@@ -42,7 +42,7 @@ export const Arrow = styled.div`
 
   &.arrow-top {
     bottom: -4px;
-    ::before {
+    &:before {
       border-top: none;
       border-left: none;
     }
@@ -50,7 +50,7 @@ export const Arrow = styled.div`
 
   &.arrow-bottom {
     top: -4px;
-    ::before {
+    &:before {
       border-bottom: none;
       border-right: none;
     }
@@ -59,7 +59,7 @@ export const Arrow = styled.div`
   &.arrow-left {
     right: -4px;
 
-    ::before {
+    &:before {
       border-bottom: none;
       border-left: none;
     }
@@ -67,7 +67,7 @@ export const Arrow = styled.div`
 
   &.arrow-right {
     left: -4px;
-    ::before {
+    &:before {
       border-right: none;
       border-top: none;
     }

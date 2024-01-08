@@ -24,7 +24,7 @@ const ArrowContainer = styled.div`
   box-sizing: content-box;
   width: 16px;
   height: 16px;
-  :hover {
+  &:hover {
     background-color: ${colors.border};
   }
 `;
@@ -84,7 +84,7 @@ const Aside = styled.aside`
 
 const AsideLink = styled.li<{ $active?: boolean }>`
   background: ${(props) => (props.$active ? colors.border : colors.white)};
-  :hover {
+  &:hover {
     background-color: ${colors.border};
     filter: brightness(-200%);
   }

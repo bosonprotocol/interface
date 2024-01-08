@@ -19,7 +19,7 @@ const ToggleButton = styled(Grid)`
   height: 100%;
   width: fit-content;
   cursor: pointer;
-  :hover {
+  &:hover {
     opacity: 0.8;
   }
 `;

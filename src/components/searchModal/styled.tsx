@@ -21,7 +21,7 @@ export const MenuItem = styled(Grid)<{
   grid-gap: 16px;
   cursor: ${({ disabled }) => !disabled && "pointer"};
   pointer-events: ${({ disabled }) => disabled && "none"};
-  :hover {
+  &:hover {
     background-color: ${({ theme }) => theme.hoverDefault};
   }
   opacity: ${({ disabled, selected, dim }) =>
@@ -57,7 +57,7 @@ export const SearchInput = styled.input`
     font-size: 1rem;
   }
   transition: border 100ms;
-  :focus {
+  &:focus {
     border: 1px solid ${({ theme }) => theme.accentActiveSoft};
     background-color: ${colors.lightGrey};
     outline: none;

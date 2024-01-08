@@ -11,7 +11,7 @@ const Wrapper = styled(Grid)`
     color: ${colors.secondary};
     text-decoration: none;
     transition: all 150ms ease-in-out;
-    :hover {
+    &:hover {
       color: ${colors.black};
       text-decoration: underline;
     }
@@ -47,7 +47,7 @@ const List = styled.ol`
     :not(:first-child) {
       margin: 2rem 0;
     }
-    :before {
+    &:before {
       content: counters(list-item, ".") " ";
       counter-increment: list-item;
       position: absolute;

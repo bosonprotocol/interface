@@ -144,10 +144,10 @@ const ExplorerLinkWrapper = styled.div`
   align-items: center;
   cursor: pointer;
 
-  :hover {
+  &:hover {
     opacity: 0.6;
   }
-  :active {
+  &:active {
     opacity: 0.4;
   }
 `;
