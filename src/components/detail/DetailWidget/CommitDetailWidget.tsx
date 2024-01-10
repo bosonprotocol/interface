@@ -29,6 +29,7 @@ import {
   providers
 } from "ethers";
 import { CONFIG } from "lib/config";
+import { BosonRoutes } from "lib/routing/routes";
 import { isTruthy } from "lib/types/helpers";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
@@ -43,6 +44,7 @@ import {
   useAddPendingTransaction,
   useRemovePendingTransaction
 } from "lib/utils/hooks/transactions/usePendingTransactions";
+import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellers } from "lib/utils/hooks/useSellers";
 import { poll } from "lib/utils/promises";
 import { useCoreSDK } from "lib/utils/useCoreSdk";
@@ -118,6 +120,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   const [commitType, setCommitType] = useState<ActionName | undefined | null>(
     null
   );
+  const navigate = useKeepQueryParamsNavigate();
   const { config } = useConfigContext();
   const { account: address } = useAccount();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -492,6 +495,9 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
           title: "Commit and Redeem"
         });
+      }}
+      onClickBuyOrSwap={({ swapParams }) => {
+        navigate({ pathname: BosonRoutes.Swap, search: swapParams });
       }}
     >
       <CTAsGrid flexDirection="column" alignItems="center" margin="1.5rem 0">
