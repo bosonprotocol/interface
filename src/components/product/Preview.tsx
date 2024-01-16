@@ -31,7 +31,6 @@ interface Props {
   seller?: subgraph.SellerFieldsFragment;
   isMultiVariant: boolean;
   isOneSetOfImages: boolean;
-  hasMultipleVariants: boolean;
   decimals?: number;
 }
 
@@ -49,7 +48,6 @@ export default function Preview({
   seller,
   isMultiVariant,
   isOneSetOfImages,
-  hasMultipleVariants,
   decimals
 }: Props) {
   const { values } = useForm();
@@ -205,7 +203,6 @@ export default function Preview({
                 /> */}
                 <CommitDetailWidget
                   selectedVariant={variant}
-                  hasMultipleVariants={hasMultipleVariants}
                   isPreview={true}
                   name={name}
                   image={offerImg}

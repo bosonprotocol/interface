@@ -193,7 +193,6 @@ export default function ProductDetail() {
             /> */}
             <CommitDetailWidget
               selectedVariant={selectedVariant}
-              hasMultipleVariants={false}
               isPreview={false}
             />
           </div>

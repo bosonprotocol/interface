@@ -548,14 +548,6 @@ export const OpenSeaButton = styled.a<{ $disabled: boolean }>`
 `;
 
 export const RedeemLeftButton = styled.button`
-  position: absolute;
-  top: -2rem;
-  left: 0;
-  right: 0;
-  border-width: 0;
-  border-bottom: 2px solid ${colors.border};
-  z-index: ${zIndex.OfferStatus};
-
   cursor: pointer;
   transition: all 150ms ease-in-out;
   &:hover {

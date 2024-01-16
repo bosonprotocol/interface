@@ -1,3 +1,4 @@
+import { ExchangeDetailWidget } from "components/detail/DetailWidget/ExchangeDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
 import { useMemo } from "react";
@@ -17,8 +18,6 @@ import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailTransactions from "../../components/detail/DetailTransactions";
-import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
-// DETAILS COMPONENTS ABOVE
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -28,7 +27,6 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useLensProfilesPerSellerIds } from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
-import useCheckExchangePolicy from "../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
   useSellerCurationListFn,
@@ -39,10 +37,13 @@ import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
 
-const marginBottom = "4rem";
+const marginBottom = "1rem";
 
 const StyledVariationSelects = styled(VariationSelects)`
-  margin-bottom: ${marginBottom};
+  margin-bottom: 0;
+  > * {
+    margin-bottom: 0;
+  }
 `;
 
 export default function Exchange() {
@@ -51,8 +52,7 @@ export default function Exchange() {
   const {
     data: exchanges,
     isError,
-    isLoading,
-    refetch: reload
+    isLoading
   } = useExchanges(
     {
       id: exchangeId,
@@ -76,13 +76,7 @@ export default function Exchange() {
       sellerId && checkIfSellerIsInCurationList(sellerId);
     return isSellerInCurationList;
   }, [sellerId, checkIfSellerIsInCurationList]);
-
-  const variant = {
-    offer,
-    variations
-  };
   const textColor = useCustomStoreQueryParameter("textColor");
-
   const { data: sellers } = useSellers(
     {
       id: sellerId,
@@ -92,29 +86,12 @@ export default function Exchange() {
       enabled: !!sellerId
     }
   );
-  const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
-    (fund) => fund.token.address === offer?.exchangeToken.address
-  )?.availableAmount;
-  const offerRequiredDeposit = Number(offer?.sellerDeposit || 0);
-  const hasSellerEnoughFunds =
-    offerRequiredDeposit > 0
-      ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
-      : true;
-
-  const exchangePolicyCheckResult = useCheckExchangePolicy({
-    offerId: offer?.id
-  });
-
   // fetch lensProfile for current SellerId
   const seller = sellers?.[0];
   const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
     { sellers: seller ? [seller] : [] },
     { enabled: !!seller }
   );
-  const sellerLensProfile = seller
-    ? sellerLensProfilePerSellerId?.get(seller.id)
-    : undefined;
-
   if (isLoading) {
     return <LoadingMessage />;
   }
@@ -136,6 +113,14 @@ export default function Exchange() {
       />
     );
   }
+  const variant = {
+    offer,
+    variations: variations ?? []
+  } as VariantV1;
+
+  const sellerLensProfile = seller
+    ? sellerLensProfilePerSellerId?.get(seller.id)
+    : undefined;
 
   if (!offer.isValid) {
     return (
@@ -181,7 +166,7 @@ export default function Exchange() {
                 <Image src={offerImg ?? ""} dataTestId="offerImage" />
               )}
             </ImageWrapper>
-            <div>
+            <div style={{ width: "100%" }}>
               <>
                 <SellerID
                   offer={offer}
@@ -203,22 +188,13 @@ export default function Exchange() {
               </>
               {hasVariations && (
                 <StyledVariationSelects
-                  selectedVariant={variant as VariantV1}
-                  variants={[variant] as VariantV1[]}
+                  selectedVariant={variant}
+                  variants={[variant]}
                   disabled
                 />
               )}
 
-              <DetailWidget
-                pageType="exchange"
-                offer={offer}
-                exchange={exchange}
-                name={name}
-                image={offerImg}
-                hasSellerEnoughFunds={hasSellerEnoughFunds}
-                reload={reload}
-                exchangePolicyCheckResult={exchangePolicyCheckResult}
-              />
+              <ExchangeDetailWidget exchange={exchange} variant={variant} />
             </div>
             <DetailShare />
           </MainDetailGrid>

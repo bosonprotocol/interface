@@ -1,6 +1,6 @@
 import {
   CommitButton,
-  ExternalDetailView,
+  ExternalCommitDetailView,
   extractUserFriendlyError,
   getHasUserRejectedTx,
   Provider,
@@ -103,7 +103,6 @@ const CommitButtonWrapper = styled.div<{ $pointerEvents: string }>`
 type CommitDetailWidgetProps = {
   selectedVariant: VariantV1;
   isPreview: boolean;
-  hasMultipleVariants: boolean;
   name?: string;
   image?: string;
 };
@@ -112,7 +111,6 @@ type ActionName = "approveExchangeToken" | "depositFunds" | "commit";
 export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   selectedVariant,
   isPreview,
-  hasMultipleVariants,
   name = "",
   image = ""
 }) => {
@@ -467,7 +465,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
     });
   };
   return (
-    <ExternalDetailView
+    <ExternalCommitDetailView
       providerProps={{
         ...CONFIG,
         envName: config.envName,
@@ -480,8 +478,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         contactSellerForExchangeUrl: ""
       }}
       selectedVariant={selectedVariant}
-      hasMultipleVariants={hasMultipleVariants}
-      isPreview={isPreview}
+      showPriceAsterisk={isPreview}
       showBosonLogo={isCustomStoreFront}
       onExchangePolicyClick={({ exchangePolicyCheckResult }) => {
         showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {
@@ -603,6 +600,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
           .
         </Typography>
       </CTAsGrid>
-    </ExternalDetailView>
+    </ExternalCommitDetailView>
   );
 };

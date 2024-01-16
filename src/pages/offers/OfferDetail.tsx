@@ -152,7 +152,6 @@ export default function OfferDetail() {
             /> */}
             <CommitDetailWidget
               selectedVariant={selectedVariant}
-              hasMultipleVariants={false}
               isPreview={false}
             />
           </div>
