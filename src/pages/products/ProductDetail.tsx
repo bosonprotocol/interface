@@ -1,28 +1,22 @@
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
-  DarkerBackground,
-  DetailGrid,
   DetailWrapper,
   ImageWrapper,
   LightBackground,
   MainDetailGrid
 } from "../../components/detail/Detail.style";
-import DetailChart from "../../components/detail/DetailChart";
 import DetailShare from "../../components/detail/DetailShare";
-import DetailSlider from "../../components/detail/DetailSlider";
-import DetailTable from "../../components/detail/DetailTable";
-// import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID, { Seller } from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { colors } from "../../lib/styles/colors";
 import {
   getOfferAnimationUrl,
   getOfferDetails
@@ -40,7 +34,7 @@ export default function ProductDetail() {
     [UrlParameters.uuid]: productUuid = "",
     [UrlParameters.sellerId]: sellerId = ""
   } = useParams();
-  const textColor = useCustomStoreQueryParameter("textColor");
+  const textColor = useCustomStoreQueryParameter("textColor"); // TODO: what to do?
   const {
     data: productResult,
     isError,
@@ -127,14 +121,7 @@ export default function ProductDetail() {
     return <NotFound />;
   }
 
-  const {
-    name,
-    offerImg,
-    shippingInfo,
-    description,
-    artistDescription,
-    images
-  } = getOfferDetails(selectedOffer);
+  const { name, offerImg } = getOfferDetails(selectedOffer);
 
   return (
     <DetailWrapper>
@@ -199,46 +186,7 @@ export default function ProductDetail() {
           <DetailShare />
         </MainDetailGrid>
       </LightBackground>
-      <DarkerBackground>
-        <DetailGrid>
-          <div>
-            <Typography tag="h3">Product description</Typography>
-            <Typography
-              tag="p"
-              data-testid="description"
-              style={{ whiteSpace: "pre-wrap" }}
-            >
-              {description}
-            </Typography>
-            {/* TODO: hidden for now */}
-            {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
-          </div>
-          <div>
-            <Typography tag="h3">About the creator</Typography>
-            <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
-              {artistDescription}
-            </Typography>
-          </div>
-        </DetailGrid>
-        {images.length > 0 && <DetailSlider images={images} />}
-        <DetailGrid>
-          <DetailChart offer={selectedOffer} title="Inventory graph" />
-          {(shippingInfo.returnPeriodInDays !== undefined ||
-            !!shippingInfo.shippingTable.length) && (
-            <div>
-              <Typography tag="h3">Shipping information</Typography>
-              <Typography
-                tag="p"
-                style={{ color: textColor || colors.darkGrey }}
-              >
-                Return period: {shippingInfo.returnPeriodInDays}{" "}
-                {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
-              </Typography>
-              <DetailTable data={shippingInfo.shippingTable} inheritColor />
-            </div>
-          )}
-        </DetailGrid>
-      </DarkerBackground>
+      <OfferFullDescription offer={selectedVariant.offer} exchange={null} />
     </DetailWrapper>
   );
 }

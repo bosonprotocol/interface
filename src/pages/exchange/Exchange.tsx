@@ -1,13 +1,12 @@
 import { ExchangeDetailWidget } from "components/detail/DetailWidget/ExchangeDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import {
-  DarkerBackground,
-  DetailGrid,
   DetailWrapper,
   ImageWrapper,
   LightBackground,
@@ -15,16 +14,11 @@ import {
 } from "../../components/detail/Detail.style";
 import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
-import DetailSlider from "../../components/detail/DetailSlider";
-import DetailTable from "../../components/detail/DetailTable";
-import DetailTransactions from "../../components/detail/DetailTransactions";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { colors } from "../../lib/styles/colors";
-import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useLensProfilesPerSellerIds } from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
@@ -76,7 +70,7 @@ export default function Exchange() {
       sellerId && checkIfSellerIsInCurationList(sellerId);
     return isSellerInCurationList;
   }, [sellerId, checkIfSellerIsInCurationList]);
-  const textColor = useCustomStoreQueryParameter("textColor");
+  const textColor = useCustomStoreQueryParameter("textColor"); // TODO: what to do?
   const { data: sellers } = useSellers(
     {
       id: sellerId,
@@ -134,17 +128,8 @@ export default function Exchange() {
   if (!isSellerCurated) {
     return <NotFound />;
   }
-  const buyerAddress = exchange.buyer.wallet;
 
-  const {
-    name,
-    offerImg,
-    animationUrl,
-    shippingInfo,
-    description,
-    artistDescription,
-    images
-  } = getOfferDetails(offer);
+  const { name, offerImg, animationUrl } = getOfferDetails(offer);
 
   return (
     <>
@@ -199,51 +184,7 @@ export default function Exchange() {
             <DetailShare />
           </MainDetailGrid>
         </LightBackground>
-        <DarkerBackground>
-          <DetailGrid>
-            <div>
-              <Typography tag="h3">Product description</Typography>
-              <Typography
-                tag="p"
-                data-testid="description"
-                style={{ whiteSpace: "pre-wrap" }}
-              >
-                {description}
-              </Typography>
-              {/* TODO: hidden for now */}
-              {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
-            </div>
-            <div>
-              <Typography tag="h3">About the creator</Typography>
-              <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
-                {artistDescription}
-              </Typography>
-            </div>
-          </DetailGrid>
-          {images.length > 0 && <DetailSlider images={images} />}
-          <DetailGrid>
-            <DetailTransactions
-              title="Transaction History (this item)"
-              exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-              offer={offer}
-              buyerAddress={buyerAddress}
-            />
-            {(shippingInfo.returnPeriodInDays !== undefined ||
-              !!shippingInfo.shippingTable.length) && (
-              <div>
-                <Typography tag="h3">Shipping information</Typography>
-                <Typography
-                  tag="p"
-                  style={{ color: textColor || colors.darkGrey }}
-                >
-                  Return period: {shippingInfo.returnPeriodInDays}{" "}
-                  {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
-                </Typography>
-                <DetailTable data={shippingInfo.shippingTable} inheritColor />
-              </div>
-            )}
-          </DetailGrid>
-        </DarkerBackground>
+        <OfferFullDescription offer={offer} exchange={exchange} />
       </DetailWrapper>
     </>
   );

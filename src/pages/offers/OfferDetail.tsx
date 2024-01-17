@@ -2,28 +2,23 @@ import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailW
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
 import useProductByOfferId from "lib/utils/hooks/product/useProductByOfferId";
+import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { VariantV1 } from "pages/products/types";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
-  DarkerBackground,
-  DetailGrid,
   DetailWrapper,
   ImageWrapper,
   LightBackground,
   MainDetailGrid
 } from "../../components/detail/Detail.style";
-import DetailChart from "../../components/detail/DetailChart";
 import DetailShare from "../../components/detail/DetailShare";
-import DetailSlider from "../../components/detail/DetailSlider";
-import DetailTable from "../../components/detail/DetailTable";
 import Image from "../../components/ui/Image";
 import SellerID, { Seller } from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
@@ -54,7 +49,7 @@ export default function OfferDetail() {
       setSelectedVariant(defaultVariant);
     }
   }, [defaultVariant]);
-  const textColor = useCustomStoreQueryParameter("textColor");
+  const textColor = useCustomStoreQueryParameter("textColor"); // TODO: what to do??
 
   const sellerId = offer?.seller.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
@@ -95,16 +90,7 @@ export default function OfferDetail() {
     return <NotFound />;
   }
 
-  const {
-    name,
-    offerImg,
-    animationUrl,
-    shippingInfo,
-    description,
-    // productData,
-    artistDescription,
-    images
-  } = getOfferDetails(offer);
+  const { name, offerImg, animationUrl } = getOfferDetails(offer);
 
   return (
     <DetailWrapper>
@@ -158,46 +144,7 @@ export default function OfferDetail() {
           <DetailShare />
         </MainDetailGrid>
       </LightBackground>
-      <DarkerBackground>
-        <DetailGrid>
-          <div>
-            <Typography tag="h3">Product description</Typography>
-            <Typography
-              tag="p"
-              data-testid="description"
-              style={{ whiteSpace: "pre-wrap" }}
-            >
-              {description}
-            </Typography>
-            {/* TODO: hidden for now */}
-            {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
-          </div>
-          <div>
-            <Typography tag="h3">About the creator</Typography>
-            <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
-              {artistDescription}
-            </Typography>
-          </div>
-        </DetailGrid>
-        {images.length > 0 && <DetailSlider images={images} />}
-        <DetailGrid>
-          <DetailChart offer={offer} title="Inventory graph" />
-          {(shippingInfo.returnPeriodInDays !== undefined ||
-            !!shippingInfo.shippingTable.length) && (
-            <div>
-              <Typography tag="h3">Shipping information</Typography>
-              <Typography
-                tag="p"
-                style={{ color: textColor || colors.darkGrey }}
-              >
-                Return period: {shippingInfo.returnPeriodInDays}{" "}
-                {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
-              </Typography>
-              <DetailTable data={shippingInfo.shippingTable} inheritColor />
-            </div>
-          )}
-        </DetailGrid>
-      </DarkerBackground>
+      <OfferFullDescription offer={selectedVariant.offer} exchange={null} />
     </DetailWrapper>
   );
 }

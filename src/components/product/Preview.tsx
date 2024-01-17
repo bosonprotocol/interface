@@ -1,25 +1,21 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import map from "lodash/map";
+import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import styled from "styled-components";
 
 import Image from "../../components/ui/Image";
 import SellerID, { Seller } from "../../components/ui/SellerID";
-import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { useForm } from "../../lib/utils/hooks/useForm";
 import { VariantV1 } from "../../pages/products/types";
 import VariationSelects from "../../pages/products/VariationSelects";
 import {
-  DarkerBackground,
-  DetailGrid,
   DetailWrapper,
   ImageWrapper,
   LightBackground,
   MainDetailGrid
 } from "../detail/Detail.style";
-import DetailSlider from "../detail/DetailSlider";
-import DetailTable from "../detail/DetailTable";
 import BosonButton from "../ui/BosonButton";
 import Typography from "../ui/Typography";
 import Video from "../ui/Video";
@@ -210,61 +206,7 @@ export default function Preview({
               </div>
             </MainDetailGrid>
           </LightBackground>
-          <DarkerBackground>
-            <DetailGrid>
-              <div>
-                <Typography tag="h3">Product description</Typography>
-                <Typography
-                  tag="p"
-                  color={colors.darkGrey}
-                  data-testid="description"
-                  style={{ whiteSpace: "pre-wrap" }}
-                >
-                  {values.productInformation.description}
-                </Typography>
-                {/* TODO: hidden for now */}
-                {/* <DetailTable data={productAttributes ?? []} /> */}
-              </div>
-              <div>
-                <Typography tag="h3">About the creator</Typography>
-                <Typography
-                  tag="p"
-                  color={colors.darkGrey}
-                  style={{ whiteSpace: "pre-wrap" }}
-                >
-                  {values.createYourProfile.description}
-                </Typography>
-              </div>
-            </DetailGrid>
-            <DetailSlider images={sliderImages} />
-            <DetailGrid>
-              {(values.shippingInfo.returnPeriod ||
-                (values?.shippingInfo?.jurisdiction?.length > 0 &&
-                  (values?.shippingInfo?.jurisdiction[0]?.region?.length ?? 0) >
-                    0)) && (
-                <div>
-                  <Typography tag="h3">Shipping information</Typography>
-                  <Typography tag="p" style={{ color: colors.darkGrey }}>
-                    Return period: {values.shippingInfo.returnPeriod}{" "}
-                    {values.shippingInfo.returnPeriod === 1 ? "day" : "days"}
-                  </Typography>
-                  <DetailTable
-                    data={map(
-                      values?.shippingInfo?.jurisdiction.filter(
-                        (v) => v.time && v.region
-                      ),
-                      ({ region, time }) => {
-                        return {
-                          name: region,
-                          value: time
-                        };
-                      }
-                    )}
-                  />
-                </div>
-              )}
-            </DetailGrid>
-          </DarkerBackground>
+          <OfferFullDescription offer={offer} exchange={null} />
         </DetailWrapper>
       </PreviewWrapperContent>
       <ProductButtonGroup>
