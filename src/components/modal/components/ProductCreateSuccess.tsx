@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useGetOfferDetailData } from "@bosonprotocol/react-kit";
 import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { BigNumber, FixedNumber } from "ethers";
+import { CONFIG } from "lib/config";
 import { Plus, Warning } from "phosphor-react";
-import { useMemo } from "react";
 import styled from "styled-components";
 
-import { getOfferDetailData } from "../../../components/detail/DetailWidget/DetailWidget";
 import Price from "../../../components/price/index";
-import { useConvertedPrice } from "../../../components/price/useConvertedPrice";
 import { colors } from "../../../lib/styles/colors";
 import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import {
@@ -25,6 +24,8 @@ import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 import Video from "../../ui/Video";
+import { MODAL_TYPES } from "../ModalComponents";
+import { useModal } from "../useModal";
 interface Props {
   message: string;
   name: string;
@@ -102,7 +103,10 @@ const Amount = styled.span`
 `;
 
 const PROGRESS = 15;
-
+const exchangePolicyCheckResult = {
+  isValid: true,
+  errors: []
+};
 export default function ProductCreateSuccess({
   message,
   name,
@@ -116,30 +120,24 @@ export default function ProductCreateSuccess({
   const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
     "openseaLinkToOriginalMainnetCollection"
   );
-  const convertedPrice = useConvertedPrice({
-    value: offer?.price,
-    decimals: offer?.exchangeToken.decimals,
-    symbol: offer?.exchangeToken.symbol
+
+  const { showModal } = useModal();
+
+  const offerDetailData = useGetOfferDetailData({
+    dateFormat: CONFIG.dateFormat,
+    defaultCurrencySymbol: CONFIG.defaultCurrency.symbol,
+    offer,
+    exchange: null,
+    onExchangePolicyClick: () => {
+      showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {
+        title: "Exchange Policy Details",
+        offerId: offer.id,
+        offerData: offer,
+        exchangePolicyCheckResult
+      });
+    },
+    exchangePolicyCheckResult
   });
-
-  const OFFER_DETAIL_DATA = useMemo(() => {
-    // offer is necessarily compliant because created with the dApp
-    const exchangePolicyCheckResult = {
-      isValid: true,
-      errors: []
-    };
-
-    return getOfferDetailData(
-      offer,
-      undefined,
-      convertedPrice,
-      false,
-      undefined,
-      undefined,
-      undefined,
-      exchangePolicyCheckResult
-    );
-  }, [convertedPrice, offer]);
 
   const suggestedAmount = FixedNumber.fromString(
     formatUnits(
@@ -214,7 +212,7 @@ export default function ProductCreateSuccess({
               />
             )}
             <div style={{ paddingTop: "2rem" }}>
-              <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
+              <DetailTable align noBorder data={offerDetailData} />
             </div>
           </Widget>
           {hasDeposit && (

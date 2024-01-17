@@ -5,7 +5,8 @@ import {
   getHasUserRejectedTx,
   Provider,
   RedeemButton,
-  subgraph
+  subgraph,
+  useGetOfferDetailData
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
@@ -13,7 +14,6 @@ import { useAccountDrawer } from "components/header/accountDrawer";
 import { Spinner } from "components/loading/Spinner";
 import { MODAL_TYPES } from "components/modal/ModalComponents";
 import { useModal } from "components/modal/useModal";
-import { useConvertedPrice } from "components/price/useConvertedPrice";
 import SuccessTransactionToast from "components/toasts/SuccessTransactionToast";
 import BosonButton from "components/ui/BosonButton";
 import Button from "components/ui/Button";
@@ -56,7 +56,6 @@ import styled from "styled-components";
 
 import bosonSnapshotGateAbi from "./BosonSnapshotGate/BosonSnapshotGate.json";
 import { BosonSnapshotGate__factory } from "./BosonSnapshotGate/typechain/factories";
-import { getOfferDetailData } from "./DetailWidget";
 const StyledRedeemButton = styled(RedeemButton)`
   width: 100%;
 `;
@@ -255,25 +254,21 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         errors: []
       }
     : exchangePolicyCheckResult;
-  const convertedPrice = useConvertedPrice({
-    value: offer.price,
-    decimals: offer.exchangeToken.decimals,
-    symbol: offer.exchangeToken.symbol
-  });
-  const OFFER_DETAIL_DATA_MODAL = useMemo(
-    () =>
-      getOfferDetailData(
-        offer,
-        undefined,
-        convertedPrice,
-        true,
-        MODAL_TYPES,
-        showModal,
-        false,
+  const offerDetailData = useGetOfferDetailData({
+    dateFormat: CONFIG.dateFormat,
+    defaultCurrencySymbol: CONFIG.defaultCurrency.symbol,
+    offer,
+    exchange: null,
+    onExchangePolicyClick: () => {
+      showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {
+        title: "Exchange Policy Details",
+        offerId: offer.id,
+        offerData: offer,
         exchangePolicyCheckResult
-      ),
-    [offer, convertedPrice, showModal, exchangePolicyCheckResult]
-  );
+      });
+    },
+    exchangePolicyCheckResult
+  });
   const { data: sellers } = useSellers(
     {
       id: offer?.seller.id,
@@ -354,12 +349,12 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   };
   const BASE_MODAL_DATA = useMemo(
     () => ({
-      data: OFFER_DETAIL_DATA_MODAL,
+      data: offerDetailData,
       animationUrl: offer.metadata.animationUrl || "",
       image,
       name
     }),
-    [OFFER_DETAIL_DATA_MODAL, image, name, offer.metadata.animationUrl]
+    [offerDetailData, image, name, offer.metadata.animationUrl]
   );
   const onCommitSuccess = async (
     _receipt: ethers.providers.TransactionReceipt,
