@@ -187,16 +187,6 @@ export default function Preview({
                     disabled
                   />
                 )}
-                {/* <DetailWidget
-                  isPreview={true}
-                  pageType="offer"
-                  offer={offer}
-                  name={name}
-                  image={offerImg}
-                  hasSellerEnoughFunds={true}
-                  hasMultipleVariants={hasMultipleVariants}
-                  exchangePolicyCheckResult={exchangePolicyCheckResult}
-                /> */}
                 <CommitDetailWidget
                   selectedVariant={variant}
                   isPreview={true}

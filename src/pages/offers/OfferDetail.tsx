@@ -127,15 +127,6 @@ export default function OfferDetail() {
               </Typography>
             </>
 
-            {/* <DetailWidget
-              pageType="offer"
-              offer={offer}
-              name={name}
-              image={offerImg}
-              hasSellerEnoughFunds={hasSellerEnoughFunds}
-              exchangePolicyCheckResult={exchangePolicyCheckResult}
-              reload={reload}
-            /> */}
             <CommitDetailWidget
               selectedVariant={selectedVariant}
               isPreview={false}

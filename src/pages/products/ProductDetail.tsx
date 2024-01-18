@@ -168,16 +168,6 @@ export default function ProductDetail() {
                 />
               )}
             </>
-
-            {/* <DetailWidget
-              pageType="offer"
-              offer={selectedOffer}
-              name={name}
-              image={offerImg}
-              hasSellerEnoughFunds={hasSellerEnoughFunds}
-              exchangePolicyCheckResult={exchangePolicyCheckResult}
-              reload={reload}
-            /> */}
             <CommitDetailWidget
               selectedVariant={selectedVariant}
               isPreview={false}
