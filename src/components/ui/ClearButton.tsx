@@ -26,7 +26,7 @@ export const ClearButton = styled(CrossIcon)`
   line-height: 1;
   stroke: #cccccc;
   stroke-width: 0;
-  :hover * {
+  &:hover * {
     stroke: #999999;
     fill: #999999;
   }

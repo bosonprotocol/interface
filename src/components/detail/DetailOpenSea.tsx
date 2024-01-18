@@ -8,6 +8,7 @@ import { OpenSeaButton } from "./Detail.style";
 
 interface Props {
   exchange?: subgraph.ExchangeFieldsFragment;
+  className?: string;
 }
 
 const openSeaUrlMap = new Map([
@@ -58,7 +59,7 @@ const openSeaUrlMap = new Map([
   ]
 ]);
 
-export default function DetailOpenSea({ exchange }: Props) {
+export default function DetailOpenSea({ exchange, className }: Props) {
   const { config } = useConfigContext();
   const exchangeStatus = exchange
     ? exchanges.getExchangeState(
@@ -87,7 +88,12 @@ export default function DetailOpenSea({ exchange }: Props) {
   }
 
   return (
-    <OpenSeaButton href={openSeaUrl} $disabled={!openSeaUrl} target="_blank">
+    <OpenSeaButton
+      href={openSeaUrl}
+      $disabled={!openSeaUrl}
+      target="_blank"
+      className={className}
+    >
       View on OpenSea
       <ArrowSquareOut size={18} />
     </OpenSeaButton>

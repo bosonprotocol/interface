@@ -173,7 +173,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   ${({ clickable }) =>
     clickable
       ? css`
-          :hover {
+          &:hover {
             cursor: pointer;
             opacity: 0.8;
           }

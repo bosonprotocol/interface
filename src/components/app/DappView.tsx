@@ -38,6 +38,7 @@ export const DappView: React.FC<DappViewProps> = ({
   const buttonTextColor = useCustomStoreQueryParameter("buttonTextColor");
   const upperCardBgColor = useCustomStoreQueryParameter("upperCardBgColor");
   const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
+  console.log({ headerBgColor });
   return (
     <>
       <GlobalStyle

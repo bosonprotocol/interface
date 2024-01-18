@@ -24,7 +24,7 @@ import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { VariantV1 } from "pages/products/types";
-import { ArrowRight, Check, Question } from "phosphor-react";
+import { ArrowRight, Check } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
 
@@ -34,18 +34,6 @@ import {
   RedeemLeftButton,
   StyledCancelButton
 } from "../Detail.style";
-
-const containerBreakpoint = "400px";
-const CTAsGrid = styled(Grid)`
-  gap: 1rem;
-  flex-direction: column;
-  > * {
-    width: 100%;
-  }
-  @container (width > ${containerBreakpoint}) {
-    flex-direction: row;
-  }
-`;
 
 const RedeemButton = styled(BosonButton)`
   padding: 1rem;
@@ -220,7 +208,6 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
               disabled={!isBuyer && !isSeller}
             >
               Contact seller
-              <Question size={18} />
             </ContactSellerButton>
             {isBeforeRedeem ? (
               <>
@@ -246,8 +233,7 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
                     data-show-redemption-overview={false}
                     data-parent-origin={window.location.origin}
                   >
-                    Cancel
-                    <Question size={18} />
+                    Cancel exchange
                   </StyledCancelButton>
                 )}
               </>
@@ -276,7 +262,6 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
                     }
                   >
                     Raise a dispute
-                    <Question size={18} />
                   </RaiseProblemButton>
                 )}
               </>
@@ -285,7 +270,7 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
         </>
       }
     >
-      <CTAsGrid alignItems="center" margin="1.5rem 0">
+      <Grid flexDirection="column" alignItems="center" margin="1.5rem 0">
         {isToRedeem ? (
           <>
             <RedeemButton
@@ -299,6 +284,7 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
               data-account={address}
               data-with-external-signer="true"
               withBosonStyle
+              style={{ width: "100%" }}
             >
               <span>Redeem</span>
               <Typography
@@ -319,9 +305,9 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
                 By proceeding to Redeem, I agree to the{" "}
                 <span
                   style={{
-                    color: colors.blue,
                     fontSize: "inherit",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    textDecoration: "underline"
                   }}
                   onClick={() => {
                     showModal("BUYER_SELLER_AGREEMENT", {
@@ -336,12 +322,12 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
             )}
           </>
         ) : (
-          <Button themeVal="outline" disabled>
+          <Button themeVal="outline" disabled style={{ width: "100%" }}>
             {disabledRedeemText}
             <Check size={24} />
           </Button>
         )}
-      </CTAsGrid>
+      </Grid>
     </ExternalExchangeDetailView>
   );
 };

@@ -97,7 +97,7 @@ const MessageItem = styled.div<{ $active?: boolean }>`
     css`
       background-color: ${colors.border};
     `};
-  :hover {
+  &:hover {
     background-color: ${colors.border};
   }
 `;

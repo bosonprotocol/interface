@@ -528,14 +528,9 @@ const miniButton = css`
   }
 `;
 export const OpenSeaButton = styled.a<{ $disabled: boolean }>`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: ${zIndex.OfferStatus};
-  border: 2px solid ${colors.border};
   ${miniButton}
-
+  padding: 0;
+  gap: 0.5rem;
   ${({ $disabled }) =>
     $disabled &&
     css`
@@ -545,6 +540,22 @@ export const OpenSeaButton = styled.a<{ $disabled: boolean }>`
         color: ${colors.grey};
       }
     `}
+`;
+export const SellerAndOpenSeaGrid = styled(Grid)`
+  justify-content: space-between;
+  border: 2px solid ${colors.border};
+  padding: 0.5rem;
+  && {
+    > * {
+      flex: 1;
+    }
+  }
+  :nth-child(1) {
+    justify-content: flex-start;
+  }
+  :nth-child(2) {
+    justify-content: flex-end;
+  }
 `;
 
 export const RedeemLeftButton = styled.button`
@@ -576,7 +587,7 @@ export const RaiseProblemButton = styled(Button)`
     padding: 0.75rem 1rem;
 
     font-weight: 600;
-    color: ${colors.orange};
+    color: ${colors.accent};
     cursor: pointer;
     transition: all 150ms ease-in-out;
     &:hover:not(:disabled) {

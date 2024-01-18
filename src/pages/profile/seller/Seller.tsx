@@ -59,7 +59,7 @@ const SellerButton = styled.div`
   border: 2px solid ${colors.secondary};
   color: ${colors.secondary};
   cursor: pointer;
-  :hover {
+  &:hover {
     color: ${colors.white};
     background: ${colors.secondary};
     a {
@@ -68,7 +68,7 @@ const SellerButton = styled.div`
   }
   a {
     color: ${colors.secondary};
-    :hover {
+    &:hover {
       background: ${colors.secondary};
       color: ${colors.white};
     }

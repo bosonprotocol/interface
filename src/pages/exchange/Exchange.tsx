@@ -10,7 +10,8 @@ import {
   DetailWrapper,
   ImageWrapper,
   LightBackground,
-  MainDetailGrid
+  MainDetailGrid,
+  SellerAndOpenSeaGrid
 } from "../../components/detail/Detail.style";
 import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
@@ -26,7 +27,6 @@ import {
   useSellerCurationListFn,
   useSellers
 } from "../../lib/utils/hooks/useSellers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
@@ -70,7 +70,6 @@ export default function Exchange() {
       sellerId && checkIfSellerIsInCurationList(sellerId);
     return isSellerInCurationList;
   }, [sellerId, checkIfSellerIsInCurationList]);
-  const textColor = useCustomStoreQueryParameter("textColor"); // TODO: what to do?
   const { data: sellers } = useSellers(
     {
       id: sellerId,
@@ -137,7 +136,6 @@ export default function Exchange() {
         <LightBackground>
           <MainDetailGrid>
             <ImageWrapper>
-              <DetailOpenSea exchange={exchange} />
               {animationUrl ? (
                 <Video
                   src={animationUrl}
@@ -150,9 +148,7 @@ export default function Exchange() {
               ) : (
                 <Image src={offerImg ?? ""} dataTestId="offerImage" />
               )}
-            </ImageWrapper>
-            <div style={{ width: "100%" }}>
-              <>
+              <SellerAndOpenSeaGrid>
                 <SellerID
                   offer={offer}
                   buyerOrSeller={exchange?.seller}
@@ -160,12 +156,18 @@ export default function Exchange() {
                   withProfileImage
                   lensProfile={sellerLensProfile}
                 />
+                <DetailOpenSea exchange={exchange} />
+              </SellerAndOpenSeaGrid>
+            </ImageWrapper>
+            <div style={{ width: "100%" }}>
+              <>
                 <Typography
                   tag="h1"
                   data-testid="name"
                   style={{
                     fontSize: "2rem",
-                    ...(!hasVariations && { marginBottom })
+                    ...(!hasVariations && { marginBottom }),
+                    marginTop: 0
                   }}
                 >
                   {name}

@@ -9,7 +9,8 @@ import {
   DetailWrapper,
   ImageWrapper,
   LightBackground,
-  MainDetailGrid
+  MainDetailGrid,
+  SellerAndOpenSeaGrid
 } from "../../components/detail/Detail.style";
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
@@ -24,7 +25,6 @@ import {
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
@@ -34,7 +34,6 @@ export default function ProductDetail() {
     [UrlParameters.uuid]: productUuid = "",
     [UrlParameters.sellerId]: sellerId = ""
   } = useParams();
-  const textColor = useCustomStoreQueryParameter("textColor"); // TODO: what to do?
   const {
     data: productResult,
     isError,
@@ -143,19 +142,21 @@ export default function ProductDetail() {
             ) : (
               <Image src={offerImg || ""} dataTestId="offerImage" />
             )}
-          </ImageWrapper>
-          <div style={{ width: "100%" }}>
-            <>
+            <SellerAndOpenSeaGrid>
               <SellerID
                 offer={selectedOffer}
                 buyerOrSeller={selectedOffer?.seller as Seller}
                 justifyContent="flex-start"
                 withProfileImage
               />
+            </SellerAndOpenSeaGrid>
+          </ImageWrapper>
+          <div style={{ width: "100%" }}>
+            <>
               <Typography
                 tag="h1"
                 data-testid="name"
-                style={{ fontSize: "2rem", marginBottom: "2rem" }}
+                style={{ fontSize: "2rem", marginBottom: "2rem", marginTop: 0 }}
               >
                 {name}
               </Typography>

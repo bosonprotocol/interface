@@ -12,8 +12,14 @@ import React from "react";
 import { styled } from "styled-components";
 
 const StyledExternalOfferFullDescription = styled(ExternalOfferFullDescription)`
-  * {
-    color: inherit;
+  .headers {
+    background-color: var(--secondary);
+    &:before {
+      background-color: var(--secondary);
+    }
+    > * {
+      background-color: var(--secondary);
+    }
   }
 `;
 
@@ -23,6 +29,7 @@ type OfferFullDescriptionProps = Omit<
   | "onExchangePolicyClick"
   | "onClickBuyOrSwap"
   | "walletConnectProjectId"
+  | "includeGeneralProductDataTab"
 >;
 
 export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
@@ -34,6 +41,8 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
   return (
     <StyledExternalOfferFullDescription
       {...props}
+      includeGeneralProductDataTab={false}
+      defaultSelectedOfferTabsIdTab="physical-product-data"
       withFullViewportWidth={true}
       onExchangePolicyClick={({ exchangePolicyCheckResult }) =>
         showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {

@@ -9,7 +9,7 @@ const StyledGrid = styled(Grid)`
   background: ${colors.lightGrey2};
   padding: 1.5rem;
   color: initial;
-  :hover {
+  &:hover {
     cursor: pointer;
     filter: drop-shadow(5px 5px 10px ${colors.grey}) brightness(101%);
 
