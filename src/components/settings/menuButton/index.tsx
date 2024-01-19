@@ -25,7 +25,7 @@ const Button = styled.button<{ isActive: boolean }>`
   cursor: pointer;
   outline: none;
 
-  :not([disabled]):hover {
+  &:not([disabled]):hover {
     opacity: 0.7;
   }
 

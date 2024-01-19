@@ -84,7 +84,7 @@ const TextArea = styled.textarea`
   &:focus {
     outline: none;
   }
-  :disabled {
+  &:disabled {
     cursor: not-allowed;
   }
 `;
@@ -97,7 +97,7 @@ const UploadButtonWrapper = styled.button`
   top: 0;
   transform: translate(0, 40%);
   margin: 0 1rem;
-  :disabled {
+  &:disabled {
     cursor: not-allowed;
   }
 `;

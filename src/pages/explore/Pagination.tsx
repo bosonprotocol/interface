@@ -16,7 +16,7 @@ const Container = styled.div`
 const PaginationButton = styled(Button).attrs({
   type: "button"
 })<{ $isBack: boolean }>`
-  :disabled {
+  &:disabled {
     color: ${colors.grey};
     cursor: not-allowed;
   }

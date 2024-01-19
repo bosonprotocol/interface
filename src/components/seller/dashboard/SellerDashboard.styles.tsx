@@ -38,7 +38,7 @@ export const ItemsName = styled(Grid)`
   svg {
     transition: all 150ms ease-in-out;
   }
-  :hover {
+  &:hover {
     * {
       color: ${colors.secondary};
     }
@@ -67,16 +67,16 @@ export const ItemsGrid = styled.div`
 export const ItemsDates = styled(Typography)`
   padding: 0;
   justify-content: space-between;
-  :first-child {
+  &:first-child {
     margin-top: 0.5rem;
   }
-  :last-child:not(:first-child) {
+  &:last-child:not(:first-child) {
     margin-top: 0.25rem;
   }
   > * {
     font-size: 0.75rem;
     color: ${colors.darkGrey};
-    :first-child {
+    &:first-child {
       font-weight: 600;
     }
   }
@@ -102,16 +102,14 @@ export const BaseElement = styled(Grid)`
   padding: 1rem;
 `;
 
-export const SellerInner = styled.div.attrs(
-  (props: { background?: string; color?: string; padding?: string }) => ({
-    background: props?.background || colors.white,
-    color: props?.color || colors.black,
-    padding: props?.padding || "1rem"
-  })
-)`
-  background: ${({ background }) => background};
-  color: ${({ color }) => color};
-  padding: ${({ padding }) => padding};
+export const SellerInner = styled.div<{
+  background?: string;
+  color?: string;
+  padding?: string;
+}>`
+  background: ${({ background }) => background || colors.white};
+  color: ${({ color }) => color || colors.black};
+  padding: ${({ padding }) => padding || "1rem"};
   box-shadow: 0px 0px 5px 0px rgb(0 0 0 / 2%), 0px 0px 10px 0px rgb(0 0 0 / 2%),
     0px 0px 15px 0px rgb(0 0 0 / 5%);
 `;

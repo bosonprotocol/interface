@@ -25,14 +25,14 @@ export const FieldInput = styled.input<{ error?: any }>`
 
   ${transition}
 
-  :not(:disabled) {
+  &:not(:disabled) {
     &:focus,
     &:hover {
       border: 1px solid var(--secondary);
     }
   }
 
-  :disabled {
+  &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
   }
@@ -41,29 +41,29 @@ export const FieldInput = styled.input<{ error?: any }>`
     !checkIfValueIsEmpty(error)
       ? css`
           border: 1px solid ${colors.orange};
-          :not(:disabled) {
+          &:not(:disabled) {
             &:hover {
               border: 1px solid ${colors.orange};
             }
           }
-          :not(:disabled) {
+          &:not(:disabled) {
             &:focus {
               border: 1px solid var(--secondary);
             }
           }
-          ::placeholder {
+          &::placeholder {
             color: ${colors.orange};
             opacity: 1;
           }
-          :-ms-input-placeholder {
+          &:-ms-input-placeholder {
             color: ${colors.orange};
           }
-          ::-ms-input-placeholder {
+          &::-ms-input-placeholder {
             color: ${colors.orange};
           }
         `
       : css`
-          :not(:disabled) {
+          &:not(:disabled) {
             &:focus,
             &:hover {
               border: 1px solid var(--secondary);
@@ -176,14 +176,14 @@ export const FieldTextArea = styled.textarea<{ error: unknown }>`
 
   ${transition}
 
-  :not(:disabled) {
+  &:not(:disabled) {
     &:focus,
     &:hover {
       border: 1px solid var(--secondary);
     }
   }
 
-  :disabled {
+  &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
   }
@@ -192,29 +192,29 @@ export const FieldTextArea = styled.textarea<{ error: unknown }>`
     !checkIfValueIsEmpty(error)
       ? css`
           border: 1px solid ${colors.orange};
-          ::placeholder {
+          &::placeholder {
             color: ${colors.orange};
             opacity: 1;
           }
-          :-ms-input-placeholder {
+          &:-ms-input-placeholder {
             color: ${colors.orange};
           }
-          ::-ms-input-placeholder {
+          &::-ms-input-placeholder {
             color: ${colors.orange};
           }
-          :not(:disabled) {
+          &:not(:disabled) {
             &:hover {
               border: 1px solid ${colors.orange};
             }
           }
-          :not(:disabled) {
+          &:not(:disabled) {
             &:focus {
               border: 1px solid var(--secondary);
             }
           }
         `
       : css`
-          :not(:disabled) {
+          &:not(:disabled) {
             &:focus,
             &:hover {
               border: 1px solid var(--secondary);
@@ -229,20 +229,13 @@ export const FormFieldWrapper = styled(Grid)`
     line-height: 150%;
   }
 
-  margin-bottom: 0.5rem;
   /* TODO: 
   input, textarea {
     background: ${colors.white};
-    :disabled {
+    &:disabled {
       opacity: 1;
     }
   } */
-  input {
-    border-width: 0;
-    &:hover {
-      border-width: 0;
-    }
-  }
   input + div {
     background: ${colors.white};
   }
@@ -271,13 +264,13 @@ export const CheckboxWrapper = styled.label<{ error?: unknown }>`
   justify-content: flex-start;
 
   > input {
-    :disabled {
+    &:disabled {
       + div {
         opacity: 0.5;
         cursor: not-allowed;
       }
     }
-    :not(:disabled) {
+    &:not(:disabled) {
       + div {
         cursor: pointer;
         &:hover {
@@ -307,12 +300,12 @@ export const CheckboxWrapper = styled.label<{ error?: unknown }>`
   }
 
   > input {
-    :checked {
+    &:checked {
       + div svg {
         opacity: 1;
       }
     }
-    :not(:checked) {
+    &:not(:checked) {
       + div svg {
         opacity: 0;
       }

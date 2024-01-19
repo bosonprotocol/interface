@@ -21,7 +21,7 @@ const TableHeader = styled.th`
   font-family: inherit;
   border-bottom: none;
   padding-bottom: 0;
-  :last-child {
+  &:last-child {
     text-align: right;
   }
 `;

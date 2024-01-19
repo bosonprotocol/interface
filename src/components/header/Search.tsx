@@ -46,7 +46,7 @@ const Input = styled.input`
   font-size: 1rem;
   font-weight: 500;
   line-height: 24px;
-  ::placeholder {
+  &::placeholder {
     color: var(--headerTextColor);
   }
   &:focus {

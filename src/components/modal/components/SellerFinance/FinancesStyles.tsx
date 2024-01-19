@@ -7,7 +7,7 @@ import Grid from "../../../ui/Grid";
 
 export const CTAButton = styled(Button)`
   padding: 0.75rem 1.5rem;
-  :disabled {
+  &:disabled {
     border: 2px solid ${colors.darkGrey};
   }
   &:hover:not(:disabled) {

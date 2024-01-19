@@ -52,22 +52,22 @@ const Input = styled.input<{ error?: boolean }>`
   text-overflow: ellipsis;
   font-weight: 500;
   width: 100%;
-  ::placeholder {
+  &::placeholder {
     color: ${({ theme }) => theme.deprecated_text4};
   }
   padding: 0px;
   -webkit-appearance: textfield;
 
-  ::-webkit-search-decoration {
+  &::-webkit-search-decoration {
     -webkit-appearance: none;
   }
 
-  ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
 
-  ::placeholder {
+  &::placeholder {
     color: ${({ theme }) => theme.deprecated_text4};
   }
 `;

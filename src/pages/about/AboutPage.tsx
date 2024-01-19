@@ -23,14 +23,14 @@ const Text = styled(Typography)`
     word-break: break-word;
     max-width: 100%;
 
-    :first-child {
+    &:first-child {
       ${breakpoint.s} {
         min-width: 15rem;
         max-width: 15rem;
       }
       margin-right: 1rem;
     }
-    :last-child {
+    &:last-child {
       font-weight: bold;
     }
   }

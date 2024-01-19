@@ -98,7 +98,7 @@ const Table = styled.table`
         border-top: 1px solid ${colors.border};
         border-right: 1px solid ${colors.border};
         border-bottom: 4px solid ${colors.border};
-        :first-child {
+        &:first-child {
           border-left: 1px solid ${colors.border};
         }
       }
@@ -109,12 +109,12 @@ const Table = styled.table`
     tr {
       td {
         border-bottom: 1px solid ${colors.border};
-        :first-child {
+        &:first-child {
           border-left: 1px solid ${colors.border};
         }
         border-right: 1px solid ${colors.border};
       }
-      :nth-child(2n + 2) {
+      &:nth-child(2n + 2) {
         td {
           background: ${colors.border};
         }

@@ -52,7 +52,7 @@ export const SearchInput = styled.input`
 
   font-size: 1rem;
 
-  ::placeholder {
+  &::placeholder {
     color: ${({ theme }) => theme.textTertiary};
     font-size: 1rem;
   }

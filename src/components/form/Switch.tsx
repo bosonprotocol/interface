@@ -35,7 +35,7 @@ const StyledSwitchRoot = styled(ReactSwitch.Root)`
   &[data-state="checked"] {
     background-color: ${colors.secondary};
   }
-  :disabled {
+  &:disabled {
     cursor: not-allowed;
     ~ *,
     * {

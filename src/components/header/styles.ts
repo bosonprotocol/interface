@@ -20,7 +20,7 @@ export const ScrollBarStyles = css<{ $isHorizontalScroll?: boolean }>`
   height: 100%;
 
   // safari and chrome scrollbar styling
-  ::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     background: transparent;
 
     // Set height for horizontal scrolls
@@ -37,7 +37,7 @@ export const ScrollBarStyles = css<{ $isHorizontalScroll?: boolean }>`
     }}
   }
 
-  ::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     background: ${colors.lightGrey};
     border-radius: 8px;
   }

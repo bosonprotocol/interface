@@ -98,7 +98,7 @@ const TagsInput = ({
           </Helper>
         </TagContainer>
       </Grid>
-      <TagContainer style={{ marginTop: "1em" }}>
+      <TagContainer>
         {label && (
           <div
             style={{

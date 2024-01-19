@@ -40,10 +40,10 @@ const List = styled.ol`
 
   > li {
     display: block;
-    :first-child {
+    &:first-child {
       margin-bottom: 2rem;
     }
-    :not(:first-child) {
+    &:not(:first-child) {
       margin: 2rem 0;
     }
     &:before {

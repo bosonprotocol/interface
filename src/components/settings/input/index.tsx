@@ -14,7 +14,7 @@ export const Input = styled.input`
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-  /* TODO: ::placeholder {
+  /* TODO: &::placeholder {
     color: ${({ theme }) => theme.textTertiary};
   } */
 `;

@@ -479,7 +479,6 @@ export default function SellerExchangeTable({
                     className="tr"
                   >
                     {row.cells.map((cell) => {
-                      console.log("cell.getCellProps()", cell.getCellProps());
                       return (
                         <div
                           {...cell.getCellProps()}

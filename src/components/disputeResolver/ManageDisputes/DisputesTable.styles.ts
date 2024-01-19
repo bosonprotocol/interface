@@ -10,7 +10,7 @@ export const Table = styled.table`
   th {
     font-weight: 600;
     color: ${colors.darkGrey};
-    :not([data-sortable]) {
+    &:not([data-sortable]) {
       cursor: default !important;
     }
     [data-sortable] {
