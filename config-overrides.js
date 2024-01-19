@@ -31,6 +31,8 @@ module.exports = {
         util: require.resolve("util/")
       };
 
+      config.ignoreWarnings = [/Failed to parse source map/];
+
       return config;
     },
     addWebpackResolve({
