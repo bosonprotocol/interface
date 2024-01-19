@@ -491,6 +491,9 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       onClickBuyOrSwap={({ swapParams }) => {
         navigate({ pathname: BosonRoutes.Swap, search: swapParams });
       }}
+      onAlreadyOwnOfferClick={() => {
+        navigate({ pathname: BosonRoutes.YourAccount });
+      }}
     >
       <CTAsGrid flexDirection="column" alignItems="center" margin="1.5rem 0">
         <CommitWrapper>
