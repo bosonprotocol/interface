@@ -14,7 +14,8 @@ import {
   DetailWrapper,
   ImageWrapper,
   LightBackground,
-  MainDetailGrid
+  MainDetailGrid,
+  SellerAndOpenSeaGrid
 } from "../detail/Detail.style";
 import BosonButton from "../ui/BosonButton";
 import Typography from "../ui/Typography";
@@ -58,7 +59,7 @@ export default function Preview({
   const sliderImages = map(productImages, (v) => v?.[0]?.src || "").filter(
     (ipfsLink) => ipfsLink
   );
-  const offerImg = sliderImages?.[0] || "";
+  const offerImg: string = sliderImages?.[0] || "";
 
   const handleClosePreview = () => {
     togglePreview(false);
@@ -68,7 +69,7 @@ export default function Preview({
   const previewOffers = usePreviewOffers({
     isMultiVariant,
     seller,
-    overrides: { decimals }
+    overrides: { decimals, offerImg, visuals_images: sliderImages }
   });
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const [offer] = previewOffers;
@@ -163,15 +164,17 @@ export default function Preview({
                 ) : (
                   <Image src={thumbnailImg} dataTestId="offerImage" />
                 )}
+                <SellerAndOpenSeaGrid>
+                  <SellerID
+                    offer={offer}
+                    buyerOrSeller={offer?.seller as Seller}
+                    justifyContent="flex-start"
+                    withProfileImage
+                    onClick={null}
+                  />
+                </SellerAndOpenSeaGrid>
               </ImageWrapper>
               <div style={{ width: "100%" }}>
-                <SellerID
-                  offer={offer}
-                  buyerOrSeller={offer?.seller as Seller}
-                  justifyContent="flex-start"
-                  withProfileImage
-                  onClick={null}
-                />
                 <Typography
                   tag="h1"
                   data-testid="name"

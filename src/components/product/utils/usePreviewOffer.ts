@@ -18,6 +18,8 @@ type UsePreviewOfferProps = {
   seller?: subgraph.SellerFieldsFragment;
   overrides?: Partial<{
     decimals: number;
+    offerImg: string;
+    visuals_images: string[];
   }>;
 };
 
@@ -101,7 +103,6 @@ export const usePreviewOffers = ({
           price,
           decimals
         });
-      const exchangeDate = Date.now().toString();
       const offer = {
         price: priceBN.toString(),
         sellerDeposit,
@@ -132,12 +133,7 @@ export const usePreviewOffers = ({
         metadataHash: "not-uploaded-yet", // can't be empty
         voidedAt: null,
         disputeResolverId,
-        exchanges: [
-          {
-            committedDate: exchangeDate,
-            redeemedDate: exchangeDate
-          }
-        ],
+        exchanges: [],
         seller,
         exchangeToken: exchangeToken || {
           // this 'or' should never occurr
@@ -152,6 +148,16 @@ export const usePreviewOffers = ({
           escalationResponsePeriod: escalationResponsePeriod
         },
         metadata: {
+          product: {
+            description: values.productInformation.description,
+            ...(overrides.visuals_images && {
+              visuals_images: overrides.visuals_images.map((ipfsLink) => ({
+                url: ipfsLink
+              }))
+            })
+          },
+          ...(overrides.offerImg && { image: overrides.offerImg }),
+          animationUrl: values.productAnimation?.[0]?.src,
           shipping: {
             returnPeriodInDays: parseInt(values.shippingInfo.returnPeriod)
           },
@@ -162,7 +168,8 @@ export const usePreviewOffers = ({
             label: values.termsOfExchange.exchangePolicy.label
           },
           productV1Seller: {
-            name: values.createYourProfile.name
+            name: values.createYourProfile.name,
+            description: values.createYourProfile.description
           }
         },
         condition: condition
@@ -176,12 +183,17 @@ export const usePreviewOffers = ({
       disputeResolverId,
       escalationResponsePeriod,
       overrides.decimals,
+      overrides.offerImg,
+      overrides.visuals_images,
       seller,
       tokenGating,
       validFromDateInMS,
       validUntilDateInMS,
       values.coreTermsOfSale.currency.value,
+      values.createYourProfile.description,
       values.createYourProfile.name,
+      values.productAnimation,
+      values.productInformation.description,
       values.productType?.tokenGatedOffer,
       values.shippingInfo.returnPeriod,
       values.termsOfExchange,

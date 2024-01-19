@@ -1,19 +1,16 @@
 import styled, { css } from "styled-components";
 
-export const ProductLayoutContainer = styled.div(
-  ({ isPreviewVisible }: { isPreviewVisible: boolean }) => {
-    if (!isPreviewVisible) {
-      return css`
-        display: flex;
-        justify-content: space-between;
-        > form {
-          width: 100%;
-        }
-      `;
-    }
-    return "";
-  }
-);
+export const ProductLayoutContainer = styled.div<{ isPreviewVisible: boolean }>`
+  ${({ isPreviewVisible }) =>
+    !isPreviewVisible &&
+    css`
+      display: flex;
+      justify-content: space-between;
+      > form {
+        width: 100%;
+      }
+    `}
+`;
 
 export const HelpWrapper = styled.div`
   padding-left: 3rem;

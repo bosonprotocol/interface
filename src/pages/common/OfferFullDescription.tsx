@@ -64,6 +64,8 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
         licenseTemplate: CONFIG.rNFTLicenseTemplate,
         minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
         walletConnectProjectId: CONFIG.walletConnect.projectId,
+        ipfsProjectId: CONFIG.infuraProjectId,
+        ipfsProjectSecret: CONFIG.infuraProjectSecret,
         contactSellerForExchangeUrl: ""
       }}
     />

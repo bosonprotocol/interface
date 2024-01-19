@@ -292,7 +292,6 @@ function Upload({
           </BosonButton>
         ) : (
           <FileUploadWrapper
-            choosen={files !== null}
             data-disabled={disabled}
             onClick={handleChooseFile}
             error={errorMessage}
@@ -330,7 +329,7 @@ function Upload({
                 ) : (
                   <Image size={24} />
                 )}
-                {placeholder && (
+                {placeholder && !field.value?.length && (
                   <Typography tag="p" style={{ marginBottom: "0" }}>
                     {placeholder}
                   </Typography>

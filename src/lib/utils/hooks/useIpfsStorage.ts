@@ -1,5 +1,6 @@
 import { hooks } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import { CONFIG } from "lib/config";
 
 export function useIpfsStorage() {
   const { config } = useConfigContext();
@@ -7,7 +8,7 @@ export function useIpfsStorage() {
     config.envName,
     config.envConfig.configId,
     config.ipfsMetadataStorageUrl,
-    config.ipfsMetadataStorageHeaders
+    CONFIG.ipfsMetadataStorageHeaders
   );
   return storage;
 }

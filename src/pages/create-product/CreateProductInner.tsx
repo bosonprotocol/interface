@@ -520,9 +520,8 @@ function CreateProductInner({
               template: OPTIONS_EXCHANGE_POLICY[0].value
             }
           },
-          condition: offerInfo.condition ?? null
+          condition: offerInfo.condition ?? values.tokenGating ?? null
         },
-        hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
         onCreateNew: onCreateNew,
         onViewMyItem: () => onViewMyItem(metadataInfo.product?.uuid)
@@ -1113,9 +1112,6 @@ function CreateProductInner({
                       seller={currentAssistant as any}
                       isMultiVariant={isMultiVariant}
                       isOneSetOfImages={isOneSetOfImages}
-                      hasMultipleVariants={
-                        !!values.productVariants.variants.length
-                      }
                       decimals={decimals}
                     />
                   </ErrorBoundary>
