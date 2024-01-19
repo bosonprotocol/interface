@@ -18,4 +18,4 @@ jobs:
         with:
           requireScope: false
           subjectPattern: ^(?![A-Z]).+$
-          validateSingleCommit: true
+          validateSingleCommit: false
