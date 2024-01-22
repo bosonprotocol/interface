@@ -5,8 +5,8 @@ import { ReactComponent as DotLine } from "assets/svg/dot_line.svg";
 import CurrencyLogo from "components/logo/CurrencyLogo";
 import DoubleCurrencyLogo from "components/logo/DoubleCurrencyLogo";
 import Tooltip from "components/tooltip/Tooltip";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { RoutingDiagramEntry } from "lib/utils/getRoutingDiagramEntries";
 import { useTokenInfoFromActiveList } from "lib/utils/hooks/useTokenInfoFromActiveList";
@@ -132,7 +132,7 @@ function Route({
       </OpaqueBadge>
       <Grid
         gap="1px"
-        $width="100%"
+        width="100%"
         style={{ justifyContent: "space-evenly", zIndex: 2 }}
       >
         {path.map(([currency0, currency1, feeAmount], index) => (
@@ -182,7 +182,7 @@ function Pool({
             size={20}
           />
         </Grid>
-        <Typography $fontSize={14}>{feeAmount / 10000}%</Typography>
+        <Typography fontSize={14}>{feeAmount / 10000}%</Typography>
       </PoolBadge>
     </Tooltip>
   );

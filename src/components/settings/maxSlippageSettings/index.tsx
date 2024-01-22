@@ -1,8 +1,8 @@
 import { Percent } from "@uniswap/sdk-core";
 import Expand from "components/expand";
 import QuestionHelper from "components/questionHelper";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { Warning } from "phosphor-react";
 import { useState } from "react";
@@ -111,7 +111,7 @@ export default function MaxSlippageSettings({
       isOpen={isOpen}
       onToggle={() => setIsOpen(!isOpen)}
       header={
-        <Grid $width="auto">
+        <Grid width="auto">
           <Typography color={colors.darkGrey}>
             <>Max slippage</>
           </Typography>

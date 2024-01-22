@@ -4,7 +4,7 @@ import CurrencyLogo from "components/logo/CurrencyLogo";
 import TokenSafetyLabel from "components/tokenSafety/TokenSafetyLabel";
 import Button from "components/ui/Button";
 import { AutoColumn } from "components/ui/column/index";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import {
   checkWarning,
   displayWarningLabel,

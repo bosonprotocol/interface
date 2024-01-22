@@ -11,8 +11,8 @@ import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
 import PaginationPages from "../seller/common/PaginationPages";
 import Tooltip from "../tooltip/Tooltip";
 import Button from "../ui/Button";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import {
   HeaderSorter,
   Pagination,
@@ -72,12 +72,12 @@ export default function TransactionsTable({ transactions }: Props) {
 
         return {
           accountType: (
-            <Typography $fontSize="0.75rem" tag="p">
+            <Typography fontSize="0.75rem" tag="p">
               {tx.accountType}
             </Typography>
           ),
           transaction: (
-            <Typography $fontSize="0.75rem" tag="p">
+            <Typography fontSize="0.75rem" tag="p">
               {tx.transactionLabel}
             </Typography>
           ),
@@ -85,12 +85,12 @@ export default function TransactionsTable({ transactions }: Props) {
             <Tooltip
               interactive
               content={
-                <Typography $fontSize="0.75rem">
+                <Typography fontSize="0.75rem">
                   {dayjs(getDateTimestamp(tx.date)).format("HH:mm:ss")}
                 </Typography>
               }
             >
-              <Typography $fontSize="0.75rem">
+              <Typography fontSize="0.75rem">
                 {dayjs(getDateTimestamp(tx.date)).format(CONFIG.dateFormat)}
               </Typography>
             </Tooltip>
@@ -99,7 +99,7 @@ export default function TransactionsTable({ transactions }: Props) {
             <a href={getTxExplorerUrl?.(tx.hash)} target="_blank">
               <Typography
                 fontWeight="600"
-                $fontSize="0.75rem"
+                fontSize="0.75rem"
                 lineHeight="150%"
                 color={colors.secondary}
               >

@@ -1,6 +1,6 @@
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 
 interface Props {
   chooseNew: () => void;

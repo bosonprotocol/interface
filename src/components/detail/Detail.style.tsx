@@ -6,7 +6,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import { buttonText } from "../ui/styles";
 
 export const ChartWrapper = styled.div`

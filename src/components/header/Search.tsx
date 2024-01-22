@@ -7,7 +7,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import BosonButton from "../ui/BosonButton";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 
 const InputWrapper = styled(Grid)<{
   isMobile: boolean;

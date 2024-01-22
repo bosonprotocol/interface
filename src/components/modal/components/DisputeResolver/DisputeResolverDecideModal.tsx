@@ -8,8 +8,8 @@ import { Offer } from "../../../../lib/types/offer";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { Spinner } from "../../../loading/Spinner";
 import { useConvertedPrice } from "../../../price/useConvertedPrice";
-import Grid from "../../../ui/Grid";
-import Typography from "../../../ui/Typography";
+import { Grid } from "../../../ui/Grid";
+import { Typography } from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import {
   AmountWrapper,
@@ -109,7 +109,7 @@ export default function DisputeResolverDecideModal({
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
-      <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
+      <Typography tag="p" margin="0" fontSize="0.75rem" fontWeight="600">
         Enter the refund amount the buyer should receive (as a percentage of the
         total funds relating to this exchange)
       </Typography>
@@ -124,7 +124,7 @@ export default function DisputeResolverDecideModal({
             value={disputePercentage}
           />
           <div>
-            <Typography $fontSize="0.875rem" margin="0" fontWeight="600">
+            <Typography fontSize="0.875rem" margin="0" fontWeight="600">
               %
             </Typography>
           </div>
@@ -152,12 +152,7 @@ export default function DisputeResolverDecideModal({
           {isSubmitingDispute ? (
             <Spinner size={20} />
           ) : (
-            <Typography
-              tag="p"
-              margin="0"
-              $fontSize="0.873rem"
-              fontWeight="600"
-            >
+            <Typography tag="p" margin="0" fontSize="0.873rem" fontWeight="600">
               Confirm Decision
             </Typography>
           )}

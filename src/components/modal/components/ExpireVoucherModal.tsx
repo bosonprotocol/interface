@@ -24,8 +24,8 @@ import DetailTable from "../../detail/DetailTable";
 import SimpleError from "../../error/SimpleError";
 import { Spinner } from "../../loading/Spinner";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 import { useModal } from "../useModal";
 
 const Content = styled.div`
@@ -100,7 +100,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
           textAlign="left"
           margin="0"
           color={colors.darkGrey}
-          $width="100%"
+          width="100%"
           style={{
             width: "100%"
           }}

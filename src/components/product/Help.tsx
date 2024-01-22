@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 
 interface Props {
   title?: string;

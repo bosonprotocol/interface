@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Grid from "./Grid";
+import { Grid } from "./Grid";
 
 const LoadingPlaceholder = styled.div<{ size: number }>`
   height: ${({ size }) => size}rem;

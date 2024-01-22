@@ -1,4 +1,4 @@
-import Grid, { GridProps } from "components/ui/Grid";
+import { Grid, GridProps } from "components/ui/Grid";
 import { useRef } from "react";
 import uuid from "react-uuid";
 import styled from "styled-components";
@@ -72,7 +72,7 @@ export default function UniswapXRouterLabel({
   return (
     <Grid
       gap="xs"
-      $width="auto"
+      width="auto"
       {...rest}
       style={{ display: "inline-flex", ...rest.style }}
     >

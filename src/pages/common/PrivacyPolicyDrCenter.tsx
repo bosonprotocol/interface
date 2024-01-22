@@ -2,8 +2,8 @@
 import { defaultFontFamily } from "lib/styles/fonts";
 import styled from "styled-components";
 
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 
 const Wrapper = styled(Grid)`

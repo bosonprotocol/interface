@@ -10,8 +10,8 @@ import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
 import { CreateProfile } from "../../../../product/utils";
 import BosonButton from "../../../../ui/BosonButton";
-import Grid from "../../../../ui/Grid";
-import Typography from "../../../../ui/Typography";
+import { Grid } from "../../../../ui/Grid";
+import { Typography } from "../../../../ui/Typography";
 import { BosonAccount } from "../bosonAccount/validationSchema";
 import { ProfileType } from "../const";
 
@@ -40,7 +40,7 @@ export default function RegularProfileSummary({
 
   return (
     <>
-      <Typography $fontSize="2rem" fontWeight="600">
+      <Typography fontSize="2rem" fontWeight="600">
         Confirm Profile Information
       </Typography>
       <Grid flexDirection="column" gap="2.625rem">
@@ -54,7 +54,7 @@ export default function RegularProfileSummary({
               title={
                 <Typography
                   fontWeight="600"
-                  $fontSize="1.25rem"
+                  fontSize="1.25rem"
                   lineHeight="1.875rem"
                 >
                   Profile
@@ -74,7 +74,7 @@ export default function RegularProfileSummary({
                   >
                     <Typography
                       fontWeight="600"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.5rem"
                     >
                       Logo / profile picture *
@@ -95,7 +95,7 @@ export default function RegularProfileSummary({
                   >
                     <Typography
                       fontWeight="600"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.5rem"
                     >
                       Cover picture *
@@ -119,14 +119,14 @@ export default function RegularProfileSummary({
                   >
                     <Typography
                       fontWeight="600"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
                       Your brand / name *
                     </Typography>
                     <Typography
                       fontWeight="400"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
                       {values.name}
@@ -139,14 +139,14 @@ export default function RegularProfileSummary({
                   >
                     <Typography
                       fontWeight="600"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
                       Contact email *
                     </Typography>
                     <Typography
                       fontWeight="400"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
                       {values.email}
@@ -159,14 +159,14 @@ export default function RegularProfileSummary({
                   >
                     <Typography
                       fontWeight="600"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
                       Website / Social media link *
                     </Typography>
                     <Typography
                       fontWeight="400"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
                       {values.website}
@@ -180,14 +180,14 @@ export default function RegularProfileSummary({
                   >
                     <Typography
                       fontWeight="600"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
                       Legal trading name
                     </Typography>
                     <Typography
                       fontWeight="400"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
                       {values.legalTradingName}
@@ -201,14 +201,14 @@ export default function RegularProfileSummary({
                 >
                   <Typography
                     fontWeight="600"
-                    $fontSize="0.75rem"
+                    fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
                     Description *
                   </Typography>
                   <Typography
                     fontWeight="400"
-                    $fontSize="0.75rem"
+                    fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
                     {values.description}
@@ -221,14 +221,14 @@ export default function RegularProfileSummary({
                 >
                   <Typography
                     fontWeight="600"
-                    $fontSize="0.75rem"
+                    fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
                     Choose a communication channel *
                   </Typography>
                   <Typography
                     fontWeight="400"
-                    $fontSize="0.75rem"
+                    fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
                     {values.contactPreference.label}
@@ -246,7 +246,7 @@ export default function RegularProfileSummary({
               title={
                 <Typography
                   fontWeight="600"
-                  $fontSize="1.25rem"
+                  fontSize="1.25rem"
                   lineHeight="1.875rem"
                 >
                   Boson Account
@@ -261,14 +261,14 @@ export default function RegularProfileSummary({
                 >
                   <Typography
                     fontWeight="600"
-                    $fontSize="0.75rem"
+                    fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
                     Secondary royalties *
                   </Typography>
                   <Typography
                     fontWeight="400"
-                    $fontSize="0.75rem"
+                    fontSize="0.75rem"
                     lineHeight="1.875rem"
                   >
                     {bosonAccount.secondaryRoyalties}%
@@ -281,7 +281,7 @@ export default function RegularProfileSummary({
                 >
                   <Typography
                     fontWeight="600"
-                    $fontSize="0.75rem"
+                    fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
                     Address for royalty payments{" "}
@@ -289,7 +289,7 @@ export default function RegularProfileSummary({
                   </Typography>
                   <Typography
                     fontWeight="400"
-                    $fontSize="0.75rem"
+                    fontSize="0.75rem"
                     lineHeight="1.875rem"
                   >
                     {bosonAccount.addressForRoyaltyPayment} &nbsp;
@@ -309,7 +309,7 @@ export default function RegularProfileSummary({
           <Grid flexDirection="column" alignItems="flex-start" gap="0.5rem">
             <Typography
               fontWeight="600"
-              $fontSize="1rem"
+              fontSize="1rem"
               lineHeight="1.5rem"
               color={colors.white}
             >
@@ -324,7 +324,7 @@ export default function RegularProfileSummary({
             <SimpleError>
               <Typography
                 fontWeight="600"
-                $fontSize="1rem"
+                fontSize="1rem"
                 lineHeight="1.5rem"
                 style={{ display: "inline-block" }}
               >
@@ -364,7 +364,7 @@ export default function RegularProfileSummary({
             }
           >
             <Grid gap="1.0625rem">
-              <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
+              <Typography fontWeight="600" fontSize="1rem" lineHeight="1.5rem">
                 Create Seller Account
               </Typography>
               {(isCreatingSellerAccount || submitting) && <Spinner size={15} />}

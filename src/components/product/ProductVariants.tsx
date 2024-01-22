@@ -10,7 +10,7 @@ import { Error, FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import {
   ContainerProductPage,
   ProductButtonGroup,

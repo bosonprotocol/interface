@@ -5,7 +5,7 @@ import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { Channels } from "../../modal/components/SalesChannelsModal/form";
 import Button from "../../ui/Button";
-import GridContainer from "../../ui/GridContainer";
+import { GridContainer } from "../../ui/GridContainer";
 import { SalesChannelCard } from "./SalesChannelCard";
 
 type SalesChannelsProps = {

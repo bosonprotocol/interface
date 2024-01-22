@@ -10,7 +10,7 @@ import { ImageEditorModal } from "../../modal/components/ImageEditorModal/ImageE
 import { useModal } from "../../modal/useModal";
 import BosonButton from "../../ui/BosonButton";
 import Loading from "../../ui/Loading";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import Error from "../Error";
 import {
   FieldFileUploadWrapper,

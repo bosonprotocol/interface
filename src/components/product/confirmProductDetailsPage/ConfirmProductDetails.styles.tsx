@@ -1,5 +1,5 @@
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
 import { ChatDots, CheckCircle } from "phosphor-react";

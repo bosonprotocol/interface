@@ -1,6 +1,6 @@
 import Button from "../../components/ui/Button";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { goToViewMode, ViewMode } from "../../lib/viewMode";

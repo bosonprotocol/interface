@@ -6,8 +6,8 @@ import styled, { createGlobalStyle } from "styled-components";
 
 import { Input } from "../../components/form";
 import Button from "../../components/ui/Button";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { AdditionalFooterLink } from "./AdditionalFooterLinksTypes";
 import { storeFields } from "./store-fields";
 import { StoreFormFields } from "./store-fields-types";

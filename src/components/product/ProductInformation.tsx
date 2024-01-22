@@ -11,7 +11,7 @@ import { FormField, Input, Select, TagsInput, Textarea } from "../form";
 import Error from "../form/Error";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import {
   ContainerProductPage,
   ProductButtonGroup,

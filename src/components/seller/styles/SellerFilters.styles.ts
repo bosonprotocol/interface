@@ -2,7 +2,7 @@ import { defaultFontFamily } from "lib/styles/fonts";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 
 export const InputWrapper = styled(Grid)`
   flex: 1;

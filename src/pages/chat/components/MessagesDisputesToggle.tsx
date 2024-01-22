@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
 import Button from "../../../components/ui/Button";
-import Grid from "../../../components/ui/Grid";
+import { Grid } from "../../../components/ui/Grid";
 import { colors } from "../../../lib/styles/colors";
 
 const StyledButton = styled(Button)<{ $isActive: boolean }>`

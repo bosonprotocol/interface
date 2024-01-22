@@ -3,7 +3,7 @@ import { CaretLeft, CaretRight } from "phosphor-react";
 import { useCallback } from "react";
 
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import { Selector } from "./DatePicker.style";
 import { changeMonth } from "./utils";
 

@@ -16,8 +16,8 @@ import { useModal } from "components/modal/useModal";
 import SuccessTransactionToast from "components/toasts/SuccessTransactionToast";
 import BosonButton from "components/ui/BosonButton";
 import Button from "components/ui/Button";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import dayjs from "dayjs";
 import {
   BigNumber,
@@ -520,7 +520,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
             </CommitButtonWrapper>
             <Typography
               className="show-in-smaller-view"
-              $fontSize="0.8rem"
+              fontSize="0.8rem"
               marginTop="0.25rem"
             >
               By proceeding to Commit, I agree to the{" "}
@@ -554,7 +554,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         </CommitWrapper>
         <Typography
           className="show-in-larger-view"
-          $fontSize="0.8rem"
+          fontSize="0.8rem"
           marginTop="0.25rem"
         >
           By proceeding to Commit, I agree to the{" "}

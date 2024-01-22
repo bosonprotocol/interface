@@ -6,8 +6,8 @@ import {
 import { Spinner } from "components/loading/Spinner";
 import { SettingsTab } from "components/settings/index";
 import Button from "components/ui/Button";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { BosonRoutes } from "lib/routing/routes";
 import { colors } from "lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";

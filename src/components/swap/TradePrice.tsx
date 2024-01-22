@@ -1,5 +1,5 @@
 import { Currency, Price } from "@uniswap/sdk-core";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import { formatNumber, formatPrice, NumberType } from "lib/utils/formatNumbers";
 import { useUSDPrice } from "lib/utils/hooks/useUSDPrice";
 import tryParseCurrencyAmount from "lib/utils/tryParseCurrencyAmount";

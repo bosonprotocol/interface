@@ -16,7 +16,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { buttonText } from "./styles";
-import Typography from "./Typography";
+import { Typography } from "./Typography";
 
 const VideoWrapper = styled.div<{ $hasOnClick?: boolean }>`
   overflow: hidden;

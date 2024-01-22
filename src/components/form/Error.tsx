@@ -1,5 +1,5 @@
 import { colors } from "../../lib/styles/colors";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import type { ErrorProps } from "./types";
 
 export default function Error({ display = false, message = "" }: ErrorProps) {
@@ -12,7 +12,7 @@ export default function Error({ display = false, message = "" }: ErrorProps) {
       color={colors.orange}
       margin="0.25rem"
       fontWeight="600"
-      $fontSize="0.75rem"
+      fontSize="0.75rem"
       style={{ whiteSpace: "pre-wrap" }}
     >
       {message}

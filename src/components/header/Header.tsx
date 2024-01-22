@@ -6,7 +6,7 @@ import { Spinner } from "components/loading/Spinner";
 import { Portal } from "components/portal/Portal";
 import { DEFAULT_SELLER_PAGE } from "components/seller/SellerPages";
 import BosonButton from "components/ui/BosonButton";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { UrlParameters } from "lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "lib/routing/routes";
 import { breakpoint } from "lib/styles/breakpoint";
@@ -332,7 +332,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
               <Grid
                 flexDirection="row"
                 alignItems="center"
-                $width="initial"
+                width="initial"
                 gap="1rem"
               >
                 <LinkWithQuery

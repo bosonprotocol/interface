@@ -17,7 +17,7 @@ import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";

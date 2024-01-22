@@ -21,7 +21,7 @@ import {
 } from "../../components/product/Product.styles";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import BosonButton from "../../components/ui/BosonButton";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
 import { useOffers } from "../../lib/utils/hooks/offers";
 import { useGetOfferMetadata } from "../../lib/utils/hooks/offers/useGetOfferMetadata";

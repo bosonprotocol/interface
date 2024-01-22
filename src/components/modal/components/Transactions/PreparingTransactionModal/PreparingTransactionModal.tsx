@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 
 import { colors } from "../../../../../lib/styles/colors";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 import Loading from "../../../../ui/Loading";
-import Typography from "../../../../ui/Typography";
+import { Typography } from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
 
 export const PreparingTransactionModal: React.FC = () => {
@@ -34,7 +34,7 @@ export const PreparingTransactionModal: React.FC = () => {
           height: "6rem"
         }}
       />
-      <Typography fontWeight="600" $fontSize="1.5rem" lineHeight="150%">
+      <Typography fontWeight="600" fontSize="1.5rem" lineHeight="150%">
         Preparing transaction
       </Typography>
     </Grid>

@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { colors } from "../../../lib/styles/colors";
 import bytesToSize from "../../../lib/utils/bytesToSize";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 
 const AttachmentContainer = styled.div<{ $isLeftAligned: boolean }>`
   position: relative;
@@ -46,7 +46,7 @@ export default function UploadedFile({
     return (
       <>
         <ImageSquare size={23} />
-        <Typography $fontSize="1rem" fontWeight="400">
+        <Typography fontSize="1rem" fontWeight="400">
           &nbsp;&nbsp; {fileName}
         </Typography>
         {showSize && (

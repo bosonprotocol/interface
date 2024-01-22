@@ -11,8 +11,8 @@ import {
   saveItemInStorage
 } from "../../lib/utils/hooks/localstorage/useLocalStorage";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 
 const StyledCookie = styled.div`
   position: fixed;
@@ -60,7 +60,7 @@ export default function CookieBanner({ isDapp }: { isDapp: boolean }) {
   return (
     <StyledCookie>
       <Grid gap="2rem">
-        <Typography fontWeight="400" $fontSize="1rem" lineHeight="1.5rem">
+        <Typography fontWeight="400" fontSize="1rem" lineHeight="1.5rem">
           <span>
             This website uses cookies to improve user experience. By using our
             website you consent to all cookies in accordance with our&nbsp;

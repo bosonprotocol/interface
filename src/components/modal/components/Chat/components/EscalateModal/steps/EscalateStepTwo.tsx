@@ -58,8 +58,8 @@ import { Spinner } from "../../../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../../../../ui/BosonButton";
 import Button from "../../../../../../ui/Button";
-import Grid from "../../../../../../ui/Grid";
-import Typography from "../../../../../../ui/Typography";
+import { Grid } from "../../../../../../ui/Grid";
+import { Typography } from "../../../../../../ui/Typography";
 import { useModal } from "../../../../../useModal";
 import InitializeChatWithSuccess from "../../InitializeChatWithSuccess";
 
@@ -282,7 +282,7 @@ function EscalateStepTwo({
                   gap="1rem"
                 >
                   <Typography
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
@@ -328,7 +328,7 @@ function EscalateStepTwo({
                   gap="1rem"
                 >
                   <Typography
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
@@ -420,7 +420,7 @@ function EscalateStepTwo({
                   gap="1rem"
                 >
                   <Typography
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     fontWeight="400"
                     color={colors.darkGrey}
                   >

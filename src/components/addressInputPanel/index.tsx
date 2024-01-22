@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-restricted-imports
 import { flexColumnNoWrap } from "components/header/styles";
 import { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { ExplorerDataType, getExplorerLink } from "lib/utils/getExplorerLink";
 import { useChainId } from "lib/utils/hooks/connection/connection";
@@ -108,12 +108,12 @@ export default function AddressInputPanel({
     <InputPanel id={id}>
       <ContainerRow error={error}>
         <InputContainer>
-          <AutoColumn gap="md">
+          <AutoColumn $gap="md">
             <Grid>
               <Typography
                 color={colors.lightGrey}
                 fontWeight={500}
-                $fontSize={14}
+                fontSize={14}
               >
                 {label ?? <>Recipient</>}
               </Typography>

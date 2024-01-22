@@ -10,7 +10,7 @@ import {
 } from "../../../form/Upload/ImageEditor";
 import { Spinner } from "../../../loading/Spinner";
 import BosonButton from "../../../ui/BosonButton";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import Modal from "../../Modal";
 
 type ImageEditorModal = Omit<ImageEditorProps, "url"> & {

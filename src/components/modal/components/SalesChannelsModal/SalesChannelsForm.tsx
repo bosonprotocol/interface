@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 import { FormField, Select } from "../../../form";
 import { Spinner } from "../../../loading/Spinner";
 import BosonButton from "../../../ui/BosonButton";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import { Channels, FormType } from "./form";
 
 type SalesChannelsFormProps = {

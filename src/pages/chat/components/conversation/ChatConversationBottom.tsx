@@ -6,7 +6,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import React, { useEffect, useState } from "react";
 
-import Grid from "../../../../components/ui/Grid";
+import { Grid } from "../../../../components/ui/Grid";
 import { FileWithEncodedData } from "../../../../lib/utils/files";
 import { useChatContext } from "../../ChatProvider/ChatContext";
 import { ProposalItem } from "../../types";

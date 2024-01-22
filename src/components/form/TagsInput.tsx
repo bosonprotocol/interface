@@ -3,8 +3,8 @@ import { useField, useFormikContext } from "formik";
 import { KeyReturn } from "phosphor-react";
 import { useEffect, useRef } from "react";
 
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";
 import {

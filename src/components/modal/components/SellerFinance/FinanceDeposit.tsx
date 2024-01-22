@@ -14,8 +14,8 @@ import { useState } from "react";
 import { useSigner } from "../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Spinner } from "../../../loading/Spinner";
-import Grid from "../../../ui/Grid";
-import Typography from "../../../ui/Typography";
+import { Grid } from "../../../ui/Grid";
+import { Typography } from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import {
   AmountWrapper,
@@ -76,11 +76,11 @@ export default function FinanceDeposit({
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
-      <Typography tag="p" margin="0" $fontSize="0.75rem">
+      <Typography tag="p" margin="0" fontSize="0.75rem">
         <ProtocolStrong>Protocol Balance:</ProtocolStrong> {protocolBalance}{" "}
         {symbol}
       </Typography>
-      <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
+      <Typography tag="p" margin="0" fontSize="0.75rem" fontWeight="600">
         Choose Amount To Deposit:
       </Typography>
       <AmountWrapper>
@@ -99,7 +99,7 @@ export default function FinanceDeposit({
           />
           <div>
             <Typography
-              $fontSize="0.875rem"
+              fontSize="0.875rem"
               margin="0"
               fontWeight="600"
               textAlign="right"
@@ -109,7 +109,7 @@ export default function FinanceDeposit({
             >
               {symbol}
             </Typography>
-            <Typography $fontSize="0.625rem" margin="0">
+            <Typography fontSize="0.625rem" margin="0">
               Balance{" "}
               {exchangeTokenBalance?.toSignificant(Number(tokenDecimals))}
             </Typography>
@@ -214,7 +214,7 @@ export default function FinanceDeposit({
           {isBeingDeposit ? (
             <Spinner size={20} />
           ) : (
-            <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
+            <Typography tag="p" margin="0" fontSize="0.75rem" fontWeight="600">
               Deposit {symbol}
             </Typography>
           )}

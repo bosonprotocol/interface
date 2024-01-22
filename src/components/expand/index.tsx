@@ -1,6 +1,6 @@
 import AnimatedDropdown from "components/animatedDropdown";
 import Column from "components/ui/column";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { colors } from "lib/styles/colors";
 import { CaretDown } from "phosphor-react";
 import { PropsWithChildren, ReactElement } from "react";

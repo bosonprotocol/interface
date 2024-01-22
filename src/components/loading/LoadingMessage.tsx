@@ -1,7 +1,7 @@
 import Loading from "components/ui/Loading";
 import styled from "styled-components";
 
-import GridContainer from "../ui/GridContainer";
+import { GridContainer } from "../ui/GridContainer";
 
 const margin = "1.75rem";
 const StyledGridContainer = styled(GridContainer)`

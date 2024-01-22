@@ -16,8 +16,8 @@ import { Channels } from "../../../components/modal/components/SalesChannelsModa
 import { useModal } from "../../../components/modal/useModal";
 import SuccessToast from "../../../components/toasts/common/SuccessToast";
 import Button from "../../../components/ui/Button";
-import Grid from "../../../components/ui/Grid";
-import Typography from "../../../components/ui/Typography";
+import { Grid } from "../../../components/ui/Grid";
+import { Typography } from "../../../components/ui/Typography";
 import { UpdateIcon } from "../../../components/ui/UpdateIcon";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
@@ -137,7 +137,7 @@ export const ManageStoreFrontsPage = () => {
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
       <Grid flexDirection="column" alignItems="flex-start" flex="0">
-        <Typography fontWeight="600" $fontSize="2rem" marginTop="2rem">
+        <Typography fontWeight="600" fontSize="2rem" marginTop="2rem">
           Create a new custom storefront
         </Typography>
         <p>
@@ -151,7 +151,7 @@ export const ManageStoreFrontsPage = () => {
       {storeFronts?.length ? (
         <Grid flexDirection="column" alignItems="flex-start">
           <Grid justifyContent="flex-start" gap="1rem">
-            <Typography fontWeight="600" $fontSize="1.6rem">
+            <Typography fontWeight="600" fontSize="1.6rem">
               My storefronts
             </Typography>
             <UpdateIcon
@@ -177,9 +177,9 @@ export const ManageStoreFrontsPage = () => {
                     alignItems="flex-start"
                   >
                     <Grid flexDirection="column" alignItems="flex-start">
-                      <Typography $fontSize="1.2rem">{name}</Typography>
+                      <Typography fontSize="1.2rem">{name}</Typography>
 
-                      <Typography $fontSize="0.6rem" padding="0 0 1rem 0">
+                      <Typography fontSize="0.6rem" padding="0 0 1rem 0">
                         Creation date:{" "}
                         {lastUpdated
                           ? `${dayjs(lastUpdated).format("LLL")} GMT${dayjs(

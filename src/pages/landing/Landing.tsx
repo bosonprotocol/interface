@@ -4,8 +4,8 @@ import styled, { css } from "styled-components";
 
 import Layout, { LayoutRoot } from "../../components/layout/Layout";
 import BosonButton from "../../components/ui/BosonButton";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";

@@ -8,7 +8,7 @@ import { useLayoutContext } from "../../components/layout/Context";
 import { Close } from "../../components/modal/header/styles";
 import { getSellerCenterPath } from "../../components/seller/paths";
 import MultiSteps from "../../components/step/MultiSteps";
-import Grid from "../../components/ui/Grid";
+import { Grid } from "../../components/ui/Grid";
 import { SellerLandingPageParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";

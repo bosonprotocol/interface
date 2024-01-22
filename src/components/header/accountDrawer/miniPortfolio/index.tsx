@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 import { breakpointNumbers } from "../../../../lib/styles/breakpoint";
 import Column from "../../../ui/column";
-import Grid from "../../../ui/Grid";
-import Typography from "../../../ui/Typography";
+import { Grid } from "../../../ui/Grid";
+import { Typography } from "../../../ui/Typography";
 import Tokens from "./tokens";
 
 const Wrapper = styled(Column)`

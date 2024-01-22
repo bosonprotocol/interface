@@ -1,4 +1,4 @@
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import styled from "styled-components";
 
 export const Input = styled.input`

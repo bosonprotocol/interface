@@ -8,7 +8,7 @@ import React, {
 
 import SimpleError from "../../../error/SimpleError";
 import Button from "../../../ui/Button";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import { useModal } from "../../useModal";
 
 interface ConfirmationModalProps {

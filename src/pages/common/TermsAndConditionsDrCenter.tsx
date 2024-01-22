@@ -3,8 +3,8 @@ import { defaultFontFamily } from "lib/styles/fonts";
 import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { colors } from "../../lib/styles/colors";
 

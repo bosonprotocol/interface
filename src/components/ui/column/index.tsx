@@ -22,8 +22,8 @@ export const ColumnCenter = styled(Column)`
 `;
 
 export const AutoColumn = styled.div<{
-  gap?: Gap | string;
-  justify?:
+  $gap?: Gap | string;
+  $justify?:
     | "stretch"
     | "center"
     | "start"
@@ -31,13 +31,13 @@ export const AutoColumn = styled.div<{
     | "flex-start"
     | "flex-end"
     | "space-between";
-  grow?: true;
+  $grow?: true;
 }>`
   display: grid;
   grid-auto-rows: auto;
-  grid-row-gap: ${({ gap }) => gap};
-  justify-items: ${({ justify }) => justify && justify};
-  flex-grow: ${({ grow }) => grow && 1};
+  grid-row-gap: ${({ $gap }) => $gap};
+  justify-items: ${({ $justify }) => $justify && $justify};
+  flex-grow: ${({ $grow }) => $grow && 1};
 `;
 
 export default Column;

@@ -1,7 +1,7 @@
 import { Button, hooks, ThemedButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import Tooltip from "components/tooltip/Tooltip";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { envConfigsFilteredByEnv } from "lib/config";
 import { getConnection } from "lib/connection";
 import { CHAIN_IDS_TO_FRIENDLY_NAMES } from "lib/constants/chains";

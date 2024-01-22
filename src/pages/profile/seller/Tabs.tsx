@@ -2,7 +2,7 @@ import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { useMemo, useState } from "react";
 import styled from "styled-components";
 
-import Grid from "../../../components/ui/Grid";
+import { Grid } from "../../../components/ui/Grid";
 import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { useQueryParameter } from "../../../lib/routing/useQueryParameter";
 import { breakpoint } from "../../../lib/styles/breakpoint";

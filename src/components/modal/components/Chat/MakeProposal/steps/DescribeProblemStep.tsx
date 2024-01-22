@@ -5,8 +5,8 @@ import { colors } from "../../../../../../lib/styles/colors";
 import UploadForm from "../../../../../../pages/chat/components/UploadForm/UploadForm";
 import { Textarea } from "../../../../../form";
 import BosonButton from "../../../../../ui/BosonButton";
-import Grid from "../../../../../ui/Grid";
-import Typography from "../../../../../ui/Typography";
+import { Grid } from "../../../../../ui/Grid";
+import { Typography } from "../../../../../ui/Typography";
 import { FormModel } from "../MakeProposalFormModel";
 
 const ButtonsSection = styled.div`
@@ -28,10 +28,10 @@ interface Props {
 export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
   return (
     <>
-      <Typography $fontSize="2rem" fontWeight="600">
+      <Typography fontSize="2rem" fontWeight="600">
         Add documents to support your case
       </Typography>
-      <Typography $fontSize="1.25rem" color={colors.darkGrey}>
+      <Typography fontSize="1.25rem" color={colors.darkGrey}>
         You may provide any information or attach any files that support your
         case.
       </Typography>

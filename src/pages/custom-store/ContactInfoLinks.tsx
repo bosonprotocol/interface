@@ -4,8 +4,8 @@ import SortableList, { SortableItem } from "react-easy-sort";
 import styled, { createGlobalStyle } from "styled-components";
 
 import { Input } from "../../components/form";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { ContactInfoLinkIcon } from "./ContactInfoLinkIcon";
 import { storeFields } from "./store-fields";
 import { StoreFormFields } from "./store-fields-types";

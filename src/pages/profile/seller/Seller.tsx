@@ -14,8 +14,8 @@ import {
   isMatchingLensHandle
 } from "../../../components/modal/components/Profile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
-import Grid from "../../../components/ui/Grid";
-import Typography from "../../../components/ui/Typography";
+import { Grid } from "../../../components/ui/Grid";
+import { Typography } from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -214,7 +214,7 @@ export default function Seller() {
             <Grid
               justifyContent="flex-start"
               alignItems="flex-end"
-              $width="auto"
+              width="auto"
               flexGrow="1"
             >
               <AvatarEmptySpace />
@@ -222,7 +222,7 @@ export default function Seller() {
                 <Typography
                   tag="h2"
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
-                  $fontSize={!isLteXS ? "2rem" : "1.675rem"}
+                  fontSize={!isLteXS ? "2rem" : "1.675rem"}
                 >
                   {name}
                 </Typography>
@@ -242,7 +242,7 @@ export default function Seller() {
             </Grid>
             <Grid
               justifyContent="flex-end"
-              $width="auto"
+              width="auto"
               margin="1.25rem 0 0 0"
               gap="1rem"
             >
@@ -291,7 +291,7 @@ export default function Seller() {
                 <div>
                   <Typography
                     tag="p"
-                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
+                    fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
                     margin="0"
                     color={colors.darkGrey}
                   >
@@ -302,7 +302,7 @@ export default function Seller() {
                   ) : (
                     <Typography
                       tag="p"
-                      $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
+                      fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                       margin="0"
                       fontWeight="600"
                     >

@@ -10,8 +10,8 @@ import {
   UniswapXShine
 } from "components/swap/styled";
 import Column from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { X } from "phosphor-react";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
@@ -131,7 +131,7 @@ const OptInContents = ({
   const tryItNowElement = (
     <Typography
       color="accentAction"
-      $fontSize={14}
+      fontSize={14}
       fontWeight="500"
       onClick={() => {
         // slight delay before hiding
@@ -172,7 +172,7 @@ const OptInContents = ({
             alignItems="center"
             flexWrap="wrap"
           >
-            <Typography $fontSize={14} fontWeight={400} lineHeight="20px">
+            <Typography fontSize={14} fontWeight={400} lineHeight="20px">
               <>Try gas free swaps with the</>
               <br />
               <UniswapXBrandMark
@@ -203,7 +203,7 @@ const OptInContents = ({
         />
 
         <Column>
-          <Typography $fontSize={14} fontWeight={400} lineHeight="20px">
+          <Typography fontSize={14} fontWeight={400} lineHeight="20px">
             <>Try the</>{" "}
             <UniswapXBrandMark
               fontWeight="bold"
@@ -236,12 +236,12 @@ const OptInContents = ({
       {/* second popover: you're in! */}
       <UniswapXOptInPopover visible={showYoureIn}>
         <UniswapXRouterLabel disableTextGradient>
-          <Typography $fontSize={14} fontWeight={500} lineHeight="20px">
+          <Typography fontSize={14} fontWeight={500} lineHeight="20px">
             <>You&apos;re in!</>
           </Typography>
         </UniswapXRouterLabel>
 
-        <Typography style={{ marginTop: 8 }} $fontSize={14}>
+        <Typography style={{ marginTop: 8 }} fontSize={14}>
           <>You can turn it off at anytime in settings</>
         </Typography>
       </UniswapXOptInPopover>

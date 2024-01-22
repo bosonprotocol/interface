@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { colors } from "../../../../lib/styles/colors";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { ProposalItem } from "../../../../pages/chat/types";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import { DisputeSplit } from "./components/DisputeSplit";
 import ExchangePreview from "./components/ExchangePreview";
 import ProposalTypeSummary from "./components/ProposalTypeSummary";

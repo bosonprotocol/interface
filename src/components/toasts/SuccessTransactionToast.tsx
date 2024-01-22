@@ -2,8 +2,8 @@ import { Toast } from "react-hot-toast";
 
 import { colors } from "../../lib/styles/colors";
 import { sanitizeUrl } from "../../lib/utils/url";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import SuccessToast from "./common/SuccessToast";
 
 interface Props {

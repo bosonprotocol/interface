@@ -6,7 +6,7 @@ import { BosonRoutes } from "../../../../lib/routing/routes";
 import { LinkWithQuery } from "../../../customNavigation/LinkWithQuery";
 import { EditProfile } from "../../../detail/EditProfile";
 import Button from "../../../ui/Button";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 
 type ProfileDetailsModalProps = {
   sellerId: string;

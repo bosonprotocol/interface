@@ -1,6 +1,6 @@
 import { ReactComponent as Settings } from "assets/svg/settings.svg";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import validateUserSlippageTolerance, {
   SlippageValidationResult

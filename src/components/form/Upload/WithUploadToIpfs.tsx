@@ -8,7 +8,7 @@ import { getImageMetadata } from "../../../lib/utils/images";
 import { getVideoMetadata } from "../../../lib/utils/videos";
 import { SUPPORTED_FILE_FORMATS } from "../../product/utils";
 import ErrorToast from "../../toasts/common/ErrorToast";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import { UploadProps } from "../types";
 import { FileProps } from "./types";
 

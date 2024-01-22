@@ -2,8 +2,8 @@ import { Percent, TradeType } from "@uniswap/sdk-core";
 import Tooltip from "components/tooltip/Tooltip";
 import Button from "components/ui/Button";
 import Column from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import {
   formatNumber,
   formatPriceImpact,

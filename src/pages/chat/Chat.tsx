@@ -8,9 +8,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
-import Grid from "../../components/ui/Grid";
+import { Grid } from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
@@ -245,7 +245,7 @@ export default function Chat() {
             gap="1rem"
           >
             <WarningCircle size="40" color={colors.red} />
-            <Typography $fontSize="2rem">
+            <Typography fontSize="2rem">
               Something went wrong, please try again...
             </Typography>
           </Grid>

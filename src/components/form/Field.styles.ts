@@ -5,7 +5,7 @@ import styled, { css } from "styled-components";
 import { transition } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 
 export const CopyButton = styled.button`
   background: none;

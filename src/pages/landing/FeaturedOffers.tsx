@@ -5,9 +5,9 @@ import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
 import OfferList from "../../components/offers/OfferList";
-import Grid from "../../components/ui/Grid";
+import { Grid } from "../../components/ui/Grid";
 import { buttonText } from "../../components/ui/styles";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
 import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";

@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { colors } from "../../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 
 type SalesChannelCardProps = {
   title: string;
@@ -42,15 +42,11 @@ export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
     <StyledGrid flexDirection="column" alignItems="flex-start" padding="1.5rem">
       <Time gap="0.25rem">
         <Clock size={16} color={colors.secondary} />
-        <Typography
-          fontWeight="600"
-          $fontSize="0.75rem"
-          color={colors.darkGrey}
-        >
+        <Typography fontWeight="600" fontSize="0.75rem" color={colors.darkGrey}>
           {time}
         </Typography>
       </Time>
-      <Typography fontWeight="600" $fontSize="1.25rem" margin="0.8rem 0 0 0">
+      <Typography fontWeight="600" fontSize="1.25rem" margin="0.8rem 0 0 0">
         {title}
       </Typography>
       <Typography tag="p">{text}</Typography>

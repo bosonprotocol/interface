@@ -1,7 +1,7 @@
 import { ProductCardSkeleton } from "@bosonprotocol/react-kit";
 
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
-import GridContainer from "../../../ui/GridContainer";
+import { GridContainer } from "../../../ui/GridContainer";
 import DisputeListMobileElement, {
   containerWidth
 } from "./DisputeListMobileElement";

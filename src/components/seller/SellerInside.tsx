@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { UrlParameters } from "../../lib/routing/parameters";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import { WithSellerDataProps } from "./common/WithSellerData";
 import { sellerPageTypes } from "./SellerPages";
 import SellerWrapper from "./SellerWrapper";

@@ -1,11 +1,11 @@
 import { CaretRight } from "phosphor-react";
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 
 interface Props {
   steps: {
@@ -38,7 +38,7 @@ function Breadcrumbs({ steps, margin }: Props) {
   );
 
   return (
-    <Grid $width="fit-content" margin={margin ? margin : "0"}>
+    <Grid width="fit-content" margin={margin ? margin : "0"}>
       {steps.map((step) => (
         <Button
           key={step.id}
@@ -47,7 +47,7 @@ function Breadcrumbs({ steps, margin }: Props) {
           }}
         >
           <Typography
-            $fontSize="0.875rem"
+            fontSize="0.875rem"
             fontWeight="600"
             color={step.hightlighted ? "var(--accent)" : colors.darkGrey}
             margin="0 0.3125rem 0 0"

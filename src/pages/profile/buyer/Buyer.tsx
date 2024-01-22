@@ -10,8 +10,8 @@ import DetailShare from "../../../components/detail/DetailShare";
 import { useModal } from "../../../components/modal/useModal";
 import AddressText from "../../../components/offer/AddressText";
 import BosonButton from "../../../components/ui/BosonButton";
-import Grid from "../../../components/ui/Grid";
-import Typography from "../../../components/ui/Typography";
+import { Grid } from "../../../components/ui/Grid";
+import { Typography } from "../../../components/ui/Typography";
 import {
   AccountQueryParameters,
   UrlParameters
@@ -178,14 +178,14 @@ export default function Buyer({ buyerId: buyerIdProp }: Props) {
             <Grid
               justifyContent="flex-start"
               alignItems="flex-end"
-              $width="auto"
+              width="auto"
             >
               <AvatarEmptySpace />
               <div>
                 <Typography
                   tag="h2"
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
-                  $fontSize={!isLteXS ? "2rem" : "1.675rem"}
+                  fontSize={!isLteXS ? "2rem" : "1.675rem"}
                 >
                   Buyer ID: {buyerId}
                 </Typography>
@@ -196,11 +196,7 @@ export default function Buyer({ buyerId: buyerIdProp }: Props) {
                 </Grid>
               </div>
             </Grid>
-            <Grid
-              justifyContent="flex-end"
-              $width="auto"
-              margin="1.25rem 0 0 0"
-            >
+            <Grid justifyContent="flex-end" width="auto" margin="1.25rem 0 0 0">
               {buyerIdProp && !isLteXS && (
                 <ManageFundsButton
                   $isCustomStoreFront={!!isCustomStoreFront}

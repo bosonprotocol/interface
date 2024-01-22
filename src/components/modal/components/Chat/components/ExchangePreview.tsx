@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useBreakpoints } from "../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import Price from "../../../../price";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import SellerID from "../../../../ui/SellerID";
 import Video from "../../../../ui/Video";

@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 
 const StyledGrid = styled(Grid)`
   background-color: ${colors.lightGrey};
@@ -34,7 +34,7 @@ export default function SimpleError({
       {children ? (
         children
       ) : (
-        <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
+        <Typography fontWeight="600" fontSize="1rem" lineHeight="1.5rem">
           {errorMessage || "There has been an error, please try again"}
         </Typography>
       )}

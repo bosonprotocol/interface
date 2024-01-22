@@ -3,8 +3,8 @@ import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 import { CheckCircle, XCircle } from "phosphor-react";
 import styled from "styled-components";
 
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";

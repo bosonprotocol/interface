@@ -3,8 +3,8 @@ import { Spinner } from "components/loading/Spinner";
 import TokenSafetyIcon from "components/tokenSafety/TokenSafetyIcon";
 import Tooltip from "components/tooltip/Tooltip";
 import Column, { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { checkWarning } from "lib/constants/tokenSafety";
 import { colors } from "lib/styles/colors";
 import { useAccount } from "lib/utils/hooks/connection/connection";
@@ -174,7 +174,7 @@ export function CurrencyRow({
             <TokenSafetyIcon warning={warning} />
           </WarningContainer>
         </Grid>
-        <Typography marginLeft="0px" $fontSize="12px" fontWeight={300}>
+        <Typography marginLeft="0px" fontSize="12px" fontWeight={300}>
           {currency.symbol}
         </Typography>
       </AutoColumn>

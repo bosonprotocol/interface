@@ -1,4 +1,4 @@
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";

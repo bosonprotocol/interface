@@ -1,7 +1,7 @@
 import searchIcon from "assets/svg/search.svg";
 import { LoadingRows as BaseLoadingRows } from "components/loader/styled";
 import { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { colors } from "lib/styles/colors";
 import styled from "styled-components";
 

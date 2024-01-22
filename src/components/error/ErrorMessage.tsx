@@ -2,8 +2,8 @@ import { breakpoint } from "lib/styles/breakpoint";
 import { ReactNode } from "react";
 import styled from "styled-components";
 
-import Grid from "../ui/Grid";
-import GridContainer from "../ui/GridContainer";
+import { Grid } from "../ui/Grid";
+import { GridContainer } from "../ui/GridContainer";
 
 const margin = "1.75rem";
 const StyledGridContainer = styled(GridContainer)`

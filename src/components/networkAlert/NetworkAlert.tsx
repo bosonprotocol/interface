@@ -1,5 +1,5 @@
 import { ChainId } from "@uniswap/sdk-core";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { getChainInfo } from "lib/constants/chainInfo";
 import { useChainId } from "lib/utils/hooks/connection/connection";
 import { ArrowUpRight } from "phosphor-react";

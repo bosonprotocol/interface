@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { CONFIG } from "../../../lib/config";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 
 interface Props {
   exchange: Exchange;

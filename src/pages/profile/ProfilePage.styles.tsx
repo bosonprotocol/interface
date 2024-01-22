@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import GridContainer from "../../components/ui/GridContainer";
+import { GridContainer } from "../../components/ui/GridContainer";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";

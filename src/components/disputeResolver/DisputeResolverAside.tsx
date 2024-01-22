@@ -6,7 +6,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { DisputeResolverCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import { drPageTypes } from "./DisputeResolver";
 
 const Aside = styled.aside`

@@ -10,7 +10,7 @@ import styled from "styled-components";
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
 import { useSortOffers } from "../../components/price/useSortOffers";
 import ProductCard from "../../components/productCard/ProductCard";
-import Grid from "../../components/ui/Grid";
+import { Grid } from "../../components/ui/Grid";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";

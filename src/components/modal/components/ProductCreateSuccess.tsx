@@ -14,9 +14,9 @@ import {
 } from "../../detail/Detail.style";
 import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import Video from "../../ui/Video";
 
 interface Props {
@@ -137,7 +137,7 @@ export default function ProductCreateSuccess({
                 tag="h2"
                 margin="1rem 0"
                 color={colors.secondary}
-                $fontSize="1.5rem"
+                fontSize="1.5rem"
               >
                 {name}
               </Typography>{" "}
@@ -163,7 +163,7 @@ export default function ProductCreateSuccess({
                   size={16}
                 />
               </FundTile>
-              <Typography tag="p" $fontSize="0.75rem">
+              <Typography tag="p" fontSize="0.75rem">
                 In order for your offer to go live you must first provide funds
                 to cover your seller deposit. When a buyer commits to your
                 offer, your deposit will be put into escrow as part of the
@@ -172,7 +172,7 @@ export default function ProductCreateSuccess({
               <Typography
                 tag="p"
                 margin="1rem 0 0 0"
-                $fontSize="0.75rem"
+                fontSize="0.75rem"
                 fontWeight="600"
               >
                 Suggested pool amount: 15%

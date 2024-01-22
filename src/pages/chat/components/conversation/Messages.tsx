@@ -8,7 +8,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 
 import { Spinner } from "../../../../components/loading/Spinner";
-import Typography from "../../../../components/ui/Typography";
+import { Typography } from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
 import { ThreadObjectWithInfo } from "../../types";
 import Message from "../Message";

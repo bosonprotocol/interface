@@ -11,7 +11,7 @@ import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { NewProposal } from "../../../../../pages/chat/types";
 import { createProposal } from "../../../../../pages/chat/utils/create";
 import MultiSteps from "../../../../step/MultiSteps";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
 import ExchangePreview from "../components/ExchangePreview";
 import { FormModel, validationSchemaPerStep } from "./MakeProposalFormModel";

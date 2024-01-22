@@ -1,8 +1,8 @@
 import { LoadingOpacityContainer } from "components/loader/styled";
 import { UniswapXRouterIcon } from "components/routerLabel/UniswapXRouterLabel";
 import Tooltip from "components/tooltip/Tooltip";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "lib/constants/chains";
 import { formatNumber, NumberType } from "lib/utils/formatNumbers";
 import { useChainId } from "lib/utils/hooks/connection/connection";

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import Button from "../../../components/ui/Button";
-import Typography from "../../../components/ui/Typography";
+import { Typography } from "../../../components/ui/Typography";
 import { colors } from "../../../lib/styles/colors";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 
@@ -50,7 +50,7 @@ function ReadMore({ text }: Props) {
     <ReadMoreContainer>
       <Typography
         tag="p"
-        $fontSize={isLteXS ? "1.15rem" : "1rem"}
+        fontSize={isLteXS ? "1.15rem" : "1rem"}
         margin="0"
         style={{ overflow: "hidden", textOverflow: "ellipsis" }}
       >

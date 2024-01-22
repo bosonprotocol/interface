@@ -7,8 +7,8 @@ import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { DisputeFormModel } from "../modal/components/DisputeModal/DisputeModalFormModel";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 
 const FormButton = styled.button`
   border: none;
@@ -56,10 +56,10 @@ function TellUsMore({
         flexDirection="column"
         alignItems="flex-start"
       >
-        <Typography fontWeight="600" $fontSize="2rem">
+        <Typography fontWeight="600" fontSize="2rem">
           Tell us more about your problem
         </Typography>
-        <Typography $fontSize="1.25rem" color={colors.darkGrey}>
+        <Typography fontSize="1.25rem" color={colors.darkGrey}>
           Choose from one of the problems listed below
         </Typography>
       </Grid>

@@ -11,7 +11,7 @@ import { FileProps } from "../../../components/form/Upload/types";
 import { LensProfileType } from "../../../components/modal/components/Profile/Lens/validationSchema";
 import { CreateProfile } from "../../../components/product/utils";
 import Button from "../../../components/ui/Button";
-import Grid from "../../../components/ui/Grid";
+import { Grid } from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";

@@ -18,7 +18,7 @@ import {
   SellerAndOpenSeaGrid
 } from "../detail/Detail.style";
 import BosonButton from "../ui/BosonButton";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import Video from "../ui/Video";
 import { ProductButtonGroup } from "./Product.styles";
 import { usePreviewOffers } from "./utils/usePreviewOffer";
@@ -178,7 +178,7 @@ export default function Preview({
                 <Typography
                   tag="h1"
                   data-testid="name"
-                  $fontSize="2rem"
+                  fontSize="2rem"
                   margin="0 0 2rem 0"
                 >
                   {name}

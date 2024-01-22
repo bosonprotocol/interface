@@ -61,8 +61,8 @@ import {
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import BosonButton from "../../components/ui/BosonButton";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { CONFIG, DappConfig } from "../../lib/config";
 import {
   SellerLandingPageParameters,

@@ -10,8 +10,8 @@ import { MODAL_TYPES } from "components/modal/ModalComponents";
 import { useModal } from "components/modal/useModal";
 import BosonButton from "components/ui/BosonButton";
 import Button from "components/ui/Button";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import dayjs from "dayjs";
 import { CONFIG } from "lib/config";
 import { BosonRoutes } from "lib/routing/routes";
@@ -180,7 +180,7 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
             <Typography
               tag="p"
               style={{ color: colors.darkGrey, margin: 0 }}
-              $fontSize="0.75rem"
+              fontSize="0.75rem"
             >
               You can withdraw your funds here
             </Typography>
@@ -289,7 +289,7 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
               <span>Redeem</span>
               <Typography
                 tag="small"
-                $fontSize="0.75rem"
+                fontSize="0.75rem"
                 lineHeight="1.125rem"
                 fontWeight="600"
                 margin="0"
@@ -299,7 +299,7 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
             </RedeemButton>
             {!isRedeemDisabled && (
               <Typography
-                $fontSize="0.8rem"
+                fontSize="0.8rem"
                 style={{ color: "initial", display: "block" }}
               >
                 By proceeding to Redeem, I agree to the{" "}

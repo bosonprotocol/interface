@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { colors } from "../../lib/styles/colors";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 
 const Headers = styled.div`
   display: flex;

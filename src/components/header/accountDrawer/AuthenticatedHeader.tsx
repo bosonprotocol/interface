@@ -23,7 +23,7 @@ import { formatAddress } from "../../../lib/utils/address";
 import { Spinner } from "../../loading/Spinner";
 import Tooltip from "../../tooltip/Tooltip";
 import Column from "../../ui/column";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import StatusIcon from "../identicon/StatusIcon";
 import { FiatLink, useFiatLinkContext } from "./fiatOnrampModal/FiatLink";
 // import FiatOnrampModal from "./fiatOnrampModal";

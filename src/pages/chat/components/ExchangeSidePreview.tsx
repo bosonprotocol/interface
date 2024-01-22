@@ -33,7 +33,7 @@ import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
 import Button from "../../../components/ui/Button";
 import Image from "../../../components/ui/Image";
-import Typography from "../../../components/ui/Typography";
+import { Typography } from "../../../components/ui/Typography";
 import Video from "../../../components/ui/Video";
 import { ViewModeLink } from "../../../components/viewMode/ViewMode";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -272,7 +272,7 @@ const getOfferDetailData = (
           <Typography
             tag="p"
             color={colors.orange}
-            $fontSize={fontSizeExchangePolicy}
+            fontSize={fontSizeExchangePolicy}
             alignItems="center"
           >
             {customisedExchangePolicy}
@@ -287,7 +287,7 @@ const getOfferDetailData = (
         <Typography
           tag="p"
           color="purple"
-          $fontSize={fontSizeExchangePolicy}
+          fontSize={fontSizeExchangePolicy}
           alignItems="center"
         >
           Unknown

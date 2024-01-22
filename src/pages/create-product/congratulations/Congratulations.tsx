@@ -15,9 +15,9 @@ import { ModalHeaderTitle } from "../../../components/modal/header/ModalHeaderTi
 import useOffersBacked from "../../../components/seller/common/useOffersBacked";
 import { getSellerCenterPath } from "../../../components/seller/paths";
 import Button from "../../../components/ui/Button";
-import Grid from "../../../components/ui/Grid";
-import GridContainer from "../../../components/ui/GridContainer";
-import Typography from "../../../components/ui/Typography";
+import { Grid } from "../../../components/ui/Grid";
+import { GridContainer } from "../../../components/ui/GridContainer";
+import { Typography } from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import {
   SellerCenterRoutes,
@@ -210,7 +210,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
             color={colors.green}
             style={{ marginBottom: "2rem" }}
           />
-          <Typography fontWeight="600" $fontSize="1.5rem" textAlign="center">
+          <Typography fontWeight="600" fontSize="1.5rem" textAlign="center">
             {message}
           </Typography>
         </Grid>

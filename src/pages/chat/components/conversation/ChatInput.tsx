@@ -21,7 +21,7 @@ import styled from "styled-components";
 import { MakeProposalModalProps } from "../../../../components/modal/components/Chat/MakeProposal/MakeProposalModal";
 import { useModal } from "../../../../components/modal/useModal";
 import BosonButton from "../../../../components/ui/BosonButton";
-import Grid from "../../../../components/ui/Grid";
+import { Grid } from "../../../../components/ui/Grid";
 import { colors } from "../../../../lib/styles/colors";
 import { FileWithEncodedData } from "../../../../lib/utils/files";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
@@ -288,7 +288,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       {exchange.disputed && !hideProposal && (
         <Grid
           alignItems="flex-start"
-          $width="auto"
+          width="auto"
           justifyContent="flex-start"
           $height="100%"
         >

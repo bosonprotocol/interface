@@ -10,7 +10,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../layout/Layout";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import { AccountDrawer } from "./accountDrawer";
 import { BurgerButton } from "./BurgerButton";
 import ConnectButton from "./ConnectButton";
@@ -105,7 +105,7 @@ export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
         <Header ref={ref}>
           <HeaderContainer fluidHeader={fluidHeader}>
             <>
-              <Grid flexDirection="row" alignItems="center" $width="initial">
+              <Grid flexDirection="row" alignItems="center" width="initial">
                 <LinkWithQuery
                   to={DrCenterRoutes.Root}
                   style={{ display: "flex" }}

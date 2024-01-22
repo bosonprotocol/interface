@@ -2,8 +2,8 @@ import { ArrowRight } from "phosphor-react";
 import React from "react";
 
 import BosonButton from "../../../ui/BosonButton";
-import Grid from "../../../ui/Grid";
-import Typography from "../../../ui/Typography";
+import { Grid } from "../../../ui/Grid";
+import { Typography } from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import personWatchImg from "./assets/personWatch.webp";
 
@@ -28,10 +28,10 @@ export const AccountCreationModal: React.FC<AccountCreationModalProps> = ({
         height="250"
       />
       <Grid justifyContent="center" flexDirection="column">
-        <Typography fontWeight="600" $fontSize="2rem">
+        <Typography fontWeight="600" fontSize="2rem">
           Create an account in 2 Minutes
         </Typography>
-        <Typography fontWeight="400" $fontSize="1.25rem">
+        <Typography fontWeight="400" fontSize="1.25rem">
           There was no account found connected to you wallet. Create an account
           in minutes to start selling on Boson.
         </Typography>

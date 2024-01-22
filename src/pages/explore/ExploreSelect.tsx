@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { default as ReactSelect, StylesConfig } from "react-select";
 import styled, { css } from "styled-components";
 
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";

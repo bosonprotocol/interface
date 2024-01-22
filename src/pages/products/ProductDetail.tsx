@@ -15,7 +15,7 @@ import {
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
 import SellerID, { Seller } from "../../components/ui/SellerID";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import {

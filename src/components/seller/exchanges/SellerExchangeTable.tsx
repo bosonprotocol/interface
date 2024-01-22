@@ -32,9 +32,9 @@ import ExchangeStatuses from "../../offer/ExchangeStatuses";
 import Price from "../../price/index";
 import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import PaginationPages from "../common/PaginationPages";
 import {
   SellerActionButton,

@@ -24,8 +24,8 @@ import SwapHeader from "components/swap/SwapHeader";
 import TokenSafetyModal from "components/tokenSafety/TokenSafetyModal";
 import Button from "components/ui/Button";
 import { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import JSBI from "jsbi";
 import { getChainInfo } from "lib/constants/chainInfo";
 import { asSupportedChain, isSupportedChain } from "lib/constants/chains";
@@ -730,7 +730,7 @@ export function Swap({
           </ArrowContainer>
         </ArrowWrapper>
       </div>
-      <AutoColumn gap="xs">
+      <AutoColumn $gap="xs">
         <div>
           <OutputSwapSection>
             <SwapCurrencyInputPanel
@@ -861,7 +861,7 @@ export function Swap({
                     : ""
               }}
             >
-              <Typography $fontSize={`20px`} fontWeight={600}>
+              <Typography fontSize={`20px`} fontWeight={600}>
                 {swapInputError ? (
                   swapInputError
                 ) : routeIsSyncing || routeIsLoading ? (

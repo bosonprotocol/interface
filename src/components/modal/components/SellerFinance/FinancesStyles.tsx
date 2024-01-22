@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import Button from "../../../ui/Button";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 
 export const CTAButton = styled(Button)`
   padding: 0.75rem 1.5rem;

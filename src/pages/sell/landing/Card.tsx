@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
 
-import Grid from "../../../components/ui/Grid";
-import Typography from "../../../components/ui/Typography";
+import { Grid } from "../../../components/ui/Grid";
+import { Typography } from "../../../components/ui/Typography";
 import { colors } from "../../../lib/styles/colors";
 
 const StyledGrid = styled(Grid)`
@@ -62,13 +62,13 @@ export const Card: React.FC<CardProps> = ({
       {image}
       <Typography
         fontWeight="600"
-        $fontSize="1.25rem"
+        fontSize="1.25rem"
         marginTop="1rem"
         className="title"
       >
         {title}
       </Typography>
-      <Typography fontWeight="400" $fontSize="1rem" margin="0.25rem 0 2.5rem 0">
+      <Typography fontWeight="400" fontSize="1rem" margin="0.25rem 0 2.5rem 0">
         {subtitle}
       </Typography>
       {tags && (

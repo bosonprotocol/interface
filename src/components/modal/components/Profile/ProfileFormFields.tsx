@@ -8,7 +8,7 @@ import {
   CreateProfile,
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
 } from "../../../product/utils";
-import GridContainer from "../../../ui/GridContainer";
+import { GridContainer } from "../../../ui/GridContainer";
 import { ProfilePreview } from "./ProfilePreview";
 
 interface Props {

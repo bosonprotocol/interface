@@ -14,8 +14,8 @@ import { timezones } from "lib/utils/time";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import BaseSelect from "../form/BaseSelect";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import { ChoosenTime } from "./DatePicker";
 import { Selector } from "./DatePicker.style";
 

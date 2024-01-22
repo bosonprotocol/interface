@@ -1,8 +1,8 @@
 import { Currency } from "@uniswap/sdk-core";
 import CurrencyLogo from "components/logo/CurrencyLogo";
 import { AutoColumn } from "components/ui/column/index";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { COMMON_BASES } from "lib/constants/routing";
 import { breakpoint } from "lib/styles/breakpoint";
 import { currencyId } from "lib/utils/currencyId";
@@ -48,7 +48,7 @@ export default function CommonBases({
   const bases = chainId !== undefined ? COMMON_BASES[chainId] ?? [] : [];
 
   return bases.length > 0 ? (
-    <MobileWrapper gap="md">
+    <MobileWrapper $gap="md">
       <Grid gap="4px">
         {bases.map((currency: Currency) => {
           const isSelected = selectedCurrency?.equals(currency);
@@ -65,7 +65,7 @@ export default function CommonBases({
               data-testid={`common-base-${currency.symbol}`}
             >
               <CurrencyLogoFromList currency={currency} />
-              <Typography fontWeight={500} $fontSize={16}>
+              <Typography fontWeight={500} fontSize={16}>
                 {currency.symbol}
               </Typography>
             </BaseWrapper>

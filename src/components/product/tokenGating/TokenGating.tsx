@@ -8,7 +8,7 @@ import { useForm } from "../../../lib/utils/hooks/useForm";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { FormField, Input, Select } from "../../form";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "../Product.styles";
 import { TOKEN_CRITERIA, TOKEN_TYPES } from "../utils";
 

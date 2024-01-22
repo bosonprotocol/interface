@@ -1,6 +1,6 @@
 import { Token } from "@uniswap/sdk-core";
 import { EllipsisStyle } from "components/header/styles";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import { ethers } from "ethers";
 import { nativeOnChain } from "lib/constants/tokens";
 import { formatNumber, NumberType } from "lib/utils/formatNumbers";

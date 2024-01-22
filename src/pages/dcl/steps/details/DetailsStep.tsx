@@ -11,9 +11,9 @@ import {
   RadioButton
 } from "../../../../components/product/ProductType";
 import BosonButton from "../../../../components/ui/BosonButton";
-import Grid from "../../../../components/ui/Grid";
-import GridContainer from "../../../../components/ui/GridContainer";
-import Typography from "../../../../components/ui/Typography";
+import { Grid } from "../../../../components/ui/Grid";
+import { GridContainer } from "../../../../components/ui/GridContainer";
+import { Typography } from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
 import { StyledDCLLayout } from "../../styles";
 import { FormType, LocationValues } from "../../validationSchema";
@@ -39,8 +39,8 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
         flexWrap="wrap"
         gap="3rem"
       >
-        <Grid flexDirection="column" alignItems="flex-start" $width="auto">
-          <Typography fontWeight="600" $fontSize="2rem">
+        <Grid flexDirection="column" alignItems="flex-start" width="auto">
+          <Typography fontWeight="600" fontSize="2rem">
             Where do you want to sell on DCL?
           </Typography>
           <FormField
@@ -89,7 +89,7 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
                   <Typography
                     tag="p"
                     fontWeight="600"
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     margin="1.5rem 0"
                     color={colors.darkGrey}
                   >
@@ -124,7 +124,7 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
                   <Typography
                     tag="p"
                     fontWeight="600"
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     margin="1.5rem 0"
                     color={colors.darkGrey}
                   >

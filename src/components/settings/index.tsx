@@ -4,8 +4,8 @@ import { Scrim } from "components/header/accountDrawer";
 import { CloseIcon, Divider } from "components/icons";
 import { Portal } from "components/portal/Portal";
 import Column, { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { isSupportedChain, L2_CHAIN_IDS } from "lib/constants/chains";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
@@ -124,7 +124,7 @@ export function SettingsTab({
   const Settings = useMemo(
     () => (
       <>
-        <AutoColumn gap="16px">
+        <AutoColumn $gap="16px">
           <RouterPreferenceSettings />
         </AutoColumn>
         <AnimatedDropdown open={!isUniswapXTrade(trade)}>

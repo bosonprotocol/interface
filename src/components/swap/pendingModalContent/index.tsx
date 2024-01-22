@@ -1,7 +1,7 @@
 import { ChainId, Currency } from "@uniswap/sdk-core";
 import Column, { ColumnCenter } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
 import { getExplorerLink } from "lib/utils/getExplorerLink";
 import { ExplorerDataType } from "lib/utils/getExplorerLink";

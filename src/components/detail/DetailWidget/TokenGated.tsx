@@ -11,7 +11,7 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { sanitizeUrl } from "../../../lib/utils/url";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
 
 interface Props {

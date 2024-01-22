@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
-import Grid from "../../ui/Grid";
-import GridContainer from "../../ui/GridContainer";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { GridContainer } from "../../ui/GridContainer";
+import { Typography } from "../../ui/Typography";
 
 export const OfferImage = styled.div`
   width: 3rem;

@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 
 import { colors } from "../../lib/styles/colors";
 import Tooltip from "../tooltip/Tooltip";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import { FormFieldWrapper } from "./Field.styles";
 import type { FormFieldProps } from "./types";
 

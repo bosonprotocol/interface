@@ -11,7 +11,7 @@ import { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Image from "../ui/Image";
 import SellerID from "../ui/SellerID";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import ExchangeStatuses from "./ExchangeStatuses";
 import OfferBanner from "./OfferBanner";
 import OfferStatuses from "./OfferStatuses";

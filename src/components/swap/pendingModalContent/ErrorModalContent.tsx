@@ -1,8 +1,8 @@
 import QuestionHelper from "components/questionHelper";
 import Button from "components/ui/Button";
 import { ColumnCenter } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { Warning } from "phosphor-react";
 
 import { PendingModalContainer } from ".";

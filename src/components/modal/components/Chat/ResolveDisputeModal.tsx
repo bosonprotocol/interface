@@ -41,7 +41,7 @@ import { useConvertedPrice } from "../../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../ui/BosonButton";
 import Button from "../../../ui/Button";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import { useModal } from "../../useModal";
 import { DisputeSplit } from "./components/DisputeSplit";
 import ExchangePreview from "./components/ExchangePreview";

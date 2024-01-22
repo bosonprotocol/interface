@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
 import Button from "../../../../ui/Button";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 
 const StyledGrid = styled(Grid)`
   background-color: ${colors.lightGrey};

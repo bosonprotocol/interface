@@ -1,8 +1,8 @@
 import { Currency, Percent } from "@uniswap/sdk-core";
 import Modal from "components/modal/Modal";
 import { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
 import { getChainInfo } from "lib/constants/chainInfo";
 import { USDT as USDT_MAINNET } from "lib/constants/tokens";
@@ -55,7 +55,7 @@ function ConfirmationModalContent({
 }) {
   return (
     <Wrapper>
-      <AutoColumn gap="sm">
+      <AutoColumn $gap="sm">
         <Grid>
           {headerContent}
           <Grid justifyContent="center" marginLeft="24px">
@@ -65,7 +65,7 @@ function ConfirmationModalContent({
         {topContent}
       </AutoColumn>
       {bottomContent && (
-        <BottomSection gap="12px">{bottomContent}</BottomSection>
+        <BottomSection $gap="12px">{bottomContent}</BottomSection>
       )}
     </Wrapper>
   );

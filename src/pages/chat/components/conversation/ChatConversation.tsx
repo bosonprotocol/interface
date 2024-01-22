@@ -23,7 +23,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import InitializeChat from "../../../../components/modal/components/Chat/components/InitializeChat";
-import Grid from "../../../../components/ui/Grid";
+import { Grid } from "../../../../components/ui/Grid";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { zIndex } from "../../../../lib/styles/zIndex";

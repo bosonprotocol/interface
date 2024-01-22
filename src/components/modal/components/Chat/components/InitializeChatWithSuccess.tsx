@@ -6,8 +6,8 @@ import {
   useChatStatus
 } from "../../../../../lib/utils/hooks/chat/useChatStatus";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
-import Grid from "../../../../ui/Grid";
-import Typography from "../../../../ui/Typography";
+import { Grid } from "../../../../ui/Grid";
+import { Typography } from "../../../../ui/Typography";
 import InitializeChat from "./InitializeChat";
 
 const CheckIcon = styled(CheckCircle)`

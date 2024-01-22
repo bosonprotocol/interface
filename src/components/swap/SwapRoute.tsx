@@ -2,7 +2,7 @@ import { Separator } from "components/icons";
 import { LoadingRows } from "components/loader/styled";
 import RoutingDiagram from "components/routingDiagram/RoutingDiagram";
 import Column from "components/ui/column";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "lib/constants/chains";
 import getRoutingDiagramEntries from "lib/utils/getRoutingDiagramEntries";
 import { useChainId } from "lib/utils/hooks/connection/connection";

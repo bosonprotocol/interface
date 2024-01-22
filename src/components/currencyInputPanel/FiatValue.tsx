@@ -1,8 +1,8 @@
 import { LoadingBubble } from "@bosonprotocol/react-kit";
 import { Percent } from "@uniswap/sdk-core";
 import Tooltip from "components/tooltip/Tooltip";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import {
   formatNumber,

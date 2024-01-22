@@ -12,7 +12,7 @@ import { useForm } from "../../lib/utils/hooks/useForm";
 import { FormField, Input, Select } from "../form";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import {
   ContainerProductPage,
   ProductButtonGroup,

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { CompletedTransactions } from "../../../../transactions/CompleteTransactions";
 import { PendingTransactions } from "../../../../transactions/PendingTransactions";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 import Toggle from "./Toggle";
 
 enum TransactionsToogleStates {
