@@ -1,17 +1,15 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { BasicCommitDetailWidget } from "components/detail/DetailWidget/BasicCommitDetailWidget";
+import { Offer } from "lib/types/offer";
 import { generatePath } from "react-router-dom";
 
 import {
-  Break,
   ModalGrid,
   ModalImageWrapper,
   Widget,
   WidgetButtonWrapper
 } from "../../../components/detail/Detail.style";
 import DetailOpenSea from "../../../components/detail/DetailOpenSea";
-import DetailTable, {
-  Data as TableData
-} from "../../../components/detail/DetailTable";
 import {
   AccountQueryParameters,
   UrlParameters
@@ -29,7 +27,6 @@ import { useModal } from "../useModal";
 type Props = {
   state: string;
   message: string;
-  data: Readonly<Array<TableData>>;
   name: string;
   image: string;
   animationUrl: string;
@@ -50,7 +47,6 @@ export default function DetailWidget({
   type,
   state,
   message,
-  data,
   name,
   image,
   exchange,
@@ -79,8 +75,8 @@ export default function DetailWidget({
             <Image src={image} dataTestId="offerImage" />
           )}
         </ModalImageWrapper>
-        <div>
-          <Widget>
+        <div style={{ width: "100%" }}>
+          <Widget style={{ marginBottom: "1rem" }}>
             <Grid flexDirection="column">
               <Typography
                 tag="p"
@@ -98,11 +94,16 @@ export default function DetailWidget({
                 {name}
               </Typography>
             </Grid>
-            <Break />
-            <div style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
-              <DetailTable align noBorder data={data} />
-            </div>
           </Widget>
+          {exchange?.offer && (
+            <BasicCommitDetailWidget
+              isPreview={false}
+              selectedVariant={{
+                offer: exchange.offer as Offer,
+                variations: []
+              }}
+            />
+          )}
           <WidgetButtonWrapper>
             <BosonButton
               variant="primaryFill"

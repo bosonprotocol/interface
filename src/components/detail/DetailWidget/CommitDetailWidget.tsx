@@ -5,8 +5,7 @@ import {
   getHasUserRejectedTx,
   Provider,
   RedeemButton,
-  subgraph,
-  useGetOfferDetailData
+  subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
@@ -37,7 +36,6 @@ import {
   getItemFromStorage,
   saveItemInStorage
 } from "lib/utils/hooks/localstorage/useLocalStorage";
-import useCheckExchangePolicy from "lib/utils/hooks/offer/useCheckExchangePolicy";
 import useCheckTokenGatedOffer from "lib/utils/hooks/offer/useCheckTokenGatedOffer";
 import { useExchangeTokenBalance } from "lib/utils/hooks/offer/useExchangeTokenBalance";
 import {
@@ -245,30 +243,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
     ((numSellers === 1 && numOffers === 0) ||
       (numSellers === 0 && numOffers === 1)) &&
     !!commitProxyAddress;
-  let exchangePolicyCheckResult = useCheckExchangePolicy({
-    offerId: isPreview ? undefined : offer.id
-  });
-  exchangePolicyCheckResult = isPreview
-    ? {
-        isValid: true,
-        errors: []
-      }
-    : exchangePolicyCheckResult;
-  const offerDetailData = useGetOfferDetailData({
-    dateFormat: CONFIG.dateFormat,
-    defaultCurrencySymbol: CONFIG.defaultCurrency.symbol,
-    offer,
-    exchange: null,
-    onExchangePolicyClick: () => {
-      showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {
-        title: "Exchange Policy Details",
-        offerId: offer.id,
-        offerData: offer,
-        exchangePolicyCheckResult
-      });
-    },
-    exchangePolicyCheckResult
-  });
   const { data: sellers } = useSellers(
     {
       id: offer?.seller.id,
@@ -349,12 +323,11 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   };
   const BASE_MODAL_DATA = useMemo(
     () => ({
-      data: offerDetailData,
       animationUrl: offer.metadata.animationUrl || "",
       image,
       name
     }),
-    [offerDetailData, image, name, offer.metadata.animationUrl]
+    [image, name, offer.metadata.animationUrl]
   );
   const onCommitSuccess = async (
     _receipt: ethers.providers.TransactionReceipt,
