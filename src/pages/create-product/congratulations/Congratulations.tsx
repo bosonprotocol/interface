@@ -1,3 +1,4 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import {
   CheckCircle,
   DownloadSimple,
@@ -12,7 +13,6 @@ import styled from "styled-components";
 
 import { useConvertionRate } from "../../../components/convertion-rate/useConvertionRate";
 import { ModalHeaderTitle } from "../../../components/modal/header/ModalHeaderTitle";
-import useOffersBacked from "../../../components/seller/common/useOffersBacked";
 import { getSellerCenterPath } from "../../../components/seller/paths";
 import Button from "../../../components/ui/Button";
 import { Grid } from "../../../components/ui/Grid";
@@ -137,7 +137,7 @@ const useDepositWarning = (sellerId: string) => {
       isSellerCurated
     ]
   );
-  const offersBacked = useOffersBacked({
+  const offersBacked = hooks.useOffersBacked({
     ...newProps
   });
   return offersBacked.displayWarning;
@@ -278,7 +278,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
                   <DownloadSimple color={colors.black} size={20} />
                 </Button>
               }
-              theme="dark"
+              cardTheme="dark"
             />
           )}
         </GridContainer>

@@ -9,10 +9,10 @@ export const formatDate = (
     textIfTooSmall,
     format = CONFIG.dateFormat
   }: {
-    textIfTooBig?: string;
+    textIfTooBig: string;
     textIfTooSmall?: string;
     format?: string;
-  } = {}
+  }
 ) => {
   if (textIfTooBig && checkIfTimestampIsToo("too_big", timestamp)) {
     return textIfTooBig;

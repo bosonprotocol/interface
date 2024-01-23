@@ -173,7 +173,6 @@ export default function SellerAside(
             icon: Icon
           } = sellerPageTypes[key as keyof typeof sellerPageTypes];
           const isActive = sellerPage === url;
-          props.offersBacked.displayWarning = true;
           const showWarning =
             label === "Finances" && props.offersBacked.displayWarning;
           return (
