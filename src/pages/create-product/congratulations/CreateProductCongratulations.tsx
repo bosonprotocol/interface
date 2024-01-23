@@ -1,3 +1,4 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import {
   CheckCircle,
   DownloadSimple,
@@ -13,7 +14,6 @@ import styled from "styled-components";
 import { useConvertionRate } from "../../../components/convertion-rate/useConvertionRate";
 import { useLayoutContext } from "../../../components/layout/Context";
 import { ModalHeaderTitle } from "../../../components/modal/header/ModalHeaderTitle";
-import { useOffersBacked } from "../../../components/seller/common/useOffersBacked";
 import { getSellerCenterPath } from "../../../components/seller/paths";
 import Button from "../../../components/ui/Button";
 import { Grid } from "../../../components/ui/Grid";
@@ -132,7 +132,7 @@ const useDepositWarning = (sellerId: string) => {
       isSellerCurated
     ]
   );
-  const offersBacked = useOffersBacked({
+  const offersBacked = hooks.useOffersBacked({
     ...newProps
   });
   return offersBacked.displayWarning;
