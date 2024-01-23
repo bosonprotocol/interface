@@ -23,12 +23,14 @@ export const buildCondition = (
 ): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
   let method: EvaluationMethod = EvaluationMethod.None;
-  let threshold;
+  let threshold: string | undefined;
   let tokenId = partialTokenGating.tokenId || "0";
 
   let formatedValue = null;
   if (decimals && partialTokenGating.minBalance) {
-    formatedValue = utils.parseUnits(partialTokenGating.minBalance, decimals);
+    formatedValue = utils
+      .parseUnits(partialTokenGating.minBalance, decimals)
+      .toString();
   }
 
   switch (partialTokenGating.tokenType.value) {

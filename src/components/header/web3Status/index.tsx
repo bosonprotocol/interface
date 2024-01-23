@@ -1,7 +1,7 @@
 import { Button, hooks, ThemedButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import Tooltip from "components/tooltip/Tooltip";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { envConfigsFilteredByEnv } from "lib/config";
 import { getConnection } from "lib/connection";
 import { CHAIN_IDS_TO_FRIENDLY_NAMES } from "lib/constants/chains";
@@ -33,7 +33,7 @@ const Web3StatusGeneric = styled.button`
 
   margin-right: 2px;
   margin-left: 2px;
-  :focus {
+  &:focus {
     outline: none;
   }
 `;
@@ -43,8 +43,8 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ $color: string }>`
   border: 1px solid transparent;
   font-weight: 500;
   color: ${({ $color }) => $color};
-  :hover,
-  :focus {
+  &:hover,
+  &:focus {
     border: 1px solid color-mix(in srgb, var(--buttonBgColor) 90%, black);
   }
   @media (min-width: ${breakpointNumbers.xs}px) and (max-width: ${breakpointNumbers.l -
@@ -211,7 +211,7 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
           <ThemedButton
             {...getCommonWalletButtonProps(isXXS)}
             onClick={handleWalletDropdownClick}
-            theme="orangeInverse"
+            themeVal="orangeInverse"
           >
             Wrong network
           </ThemedButton>

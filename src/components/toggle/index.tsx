@@ -68,7 +68,7 @@ const ToggleElement = styled.span<{
       : colors.darkGrey};
   border-radius: 50%;
   height: 24px;
-  :hover {
+  &:hover {
     ${({ bgColor, isActive }) => ToggleElementHoverStyle(!!bgColor, isActive)}
   }
   margin-left: ${({ isActive }) => isActive && "2.2em"};

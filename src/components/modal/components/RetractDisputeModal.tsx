@@ -38,8 +38,8 @@ import { MessageDataWithInfo } from "../../../pages/chat/types";
 import SimpleError from "../../error/SimpleError";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 import { ModalProps } from "../ModalContext";
 import { useModal } from "../useModal";
 import ExchangePreview from "./Chat/components/ExchangePreview";
@@ -189,7 +189,15 @@ export default function RetractDisputeModal({
             try {
               await handleSendingRetractMessage();
               setRetractDisputeError(null);
-              showModal("WAITING_FOR_CONFIRMATION");
+              showModal(
+                "WAITING_FOR_CONFIRMATION",
+                undefined,
+                "auto",
+                undefined,
+                {
+                  xs: "400px"
+                }
+              );
               const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
 
               await sendErrorMessageIfTxFails({

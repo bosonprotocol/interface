@@ -10,7 +10,7 @@ import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeS
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Button from "../../../ui/Button";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
 import ProposalTypeSummary from "../Chat/components/ProposalTypeSummary";
@@ -71,7 +71,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         <Grid
           alignItems="center"
           justifyContent="flex-start"
-          $width="max-content"
+          width="max-content"
         >
           <OfferImage>
             <Image src={exchange.offer.metadata.image} />
@@ -92,7 +92,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         {isResolved ? (
           "-"
         ) : (
-          <Grid alignItems="center" $width="max-content">
+          <Grid alignItems="center" width="max-content">
             <DisputeEndDate size={17} fontWeight="light" color={colors.black} />
             {deadlineTimeLeft} days left
           </Grid>
@@ -113,7 +113,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         <Grid justifyContent="flex-end" gap="1rem">
           <Button
             type="button"
-            theme="secondary"
+            themeVal="secondary"
             onClick={() => {
               navigate({
                 pathname: generatePath(DrCenterRoutes.ChatMessage, {

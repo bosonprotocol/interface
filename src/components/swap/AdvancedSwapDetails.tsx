@@ -3,8 +3,8 @@ import { Separator } from "components/icons";
 import { LoadingRows } from "components/loader/styled";
 import Tooltip from "components/tooltip/Tooltip";
 import Column from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from "lib/constants/chains";
 import {
   formatCurrencyAmount,
@@ -106,7 +106,7 @@ export function AdvancedSwapDetails({
         </Grid>
       )}
       <Grid>
-        <Grid $width="fit-content">
+        <Grid width="fit-content">
           <Tooltip
             content={
               <>
@@ -125,7 +125,7 @@ export function AdvancedSwapDetails({
           </Tooltip>
         </Grid>
         <TextWithLoadingPlaceholder syncing={syncing} width={70}>
-          <Typography fontWeight={400} $fontSize={`14px`}>
+          <Typography fontWeight={400} fontSize={`14px`}>
             {trade.tradeType === TradeType.EXACT_INPUT
               ? `${formatCurrencyAmount(
                   trade.minimumAmountOut(allowedSlippage),
@@ -138,7 +138,7 @@ export function AdvancedSwapDetails({
         </TextWithLoadingPlaceholder>
       </Grid>
       <Grid>
-        <Grid $width="fit-content">
+        <Grid width="fit-content">
           <Tooltip
             content={
               <>

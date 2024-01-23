@@ -1,8 +1,8 @@
 import { Datepicker, FormField, Input } from "components/form";
 import { Select } from "components/form/Select";
 import { SwitchForm } from "components/form/Switch";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { useForm } from "lib/utils/hooks/useForm";
 import React, { useEffect } from "react";
@@ -49,7 +49,7 @@ export const CoreTermsOfSaleDates: React.FC<CoreTermsOfSaleDatesProps> = ({
             label={() => (
               <Typography
                 color={colors.secondary}
-                $fontSize="0.8rem"
+                fontSize="0.8rem"
                 cursor="pointer"
               >
                 Set an expiration date for this offer

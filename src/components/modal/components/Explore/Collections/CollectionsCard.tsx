@@ -12,9 +12,9 @@ import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKe
 import useSellerNumbers from "../../../../../lib/utils/hooks/useSellerNumbers";
 import { useCustomStoreQueryParameter } from "../../../../../pages/custom-store/useCustomStoreQueryParameter";
 import { ExtendedSeller } from "../../../../../pages/explore/WithAllOffers";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
-import Typography from "../../../../ui/Typography";
+import { Typography } from "../../../../ui/Typography";
 
 const CardContainer = styled.div<{
   $isUpperCardBgColorDefined: boolean;
@@ -146,7 +146,7 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
         <div>
           <Typography
             color={colors.black}
-            $fontSize="1.25rem"
+            fontSize="1.25rem"
             fontWeight="600"
             margin="0 0 0.625rem 0"
           >
@@ -154,7 +154,7 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
           </Typography>
           <StyledGrid alignItems="flex-start" margin="0 0 0.3125rem 0">
             <Typography
-              $fontSize="12px"
+              fontSize="12px"
               fontWeight="400"
               color={colors.darkGrey}
             >
@@ -162,7 +162,7 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
             </Typography>
           </StyledGrid>
           <StyledGrid alignItems="flex-start">
-            <Typography $fontSize="20px" fontWeight="600" color={colors.black}>
+            <Typography fontSize="20px" fontWeight="600" color={colors.black}>
               {numProducts}
             </Typography>
           </StyledGrid>

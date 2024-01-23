@@ -5,13 +5,13 @@ import { LayoutRoot } from "../../../components/layout/Layout";
 import { VariableStep } from "../../../components/modal/components/createProduct/const";
 import { useModal } from "../../../components/modal/useModal";
 import BosonButton from "../../../components/ui/BosonButton";
-import Grid from "../../../components/ui/Grid";
+import { Grid } from "../../../components/ui/Grid";
 import {
   ColumnGapPerRow,
   ItemsPerRow,
   RowGapPerRow
 } from "../../../components/ui/GridContainer";
-import Typography from "../../../components/ui/Typography";
+import { Typography } from "../../../components/ui/Typography";
 import { SellerLandingPageParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -184,7 +184,7 @@ export const SellerLandingPage: React.FC = () => {
             columnGap="5rem"
             itemsPerRow={{ xs: 1, s: 2, m: 2, l: 2, xl: 2 }}
           >
-            <Title tag="h1" fontWeight="600" $fontSize="3.5rem">
+            <Title tag="h1" fontWeight="600" fontSize="3.5rem">
               Sell physical products as NFTs everywhere
             </Title>
             <StyledGrid
@@ -201,7 +201,7 @@ export const SellerLandingPage: React.FC = () => {
                   Start from scratch
                 </span>
               </BosonButton>
-              <Typography fontWeight="600" $fontSize="20px" textAlign="center">
+              <Typography fontWeight="600" fontSize="20px" textAlign="center">
                 or select a template
               </Typography>
             </StyledGrid>

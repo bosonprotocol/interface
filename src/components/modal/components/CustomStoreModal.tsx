@@ -24,8 +24,8 @@ import { Spinner } from "../../loading/Spinner";
 import SuccessToast from "../../toasts/common/SuccessToast";
 import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 import { useModal } from "../useModal";
 import {
   getNextButtonText,
@@ -46,7 +46,7 @@ const CopyIcon = styled(CopySimple)`
 
 const Heading = styled(Typography).attrs({
   tag: "p",
-  $fontSize: "1rem",
+  fontSize: "1rem",
   fontWeight: "600",
   lineHeight: "1.5rem"
 })``;
@@ -117,7 +117,7 @@ export function CustomStoreModal({
       <Typography
         color={colors.darkGrey}
         fontWeight="600"
-        $fontSize="1.25rem"
+        fontSize="1.25rem"
         lineHeight="1.875rem"
       >
         {text}
@@ -269,7 +269,7 @@ export function CustomStoreModal({
                       />
                     </Grid>
                     <Button
-                      theme="secondary"
+                      themeVal="secondary"
                       type="submit"
                       disabled={isSubmitting}
                     >

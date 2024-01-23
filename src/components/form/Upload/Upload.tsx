@@ -10,7 +10,7 @@ import { ImageEditorModal } from "../../modal/components/ImageEditorModal/ImageE
 import { useModal } from "../../modal/useModal";
 import BosonButton from "../../ui/BosonButton";
 import Loading from "../../ui/Loading";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import Error from "../Error";
 import {
   FieldFileUploadWrapper,
@@ -292,7 +292,6 @@ function Upload({
           </BosonButton>
         ) : (
           <FileUploadWrapper
-            choosen={files !== null}
             data-disabled={disabled}
             onClick={handleChooseFile}
             error={errorMessage}
@@ -330,7 +329,7 @@ function Upload({
                 ) : (
                   <Image size={24} />
                 )}
-                {placeholder && (
+                {placeholder && !field.value?.length && (
                   <Typography tag="p" style={{ marginBottom: "0" }}>
                     {placeholder}
                   </Typography>

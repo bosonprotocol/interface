@@ -2,7 +2,7 @@ import { LoadingBubble } from "@bosonprotocol/react-kit";
 import styled, { css, keyframes } from "styled-components";
 
 import Column, { AutoColumn } from "../../../ui/column";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 
 const PortfolioRowWrapper = styled(Grid)`
   gap: 12px;
@@ -33,7 +33,7 @@ export default function PortfolioRow({
   return (
     <PortfolioRowWrapper data-testid={testId}>
       {left}
-      <AutoColumn grow>
+      <AutoColumn $grow>
         {title}
         {descriptor}
       </AutoColumn>
@@ -46,9 +46,9 @@ function PortfolioSkeletonRow() {
   return (
     <PortfolioRowWrapper>
       <LoadingBubble $height="40px" $width="40px" $borderRadius="50%" />
-      <AutoColumn grow gap="4px">
-        <LoadingBubble $height="16px" $width="60px" delay="300ms" />
-        <LoadingBubble $height="10px" $width="90px" delay="300ms" />
+      <AutoColumn $grow $gap="4px">
+        <LoadingBubble $height="16px" $width="60px" $delay="300ms" />
+        <LoadingBubble $height="10px" $width="90px" $delay="300ms" />
       </AutoColumn>
     </PortfolioRowWrapper>
   );

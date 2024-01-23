@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import Image from "../ui/Image";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 
 export const ProductButtonGroup = styled.div`
   margin-top: 3.5rem;

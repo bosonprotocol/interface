@@ -11,7 +11,7 @@ import { FormField, Input, Select, TagsInput, Textarea } from "../form";
 import Error from "../form/Error";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import {
   ContainerProductPage,
   ProductButtonGroup,
@@ -127,7 +127,7 @@ const AddAttributesContainer = ({
               {!checkLastElementIsPristine(elements) && (
                 <Button
                   onClick={() => arrayHelpers.push({ name: "", value: "" })}
-                  theme="blankSecondary"
+                  themeVal="blankSecondary"
                   style={{ borderBottom: `1px solid ${colors.border}` }}
                 >
                   Add new <Plus size={18} />

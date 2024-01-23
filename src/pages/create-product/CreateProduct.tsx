@@ -42,7 +42,7 @@ export default function CreateProductWrapper() {
           </p>
 
           <Button
-            theme="warning"
+            themeVal="warning"
             onClick={() => navigate({ pathname: BosonRoutes.Root })}
           >
             Go back

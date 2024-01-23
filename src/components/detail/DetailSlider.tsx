@@ -7,9 +7,9 @@ import { CaretLeft, CaretRight } from "phosphor-react";
 import { useEffect, useReducer, useRef } from "react";
 
 import Button from "../../components/ui/Button";
-import Grid from "../../components/ui/Grid";
+import { Grid } from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import { SLIDER_OPTIONS } from "./const";
 import { GlideSlide, GlideWrapper } from "./Detail.style";
 
@@ -59,10 +59,10 @@ export default function DetailSlider({ images }: Props) {
           Detail images
         </Typography>
         <Grid justifyContent="flex-end">
-          <Button theme="blank" onClick={() => handleSlider("<")}>
+          <Button themeVal="blank" onClick={() => handleSlider("<")}>
             <CaretLeft size={32} />
           </Button>
-          <Button theme="blank" onClick={() => handleSlider(">")}>
+          <Button themeVal="blank" onClick={() => handleSlider(">")}>
             <CaretRight size={32} />
           </Button>
         </Grid>

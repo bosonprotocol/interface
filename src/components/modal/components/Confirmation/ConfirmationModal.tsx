@@ -8,7 +8,7 @@ import React, {
 
 import SimpleError from "../../../error/SimpleError";
 import Button from "../../../ui/Button";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import { useModal } from "../../useModal";
 
 interface ConfirmationModalProps {
@@ -36,7 +36,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       {children}
       {hasError && <SimpleError />}
       <Grid justifyContent="space-between" marginTop="1rem">
-        <Button theme="blankSecondaryOutline" onClick={() => hideModal()}>
+        <Button themeVal="blankSecondaryOutline" onClick={() => hideModal()}>
           Cancel
         </Button>
         {CTA}

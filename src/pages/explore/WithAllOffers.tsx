@@ -6,8 +6,8 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { LayoutRoot } from "../../components/layout/Layout";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -241,7 +241,7 @@ export function WithAllOffers<P>(
           <TopContainer>
             <Typography
               tag="h2"
-              $fontSize="2.25rem"
+              fontSize="2.25rem"
               style={{ visibility: isCustomStoreFront ? "hidden" : undefined }}
             >
               Explore products

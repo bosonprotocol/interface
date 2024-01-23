@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import Step, { StepState } from "./Step";
 import { MultiStepStyle, MultiStepWrapper, StepWrapper } from "./Step.styles";
 
@@ -40,7 +40,7 @@ export default function MultiSteps({
   return (
     <>
       {isLteS && !hideArrows && (
-        <Grid alignItems="center" $width="auto">
+        <Grid alignItems="center" width="auto">
           <ArrowLeft
             size={32}
             style={{ cursor: active && callback ? "pointer" : "not-allowed" }}
@@ -107,7 +107,7 @@ export default function MultiSteps({
         })}
       </MultiStepStyle>
       {isLteS && !hideArrows && (
-        <Grid alignItems="flex-end" $width="auto">
+        <Grid alignItems="flex-end" width="auto">
           <ArrowRight
             size={32}
             color={

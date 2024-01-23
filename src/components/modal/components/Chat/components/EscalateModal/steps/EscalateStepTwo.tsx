@@ -58,8 +58,8 @@ import { Spinner } from "../../../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../../../../ui/BosonButton";
 import Button from "../../../../../../ui/Button";
-import Grid from "../../../../../../ui/Grid";
-import Typography from "../../../../../../ui/Typography";
+import { Grid } from "../../../../../../ui/Grid";
+import { Typography } from "../../../../../../ui/Typography";
 import { useModal } from "../../../../../useModal";
 import InitializeChatWithSuccess from "../../InitializeChatWithSuccess";
 
@@ -282,7 +282,7 @@ function EscalateStepTwo({
                   gap="1rem"
                 >
                   <Typography
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
@@ -290,7 +290,7 @@ function EscalateStepTwo({
                     your wallet. This will allow the dispute resolver to verify
                     your identity.
                   </Typography>
-                  <FormField theme="white" title="Message">
+                  <FormField title="Message">
                     <Textarea {...FormModel.formFields.message} disabled />
                   </FormField>
                   <BosonButton
@@ -328,7 +328,7 @@ function EscalateStepTwo({
                   gap="1rem"
                 >
                   <Typography
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
@@ -336,7 +336,6 @@ function EscalateStepTwo({
                     attaching any evidence (e.g. Chat Transcript, Files, etc)
                   </Typography>
                   <FormField
-                    theme="white"
                     title="Email Address"
                     valueToCopy={{
                       [emailFormField.name]: values?.email || ""
@@ -345,7 +344,6 @@ function EscalateStepTwo({
                     <Input {...emailFormField} />
                   </FormField>
                   <FormField
-                    theme="white"
                     title="Email Subject"
                     valueToCopy={{
                       [FormModel.formFields.subject
@@ -355,7 +353,6 @@ function EscalateStepTwo({
                     <Input {...FormModel.formFields.subject} />
                   </FormField>
                   <FormField
-                    theme="white"
                     title="Email Body"
                     valueToCopy={{
                       [FormModel.formFields.exchangeId.name]:
@@ -389,7 +386,7 @@ function EscalateStepTwo({
                     </UnsignedMessageWrapper>
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
-                  <FormField theme="white" title="Chat transcript">
+                  <FormField title="Chat transcript">
                     <BosonButton
                       variant="accentFill"
                       style={{ color: "white" }}
@@ -398,7 +395,7 @@ function EscalateStepTwo({
                       Download CSV
                     </BosonButton>
                   </FormField>
-                  <FormField theme="white" title="">
+                  <FormField title="">
                     <Checkbox
                       {...FormModel.formFields.confirm}
                       disabled={activeStep === 0}
@@ -423,7 +420,7 @@ function EscalateStepTwo({
                   gap="1rem"
                 >
                   <Typography
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
@@ -435,7 +432,6 @@ function EscalateStepTwo({
                   </Typography>
                   <InitializeChatWithSuccess />
                   <Button
-                    theme="secondary"
                     onClick={async () => {
                       const handleSendingEscalateMessage = async () => {
                         if (bosonXmtp && threadId && address) {
@@ -488,7 +484,15 @@ function EscalateStepTwo({
                       let tx: TransactionResponse | undefined = undefined;
                       try {
                         setLoading(true);
-                        showModal("WAITING_FOR_CONFIRMATION");
+                        showModal(
+                          "WAITING_FOR_CONFIRMATION",
+                          undefined,
+                          "auto",
+                          undefined,
+                          {
+                            xs: "400px"
+                          }
+                        );
                         const buyerEscalationDeposit =
                           exchange.offer.disputeResolutionTerms
                             .buyerEscalationDeposit;

@@ -1,6 +1,6 @@
 import CurrencyLogo from "components/logo/CurrencyLogo";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { formatReviewSwapCurrencyAmount } from "lib/utils/formatNumbers";
 import { ArrowRight } from "phosphor-react";
 import { InterfaceTrade } from "state/routing/types";

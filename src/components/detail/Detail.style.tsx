@@ -6,7 +6,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import { buttonText } from "../ui/styles";
 
 export const ChartWrapper = styled.div`
@@ -528,14 +528,9 @@ const miniButton = css`
   }
 `;
 export const OpenSeaButton = styled.a<{ $disabled: boolean }>`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: ${zIndex.OfferStatus};
-  border: 2px solid ${colors.border};
   ${miniButton}
-
+  padding: 0;
+  gap: 0.5rem;
   ${({ $disabled }) =>
     $disabled &&
     css`
@@ -546,16 +541,24 @@ export const OpenSeaButton = styled.a<{ $disabled: boolean }>`
       }
     `}
 `;
+export const SellerAndOpenSeaGrid = styled(Grid)`
+  justify-content: space-between;
+  border: 2px solid ${colors.border};
+  padding: 0.5rem;
+  && {
+    > * {
+      flex: 1;
+    }
+  }
+  :nth-child(1) {
+    justify-content: flex-start;
+  }
+  :nth-child(2) {
+    justify-content: flex-end;
+  }
+`;
 
 export const RedeemLeftButton = styled.button`
-  position: absolute;
-  top: -2rem;
-  left: 0;
-  right: 0;
-  border-width: 0;
-  border-bottom: 2px solid ${colors.border};
-  z-index: ${zIndex.OfferStatus};
-
   cursor: pointer;
   transition: all 150ms ease-in-out;
   &:hover {
@@ -584,7 +587,7 @@ export const RaiseProblemButton = styled(Button)`
     padding: 0.75rem 1rem;
 
     font-weight: 600;
-    color: ${colors.orange};
+    color: ${colors.accent};
     cursor: pointer;
     transition: all 150ms ease-in-out;
     &:hover:not(:disabled) {

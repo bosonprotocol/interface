@@ -6,7 +6,7 @@ import { IPrice } from "../../lib/utils/convertPrice";
 import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
 import useTransactionHistory from "../../lib/utils/hooks/useTransactionHistory";
 import { useConvertedPrice } from "../price/useConvertedPrice";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import { HEADER } from "./const";
 import { Transactions } from "./Detail.style";
 

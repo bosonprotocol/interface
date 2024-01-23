@@ -28,6 +28,7 @@ export const TagWrapper = styled.div`
   background-color: ${colors.lightGrey};
   display: inline-block;
   padding: 0.5em 0.75em;
+  margin-top: 1rem;
   .text {
     word-break: break-word;
   }

@@ -10,7 +10,7 @@ import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import {
   ExchangeName,
   Items,

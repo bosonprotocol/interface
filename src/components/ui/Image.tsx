@@ -11,7 +11,7 @@ import {
   getImageUrl,
   ImageOptimizationOpts
 } from "../../lib/utils/images";
-import Typography from "./Typography";
+import { Typography } from "./Typography";
 
 type LoadingStatus = "loading" | "success" | "error";
 

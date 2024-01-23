@@ -123,7 +123,7 @@ export default function SwapBuyFiatButton() {
       disabled={fiatOnRampsUnavailableTooltipDisabled}
     >
       <StyledTextButton
-        theme="blankSecondary"
+        themeVal="blankSecondary"
         onClick={handleBuyCrypto}
         disabled={buyCryptoButtonDisabled}
         data-testid="buy-fiat-button"

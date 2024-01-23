@@ -7,7 +7,7 @@ import { memo } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 
-import Grid, { IGrid } from "../../components/ui/Grid";
+import { Grid, GridProps } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
@@ -61,7 +61,7 @@ const ImageContainer = styled.div`
 `;
 
 type Buyer = Pick<subgraph.Buyer, "id" | "wallet">;
-type Seller = Pick<
+export type Seller = Pick<
   subgraph.Seller,
   "id" | "assistant" | "authTokenType" | "authTokenId"
 > & {
@@ -82,7 +82,7 @@ const SellerID: React.FC<
     withBosonStyles?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
     lensProfile?: Profile;
-  } & IGrid &
+  } & GridProps &
     Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">
 > = ({
   children,

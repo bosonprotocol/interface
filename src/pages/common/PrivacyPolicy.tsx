@@ -2,8 +2,8 @@
 import { defaultFontFamily } from "lib/styles/fonts";
 import styled from "styled-components";
 
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 
 const Wrapper = styled(Grid)`
@@ -11,7 +11,7 @@ const Wrapper = styled(Grid)`
     color: ${colors.secondary};
     text-decoration: none;
     transition: all 150ms ease-in-out;
-    :hover {
+    &:hover {
       color: ${colors.black};
       text-decoration: underline;
     }
@@ -32,7 +32,7 @@ const List = styled.ol`
   li {
     display: block;
     margin: 2rem 0;
-    :before {
+    &:before {
       content: counters(item, ".") " ";
       counter-increment: item;
       position: absolute;
@@ -98,7 +98,7 @@ const Table = styled.table`
         border-top: 1px solid ${colors.border};
         border-right: 1px solid ${colors.border};
         border-bottom: 4px solid ${colors.border};
-        :first-child {
+        &:first-child {
           border-left: 1px solid ${colors.border};
         }
       }
@@ -109,17 +109,17 @@ const Table = styled.table`
     tr {
       td {
         border-bottom: 1px solid ${colors.border};
-        :first-child {
+        &:first-child {
           border-left: 1px solid ${colors.border};
         }
         border-right: 1px solid ${colors.border};
       }
-      :nth-child(2n + 2) {
+      &:nth-child(2n + 2) {
         td {
           background: ${colors.border};
         }
       }
-      :hover {
+      &:hover {
         td {
           background: ${colors.lightGrey};
         }

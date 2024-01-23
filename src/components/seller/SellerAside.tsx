@@ -8,7 +8,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import { WithSellerDataProps } from "./common/WithSellerData";
 import { SellerInsideProps } from "./SellerInside";
 import { sellerPageTypes } from "./SellerPages";
@@ -24,7 +24,7 @@ const ArrowContainer = styled.div`
   box-sizing: content-box;
   width: 16px;
   height: 16px;
-  :hover {
+  &:hover {
     background-color: ${colors.border};
   }
 `;
@@ -84,7 +84,7 @@ const Aside = styled.aside`
 
 const AsideLink = styled.li<{ $active?: boolean }>`
   background: ${(props) => (props.$active ? colors.border : colors.white)};
-  :hover {
+  &:hover {
     background-color: ${colors.border};
     filter: brightness(-200%);
   }

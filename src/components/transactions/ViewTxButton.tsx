@@ -4,7 +4,7 @@ import { usePendingTransactionsStore } from "../../lib/utils/hooks/transactions/
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import { Spinner } from "../loading/Spinner";
 import { useModal } from "../modal/useModal";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 
 type ViewTxButtonProps = {
   children?: ReactNode;
@@ -41,7 +41,7 @@ export default function ViewTxButton({ children, ...rest }: ViewTxButtonProps) {
 
   return (
     <Grid
-      $width="initial"
+      width="initial"
       gap="0.5rem"
       alignItems="center"
       flexWrap="nowrap"

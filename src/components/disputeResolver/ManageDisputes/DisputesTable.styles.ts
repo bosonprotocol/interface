@@ -10,7 +10,7 @@ export const Table = styled.table`
   th {
     font-weight: 600;
     color: ${colors.darkGrey};
-    :not([data-sortable]) {
+    &:not([data-sortable]) {
       cursor: default !important;
     }
     [data-sortable] {
@@ -45,7 +45,7 @@ export const Table = styled.table`
   }
   tbody {
     tr {
-      :hover {
+      &:hover {
         td {
           background-color: ${colors.darkGrey}08;
           cursor: pointer;
@@ -108,11 +108,9 @@ export const Span = styled.span`
   }
 `;
 
-export const DisputeStateWrapper = styled.button.attrs(
-  (props: { state: subgraph.DisputeState }) => ({
-    state: props.state
-  })
-)`
+export const DisputeStateWrapper = styled.button<{
+  state: subgraph.DisputeState;
+}>`
   padding: 0.4rem;
   border-radius: 5%;
   color: ${colors.black};

@@ -1,4 +1,4 @@
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { colors } from "lib/styles/colors";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
@@ -38,7 +38,7 @@ const IconStyles = css<{ hideHorizontal?: boolean; $color: string }>`
   overflow: hidden;
   height: 32px;
   width: ${({ hideHorizontal }) => (hideHorizontal ? "0px" : "32px")};
-  :hover {
+  &:hover {
     background-color: color-mix(in srgb, var(--buttonBgColor) 90%, black);
     transition: 125ms background-color ease-in, ${getWidthTransition};
 
@@ -46,17 +46,20 @@ const IconStyles = css<{ hideHorizontal?: boolean; $color: string }>`
       opacity: 1;
     }
   }
-  :active {
+  &:active {
     background-color: var(--buttonBgColor);
     transition: background-color 125ms linear, ${getWidthTransition};
   }
 `;
 
-const IconBlockLink = styled.a`
+const IconBlockLink = styled.a<{ hideHorizontal?: boolean; $color: string }>`
   ${IconStyles};
 `;
 
-const IconBlockButton = styled.button`
+const IconBlockButton = styled.button<{
+  hideHorizontal?: boolean;
+  $color: string;
+}>`
   ${IconStyles};
   border: none;
   outline: none;

@@ -12,7 +12,7 @@ import { useForm } from "../../lib/utils/hooks/useForm";
 import { FormField, Input, Select } from "../form";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import {
   ContainerProductPage,
   ProductButtonGroup,
@@ -151,7 +151,7 @@ const AddSupportedJurisdictions = () => {
                 {!checkLastElementIsPristine(jurisdictions) && (
                   <Button
                     onClick={() => arrayHelpers.push({ region: "", time: "" })}
-                    theme="blankSecondary"
+                    themeVal="blankSecondary"
                     style={{ borderBottom: `1px solid ${colors.border}` }}
                   >
                     Add new <Plus size={18} />

@@ -21,9 +21,9 @@ import PaginationPages from "../../seller/common/PaginationPages";
 import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import { DisputeHistory } from "../DisputeHistory/DisputeHistory";
 import {
   DisputeStateWrapper,
@@ -390,7 +390,7 @@ export default function DisputesTable({ disputes }: Props) {
             <Grid justifyContent="flex-end" gap="1rem">
               <Button
                 size="small"
-                theme="blank"
+                themeVal="blank"
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
@@ -400,7 +400,7 @@ export default function DisputesTable({ disputes }: Props) {
                 <Button
                   key={`page_btn_${pageNumber}`}
                   size="small"
-                  theme="blank"
+                  themeVal="blank"
                   style={{
                     color:
                       pageNumber === pageIndex
@@ -418,7 +418,7 @@ export default function DisputesTable({ disputes }: Props) {
               ))}
               <Button
                 size="small"
-                theme="blank"
+                themeVal="blank"
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
               >

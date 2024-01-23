@@ -1,7 +1,7 @@
 import { Currency, Percent, TradeType } from "@uniswap/sdk-core";
 import { Divider } from "components/icons";
 import Column, { AutoColumn } from "components/ui/column";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import { useUSDPrice } from "lib/utils/hooks/useUSDPrice";
 import { InterfaceTrade } from "state/routing/types";
 import { Field } from "state/swap/actions";
@@ -30,7 +30,7 @@ export default function SwapModalHeader({
   const fiatValueOutput = useUSDPrice(trade.outputAmount);
 
   return (
-    <HeaderContainer gap="sm">
+    <HeaderContainer $gap="sm">
       <Column gap="lg">
         <SwapModalHeaderAmount
           field={Field.INPUT}

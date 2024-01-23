@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 
 import Tooltip from "../tooltip/Tooltip";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import { Table } from "./Detail.style";
 
 export interface Data {

@@ -16,9 +16,9 @@ import ConnectButton from "../../../header/ConnectButton";
 import { CreateProfile } from "../../../product/utils";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../ui/BosonButton";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import Loading from "../../../ui/Loading";
-import Typography from "../../../ui/Typography";
+import { Typography } from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import { ChooseProfileType } from "./ChooseProfileType";
 import { ProfileType } from "./const";
@@ -118,7 +118,7 @@ export default function CreateProfileModal({
         label={() => (
           <Typography
             color={colors.secondary}
-            $fontSize="0.8rem"
+            fontSize="0.8rem"
             onClick={() => setSwitchAndProfileType(!switchChecked)}
             cursor="pointer"
           >

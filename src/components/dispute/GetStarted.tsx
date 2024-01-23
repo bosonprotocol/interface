@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { DisputeFormModel } from "../modal/components/DisputeModal/DisputeModalFormModel";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 
 const FormButton = styled.button`
   border: none;
@@ -49,10 +49,10 @@ function GetStarted({
   return (
     <>
       <div>
-        <Typography fontWeight="600" $fontSize="2rem">
+        <Typography fontWeight="600" fontSize="2rem">
           Get started
         </Typography>
-        <Typography $fontSize="1.25rem" color={colors.darkGrey}>
+        <Typography fontSize="1.25rem" color={colors.darkGrey}>
           First, choose the issue you're facing with your exchange.
         </Typography>
       </div>

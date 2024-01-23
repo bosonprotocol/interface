@@ -7,9 +7,9 @@ import SimpleError from "../../../../error/SimpleError";
 import { FormField, Input } from "../../../../form";
 import Error from "../../../../form/Error";
 import BosonButton from "../../../../ui/BosonButton";
-import Grid from "../../../../ui/Grid";
-import GridContainer from "../../../../ui/GridContainer";
-import Typography from "../../../../ui/Typography";
+import { Grid } from "../../../../ui/Grid";
+import { GridContainer } from "../../../../ui/GridContainer";
+import { Typography } from "../../../../ui/Typography";
 
 interface Props {
   onBackClick: () => void;
@@ -124,7 +124,7 @@ export default function BosonAccountFormFields({
           <SimpleError>
             <Typography
               fontWeight="600"
-              $fontSize="1rem"
+              fontSize="1rem"
               lineHeight="1.5rem"
               style={{ display: "inline-block" }}
             >

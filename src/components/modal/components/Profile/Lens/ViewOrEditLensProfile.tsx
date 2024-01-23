@@ -21,7 +21,7 @@ import {
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
 } from "../../../../product/utils";
 import BosonButton from "../../../../ui/BosonButton";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
 import { getMetadataEmail } from "../utils";
 import { LensStep } from "./const";

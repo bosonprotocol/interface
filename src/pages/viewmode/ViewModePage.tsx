@@ -1,6 +1,6 @@
 import Button from "../../components/ui/Button";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { goToViewMode, ViewMode } from "../../lib/viewMode";
@@ -24,7 +24,7 @@ export const ViewModePage = () => {
         margin="1rem"
       >
         <Button
-          theme="secondary"
+          themeVal="secondary"
           onClick={() => {
             goToViewMode(ViewMode.DAPP, BosonRoutes.Root);
           }}
@@ -32,7 +32,7 @@ export const ViewModePage = () => {
           Go to the DAPP
         </Button>
         <Button
-          theme="secondary"
+          themeVal="secondary"
           onClick={() => {
             goToViewMode(ViewMode.DR_CENTER, DrCenterRoutes.Root);
           }}

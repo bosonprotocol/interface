@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { useCompletedTransactions } from "../../lib/utils/hooks/transactions/useCompletedTransactions";
 import { buildTableData } from "../../lib/utils/transactions";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import Loading from "../ui/Loading";
 import TransactionsTable from "./TransactionsTable";
 

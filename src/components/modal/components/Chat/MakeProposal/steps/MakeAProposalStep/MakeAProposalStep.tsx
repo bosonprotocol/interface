@@ -8,8 +8,8 @@ import { useBuyers } from "../../../../../../../lib/utils/hooks/useBuyers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { Select } from "../../../../../../form";
 import BosonButton from "../../../../../../ui/BosonButton";
-import Grid from "../../../../../../ui/Grid";
-import Typography from "../../../../../../ui/Typography";
+import { Grid } from "../../../../../../ui/Grid";
+import { Typography } from "../../../../../../ui/Typography";
 import { FormModel } from "../../MakeProposalFormModel";
 import RefundRequest from "./RefundRequest";
 
@@ -67,17 +67,17 @@ export default function MakeAProposalStep({
     : "proposal";
   return (
     <>
-      <Typography $fontSize="2rem" fontWeight="600">
+      <Typography fontSize="2rem" fontWeight="600">
         Make a {proposalOrCounterProposal}
       </Typography>
-      <Typography $fontSize="1.25rem" color={colors.darkGrey}>
+      <Typography fontSize="1.25rem" color={colors.darkGrey}>
         Here you can make a {proposalOrCounterProposal} to the{" "}
         {counterPartyText} on how you would like the issue to be resolved. Note
         that this proposal is binding and if the &nbsp;{counterPartyText} agrees
         to it, the proposal will be implemented automatically.
       </Typography>
       <Grid flexDirection="column" margin="2rem 0 0 0" alignItems="flex-start">
-        <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+        <Typography fontWeight="600" tag="p" fontSize="1.5rem">
           Proposal type
         </Typography>
         <Select

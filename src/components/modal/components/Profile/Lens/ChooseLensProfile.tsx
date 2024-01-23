@@ -8,10 +8,10 @@ import useGetLensProfiles from "../../../../../lib/utils/hooks/lens/profile/useG
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import Button from "../../../../ui/Button";
-import Grid from "../../../../ui/Grid";
-import GridContainer from "../../../../ui/GridContainer";
+import { Grid } from "../../../../ui/Grid";
+import { GridContainer } from "../../../../ui/GridContainer";
 import Loading from "../../../../ui/Loading";
-import Typography from "../../../../ui/Typography";
+import { Typography } from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
 import { LensStep } from "./const";
 import LensProfileMultiSteps from "./LensProfileMultiSteps";
@@ -121,14 +121,14 @@ export default function ChooseLensProfile({
               {lensProfiles.map((profile, index) => {
                 return (
                   <Button
-                    theme="white"
+                    themeVal="white"
                     onClick={() => onChooseUseExisting(profile as Profile)}
                     key={`lens_profile_${profile.id}_${index}`}
                   >
                     <Grid flexDirection="column" gap="1rem" padding="1rem">
                       <Typography
                         fontWeight="600"
-                        $fontSize="1.25rem"
+                        fontSize="1.25rem"
                         lineHeight="150%"
                         style={{
                           wordBreak: "break-all"
@@ -146,7 +146,7 @@ export default function ChooseLensProfile({
         </GridContainer>
         {!isFetching && !lensProfiles.length && (
           <Grid justifyContent="center">
-            <Typography $fontSize="0.8rem" color={colors.grey}>
+            <Typography fontSize="0.8rem" color={colors.grey}>
               No Lens profiles found
             </Typography>
           </Grid>
@@ -155,14 +155,17 @@ export default function ChooseLensProfile({
       <Grid justifyContent="flex-start" gap="2rem" margin="2rem 0 0 0">
         {!isEdit && (
           <Button
-            theme="orangeInverse"
+            themeVal="orangeInverse"
             type="button"
             onClick={() => navigate({ pathname: BosonRoutes.Root })}
           >
             Back to home page
           </Button>
         )}
-        <Button onClick={changeToRegularProfile} theme="blankSecondaryOutline">
+        <Button
+          onClick={changeToRegularProfile}
+          themeVal="blankSecondaryOutline"
+        >
           Proceed without Lens
         </Button>
       </Grid>

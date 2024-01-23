@@ -1,27 +1,24 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import map from "lodash/map";
+import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import styled from "styled-components";
 
-import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
-import SellerID from "../../components/ui/SellerID";
-import { colors } from "../../lib/styles/colors";
+import SellerID, { Seller } from "../../components/ui/SellerID";
 import { isTruthy } from "../../lib/types/helpers";
 import { useForm } from "../../lib/utils/hooks/useForm";
 import { VariantV1 } from "../../pages/products/types";
 import VariationSelects from "../../pages/products/VariationSelects";
 import {
-  DarkerBackground,
-  DetailGrid,
   DetailWrapper,
   ImageWrapper,
   LightBackground,
-  MainDetailGrid
+  MainDetailGrid,
+  SellerAndOpenSeaGrid
 } from "../detail/Detail.style";
-import DetailSlider from "../detail/DetailSlider";
-import DetailTable from "../detail/DetailTable";
 import BosonButton from "../ui/BosonButton";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import Video from "../ui/Video";
 import { ProductButtonGroup } from "./Product.styles";
 import { usePreviewOffers } from "./utils/usePreviewOffer";
@@ -31,7 +28,6 @@ interface Props {
   seller?: subgraph.SellerFieldsFragment;
   isMultiVariant: boolean;
   isOneSetOfImages: boolean;
-  hasMultipleVariants: boolean;
   decimals?: number;
 }
 
@@ -49,7 +45,6 @@ export default function Preview({
   seller,
   isMultiVariant,
   isOneSetOfImages,
-  hasMultipleVariants,
   decimals
 }: Props) {
   const { values } = useForm();
@@ -64,7 +59,7 @@ export default function Preview({
   const sliderImages = map(productImages, (v) => v?.[0]?.src || "").filter(
     (ipfsLink) => ipfsLink
   );
-  const offerImg = sliderImages?.[0] || "";
+  const offerImg: string = sliderImages?.[0] || "";
 
   const handleClosePreview = () => {
     togglePreview(false);
@@ -74,7 +69,7 @@ export default function Preview({
   const previewOffers = usePreviewOffers({
     isMultiVariant,
     seller,
-    overrides: { decimals }
+    overrides: { decimals, offerImg, visuals_images: sliderImages }
   });
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const [offer] = previewOffers;
@@ -150,11 +145,6 @@ export default function Preview({
       })) ?? [])
     ]
   };
-  // offer is necessarily compliant because created with the dApp
-  const exchangePolicyCheckResult = {
-    isValid: true,
-    errors: []
-  };
   return (
     <PreviewWrapper>
       <PreviewWrapperContent>
@@ -174,19 +164,21 @@ export default function Preview({
                 ) : (
                   <Image src={thumbnailImg} dataTestId="offerImage" />
                 )}
+                <SellerAndOpenSeaGrid>
+                  <SellerID
+                    offer={offer}
+                    buyerOrSeller={offer?.seller as Seller}
+                    justifyContent="flex-start"
+                    withProfileImage
+                    onClick={null}
+                  />
+                </SellerAndOpenSeaGrid>
               </ImageWrapper>
-              <div>
-                <SellerID
-                  offer={offer}
-                  buyerOrSeller={offer?.seller}
-                  justifyContent="flex-start"
-                  withProfileImage
-                  onClick={null}
-                />
+              <div style={{ width: "100%" }}>
                 <Typography
                   tag="h1"
                   data-testid="name"
-                  $fontSize="2rem"
+                  fontSize="2rem"
                   margin="0 0 2rem 0"
                 >
                   {name}
@@ -198,74 +190,16 @@ export default function Preview({
                     disabled
                   />
                 )}
-                <DetailWidget
+                <CommitDetailWidget
+                  selectedVariant={variant}
                   isPreview={true}
-                  pageType="offer"
-                  offer={offer}
                   name={name}
                   image={offerImg}
-                  hasSellerEnoughFunds={true}
-                  hasMultipleVariants={hasMultipleVariants}
-                  exchangePolicyCheckResult={exchangePolicyCheckResult}
                 />
               </div>
             </MainDetailGrid>
           </LightBackground>
-          <DarkerBackground>
-            <DetailGrid>
-              <div>
-                <Typography tag="h3">Product description</Typography>
-                <Typography
-                  tag="p"
-                  color={colors.darkGrey}
-                  data-testid="description"
-                  style={{ whiteSpace: "pre-wrap" }}
-                >
-                  {values.productInformation.description}
-                </Typography>
-                {/* TODO: hidden for now */}
-                {/* <DetailTable data={productAttributes ?? []} /> */}
-              </div>
-              <div>
-                <Typography tag="h3">About the creator</Typography>
-                <Typography
-                  tag="p"
-                  color={colors.darkGrey}
-                  style={{ whiteSpace: "pre-wrap" }}
-                >
-                  {values.createYourProfile.description}
-                </Typography>
-              </div>
-            </DetailGrid>
-            <DetailSlider images={sliderImages} />
-            <DetailGrid>
-              {(values.shippingInfo.returnPeriod ||
-                (values?.shippingInfo?.jurisdiction?.length > 0 &&
-                  (values?.shippingInfo?.jurisdiction[0]?.region?.length ?? 0) >
-                    0)) && (
-                <div>
-                  <Typography tag="h3">Shipping information</Typography>
-                  <Typography tag="p" style={{ color: colors.darkGrey }}>
-                    Return period: {values.shippingInfo.returnPeriod}{" "}
-                    {values.shippingInfo.returnPeriod === 1 ? "day" : "days"}
-                  </Typography>
-                  <DetailTable
-                    data={map(
-                      values?.shippingInfo?.jurisdiction.filter(
-                        (v) => v.time && v.region
-                      ),
-                      ({ region, time }) => {
-                        return {
-                          name: region,
-                          value: time
-                        };
-                      }
-                    )}
-                  />
-                </div>
-              )}
-            </DetailGrid>
-          </DarkerBackground>
+          <OfferFullDescription offer={offer} exchange={null} />
         </DetailWrapper>
       </PreviewWrapperContent>
       <ProductButtonGroup>

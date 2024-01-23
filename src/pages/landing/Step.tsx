@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";

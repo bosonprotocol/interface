@@ -10,9 +10,9 @@ import { ViewMode } from "../../lib/viewMode";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../layout/Layout";
 import { getSellerCenterPath } from "../seller/paths";
-import Grid from "../ui/Grid";
-import GridContainer from "../ui/GridContainer";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { GridContainer } from "../ui/GridContainer";
+import { Typography } from "../ui/Typography";
 import { ViewModeLink } from "../viewMode/ViewMode";
 import { ADDITIONAL_LINKS_DR_CENTER, SOCIAL_ROUTES } from "./routes";
 
@@ -148,7 +148,7 @@ export const DrCenterFooter: React.FC = () => {
             xl: 3
           }}
         >
-          <Typography $fontSize="0.8rem">
+          <Typography fontSize="0.8rem">
             Copyright © ${year} Boson Protocol. All rights reserved.
           </Typography>
           <Socials />

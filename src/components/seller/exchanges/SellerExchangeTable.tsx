@@ -32,9 +32,9 @@ import ExchangeStatuses from "../../offer/ExchangeStatuses";
 import Price from "../../price/index";
 import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import PaginationPages from "../common/PaginationPages";
 import {
   SellerActionButton,
@@ -141,7 +141,7 @@ const Table = styled.table`
   .tbody {
     .tr {
       display: flex;
-      :hover {
+      &:hover {
         .td {
           background-color: ${colors.darkGrey}08;
           cursor: pointer;
@@ -479,7 +479,6 @@ export default function SellerExchangeTable({
                     className="tr"
                   >
                     {row.cells.map((cell) => {
-                      console.log("cell.getCellProps()", cell.getCellProps());
                       return (
                         <div
                           {...cell.getCellProps()}
@@ -553,7 +552,7 @@ export default function SellerExchangeTable({
             <Grid justifyContent="flex-end" gap="1rem">
               <Button
                 size="small"
-                theme="blank"
+                themeVal="blank"
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
@@ -563,7 +562,7 @@ export default function SellerExchangeTable({
                 <Button
                   key={`page_btn_${pageNumber}`}
                   size="small"
-                  theme="blank"
+                  themeVal="blank"
                   style={{
                     color:
                       pageNumber === pageIndex
@@ -581,7 +580,7 @@ export default function SellerExchangeTable({
               ))}
               <Button
                 size="small"
-                theme="blank"
+                themeVal="blank"
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
               >

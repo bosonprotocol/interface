@@ -9,7 +9,7 @@ import { UrlParameters } from "../../../../lib/routing/parameters";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { goToViewMode, ViewMode } from "../../../../lib/viewMode";
-import Typography from "../../../ui/Typography";
+import { Typography } from "../../../ui/Typography";
 
 const ModalGrid = styled.div`
   display: grid;
@@ -149,11 +149,11 @@ function DisputeModal({ exchangeId }: Props) {
   };
   return (
     <>
-      <Typography fontWeight="600" $fontSize="1.25rem">
+      <Typography fontWeight="600" fontSize="1.25rem">
         How does the dispute process work?
       </Typography>
       <Typography
-        $fontSize="1.25rem"
+        fontSize="1.25rem"
         color={colors.darkGrey}
         marginTop="0.5rem"
         marginBottom="2rem"
@@ -170,7 +170,7 @@ function DisputeModal({ exchangeId }: Props) {
           <Chats size={24} color={colors.secondary} data-columns-icon />
           <Typography
             margin="0"
-            $fontSize="1.25rem"
+            fontSize="1.25rem"
             color={colors.black}
             fontWeight="600"
           >
@@ -181,7 +181,7 @@ function DisputeModal({ exchangeId }: Props) {
           <FilePlus size={24} color={colors.secondary} data-columns-icon />
           <Typography
             margin="0"
-            $fontSize="1.25rem"
+            fontSize="1.25rem"
             color={colors.black}
             fontWeight="600"
           >
@@ -192,7 +192,7 @@ function DisputeModal({ exchangeId }: Props) {
           <Handshake size={24} color={colors.secondary} data-columns-icon />
           <Typography
             margin="0"
-            $fontSize="1.25rem"
+            fontSize="1.25rem"
             color={colors.black}
             fontWeight="600"
           >

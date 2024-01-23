@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import MultiSteps from "../../../../step/MultiSteps";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 import { LensStep } from "./const";
 
 interface Props {

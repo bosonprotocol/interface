@@ -8,8 +8,8 @@ import { colors } from "../../../../../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../../../../../lib/utils/getDateTimestamp";
 import { useDisputeResolvers } from "../../../../../../../lib/utils/hooks/useDisputeResolvers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
-import Grid from "../../../../../../ui/Grid";
-import Typography from "../../../../../../ui/Typography";
+import { Grid } from "../../../../../../ui/Grid";
+import { Typography } from "../../../../../../ui/Typography";
 
 interface Props {
   exchange: Exchange;
@@ -65,33 +65,33 @@ function EscalateStepOne({ exchange }: Props) {
         padding="2rem"
         margin="1rem 0 0 0"
       >
-        <Typography fontWeight="600" $fontSize="2rem" margin="1rem 0 0 0">
+        <Typography fontWeight="600" fontSize="2rem" margin="1rem 0 0 0">
           Escalate Dispute
         </Typography>
-        <Typography $fontSize="1rem" fontWeight="400" color={colors.darkGrey}>
+        <Typography fontSize="1rem" fontWeight="400" color={colors.darkGrey}>
           Escalating a dispute will enable the dispute resolver to decide on the
           outcome of the dispute. The dispute resolver will decide based on the
           contractual agreement and evidence submitted by both parties.
         </Typography>
         <GridContainer>
-          <Typography fontWeight="400" $fontSize="1rem" color={colors.darkGrey}>
+          <Typography fontWeight="400" fontSize="1rem" color={colors.darkGrey}>
             Dispute resolver
           </Typography>
           <Typography
             fontWeight="600"
-            $fontSize="1rem"
+            fontSize="1rem"
             color={colors.darkGrey}
             justifyContent="flex-end"
           >
             Redeemeum
           </Typography>
-          <Typography fontWeight="400" $fontSize="1rem" color={colors.darkGrey}>
+          <Typography fontWeight="400" fontSize="1rem" color={colors.darkGrey}>
             Exchange policy
           </Typography>
           <Grid justifyContent="flex-end">
             <Typography
               fontWeight="600"
-              $fontSize="1rem"
+              fontSize="1rem"
               color={colors.darkGrey}
               justifyContent="flex-end"
             >
@@ -99,23 +99,23 @@ function EscalateStepOne({ exchange }: Props) {
             </Typography>
             <StyledArrowSquare color={colors.secondary} size={22} />
           </Grid>
-          <Typography fontWeight="400" $fontSize="1rem" color={colors.darkGrey}>
+          <Typography fontWeight="400" fontSize="1rem" color={colors.darkGrey}>
             Escalation deposit
           </Typography>
           <Typography
             fontWeight="600"
-            $fontSize="1rem"
+            fontSize="1rem"
             color={colors.darkGrey}
             justifyContent="flex-end"
           >
             {feeAmount}
           </Typography>
-          <Typography fontWeight="400" $fontSize="1rem" color={colors.darkGrey}>
+          <Typography fontWeight="400" fontSize="1rem" color={colors.darkGrey}>
             Dispute period
           </Typography>
           <Typography
             fontWeight="600"
-            $fontSize="1rem"
+            fontSize="1rem"
             color={colors.darkGrey}
             justifyContent="flex-end"
           >

@@ -2,8 +2,8 @@ import { CaretDoubleDown } from "phosphor-react";
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
 
-import Grid from "../../../ui/Grid";
-import Typography from "../../../ui/Typography";
+import { Grid } from "../../../ui/Grid";
+import { Typography } from "../../../ui/Typography";
 
 const ExpandIcon = styled(CaretDoubleDown).attrs({
   size: 20
@@ -19,7 +19,7 @@ const ToggleButton = styled(Grid)`
   height: 100%;
   width: fit-content;
   cursor: pointer;
-  :hover {
+  &:hover {
     opacity: 0.8;
   }
 `;

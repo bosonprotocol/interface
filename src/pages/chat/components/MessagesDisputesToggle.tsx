@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
 import Button from "../../../components/ui/Button";
-import Grid from "../../../components/ui/Grid";
+import { Grid } from "../../../components/ui/Grid";
 import { colors } from "../../../lib/styles/colors";
 
 const StyledButton = styled(Button)<{ $isActive: boolean }>`
@@ -45,7 +45,7 @@ export function MessagesDisputesToggle({
   return (
     <Grid gap="1rem">
       <StyledButton
-        theme="white"
+        themeVal="white"
         onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           setLeftActive(true);
           onLeftButtonClick(e);
@@ -55,7 +55,7 @@ export function MessagesDisputesToggle({
         {leftButtonText}
       </StyledButton>
       <StyledButton
-        theme="white"
+        themeVal="white"
         onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           setLeftActive(false);
           onRightButtonClick(e);

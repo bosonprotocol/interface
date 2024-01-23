@@ -10,8 +10,8 @@ import {
   UniswapXShine
 } from "components/swap/styled";
 import Column from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { X } from "phosphor-react";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
@@ -27,7 +27,7 @@ export const Arrow = styled.div`
   height: 8px;
   z-index: 9998;
 
-  ::before {
+  &:before {
     position: absolute;
     width: 8px;
     height: 8px;
@@ -42,7 +42,7 @@ export const Arrow = styled.div`
 
   &.arrow-top {
     bottom: -4px;
-    ::before {
+    &:before {
       border-top: none;
       border-left: none;
     }
@@ -50,7 +50,7 @@ export const Arrow = styled.div`
 
   &.arrow-bottom {
     top: -4px;
-    ::before {
+    &:before {
       border-bottom: none;
       border-right: none;
     }
@@ -59,7 +59,7 @@ export const Arrow = styled.div`
   &.arrow-left {
     right: -4px;
 
-    ::before {
+    &:before {
       border-bottom: none;
       border-left: none;
     }
@@ -67,7 +67,7 @@ export const Arrow = styled.div`
 
   &.arrow-right {
     left: -4px;
-    ::before {
+    &:before {
       border-right: none;
       border-top: none;
     }
@@ -131,7 +131,7 @@ const OptInContents = ({
   const tryItNowElement = (
     <Typography
       color="accentAction"
-      $fontSize={14}
+      fontSize={14}
       fontWeight="500"
       onClick={() => {
         // slight delay before hiding
@@ -172,7 +172,7 @@ const OptInContents = ({
             alignItems="center"
             flexWrap="wrap"
           >
-            <Typography $fontSize={14} fontWeight={400} lineHeight="20px">
+            <Typography fontSize={14} fontWeight={400} lineHeight="20px">
               <>Try gas free swaps with the</>
               <br />
               <UniswapXBrandMark
@@ -203,7 +203,7 @@ const OptInContents = ({
         />
 
         <Column>
-          <Typography $fontSize={14} fontWeight={400} lineHeight="20px">
+          <Typography fontSize={14} fontWeight={400} lineHeight="20px">
             <>Try the</>{" "}
             <UniswapXBrandMark
               fontWeight="bold"
@@ -236,12 +236,12 @@ const OptInContents = ({
       {/* second popover: you're in! */}
       <UniswapXOptInPopover visible={showYoureIn}>
         <UniswapXRouterLabel disableTextGradient>
-          <Typography $fontSize={14} fontWeight={500} lineHeight="20px">
+          <Typography fontSize={14} fontWeight={500} lineHeight="20px">
             <>You&apos;re in!</>
           </Typography>
         </UniswapXRouterLabel>
 
-        <Typography style={{ marginTop: 8 }} $fontSize={14}>
+        <Typography style={{ marginTop: 8 }} fontSize={14}>
           <>You can turn it off at anytime in settings</>
         </Typography>
       </UniswapXOptInPopover>

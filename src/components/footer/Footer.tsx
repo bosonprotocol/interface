@@ -22,9 +22,9 @@ import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustom
 import useUserRoles from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../layout/Layout";
-import Grid from "../ui/Grid";
-import GridContainer from "../ui/GridContainer";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { GridContainer } from "../ui/GridContainer";
+import { Typography } from "../ui/Typography";
 import {
   ADDITIONAL_LINKS,
   getHelpLinks,
@@ -158,7 +158,7 @@ function Socials() {
   return renderSocialLinks?.length ? (
     <div>
       {isCustomStoreFront && (
-        <Typography $fontSize="1rem" fontWeight="600" tag="p">
+        <Typography fontSize="1rem" fontWeight="600" tag="p">
           FOLLOW US
         </Typography>
       )}
@@ -224,7 +224,7 @@ function ContactInfoLinks() {
   }, [isCustomStoreFront, contactInfoLinks]);
   return renderContactInfoLinks?.length ? (
     <div>
-      <Typography $fontSize="1rem" fontWeight="600" tag="p">
+      <Typography fontSize="1rem" fontWeight="600" tag="p">
         GET IN TOUCH
       </Typography>
       <NavigationLinks
@@ -262,7 +262,7 @@ function CustomStoreAdditionalLinks() {
   }, [isCustomStoreFront, additionalFooterLinks]);
   return renderAdditionalLinks?.length ? (
     <div>
-      <Typography $fontSize="1rem" fontWeight="600" tag="p">
+      <Typography fontSize="1rem" fontWeight="600" tag="p">
         CLIENT SERVICE
       </Typography>
       <NavigationLinks
@@ -279,7 +279,7 @@ function CustomStoreAdditionalLinks() {
 function ByBoson() {
   return (
     <Grid justifyContent="center" alignItems="center" gap="0.5rem">
-      <Typography $fontSize="0.8rem">Powered by</Typography>
+      <Typography fontSize="0.8rem">Powered by</Typography>
       <img src={logo} alt="boson logo" width="100" />
     </Grid>
   );
@@ -535,7 +535,7 @@ function FullFooter() {
           </>
         </Grid>
         <Grid justifyContent="center">
-          <Typography $fontSize="0.8rem">
+          <Typography fontSize="0.8rem">
             {isCustomStoreFront ? copyright : `© ${year} Bosonapp.io`}
           </Typography>
         </Grid>

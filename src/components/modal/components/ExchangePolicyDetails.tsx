@@ -13,8 +13,8 @@ import { useState } from "react";
 import { colors } from "../../../lib/styles/colors";
 import DetailTable from "../../detail/DetailTable";
 import License from "../../license/License";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 
 interface Props {
   offerId?: string;

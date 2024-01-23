@@ -2,7 +2,7 @@ import { CaretDown, CaretUp } from "phosphor-react";
 import { ReactNode, useReducer } from "react";
 import styled from "styled-components";
 
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 
 const ArrowContainer = styled(Grid)``;
 

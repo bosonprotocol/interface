@@ -18,7 +18,7 @@ import Layout from "../../components/layout/Layout";
 import { useRemoveLandingQueryParams } from "../../components/modal/components/createProduct/const";
 import { useModal } from "../../components/modal/useModal";
 import { getSellerCenterPath } from "../../components/seller/paths";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import {
   SellerLandingPageParameters,
   UrlParameters
@@ -100,12 +100,7 @@ export default function CustomStore() {
   const customStoreUrl = searchParams.get(UrlParameters.customStoreUrl) ?? "";
   return (
     <Root>
-      <Typography
-        tag="h2"
-        fontWeight="600"
-        $fontSize="2rem"
-        lineHeight="2.4rem"
-      >
+      <Typography tag="h2" fontWeight="600" fontSize="2rem" lineHeight="2.4rem">
         Create Custom Store
       </Typography>
       <Formik<Yup.InferType<typeof validationSchema>>

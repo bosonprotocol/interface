@@ -2,8 +2,8 @@ import { Percent } from "@uniswap/sdk-core";
 import AnimatedDropdown from "components/animatedDropdown";
 import { LoadingOpacityContainer } from "components/loader/styled";
 import Column from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { breakpoint } from "lib/styles/breakpoint";
 import { colors } from "lib/styles/colors";
 import { CaretDown } from "phosphor-react";
@@ -135,7 +135,7 @@ export default function SwapDetailsDropdown({
               <TradePrice price={trade.executionPrice} />
             </LoadingOpacityContainer>
           ) : loading || syncing ? (
-            <Typography $fontSize={14}>
+            <Typography fontSize={14}>
               <>Fetching best price...</>
             </Typography>
           ) : null}

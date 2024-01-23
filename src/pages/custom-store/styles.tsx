@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 
 export const Section = styled.div`

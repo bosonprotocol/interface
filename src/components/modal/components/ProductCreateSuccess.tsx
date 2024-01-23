@@ -1,30 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
+import { BasicCommitDetailWidget } from "components/detail/DetailWidget/BasicCommitDetailWidget";
 import { BigNumber, FixedNumber } from "ethers";
 import { Plus, Warning } from "phosphor-react";
-import { useMemo } from "react";
 import styled from "styled-components";
 
-import { getOfferDetailData } from "../../../components/detail/DetailWidget/DetailWidget";
-import Price from "../../../components/price/index";
-import { useConvertedPrice } from "../../../components/price/useConvertedPrice";
 import { colors } from "../../../lib/styles/colors";
-import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import {
-  Break,
   ModalGrid,
   ModalImageWrapper,
   Widget
 } from "../../detail/Detail.style";
-import DetailTable from "../../detail/DetailTable";
-import TokenGated from "../../detail/DetailWidget/TokenGated";
 import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import Video from "../../ui/Video";
+
 interface Props {
   message: string;
   name: string;
@@ -32,7 +26,6 @@ interface Props {
   offer: any;
   onCreateNew?: () => void;
   onViewMyItem: () => void;
-  hasMultipleVariants: boolean;
 }
 const Funds = styled.div`
   margin: 2rem auto;
@@ -41,19 +34,6 @@ const Funds = styled.div`
   color: ${colors.white};
   p {
     margin: 0;
-  }
-`;
-
-const StyledPrice = styled(Price)`
-  h3 {
-    font-size: 2rem;
-  }
-  small {
-    font-size: 1rem;
-  }
-  margin-bottom: 2rem;
-  [data-testid="price-grid"] {
-    justify-content: center;
   }
 `;
 
@@ -102,45 +82,14 @@ const Amount = styled.span`
 `;
 
 const PROGRESS = 15;
-
 export default function ProductCreateSuccess({
   message,
   name,
   image,
   offer,
   onCreateNew,
-  onViewMyItem,
-  hasMultipleVariants
+  onViewMyItem
 }: Props) {
-  const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
-  const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
-    "openseaLinkToOriginalMainnetCollection"
-  );
-  const convertedPrice = useConvertedPrice({
-    value: offer?.price,
-    decimals: offer?.exchangeToken.decimals,
-    symbol: offer?.exchangeToken.symbol
-  });
-
-  const OFFER_DETAIL_DATA = useMemo(() => {
-    // offer is necessarily compliant because created with the dApp
-    const exchangePolicyCheckResult = {
-      isValid: true,
-      errors: []
-    };
-
-    return getOfferDetailData(
-      offer,
-      undefined,
-      convertedPrice,
-      false,
-      undefined,
-      undefined,
-      undefined,
-      exchangePolicyCheckResult
-    );
-  }, [convertedPrice, offer]);
-
   const suggestedAmount = FixedNumber.fromString(
     formatUnits(
       BigNumber.from(offer?.sellerDeposit).mul(Number(offer?.quantityInitial)),
@@ -179,7 +128,7 @@ export default function ProductCreateSuccess({
           )}
         </ModalImageWrapper>
         <div>
-          <Widget>
+          <Widget style={{ marginBottom: "1rem" }}>
             <Grid flexDirection="column">
               <Typography tag="p" margin="0.5rem 0 0 0">
                 <b>{message}</b>
@@ -188,35 +137,16 @@ export default function ProductCreateSuccess({
                 tag="h2"
                 margin="1rem 0"
                 color={colors.secondary}
-                $fontSize="1.5rem"
+                fontSize="1.5rem"
               >
                 {name}
-              </Typography>
-              <StyledPrice
-                isExchange={false}
-                currencySymbol={offer.exchangeToken.symbol}
-                value={offer.price}
-                decimals={offer.exchangeToken.decimals}
-                tag="h3"
-                convert
-                withAsterisk={hasMultipleVariants}
-              />
+              </Typography>{" "}
             </Grid>
-            <Break />
-            {offer.condition && (
-              <TokenGated
-                offer={offer}
-                commitProxyAddress={commitProxyAddress}
-                openseaLinkToOriginalMainnetCollection={
-                  openseaLinkToOriginalMainnetCollection
-                }
-                isConditionMet={false}
-              />
-            )}
-            <div style={{ paddingTop: "2rem" }}>
-              <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
-            </div>
           </Widget>
+          <BasicCommitDetailWidget
+            isPreview
+            selectedVariant={{ offer, variations: [] }}
+          />
           {hasDeposit && (
             <Funds>
               <FundTile tag="p">
@@ -233,7 +163,7 @@ export default function ProductCreateSuccess({
                   size={16}
                 />
               </FundTile>
-              <Typography tag="p" $fontSize="0.75rem">
+              <Typography tag="p" fontSize="0.75rem">
                 In order for your offer to go live you must first provide funds
                 to cover your seller deposit. When a buyer commits to your
                 offer, your deposit will be put into escrow as part of the
@@ -242,7 +172,7 @@ export default function ProductCreateSuccess({
               <Typography
                 tag="p"
                 margin="1rem 0 0 0"
-                $fontSize="0.75rem"
+                fontSize="0.75rem"
                 fontWeight="600"
               >
                 Suggested pool amount: 15%

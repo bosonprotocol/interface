@@ -14,9 +14,9 @@ import { SelectDataProps } from "../../components/form/types";
 import { Spinner } from "../../components/loading/Spinner";
 import { useModal } from "../../components/modal/useModal";
 import BosonButton from "../../components/ui/BosonButton";
-import Grid from "../../components/ui/Grid";
-import GridContainer from "../../components/ui/GridContainer";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { GridContainer } from "../../components/ui/GridContainer";
+import { Typography } from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
@@ -545,7 +545,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   label={({ toggleFormValue, checked }) => (
                     <Typography
                       color={colors.secondary}
-                      $fontSize="0.8rem"
+                      fontSize="0.8rem"
                       onClick={() => toggleFormValue?.()}
                       cursor="pointer"
                     >
@@ -775,7 +775,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 <Grid
                   flexDirection="column"
                   margin={`0 0 0 ${subFieldsMarginLeft}`}
-                  $width={`calc(100% - ${subFieldsMarginLeft})`}
+                  width={`calc(100% - ${subFieldsMarginLeft})`}
                   gap={gapBetweenInputs}
                 >
                   <Grid flexDirection="column" alignItems="flex-start">
@@ -884,7 +884,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 <Grid
                   flexDirection="column"
                   margin={`0 0 0 ${subFieldsMarginLeft}`}
-                  $width={`calc(100% - ${subFieldsMarginLeft})`}
+                  width={`calc(100% - ${subFieldsMarginLeft})`}
                   gap={gapBetweenInputs}
                 >
                   <Grid flexDirection="column" alignItems="flex-start">

@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Loading from "../../ui/Loading";
 
 const Close = styled(X)`
@@ -31,7 +31,7 @@ export function LoadingToast({ t, children }: Props) {
       <Grid alignSelf="flex-start" justifyContent="flex-end" flexBasis="0">
         <StyledButton
           data-close
-          theme="blank"
+          themeVal="blank"
           onClick={() => toast.dismiss(t.id)}
         >
           <Close size={20} />

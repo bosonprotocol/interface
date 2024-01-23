@@ -9,7 +9,7 @@ import FormField from "../form/FormField";
 import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
 import Tabs from "../tabs/Tabs";
 import BosonButton from "../ui/BosonButton";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import {
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,

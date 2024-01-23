@@ -6,7 +6,7 @@ import { BosonRoutes } from "../../../../lib/routing/routes";
 import { LinkWithQuery } from "../../../customNavigation/LinkWithQuery";
 import { EditProfile } from "../../../detail/EditProfile";
 import Button from "../../../ui/Button";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 
 type ProfileDetailsModalProps = {
   sellerId: string;
@@ -22,7 +22,7 @@ export const ProfileDetailsModal: React.FC<ProfileDetailsModalProps> = ({
     <Grid justifyContent="center" gap="2rem" flexWrap="wrap">
       <EditProfile />
       <LinkWithQuery to={sellerUrl} style={{ all: "unset" }}>
-        <Button theme="secondary">View profile</Button>
+        <Button themeVal="secondary">View profile</Button>
       </LinkWithQuery>
     </Grid>
   );

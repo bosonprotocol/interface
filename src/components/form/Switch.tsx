@@ -4,7 +4,7 @@ import React, { ReactElement, ReactNode } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import Input from "./Input";
 
 const height = "20px";
@@ -35,7 +35,7 @@ const StyledSwitchRoot = styled(ReactSwitch.Root)`
   &[data-state="checked"] {
     background-color: ${colors.secondary};
   }
-  :disabled {
+  &:disabled {
     cursor: not-allowed;
     ~ *,
     * {

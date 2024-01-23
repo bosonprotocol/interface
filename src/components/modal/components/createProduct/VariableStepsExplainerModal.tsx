@@ -13,8 +13,8 @@ import {
 } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import ConnectButton from "../../../header/ConnectButton";
 import BosonButton from "../../../ui/BosonButton";
-import Grid from "../../../ui/Grid";
-import Typography from "../../../ui/Typography";
+import { Grid } from "../../../ui/Grid";
+import { Typography } from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import {
   VariableStep,
@@ -203,11 +203,7 @@ const VariableStepsExplainerModal: React.FC<
               />
             )}
             {!!text && (
-              <Typography
-                fontWeight="600"
-                $fontSize="1.5rem"
-                textAlign="center"
-              >
+              <Typography fontWeight="600" fontSize="1.5rem" textAlign="center">
                 {text}
               </Typography>
             )}
@@ -222,10 +218,10 @@ const VariableStepsExplainerModal: React.FC<
                 style={{ zIndex: 1 + -index }}
               >
                 {data.icon}
-                <Typography fontWeight="600" $fontSize="1.25rem">
+                <Typography fontWeight="600" fontSize="1.25rem">
                   {data.title}
                 </Typography>
-                <Typography fontWeight="400" $fontSize="1rem">
+                <Typography fontWeight="400" fontSize="1rem">
                   {data.body}
                 </Typography>
               </Step>

@@ -1,7 +1,7 @@
 import { MagnifyingGlass } from "phosphor-react";
 import { useEffect, useState } from "react";
 
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import {
   Input,
   InputWrapper,
@@ -82,7 +82,7 @@ export default function SellerFilters({ setSearch, search, buttons }: Props) {
         </Grid>
       </div>
       {buttons && (
-        <Grid justifyContent="flex-end" gap="1rem" $width="auto">
+        <Grid justifyContent="flex-end" gap="1rem" width="auto">
           {buttons}
         </Grid>
       )}

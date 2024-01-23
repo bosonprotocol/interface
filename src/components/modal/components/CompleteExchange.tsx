@@ -24,10 +24,10 @@ import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import { useModal } from "../useModal";
 
 const CompleteExchangeWrapper = styled.div`
@@ -251,7 +251,15 @@ export default function CompleteExchange({
               }
             }}
             onPendingSignature={() => {
-              showModal("WAITING_FOR_CONFIRMATION");
+              showModal(
+                "WAITING_FOR_CONFIRMATION",
+                undefined,
+                "auto",
+                undefined,
+                {
+                  xs: "400px"
+                }
+              );
             }}
             onPendingTransaction={(hash, isMetaTx) => {
               showModal("TRANSACTION_SUBMITTED", {
@@ -309,7 +317,15 @@ export default function CompleteExchange({
               }
             }}
             onPendingSignature={() => {
-              showModal("WAITING_FOR_CONFIRMATION");
+              showModal(
+                "WAITING_FOR_CONFIRMATION",
+                undefined,
+                "auto",
+                undefined,
+                {
+                  xs: "400px"
+                }
+              );
             }}
             onPendingTransaction={(hash, isMetaTx) => {
               showModal("TRANSACTION_SUBMITTED", {

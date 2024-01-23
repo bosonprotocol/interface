@@ -41,7 +41,6 @@ export type FormFieldProps = {
   tooltip?: string;
   children: React.ReactNode | string;
   style?: React.CSSProperties;
-  theme?: string;
   valueToCopy?:
     | string
     | {

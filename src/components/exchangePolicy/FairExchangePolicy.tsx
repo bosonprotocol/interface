@@ -4,7 +4,7 @@ import styled, { css, IntrinsicElementsKeys } from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 
 const InfoTitleWrapper = styled.div`
   display: flex;

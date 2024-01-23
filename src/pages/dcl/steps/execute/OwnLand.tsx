@@ -5,8 +5,8 @@ import styled from "styled-components";
 import Help from "../../../../components/product/Help";
 import BosonButton from "../../../../components/ui/BosonButton";
 import Button from "../../../../components/ui/Button";
-import Grid from "../../../../components/ui/Grid";
-import Typography from "../../../../components/ui/Typography";
+import { Grid } from "../../../../components/ui/Grid";
+import { Typography } from "../../../../components/ui/Typography";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { StyledDCLLayout } from "../../styles";
 
@@ -29,7 +29,7 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
         gap="3rem"
       >
         <StyledGrid flexDirection="column" alignItems="flex-start">
-          <Typography fontWeight="600" $fontSize="2rem">
+          <Typography fontWeight="600" fontSize="2rem">
             Add product to your own land
           </Typography>
           <Typography tag="p">
@@ -62,7 +62,7 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button theme="secondary">
+              <Button themeVal="secondary">
                 Documentation <ArrowSquareOut size={24} />
               </Button>
             </a>
@@ -71,7 +71,7 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button theme="secondary">
+              <Button themeVal="secondary">
                 GitHub <GithubLogo size={24} />
               </Button>
             </a>

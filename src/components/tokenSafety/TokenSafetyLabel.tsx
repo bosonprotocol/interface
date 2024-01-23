@@ -1,4 +1,4 @@
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import { WARNING_LEVEL } from "lib/constants/tokenSafety";
 import {
   useTokenWarningColor,

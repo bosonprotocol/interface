@@ -5,8 +5,8 @@ import styled from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
 import Button from "../../../../ui/Button";
-import Grid from "../../../../ui/Grid";
-import Typography from "../../../../ui/Typography";
+import { Grid } from "../../../../ui/Grid";
+import { Typography } from "../../../../ui/Typography";
 import { ModalProps } from "../../../ModalContext";
 import { useModal } from "../../../useModal";
 
@@ -53,13 +53,13 @@ export default function TransactionSubmittedModal({
     >
       <StyledArrowCircleUp size={128} color={colors.green} />
 
-      <Typography fontWeight="600" $fontSize="1.5rem" lineHeight="150%">
+      <Typography fontWeight="600" fontSize="1.5rem" lineHeight="150%">
         {action} transaction submitted
       </Typography>
       <a href={config.envConfig.getTxExplorerUrl?.(txHash)} target="_blank">
         <Typography
           fontWeight="600"
-          $fontSize="1rem"
+          fontSize="1rem"
           lineHeight="150%"
           margin="0.5rem 0 1.5rem 0"
           color={colors.secondary}

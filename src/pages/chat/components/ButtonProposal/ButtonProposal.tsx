@@ -25,7 +25,7 @@ const StyledButton = styled.button`
       transform: translateY(-50%);
     }
   }
-  :disabled {
+  &:disabled {
     cursor: not-allowed;
   }
 `;

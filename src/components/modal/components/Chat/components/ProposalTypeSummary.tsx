@@ -8,7 +8,7 @@ import { displayFloat } from "../../../../../lib/utils/calcPrice";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { ProposalItem } from "../../../../../pages/chat/types";
 import { useConvertedPrice } from "../../../../price/useConvertedPrice";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 
 const Line = styled.div`
   border-right: 2px solid ${colors.border};

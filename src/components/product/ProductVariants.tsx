@@ -10,7 +10,7 @@ import { Error, FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import {
   ContainerProductPage,
   ProductButtonGroup,
@@ -374,7 +374,7 @@ export default function ProductVariants() {
         <Error display message={metaVariants.error} />
       )}
       <ProductInformationButtonGroup>
-        <Button theme="primary" type="submit" disabled={nextIsDisabled}>
+        <Button themeVal="primary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductInformationButtonGroup>

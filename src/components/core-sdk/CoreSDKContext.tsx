@@ -1,5 +1,6 @@
 import { hooks } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
+import { CONFIG } from "lib/config";
 import { createContext, useContext } from "react";
 
 import { useProvider } from "../../lib/utils/hooks/connection/connection";
@@ -12,7 +13,7 @@ export function useProviderCoreSDK() {
   const { config } = useConfigContext();
 
   return hooks.useCoreSdk({
-    ipfsMetadataStorageHeaders: config.ipfsMetadataStorageHeaders,
+    ipfsMetadataStorageHeaders: CONFIG.ipfsMetadataStorageHeaders,
     configId: config.envConfig.configId,
     envName: config.envName,
     ipfsMetadataStorageUrl: config.ipfsMetadataStorageUrl,

@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import Tooltip from "../tooltip/Tooltip";
-import Typography from "./Typography";
+import { Typography } from "./Typography";
 
 const InputGroupContainer = styled.div`
   display: flex;

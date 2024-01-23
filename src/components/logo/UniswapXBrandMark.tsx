@@ -1,4 +1,4 @@
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 
 import UniswapXRouterLabel, {
   UnswapXRouterLabelProps
@@ -18,7 +18,7 @@ export default function UniswapXBrandMark({
   return (
     <UniswapXRouterLabel {...props}>
       <Typography
-        $fontSize="inherit"
+        fontSize="inherit"
         {...(fontWeight === "bold" && {
           fontWeight: "500"
         })}

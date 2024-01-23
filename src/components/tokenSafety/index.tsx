@@ -4,7 +4,7 @@ import CurrencyLogo from "components/logo/CurrencyLogo";
 import TokenSafetyLabel from "components/tokenSafety/TokenSafetyLabel";
 import Button from "components/ui/Button";
 import { AutoColumn } from "components/ui/column/index";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import {
   checkWarning,
   displayWarningLabel,
@@ -97,7 +97,7 @@ const Buttons = ({
         {!displayWarningLabel(warning) ? <>Continue</> : <>I understand</>}
       </StyledButton>
       {showCancel && (
-        <StyledCancelButton onClick={onCancel} theme="blank">
+        <StyledCancelButton onClick={onCancel} themeVal="blank">
           Cancel
         </StyledCancelButton>
       )}
@@ -144,10 +144,10 @@ const ExplorerLinkWrapper = styled.div`
   align-items: center;
   cursor: pointer;
 
-  :hover {
+  &:hover {
     opacity: 0.6;
   }
-  :active {
+  &:active {
     opacity: 0.4;
   }
 `;

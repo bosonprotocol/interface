@@ -8,18 +8,14 @@ export const ClearButton = _ClearButton;
 export const Picker = styled.div`
   width: 100%;
   position: relative;
-  :hover,
-  :focus-within {
+  &:hover,
+  &:focus-within {
     ${ClearButton} {
       display: initial;
     }
   }
 `;
-export const PickerGrid = styled.div.attrs(
-  (props: { selectTime: boolean }) => ({
-    selectTime: props.selectTime
-  })
-)`
+export const PickerGrid = styled.div<{ selectTime: boolean }>`
   width: 100%;
   display: grid;
   gap: 0px 1em;
@@ -33,12 +29,10 @@ export const PickerGrid = styled.div.attrs(
         `}
 `;
 
-export const DatePickerWrapper = styled.div.attrs(
-  (props: { show: boolean; selectTime: boolean }) => ({
-    show: props.show,
-    selectTime: props.selectTime
-  })
-)`
+export const DatePickerWrapper = styled.div<{
+  show: boolean;
+  selectTime: boolean;
+}>`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -123,19 +117,12 @@ export const CalendarCell = styled.div`
   padding: 0.375rem;
 `;
 
-export const CalendarDay = styled(CalendarCell).attrs(
-  (props: {
-    active: boolean;
-    current: boolean;
-    between: boolean;
-    disabled: boolean;
-  }) => ({
-    active: props.active,
-    current: props.current,
-    between: props.between,
-    disabled: props.disabled
-  })
-)`
+export const CalendarDay = styled(CalendarCell)<{
+  active: boolean;
+  current: boolean;
+  between: boolean;
+  disabled: boolean;
+}>`
   cursor: pointer;
   position: relative;
   ${transition}
@@ -143,7 +130,7 @@ export const CalendarDay = styled(CalendarCell).attrs(
     z-index: 3;
   }
 
-  :after {
+  &:after {
     content: "";
     position: absolute;
     top: 50%;
@@ -158,8 +145,8 @@ export const CalendarDay = styled(CalendarCell).attrs(
     ${transition}
   }
 
-  :hover {
-    :after {
+  &:hover {
+    &:after {
       width: 2rem;
       height: 2rem;
     }
@@ -182,7 +169,7 @@ export const CalendarDay = styled(CalendarCell).attrs(
   ${({ active }) =>
     active &&
     css`
-      :after {
+      &:after {
         background: ${colors.secondary};
         width: 2.25rem;
         height: 2.25rem;
@@ -197,7 +184,7 @@ export const CalendarDay = styled(CalendarCell).attrs(
     between &&
     !active &&
     css`
-      :after {
+      &:after {
         background: ${colors.secondary};
         width: 1.75rem;
         height: 1.75rem;

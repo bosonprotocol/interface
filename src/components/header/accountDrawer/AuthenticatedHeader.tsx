@@ -23,7 +23,7 @@ import { formatAddress } from "../../../lib/utils/address";
 import { Spinner } from "../../loading/Spinner";
 import Tooltip from "../../tooltip/Tooltip";
 import Column from "../../ui/column";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import StatusIcon from "../identicon/StatusIcon";
 import { FiatLink, useFiatLinkContext } from "./fiatOnrampModal/FiatLink";
 // import FiatOnrampModal from "./fiatOnrampModal";
@@ -60,11 +60,11 @@ const HeaderButton = styled.button<{ $color: string }>`
   font-weight: 500;
   line-height: 24px;
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--buttonBgColor) 90%, black);
     transition: 125ms background-color ease-in;
   }
-  :disabled {
+  &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
   }

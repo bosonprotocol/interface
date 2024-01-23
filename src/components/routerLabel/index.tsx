@@ -1,4 +1,4 @@
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import { InterfaceTrade, QuoteMethod } from "state/routing/types";
 import { isUniswapXTrade } from "state/routing/utils";
 

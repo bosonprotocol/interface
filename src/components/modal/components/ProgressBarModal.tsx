@@ -1,7 +1,7 @@
 import { colors } from "../../../lib/styles/colors";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 
 interface Props {
   progress: number;
@@ -49,7 +49,7 @@ export default function ProgressBarModal({ progress, text, onCancel }: Props) {
       {text && (
         <Typography
           fontWeight="600"
-          $fontSize="1rem"
+          fontSize="1rem"
           lineHeight="150%"
           color={colors.darkGrey}
           margin="0.5rem 0 1.5rem 0"

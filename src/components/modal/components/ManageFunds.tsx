@@ -14,8 +14,8 @@ import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { Spinner } from "../../loading/Spinner";
 import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 import { useModal } from "../useModal";
 
 const WithdrawButton = styled(BosonButton)`
@@ -23,7 +23,7 @@ const WithdrawButton = styled(BosonButton)`
   background: transparent;
   color: ${colors.green};
   border: 2px solid ${colors.green};
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     background: ${colors.green};
     border: 2px solid ${colors.green};
   }
@@ -89,12 +89,12 @@ export default function ManageFunds({ id }: Props) {
     <>
       <Grid justifyContent="flex-start">
         <TokenWrapper>
-          <Typography tag="p" $fontSize="0.75rem" fontWeight="600">
+          <Typography tag="p" fontSize="0.75rem" fontWeight="600">
             Token
           </Typography>
         </TokenWrapper>
         <WithdrawableWrapper>
-          <Typography tag="p" $fontSize="0.75rem" fontWeight="600">
+          <Typography tag="p" fontSize="0.75rem" fontWeight="600">
             Withdrawable
           </Typography>
         </WithdrawableWrapper>

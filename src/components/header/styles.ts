@@ -6,10 +6,10 @@ export const ClickableStyle = css`
   cursor: pointer;
   transition-duration: 125ms;
 
-  :hover {
+  &:hover {
     opacity: 0.6;
   }
-  :active {
+  &:active {
     opacity: 0.4;
   }
 `;
@@ -20,7 +20,7 @@ export const ScrollBarStyles = css<{ $isHorizontalScroll?: boolean }>`
   height: 100%;
 
   // safari and chrome scrollbar styling
-  ::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     background: transparent;
 
     // Set height for horizontal scrolls
@@ -37,7 +37,7 @@ export const ScrollBarStyles = css<{ $isHorizontalScroll?: boolean }>`
     }}
   }
 
-  ::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     background: ${colors.lightGrey};
     border-radius: 8px;
   }

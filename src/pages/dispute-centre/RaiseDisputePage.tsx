@@ -24,7 +24,7 @@ import ExchangePreview from "../../components/modal/components/Chat/components/E
 import { useModal } from "../../components/modal/useModal";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
-import Grid from "../../components/ui/Grid";
+import { Grid } from "../../components/ui/Grid";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -300,7 +300,15 @@ function RaiseDisputePage() {
                     });
                   }
 
-                  showModal("WAITING_FOR_CONFIRMATION");
+                  showModal(
+                    "WAITING_FOR_CONFIRMATION",
+                    undefined,
+                    "auto",
+                    undefined,
+                    {
+                      xs: "400px"
+                    }
+                  );
                   const isMetaTx = Boolean(
                     coreSDK?.isMetaTxConfigSet && address
                   );

@@ -8,7 +8,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 
 import { Spinner } from "../../../../components/loading/Spinner";
-import Typography from "../../../../components/ui/Typography";
+import { Typography } from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
 import { ThreadObjectWithInfo } from "../../types";
 import Message from "../Message";
@@ -61,7 +61,7 @@ const LoadMoreMessages = styled.button.attrs({ type: "button" })`
   padding: 0.2rem 0.7rem;
   transition: all 300ms;
 
-  :hover {
+  &:hover {
     background-color: ${colors.black};
     color: ${colors.white};
   }

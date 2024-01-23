@@ -27,10 +27,10 @@ import Price from "../../price/index";
 import OfferVariation from "../../seller/products/OfferVariation";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import { useModal } from "../useModal";
 
 const OfferWrapper = styled.div`
@@ -365,7 +365,15 @@ export default function VoidProduct({
                 }
               }}
               onPendingSignature={() => {
-                showModal("WAITING_FOR_CONFIRMATION");
+                showModal(
+                  "WAITING_FOR_CONFIRMATION",
+                  undefined,
+                  "auto",
+                  undefined,
+                  {
+                    xs: "400px"
+                  }
+                );
               }}
               onPendingTransaction={(hash, isMetaTx) => {
                 showModal("TRANSACTION_SUBMITTED", {

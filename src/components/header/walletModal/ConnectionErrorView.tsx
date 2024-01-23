@@ -7,7 +7,7 @@ import {
   useActivationState
 } from "../../../lib/connection/activate";
 import BosonButton from "../../ui/BosonButton";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import { useCloseAccountDrawer } from "../accountDrawer";
 import { flexColumnNoWrap } from "../styles";
 
@@ -41,7 +41,7 @@ export default function ConnectionErrorView() {
       <AlertTriangleIcon />
       <Typography marginBottom="8px">Error connecting</Typography>
       <Typography
-        $fontSize={16}
+        fontSize={16}
         marginBottom={24}
         lineHeight="24px"
         textAlign="center"

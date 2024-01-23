@@ -3,7 +3,7 @@ import { CaretLeft, CaretRight } from "phosphor-react";
 import { useCallback } from "react";
 
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import { Selector } from "./DatePicker.style";
 import { changeMonth } from "./utils";
 
@@ -20,11 +20,11 @@ export default function SelectMonth({ month, setMonth }: Props) {
 
   return (
     <Selector>
-      <Button theme="blank" onClick={() => handleMonthChange(false)}>
+      <Button themeVal="blank" onClick={() => handleMonthChange(false)}>
         <CaretLeft size={18} />
       </Button>
       <Typography tag="p">{month.format("MMMM YYYY")}</Typography>
-      <Button theme="blank" onClick={() => handleMonthChange(true)}>
+      <Button themeVal="blank" onClick={() => handleMonthChange(true)}>
         <CaretRight size={18} />
       </Button>
     </Selector>

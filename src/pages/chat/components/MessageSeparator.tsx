@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { useMemo } from "react";
 import styled from "styled-components";
 
-import Grid from "../../../components/ui/Grid";
+import { Grid } from "../../../components/ui/Grid";
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";

@@ -9,8 +9,8 @@ import {
   LearnMore,
   ModalBackground
 } from "../../detail/Detail.style";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 
 export default function WhatIsRedeem() {
   const { isLteXS } = useBreakpoints();

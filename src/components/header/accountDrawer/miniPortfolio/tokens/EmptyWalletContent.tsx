@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import Typography from "../../../../ui/Typography";
+import { Typography } from "../../../../ui/Typography";
 import { EmptyTokensIcon } from "./icons";
 
 const EmptyWalletContainer = styled.div`

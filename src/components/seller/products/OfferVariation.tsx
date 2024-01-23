@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 
 const VariationsGrid = styled(Grid)`
   * {

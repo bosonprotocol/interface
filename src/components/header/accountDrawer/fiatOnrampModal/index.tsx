@@ -1,6 +1,6 @@
 import { Spinner } from "components/loading/Spinner";
 import Modal from "components/modal/Modal";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import { CONFIG } from "lib/config";
 import { DrCenterRoutes } from "lib/routing/drCenterRoutes";
 import { BosonRoutes } from "lib/routing/routes";

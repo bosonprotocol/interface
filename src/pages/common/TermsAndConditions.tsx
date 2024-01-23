@@ -3,8 +3,8 @@ import { defaultFontFamily } from "lib/styles/fonts";
 import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 
@@ -13,7 +13,7 @@ const Wrapper = styled(Grid)`
     color: ${colors.secondary};
     text-decoration: none;
     transition: all 150ms ease-in-out;
-    :hover {
+    &:hover {
       color: ${colors.black};
       text-decoration: underline;
     }
@@ -43,13 +43,13 @@ const List = styled.ol`
 
   > li {
     display: block;
-    :first-child {
+    &:first-child {
       margin-bottom: 2rem;
     }
-    :not(:first-child) {
+    &:not(:first-child) {
       margin: 2rem 0;
     }
-    :before {
+    &:before {
       content: counters(list-item, ".") " ";
       counter-increment: list-item;
       position: absolute;

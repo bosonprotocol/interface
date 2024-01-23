@@ -1,7 +1,7 @@
 import searchIcon from "assets/svg/search.svg";
 import { LoadingRows as BaseLoadingRows } from "components/loader/styled";
 import { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { colors } from "lib/styles/colors";
 import styled from "styled-components";
 
@@ -21,7 +21,7 @@ export const MenuItem = styled(Grid)<{
   grid-gap: 16px;
   cursor: ${({ disabled }) => !disabled && "pointer"};
   pointer-events: ${({ disabled }) => disabled && "none"};
-  :hover {
+  &:hover {
     background-color: ${({ theme }) => theme.hoverDefault};
   }
   opacity: ${({ disabled, selected, dim }) =>
@@ -52,12 +52,12 @@ export const SearchInput = styled.input`
 
   font-size: 1rem;
 
-  ::placeholder {
+  &::placeholder {
     color: ${({ theme }) => theme.textTertiary};
     font-size: 1rem;
   }
   transition: border 100ms;
-  :focus {
+  &:focus {
     border: 1px solid ${({ theme }) => theme.accentActiveSoft};
     background-color: ${colors.lightGrey};
     outline: none;

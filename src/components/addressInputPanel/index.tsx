@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-restricted-imports
 import { flexColumnNoWrap } from "components/header/styles";
 import { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { ExplorerDataType, getExplorerLink } from "lib/utils/getExplorerLink";
 import { useChainId } from "lib/utils/hooks/connection/connection";
@@ -52,22 +52,22 @@ const Input = styled.input<{ error?: boolean }>`
   text-overflow: ellipsis;
   font-weight: 500;
   width: 100%;
-  ::placeholder {
+  &::placeholder {
     color: ${({ theme }) => theme.deprecated_text4};
   }
   padding: 0px;
   -webkit-appearance: textfield;
 
-  ::-webkit-search-decoration {
+  &::-webkit-search-decoration {
     -webkit-appearance: none;
   }
 
-  ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
 
-  ::placeholder {
+  &::placeholder {
     color: ${({ theme }) => theme.deprecated_text4};
   }
 `;
@@ -108,12 +108,12 @@ export default function AddressInputPanel({
     <InputPanel id={id}>
       <ContainerRow error={error}>
         <InputContainer>
-          <AutoColumn gap="md">
+          <AutoColumn $gap="md">
             <Grid>
               <Typography
                 color={colors.lightGrey}
                 fontWeight={500}
-                $fontSize={14}
+                fontSize={14}
               >
                 {label ?? <>Recipient</>}
               </Typography>

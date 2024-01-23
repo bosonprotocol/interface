@@ -10,8 +10,8 @@ import SimpleError from "../../../../../error/SimpleError";
 import UploadedFiles from "../../../../../form/Upload/UploadedFiles";
 import { Spinner } from "../../../../../loading/Spinner";
 import BosonButton from "../../../../../ui/BosonButton";
-import Grid from "../../../../../ui/Grid";
-import Typography from "../../../../../ui/Typography";
+import { Grid } from "../../../../../ui/Grid";
+import { Typography } from "../../../../../ui/Typography";
 import { DisputeFormModel } from "../../../DisputeModal/DisputeModalFormModel";
 import InitializeChatWithSuccess from "../../components/InitializeChatWithSuccess";
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
@@ -73,12 +73,12 @@ export default function ReviewAndSubmitStep({
 
   return (
     <>
-      <Typography $fontSize="2rem" fontWeight="600">
+      <Typography fontSize="2rem" fontWeight="600">
         {isCounterProposal ? "Counterproposal overview" : "Review & Submit"}
       </Typography>
       {tellUsMore && (
         <>
-          <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+          <Typography fontWeight="600" tag="p" fontSize="1.5rem">
             Dispute category
           </Typography>
           <Grid flexDirection="column" alignItems="flex-start">
@@ -95,7 +95,7 @@ export default function ReviewAndSubmitStep({
       )}
 
       <>
-        <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+        <Typography fontWeight="600" tag="p" fontSize="1.5rem">
           Description
         </Typography>
         <Typography tag="p">{descriptionField.value}</Typography>
@@ -111,7 +111,7 @@ export default function ReviewAndSubmitStep({
       {proposalTypeField.value && (
         <>
           <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
-            <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+            <Typography fontWeight="600" tag="p" fontSize="1.5rem">
               Resolution proposal
             </Typography>
             <Grid flexDirection="column" gap="2rem">

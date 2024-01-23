@@ -48,9 +48,9 @@ import Price from "../../price/index";
 import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import Image from "../../ui/Image";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 import { UnthemedButton } from "../../ui/UnthemedButton";
 import PaginationPages from "../common/PaginationPages";
 import { BackedProps, OffersBackedProps } from "../common/WithSellerData";
@@ -77,8 +77,6 @@ const VoidButton = styled(BosonButton)`
     color: ${colors.white};
   }
 `;
-
-const StyledCheckboxWrapper = styled(CheckboxWrapper)``;
 
 export interface SellerProductsTableProps {
   offers: (ExtendedOffer | null)[];
@@ -133,7 +131,7 @@ const IndeterminateCheckbox = forwardRef<
     };
 
     return (
-      <StyledCheckboxWrapper htmlFor={checkboxId} style={style}>
+      <CheckboxWrapper htmlFor={checkboxId} style={style}>
         <input
           hidden
           id={checkboxId}
@@ -146,7 +144,7 @@ const IndeterminateCheckbox = forwardRef<
         <div>
           <Check size={16} />
         </div>
-      </StyledCheckboxWrapper>
+      </CheckboxWrapper>
     );
   }
 );
@@ -214,7 +212,7 @@ const Table = styled.table`
       }
     }
     .tr {
-      :hover {
+      &:hover {
         .td {
           background-color: ${colors.darkGrey}08;
           cursor: pointer;
@@ -423,7 +421,7 @@ export default function SellerProductsTable({
             <Tooltip
               content={
                 <Typography
-                  $fontSize="0.75rem"
+                  fontSize="0.75rem"
                   color={colors.red}
                   fontWeight="600"
                 >
@@ -519,7 +517,7 @@ export default function SellerProductsTable({
                       sku: (
                         <Typography
                           justifyContent="flex-start"
-                          $fontSize="0.75rem"
+                          fontSize="0.75rem"
                           style={{
                             paddingLeft: "2rem"
                           }}
@@ -635,12 +633,12 @@ export default function SellerProductsTable({
             sku: (
               <Tooltip
                 content={
-                  <Typography $fontSize="0.75rem">
+                  <Typography fontSize="0.75rem">
                     {offer?.metadata?.product?.uuid || ""}
                   </Typography>
                 }
               >
-                <Typography $fontSize="0.75rem">
+                <Typography fontSize="0.75rem">
                   {offer?.metadata?.product?.uuid?.substring(0, 4) + "..."}
                 </Typography>
               </Tooltip>
@@ -660,7 +658,7 @@ export default function SellerProductsTable({
                   {showVariant && (
                     <Typography
                       tag="span"
-                      $fontSize="0.75rem"
+                      fontSize="0.75rem"
                       color={colors.darkGrey}
                     >
                       {offer?.additional?.variants.length} variants
@@ -1159,7 +1157,7 @@ export default function SellerProductsTable({
             <Grid justifyContent="flex-end" gap="1rem">
               <Button
                 size="small"
-                theme="blank"
+                themeVal="blank"
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
@@ -1169,7 +1167,7 @@ export default function SellerProductsTable({
                 <Button
                   key={`page_btn_${pageNumber}`}
                   size="small"
-                  theme="blank"
+                  themeVal="blank"
                   style={{
                     color:
                       pageNumber === pageIndex
@@ -1187,7 +1185,7 @@ export default function SellerProductsTable({
               ))}
               <Button
                 size="small"
-                theme="blank"
+                themeVal="blank"
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
               >

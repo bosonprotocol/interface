@@ -3,8 +3,8 @@ import { useMemo, useState } from "react";
 
 import DatePicker from "../../datepicker/DatePicker";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
-import Typography from "../../ui/Typography";
+import { Grid } from "../../ui/Grid";
+import { Typography } from "../../ui/Typography";
 
 export default function ExportExchangesWithDeliveryModal({
   onExport

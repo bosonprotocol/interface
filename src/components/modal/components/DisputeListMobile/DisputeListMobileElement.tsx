@@ -8,10 +8,10 @@ import { getExchangeDisputeDates } from "../../../../lib/utils/exchange";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import BosonButton from "../../../ui/BosonButton";
-import Grid from "../../../ui/Grid";
+import { Grid } from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
-import Typography from "../../../ui/Typography";
+import { Typography } from "../../../ui/Typography";
 export const containerWidth = "25rem";
 const Container = styled.div`
   background: ${colors.white};
@@ -109,11 +109,11 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
           onClick={() => null}
         />
       </MessageInfo>
-      <Typography fontWeight="400" $fontSize="12px" color={colors.darkGrey}>
+      <Typography fontWeight="400" fontSize="12px" color={colors.darkGrey}>
         State
       </Typography>
       <Grid>
-        <Grid $width="initial">
+        <Grid width="initial">
           <DisputeRaised>{exchange?.state}</DisputeRaised>
         </Grid>
 

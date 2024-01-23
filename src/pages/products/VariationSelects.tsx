@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import SimpleError from "../../components/error/SimpleError";
 import { Select } from "../../components/form";
 import { SelectDataProps } from "../../components/form/types";
-import Grid from "../../components/ui/Grid";
+import { Grid } from "../../components/ui/Grid";
 import { isTruthy } from "../../lib/types/helpers";
 import { isNumeric } from "../../lib/utils/number";
 import { VariantV1, Variation } from "./types";

@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 
 import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../../../../lib/utils/hooks/useIpfsStorage";
-import Grid from "../../../../ui/Grid";
-import Typography from "../../../../ui/Typography";
+import { Grid } from "../../../../ui/Grid";
+import { Typography } from "../../../../ui/Typography";
 import BosonAccountFormFields from "./BosonAccountFormFields";
 import { BosonAccount, bosonAccountValidationSchema } from "./validationSchema";
 
@@ -66,7 +66,7 @@ export default function BosonAccountForm({
   }, [contractURI]);
   return (
     <Grid flexDirection="column" gap="0.5rem" alignItems="flex-start">
-      <Typography fontWeight="600" $fontSize="2rem" lineHeight="2.4rem">
+      <Typography fontWeight="600" fontSize="2rem" lineHeight="2.4rem">
         Boson Account
       </Typography>
       <Typography margin="0 0 1rem 0">

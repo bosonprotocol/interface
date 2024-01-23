@@ -17,17 +17,17 @@ const Statuses = styled.div`
   z-index: ${zIndex.OfferStatus};
   &[data-dot="true"] {
     > div {
-      :after {
+      &:after {
         opacity: 0.2;
       }
       &[data-testid="voided-status"] {
-        :before {
+        &:before {
           background: transparent;
           box-shadow: inset 0px 0px 0px 2px ${colors.darkGrey};
         }
       }
       padding-left: 1.5rem;
-      :before {
+      &:before {
         content: "";
         position: absolute;
         left: 0.25rem;
@@ -49,7 +49,7 @@ const Status = styled.div<{
   $size: Props["size"];
 }>`
   position: relative;
-  :after {
+  &:after {
     content: "";
     position: absolute;
     top: 0;

@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
 
-import Grid from "../../../components/ui/Grid";
-import GridContainer from "../../../components/ui/GridContainer";
-import Typography from "../../../components/ui/Typography";
+import { Grid } from "../../../components/ui/Grid";
+import { GridContainer } from "../../../components/ui/GridContainer";
+import { Typography } from "../../../components/ui/Typography";
 
 const CardsContainer = styled(GridContainer)``;
 
@@ -23,12 +23,12 @@ export const RowWithCards: React.FC<RowWithCardsProps> = ({
       <Typography
         tag="h2"
         fontWeight="600"
-        $fontSize="2rem"
+        fontSize="2rem"
         marginBottom="0.25rem"
       >
         {title}
       </Typography>
-      <Typography fontWeight="400" $fontSize="20px" marginBottom="2.5rem">
+      <Typography fontWeight="400" fontSize="20px" marginBottom="2.5rem">
         {subtitle}
       </Typography>
       <CardsContainer

@@ -44,7 +44,7 @@ export const Table = styled.table`
   }
   tbody {
     tr {
-      :hover {
+      &:hover {
         td {
           background-color: ${colors.darkGrey}08;
           cursor: pointer;

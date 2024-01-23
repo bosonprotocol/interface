@@ -14,9 +14,9 @@ import { ProductGridContainer } from "../../pages/profile/ProfilePage.styles";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import { Action } from "../offer/OfferCard";
 import ProductCard from "../productCard/ProductCard";
-import Grid from "../ui/Grid";
+import { Grid } from "../ui/Grid";
 import { ItemsPerRow } from "../ui/GridContainer";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 
 interface Props {
   offers?: Offer[] | ExtendedOffer[];
@@ -99,7 +99,7 @@ export default function OfferList({
       {isProductPage && (
         <StyledGrid>
           <Typography
-            $fontSize="2.25rem"
+            fontSize="2.25rem"
             fontWeight="600"
             margin="1.375rem 0 0.67em 0"
           >
@@ -135,7 +135,7 @@ export default function OfferList({
           {isExplorePage && (
             <>
               <Typography
-                $fontSize="32px"
+                fontSize="32px"
                 fontWeight="600"
                 margin="0.67em 0 0.67em 0"
               >

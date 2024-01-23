@@ -1,4 +1,4 @@
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import styled from "styled-components";
 
 export const Input = styled.input`
@@ -14,7 +14,7 @@ export const Input = styled.input`
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-  /* TODO: ::placeholder {
+  /* TODO: &::placeholder {
     color: ${({ theme }) => theme.textTertiary};
   } */
 `;
@@ -36,13 +36,13 @@ export const InputContainer = styled(Grid)<{ error?: boolean }>`
     error
       ? `
         border: 1px solid ${theme.accentFailure};
-        :focus-within {
+        &:focus-within {
           border-color: ${theme.accentFailureSoft};
         }
       `
       : `
         border: 1px solid ${theme.backgroundOutline};
-        :focus-within {
+        &:focus-within {
           border-color: ${theme.accentActiveSoft};
         }
       `} */

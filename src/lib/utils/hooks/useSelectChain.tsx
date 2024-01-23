@@ -3,7 +3,7 @@ import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
 import ErrorToast from "components/toasts/common/ErrorToast";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import { envConfigsFilteredByEnv } from "lib/config";
 import { configQueryParameters } from "lib/routing/parameters";
 import { colors } from "lib/styles/colors";

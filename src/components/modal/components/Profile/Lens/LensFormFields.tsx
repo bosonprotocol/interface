@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
 import { FormField, Input } from "../../../../form";
-import Grid from "../../../../ui/Grid";
-import Typography from "../../../../ui/Typography";
+import { Grid } from "../../../../ui/Grid";
+import { Typography } from "../../../../ui/Typography";
 import { ProfileFormFields } from "../ProfileFormFields";
 
 interface Props {
@@ -36,7 +36,7 @@ export default function LensFormFields({
         margin="0 0 2rem 0"
         flex="1"
       >
-        <Typography $fontSize="2rem" fontWeight="600">
+        <Typography fontSize="2rem" fontWeight="600">
           Lens profile
         </Typography>
         <div>{children}</div>

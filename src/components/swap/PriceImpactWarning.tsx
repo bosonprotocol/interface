@@ -2,8 +2,8 @@ import { Percent } from "@uniswap/sdk-core";
 import { OutlineCard } from "components/card";
 import Tooltip from "components/tooltip/Tooltip";
 import { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import formatPriceImpact from "lib/utils/formatPriceImpact";
 import styled from "styled-components";
 
@@ -22,7 +22,7 @@ export default function PriceImpactWarning({
 }: PriceImpactWarningProps) {
   return (
     <StyledCard>
-      <AutoColumn gap="sm">
+      <AutoColumn $gap="sm">
         <Tooltip
           content={
             <>
@@ -40,7 +40,7 @@ export default function PriceImpactWarning({
                 <>Price impact warning</>
               </Typography>
             </Grid>
-            <Typography textAlign="right" $fontSize={14} color="accentFailure">
+            <Typography textAlign="right" fontSize={14} color="accentFailure">
               {formatPriceImpact(priceImpact)}
             </Typography>
           </Grid>

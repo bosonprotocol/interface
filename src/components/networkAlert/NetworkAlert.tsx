@@ -1,5 +1,5 @@
 import { ChainId } from "@uniswap/sdk-core";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { getChainInfo } from "lib/constants/chainInfo";
 import { useChainId } from "lib/utils/hooks/connection/connection";
 import { ArrowUpRight } from "phosphor-react";
@@ -111,7 +111,7 @@ const ContentWrapper = styled.div<{
   position: relative;
   width: 100%;
 
-  :before {
+  &:before {
     background-image: url(${({ logoUrl }) => logoUrl});
     background-repeat: no-repeat;
     background-size: 300px;

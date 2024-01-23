@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
 import Button from "../../../../ui/Button";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 
 const StyledGrid = styled(Grid)`
   background-color: ${colors.lightGrey};
@@ -41,7 +41,7 @@ export default function Toggle({
   return (
     <StyledGrid>
       <StyledButton
-        theme="white"
+        themeVal="white"
         onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           setLeftActive(true);
           onLeftButtonClick(e);
@@ -51,7 +51,7 @@ export default function Toggle({
         {leftButtonText}
       </StyledButton>
       <StyledButton
-        theme="white"
+        themeVal="white"
         onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           setLeftActive(false);
           onRightButtonClick(e);

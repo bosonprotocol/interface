@@ -6,8 +6,8 @@ import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKe
 import { Spinner } from "../../../../loading/Spinner";
 import { CreateProfile } from "../../../../product/utils";
 import BosonButton from "../../../../ui/BosonButton";
-import Grid from "../../../../ui/Grid";
-import Typography from "../../../../ui/Typography";
+import { Grid } from "../../../../ui/Grid";
+import { Typography } from "../../../../ui/Typography";
 import { LensProfileType } from "../Lens/validationSchema";
 import { ProfileFormFields } from "../ProfileFormFields";
 
@@ -39,7 +39,7 @@ export default function RegularProfileForm({
         margin="0 0 2rem 0"
       >
         <Grid justifyContent="space-between" alignItems="center" flex="1">
-          <Typography $fontSize="2rem" fontWeight="600">
+          <Typography fontSize="2rem" fontWeight="600">
             {isEdit ? "Regular profile" : "Create your profile"}
           </Typography>
 

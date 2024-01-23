@@ -3,8 +3,8 @@ import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 import { CheckCircle, XCircle } from "phosphor-react";
 import styled from "styled-components";
 
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
@@ -23,14 +23,14 @@ const Text = styled(Typography)`
     word-break: break-word;
     max-width: 100%;
 
-    :first-child {
+    &:first-child {
       ${breakpoint.s} {
         min-width: 15rem;
         max-width: 15rem;
       }
       margin-right: 1rem;
     }
-    :last-child {
+    &:last-child {
       font-weight: bold;
     }
   }

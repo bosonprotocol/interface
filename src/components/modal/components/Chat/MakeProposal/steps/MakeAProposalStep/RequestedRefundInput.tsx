@@ -9,7 +9,7 @@ import { Input } from "../../../../../../form";
 import { InputError } from "../../../../../../form/Input";
 import ConvertedPrice from "../../../../../../price/ConvertedPrice";
 import { useConvertedPrice } from "../../../../../../price/useConvertedPrice";
-import Grid from "../../../../../../ui/Grid";
+import { Grid } from "../../../../../../ui/Grid";
 import { FormModel } from "../../MakeProposalFormModel";
 
 const RefundAmountWrapper = styled.div`

@@ -19,7 +19,7 @@ import {
   useActivationState
 } from "../../../lib/connection/activate";
 import { isSupportedChain } from "../../../lib/constants/chains";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 import { flexColumnNoWrap } from "../styles";
 import ConnectionErrorView from "./ConnectionErrorView";
 import Option from "./Option";
@@ -87,7 +87,7 @@ export default function WalletModal() {
       {activationState.status === ActivationStatus.ERROR ? (
         <ConnectionErrorView />
       ) : (
-        <AutoColumn gap="16px">
+        <AutoColumn $gap="16px">
           <OptionGrid data-testid="option-grid">
             {connections
               .filter((connection) => connection.shouldDisplay())
@@ -96,8 +96,10 @@ export default function WalletModal() {
               ))}
           </OptionGrid>
           <MagicLoginButton
-            style={{
-              color: magicLoginTextColor
+            buttonProps={{
+              style: {
+                color: magicLoginTextColor
+              }
             }}
           />
           <PrivacyPolicyWrapper style={{ color: privacyTextColor }}>

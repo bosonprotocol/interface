@@ -33,7 +33,7 @@ export const BurgerButton: React.FC<BurgerButtonProps> = ({ onClick }) => {
     contrastThreshold: 4
   });
   return (
-    <Button theme="blank" onClick={onClick} $backgroundColor={backgroundColor}>
+    <Button onClick={onClick} $backgroundColor={backgroundColor}>
       <div />
       <div />
       <div />

@@ -1,5 +1,5 @@
 import { ClearButton } from "components/ui/ClearButton";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import { useField, useFormikContext } from "formik";
 import { forwardRef, useMemo } from "react";
 import styled from "styled-components";

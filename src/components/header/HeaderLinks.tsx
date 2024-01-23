@@ -35,7 +35,7 @@ const NavigationLinks = styled.div<{
   a,
   [data-anchor] {
     color: var(--headerTextColor, ${colors.black});
-    :hover {
+    &:hover {
       background-color: ${colors.border};
       color: ${({ $hoverHeaderTextColor }) => $hoverHeaderTextColor};
     }

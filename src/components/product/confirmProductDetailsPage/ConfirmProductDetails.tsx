@@ -9,9 +9,9 @@ import physicalProductSmall from "components/product/img/physical-product-small.
 import { optionUnitValues, ProductTypeValues } from "components/product/utils";
 import Tooltip from "components/tooltip/Tooltip";
 import BosonButton from "components/ui/BosonButton";
-import Grid from "components/ui/Grid";
+import { Grid } from "components/ui/Grid";
 import Image from "components/ui/Image";
-import Typography from "components/ui/Typography";
+import { Typography } from "components/ui/Typography";
 import Video from "components/ui/Video";
 import dayjs from "dayjs";
 import { CONFIG } from "lib/config";
@@ -121,7 +121,7 @@ export default function ConfirmProductDetails({
     }
     return (
       <>
-        <Typography tag="p" $fontSize="0.75rem" fontWeight="600">
+        <Typography tag="p" fontSize="0.75rem" fontWeight="600">
           Product type*
         </Typography>
         <ProductBox>
@@ -568,7 +568,7 @@ export default function ConfirmProductDetails({
           <Info justifyContent="space-between" gap="2rem">
             <Grid justifyContent="flex-start" gap="1rem">
               <ChatDotsIcon size={24} />
-              <InfoMessage $fontSize="1rem" fontWeight="600">
+              <InfoMessage fontSize="1rem" fontWeight="600">
                 You succesfully initialized your chat client
               </InfoMessage>
             </Grid>

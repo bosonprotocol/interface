@@ -2,7 +2,7 @@ import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { useMemo, useState } from "react";
 import styled from "styled-components";
 
-import Grid from "../../../components/ui/Grid";
+import { Grid } from "../../../components/ui/Grid";
 import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { useQueryParameter } from "../../../lib/routing/useQueryParameter";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -48,7 +48,7 @@ const Content = styled.div`
   ${breakpoint.s} {
     padding: 5rem 0;
   }
-  &::before {
+  &:before {
     content: "";
     position: absolute;
     top: 0px;

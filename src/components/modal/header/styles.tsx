@@ -2,7 +2,7 @@ import { X } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
-import Typography from "../../ui/Typography";
+import { Typography } from "../../ui/Typography";
 
 export const Close = styled(X)`
   line {

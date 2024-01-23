@@ -31,10 +31,10 @@ import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
 import { useModal } from "../modal/useModal";
 import { getSellerCenterPath } from "../seller/paths";
 import BosonButton from "../ui/BosonButton";
-import Grid from "../ui/Grid";
-import GridContainer from "../ui/GridContainer";
+import { Grid } from "../ui/Grid";
+import { GridContainer } from "../ui/GridContainer";
 import Image from "../ui/Image";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import differentVariantsProduct from "./img/different-variants-product.png";
 import oneItemTypeProduct from "./img/one-item-product.png";
 import phygitalProduct from "./img/phygital-product.png";
@@ -93,7 +93,7 @@ export const RadioButton = styled.input`
 const RadioButtonText = styled(Typography).attrs({
   tag: "p",
   fontWeight: "600",
-  $fontSize: "1rem",
+  fontSize: "1rem",
   margin: "1.5rem 0",
   color: colors.darkGrey
 })``;
@@ -418,7 +418,7 @@ export default function ProductType({
                   <Typography
                     tag="p"
                     fontWeight="600"
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     margin="1.5rem 0"
                     color={colors.darkGrey}
                   >
@@ -446,7 +446,7 @@ export default function ProductType({
                   <Typography
                     tag="p"
                     fontWeight="600"
-                    $fontSize="1rem"
+                    fontSize="1rem"
                     margin="1rem 0 0 0"
                     color={colors.darkGrey}
                   >
@@ -455,7 +455,7 @@ export default function ProductType({
                   <Typography
                     tag="p"
                     fontWeight="600"
-                    $fontSize="0.7rem"
+                    fontSize="0.7rem"
                     margin="0.3rem 0 1.3125rem 0"
                     color={colors.darkGrey}
                   >

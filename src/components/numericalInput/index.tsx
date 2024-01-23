@@ -25,7 +25,7 @@ const StyledInput = styled.input<{
   -webkit-appearance: textfield;
   text-align: right;
 
-  ::-webkit-search-decoration {
+  &::-webkit-search-decoration {
     -webkit-appearance: none;
   }
 
@@ -33,12 +33,12 @@ const StyledInput = styled.input<{
     -moz-appearance: textfield;
   }
 
-  ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
 
-  ::placeholder {
+  &::placeholder {
     color: ${({ theme }) => theme.textTertiary};
   }
 `;

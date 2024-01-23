@@ -4,7 +4,7 @@ import Dropzone from "react-dropzone";
 import styled from "styled-components";
 
 import { useIpfsImage } from "../../../lib/utils/hooks/images/useIpfsImage";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 
 const StyledCanvasWrapper = styled.div`
   > :first-child {

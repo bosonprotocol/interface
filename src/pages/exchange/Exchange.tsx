@@ -1,48 +1,43 @@
+import { ExchangeDetailWidget } from "components/detail/DetailWidget/ExchangeDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import {
-  DarkerBackground,
-  DetailGrid,
   DetailWrapper,
   ImageWrapper,
   LightBackground,
-  MainDetailGrid
+  MainDetailGrid,
+  SellerAndOpenSeaGrid
 } from "../../components/detail/Detail.style";
 import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
-import DetailSlider from "../../components/detail/DetailSlider";
-import DetailTable from "../../components/detail/DetailTable";
-import DetailTransactions from "../../components/detail/DetailTransactions";
-import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
-// DETAILS COMPONENTS ABOVE
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { colors } from "../../lib/styles/colors";
-import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useLensProfilesPerSellerIds } from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
-import useCheckExchangePolicy from "../../lib/utils/hooks/offer/useCheckExchangePolicy";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
   useSellerCurationListFn,
   useSellers
 } from "../../lib/utils/hooks/useSellers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
 
-const marginBottom = "4rem";
+const marginBottom = "1rem";
 
 const StyledVariationSelects = styled(VariationSelects)`
-  margin-bottom: ${marginBottom};
+  margin-bottom: 0;
+  > * {
+    margin-bottom: 0;
+  }
 `;
 
 export default function Exchange() {
@@ -51,8 +46,7 @@ export default function Exchange() {
   const {
     data: exchanges,
     isError,
-    isLoading,
-    refetch: reload
+    isLoading
   } = useExchanges(
     {
       id: exchangeId,
@@ -76,13 +70,6 @@ export default function Exchange() {
       sellerId && checkIfSellerIsInCurationList(sellerId);
     return isSellerInCurationList;
   }, [sellerId, checkIfSellerIsInCurationList]);
-
-  const variant = {
-    offer,
-    variations
-  };
-  const textColor = useCustomStoreQueryParameter("textColor");
-
   const { data: sellers } = useSellers(
     {
       id: sellerId,
@@ -92,29 +79,12 @@ export default function Exchange() {
       enabled: !!sellerId
     }
   );
-  const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
-    (fund) => fund.token.address === offer?.exchangeToken.address
-  )?.availableAmount;
-  const offerRequiredDeposit = Number(offer?.sellerDeposit || 0);
-  const hasSellerEnoughFunds =
-    offerRequiredDeposit > 0
-      ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
-      : true;
-
-  const exchangePolicyCheckResult = useCheckExchangePolicy({
-    offerId: offer?.id
-  });
-
   // fetch lensProfile for current SellerId
   const seller = sellers?.[0];
   const sellerLensProfilePerSellerId = useLensProfilesPerSellerIds(
     { sellers: seller ? [seller] : [] },
     { enabled: !!seller }
   );
-  const sellerLensProfile = seller
-    ? sellerLensProfilePerSellerId?.get(seller.id)
-    : undefined;
-
   if (isLoading) {
     return <LoadingMessage />;
   }
@@ -136,6 +106,14 @@ export default function Exchange() {
       />
     );
   }
+  const variant = {
+    offer,
+    variations: variations ?? []
+  } as VariantV1;
+
+  const sellerLensProfile = seller
+    ? sellerLensProfilePerSellerId?.get(seller.id)
+    : undefined;
 
   if (!offer.isValid) {
     return (
@@ -149,17 +127,8 @@ export default function Exchange() {
   if (!isSellerCurated) {
     return <NotFound />;
   }
-  const buyerAddress = exchange.buyer.wallet;
 
-  const {
-    name,
-    offerImg,
-    animationUrl,
-    shippingInfo,
-    description,
-    artistDescription,
-    images
-  } = getOfferDetails(offer);
+  const { name, offerImg, animationUrl } = getOfferDetails(offer);
 
   return (
     <>
@@ -167,7 +136,6 @@ export default function Exchange() {
         <LightBackground>
           <MainDetailGrid>
             <ImageWrapper>
-              <DetailOpenSea exchange={exchange} />
               {animationUrl ? (
                 <Video
                   src={animationUrl}
@@ -180,9 +148,7 @@ export default function Exchange() {
               ) : (
                 <Image src={offerImg ?? ""} dataTestId="offerImage" />
               )}
-            </ImageWrapper>
-            <div>
-              <>
+              <SellerAndOpenSeaGrid>
                 <SellerID
                   offer={offer}
                   buyerOrSeller={exchange?.seller}
@@ -190,12 +156,18 @@ export default function Exchange() {
                   withProfileImage
                   lensProfile={sellerLensProfile}
                 />
+                <DetailOpenSea exchange={exchange} />
+              </SellerAndOpenSeaGrid>
+            </ImageWrapper>
+            <div style={{ width: "100%" }}>
+              <>
                 <Typography
                   tag="h1"
                   data-testid="name"
                   style={{
                     fontSize: "2rem",
-                    ...(!hasVariations && { marginBottom })
+                    ...(!hasVariations && { marginBottom }),
+                    marginTop: 0
                   }}
                 >
                   {name}
@@ -203,71 +175,18 @@ export default function Exchange() {
               </>
               {hasVariations && (
                 <StyledVariationSelects
-                  selectedVariant={variant as VariantV1}
-                  variants={[variant] as VariantV1[]}
+                  selectedVariant={variant}
+                  variants={[variant]}
                   disabled
                 />
               )}
 
-              <DetailWidget
-                pageType="exchange"
-                offer={offer}
-                exchange={exchange}
-                name={name}
-                image={offerImg}
-                hasSellerEnoughFunds={hasSellerEnoughFunds}
-                reload={reload}
-                exchangePolicyCheckResult={exchangePolicyCheckResult}
-              />
+              <ExchangeDetailWidget exchange={exchange} variant={variant} />
             </div>
             <DetailShare />
           </MainDetailGrid>
         </LightBackground>
-        <DarkerBackground>
-          <DetailGrid>
-            <div>
-              <Typography tag="h3">Product description</Typography>
-              <Typography
-                tag="p"
-                data-testid="description"
-                style={{ whiteSpace: "pre-wrap" }}
-              >
-                {description}
-              </Typography>
-              {/* TODO: hidden for now */}
-              {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
-            </div>
-            <div>
-              <Typography tag="h3">About the creator</Typography>
-              <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
-                {artistDescription}
-              </Typography>
-            </div>
-          </DetailGrid>
-          {images.length > 0 && <DetailSlider images={images} />}
-          <DetailGrid>
-            <DetailTransactions
-              title="Transaction History (this item)"
-              exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-              offer={offer}
-              buyerAddress={buyerAddress}
-            />
-            {(shippingInfo.returnPeriodInDays !== undefined ||
-              !!shippingInfo.shippingTable.length) && (
-              <div>
-                <Typography tag="h3">Shipping information</Typography>
-                <Typography
-                  tag="p"
-                  style={{ color: textColor || colors.darkGrey }}
-                >
-                  Return period: {shippingInfo.returnPeriodInDays}{" "}
-                  {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
-                </Typography>
-                <DetailTable data={shippingInfo.shippingTable} inheritColor />
-              </div>
-            )}
-          </DetailGrid>
-        </DarkerBackground>
+        <OfferFullDescription offer={offer} exchange={exchange} />
       </DetailWrapper>
     </>
   );

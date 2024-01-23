@@ -7,7 +7,7 @@ import { useBreakpoints } from "../../../../../../lib/utils/hooks/useBreakpoints
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import MultiSteps from "../../../../../step/MultiSteps";
 import BosonButton from "../../../../../ui/BosonButton";
-import Grid from "../../../../../ui/Grid";
+import { Grid } from "../../../../../ui/Grid";
 import ExchangePreview from "../ExchangePreview";
 import EscalateStepOne from "./steps/EscalateStepOne";
 import EscalateStepTwo, { EscalateChatProps } from "./steps/EscalateStepTwo";

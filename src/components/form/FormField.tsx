@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 
 import { colors } from "../../lib/styles/colors";
 import Tooltip from "../tooltip/Tooltip";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import { FormFieldWrapper } from "./Field.styles";
 import type { FormFieldProps } from "./types";
 
@@ -19,7 +19,6 @@ export default function FormField({
   tooltip,
   children,
   style = {},
-  theme = "",
   valueToCopy,
   ...rest
 }: FormFieldProps) {
@@ -30,7 +29,6 @@ export default function FormField({
       alignItems="flex-start"
       flexGrow="1"
       style={style}
-      theme={theme}
       {...rest}
     >
       <Grid justifyContent="space-between" margin="0 0 0.375rem 0" gap="0.5rem">

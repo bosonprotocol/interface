@@ -26,6 +26,9 @@ if (!widgetsUrl) {
   throw new Error("REACT_APP_WIDGETS_URL is not defined");
 }
 
+const infuraProjectSecret = process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET;
+const infuraProjectId = process.env.REACT_APP_INFURA_IPFS_PROJECT_ID;
+
 function getMetaTxApiIds(envConfig: ProtocolConfig) {
   const protocolAddress: string = envConfig.contracts.protocolDiamond;
   const defaultTokens: Token[] = envConfig.defaultTokens || [];
@@ -120,10 +123,11 @@ export const CONFIG = {
   offerCurationList: parseCurationList(
     process.env.REACT_APP_OFFER_CURATION_LIST
   ),
-  rNFTLicenseTemplate: process.env.REACT_APP_RNFT_LICENSE_TEMPLATE,
+  rNFTLicenseTemplate: process.env.REACT_APP_RNFT_LICENSE_TEMPLATE ?? "",
   buyerSellerAgreementTemplate:
-    process.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE,
-  fairExchangePolicyRules: process.env.REACT_APP_FAIR_EXCHANGE_POLICY_RULES,
+    process.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE ?? "",
+  fairExchangePolicyRules:
+    process.env.REACT_APP_FAIR_EXCHANGE_POLICY_RULES ?? "",
   enableCurationLists: stringToBoolean(
     process.env.REACT_APP_ENABLE_CURATION_LISTS,
     true
@@ -170,6 +174,12 @@ export const CONFIG = {
   awsApiEndpoint: process.env.REACT_APP_AWS_API_ENDPOINT as string,
   uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
   infuraKey,
+  infuraProjectId,
+  infuraProjectSecret,
+  ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
+    infuraProjectId,
+    infuraProjectSecret
+  ),
   magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string,
   rpcUrls: getRpcUrls(infuraKey),
   widgetsUrl
@@ -191,10 +201,6 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
       process.env.REACT_APP_THE_GRAPH_IPFS_URL || envConfig.theGraphIpfsUrl,
     ipfsMetadataStorageUrl:
       process.env.REACT_APP_IPFS_METADATA_URL || envConfig.ipfsMetadataUrl,
-    ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
-      process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
-      process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
-    ),
     metaTx: envConfig.metaTx
       ? {
           ...envConfig.metaTx,

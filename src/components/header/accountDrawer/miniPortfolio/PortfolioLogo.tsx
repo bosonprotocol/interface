@@ -63,9 +63,9 @@ const CircleLogoImage = styled.img<{ size: string }>`
   border-radius: 50%;
 `;
 
-const L2LogoContainer = styled.div<{ hasSquareLogo?: boolean }>`
-  background-color: ${({ hasSquareLogo }) =>
-    hasSquareLogo ? colors.lightGrey : colors.white};
+const L2LogoContainer = styled.div<{ $hasSquareLogo?: boolean }>`
+  background-color: ${({ $hasSquareLogo }) =>
+    $hasSquareLogo ? colors.lightGrey : colors.white};
   border-radius: 2px;
   height: 16px;
   left: 60%;
@@ -194,7 +194,7 @@ function SquareL2Logo({ chainId }: { chainId: ChainId }) {
   const chainLogo = squareLogoUrl ?? logoUrl;
 
   return (
-    <L2LogoContainer hasSquareLogo={!!squareLogoUrl}>
+    <L2LogoContainer $hasSquareLogo={!!squareLogoUrl}>
       {squareLogoUrl ? (
         <SquareChainLogo src={chainLogo} alt="chainLogo" />
       ) : (

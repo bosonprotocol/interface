@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
 import { colors } from "../../../../../lib/styles/colors";
-import Grid from "../../../../ui/Grid";
+import { Grid } from "../../../../ui/Grid";
 import Loading from "../../../../ui/Loading";
-import Typography from "../../../../ui/Typography";
+import { Typography } from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
 
 interface Props {
@@ -38,12 +38,12 @@ export default function WaitingForConfirmationModal({ action }: Props) {
           height: "6rem"
         }}
       />
-      <Typography fontWeight="600" $fontSize="1.5rem" lineHeight="150%">
+      <Typography fontWeight="600" fontSize="1.5rem" lineHeight="150%">
         Waiting For Confirmation
       </Typography>
       <Typography
         fontWeight="600"
-        $fontSize="1rem"
+        fontSize="1rem"
         lineHeight="150%"
         color={colors.darkGrey}
         margin="0.5rem 0 1.5rem 0"
@@ -52,7 +52,7 @@ export default function WaitingForConfirmationModal({ action }: Props) {
       </Typography>
       <Typography
         fontWeight="400"
-        $fontSize="0.75rem"
+        fontSize="0.75rem"
         lineHeight="150%"
         color={colors.darkGrey}
       >

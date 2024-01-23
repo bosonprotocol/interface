@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
 import LicenseComponent from "../../components/license/License";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import useOfferByUuid from "../../lib/utils/hooks/product/useOfferByUuid";

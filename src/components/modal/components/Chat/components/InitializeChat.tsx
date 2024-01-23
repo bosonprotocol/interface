@@ -10,8 +10,8 @@ import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatConte
 import ConnectButton from "../../../../header/ConnectButton";
 import { Spinner } from "../../../../loading/Spinner";
 import BosonButton from "../../../../ui/BosonButton";
-import Grid from "../../../../ui/Grid";
-import Typography from "../../../../ui/Typography";
+import { Grid } from "../../../../ui/Grid";
+import { Typography } from "../../../../ui/Typography";
 
 const Info = styled(Grid)`
   display: flex;
@@ -49,7 +49,7 @@ export default function InitializeChat({ isError = false, message }: Props) {
       <Grid justifyContent="flex-start" gap="1rem">
         {isError ? <IconError size={24} /> : <Icon size={24} />}
         <Typography
-          $fontSize="1rem"
+          fontSize="1rem"
           fontWeight="600"
           lineHeight="1.5rem"
           flex="1 1"

@@ -6,8 +6,8 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { displayFloat } from "../../lib/utils/calcPrice";
 import Tooltip from "../tooltip/Tooltip";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { Grid } from "../ui/Grid";
+import { Typography } from "../ui/Typography";
 import ConvertedPrice from "./ConvertedPrice";
 import { useConvertedPrice } from "./useConvertedPrice";
 

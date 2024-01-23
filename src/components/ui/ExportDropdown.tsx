@@ -7,7 +7,7 @@ import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import Button, { IButton } from "../ui/Button";
+import Button from "../ui/Button";
 import Loading from "./Loading";
 
 const ExportButton = styled(Button)`
@@ -28,11 +28,11 @@ const ExportButton = styled(Button)`
       button {
         color: ${colors.white};
       }
-      :after {
+      &:after {
         background: ${colors.white};
         opacity: 0.5;
       }
-      :before {
+      &:before {
         opacity: 0.75;
         border-top: 0.5rem solid ${colors.white};
       }
@@ -42,12 +42,12 @@ const ExportButton = styled(Button)`
     }
     padding-right: 2rem;
     position: relative;
-    :after,
-    :before {
+    &:after,
+    &:before {
       position: absolute;
       content: "";
     }
-    :after {
+    &:after {
       top: 0;
       bottom: 0;
       right: 1.5rem;
@@ -55,7 +55,7 @@ const ExportButton = styled(Button)`
       width: 1px;
       height: 100%;
     }
-    :before {
+    &:before {
       width: 0;
       height: 0;
       border-left: 0.25rem solid transparent;
@@ -145,11 +145,10 @@ interface ChildProps {
   csvProps: CommonPropTypes;
 }
 interface Props {
-  buttonProps?: IButton;
   children?: Array<ChildProps>;
 }
 
-function ExportDropdown({ buttonProps = {}, children }: Props) {
+function ExportDropdown({ children }: Props) {
   return (
     <Container>
       {children && (
@@ -162,7 +161,7 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
           }
           key={children[0].id}
         >
-          <ExportButton theme="secondary" size="small" {...buttonProps}>
+          <ExportButton themeVal="secondary" size="small">
             Export <DownloadSimple size={16} />
           </ExportButton>
         </CSVLink>

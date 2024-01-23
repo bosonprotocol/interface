@@ -10,9 +10,9 @@ import DisputeListMobile from "../../components/modal/components/DisputeListMobi
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
 import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
-import Grid from "../../components/ui/Grid";
+import { Grid } from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
-import Typography from "../../components/ui/Typography";
+import { Typography } from "../../components/ui/Typography";
 import {
   AccountQueryParameters,
   TabQueryParameters
@@ -135,21 +135,21 @@ function DisputeCenterPage() {
           <CustomGridContainer>
             <div style={{ padding: "3.5rem 0" }}>
               <Typography
-                $fontSize="3.5rem"
+                fontSize="3.5rem"
                 color={colors.black}
                 fontWeight="600"
               >
                 Boson Protocol
               </Typography>
               <Typography
-                $fontSize="3.5rem"
+                fontSize="3.5rem"
                 color={colors.black}
                 fontWeight="600"
               >
                 Dispute Resolution Center
               </Typography>
               <Grid
-                $width="max-content"
+                width="max-content"
                 gap="1rem"
                 justifyContent="flex-start"
                 alignItems="flex-start"
@@ -157,7 +157,7 @@ function DisputeCenterPage() {
               >
                 <Button
                   type="submit"
-                  theme="primary"
+                  themeVal="primary"
                   disabled={!myBuyerId}
                   onClick={() => {
                     goToViewMode(
@@ -170,7 +170,7 @@ function DisputeCenterPage() {
                 </Button>
                 <Button
                   type="button"
-                  theme="secondary"
+                  themeVal="secondary"
                   onClick={() => {
                     showModal(
                       modalTypes.RAISE_DISPUTE,
@@ -203,7 +203,7 @@ function DisputeCenterPage() {
           >
             {myBuyerId && (
               <Button
-                theme="secondary"
+                themeVal="secondary"
                 onClick={() => {
                   showModal(
                     "MANAGE_FUNDS_MODAL",
@@ -221,7 +221,7 @@ function DisputeCenterPage() {
             )}
             {mySellerId && (
               <Button
-                theme="secondary"
+                themeVal="secondary"
                 onClick={() => {
                   showModal(
                     "MANAGE_FUNDS_MODAL",

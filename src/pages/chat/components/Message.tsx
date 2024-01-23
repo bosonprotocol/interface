@@ -20,8 +20,8 @@ import styled from "styled-components";
 
 import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
-import Grid from "../../../components/ui/Grid";
-import Typography from "../../../components/ui/Typography";
+import { Grid } from "../../../components/ui/Grid";
+import { Typography } from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -204,7 +204,7 @@ const IconMessage = ({
         })}
       <Grid flexDirection="column" gap="1rem" alignItems="flex-start">
         {heading && (
-          <Typography $fontSize="1.25rem" fontWeight="600">
+          <Typography fontSize="1.25rem" fontWeight="600">
             {heading}
           </Typography>
         )}
@@ -339,7 +339,7 @@ const MessageContent = ({
           <>
             <Typography
               margin="1.5rem 0 0.5rem 0"
-              $fontSize="1rem"
+              fontSize="1rem"
               fontWeight="600"
             >
               Dispute Category
@@ -352,7 +352,7 @@ const MessageContent = ({
                 </Grid>
               );
             })}
-            <Typography margin="1.5rem 0 0 0" $fontSize="1rem" fontWeight="600">
+            <Typography margin="1.5rem 0 0 0" fontSize="1rem" fontWeight="600">
               Additional Information
             </Typography>
             <Typography tag="p" margin="1rem 0rem">
@@ -379,7 +379,7 @@ const MessageContent = ({
                     >
                       <Typography
                         margin="0 0 0.5rem 0"
-                        $fontSize="1rem"
+                        fontSize="1rem"
                         fontWeight="600"
                       >
                         Proposal
@@ -397,7 +397,7 @@ const MessageContent = ({
               <>
                 <Typography
                   margin="0 0 0.5rem 0"
-                  $fontSize="1rem"
+                  fontSize="1rem"
                   fontWeight="600"
                 >
                   Resolution Proposal
@@ -428,11 +428,7 @@ const MessageContent = ({
         <Typography tag="h4" margin="0">
           {title}
         </Typography>
-        <Typography
-          margin="1.5rem 0 0.5rem 0"
-          $fontSize="1rem"
-          fontWeight="600"
-        >
+        <Typography margin="1.5rem 0 0.5rem 0" fontSize="1rem" fontWeight="600">
           Resolution Summary
         </Typography>
         <ProposalTypeSummary

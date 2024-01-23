@@ -205,5 +205,7 @@ const GlobalStyle = createGlobalStyle<{
     top: 0; // rainbowkit modal backdrop should fill up all height
     height: 100%;
   }
+
+
 `;
 export default GlobalStyle;

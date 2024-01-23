@@ -3,8 +3,8 @@ import UniswapXRouterLabel, {
   UniswapXGradient
 } from "components/routerLabel/UniswapXRouterLabel";
 import { AutoColumn } from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { colors } from "lib/styles/colors";
 import { formatNumber, NumberType } from "lib/utils/formatNumbers";
 import { ReactNode } from "react";
@@ -68,10 +68,10 @@ export function GasBreakdownTooltip({
       ? trade.wrapInfo.wrapGasEstimateUSD
       : undefined;
   return (
-    <Container gap="md">
+    <Container $gap="md">
       {(wrapEstimate || approvalEstimate) && !hideFees && (
         <>
-          <AutoColumn gap="sm">
+          <AutoColumn $gap="sm">
             {wrapEstimate && (
               <GasCostItem title={<>Wrap ETH</>} amount={wrapEstimate} />
             )}

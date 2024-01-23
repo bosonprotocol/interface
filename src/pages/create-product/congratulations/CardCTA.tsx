@@ -1,8 +1,8 @@
 import React, { ReactElement } from "react";
 import styled, { css } from "styled-components";
 
-import Grid from "../../../components/ui/Grid";
-import Typography from "../../../components/ui/Typography";
+import { Grid } from "../../../components/ui/Grid";
+import { Typography } from "../../../components/ui/Typography";
 import { colors } from "../../../lib/styles/colors";
 
 type CardCTAProps = {
@@ -54,7 +54,7 @@ export const CardCTA: React.FC<CardCTAProps> = ({
     >
       <>
         <IconContainer>{icon}</IconContainer>
-        <Typography fontWeight="600" $fontSize="1.25rem">
+        <Typography fontWeight="600" fontSize="1.25rem">
           {title}
         </Typography>
         <Typography tag="p">{text}</Typography>

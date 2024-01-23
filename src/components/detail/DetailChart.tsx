@@ -15,7 +15,7 @@ import { Line } from "react-chartjs-2";
 
 import { Offer } from "../../lib/types/offer";
 import { useOfferDataset } from "../../lib/utils/hooks/useOfferDataset";
-import Typography from "../ui/Typography";
+import { Typography } from "../ui/Typography";
 import { ChartWrapper } from "./Detail.style";
 
 ChartJS.register(

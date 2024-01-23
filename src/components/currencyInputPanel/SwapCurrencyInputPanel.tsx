@@ -9,8 +9,8 @@ import {
 import CurrencyLogo from "components/logo/CurrencyLogo";
 import Button from "components/ui/Button";
 import { AutoColumn } from "components/ui/column/index";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { isSupportedChain } from "lib/constants/chains";
 import { colors } from "lib/styles/colors";
 import { opacify } from "lib/styles/opacify";
@@ -190,11 +190,11 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   padding: 4px 6px;
   pointer-events: ${({ disabled }) => (!disabled ? "initial" : "none")};
 
-  :hover {
+  &:hover {
     opacity: ${({ disabled }) => (!disabled ? 0.8 : 0.4)};
   }
 
-  :focus {
+  &:focus {
     outline: none;
   }
 `;
@@ -273,9 +273,9 @@ export default function SwapCurrencyInputPanel({
     <InputPanel id={id} hideInput={hideInput} {...rest}>
       {locked && (
         <FixedContainer>
-          <AutoColumn gap="sm" justify="center">
+          <AutoColumn $gap="sm" $justify="center">
             <Lock />
-            <Typography $fontSize="12px" textAlign="center" padding="0 12px">
+            <Typography fontSize="12px" textAlign="center" padding="0 12px">
               <>
                 The market price is outside your specified price range.
                 Single-asset deposit only.
@@ -361,12 +361,12 @@ export default function SwapCurrencyInputPanel({
                 )}
               </LoadingOpacityContainer>
               {account ? (
-                <Grid $height={"17px"} $width={"fit-content"}>
+                <Grid height={"17px"} width={"fit-content"}>
                   <Typography
                     data-testid="balance-text"
                     color="initial"
                     fontWeight={400}
-                    $fontSize={`14px`}
+                    fontSize={`14px`}
                     style={{ display: "inline" }}
                   >
                     {!hideBalance && currency && selectedCurrencyBalance ? (

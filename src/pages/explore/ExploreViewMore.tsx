@@ -2,8 +2,8 @@ import { ArrowRight } from "phosphor-react";
 import styled from "styled-components";
 
 import Breadcrumbs from "../../components/breadcrumbs/Breadcrumbs";
-import Grid from "../../components/ui/Grid";
-import Typography from "../../components/ui/Typography";
+import { Grid } from "../../components/ui/Grid";
+import { Typography } from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
 
 const ViewMoreButton = styled.button`
@@ -36,7 +36,7 @@ export default function ExploreViewMore({
       {showMore ? (
         <>
           <Typography
-            $fontSize="32px"
+            fontSize="32px"
             fontWeight="600"
             margin="0.67em 0 0.67em 0"
           >

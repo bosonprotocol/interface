@@ -5,7 +5,7 @@ import { createGlobalStyle } from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
 import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
+import { Grid } from "../../ui/Grid";
 
 const GlobalStyle = createGlobalStyle`
 .DropdownMenuContent,
@@ -186,7 +186,7 @@ const Actions: React.FC<ActionsProps> = ({ label, items }) => {
       <GlobalStyle />
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild={false}>
-          <Button theme="secondary" size={"small"}>
+          <Button themeVal="secondary" size={"small"}>
             <Grid gap="0.5rem">
               {label} <CaretDown size={16} />
             </Grid>

@@ -1,7 +1,7 @@
 import { Currency, Token } from "@uniswap/sdk-core";
 import Column from "components/ui/column";
-import Grid from "components/ui/Grid";
-import Typography from "components/ui/Typography";
+import { Grid } from "components/ui/Grid";
+import { Typography } from "components/ui/Typography";
 import { isAddress } from "lib/utils/address";
 import { useChainId } from "lib/utils/hooks/connection/connection";
 import {
@@ -192,7 +192,7 @@ export function CurrencySearch({
     <ContentWrapper>
       <PaddedColumn gap="16px">
         <Grid>
-          <Typography fontWeight={500} $fontSize={16}>
+          <Typography fontWeight={500} fontSize={16}>
             <>Select a token</>
           </Typography>
         </Grid>
