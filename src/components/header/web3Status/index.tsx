@@ -40,21 +40,21 @@ const Web3StatusGeneric = styled.button`
 
 const breakpointWhenConnectButtonOverflows = "1300px";
 const Web3StatusConnected = styled(Web3StatusGeneric)<{ $color: string }>`
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   font-weight: 500;
   color: ${({ $color }) => $color};
   &:hover,
   &:focus {
-    border: 1px solid color-mix(in srgb, var(--buttonBgColor) 90%, black);
+    border: 2px solid color-mix(in srgb, var(--buttonBgColor) 90%, black);
   }
   @media (min-width: ${breakpointNumbers.xs}px) and (max-width: ${breakpointNumbers.l -
     1}px) {
     background-color: var(--buttonBgColor);
-    border: 1px solid var(--buttonBgColor);
+    border: 2px solid var(--buttonBgColor);
   }
   @media (min-width: ${breakpointWhenConnectButtonOverflows}) {
     background-color: var(--buttonBgColor);
-    border: 1px solid var(--buttonBgColor);
+    border: 2px solid var(--buttonBgColor);
   }
   ${breakpoint.xxs} {
     border-radius: 8px;

@@ -263,29 +263,34 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
       return SellerCenterRoutes.CreateProduct;
     }, [isSeller, hasSellerOffers]);
     const CTA = useMemo(() => {
+      const commonStyles = { minWidth: "200px" };
       return (
         <>
           {isFetching ? (
             <BosonButton
               variant="accentInverted"
               size="regular"
-              {...(!isLteS && { style: { minWidth: "200px" } })}
+              {...(!isLteS && { style: commonStyles })}
             >
-              <Spinner />
+              <Spinner size={18} />
             </BosonButton>
           ) : (
             showSellButton && (
               <Grid
                 flexBasis="content"
+                flexShrink="0"
                 {...(isSideNavBar && { justifyContent: "center" })}
               >
                 <BosonButton
                   variant="accentInverted"
                   style={{
                     whiteSpace: "pre",
-                    marginLeft: isLteXS ? "1rem" : ""
+                    marginLeft: isLteXS ? "1rem" : "",
+                    marginTop: 0,
+                    marginRight: 0,
+                    marginBottom: 0,
+                    ...(!isLteS && commonStyles)
                   }}
-                  {...(!isLteS && { style: { minWidth: "200px" } })}
                   size="regular"
                   onClick={() => {
                     navigate({ pathname: sellUrl });
