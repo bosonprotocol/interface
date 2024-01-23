@@ -1,16 +1,12 @@
 import React from "react";
-import styled, { CSSProperties } from "styled-components";
+import styled from "styled-components";
 
 import { LayoutRoot } from "../../../components/layout/Layout";
 import { VariableStep } from "../../../components/modal/components/createProduct/const";
 import { useModal } from "../../../components/modal/useModal";
 import BosonButton from "../../../components/ui/BosonButton";
 import { Grid } from "../../../components/ui/Grid";
-import {
-  ColumnGapPerRow,
-  ItemsPerRow,
-  RowGapPerRow
-} from "../../../components/ui/GridContainer";
+import { GridContainer } from "../../../components/ui/GridContainer";
 import { Typography } from "../../../components/ui/Typography";
 import { SellerLandingPageParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
@@ -36,50 +32,6 @@ const Background = styled.div`
   background: ${colors.lightGrey};
   width: 100%;
   margin-bottom: 5rem;
-`;
-
-const GridContainer = styled.div<{
-  itemsPerRow?: Partial<ItemsPerRow>;
-  columnGapPerRow?: Partial<ColumnGapPerRow>;
-  rowGapPerRow?: Partial<RowGapPerRow>;
-  columnGap?: CSSProperties["columnGap"];
-  rowGap?: CSSProperties["rowGap"];
-}>`
-  display: grid;
-  grid-column-gap: ${({ columnGap }) => columnGap || "2rem"};
-  grid-row-gap: ${({ rowGap }) => rowGap || "2rem"};
-
-  grid-template-columns: repeat(1, minmax(0, max-content));
-  ${breakpoint.xs} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.xs || "2"}, minmax(0, max-content))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.xs};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.xs};
-  }
-  ${breakpoint.s} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.s || "3"}, minmax(0, max-content))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.s};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.s};
-  }
-  ${breakpoint.m} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.m || "3"}, minmax(0, max-content))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.m};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.m};
-  }
-  ${breakpoint.l} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.l || "3"}, minmax(0, max-content))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.l};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.l};
-  }
-  ${breakpoint.xl} {
-    grid-template-columns: repeat(${({ itemsPerRow }) =>
-      itemsPerRow?.xl || "3"}, minmax(0, max-content))};
-    grid-column-gap: ${({ columnGapPerRow }) => columnGapPerRow?.xl};
-    grid-row-gap: ${({ rowGapPerRow }) => rowGapPerRow?.xl};
-  }
 `;
 
 const StyledGrid = styled(Grid)`
@@ -183,6 +135,7 @@ export const SellerLandingPage: React.FC = () => {
           <GridContainer
             columnGap="5rem"
             itemsPerRow={{ xs: 1, s: 2, m: 2, l: 2, xl: 2 }}
+            defaultSize="minmax(0, max-content)"
           >
             <Title tag="h1" fontWeight="600" fontSize="3.5rem">
               Sell physical products as NFTs everywhere
