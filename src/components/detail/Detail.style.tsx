@@ -353,49 +353,6 @@ export const DetailWrapper = styled.div`
   }
 `;
 
-export const DetailGrid = styled.div`
-  position: relative;
-  display: grid;
-
-  grid-column-gap: 1em;
-  grid-row-gap: 1rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  ${breakpoint.s} {
-    grid-column-gap: 3rem;
-    grid-row-gap: 3rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  > div {
-    max-width: 100%;
-  }
-`;
-
-export const WidgetUpperGrid = styled.div`
-  display: grid;
-  grid-column-gap: 1em;
-  grid-row-gap: 1rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  align-items: center;
-
-  ${breakpoint.s} {
-    grid-column-gap: 2rem;
-    grid-row-gap: 2rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  > button {
-    min-width: unset !important;
-    div {
-      justify-content: space-between;
-      gap: 1rem;
-      > div,
-      > span {
-        margin-left: unset !important;
-      }
-    }
-  }
-`;
-
 export const MainDetailGrid = styled.div`
   position: relative;
   display: grid;
@@ -418,33 +375,6 @@ export const MainDetailGrid = styled.div`
   }
   > div {
     max-width: 100%;
-  }
-`;
-
-export const DarkerBackground = styled.div`
-  padding: 2rem 0;
-  max-width: 100%;
-  background-color: var(--secondary);
-  position: relative;
-  > div:not(:last-child) {
-    margin-bottom: 2rem;
-  }
-
-  &:before,
-  &:after {
-    content: "";
-    width: 100rem;
-    top: 0;
-    bottom: 0;
-    position: absolute;
-    background-color: var(--secondary);
-    z-index: -1;
-  }
-  &:before {
-    right: -100rem;
-  }
-  &:after {
-    left: -100rem;
   }
 `;
 
@@ -567,14 +497,6 @@ export const RedeemLeftButton = styled.button`
 
   ${miniButton}
   color: ${colors.black};
-`;
-
-export const CommitAndRedeemButton = styled.p`
-  font-weight: 600;
-  font-size: 0.75rem;
-  font-style: normal;
-  margin: 0;
-  color: ${colors.secondary};
 `;
 
 export const RaiseProblemButton = styled(Button)`

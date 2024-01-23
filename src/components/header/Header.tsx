@@ -413,5 +413,3 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
     );
   }
 );
-
-export default HeaderComponent;
