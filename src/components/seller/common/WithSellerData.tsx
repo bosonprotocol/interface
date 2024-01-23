@@ -26,7 +26,7 @@ import {
 } from "../../../lib/utils/hooks/useSellerRoles";
 import { useSellerCurationListFn } from "../../../lib/utils/hooks/useSellers";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
-import useOffersBacked from "./useOffersBacked";
+import { useOffersBacked } from "./useOffersBacked";
 
 interface QueryProps {
   isLoading: boolean;

@@ -12,7 +12,7 @@ import styled from "styled-components";
 
 import { useConvertionRate } from "../../../components/convertion-rate/useConvertionRate";
 import { ModalHeaderTitle } from "../../../components/modal/header/ModalHeaderTitle";
-import useOffersBacked from "../../../components/seller/common/useOffersBacked";
+import { useOffersBacked } from "../../../components/seller/common/useOffersBacked";
 import { getSellerCenterPath } from "../../../components/seller/paths";
 import Button from "../../../components/ui/Button";
 import { Grid } from "../../../components/ui/Grid";
@@ -278,7 +278,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
                   <DownloadSimple color={colors.black} size={20} />
                 </Button>
               }
-              theme="dark"
+              cardTheme="dark"
             />
           )}
         </GridContainer>

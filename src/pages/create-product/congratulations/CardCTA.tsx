@@ -10,12 +10,12 @@ type CardCTAProps = {
   text: string;
   icon: ReactElement;
   cta: ReactElement;
-  theme?: "light" | "dark";
+  cardTheme?: "light" | "dark";
 };
 
-const StyledGrid = styled(Grid)`
-  ${({ theme }: { theme: CardCTAProps["theme"] }) => {
-    if (theme === "dark") {
+const StyledGrid = styled(Grid)<{ $cardTheme: CardCTAProps["cardTheme"] }>`
+  ${({ $cardTheme }) => {
+    if ($cardTheme === "dark") {
       return css`
         background: ${colors.black};
         color: ${colors.white};
@@ -43,14 +43,14 @@ export const CardCTA: React.FC<CardCTAProps> = ({
   text,
   icon,
   cta,
-  theme = "light"
+  cardTheme = "light"
 }) => {
   return (
     <StyledGrid
       flexDirection="column"
       alignItems="flex-start"
       padding="1.5rem"
-      theme={theme}
+      $cardTheme={cardTheme}
     >
       <>
         <IconContainer>{icon}</IconContainer>

@@ -1,6 +1,8 @@
-import { offers as OffersKit } from "@bosonprotocol/react-kit";
+import {
+  getIsOfferExpired,
+  offers as OffersKit
+} from "@bosonprotocol/react-kit";
 import { subgraph } from "@bosonprotocol/react-kit";
-import dayjs from "dayjs";
 import { NO_EXPIRATION } from "lib/constants/offer";
 import { defaultFontFamily } from "lib/styles/fonts";
 import { formatDate } from "lib/utils/date";
@@ -459,10 +461,12 @@ export default function SellerProductsTable({
           }
           if (currentTag === "expired" && offer !== null && offer.additional) {
             offer.additional.variants = offer.additional.variants.filter(
-              (variant) =>
-                dayjs(getDateTimestamp(variant?.validUntilDate)).isBefore(
-                  dayjs()
-                ) && !variant.voided
+              (variant) => {
+                const isVariantExpired = getIsOfferExpired({
+                  validUntilDate: variant?.validUntilDate
+                });
+                return isVariantExpired && !variant.voided;
+              }
             );
           }
           return {
@@ -778,14 +782,13 @@ export default function SellerProductsTable({
                                             offers:
                                               offer.additional?.variants.filter(
                                                 (variant) => {
-                                                  variant.validUntilDate;
+                                                  const isOfferExpired =
+                                                    getIsOfferExpired({
+                                                      offer
+                                                    });
                                                   return (
                                                     !variant.voided &&
-                                                    !dayjs(
-                                                      getDateTimestamp(
-                                                        offer?.validUntilDate
-                                                      )
-                                                    ).isBefore(dayjs())
+                                                    !isOfferExpired
                                                   );
                                                 }
                                               ) as Offer[],

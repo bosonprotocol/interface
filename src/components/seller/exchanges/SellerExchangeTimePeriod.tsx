@@ -1,5 +1,7 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { NO_EXPIRATION } from "lib/constants/offer";
+import { formatDate } from "lib/utils/date";
 import { useMemo } from "react";
 
 import { CONFIG } from "../../../lib/config";
@@ -46,15 +48,15 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
         },
         [subgraph.ExchangeState.Completed]: {
           text: "Expired on",
-          value: dayjs(getDateTimestamp(exchange?.validUntilDate)).format(
-            CONFIG.dateFormat
-          )
+          value: formatDate(getDateTimestamp(exchange?.validUntilDate), {
+            textIfTooBig: NO_EXPIRATION
+          })
         },
         [ExchangesKit.ExtendedExchangeState.Expired]: {
           text: "Expired on",
-          value: dayjs(getDateTimestamp(exchange?.validUntilDate)).format(
-            CONFIG.dateFormat
-          )
+          value: formatDate(getDateTimestamp(exchange?.validUntilDate), {
+            textIfTooBig: NO_EXPIRATION
+          })
         },
         // rest of them
         [subgraph.ExchangeState.Revoked]: {

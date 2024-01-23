@@ -1,11 +1,12 @@
 import { offers } from "@bosonprotocol/react-kit";
 import { LoadingMessage } from "components/loading/LoadingMessage";
 import dayjs from "dayjs";
+import { NO_EXPIRATION } from "lib/constants/offer";
+import { formatDate } from "lib/utils/date";
 import map from "lodash/map";
 import uniqBy from "lodash/uniqBy";
 import { useMemo, useState } from "react";
 
-import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
@@ -147,9 +148,9 @@ export default function SellerProducts({
             : "",
         ["Token"]: offer?.exchangeToken?.symbol ?? "",
         ["Offer validity"]: offer?.validUntilDate
-          ? dayjs(getDateTimestamp(offer.validUntilDate)).format(
-              CONFIG.dateFormat
-            )
+          ? formatDate(getDateTimestamp(offer.validUntilDate), {
+              textIfTooBig: NO_EXPIRATION
+            })
           : ""
       };
     });

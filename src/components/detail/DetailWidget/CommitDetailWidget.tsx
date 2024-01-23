@@ -3,6 +3,7 @@ import {
   ExternalCommitDetailView,
   extractUserFriendlyError,
   getHasUserRejectedTx,
+  getIsOfferExpired,
   Provider,
   RedeemButton,
   subgraph
@@ -265,8 +266,8 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
     [offer?.quantityAvailable]
   );
   const isExpiredOffer = useMemo<boolean>(
-    () => dayjs(getDateTimestamp(offer?.validUntilDate)).isBefore(dayjs()),
-    [offer?.validUntilDate]
+    () => getIsOfferExpired({ offer }),
+    [offer]
   );
   const isVoidedOffer = !!offer.voidedAt;
   const isBuyerInsufficientFunds: boolean = useMemo(
