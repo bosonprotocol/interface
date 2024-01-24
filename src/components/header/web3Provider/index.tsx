@@ -35,7 +35,7 @@ function Updater() {
   const [, addConnectedWallet] = useConnectedWallets();
   useEffect(() => {
     if (account && account !== previousAccount) {
-      const walletType = getConnection(connector).getName();
+      const walletType = getConnection(connector)?.getName() ?? "";
 
       addConnectedWallet({ account, walletType });
     }
