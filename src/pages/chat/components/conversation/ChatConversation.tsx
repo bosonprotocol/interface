@@ -381,7 +381,10 @@ const ChatConversation = ({
 
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = useCallback(() => {
-    lastMessageRef.current?.scrollBy(0, Number.MAX_SAFE_INTEGER);
+    lastMessageRef.current?.scrollBy({
+      top: Number.MAX_SAFE_INTEGER,
+      behavior: "smooth"
+    });
   }, []);
   useEffect(() => {
     if (
