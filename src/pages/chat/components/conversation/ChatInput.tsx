@@ -290,7 +290,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           alignItems="flex-start"
           width="auto"
           justifyContent="flex-start"
-          $height="100%"
+          height="100%"
         >
           <ButtonProposal
             exchange={exchange}

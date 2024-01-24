@@ -3,7 +3,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Exchange } from "lib/utils/hooks/useExchanges";
 import { WarningCircle } from "phosphor-react";
-import { memo, RefObject, useMemo, useRef } from "react";
+import { memo, RefObject, useMemo } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 
@@ -81,7 +81,7 @@ type MessagesProps = {
   areThreadsLoading: boolean;
   address: string;
   iAmTheBuyer: boolean;
-  lastMessageRef: RefObject<HTMLDivElement>;
+  messagesContainerRef: RefObject<HTMLDivElement>;
   lastReceivedProposal: MessageData | null;
   lastSentProposal: MessageData | null;
 };
@@ -97,12 +97,11 @@ export const Messages: React.FC<MessagesProps> = memo(
     areThreadsLoading,
     address,
     iAmTheBuyer,
-    lastMessageRef,
+    messagesContainerRef,
     lastReceivedProposal,
     lastSentProposal
   }) => {
     const hasMoreMessages = !isBeginningOfTimes;
-    const dataMessagesRef = useRef<HTMLDivElement>(null);
     const Buyer = useMemo(() => {
       return (
         <SellerComponent
@@ -126,7 +125,7 @@ export const Messages: React.FC<MessagesProps> = memo(
     return (
       <Container
         data-messages
-        ref={dataMessagesRef}
+        ref={messagesContainerRef}
         id="messages"
         $overflow="auto"
       >
@@ -181,14 +180,12 @@ export const Messages: React.FC<MessagesProps> = memo(
                     ) > 0;
               const showMessageSeparator =
                 isFirstMessage || isPreviousMessageInADifferentDay;
-              const isLastMessage = index === thread.messages.length - 1;
               const wasItMe = getWasItSentByMe(address, message.sender);
               const Child =
                 (wasItMe && iAmTheBuyer) || (!wasItMe && !iAmTheBuyer)
                   ? Buyer
                   : Seller;
               const leftAligned = !wasItMe;
-              const ref = isLastMessage ? lastMessageRef : null;
               return (
                 <Conversation key={message.timestamp} $alignStart={leftAligned}>
                   <>
@@ -202,7 +199,6 @@ export const Messages: React.FC<MessagesProps> = memo(
                       isLeftAligned={leftAligned}
                       lastReceivedProposal={lastReceivedProposal}
                       lastSentProposal={lastSentProposal}
-                      ref={ref}
                     >
                       {Child}
                     </Message>

@@ -379,12 +379,13 @@ const ChatConversation = ({
     thread?.messages || []
   );
 
-  const lastMessageRef = useRef<HTMLDivElement>(null);
-  const scrollToBottom = useCallback(
-    (scrollOptions: ScrollIntoViewOptions) =>
-      lastMessageRef.current?.scrollIntoView(scrollOptions),
-    []
-  );
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = useCallback(() => {
+    messagesContainerRef.current?.scrollBy({
+      top: Number.MAX_SAFE_INTEGER,
+      behavior: "smooth"
+    });
+  }, []);
   useEffect(() => {
     if (
       thread &&
@@ -395,9 +396,7 @@ const ChatConversation = ({
           (thread?.messages[0].timestamp || 0) <
           previousThreadMessagesRef.current[0].timestamp;
         if (!isLoadingHistoryMessages) {
-          scrollToBottom({
-            behavior: "smooth"
-          }); // every time we send/receive a message
+          scrollToBottom(); // every time we send/receive a message
         }
       }
 
@@ -664,7 +663,7 @@ const ChatConversation = ({
             areThreadsLoading={areThreadsLoading}
             address={address}
             iAmTheBuyer={iAmTheBuyer}
-            lastMessageRef={lastMessageRef}
+            messagesContainerRef={messagesContainerRef}
             lastReceivedProposal={lastReceivedProposal}
             lastSentProposal={lastSentProposal}
           />
