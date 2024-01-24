@@ -11,7 +11,6 @@ const Card = styled.div<{
   border-radius: ${({ $borderRadius }) => $borderRadius ?? "16px"};
   border: ${({ border }) => border};
 `;
-export default Card;
 
 export const GrayCard = styled(Card)`
   background-color: ${({ theme }) => theme.deprecated_bg3};

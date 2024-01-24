@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import GlobalStyle from "../../lib/styles/GlobalStyle";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Footer from "../footer/Footer";
-import HeaderComponent from "../header/Header";
+import { HeaderComponent } from "../header/Header";
 import { Wrapper } from "./useWrapper";
 
 type DappViewProps = {
