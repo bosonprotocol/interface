@@ -7,8 +7,8 @@ import { useAppDispatch } from "state/hooks";
 import { endSwitchingChain, startSwitchingChain } from "state/wallets/reducer";
 
 import {
+  coinbaseWalletConnection,
   networkConnection,
-  uniwalletWCV2ConnectConnection,
   walletConnectV2Connection
 } from "../../connection";
 import { getChainInfo } from "../../constants/chainInfo";
@@ -51,7 +51,7 @@ export function useSwitchChain(doConnect = true) {
           if (
             [
               walletConnectV2Connection.connector,
-              uniwalletWCV2ConnectConnection.connector,
+              coinbaseWalletConnection.connector,
               networkConnection.connector
             ].includes(connector)
           ) {
