@@ -83,6 +83,7 @@ const IconHoverText = styled.span`
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   & > a,
   & > button {
     margin-right: 8px;
@@ -142,6 +143,12 @@ const HeaderWrapper = styled.div`
 
 const PortfolioDrawerContainer = styled(Column)`
   flex: 1;
+`;
+
+const StyledIconWithConfirmTextButton = styled(IconWithConfirmTextButton)`
+  * {
+    font-size: 0.7rem;
+  }
 `;
 
 export function PortfolioArrow({
@@ -247,7 +254,7 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
           )}
         </StatusWrapper>
         <IconContainer>
-          <IconWithConfirmTextButton
+          <StyledIconWithConfirmTextButton
             data-testid="wallet-disconnect"
             onConfirm={() => disconnect({ isUserDisconnecting: true })}
             Icon={SignOut}

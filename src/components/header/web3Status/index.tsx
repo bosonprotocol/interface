@@ -41,6 +41,7 @@ const Web3StatusGeneric = styled.button`
 const breakpointWhenConnectButtonOverflows = "1300px";
 const Web3StatusConnected = styled(Web3StatusGeneric)<{ $color: string }>`
   border: 2px solid transparent;
+  width: auto;
   font-weight: 500;
   color: ${({ $color }) => $color};
   &:hover,
