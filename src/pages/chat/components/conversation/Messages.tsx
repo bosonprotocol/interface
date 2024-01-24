@@ -81,7 +81,7 @@ type MessagesProps = {
   areThreadsLoading: boolean;
   address: string;
   iAmTheBuyer: boolean;
-  lastMessageRef: RefObject<HTMLDivElement>;
+  messagesContainerRef: RefObject<HTMLDivElement>;
   lastReceivedProposal: MessageData | null;
   lastSentProposal: MessageData | null;
 };
@@ -97,7 +97,7 @@ export const Messages: React.FC<MessagesProps> = memo(
     areThreadsLoading,
     address,
     iAmTheBuyer,
-    lastMessageRef,
+    messagesContainerRef,
     lastReceivedProposal,
     lastSentProposal
   }) => {
@@ -125,7 +125,7 @@ export const Messages: React.FC<MessagesProps> = memo(
     return (
       <Container
         data-messages
-        ref={lastMessageRef}
+        ref={messagesContainerRef}
         id="messages"
         $overflow="auto"
       >

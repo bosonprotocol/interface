@@ -379,9 +379,9 @@ const ChatConversation = ({
     thread?.messages || []
   );
 
-  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = useCallback(() => {
-    lastMessageRef.current?.scrollBy({
+    messagesContainerRef.current?.scrollBy({
       top: Number.MAX_SAFE_INTEGER,
       behavior: "smooth"
     });
@@ -663,7 +663,7 @@ const ChatConversation = ({
             areThreadsLoading={areThreadsLoading}
             address={address}
             iAmTheBuyer={iAmTheBuyer}
-            lastMessageRef={lastMessageRef}
+            messagesContainerRef={messagesContainerRef}
             lastReceivedProposal={lastReceivedProposal}
             lastSentProposal={lastSentProposal}
           />
