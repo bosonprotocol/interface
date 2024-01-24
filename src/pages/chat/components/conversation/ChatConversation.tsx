@@ -380,11 +380,9 @@ const ChatConversation = ({
   );
 
   const lastMessageRef = useRef<HTMLDivElement>(null);
-  const scrollToBottom = useCallback(
-    (scrollOptions: ScrollIntoViewOptions) =>
-      lastMessageRef.current?.scrollIntoView(scrollOptions),
-    []
-  );
+  const scrollToBottom = useCallback(() => {
+    lastMessageRef.current?.scrollBy(0, Number.MAX_SAFE_INTEGER);
+  }, []);
   useEffect(() => {
     if (
       thread &&
@@ -395,9 +393,7 @@ const ChatConversation = ({
           (thread?.messages[0].timestamp || 0) <
           previousThreadMessagesRef.current[0].timestamp;
         if (!isLoadingHistoryMessages) {
-          scrollToBottom({
-            behavior: "smooth"
-          }); // every time we send/receive a message
+          scrollToBottom(); // every time we send/receive a message
         }
       }
 
