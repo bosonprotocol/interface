@@ -31,7 +31,8 @@
     "clean-react-cache": "run-script-os",
     "clean-react-cache:default": "rm -rf node_modules/.cache",
     "clean-react-cache:win32": "rmdir /S /Q node_modules\\.cache",
-    "link-cc": "node ./scripts/link-to-local-core-components.js"
+    "link-cc": "node ./scripts/link-to-local-core-components.js",
+    "ts-coverage": "typescript-coverage-report"
   },
   "lint-staged": {
     "src/**/*.+(js|json|ts|tsx)": [
@@ -199,6 +200,7 @@
     "react-app-rewired": "^2.2.1",
     "run-script-os": "^1.1.6",
     "typescript": "^5.1.6",
+    "typescript-coverage-report": "^0.8.0",
     "webpack-bundle-analyzer": "^4.6.1"
   },
   "browserslist": {
