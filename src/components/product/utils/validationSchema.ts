@@ -16,12 +16,16 @@ import { getCommonFieldsValidation } from "../../modal/components/Profile/valida
 import { CONFIG, DappConfig } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
+  DIGITAL_NFT_TYPE,
+  DIGITAL_TYPE,
+  isNftMintedAlreadyOptions,
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_LENGTH,
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
-  ProductTypeValues,
+  ProductTypeTypeValues,
+  ProductTypeVariantsValues,
   TOKEN_CRITERIA,
   TOKEN_TYPES,
   TokenTypes
@@ -45,7 +49,7 @@ export const productTypeValidationSchema = Yup.object({
   productType: Yup.object({
     productType: Yup.string()
       .min(1)
-      .oneOf(["physical", "phygital"])
+      .oneOf([ProductTypeTypeValues.physical, ProductTypeTypeValues.phygital])
       .required(validationMessage.required),
     productVariant: Yup.string().min(1).required(validationMessage.required),
     tokenGatedOffer: Yup.string()
@@ -191,6 +195,49 @@ export const productInformationValidationSchema = Yup.object({
     manufactureModelName: Yup.string(),
     partNumber: Yup.string(),
     materials: Yup.string()
+  })
+});
+
+export const productDigitalValidationSchema = Yup.object({
+  productDigital: Yup.object({
+    type: Yup.object({
+      value: Yup.string()
+        .oneOf(DIGITAL_TYPE.map(({ value }) => value))
+        .required(validationMessage.required),
+      label: Yup.string()
+    }).required(validationMessage.required),
+    nftType: Yup.object({
+      value: Yup.string()
+        .oneOf(DIGITAL_NFT_TYPE.map(({ value }) => value))
+        .required(validationMessage.required),
+      label: Yup.string()
+    }).required(validationMessage.required),
+    isNftMintedAlready: Yup.object({
+      value: Yup.string()
+        .oneOf(isNftMintedAlreadyOptions.map(({ value }) => value))
+        .required(validationMessage.required),
+      label: Yup.string()
+    }).required(validationMessage.required),
+    bundleItems: Yup.array(
+      Yup.object({
+        contractAddress: Yup.string()
+          .required(validationMessage.required)
+          .test("FORMAT", "Must be a valid address", (value) =>
+            value ? ethers.utils.isAddress(value) : true
+          ),
+        tokenIdRangeMin: Yup.number().required(validationMessage.required),
+        tokenIdRangeMax: Yup.number().required(validationMessage.required),
+        externalUrl: Yup.string().required(validationMessage.required),
+        whenWillItBeSentToTheBuyer: Yup.string().required(
+          validationMessage.required
+        ),
+        shippingInDays: Yup.number()
+          .required(validationMessage.required)
+          .min(0, "Shipping cannot be negative")
+      })
+    )
+      .required(validationMessage.required)
+      .min(0, "The bundle should have at least 1 item")
   })
 });
 
@@ -364,7 +411,7 @@ export const getTokenGatingValidationSchema = ({
             const formValues = context.from[1].value;
             const isOneVariant =
               formValues.productType.productVariant ===
-              ProductTypeValues.oneItemType;
+              ProductTypeVariantsValues.oneItemType;
             const variantsQuantity = isOneVariant
               ? 0
               : (

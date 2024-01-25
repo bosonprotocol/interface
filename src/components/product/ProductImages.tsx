@@ -14,7 +14,7 @@ import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import {
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
-  ProductTypeValues
+  ProductTypeVariantsValues
 } from "./utils";
 
 const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
@@ -110,7 +110,8 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const { nextIsDisabled, values } = useForm();
   const [isVideoLoading, setVideoLoading] = useState<boolean>();
   const hasVariants =
-    values.productType.productVariant === ProductTypeValues.differentVariants;
+    values.productType.productVariant ===
+    ProductTypeVariantsValues.differentVariants;
   const oneSetOfImages =
     !hasVariants ||
     values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;

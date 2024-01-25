@@ -42,7 +42,7 @@ export const buildCondition = (
     case "erc721":
       tokenType = TokenType.NonFungibleToken;
       if (partialTokenGating.tokenCriteria.value === "tokenid") {
-        method = EvaluationMethod.SpecificToken;
+        method = EvaluationMethod.TokenRange;
         // if erc721 and SpecificToken we should set the threshold as zero
         threshold = "0";
       } else {

@@ -16,14 +16,28 @@ export const SUPPORTED_FILE_FORMATS = [
   "image/png",
   "image/webp"
 ];
-
-export const CREATE_PRODUCT_STEPS = (
-  isMultiVariant: boolean,
-  isTokenGated: boolean
-) => [
+const yesOrNoOptions = [
+  {
+    value: "false",
+    label: "No"
+  },
+  {
+    value: "true",
+    label: "Yes"
+  }
+];
+export const getCreateProductSteps = ({
+  isMultiVariant,
+  isPhygital,
+  isTokenGated
+}: {
+  isMultiVariant: boolean;
+  isTokenGated: boolean;
+  isPhygital: boolean;
+}) => [
   {
     name: "Product Data",
-    steps: isMultiVariant ? 4 : 3
+    steps: 3 + (isMultiVariant ? 1 : 0) + (isPhygital ? 1 : 0)
   } as const,
   {
     name: "Terms of Sale",
@@ -66,6 +80,33 @@ export const CATEGORY_OPTIONS = [
   }
 ] as const;
 
+export const digitalTypeMapping = {
+  "digital-nft": "Digital NFT",
+  "digital-file": "Digital File",
+  experiential: "Experiential"
+};
+export const DIGITAL_TYPE = Object.entries(digitalTypeMapping).map(
+  ([key, value]) => ({
+    value: key,
+    label: value
+  })
+);
+
+export const digitalNftTypeMapping = {
+  wearable: "Wearable",
+  image: "Image",
+  event: "Event",
+  other: "Other"
+};
+export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
+  ([key, value]) => ({
+    value: key,
+    label: value
+  })
+);
+
+export const isNftMintedAlreadyOptions = [...yesOrNoOptions];
+
 export const getOptionsCurrencies = (
   envConfig: ProtocolConfig
 ): {
@@ -85,16 +126,8 @@ export const getOptionsCurrencies = (
           label: envConfig.nativeCoin?.symbol || ""
         }
       ];
-export const OPTIONS_TOKEN_GATED = [
-  {
-    value: "false",
-    label: "No"
-  },
-  {
-    value: "true",
-    label: "Yes"
-  }
-] as const;
+
+export const OPTIONS_TOKEN_GATED = [...yesOrNoOptions] as const;
 
 export enum TokenTypes {
   "erc20" = "erc20",
@@ -132,7 +165,7 @@ export const TOKEN_CRITERIA = [
   {
     value: "tokenid",
     label: "Specific token",
-    method: EvaluationMethod.SpecificToken
+    method: EvaluationMethod.TokenRange
   }
 ] as const;
 
@@ -228,7 +261,12 @@ export const OPTIONS_WEIGHT = [
   }
 ] as const;
 
-export enum ProductTypeValues {
+export enum ProductTypeTypeValues {
+  physical = "physical",
+  phygital = "phygital"
+}
+
+export enum ProductTypeVariantsValues {
   oneItemType = "oneItemType",
   differentVariants = "differentVariants"
 }

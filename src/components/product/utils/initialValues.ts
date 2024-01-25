@@ -16,6 +16,7 @@ import {
   CoreTermsOfSale,
   CreateProductForm,
   CreateYourProfile,
+  ProductDigital,
   TokenGating,
   VariantsCoreTermsOfSale
 } from "./types";
@@ -64,6 +65,27 @@ export const productInformationInitialValues = {
     materials: undefined
   }
 };
+
+export const productDigitalInitialValues = {
+  productDigital: {
+    type: undefined as unknown as ProductDigital["productDigital"]["type"],
+    nftType:
+      undefined as unknown as ProductDigital["productDigital"]["nftType"],
+    isNftMintedAlready:
+      undefined as unknown as ProductDigital["productDigital"]["isNftMintedAlready"],
+    bundleItems: [
+      {
+        contractAddress: undefined,
+        tokenIdRangeMin: undefined,
+        tokenIdRangeMax: undefined,
+        externalUrl: undefined,
+        whenWillItBeSentToTheBuyer: undefined,
+        shippingInDays: undefined
+      } as unknown as ProductDigital["productDigital"]["bundleItems"][number]
+    ]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as Record<keyof ProductDigital["productDigital"], any>
+} as const;
 
 export const productVariantsInitialValues = {
   productVariants: {
@@ -180,6 +202,7 @@ export const initialValues: CreateProductForm = {
   ...productTypeInitialValues,
   ...productVariantsInitialValues,
   ...productInformationInitialValues,
+  ...productDigitalInitialValues,
   ...productImagesInitialValues,
   ...productVariantsImagesInitialValues,
   ...coreTermsOfSaleInitialValues,

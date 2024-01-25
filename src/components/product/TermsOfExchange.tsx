@@ -22,7 +22,7 @@ import {
   OPTIONS_UNIT,
   optionUnitKeys,
   PERCENT_OPTIONS_UNIT,
-  ProductTypeValues
+  ProductTypeVariantsValues
 } from "./utils/const";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
@@ -78,12 +78,13 @@ export default function TermsOfExchange() {
   const { values, setFieldValue, nextIsDisabled } = useForm();
   const isMultiVariant =
     values.productType?.productVariant ===
-      ProductTypeValues.differentVariants &&
+      ProductTypeVariantsValues.differentVariants &&
     new Set(
       values.productVariants?.variants?.map((variant) => variant.currency.value)
     ).size > 1;
   const maxPricePenOrSellerDeposit =
-    values.productType?.productVariant === ProductTypeValues.differentVariants
+    values.productType?.productVariant ===
+    ProductTypeVariantsValues.differentVariants
       ? Math.min(
           ...(values.productVariants?.variants?.map(
             (variant) => variant.price
@@ -91,14 +92,15 @@ export default function TermsOfExchange() {
         )
       : values.coreTermsOfSale?.price;
   const currency: string =
-    values.productType?.productVariant === ProductTypeValues.differentVariants
+    values.productType?.productVariant ===
+    ProductTypeVariantsValues.differentVariants
       ? values.productVariants?.variants?.[0]?.currency?.label || ""
       : values.coreTermsOfSale?.currency?.label || "";
   const exchangeToken = config.envConfig.defaultTokens?.find(
     (n: Token) =>
       n.symbol ===
       (values.productType?.productVariant ===
-      ProductTypeValues.differentVariants
+      ProductTypeVariantsValues.differentVariants
         ? values.productVariants?.variants?.[0]?.currency?.label
         : values.coreTermsOfSale?.currency?.label)
   );

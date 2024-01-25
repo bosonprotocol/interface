@@ -4,6 +4,7 @@ import {
   confirmProductDetailsSchema,
   CoreTermsOfSaleValidationSchema,
   imagesSpecificOrAllValidationSchema,
+  productDigitalValidationSchema,
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
@@ -26,6 +27,10 @@ export type ProductType = Yup.InferType<typeof productTypeValidationSchema>;
 
 export type ProductInformation = Yup.InferType<
   typeof productInformationValidationSchema
+>;
+
+export type ProductDigital = Yup.InferType<
+  typeof productDigitalValidationSchema
 >;
 
 export type ProductVariants = Yup.InferType<ProductVariantsValidationSchema>;
@@ -61,6 +66,7 @@ export type ConfirmProductDetails = Yup.InferType<
 export type CreateProductForm = CreateYourProfile &
   ProductType &
   ProductInformation &
+  ProductDigital &
   ProductVariants &
   ShippingInfo &
   CoreTermsOfSale &

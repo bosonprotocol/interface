@@ -6,7 +6,10 @@ import InitializeChat from "components/modal/components/Chat/components/Initiali
 import differentVariantsProduct from "components/product/img/different-variants-product.png";
 import oneItemTypeProductSmall from "components/product/img/one-item-product-small.png";
 import physicalProductSmall from "components/product/img/physical-product-small.png";
-import { optionUnitValues, ProductTypeValues } from "components/product/utils";
+import {
+  optionUnitValues,
+  ProductTypeVariantsValues
+} from "components/product/utils";
 import Tooltip from "components/tooltip/Tooltip";
 import BosonButton from "components/ui/BosonButton";
 import { Grid } from "components/ui/Grid";
@@ -116,8 +119,7 @@ export default function ConfirmProductDetails({
       src = physicalProductSmall;
       description = "Physical";
     } else if (values.productType?.productType === "phygital") {
-      // TODO: MISSING UI AND FOR NOW ONLY physical available
-      // description = "Phygital";
+      description = "Phygital";
     }
     return (
       <>
@@ -135,11 +137,15 @@ export default function ConfirmProductDetails({
   const renderProductVariant = useMemo(() => {
     let src = "";
     let description = "";
-    if (values.productType.productVariant === ProductTypeValues.oneItemType) {
+    if (
+      values.productType.productVariant ===
+      ProductTypeVariantsValues.oneItemType
+    ) {
       src = oneItemTypeProductSmall;
       description = "One item type";
     } else if (
-      values.productType.productVariant === ProductTypeValues.differentVariants
+      values.productType.productVariant ===
+      ProductTypeVariantsValues.differentVariants
     ) {
       src = differentVariantsProduct;
       description = "Different variants";

@@ -49,12 +49,13 @@ import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
 import {
-  CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  getCreateProductSteps,
   ImageSpecificOrAll,
   OPTIONS_EXCHANGE_POLICY,
   ProductMetadataAttributeKeys,
-  ProductTypeValues,
+  ProductTypeTypeValues,
+  ProductTypeVariantsValues,
   TOKEN_TYPES,
   TypeKeys
 } from "../../components/product/utils";
@@ -90,7 +91,6 @@ import {
   getDisputePeriodDurationInMS,
   getResolutionPeriodDurationInMS
 } from "./utils/helpers";
-import { CreateProductSteps } from "./utils/index";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
@@ -362,12 +362,15 @@ function CreateProductInner({
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
-    initial?.productType?.productVariant || ProductTypeValues.oneItemType
+    initial?.productType?.productVariant ||
+      ProductTypeVariantsValues.oneItemType
   );
-  const isMultiVariant = useMemo(
-    () => productVariant === ProductTypeValues.differentVariants || false,
-    [productVariant]
+  const [productType, setProductType] = useState<string>(
+    initial?.productType?.productType || ProductTypeTypeValues.physical
   );
+  const isMultiVariant =
+    productVariant === ProductTypeVariantsValues.differentVariants;
+  const isPhygital = productType === ProductTypeTypeValues.phygital;
   const [isTokenGated, setIsTokenGated] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(
     location?.state?.step || FIRST_STEP
@@ -538,6 +541,7 @@ function CreateProductInner({
       isDraftModalClosed,
       showInvalidRoleModal,
       isMultiVariant,
+      isPhygital,
       isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
       isOneSetOfImages,
@@ -545,12 +549,9 @@ function CreateProductInner({
       coreSDK
     });
     return {
-      currentStep:
-        wizard?.[currentStep as keyof CreateProductSteps]?.ui || null,
-      currentValidation:
-        wizard?.[currentStep as keyof CreateProductSteps]?.validation || null,
-      helpSection:
-        wizard?.[currentStep as keyof CreateProductSteps]?.helpSection || null,
+      currentStep: wizard?.[currentStep]?.ui || null,
+      currentValidation: wizard?.[currentStep]?.validation || null,
+      helpSection: wizard?.[currentStep]?.helpSection || null,
       wizardLength: keys(wizard).length - 1
     };
   }, [
@@ -559,6 +560,7 @@ function CreateProductInner({
     isDraftModalClosed,
     showInvalidRoleModal,
     isMultiVariant,
+    isPhygital,
     isTokenGated,
     isOneSetOfImages,
     currentStep,
@@ -1051,7 +1053,11 @@ function CreateProductInner({
     <CreateProductWrapper>
       <MultiStepsContainer>
         <MultiSteps
-          data={CREATE_PRODUCT_STEPS(isMultiVariant, isTokenGated)}
+          data={getCreateProductSteps({
+            isMultiVariant,
+            isTokenGated,
+            isPhygital
+          })}
           active={currentStep}
           callback={handleClickStep}
           disableInactiveSteps
@@ -1072,9 +1078,13 @@ function CreateProductInner({
         >
           {({ values }) => {
             // TODO: fix: these setState calls cause this warning: Warning: Cannot update a component (`CreateProductInner`) while rendering a different component (`Formik`). To locate the bad setState() call inside `Formik`, follow the stack trace as described in
+            if (productType !== values?.productType?.productType) {
+              setProductType(values?.productType?.productType);
+            }
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
+
             const formTokenGated =
               values.productType?.tokenGatedOffer === "true";
             if (isTokenGated !== formTokenGated) {

@@ -35,7 +35,7 @@ import {
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
   ProductMetadataAttributeKeys,
-  ProductTypeValues,
+  ProductTypeVariantsValues,
   SUPPORTED_FILE_FORMATS,
   TOKEN_CRITERIA,
   TOKEN_TYPES,
@@ -271,8 +271,8 @@ function loadExistingProduct<T extends CreateProductForm>(
       productType: product.details_offerCategory.toLowerCase(),
       productVariant:
         variants.length > 1
-          ? ProductTypeValues.differentVariants
-          : ProductTypeValues.oneItemType,
+          ? ProductTypeVariantsValues.differentVariants
+          : ProductTypeVariantsValues.oneItemType,
       tokenGatedOffer: firstOffer.condition ? "true" : "false"
     },
     productInformation: {
