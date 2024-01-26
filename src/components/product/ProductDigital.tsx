@@ -23,9 +23,9 @@ import {
 
 const NftsContainer = styled.div`
   display: grid;
-  grid-template-areas:
-    "contract minId maxId delete"
-    "url when shipping delete";
+  grid-template:
+    "contract minId maxId delete" 1fr
+    "url when shipping delete" 1fr / 1fr 1fr 1fr 1fr;
   align-items: start;
   grid-gap: 1rem;
   margin-bottom: 1rem;
