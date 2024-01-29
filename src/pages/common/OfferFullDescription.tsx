@@ -11,6 +11,8 @@ import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNa
 import React from "react";
 import { styled } from "styled-components";
 
+import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
+
 const StyledExternalOfferFullDescription = styled(ExternalOfferFullDescription)`
   .headers {
     background-color: var(--secondary);
@@ -37,6 +39,7 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
 ) => {
   const navigate = useKeepQueryParamsNavigate();
   const { config } = useConfigContext();
+  const curationLists = useCurationLists();
   const { showModal } = useModal();
   return (
     <StyledExternalOfferFullDescription
@@ -66,7 +69,9 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
         walletConnectProjectId: CONFIG.walletConnect.projectId,
         ipfsProjectId: CONFIG.infuraProjectId,
         ipfsProjectSecret: CONFIG.infuraProjectSecret,
-        contactSellerForExchangeUrl: ""
+        contactSellerForExchangeUrl: "",
+        sellerCurationListBetweenCommas:
+          curationLists?.sellerCurationList?.join(",") || ""
       }}
     />
   );
