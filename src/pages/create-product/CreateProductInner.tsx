@@ -164,12 +164,23 @@ async function getProductV1Metadata({
     }
   ];
 
+  const animationUrl = getIpfsGatewayUrl(productAnimation?.src || "");
+  const visualsVideos: productV1.Media[] =
+    animationUrl === ""
+      ? []
+      : [
+          {
+            url: animationUrl,
+            tag: ""
+          }
+        ];
+
   return {
     schemaUrl: "https://schema.org/",
     uuid: offerUuid,
     name: productInformation.productTitle,
     description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
-    animationUrl: getIpfsGatewayUrl(productAnimation?.src || ""),
+    animationUrl,
     animationMetadata: productAnimation
       ? {
           height: productAnimation.height ?? undefined,
@@ -208,7 +219,7 @@ async function getProductV1Metadata({
       details_sections: undefined, // no entry in the UI
       details_personalisation: undefined, // no entry in the UI
       visuals_images: visualImages,
-      visuals_videos: undefined, // no entry in the UI
+      visuals_videos: visualsVideos, // no entry in the UI
       packaging_packageQuantity: undefined, // no entry in the UI
       packaging_dimensions_length: shippingInfo.length?.toString(),
       packaging_dimensions_width: shippingInfo.width?.toString(),
