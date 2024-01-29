@@ -8,6 +8,8 @@ import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNa
 import { VariantV1 } from "pages/products/types";
 import React, { ReactNode } from "react";
 
+import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
+
 type BasicCommitDetailWidgetProps = {
   selectedVariant: VariantV1;
   isPreview: boolean;
@@ -20,6 +22,8 @@ export const BasicCommitDetailWidget: React.FC<
   const { showModal } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const { config } = useConfigContext();
+  const curationLists = useCurationLists();
+
   return (
     <ExternalCommitDetailView
       providerProps={{
@@ -31,7 +35,9 @@ export const BasicCommitDetailWidget: React.FC<
         defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
         licenseTemplate: CONFIG.rNFTLicenseTemplate,
         minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
-        contactSellerForExchangeUrl: ""
+        contactSellerForExchangeUrl: "",
+        sellerCurationListBetweenCommas:
+          curationLists?.sellerCurationList?.join(",") || ""
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}

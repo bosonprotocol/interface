@@ -28,6 +28,7 @@ import { ArrowRight, Check } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
 
+import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
 import {
   ContactSellerButton,
   RaiseProblemButton,
@@ -89,6 +90,8 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
   const navigate = useKeepQueryParamsNavigate();
 
   const { config } = useConfigContext();
+  const curationLists = useCurationLists();
+
   const { account: address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isSeller = exchange?.seller.assistant === address?.toLowerCase();
@@ -137,7 +140,9 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
         widgetAction: RedemptionWidgetAction.REDEEM_FORM,
         showRedemptionOverview: true,
         exchangeState: exchange.state,
-        sendDeliveryInfoThroughXMTP: true
+        sendDeliveryInfoThroughXMTP: true,
+        sellerCurationListBetweenCommas:
+          curationLists?.sellerCurationList?.join(",") || ""
       }}
       showBosonLogo={isCustomStoreFront}
       showPriceAsterisk={false}
