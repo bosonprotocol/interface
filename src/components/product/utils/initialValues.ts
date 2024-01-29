@@ -73,16 +73,7 @@ export const productDigitalInitialValues = {
       undefined as unknown as ProductDigital["productDigital"]["nftType"],
     isNftMintedAlready:
       undefined as unknown as ProductDigital["productDigital"]["isNftMintedAlready"],
-    bundleItems: [
-      {
-        contractAddress: undefined,
-        tokenIdRangeMin: undefined,
-        tokenIdRangeMax: undefined,
-        externalUrl: undefined,
-        whenWillItBeSentToTheBuyer: undefined,
-        shippingInDays: undefined
-      } as unknown as ProductDigital["productDigital"]["bundleItems"][number]
-    ]
+    bundleItems: []
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<keyof ProductDigital["productDigital"], any>
 } as const;
@@ -97,7 +88,8 @@ export const productVariantsInitialValues = {
 
 export const productVariantsImagesInitialValues = {
   productVariantsImages: [],
-  productAnimation: []
+  productAnimation: [],
+  bundleItemsMedia: []
 };
 
 export const productImagesInitialValues = {
@@ -111,7 +103,8 @@ export const productImagesInitialValues = {
     sizeAndScale: undefined,
     more: undefined
   },
-  productAnimation: []
+  productAnimation: [],
+  bundleItemsMedia: []
 } as const;
 
 export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {

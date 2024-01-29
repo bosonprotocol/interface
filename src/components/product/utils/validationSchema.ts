@@ -88,7 +88,13 @@ const testPrice = (config: DappConfig) =>
   };
 
 const productAnimation = {
-  productAnimation: validationOfIpfsImage()
+  productAnimation: validationOfIpfsImage(),
+  bundleItemsMedia: Yup.array(
+    Yup.object({
+      image: validationOfRequiredIpfsImage(),
+      video: validationOfIpfsImage()
+    })
+  ) // TODO: required if token gated
 };
 
 export const getProductVariantsValidationSchema = (config: DappConfig) =>
@@ -197,6 +203,36 @@ export const productInformationValidationSchema = Yup.object({
     materials: Yup.string()
   })
 });
+const shippingInDays = Yup.number().min(0, "Shipping cannot be negative");
+const existingNftSchema = Yup.array(
+  Yup.object({
+    contractAddress: Yup.string()
+      .required(validationMessage.required)
+      .test("FORMAT", "Must be a valid address", (value) =>
+        value ? ethers.utils.isAddress(value) : true
+      ),
+    tokenIdRangeMin: Yup.number().required(validationMessage.required),
+    tokenIdRangeMax: Yup.number().required(validationMessage.required),
+    externalUrl: Yup.string(),
+    whenWillItBeSentToTheBuyer: Yup.string(),
+    shippingInDays
+  })
+)
+  .required(validationMessage.required)
+  .min(0, "The bundle should have at least 1 item");
+const newNftSchema = Yup.array(
+  Yup.object({
+    name: Yup.string().required(validationMessage.required),
+    description: Yup.string().required(validationMessage.required),
+    howWillItBeSentToTheBuyer: Yup.string(),
+    whenWillItBeSentToTheBuyer: Yup.string(),
+    shippingInDays
+  })
+)
+  .required(validationMessage.required)
+  .min(0, "The bundle should have at least 1 item");
+export type NewBundleItems = Yup.InferType<typeof newNftSchema>;
+export type ExistingBundleItems = Yup.InferType<typeof existingNftSchema>;
 
 export const productDigitalValidationSchema = Yup.object({
   productDigital: Yup.object({
@@ -218,26 +254,15 @@ export const productDigitalValidationSchema = Yup.object({
         .required(validationMessage.required),
       label: Yup.string()
     }).required(validationMessage.required),
-    bundleItems: Yup.array(
-      Yup.object({
-        contractAddress: Yup.string()
-          .required(validationMessage.required)
-          .test("FORMAT", "Must be a valid address", (value) =>
-            value ? ethers.utils.isAddress(value) : true
-          ),
-        tokenIdRangeMin: Yup.number().required(validationMessage.required),
-        tokenIdRangeMax: Yup.number().required(validationMessage.required),
-        externalUrl: Yup.string().required(validationMessage.required),
-        whenWillItBeSentToTheBuyer: Yup.string().required(
-          validationMessage.required
-        ),
-        shippingInDays: Yup.number()
-          .required(validationMessage.required)
-          .min(0, "Shipping cannot be negative")
-      })
-    )
+    bundleItems: Yup.mixed<ExistingBundleItems | NewBundleItems>()
       .required(validationMessage.required)
-      .min(0, "The bundle should have at least 1 item")
+      .when("isNftMintedAlready", {
+        is: ({ value }: typeof isNftMintedAlreadyOptions[number]) => {
+          return value === "true";
+        },
+        then: existingNftSchema
+      }),
+    otherwise: newNftSchema
   })
 });
 

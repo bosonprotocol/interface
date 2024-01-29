@@ -1,7 +1,7 @@
+import { isTruthy } from "lib/types/helpers";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import { breakpoint } from "../../lib/styles/breakpoint";
 import bytesToSize from "../../lib/utils/bytesToSize";
 import { useForm } from "../../lib/utils/hooks/useForm";
 import { Select, Upload } from "../form";
@@ -10,33 +10,20 @@ import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
 import Tabs from "../tabs/Tabs";
 import BosonButton from "../ui/BosonButton";
 import { Grid } from "../ui/Grid";
+import { DigitalUploadImages } from "./DigitalProductImages";
+import { PhysicalUploadImages } from "./PhysicalProductImages";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import {
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
+  MAX_VIDEO_FILE_SIZE,
+  ProductTypeTypeValues,
   ProductTypeVariantsValues
 } from "./utils";
-
-const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
 
 const ContainerProductImage = styled.div`
   max-width: 43.5rem;
   width: 100%;
-`;
-
-const SpaceContainer = styled.div`
-  display: grid;
-  grid-column-gap: 2rem;
-  grid-row-gap: 2rem;
-  justify-content: space-between;
-
-  grid-template-columns: repeat(1, max-content);
-  ${breakpoint.xs} {
-    grid-template-columns: repeat(2, max-content);
-  }
-  ${breakpoint.m} {
-    grid-template-columns: repeat(4, max-content);
-  }
 `;
 
 const StyledSelect = styled(Select)`
@@ -50,58 +37,6 @@ const StyledTabs = styled(Tabs)`
   }
 `;
 
-function UploadImages({ prefix }: { prefix: string }) {
-  return (
-    <>
-      <SpaceContainer>
-        <div>
-          <Upload
-            name={`${prefix}.thumbnail`}
-            placeholder="Thumbnail"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload
-            name={`${prefix}.secondary`}
-            placeholder="Secondary"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload
-            name={`${prefix}.everyAngle`}
-            placeholder="Every angle"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload name={`${prefix}.details`} placeholder="Details" withUpload />
-        </div>
-        <div>
-          <Upload name={`${prefix}.inUse`} placeholder="In Use" withUpload />
-        </div>
-        <div>
-          <Upload
-            name={`${prefix}.styledScene`}
-            placeholder="Styled Scene"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload
-            name={`${prefix}.sizeAndScale`}
-            placeholder="Size and scale"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload name={`${prefix}.more`} placeholder="More" withUpload />
-        </div>
-      </SpaceContainer>
-    </>
-  );
-}
 interface Props {
   onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
 }
@@ -115,21 +50,55 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const oneSetOfImages =
     !hasVariants ||
     values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
+  const withTokenGatedImages =
+    values.productType.productType === ProductTypeTypeValues.phygital &&
+    values.productDigital.isNftMintedAlready.value === "false";
   const tabsData = useMemo(() => {
-    return (
-      values.productVariants?.variants?.map((variant, index) => {
-        return {
-          id: variant.name || index + "",
-          title: variant.name || `Variant ${index}`,
-          content: (
-            <UploadImages
-              prefix={`productVariantsImages[${index}].productImages`}
-            />
-          )
-        };
-      }) || []
-    );
-  }, [values.productVariants?.variants]);
+    return [
+      ...(oneSetOfImages
+        ? [
+            {
+              id: "physical-item",
+              title: "Physical item",
+              content: <PhysicalUploadImages prefix={productImagesPrefix} />
+            }
+          ]
+        : values.productVariants?.variants?.map((variant, index) => {
+            return {
+              id: variant.name || index + "",
+              title: variant.name || `Variant ${index}`,
+              content: (
+                <PhysicalUploadImages
+                  prefix={`productVariantsImages[${index}].productImages`}
+                />
+              )
+            };
+          }) || []),
+      ...(withTokenGatedImages
+        ? values.productDigital?.bundleItems
+            ?.map((bi, index) => {
+              if ("name" in bi) {
+                return {
+                  id: `${bi.name}-${bi.description}-${index}`,
+                  title: bi.name,
+                  content: (
+                    <DigitalUploadImages
+                      prefix={`bundleItemsMedia[${index}]`}
+                    />
+                  )
+                };
+              }
+              return null;
+            })
+            .filter(isTruthy) ?? []
+        : [])
+    ];
+  }, [
+    values.productDigital?.bundleItems,
+    values.productVariants?.variants,
+    withTokenGatedImages,
+    oneSetOfImages
+  ]);
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
   }, []);
@@ -160,6 +129,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     ? true
     : values.productVariants.variants.length ===
       values.productVariantsImages?.length;
+
   return (
     <ContainerProductImage>
       <Grid>
@@ -177,8 +147,8 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         title="Upload your product images"
         subTitle={`Use a max. size of ${bytesToSize(MAX_FILE_SIZE)} per image`}
       >
-        {oneSetOfImages ? (
-          <UploadImages prefix={productImagesPrefix} />
+        {oneSetOfImages && !withTokenGatedImages ? (
+          <PhysicalUploadImages prefix={productImagesPrefix} />
         ) : (
           <StyledTabs tabsData={tabsData} Content={TabsContent} />
         )}

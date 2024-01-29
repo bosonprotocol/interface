@@ -9,6 +9,8 @@ import { ContactPreference } from "../../modal/components/Profile/const";
 
 export const MAX_LOGO_SIZE = 600 * 1024;
 export const MAX_IMAGE_SIZE = 600 * 1024;
+export const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
+
 export const SUPPORTED_FILE_FORMATS = [
   "image/jpg",
   "image/jpeg",
@@ -25,7 +27,7 @@ const yesOrNoOptions = [
     value: "true",
     label: "Yes"
   }
-];
+] as const;
 export const getCreateProductSteps = ({
   isMultiVariant,
   isPhygital,
@@ -105,7 +107,7 @@ export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
   })
 );
 
-export const isNftMintedAlreadyOptions = [...yesOrNoOptions];
+export const isNftMintedAlreadyOptions = [...yesOrNoOptions] as const;
 
 export const getOptionsCurrencies = (
   envConfig: ProtocolConfig
