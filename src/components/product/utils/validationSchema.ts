@@ -260,9 +260,9 @@ export const productDigitalValidationSchema = Yup.object({
         is: ({ value }: typeof isNftMintedAlreadyOptions[number]) => {
           return value === "true";
         },
-        then: existingNftSchema
-      }),
-    otherwise: newNftSchema
+        then: existingNftSchema,
+        otherwise: newNftSchema
+      })
   })
 });
 

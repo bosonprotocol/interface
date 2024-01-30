@@ -8,7 +8,6 @@ const SpaceContainer = styled.div`
   display: grid;
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
-  justify-content: space-between;
 
   grid-template-columns: repeat(1, max-content);
   ${breakpoint.xs} {
