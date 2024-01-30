@@ -53,6 +53,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import styled from "styled-components";
 
+import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
 import bosonSnapshotGateAbi from "./BosonSnapshotGate/BosonSnapshotGate.json";
 import { BosonSnapshotGate__factory } from "./BosonSnapshotGate/typechain/factories";
 const StyledRedeemButton = styled(RedeemButton)`
@@ -125,8 +126,9 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   const addPendingTransaction = useAddPendingTransaction();
   const removePendingTransaction = useRemovePendingTransaction();
   const [, openConnectModal] = useAccountDrawer();
-  const sellerCurationList = useCustomStoreQueryParameter("sellerCurationList");
   const offerCurationList = useCustomStoreQueryParameter("offerCurationList");
+  const curationLists = useCurationLists();
+
   const [
     isCommittingFromNotConnectedWallet,
     setIsCommittingFromNotConnectedWallet
@@ -228,8 +230,10 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       </BosonButton>
     );
   };
+  const sellerCurationListBetweenCommas =
+    curationLists?.sellerCurationList?.join(",") || "";
   const numSellers = new Set(
-    sellerCurationList
+    sellerCurationListBetweenCommas
       .split(",")
       .map((str) => str.trim())
       .filter(isTruthy)
@@ -444,7 +448,8 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
         licenseTemplate: CONFIG.rNFTLicenseTemplate,
         minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
-        contactSellerForExchangeUrl: ""
+        contactSellerForExchangeUrl: "",
+        sellerCurationListBetweenCommas
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}
