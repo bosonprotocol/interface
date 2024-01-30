@@ -3,18 +3,16 @@ import { ReactNode } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import { Grid } from "../ui/Grid";
+import { Grid, GridProps } from "../ui/Grid";
 import { Typography } from "../ui/Typography";
 
 const StyledGrid = styled(Grid)`
   background-color: ${colors.lightGrey};
 `;
 
-interface Props {
+interface Props extends GridProps {
   errorMessage?: string;
   children?: ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [x: string]: any;
 }
 
 export default function SimpleError({

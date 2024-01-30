@@ -6,6 +6,7 @@ import {
 } from "components/modal/components/Profile/const";
 import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
+import { checkValidUrl, notUrlErrorMessage } from "lib/validation/regex/url";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
@@ -211,15 +212,65 @@ const existingNftSchema = Yup.array(
       .test("FORMAT", "Must be a valid address", (value) =>
         value ? ethers.utils.isAddress(value) : true
       ),
-    tokenIdRangeMin: Yup.number().required(validationMessage.required),
-    tokenIdRangeMax: Yup.number().required(validationMessage.required),
-    externalUrl: Yup.string(),
+    tokenIdRangeMin: Yup.number()
+      .required(validationMessage.required)
+      .min(1, "It should be at least 1"),
+    tokenIdRangeMax: Yup.number()
+      .required(validationMessage.required)
+      .min(1, "It should be at least 1")
+      .test({
+        message: 'It should be greater than or equal to "Min token ID"',
+        test: (value, context) => {
+          if (value && value < context.parent.tokenIdRangeMin) {
+            return false;
+          }
+          return true;
+        }
+      }),
+    externalUrl: Yup.string().test("FORMAT", notUrlErrorMessage, (value) => {
+      return value ? checkValidUrl(value) : true;
+    }),
     whenWillItBeSentToTheBuyer: Yup.string(),
     shippingInDays
   })
 )
   .required(validationMessage.required)
-  .min(0, "The bundle should have at least 1 item");
+  .min(0, "The bundle should have at least 1 item")
+  .test({
+    message: "No overlapping token IDs for the same contract",
+    test: (bundleItems) => {
+      if (!bundleItems || bundleItems.length <= 1) {
+        return true;
+      }
+      function hasOverlap(innerBundleItems: NonNullable<typeof bundleItems>) {
+        for (let i = 0; i < innerBundleItems.length; i++) {
+          for (let j = i + 1; j < innerBundleItems.length; j++) {
+            if (
+              innerBundleItems[i].contractAddress &&
+              innerBundleItems[j].contractAddress &&
+              innerBundleItems[i].contractAddress?.toLowerCase() ===
+                innerBundleItems[j].contractAddress?.toLowerCase()
+            ) {
+              const range1 = {
+                min: innerBundleItems[i].tokenIdRangeMin || 0,
+                max: innerBundleItems[i].tokenIdRangeMax || 0
+              };
+              const range2 = {
+                min: innerBundleItems[j].tokenIdRangeMin || 0,
+                max: innerBundleItems[j].tokenIdRangeMax || 0
+              };
+
+              if (!(range1.min > range2.max || range2.min > range1.max)) {
+                return true;
+              }
+            }
+          }
+        }
+        return false;
+      }
+      return !hasOverlap(bundleItems);
+    }
+  });
 const newNftSchema = Yup.array(
   Yup.object({
     name: Yup.string().required(validationMessage.required),

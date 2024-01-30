@@ -1,3 +1,5 @@
+import { Grid } from "@bosonprotocol/react-kit";
+import SimpleError from "components/error/SimpleError";
 import { FormField, Input } from "components/form";
 import { Select } from "components/form";
 import BosonButton from "components/ui/BosonButton";
@@ -24,11 +26,12 @@ import {
 } from "./utils";
 
 const ExistingNftContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   align-items: start;
   gap: 1rem;
-  margin-bottom: 4rem;
+
   > * {
     flex: 1 1 30%;
     margin: initial;
@@ -36,12 +39,12 @@ const ExistingNftContainer = styled.div`
 `;
 
 const NewNftContainer = styled.div`
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(3, 1fr);
   align-items: start;
   grid-gap: 1rem;
-  margin-bottom: 4rem;
   > * {
     margin: initial;
   }
@@ -74,44 +77,63 @@ const checkLastElementIsPristine = (
 };
 const prefix = "productDigital.";
 const getNewExistingBundleItem = () => {
-  const bundleItem: Record<keyof ExistingBundleItems[number], undefined> = {
-    contractAddress: undefined,
+  const bundleItem: Record<
+    keyof ExistingBundleItems[number],
+    undefined | string
+  > = {
+    contractAddress: "",
     tokenIdRangeMin: undefined,
     tokenIdRangeMax: undefined,
-    externalUrl: undefined,
+    externalUrl: "",
     shippingInDays: undefined,
-    whenWillItBeSentToTheBuyer: undefined
+    whenWillItBeSentToTheBuyer: ""
   };
   return bundleItem;
 };
 const getNewNewBundleItem = () => {
-  const bundleItem: Record<keyof NewBundleItems[number], undefined> = {
-    name: undefined,
-    description: undefined,
-    howWillItBeSentToTheBuyer: undefined,
-    whenWillItBeSentToTheBuyer: undefined,
+  const bundleItem: Record<keyof NewBundleItems[number], undefined | string> = {
+    name: "",
+    description: "",
+    howWillItBeSentToTheBuyer: "",
+    whenWillItBeSentToTheBuyer: "",
     shippingInDays: undefined
   };
   return bundleItem;
 };
 export const ProductDigital: React.FC = () => {
-  const { nextIsDisabled, values, setFieldValue } = useForm();
+  const { nextIsDisabled, values, setFieldValue, errors } = useForm();
   const {
     bundleItems,
     isNftMintedAlready: { value: isNftMintedAlreadyValue } = {}
   } = values.productDigital;
   const isNftMintedAlready = isNftMintedAlreadyValue === "true";
+  const isBundleItemMintedAlready =
+    !!bundleItems?.[0] && "contractAddress" in bundleItems[0];
+  const isBundleItemNotMintedAlready =
+    !!bundleItems?.[0] && "name" in bundleItems[0];
   useEffect(() => {
     if (isNftMintedAlreadyValue) {
-      if (isNftMintedAlreadyValue === "true") {
+      if (isNftMintedAlreadyValue === "true" && !isBundleItemMintedAlready) {
         setFieldValue("productDigital.bundleItems", [
           getNewExistingBundleItem()
         ]);
-      } else if (isNftMintedAlreadyValue === "false") {
+      } else if (
+        isNftMintedAlreadyValue === "false" &&
+        !isBundleItemNotMintedAlready
+      ) {
         setFieldValue("productDigital.bundleItems", [getNewNewBundleItem()]);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isNftMintedAlreadyValue, setFieldValue]);
+  const bundleItemsError =
+    errors.productDigital?.bundleItems &&
+    typeof errors.productDigital.bundleItems === "string" &&
+    errors.productDigital.bundleItems ? (
+      <SimpleError style={{ color: colors.red, fontWeight: 600 }}>
+        {errors.productDigital.bundleItems}
+      </SimpleError>
+    ) : null;
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Digital & Experiential Items</SectionTitle>
@@ -159,109 +181,123 @@ export const ProductDigital: React.FC = () => {
                       ? bundleItems.map((_el, index, array) => {
                           const arrayPrefix = `${prefix}bundleItems[${index}].`;
                           return (
-                            <ExistingNftContainer
+                            <Grid
+                              flexDirection="column"
                               key={`nft_container_${index}`}
+                              marginBottom="4rem"
                             >
-                              <FormField title="Contract address" required>
-                                <Input
-                                  placeholder="0x123...32f3"
-                                  name={`${arrayPrefix}contractAddress`}
-                                />
-                              </FormField>
-                              <FormField title="Min token ID" required>
-                                <Input
-                                  placeholder="1"
-                                  name={`${arrayPrefix}tokenIdRangeMin`}
-                                  type="number"
-                                />
-                              </FormField>
-                              <FormField title="Max token ID" required>
-                                <Input
-                                  placeholder="999999"
-                                  name={`${arrayPrefix}tokenIdRangeMax`}
-                                  type="number"
-                                />
-                              </FormField>
-                              <FormField title="External URL">
-                                <Input
-                                  placeholder="https://example.com"
-                                  name={`${arrayPrefix}externalUrl`}
-                                />
-                              </FormField>
-                              <FormField title="When will it be sent to the buyer?">
-                                <Input
-                                  placeholder=""
-                                  name={`${arrayPrefix}whenWillItBeSentToTheBuyer`}
-                                />
-                              </FormField>
-                              <FormField title="Shipping in days">
-                                <Input
-                                  placeholder=""
-                                  name={`${arrayPrefix}shippingInDays`}
-                                  type="number"
-                                />
-                              </FormField>
-                              {array.length > 1 && (
-                                <FormField title="Action">
-                                  <Delete
-                                    size={18}
-                                    style={{
-                                      gridColumn: "delete",
-                                      gridRow: "delete"
-                                    }}
-                                    onClick={() => {
-                                      arrayHelpers.remove(index);
-                                    }}
+                              <ExistingNftContainer>
+                                <FormField title="Contract address" required>
+                                  <Input
+                                    placeholder="0x123...32f3"
+                                    name={`${arrayPrefix}contractAddress`}
                                   />
                                 </FormField>
-                              )}
-                            </ExistingNftContainer>
+                                <FormField title="Min token ID" required>
+                                  <Input
+                                    placeholder="1"
+                                    name={`${arrayPrefix}tokenIdRangeMin`}
+                                    type="number"
+                                  />
+                                </FormField>
+                                <FormField title="Max token ID" required>
+                                  <Input
+                                    placeholder="999999"
+                                    name={`${arrayPrefix}tokenIdRangeMax`}
+                                    type="number"
+                                  />
+                                </FormField>
+                                <FormField title="External URL">
+                                  <Input
+                                    placeholder="https://example.com"
+                                    name={`${arrayPrefix}externalUrl`}
+                                  />
+                                </FormField>
+                                <FormField title="When will it be sent to the buyer?">
+                                  <Input
+                                    placeholder=""
+                                    name={`${arrayPrefix}whenWillItBeSentToTheBuyer`}
+                                  />
+                                </FormField>
+                                <FormField title="Shipping in days">
+                                  <Input
+                                    placeholder=""
+                                    name={`${arrayPrefix}shippingInDays`}
+                                    type="number"
+                                  />
+                                </FormField>
+                                {array.length > 1 && (
+                                  <FormField title="Action">
+                                    <Delete
+                                      size={18}
+                                      style={{
+                                        gridColumn: "delete",
+                                        gridRow: "delete"
+                                      }}
+                                      onClick={() => {
+                                        arrayHelpers.remove(index);
+                                      }}
+                                    />
+                                  </FormField>
+                                )}
+                              </ExistingNftContainer>
+                              {bundleItemsError}
+                            </Grid>
                           );
                         })
                       : bundleItems.map((_el, index, array) => {
                           const arrayPrefix = `${prefix}bundleItems[${index}].`;
                           return (
-                            <NewNftContainer key={`nft_container_${index}`}>
-                              <FormField title="Name" required>
-                                <Input
-                                  placeholder=""
-                                  name={`${arrayPrefix}name`}
-                                />
-                              </FormField>
-                              <FormField title="Description" required>
-                                <Input
-                                  placeholder=""
-                                  name={`${arrayPrefix}description`}
-                                />
-                              </FormField>
-                              <FormField title="How will it be sent to the buyer?">
-                                <Input
-                                  placeholder=""
-                                  name={`${arrayPrefix}whenWillItBeSentToTheBuyer`}
-                                />
-                              </FormField>
-                              <FormField title="When will it be sent to the buyer?">
-                                <Input
-                                  placeholder=""
-                                  name={`${arrayPrefix}whenWillItBeSentToTheBuyer`}
-                                />
-                              </FormField>
-                              <FormField title="Shipping in days">
-                                <Input
-                                  placeholder=""
-                                  name={`${arrayPrefix}shippingInDays`}
-                                  type="number"
-                                />
-                              </FormField>
-                              {array.length > 1 && (
-                                <Delete
-                                  size={18}
-                                  onClick={() => {
-                                    arrayHelpers.remove(index);
-                                  }}
-                                />
-                              )}
-                            </NewNftContainer>
+                            <Grid
+                              flexDirection="column"
+                              key={`nft_container_${index}`}
+                              marginBottom="4rem"
+                            >
+                              <NewNftContainer>
+                                <FormField title="Name" required>
+                                  <Input
+                                    placeholder=""
+                                    name={`${arrayPrefix}name`}
+                                  />
+                                </FormField>
+                                <FormField title="Description" required>
+                                  <Input
+                                    placeholder=""
+                                    name={`${arrayPrefix}description`}
+                                  />
+                                </FormField>
+                                <FormField title="How will it be sent to the buyer?">
+                                  <Input
+                                    placeholder=""
+                                    name={`${arrayPrefix}howWillItBeSentToTheBuyer`}
+                                  />
+                                </FormField>
+                                <FormField title="When will it be sent to the buyer?">
+                                  <Input
+                                    placeholder=""
+                                    name={`${arrayPrefix}whenWillItBeSentToTheBuyer`}
+                                  />
+                                </FormField>
+                                <FormField title="Shipping in days">
+                                  <Input
+                                    placeholder=""
+                                    name={`${arrayPrefix}shippingInDays`}
+                                    type="number"
+                                  />
+                                </FormField>
+                                {array.length > 1 && (
+                                  <FormField title="Action">
+                                    <Delete
+                                      size={18}
+                                      onClick={() => {
+                                        arrayHelpers.remove(index);
+                                      }}
+                                    />
+                                  </FormField>
+                                )}
+                              </NewNftContainer>
+                              {bundleItemsError}
+                            </Grid>
                           );
                         })}
                   </>
