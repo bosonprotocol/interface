@@ -360,6 +360,38 @@ export default function ConfirmProductDetails({
                 </SpaceContainer>
               </div>
             )}
+            {values.bundleItemsMedia?.length && (
+              <div>
+                <ProductSubtitle tag="h4">
+                  Digital images & videos
+                </ProductSubtitle>
+                {values.bundleItemsMedia.map((biMedia, index) => {
+                  const bundleItem =
+                    values.productDigital?.bundleItems?.[index];
+                  const name =
+                    bundleItem && "name" in bundleItem ? bundleItem.name : "";
+                  return (
+                    <Grid
+                      key={`${biMedia.image?.[0]?.src}-${biMedia.video?.[0]?.src}`}
+                      flexDirection="column"
+                    >
+                      <Typography>{name}</Typography>
+                      <SpaceContainer>
+                        <Image src={biMedia.image?.[0]?.src || ""} />
+                        <Video
+                          src={biMedia.video?.[0]?.src || ""}
+                          videoProps={{
+                            autoPlay: true,
+                            loop: true,
+                            muted: true
+                          }}
+                        />
+                      </SpaceContainer>
+                    </Grid>
+                  );
+                })}
+              </div>
+            )}
           </ProductInformationContent>
         </Collapse>
       </CollapseContainer>
