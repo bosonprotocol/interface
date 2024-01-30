@@ -133,6 +133,9 @@ export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
   display: inline-block;
   width: 8rem;
   height: 8rem;
+  + * {
+    max-width: 8rem;
+  }
   ${({ $disabled }) =>
     $disabled
       ? css`

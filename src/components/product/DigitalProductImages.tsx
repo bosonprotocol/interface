@@ -1,7 +1,8 @@
+import bytesToSize from "lib/utils/bytesToSize";
+import { ElementRef, HTMLAttributes } from "react";
 import styled from "styled-components";
 
-import { breakpoint } from "../../lib/styles/breakpoint";
-import { Upload } from "../form";
+import { FormField, Upload } from "../form";
 import { MAX_VIDEO_FILE_SIZE } from "./utils";
 
 const SpaceContainer = styled.div`
@@ -10,18 +11,26 @@ const SpaceContainer = styled.div`
   grid-row-gap: 2rem;
 
   grid-template-columns: repeat(1, max-content);
-  ${breakpoint.xs} {
-    grid-template-columns: repeat(2, max-content);
-  }
 `;
 
-export function DigitalUploadImages({ prefix }: { prefix: string }) {
+export function DigitalUploadImages({
+  prefix,
+  error,
+  ...rest
+}: { prefix: string; error?: string | null } & HTMLAttributes<
+  ElementRef<"div">
+>) {
   return (
-    <SpaceContainer>
+    <SpaceContainer {...rest}>
       <div>
         <Upload name={`${prefix}.image`} placeholder="Image" withUpload />
       </div>
-      <div>
+      <FormField
+        title="Upload your animation video for your digital"
+        subTitle={`Only MP4 is supported. Use a max. size of ${bytesToSize(
+          MAX_VIDEO_FILE_SIZE
+        )} for the video`}
+      >
         <Upload
           name={`${prefix}.video`}
           placeholder="Video"
@@ -31,7 +40,8 @@ export function DigitalUploadImages({ prefix }: { prefix: string }) {
           withUpload
           //   onLoading={(loading) => setVideoLoading(loading)}
         />
-      </div>
+      </FormField>
+      {error}
     </SpaceContainer>
   );
 }

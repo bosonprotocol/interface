@@ -11,13 +11,13 @@ import TermsOfExchange from "components/product/TermsOfExchange";
 import TokenGating from "components/product/tokenGating/TokenGating";
 import {
   getCoreTermsOfSaleValidationSchema,
+  getProductImagesValidationSchema,
+  getProductVariantsImagesValidationSchema,
   getProductVariantsValidationSchema,
   getTokenGatingValidationSchema,
   productDigitalValidationSchema,
-  productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
-  productVariantsImagesValidationSchema,
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
@@ -103,8 +103,8 @@ export const createProductSteps = ({
       </>
     ),
     validation: isOneSetOfImages
-      ? productImagesValidationSchema
-      : productVariantsImagesValidationSchema,
+      ? getProductImagesValidationSchema({ isPhygital })
+      : getProductVariantsImagesValidationSchema({ isPhygital }),
     helpSection: productImagesHelp
   };
   const coreTermsOfSale = {

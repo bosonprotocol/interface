@@ -5,6 +5,7 @@ import { Spinner } from "components/loading/Spinner";
 import InitializeChat from "components/modal/components/Chat/components/InitializeChat";
 import differentVariantsProduct from "components/product/img/different-variants-product.png";
 import oneItemTypeProductSmall from "components/product/img/one-item-product-small.png";
+import phygitalProductSmall from "components/product/img/phygital-product-small.png";
 import physicalProductSmall from "components/product/img/physical-product-small.png";
 import {
   optionUnitValues,
@@ -119,6 +120,7 @@ export default function ConfirmProductDetails({
       src = physicalProductSmall;
       description = "Physical";
     } else if (values.productType?.productType === "phygital") {
+      src = phygitalProductSmall;
       description = "Phygital";
     }
     return (

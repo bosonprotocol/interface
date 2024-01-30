@@ -1,3 +1,4 @@
+import { ElementRef, HTMLAttributes } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -18,9 +19,12 @@ const SpaceContainer = styled.div`
   }
 `;
 
-export function PhysicalUploadImages({ prefix }: { prefix: string }) {
+export function PhysicalUploadImages({
+  prefix,
+  ...rest
+}: { prefix: string } & HTMLAttributes<ElementRef<"div">>) {
   return (
-    <SpaceContainer>
+    <SpaceContainer {...rest}>
       <div>
         <Upload
           name={`${prefix}.thumbnail`}

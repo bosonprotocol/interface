@@ -24,6 +24,11 @@ import {
 const ContainerProductImage = styled.div`
   max-width: 43.5rem;
   width: 100%;
+  &:has(.digital) {
+    #product-animation {
+      display: none;
+    }
+  }
 `;
 
 const StyledSelect = styled(Select)`
@@ -42,7 +47,7 @@ interface Props {
 }
 const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
-  const { nextIsDisabled, values } = useForm();
+  const { nextIsDisabled, values, errors } = useForm();
   const [isVideoLoading, setVideoLoading] = useState<boolean>();
   const hasVariants =
     values.productType.productVariant ===
@@ -78,12 +83,19 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         ? values.productDigital?.bundleItems
             ?.map((bi, index) => {
               if ("name" in bi) {
+                const error =
+                  errors.bundleItemsMedia?.[index] &&
+                  typeof errors.bundleItemsMedia[index] === "string"
+                    ? errors.bundleItemsMedia?.[index]
+                    : null;
                 return {
                   id: `${bi.name}-${bi.description}-${index}`,
                   title: bi.name,
                   content: (
                     <DigitalUploadImages
+                      className="digital"
                       prefix={`bundleItemsMedia[${index}]`}
+                      error={error}
                     />
                   )
                 };
@@ -97,7 +109,8 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     values.productDigital?.bundleItems,
     values.productVariants?.variants,
     withTokenGatedImages,
-    oneSetOfImages
+    oneSetOfImages,
+    errors.bundleItemsMedia
   ]);
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
@@ -154,6 +167,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         )}
       </FormField>
       <FormField
+        id="product-animation"
         title="Upload your product animation video"
         // subTitle={`${
         //   hasVariants

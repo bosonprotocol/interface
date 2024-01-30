@@ -88,15 +88,41 @@ const testPrice = (config: DappConfig) =>
     }
   };
 
-const productAnimation = {
+const getProductAnimation = ({ isPhygital }: { isPhygital: boolean }) => ({
   productAnimation: validationOfIpfsImage(),
   bundleItemsMedia: Yup.array(
     Yup.object({
       image: validationOfRequiredIpfsImage(),
       video: validationOfIpfsImage()
     })
-  ) // TODO: required if token gated
-};
+  )
+    .when("productAnimation", {
+      is: () => {
+        return isPhygital;
+      },
+      then: (schema) => {
+        console.log({ schema });
+        return schema.min(
+          1,
+          "Either image or video has to be uploaded for the digital items"
+        );
+      },
+      otherwise: (schema) => schema
+    })
+    .test({
+      message: "Either image or video has to be uploaded for the digital items",
+      test: (value, context) => {
+        if (
+          isPhygital &&
+          (value?.length ?? 0) !==
+            context.parent.productDigital.bundleItems.length
+        ) {
+          return false;
+        }
+        return true;
+      }
+    })
+});
 
 export const getProductVariantsValidationSchema = (config: DappConfig) =>
   Yup.object({
@@ -138,31 +164,47 @@ export type ProductVariantsValidationSchema = ReturnType<
   typeof getProductVariantsValidationSchema
 >;
 
-export const productImagesValidationSchema = Yup.object({
-  productImages: Yup.object({
-    thumbnail: validationOfRequiredIpfsImage(),
-    secondary: validationOfIpfsImage(),
-    everyAngle: validationOfIpfsImage(),
-    details: validationOfIpfsImage(),
-    inUse: validationOfIpfsImage(),
-    styledScene: validationOfIpfsImage(),
-    sizeAndScale: validationOfIpfsImage(),
-    more: validationOfIpfsImage()
-  }),
-  ...productAnimation
-});
+export const getProductImagesValidationSchema = ({
+  isPhygital
+}: {
+  isPhygital: boolean;
+}) =>
+  Yup.object({
+    productImages: Yup.object({
+      thumbnail: validationOfRequiredIpfsImage(),
+      secondary: validationOfIpfsImage(),
+      everyAngle: validationOfIpfsImage(),
+      details: validationOfIpfsImage(),
+      inUse: validationOfIpfsImage(),
+      styledScene: validationOfIpfsImage(),
+      sizeAndScale: validationOfIpfsImage(),
+      more: validationOfIpfsImage()
+    }),
+    ...getProductAnimation({ isPhygital })
+  });
+export type ProductImagesValidationSchema = ReturnType<
+  typeof getProductImagesValidationSchema
+>;
 
-export const productVariantsImagesValidationSchema = Yup.object({
-  productVariantsImages: Yup.array(
-    Yup.object().concat(productImagesValidationSchema)
-  ).test({
-    name: "minLength",
-    test: function (value) {
-      return value?.length === this.parent.productVariants?.variants.length;
-    }
-  }),
-  ...productAnimation
-});
+export const getProductVariantsImagesValidationSchema = ({
+  isPhygital
+}: {
+  isPhygital: boolean;
+}) =>
+  Yup.object({
+    productVariantsImages: Yup.array(
+      Yup.object().concat(getProductImagesValidationSchema({ isPhygital }))
+    ).test({
+      name: "minLength",
+      test: function (value) {
+        return value?.length === this.parent.productVariants?.variants.length;
+      }
+    }),
+    ...getProductAnimation({ isPhygital })
+  });
+export type ProductVariantsImagesValidationSchema = ReturnType<
+  typeof getProductVariantsImagesValidationSchema
+>;
 
 export const imagesSpecificOrAllValidationSchema = Yup.object({
   imagesSpecificOrAll: Yup.object({

@@ -5,10 +5,10 @@ import {
   CoreTermsOfSaleValidationSchema,
   imagesSpecificOrAllValidationSchema,
   productDigitalValidationSchema,
-  productImagesValidationSchema,
+  ProductImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
-  productVariantsImagesValidationSchema,
+  ProductVariantsImagesValidationSchema,
   ProductVariantsValidationSchema,
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
@@ -49,11 +49,10 @@ export type TermsOfExchange = Yup.InferType<
 
 export type ShippingInfo = Yup.InferType<typeof shippingInfoValidationSchema>;
 
-export type ProductImages = Yup.InferType<typeof productImagesValidationSchema>;
+export type ProductImages = Yup.InferType<ProductImagesValidationSchema>;
 
-export type ProductVariantsImages = Yup.InferType<
-  typeof productVariantsImagesValidationSchema
->;
+export type ProductVariantsImages =
+  Yup.InferType<ProductVariantsImagesValidationSchema>;
 
 export type ImagesSpecificOrAll = Yup.InferType<
   typeof imagesSpecificOrAllValidationSchema
