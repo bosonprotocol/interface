@@ -9,6 +9,7 @@ import phygitalProductSmall from "components/product/img/phygital-product-small.
 import physicalProductSmall from "components/product/img/physical-product-small.png";
 import {
   optionUnitValues,
+  ProductTypeTypeValues,
   ProductTypeVariantsValues
 } from "components/product/utils";
 import Tooltip from "components/tooltip/Tooltip";
@@ -54,6 +55,7 @@ import {
   TagsWrapper,
   TermsOfSaleContent
 } from "./ConfirmProductDetails.styles";
+import { ConfirmProductDigital } from "./ConfirmProductDigital";
 
 const VariantsTable = styled.table`
   th:not(:first-child),
@@ -116,10 +118,12 @@ export default function ConfirmProductDetails({
   const renderProductType = useMemo(() => {
     let src = "";
     let description = "";
-    if (values.productType?.productType === "physical") {
+    if (values.productType?.productType === ProductTypeTypeValues.physical) {
       src = physicalProductSmall;
       description = "Physical";
-    } else if (values.productType?.productType === "phygital") {
+    } else if (
+      values.productType?.productType === ProductTypeTypeValues.phygital
+    ) {
       src = phygitalProductSmall;
       description = "Phygital";
     }
@@ -327,6 +331,7 @@ export default function ConfirmProductDetails({
                 </VariantsTable>
               </div>
             )}
+            <ConfirmProductDigital />
             {(!isMultiVariant || (isMultiVariant && isOneSetOfImages)) && (
               <div>
                 <ProductSubtitle tag="h4">Product Images</ProductSubtitle>
