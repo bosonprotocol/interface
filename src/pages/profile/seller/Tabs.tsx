@@ -7,6 +7,7 @@ import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { useQueryParameter } from "../../../lib/routing/useQueryParameter";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { ExtendedSeller } from "../../explore/WithAllOffers";
 import { ProfileSectionWrapper } from "../ProfilePage.styles";
 import Exchanges from "./Exchanges";
@@ -110,7 +111,10 @@ const tabIdentifier = "id" as const;
 
 interface Props {
   products: ExtendedSeller;
-  sellerId: string;
+  seller: {
+    sellerId: string;
+    lensProfile?: Profile;
+  };
   isErrorSellers: boolean;
   isPrivateProfile: boolean;
   isLoading: boolean;
@@ -118,7 +122,7 @@ interface Props {
 export default function Tabs({
   products,
   isPrivateProfile,
-  sellerId,
+  seller,
   isErrorSellers,
   isLoading
 }: Props) {
@@ -130,7 +134,7 @@ export default function Tabs({
         content: (
           <Offers
             products={products}
-            sellerId={sellerId}
+            seller={seller}
             action={isPrivateProfile ? null : "commit"}
             showInvalidOffers={isPrivateProfile}
             isPrivateProfile={isPrivateProfile}
@@ -141,16 +145,16 @@ export default function Tabs({
       {
         id: "exchanges",
         title: "Exchanges",
-        content: <Exchanges sellerId={sellerId} />
+        content: <Exchanges sellerId={seller.sellerId} />
       },
       {
         id: "redemptions",
         title: "Redemptions",
-        content: <Redemptions sellerId={sellerId} />
+        content: <Redemptions sellerId={seller.sellerId} />
       }
     ];
     return tabsData;
-  }, [sellerId, isPrivateProfile, products, isLoading]);
+  }, [seller, isPrivateProfile, products, isLoading]);
   const [currentTab, setCurrentTab] = useQueryParameter(
     AccountQueryParameters.tab
   );

@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useIsCustomStoreValueChanged } from "../../pages/custom-store/useIsCustomStoreValueChanged";
 import { ExtendedOffer } from "../../pages/explore/WithAllOffers";
@@ -30,6 +31,10 @@ interface Props {
   itemsPerRow?: Partial<ItemsPerRow>;
   breadcrumbs?: boolean;
   numOffers: number;
+  seller: {
+    sellerId: string;
+    lensProfile?: Profile;
+  };
 }
 
 const Container = styled.div<{ $isPrimaryBgChanged: boolean }>`
@@ -61,7 +66,8 @@ export default function OfferList({
   numOffers,
   showInvalidOffers,
   itemsPerRow,
-  breadcrumbs
+  breadcrumbs,
+  seller
 }: Props) {
   const isPrimaryBgChanged = useIsCustomStoreValueChanged("primaryBgColor");
   const navigate = useKeepQueryParamsNavigate();
@@ -165,6 +171,7 @@ export default function OfferList({
                       key={offer.id}
                       offer={offer}
                       dataTestId="offer"
+                      lensProfile={seller?.lensProfile}
                     />
                   )
                 );
