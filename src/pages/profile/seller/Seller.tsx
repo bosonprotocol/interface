@@ -317,7 +317,7 @@ export default function Seller() {
         <Tabs
           products={products?.[0]}
           isPrivateProfile={isMySeller}
-          sellerId={sellerId}
+          seller={{ sellerId, lensProfile: sellerLens }}
           isErrorSellers={isErrorSellers}
           isLoading={isLoadingProducts}
         />
