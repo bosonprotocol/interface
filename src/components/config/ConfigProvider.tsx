@@ -1,7 +1,6 @@
 import { ProtocolConfig } from "@bosonprotocol/react-kit";
 import { MagicProvider } from "components/magicLink/MagicContext";
 import {
-  CONFIG,
   defaultEnvConfig,
   envConfigsFilteredByEnv,
   getDappConfig
@@ -34,8 +33,6 @@ function SyncCurrentConfigId({
 export function ConfigProvider({ children }: ConfigProviderProps) {
   const [envConfig, setEnvConfig] = useState<ProtocolConfig>(defaultEnvConfig);
   const dappConfig = getDappConfig(envConfig || defaultEnvConfig);
-  // TODO: change at core-component level
-  dappConfig.lens.ipfsGateway = CONFIG.ipfsGateway;
   return (
     <Context.Provider value={{ config: dappConfig, setEnvConfig }}>
       <MagicProvider>
