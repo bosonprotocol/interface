@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionResponse } from "@bosonprotocol/common";
+import { productV1Item } from "@bosonprotocol/metadata";
 import {
   CoreSDK,
   MetadataType,
@@ -109,18 +110,18 @@ type GetProductV1MetadataProps = {
   licenseUrl: string;
   productMainImageLink: string | undefined;
   nftAttributes: {
-    trait_type: string;
+    traitType: string;
     value: string;
-    display_type?: string;
+    displayType?: string;
   }[];
   additionalAttributes: {
-    trait_type: string;
+    traitType: string;
     value: string;
-    display_type?: string;
+    displayType?: string;
   }[];
   createYourProfile: CreateProductForm["createYourProfile"];
   productType: CreateProductForm["productType"];
-  visualImages: productV1.ProductBase["visuals_images"];
+  visualImages: productV1Item.ProductBase["visuals_images"];
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
@@ -626,11 +627,11 @@ function CreateProductInner({
           : productImages?.thumbnail?.[0]?.src;
 
       const productAttributes: Array<{
-        trait_type: string;
+        traitType: string;
         value: string;
       }> = productInformation.attributes.map(({ name, value }) => {
         return {
-          trait_type: name || "",
+          traitType: name || "",
           value: value || ""
         };
       });
@@ -655,7 +656,7 @@ function CreateProductInner({
 
       // filter empty attributes
       const additionalAttributes = productAttributes.filter((attribute) => {
-        return attribute.trait_type.length > 0;
+        return attribute.traitType.length > 0;
       });
 
       const redemptionPointUrl =
@@ -706,34 +707,34 @@ function CreateProductInner({
 
       const nftAttributes = [];
       nftAttributes.push({
-        trait_type: ProductMetadataAttributeKeys["Token Type"],
+        traitType: ProductMetadataAttributeKeys["Token Type"],
         value: "BOSON rNFT"
       });
       nftAttributes.push({
-        trait_type: ProductMetadataAttributeKeys["Redeemable At"],
+        traitType: ProductMetadataAttributeKeys["Redeemable At"],
         value: redemptionPointUrl
       });
 
       if (voucherRedeemableUntilDateInMS) {
         nftAttributes.push({
-          trait_type: ProductMetadataAttributeKeys["Redeemable Until"],
+          traitType: ProductMetadataAttributeKeys["Redeemable Until"],
           value: voucherRedeemableUntilDateInMS.toString(),
-          display_type: "date"
+          displayType: "date"
         });
       } else if (voucherValidDurationInMS) {
         nftAttributes.push({
-          trait_type: ProductMetadataAttributeKeys["Redeemable After X Days"],
+          traitType: ProductMetadataAttributeKeys["Redeemable After X Days"],
           value: (voucherValidDurationInMS / 86400000).toString()
         });
       }
       if (assistantLens?.name || assistantLens?.handle) {
         nftAttributes.push({
-          trait_type: ProductMetadataAttributeKeys["Seller"],
+          traitType: ProductMetadataAttributeKeys["Seller"],
           value: assistantLens?.name || assistantLens?.handle
         });
       } else {
         nftAttributes.push({
-          trait_type: ProductMetadataAttributeKeys["Seller"],
+          traitType: ProductMetadataAttributeKeys["Seller"],
           value: createYourProfile.name
         });
       }
