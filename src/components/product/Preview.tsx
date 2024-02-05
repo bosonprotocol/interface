@@ -111,7 +111,7 @@ export default function Preview({
     productAttributes.push({
       name: "Redeemable Until",
       value: new Date(voucherRedeemableUntilDateInMS).toString(),
-      display_type: "date"
+      displayType: "date"
     });
   } else {
     productAttributes.push({
