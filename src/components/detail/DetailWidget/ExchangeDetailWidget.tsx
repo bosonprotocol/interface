@@ -1,6 +1,7 @@
 import {
   exchanges,
   ExternalExchangeDetailView,
+  hooks,
   RedemptionWidgetAction,
   subgraph
 } from "@bosonprotocol/react-kit";
@@ -78,7 +79,7 @@ const NOT_REDEEMED_YET = [
 
 type ExchangeDetailWidgetProps = {
   variant: VariantV1;
-  exchange: ExtendedExchange;
+  exchange: hooks.ExtendedExchange;
 };
 
 export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
