@@ -20,7 +20,11 @@ import { colors } from "lib/styles/colors";
 import { getHasExchangeDisputeResolutionElapsed } from "lib/utils/exchange";
 import { titleCase } from "lib/utils/formatText";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import {
+  useAccount,
+  useChainId,
+  useSigner
+} from "lib/utils/hooks/connection/connection";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { VariantV1 } from "pages/products/types";
@@ -91,7 +95,8 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
 
   const { config } = useConfigContext();
   const curationLists = useCurationLists();
-
+  const connectedChainId = useChainId();
+  const signer = useSigner();
   const { account: address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isSeller = exchange?.seller.assistant === address?.toLowerCase();
@@ -142,7 +147,11 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
         exchangeState: exchange.state,
         sendDeliveryInfoThroughXMTP: true,
         sellerCurationListBetweenCommas:
-          curationLists?.sellerCurationList?.join(",") || ""
+          curationLists?.sellerCurationList?.join(",") || "",
+        withExternalConnectionProps: true,
+        externalConnectedChainId: connectedChainId,
+        externalConnectedAccount: address,
+        externalConnectedSigner: signer
       }}
       showBosonLogo={isCustomStoreFront}
       showPriceAsterisk={false}
