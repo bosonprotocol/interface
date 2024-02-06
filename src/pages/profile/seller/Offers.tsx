@@ -2,11 +2,15 @@ import { useMemo } from "react";
 
 import { Action } from "../../../components/offer/OfferCard";
 import OfferList from "../../../components/offers/OfferList";
+import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { ExtendedSeller } from "../../explore/WithAllOffers";
 
 interface Props {
   products: ExtendedSeller;
-  sellerId: string;
+  seller: {
+    sellerId: string;
+    lensProfile?: Profile;
+  };
   action: Action;
   showInvalidOffers: boolean;
   isPrivateProfile: boolean;
@@ -18,7 +22,8 @@ export default function Offers({
   action,
   showInvalidOffers,
   isPrivateProfile,
-  isLoading
+  isLoading,
+  seller
 }: Props) {
   const allOffers = useMemo(() => {
     return products?.offers || [];
@@ -41,6 +46,7 @@ export default function Offers({
         l: 3,
         xl: 3
       }}
+      seller={seller}
     />
   );
 }
