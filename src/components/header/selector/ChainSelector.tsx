@@ -61,7 +61,7 @@ interface ChainSelectorProps {
 function useWalletSupportedChains(): ChainId[] {
   const { connector } = useWeb3React();
 
-  const connectionType = getConnection(connector).type;
+  const connectionType = getConnection(connector)?.type;
 
   switch (connectionType) {
     case ConnectionType.WALLET_CONNECT_V2:
@@ -82,7 +82,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
 
   const showTestnets = useAtomValue(showTestnetsAtom);
   const walletSupportsChain = useWalletSupportedChains();
-
+  console.log("walletSupportsChain", walletSupportsChain);
   const [supportedConfigs, unsupportedChains] = useMemo(() => {
     const { supported, unsupported } = NETWORK_SELECTOR_CHAINS.filter(
       (config) => {
