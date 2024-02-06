@@ -32,7 +32,11 @@ import { CONFIG } from "lib/config";
 import { BosonRoutes } from "lib/routing/routes";
 import { isTruthy } from "lib/types/helpers";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
-import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
+import {
+  useAccount,
+  useChainId,
+  useSigner
+} from "lib/utils/hooks/connection/connection";
 import {
   getItemFromStorage,
   saveItemInStorage
@@ -113,6 +117,9 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   name = "",
   image = ""
 }) => {
+  const connectedChainId = useChainId();
+  const { account } = useAccount();
+  const signer = useSigner();
   const { offer } = selectedVariant;
   const [commitType, setCommitType] = useState<ActionName | undefined | null>(
     null
@@ -133,7 +140,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
     isCommittingFromNotConnectedWallet,
     setIsCommittingFromNotConnectedWallet
   ] = useState(false);
-  const signer = useSigner();
   const { balance: exchangeTokenBalance, loading: balanceLoading } =
     useExchangeTokenBalance(offer.exchangeToken, {
       enabled: offer.price !== "0"
@@ -449,7 +455,11 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         licenseTemplate: CONFIG.rNFTLicenseTemplate,
         minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
         contactSellerForExchangeUrl: "",
-        sellerCurationListBetweenCommas
+        sellerCurationListBetweenCommas,
+        withExternalConnectionProps: true,
+        externalConnectedChainId: connectedChainId,
+        externalConnectedAccount: account,
+        externalConnectedSigner: signer
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}
