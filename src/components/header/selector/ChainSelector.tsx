@@ -82,7 +82,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
 
   const showTestnets = useAtomValue(showTestnetsAtom);
   const walletSupportsChain = useWalletSupportedChains();
-  console.log("walletSupportsChain", walletSupportsChain);
+
   const [supportedConfigs, unsupportedChains] = useMemo(() => {
     const { supported, unsupported } = NETWORK_SELECTOR_CHAINS.filter(
       (config) => {
