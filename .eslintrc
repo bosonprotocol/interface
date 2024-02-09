@@ -10,7 +10,8 @@
     "@typescript-eslint",
     "react-hooks",
     "simple-import-sort",
-    "unused-imports"
+    "unused-imports",
+    "@tanstack/query"
   ],
   "rules": {
     "simple-import-sort/exports": "error",
@@ -29,7 +30,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended"
   ],
   "env": {
     "browser": true,
