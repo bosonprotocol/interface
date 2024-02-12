@@ -69,9 +69,9 @@ export function useCreateOffers() {
           ) {
             try {
               const { decimals: tokenDecimals } =
-                await coreSDK.getExchangeTokenInfo(
+                (await coreSDK.getExchangeTokenInfo(
                   tokenGatedInfo.tokenContract
-                );
+                )) || {};
               decimalsLocal = tokenDecimals;
               onGetExchangeTokenDecimals?.(decimalsLocal);
             } catch (error) {

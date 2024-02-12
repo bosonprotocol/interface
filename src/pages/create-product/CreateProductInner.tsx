@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionResponse } from "@bosonprotocol/common";
-import { productV1Item } from "@bosonprotocol/metadata";
 import {
-  CoreSDK,
-  MetadataType,
   offers,
   productV1,
+  productV1Item,
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
@@ -40,11 +38,10 @@ import {
 } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
-import { BigNumber, ethers, providers } from "ethers";
+import { providers } from "ethers";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 
-import { FileProps } from "../../components/form/Upload/types";
 import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
@@ -65,7 +62,6 @@ import SuccessTransactionToast from "../../components/toasts/SuccessTransactionT
 import BosonButton from "../../components/ui/BosonButton";
 import { Grid } from "../../components/ui/Grid";
 import { Typography } from "../../components/ui/Typography";
-import { CONFIG, DappConfig } from "../../lib/config";
 import {
   SellerLandingPageParameters,
   UrlParameters
@@ -77,7 +73,6 @@ import { saveItemInStorage } from "../../lib/utils/hooks/localstorage/useLocalSt
 import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
   CreateProductWrapper,
@@ -87,11 +82,14 @@ import {
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP } from "./utils";
 import { extractOfferTimestamps } from "./utils/dataValidator";
+import { getOfferDataFromMetadata } from "./utils/getOfferDataFromMetadata";
+import { getProductV1Metadata } from "./utils/getProductV1Metadata";
 import { getTermsOfExchange } from "./utils/getTermsOfExchange";
 import {
   getDisputePeriodDurationInMS,
   getResolutionPeriodDurationInMS
 } from "./utils/helpers";
+import { SupportedJuridiction } from "./utils/types";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
@@ -101,234 +99,10 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
     event.preventDefault();
   }
 }
-type GetProductV1MetadataProps = {
-  contactPreference: string;
-  offerUuid: string;
-  productInformation: CreateProductForm["productInformation"];
-  productAnimation: FileProps | undefined;
-  externalUrl: string;
-  licenseUrl: string;
-  productMainImageLink: string | undefined;
-  nftAttributes: {
-    traitType: string;
-    value: string;
-    displayType?: string;
-  }[];
-  additionalAttributes: {
-    traitType: string;
-    value: string;
-    displayType?: string;
-  }[];
-  createYourProfile: CreateProductForm["createYourProfile"];
-  productType: CreateProductForm["productType"];
-  visualImages: productV1Item.ProductBase["visuals_images"];
-  shippingInfo: CreateProductForm["shippingInfo"];
-  termsOfExchange: CreateProductForm["termsOfExchange"];
-  supportedJurisdictions: Array<SupportedJuridiction>;
-  redemptionPointUrl: string;
-};
-async function getProductV1Metadata({
-  contactPreference,
-  offerUuid,
-  productInformation,
-  productAnimation,
-  externalUrl,
-  licenseUrl,
-  productMainImageLink,
-  nftAttributes,
-  additionalAttributes,
-  createYourProfile,
-  productType,
-  visualImages,
-  shippingInfo,
-  termsOfExchange,
-  supportedJurisdictions,
-  redemptionPointUrl
-}: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
-  const profileImage = createYourProfile?.logo?.[0];
-  const coverImage = createYourProfile?.coverPicture?.[0];
-
-  const sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
-    {
-      url: profileImage?.src || "",
-      tag: "profile",
-      height: profileImage?.height ?? undefined,
-      width: profileImage?.width ?? undefined,
-      type: profileImage?.type
-    },
-    {
-      url: coverImage?.src || "",
-      tag: "cover",
-      height: coverImage?.height ?? undefined,
-      width: coverImage?.width ?? undefined,
-      type: coverImage?.type
-    }
-  ];
-
-  const animationUrl = getIpfsGatewayUrl(productAnimation?.src || "");
-  const visualsVideos: productV1.Media[] =
-    animationUrl === ""
-      ? []
-      : [
-          {
-            url: animationUrl,
-            tag: ""
-          }
-        ];
-
-  return {
-    schemaUrl: "https://schema.org/",
-    uuid: offerUuid,
-    name: productInformation.productTitle,
-    description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
-    animationUrl,
-    animationMetadata: productAnimation
-      ? {
-          height: productAnimation.height ?? undefined,
-          width: productAnimation.width ?? undefined,
-          type: productAnimation.type
-        }
-      : undefined,
-    externalUrl,
-    licenseUrl,
-    image: productMainImageLink ? productMainImageLink : "",
-    type: MetadataType.PRODUCT_V1,
-    attributes: [...nftAttributes, ...additionalAttributes],
-    condition: /*tokenGating?.tokenGatingDesc ||*/ undefined,
-    product: {
-      uuid: uuid(),
-      version: 1,
-      title: productInformation.productTitle?.toString(),
-      description: productInformation.description?.toString(),
-      identification_sKU: productInformation.sku?.toString(),
-      identification_productId: productInformation.id?.toString(),
-      identification_productIdType: productInformation.idType?.toString(),
-      productionInformation_brandName:
-        productInformation.brandName?.toString() || createYourProfile.name,
-      productionInformation_manufacturer:
-        productInformation.manufacture?.toString(),
-      productionInformation_manufacturerPartNumber:
-        productInformation.manufactureModelName?.toString(),
-      productionInformation_modelNumber:
-        productInformation.partNumber?.toString(),
-      productionInformation_materials: productInformation.materials?.split(","),
-      details_category: productInformation.category.value?.toString(),
-      details_subCategory: undefined, // no entry in the UI
-      details_subCategory2: undefined, // no entry in the UI
-      details_offerCategory: productType.productType.toUpperCase(),
-      details_tags: productInformation.tags,
-      details_sections: undefined, // no entry in the UI
-      details_personalisation: undefined, // no entry in the UI
-      visuals_images: visualImages,
-      visuals_videos: visualsVideos, // no entry in the UI
-      packaging_packageQuantity: undefined, // no entry in the UI
-      packaging_dimensions_length: shippingInfo.length?.toString(),
-      packaging_dimensions_width: shippingInfo.width?.toString(),
-      packaging_dimensions_height: shippingInfo.height?.toString(),
-      packaging_dimensions_unit: shippingInfo.measurementUnit.value?.toString(),
-      packaging_weight_value: shippingInfo?.weight?.toString() || "",
-      packaging_weight_unit: shippingInfo?.weightUnit.value?.toString() || ""
-    },
-    seller: {
-      defaultVersion: 1,
-      name: createYourProfile.name,
-      description: createYourProfile.description,
-      externalUrl: createYourProfile.website,
-      tokenId: undefined, // no entry in the UI
-      contactLinks: [
-        {
-          url: createYourProfile.email,
-          tag: "email"
-        }
-      ],
-      images: sellerImages,
-      contactPreference
-    },
-    exchangePolicy: {
-      uuid: Date.now().toString(),
-      version: 1,
-      label: termsOfExchange.exchangePolicy.label,
-      template:
-        termsOfExchange.exchangePolicy.value === "fairExchangePolicy" // if there is data in localstorage, the exchangePolicy.value might be the old 'fairExchangePolicy'
-          ? OPTIONS_EXCHANGE_POLICY[0].value
-          : termsOfExchange.exchangePolicy.value || "",
-      sellerContactMethod: CONFIG.defaultSellerContactMethod,
-      disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
-    },
-    shipping: {
-      defaultVersion: 1,
-      countryOfOrigin:
-        /*TODO: NOTE: we might add it back in the future: shippingInfo.country?.label || */ "",
-      supportedJurisdictions:
-        supportedJurisdictions.length > 0 ? supportedJurisdictions : undefined,
-      returnPeriod: shippingInfo.returnPeriod.toString(),
-      redemptionPoint: redemptionPointUrl
-    }
-  };
-}
-
-type GetOfferDataFromMetadataProps = {
-  coreSDK: CoreSDK;
-  config: DappConfig;
-  priceBN: BigNumber;
-  sellerDeposit: BigNumber | string;
-  buyerCancellationPenaltyValue: BigNumber | string;
-  quantityAvailable: number;
-  voucherRedeemableFromDateInMS: number;
-  voucherRedeemableUntilDateInMS: number;
-  voucherValidDurationInMS: number;
-  validFromDateInMS: number;
-  validUntilDateInMS: number;
-  disputePeriodDurationInMS: number;
-  resolutionPeriodDurationInMS: number;
-  exchangeToken: Token | undefined;
-};
-async function getOfferDataFromMetadata(
-  productV1Metadata: productV1.ProductV1Metadata,
-  {
-    coreSDK,
-    config,
-    priceBN,
-    sellerDeposit,
-    buyerCancellationPenaltyValue,
-    quantityAvailable,
-    voucherRedeemableFromDateInMS,
-    voucherRedeemableUntilDateInMS,
-    voucherValidDurationInMS,
-    validFromDateInMS,
-    validUntilDateInMS,
-    disputePeriodDurationInMS,
-    resolutionPeriodDurationInMS,
-    exchangeToken
-  }: GetOfferDataFromMetadataProps
-): Promise<offers.CreateOfferArgs> {
-  const metadataHash = await coreSDK.storeMetadata(productV1Metadata);
-
-  const offerData: offers.CreateOfferArgs = {
-    price: priceBN.toString(),
-    sellerDeposit: sellerDeposit.toString(),
-    buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
-    quantityAvailable: quantityAvailable,
-    voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
-    voucherRedeemableUntilDateInMS: voucherRedeemableUntilDateInMS.toString(),
-    voucherValidDurationInMS: voucherValidDurationInMS.toString(),
-    validFromDateInMS: validFromDateInMS.toString(),
-    validUntilDateInMS: validUntilDateInMS.toString(),
-    disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
-    resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-    exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
-    disputeResolverId: config.envConfig.defaultDisputeResolverId,
-    agentId: 0, // no agent
-    metadataUri: `ipfs://${metadataHash}`,
-    metadataHash: metadataHash,
-    collectionIndex: "0"
-  };
-  return offerData;
-}
-
+type VisualImages = productV1Item.ProductBase["visuals_images"];
 function extractVisualImages(
   productImages: CreateProductForm["productImages"]
-): productV1.ProductBase["visuals_images"] {
+): VisualImages {
   const visualImages = Array.from(
     new Set(
       map(
@@ -342,8 +116,8 @@ function extractVisualImages(
             width: v?.[0]?.width,
             type: v?.[0]?.type,
             name: v?.[0]?.name
-          } as productV1.ProductBase["visuals_images"][number])
-      ).filter((n): n is productV1.ProductBase["visuals_images"][number] => !!n)
+          } as VisualImages[number])
+      ).filter((n): n is VisualImages[number] => !!n)
     ).values()
   );
   return visualImages;
@@ -354,10 +128,6 @@ interface Props {
   showCreateProductDraftModal: () => void;
   setCreatedOffersIds: Dispatch<SetStateAction<string[]>>;
   isDraftModalClosed: boolean;
-}
-interface SupportedJuridiction {
-  label: string;
-  deliveryTime: string;
 }
 
 function CreateProductInner({
@@ -760,7 +530,7 @@ function CreateProductInner({
         const variantsForMetadataCreation: Parameters<
           typeof productV1["createVariantProductMetadata"]
         >[1] = [];
-        const visualImages: productV1.ProductBase["visuals_images"] = [];
+        const visualImages: VisualImages = [];
         const allVariationsWithSameImages =
           values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
         if (allVariationsWithSameImages) {
