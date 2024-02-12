@@ -1,4 +1,4 @@
-import { CoreSDK, offers, productV1 } from "@bosonprotocol/react-kit";
+import { AnyMetadata, CoreSDK, offers } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 
@@ -26,7 +26,7 @@ type GetOfferDataFromMetadataProps = {
   exchangeToken: Token | undefined;
 };
 export async function getOfferDataFromMetadata(
-  productV1Metadata: productV1.ProductV1Metadata,
+  metadata: AnyMetadata,
   {
     coreSDK,
     config,
@@ -44,7 +44,7 @@ export async function getOfferDataFromMetadata(
     exchangeToken
   }: GetOfferDataFromMetadataProps
 ): Promise<offers.CreateOfferArgs> {
-  const metadataHash = await coreSDK.storeMetadata(productV1Metadata);
+  const metadataHash = await coreSDK.storeMetadata(metadata);
 
   const offerData: offers.CreateOfferArgs = {
     price: priceBN.toString(),

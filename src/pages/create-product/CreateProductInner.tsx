@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionResponse } from "@bosonprotocol/common";
 import {
+  AnyMetadata,
+  bundle,
   offers,
   productV1,
   productV1Item,
@@ -89,6 +91,11 @@ import {
   getDisputePeriodDurationInMS,
   getResolutionPeriodDurationInMS
 } from "./utils/helpers";
+import {
+  getBundleMetadata,
+  getDigitalMetadatas,
+  getDoesBundleItemExist
+} from "./utils/productDigital";
 import { SupportedJuridiction } from "./utils/types";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
@@ -646,6 +653,7 @@ function CreateProductInner({
         offersToCreate.push(...(await Promise.all(offerDataPromises)));
       } else {
         const visualImages = extractVisualImages(productImages);
+
         const productV1Metadata = await getProductV1Metadata({
           contactPreference,
           offerUuid,
@@ -672,24 +680,75 @@ function CreateProductInner({
             price,
             decimals
           });
-
-        const offerData = await getOfferDataFromMetadata(productV1Metadata, {
-          coreSDK,
-          config,
-          priceBN,
-          sellerDeposit,
-          buyerCancellationPenaltyValue,
-          quantityAvailable: coreTermsOfSale.quantity,
-          voucherRedeemableFromDateInMS,
-          voucherRedeemableUntilDateInMS,
-          voucherValidDurationInMS,
-          validFromDateInMS,
-          validUntilDateInMS,
-          disputePeriodDurationInMS,
-          resolutionPeriodDurationInMS,
-          exchangeToken
-        });
-        offersToCreate.push(offerData);
+        const pushOfferData = async (metadata: AnyMetadata) => {
+          const offerData = await getOfferDataFromMetadata(metadata, {
+            coreSDK,
+            config,
+            priceBN,
+            sellerDeposit,
+            buyerCancellationPenaltyValue,
+            quantityAvailable: coreTermsOfSale.quantity,
+            voucherRedeemableFromDateInMS,
+            voucherRedeemableUntilDateInMS,
+            voucherValidDurationInMS,
+            validFromDateInMS,
+            validUntilDateInMS,
+            disputePeriodDurationInMS,
+            resolutionPeriodDurationInMS,
+            exchangeToken
+          });
+          offersToCreate.push(offerData);
+        };
+        if (isPhygital) {
+          let nftMetadataIpfsLinks: string[] = [];
+          if (getDoesBundleItemExist(values.productDigital.bundleItems[0])) {
+            for (const bundleItem of values.productDigital.bundleItems) {
+              if (getDoesBundleItemExist(bundleItem)) {
+                const tokenUri = await coreSDK.erc721TokenUri({
+                  contractAddress: bundleItem.contractAddress,
+                  tokenId: bundleItem.tokenIdRangeMin
+                });
+                for (
+                  let bundleItemTokenId = bundleItem.tokenIdRangeMin;
+                  bundleItemTokenId <= bundleItem.tokenIdRangeMax;
+                  bundleItemTokenId++
+                ) {
+                  nftMetadataIpfsLinks.push(
+                    "token id uri for bundleItemTokenId"
+                  );
+                }
+              } else {
+                throw new Error(
+                  "There is a bundle item that is an existing nft and another that is not"
+                );
+              }
+            }
+          } else {
+            const newNftMetadatas = getDigitalMetadatas({} as any);
+            nftMetadataIpfsLinks = (
+              await Promise.all(
+                newNftMetadatas.map((nftMetadata) => {
+                  return coreSDK.storeMetadata(nftMetadata);
+                })
+              )
+            ).map((hash) => `ipfs://${hash}`);
+          }
+          nftMetadataIpfsLinks.push(
+            `ipfs://${await coreSDK.storeMetadata(productV1Metadata)}`
+          );
+          // 1 bundle for each variant-digital1-digital2-digital3
+          // digital1 is nft with tokenId_n1 of contract C1
+          // digital2 is nft with tokenId_n2 of contract C1
+          // digital3 is nft with tokenId_n1 of contract C2
+          // as this is the no variants flow, it's just 1 bundle with the variant ipfs hash and the digital ipfs hash
+          const bundleMetadata: bundle.BundleMetadata = getBundleMetadata(
+            {},
+            nftMetadataIpfsLinks
+          );
+          pushOfferData(bundleMetadata);
+        } else {
+          pushOfferData(productV1Metadata);
+        }
       }
       const isTokenGated = productType?.tokenGatedOffer === "true";
       const result = await createOffers({
