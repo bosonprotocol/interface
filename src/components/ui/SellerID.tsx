@@ -67,7 +67,7 @@ export type Seller = Pick<
 > & {
   metadata?: {
     name?: string | null;
-    images?: { url: string; tag: string }[] | null;
+    images?: { url: string; tag?: string | null }[] | null;
   } | null;
 };
 
@@ -75,7 +75,7 @@ const SellerID: React.FC<
   {
     children?: React.ReactNode;
     offer: Offer;
-    buyerOrSeller: Buyer | Seller;
+    buyerOrSeller?: Buyer | Seller;
     accountImageSize?: number;
     withProfileImage: boolean;
     withProfileText?: boolean;

@@ -7,9 +7,16 @@ import { MODAL_TYPES } from "components/modal/ModalComponents";
 import { useModal } from "components/modal/useModal";
 import { CONFIG } from "lib/config";
 import { BosonRoutes } from "lib/routing/routes";
+import {
+  useAccount,
+  useChainId,
+  useSigner
+} from "lib/utils/hooks/connection/connection";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import React from "react";
 import { styled } from "styled-components";
+
+import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
 
 const StyledExternalOfferFullDescription = styled(ExternalOfferFullDescription)`
   .headers {
@@ -37,7 +44,11 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
 ) => {
   const navigate = useKeepQueryParamsNavigate();
   const { config } = useConfigContext();
+  const curationLists = useCurationLists();
   const { showModal } = useModal();
+  const connectedChainId = useChainId();
+  const { account } = useAccount();
+  const signer = useSigner();
   return (
     <StyledExternalOfferFullDescription
       {...props}
@@ -66,7 +77,13 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
         walletConnectProjectId: CONFIG.walletConnect.projectId,
         ipfsProjectId: CONFIG.infuraProjectId,
         ipfsProjectSecret: CONFIG.infuraProjectSecret,
-        contactSellerForExchangeUrl: ""
+        contactSellerForExchangeUrl: "",
+        sellerCurationListBetweenCommas:
+          curationLists?.sellerCurationList?.join(",") || "",
+        withExternalConnectionProps: true,
+        externalConnectedChainId: connectedChainId,
+        externalConnectedAccount: account,
+        externalConnectedSigner: signer
       }}
     />
   );

@@ -100,13 +100,16 @@ export const walletConnectV2Connection: Connection = new (class
 {
   private initializer = (
     actions: Actions,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    defaultChainId = importedDefaultChainId as any as ChainId
+    defaultChainId = importedDefaultChainId
   ) => new WalletConnectV2({ actions, defaultChainId, onError });
 
   type = ConnectionType.WALLET_CONNECT_V2;
   getName = () => "WalletConnect";
   getIcon = () => WALLET_CONNECT_ICON;
+  getProviderInfo = () => ({
+    name: "WalletConnect",
+    icon: WALLET_CONNECT_ICON
+  });
   shouldDisplay = () => !getIsInjectedMobileBrowser();
 
   private activeConnector = initializeConnector<WalletConnectV2>(
@@ -152,6 +155,8 @@ export const walletConnectV2Connection: Connection = new (class
   overrideActivate = (chainId?: ChainId) => {
     // Always re-create the connector, so that the chainId is updated.
     this.activeConnector = initializeConnector((actions) =>
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       this.initializer(actions, chainId)
     );
     this.onActivate?.();
@@ -231,6 +236,8 @@ export function getConnection(c: Connector | ConnectionType) {
         return networkConnection;
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection;
+      default:
+        throw new Error("Connection not supported in getConnection");
     }
   }
 }

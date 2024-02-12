@@ -43,6 +43,7 @@ export default function useProducts(
     withNumExchanges?: boolean;
   }
 ) {
+  const { enabled = true } = options;
   const { config } = useConfigContext();
   const { subgraphUrl, defaultDisputeResolverId } = config.envConfig;
 
@@ -54,8 +55,8 @@ export default function useProducts(
         maxValidUntilDate_gte: now + ""
       }
     : {};
-  const baseProps = useMemo(
-    () => ({
+  const baseProps = useMemo(() => {
+    return {
       ...omit(props, ["productsIds", "quantityAvailable_gte"]),
       productsFirst: OFFERS_PER_PAGE,
       productsFilter: {
@@ -66,20 +67,20 @@ export default function useProducts(
           : undefined,
         ...props.productsFilter
       }
-    }),
-    [props, options, curationLists, defaultDisputeResolverId]
-  );
+    };
+  }, [props, options, curationLists, defaultDisputeResolverId]);
 
   const coreSDK = useCoreSDK();
 
   const { store } = useContext(ConvertionRateContext);
 
   // If id_in or sellerId_in are empty list, then no need to fetch, result is necessarily empty
-  const emptyListFilter =
+  const emptyListFilter = !!(
     (baseProps.productsFilter.id_in &&
       baseProps.productsFilter.id_in?.length === 0) ||
     (baseProps.productsFilter.sellerId_in &&
-      baseProps.productsFilter.sellerId_in?.length === 0);
+      baseProps.productsFilter.sellerId_in?.length === 0)
+  );
 
   const productsVariants = useQuery(
     [
@@ -97,9 +98,7 @@ export default function useProducts(
           ...baseProps.productsFilter
         }
       };
-      const data = emptyListFilter
-        ? []
-        : props.onlyNotVoided
+      const data = props.onlyNotVoided
         ? await coreSDK.getAllProductsWithNotVoidedVariants({ ...newProps })
         : await coreSDK.getAllProductsWithVariants({ ...newProps });
       let loop = data.length === OFFERS_PER_PAGE;
@@ -122,7 +121,7 @@ export default function useProducts(
     },
     {
       ...options,
-      enabled: options.enabled && !!coreSDK,
+      enabled: enabled && !!coreSDK && !emptyListFilter,
       refetchOnWindowFocus: false,
       refetchOnMount: options.refetchOnMount || false
     }

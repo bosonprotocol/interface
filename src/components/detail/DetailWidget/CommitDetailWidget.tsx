@@ -32,7 +32,11 @@ import { CONFIG } from "lib/config";
 import { BosonRoutes } from "lib/routing/routes";
 import { isTruthy } from "lib/types/helpers";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
-import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
+import {
+  useAccount,
+  useChainId,
+  useSigner
+} from "lib/utils/hooks/connection/connection";
 import {
   getItemFromStorage,
   saveItemInStorage
@@ -53,6 +57,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import styled from "styled-components";
 
+import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
 import bosonSnapshotGateAbi from "./BosonSnapshotGate/BosonSnapshotGate.json";
 import { BosonSnapshotGate__factory } from "./BosonSnapshotGate/typechain/factories";
 const StyledRedeemButton = styled(RedeemButton)`
@@ -112,6 +117,9 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   name = "",
   image = ""
 }) => {
+  const connectedChainId = useChainId();
+  const { account } = useAccount();
+  const signer = useSigner();
   const { offer } = selectedVariant;
   const [commitType, setCommitType] = useState<ActionName | undefined | null>(
     null
@@ -125,13 +133,13 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   const addPendingTransaction = useAddPendingTransaction();
   const removePendingTransaction = useRemovePendingTransaction();
   const [, openConnectModal] = useAccountDrawer();
-  const sellerCurationList = useCustomStoreQueryParameter("sellerCurationList");
   const offerCurationList = useCustomStoreQueryParameter("offerCurationList");
+  const curationLists = useCurationLists();
+
   const [
     isCommittingFromNotConnectedWallet,
     setIsCommittingFromNotConnectedWallet
   ] = useState(false);
-  const signer = useSigner();
   const { balance: exchangeTokenBalance, loading: balanceLoading } =
     useExchangeTokenBalance(offer.exchangeToken, {
       enabled: offer.price !== "0"
@@ -228,8 +236,10 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       </BosonButton>
     );
   };
+  const sellerCurationListBetweenCommas =
+    curationLists?.sellerCurationList?.join(",") || "";
   const numSellers = new Set(
-    sellerCurationList
+    sellerCurationListBetweenCommas
       .split(",")
       .map((str) => str.trim())
       .filter(isTruthy)
@@ -444,7 +454,12 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
         licenseTemplate: CONFIG.rNFTLicenseTemplate,
         minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
-        contactSellerForExchangeUrl: ""
+        contactSellerForExchangeUrl: "",
+        sellerCurationListBetweenCommas,
+        withExternalConnectionProps: true,
+        externalConnectedChainId: connectedChainId,
+        externalConnectedAccount: account,
+        externalConnectedSigner: signer
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}

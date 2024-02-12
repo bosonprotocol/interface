@@ -1,10 +1,11 @@
 import {
   exchanges,
   ExternalExchangeDetailView,
+  hooks,
   RedemptionWidgetAction,
   subgraph
 } from "@bosonprotocol/react-kit";
-import { ExtendedExchange } from "@bosonprotocol/react-kit/dist/cjs/hooks/useExchanges";
+import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { MODAL_TYPES } from "components/modal/ModalComponents";
 import { useModal } from "components/modal/useModal";
@@ -20,14 +21,19 @@ import { colors } from "lib/styles/colors";
 import { getHasExchangeDisputeResolutionElapsed } from "lib/utils/exchange";
 import { titleCase } from "lib/utils/formatText";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
-import { useAccount } from "lib/utils/hooks/connection/connection";
+import {
+  useAccount,
+  useChainId,
+  useSigner
+} from "lib/utils/hooks/connection/connection";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { VariantV1 } from "pages/products/types";
 import { ArrowRight, Check } from "phosphor-react";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
+import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
 import {
   ContactSellerButton,
   RaiseProblemButton,
@@ -77,7 +83,7 @@ const NOT_REDEEMED_YET = [
 
 type ExchangeDetailWidgetProps = {
   variant: VariantV1;
-  exchange: ExtendedExchange;
+  exchange: hooks.ExtendedExchange;
 };
 
 export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
@@ -89,7 +95,11 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
   const navigate = useKeepQueryParamsNavigate();
 
   const { config } = useConfigContext();
+  const curationLists = useCurationLists();
+  const connectedChainId = useChainId();
+  const signer = useSigner();
   const { account: address } = useAccount();
+
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isSeller = exchange?.seller.assistant === address?.toLowerCase();
   const isCustomStoreFront =
@@ -119,6 +129,33 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
   );
   const nowDate = dayjs();
 
+  const ButtonWrapper = ({ children }: { children?: JSX.Element }) => {
+    const iframeRef = useRef<HTMLIFrameElement>();
+    const [isIframeLoaded, setIsIframeLoaded] = useState<boolean>(false);
+    const { reload: reloadIframeListener } = hooks.useCallSignerFromIframe({
+      iframeRef,
+      isIframeLoaded,
+      signer,
+      childIframeOrigin: CONFIG.widgetsUrl as `http${string}`
+    });
+    useEffect(() => {
+      // Reload the widget script after rendering the component
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        window.bosonWidgetReload(function onLoadIframe({ iframe }) {
+          iframeRef.current = iframe;
+          setIsIframeLoaded(true);
+          reloadIframeListener();
+        });
+      } catch (e) {
+        console.error(e);
+        Sentry.captureException(e);
+      }
+    }, [reloadIframeListener]);
+    return <>{children}</>;
+  };
+
   const totalHours = voucherRedeemableUntilDate.diff(nowDate, "hours");
   const redeemableDays = Math.floor(totalHours / 24);
   const redeemableHours = totalHours - redeemableDays * 24;
@@ -137,7 +174,13 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
         widgetAction: RedemptionWidgetAction.REDEEM_FORM,
         showRedemptionOverview: true,
         exchangeState: exchange.state,
-        sendDeliveryInfoThroughXMTP: true
+        sendDeliveryInfoThroughXMTP: true,
+        sellerCurationListBetweenCommas:
+          curationLists?.sellerCurationList?.join(",") || "",
+        withExternalConnectionProps: true,
+        externalConnectedChainId: connectedChainId,
+        externalConnectedAccount: address,
+        externalConnectedSigner: signer
       }}
       showBosonLogo={isCustomStoreFront}
       showPriceAsterisk={false}
@@ -210,33 +253,35 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
               Contact seller
             </ContactSellerButton>
             {isBeforeRedeem ? (
-              <>
-                {![
-                  exchanges.ExtendedExchangeState.Expired,
-                  subgraph.ExchangeState.Cancelled,
-                  subgraph.ExchangeState.Revoked,
-                  subgraph.ExchangeState.Completed
-                ].includes(
-                  exchangeStatus as
-                    | exchanges.ExtendedExchangeState
-                    | subgraph.ExchangeState
-                ) && (
-                  <StyledCancelButton
-                    themeVal="blank"
-                    style={{ fontSize: "0.875rem" }}
-                    disabled={!isBuyer}
-                    id="boson-redeem-cancel"
-                    data-exchange-id={exchange?.id}
-                    data-config-id={config.envConfig.configId}
-                    data-account={address}
-                    data-widget-action="CANCEL_FORM"
-                    data-show-redemption-overview={false}
-                    data-parent-origin={window.location.origin}
-                  >
-                    Cancel exchange
-                  </StyledCancelButton>
-                )}
-              </>
+              <ButtonWrapper>
+                <>
+                  {![
+                    exchanges.ExtendedExchangeState.Expired,
+                    subgraph.ExchangeState.Cancelled,
+                    subgraph.ExchangeState.Revoked,
+                    subgraph.ExchangeState.Completed
+                  ].includes(
+                    exchangeStatus as
+                      | exchanges.ExtendedExchangeState
+                      | subgraph.ExchangeState
+                  ) && (
+                    <StyledCancelButton
+                      themeVal="blank"
+                      style={{ fontSize: "0.875rem" }}
+                      disabled={!isBuyer}
+                      id="boson-redeem-cancel"
+                      data-exchange-id={exchange?.id}
+                      data-widget-action="CANCEL_FORM"
+                      data-config-id={config.envConfig.configId}
+                      data-account={address}
+                      data-with-external-signer="true"
+                      data-show-redemption-overview={false}
+                    >
+                      Cancel exchange
+                    </StyledCancelButton>
+                  )}
+                </>
+              </ButtonWrapper>
             ) : (
               <>
                 {!exchange?.disputed && (
@@ -273,30 +318,32 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
       <Grid flexDirection="column" alignItems="center" margin="1.5rem 0">
         {isToRedeem ? (
           <>
-            <RedeemButton
-              variant="primaryFill"
-              size="large"
-              disabled={isRedeemDisabled}
-              id="boson-redeem-redeem"
-              data-exchange-id={exchange?.id}
-              data-widget-action="REDEEM_FORM"
-              data-config-id={config.envConfig.configId}
-              data-account={address}
-              data-with-external-signer="true"
-              withBosonStyle
-              style={{ width: "100%" }}
-            >
-              <span>Redeem</span>
-              <Typography
-                tag="small"
-                fontSize="0.75rem"
-                lineHeight="1.125rem"
-                fontWeight="600"
-                margin="0"
+            <ButtonWrapper>
+              <RedeemButton
+                variant="primaryFill"
+                size="large"
+                disabled={isRedeemDisabled}
+                id="boson-redeem-redeem"
+                data-exchange-id={exchange?.id}
+                data-widget-action="REDEEM_FORM"
+                data-config-id={config.envConfig.configId}
+                data-account={address}
+                data-with-external-signer="true"
+                withBosonStyle
+                style={{ width: "100%" }}
               >
-                Step 2/2
-              </Typography>
-            </RedeemButton>
+                <span>Redeem</span>
+                <Typography
+                  tag="small"
+                  fontSize="0.75rem"
+                  lineHeight="1.125rem"
+                  fontWeight="600"
+                  margin="0"
+                >
+                  Step 2/2
+                </Typography>
+              </RedeemButton>
+            </ButtonWrapper>
             {!isRedeemDisabled && (
               <Typography
                 fontSize="0.8rem"

@@ -61,7 +61,7 @@ interface ChainSelectorProps {
 function useWalletSupportedChains(): ChainId[] {
   const { connector } = useWeb3React();
 
-  const connectionType = getConnection(connector).type;
+  const connectionType = getConnection(connector)?.type;
 
   switch (connectionType) {
     case ConnectionType.WALLET_CONNECT_V2:

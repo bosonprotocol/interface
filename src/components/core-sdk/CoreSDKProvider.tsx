@@ -10,9 +10,6 @@ interface Props {
 export function CoreSDKProvider({ children }: Props) {
   const coreSDK = useProviderCoreSDK() as ExtendedCoreSDK;
 
-  if (!coreSDK.uuid) {
-    coreSDK.uuid = crypto.randomUUID();
-  }
   return (
     <CoreSDKContext.Provider value={coreSDK}>
       {children}
