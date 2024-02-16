@@ -52,6 +52,7 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
   return (
     <StyledExternalOfferFullDescription
       {...props}
+      imagesToShow={3}
       includeGeneralProductDataTab={false}
       defaultSelectedOfferTabsIdTab="physical-product-data"
       withFullViewportWidth={true}
