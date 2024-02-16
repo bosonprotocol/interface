@@ -30,7 +30,11 @@ import {
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
-
+const ObjectContainImage = styled(Image)`
+  > * {
+    object-fit: contain;
+  }
+`;
 const marginBottom = "1rem";
 
 const StyledVariationSelects = styled(VariationSelects)`
@@ -129,7 +133,13 @@ export default function Exchange() {
   }
 
   const { name, offerImg, animationUrl } = getOfferDetails(offer);
-
+  const OfferImage = (
+    <ObjectContainImage
+      src={offerImg || ""}
+      dataTestId="offerImage"
+      alt="Offer"
+    />
+  );
   return (
     <>
       <DetailWrapper>
@@ -141,12 +151,10 @@ export default function Exchange() {
                   src={animationUrl}
                   dataTestId="offerAnimationUrl"
                   videoProps={{ muted: true, loop: true, autoPlay: true }}
-                  componentWhileLoading={() => (
-                    <Image src={offerImg ?? ""} dataTestId="offerImage" />
-                  )}
+                  componentWhileLoading={() => OfferImage}
                 />
               ) : (
-                <Image src={offerImg ?? ""} dataTestId="offerImage" />
+                OfferImage
               )}
               <SellerAndOpenSeaGrid>
                 <SellerID
