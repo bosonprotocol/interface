@@ -4,6 +4,7 @@ import { LoadingMessage } from "components/loading/LoadingMessage";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { styled } from "styled-components";
 
 import {
   DetailWrapper,
@@ -28,7 +29,11 @@ import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
-
+const ObjectContainImage = styled(Image)`
+  > * {
+    object-fit: contain;
+  }
+`;
 export default function ProductDetail() {
   const {
     [UrlParameters.uuid]: productUuid = "",
@@ -121,7 +126,13 @@ export default function ProductDetail() {
   }
 
   const { name, offerImg } = getOfferDetails(selectedOffer);
-
+  const OfferImage = (
+    <ObjectContainImage
+      src={offerImg || ""}
+      dataTestId="offerImage"
+      alt="Offer"
+    />
+  );
   return (
     <DetailWrapper>
       <LightBackground>
@@ -135,12 +146,10 @@ export default function ProductDetail() {
                   loop: true,
                   autoPlay: true
                 }}
-                componentWhileLoading={() => (
-                  <Image src={offerImg || ""} alt="Offer image" />
-                )}
+                componentWhileLoading={() => OfferImage}
               />
             ) : (
-              <Image src={offerImg || ""} dataTestId="offerImage" />
+              OfferImage
             )}
             <SellerAndOpenSeaGrid>
               <SellerID

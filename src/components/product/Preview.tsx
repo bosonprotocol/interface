@@ -22,7 +22,11 @@ import { Typography } from "../ui/Typography";
 import Video from "../ui/Video";
 import { ProductButtonGroup } from "./Product.styles";
 import { usePreviewOffers } from "./utils/usePreviewOffer";
-
+const ObjectContainImage = styled(Image)`
+  > * {
+    object-fit: contain;
+  }
+`;
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
   seller?: subgraph.SellerFieldsFragment;
@@ -145,6 +149,13 @@ export default function Preview({
       })) ?? [])
     ]
   };
+  const OfferImage = (
+    <ObjectContainImage
+      src={thumbnailImg || ""}
+      dataTestId="offerImage"
+      alt="Offer"
+    />
+  );
   return (
     <PreviewWrapper>
       <PreviewWrapperContent>
@@ -157,12 +168,10 @@ export default function Preview({
                     src={animationUrl}
                     dataTestId="offerAnimationUrl"
                     videoProps={{ muted: true, loop: true, autoPlay: true }}
-                    componentWhileLoading={() => (
-                      <Image src={thumbnailImg} dataTestId="offerImage" />
-                    )}
+                    componentWhileLoading={() => OfferImage}
                   />
                 ) : (
-                  <Image src={thumbnailImg} dataTestId="offerImage" />
+                  OfferImage
                 )}
                 <SellerAndOpenSeaGrid>
                   <SellerID
