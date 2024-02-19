@@ -6,6 +6,7 @@ import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { VariantV1 } from "pages/products/types";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { styled } from "styled-components";
 
 import {
   DetailWrapper,
@@ -23,7 +24,11 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import NotFound from "../not-found/NotFound";
-
+const ObjectContainImage = styled(Image)`
+  > * {
+    object-fit: contain;
+  }
+`;
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
 
@@ -89,7 +94,13 @@ export default function OfferDetail() {
   }
 
   const { name, offerImg, animationUrl } = getOfferDetails(offer);
-
+  const OfferImage = (
+    <ObjectContainImage
+      src={offerImg || ""}
+      dataTestId="offerImage"
+      alt="Offer"
+    />
+  );
   return (
     <DetailWrapper>
       <LightBackground>
@@ -100,12 +111,10 @@ export default function OfferDetail() {
                 src={animationUrl}
                 dataTestId="offerAnimationUrl"
                 videoProps={{ muted: true, loop: true, autoPlay: true }}
-                componentWhileLoading={() => (
-                  <Image src={offerImg ?? ""} dataTestId="offerImage" />
-                )}
+                componentWhileLoading={() => OfferImage}
               />
             ) : (
-              <Image src={offerImg ?? ""} dataTestId="offerImage" />
+              OfferImage
             )}
             <SellerAndOpenSeaGrid>
               <SellerID
