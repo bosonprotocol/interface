@@ -230,15 +230,7 @@ export const commonCoreTermsOfSaleValidationSchema = {
     then: () => {
       return Yup.number()
         .required(validationMessage.required)
-        .min(0, "It cannot be negative")
-        .test({
-          message:
-            "It cannot be 0 if the redemption from date is not specified",
-          test: function (value, context) {
-            const { redemptionPeriod } = context.parent;
-            return redemptionPeriod ? true : value !== 0;
-          }
-        });
+        .min(1, "It has to be 1 at least");
     },
     otherwise: Yup.number().min(0, "It must be 0").max(0, "It must be 0")
   })
