@@ -101,7 +101,6 @@ const getProductAnimation = ({ isPhygital }: { isPhygital: boolean }) => ({
         return isPhygital;
       },
       then: (schema) => {
-        console.log({ schema });
         return schema.min(
           1,
           "Either image or video has to be uploaded for the digital items"

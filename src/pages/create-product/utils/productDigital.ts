@@ -8,7 +8,7 @@ import {
 import { CreateProductForm } from "components/product/utils";
 
 export function getItemNFTMetadata(
-  bundleProps: GetProductV1MetadataProps
+  bundleProps: Omit<nftItem.NftItem, "schemaUrl" | "type">
 ): nftItem.NftItem {
   return {
     ...bundleProps,
@@ -71,7 +71,10 @@ export function getDigitalMetadatas({
 }
 
 export function getBundleMetadata(
-  bundleProps: Omit<bundle.BundleMetadata, "type" | "bundleUuid">,
+  bundleProps: Omit<
+    bundle.BundleMetadata,
+    "type" | "bundleUuid" | "schemaUrl" | "items"
+  >,
   itemUrls: string[],
   bundleUuid: string = buildUuid()
 ): bundle.BundleMetadata {

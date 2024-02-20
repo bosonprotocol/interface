@@ -1,0 +1,1 @@
+export const SELLER_DEFAULT_VERSION = 1;

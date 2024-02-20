@@ -41,7 +41,11 @@ import {
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { providers } from "ethers";
-import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
+import {
+  useAccount,
+  useChainId,
+  useSigner
+} from "lib/utils/hooks/connection/connection";
 import { useEffect } from "react";
 
 import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
@@ -83,8 +87,10 @@ import {
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP } from "./utils";
+import { SELLER_DEFAULT_VERSION } from "./utils/const";
 import { extractOfferTimestamps } from "./utils/dataValidator";
 import { getOfferDataFromMetadata } from "./utils/getOfferDataFromMetadata";
+import { getProductItemV1Metadata } from "./utils/getProductItemV1Metadata";
 import { getProductV1Metadata } from "./utils/getProductV1Metadata";
 import { getTermsOfExchange } from "./utils/getTermsOfExchange";
 import {
@@ -143,6 +149,7 @@ function CreateProductInner({
   setCreatedOffersIds,
   isDraftModalClosed
 }: Props) {
+  const chainId = useChainId();
   const signer = useSigner();
   const { config } = useConfigContext();
   const history = useNavigate();
@@ -652,26 +659,9 @@ function CreateProductInner({
           });
         offersToCreate.push(...(await Promise.all(offerDataPromises)));
       } else {
+        // no variants case
         const visualImages = extractVisualImages(productImages);
 
-        const productV1Metadata = await getProductV1Metadata({
-          contactPreference,
-          offerUuid,
-          productInformation,
-          productAnimation,
-          externalUrl,
-          licenseUrl,
-          productMainImageLink,
-          nftAttributes,
-          additionalAttributes,
-          createYourProfile,
-          productType,
-          visualImages,
-          shippingInfo,
-          termsOfExchange,
-          supportedJurisdictions,
-          redemptionPointUrl
-        });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
         const { priceBN, buyerCancellationPenaltyValue, sellerDeposit } =
@@ -680,7 +670,7 @@ function CreateProductInner({
             price,
             decimals
           });
-        const pushOfferData = async (metadata: AnyMetadata) => {
+        const pushOfferData = async (metadata: AnyMetadata): Promise<void> => {
           const offerData = await getOfferDataFromMetadata(metadata, {
             coreSDK,
             config,
@@ -700,6 +690,18 @@ function CreateProductInner({
           offersToCreate.push(offerData);
         };
         if (isPhygital) {
+          const productItemV1Metadata = await getProductItemV1Metadata({
+            offerUuid,
+            productInformation,
+            productAnimation,
+            createYourProfile,
+            productType,
+            visualImages,
+            shippingInfo,
+            termsOfExchange,
+            supportedJurisdictions,
+            redemptionPointUrl
+          });
           let nftMetadataIpfsLinks: string[] = [];
           if (getDoesBundleItemExist(values.productDigital.bundleItems[0])) {
             for (const bundleItem of values.productDigital.bundleItems) {
@@ -708,13 +710,14 @@ function CreateProductInner({
                   contractAddress: bundleItem.contractAddress,
                   tokenId: bundleItem.tokenIdRangeMin
                 });
+                console.log({ tokenUri });
                 for (
                   let bundleItemTokenId = bundleItem.tokenIdRangeMin;
                   bundleItemTokenId <= bundleItem.tokenIdRangeMax;
                   bundleItemTokenId++
                 ) {
                   nftMetadataIpfsLinks.push(
-                    "token id uri for bundleItemTokenId"
+                    tokenUri // "token id uri for bundleItemTokenId"
                   );
                 }
               } else {
@@ -724,7 +727,11 @@ function CreateProductInner({
               }
             }
           } else {
-            const newNftMetadatas = getDigitalMetadatas({} as any);
+            const newNftMetadatas = getDigitalMetadatas({
+              chainId,
+              values,
+              coreSDK
+            });
             nftMetadataIpfsLinks = (
               await Promise.all(
                 newNftMetadatas.map((nftMetadata) => {
@@ -734,20 +741,47 @@ function CreateProductInner({
             ).map((hash) => `ipfs://${hash}`);
           }
           nftMetadataIpfsLinks.push(
-            `ipfs://${await coreSDK.storeMetadata(productV1Metadata)}`
+            `ipfs://${await coreSDK.storeMetadata(productItemV1Metadata)}`
           );
           // 1 bundle for each variant-digital1-digital2-digital3
           // digital1 is nft with tokenId_n1 of contract C1
           // digital2 is nft with tokenId_n2 of contract C1
           // digital3 is nft with tokenId_n1 of contract C2
-          // as this is the no variants flow, it's just 1 bundle with the variant ipfs hash and the digital ipfs hash
+          // as this is the no variants flow, it's just 1 bundle with the variant metadata ipfs hash and the digital metadata ipfs hash
           const bundleMetadata: bundle.BundleMetadata = getBundleMetadata(
-            {},
+            {
+              name: "bundle name no variants", // TODO: where to get these values from?
+              description: "bundle name no variants - description",
+              externalUrl: "externalUrl",
+              licenseUrl: "licenseUrl",
+              seller: {
+                ...(currentAssistant?.metadata || ({} as any)), // TODO: check this,
+                defaultVersion: SELLER_DEFAULT_VERSION
+              }
+            },
             nftMetadataIpfsLinks
           );
-          pushOfferData(bundleMetadata);
+          await pushOfferData(bundleMetadata);
         } else {
-          pushOfferData(productV1Metadata);
+          const productV1Metadata = await getProductV1Metadata({
+            contactPreference,
+            offerUuid,
+            productInformation,
+            productAnimation,
+            externalUrl,
+            licenseUrl,
+            productMainImageLink,
+            nftAttributes,
+            additionalAttributes,
+            createYourProfile,
+            productType,
+            visualImages,
+            shippingInfo,
+            termsOfExchange,
+            supportedJurisdictions,
+            redemptionPointUrl
+          });
+          await pushOfferData(productV1Metadata);
         }
       }
       const isTokenGated = productType?.tokenGatedOffer === "true";

@@ -1,6 +1,8 @@
+import { MetadataType } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { Offer } from "lib/types/offer";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -47,20 +49,37 @@ export default function ProductDetail() {
 
   const product = productResult?.product;
   const variants = productResult?.variants;
+  const bundleSets = productResult?.bundleSets;
   const variantsWithV1 = variants?.filter(
-    ({ offer: { metadata } }) => metadata?.type === "PRODUCT_V1"
+    ({ offer: { metadata } }) =>
+      metadata?.type === MetadataType.PRODUCT_V1.toString()
   ) as VariantV1[] | undefined;
-  const defaultVariant =
-    variantsWithV1?.find((variant) => !variant.offer.voided) ||
-    variantsWithV1?.[0];
+  console.log("variantsWithV1", variantsWithV1, { variants, productResult });
+  const firstBundle = Array.from(bundleSets?.values() || [])?.[0]?.[0]; // TODO: what about the other bundles here?
+  const defaultVariantFromBundle: VariantV1 | undefined = useMemo(() => {
+    if (!firstBundle) {
+      return undefined;
+    }
+    return {
+      offer: firstBundle.bundle.offer as unknown as Offer,
+      variations: firstBundle.variations as VariantV1["variations"]
+    };
+  }, [firstBundle]);
+  const defaultVariant: VariantV1 | undefined =
+    variantsWithV1?.find((variant) => !variant.offer.voided) ??
+    variantsWithV1?.[0] ??
+    defaultVariantFromBundle;
 
   const [selectedVariant, setSelectedVariant] = useState<VariantV1 | undefined>(
     defaultVariant
   );
-  const selectedOffer = selectedVariant?.offer;
+  const selectedOffer: Offer | undefined = selectedVariant?.offer;
 
   const animationUrl = useMemo(
-    () => getOfferAnimationUrl(selectedOffer),
+    () =>
+      selectedOffer?.metadata && "animationUrl" in selectedOffer.metadata
+        ? getOfferAnimationUrl(selectedOffer)
+        : "",
     [selectedOffer]
   );
   const hasVariants =
@@ -170,7 +189,7 @@ export default function ProductDetail() {
                 {name}
               </Typography>
 
-              {hasVariants && (
+              {hasVariants && selectedVariant && (
                 <VariationSelects
                   selectedVariant={selectedVariant}
                   setSelectedVariant={setSelectedVariant}
@@ -178,15 +197,17 @@ export default function ProductDetail() {
                 />
               )}
             </>
-            <CommitDetailWidget
-              selectedVariant={selectedVariant}
-              isPreview={false}
-            />
+            {selectedVariant && (
+              <CommitDetailWidget
+                selectedVariant={selectedVariant}
+                isPreview={false}
+              />
+            )}
           </div>
           <DetailShare />
         </MainDetailGrid>
       </LightBackground>
-      <OfferFullDescription offer={selectedVariant.offer} exchange={null} />
+      <OfferFullDescription offer={selectedOffer} exchange={null} />
     </DetailWrapper>
   );
 }

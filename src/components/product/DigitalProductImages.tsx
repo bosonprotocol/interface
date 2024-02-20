@@ -1,3 +1,4 @@
+import SimpleError from "components/error/SimpleError";
 import bytesToSize from "lib/utils/bytesToSize";
 import { ElementRef, HTMLAttributes } from "react";
 import styled from "styled-components";
@@ -41,7 +42,7 @@ export function DigitalUploadImages({
           //   onLoading={(loading) => setVideoLoading(loading)}
         />
       </FormField>
-      {error}
+      {error && <SimpleError>{error}</SimpleError>}
     </SpaceContainer>
   );
 }

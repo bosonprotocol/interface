@@ -84,9 +84,9 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
             ?.map((bi, index) => {
               if ("name" in bi) {
                 const error =
-                  errors.bundleItemsMedia?.[index] &&
-                  typeof errors.bundleItemsMedia[index] === "string"
-                    ? errors.bundleItemsMedia?.[index]
+                  errors.bundleItemsMedia &&
+                  typeof errors.bundleItemsMedia === "string"
+                    ? errors.bundleItemsMedia
                     : null;
                 return {
                   id: `${bi.name}-${bi.description}-${index}`,
