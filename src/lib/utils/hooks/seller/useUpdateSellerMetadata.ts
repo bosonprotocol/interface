@@ -8,7 +8,6 @@ import {
 } from "../../../../components/modal/components/Profile/const";
 import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
-import { decimalToHex } from "../../number";
 import { removeEmpty } from "../../objects";
 import { useAccount } from "../connection/connection";
 import { useCurrentSellers } from "../useCurrentSellers";
@@ -167,12 +166,6 @@ async function updateSellerMedatata(
   const { metadataUri } = await storeSellerMetadata(meta);
   await updateSeller({
     ...seller,
-    admin: address,
-    authTokenId: values.authTokenId // it's assumed to be in hexadecimal
-      ? values.authTokenId ?? "0"
-      : decimalToHex(+seller.authTokenId) ?? "0",
-    authTokenType:
-      kindUsed === ProfileType.LENS ? AuthTokenType.LENS : AuthTokenType.NONE,
     sellerId: seller.id,
     metadataUri
   });
