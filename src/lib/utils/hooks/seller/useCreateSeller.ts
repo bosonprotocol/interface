@@ -2,6 +2,7 @@ import { TransactionResponse } from "@bosonprotocol/common";
 import {
   accounts,
   CoreSDK,
+  hooks,
   IpfsMetadataStorage
 } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
@@ -17,14 +18,16 @@ type Props = Parameters<typeof createSellerAccount>[1];
 export default function useCreateSeller() {
   const coreSDK = useCoreSDK();
   const storage = useIpfsStorage();
+  const { isMetaTx } = hooks.useMetaTx(coreSDK);
 
   return useMutation((props: Props) => {
-    return createSellerAccount(coreSDK, props, storage);
+    return createSellerAccount(coreSDK, isMetaTx, props, storage);
   });
 }
 
 async function createSellerAccount(
   coreSDK: CoreSDK,
+  isMetaTx: boolean,
   {
     address,
     addressForRoyaltyPayment,
@@ -86,7 +89,7 @@ async function createSellerAccount(
     metadataUri
   };
   let tx: TransactionResponse;
-  if (coreSDK.isMetaTxConfigSet) {
+  if (isMetaTx) {
     // createSeller with meta-transaction
     const nonce = Date.now();
     const { r, s, v, functionName, functionSignature } =

@@ -10,14 +10,16 @@ type Props = Parameters<typeof updateSellerAccount>[1];
 
 export default function useUpdateSeller() {
   const coreSDK = useCoreSDK();
+  const { isMetaTx } = hooks.useMetaTx(coreSDK);
 
   return useMutation(async (props: Props) => {
-    return await updateSellerAccount(coreSDK, props);
+    return await updateSellerAccount(coreSDK, isMetaTx, props);
   });
 }
 
 async function updateSellerAccount(
   coreSDK: CoreSDK,
+  isMetaTx: boolean,
   {
     sellerId,
     admin,
@@ -60,7 +62,7 @@ async function updateSellerAccount(
     return value !== oldSellerValue;
   });
   if (thereAreChanges) {
-    if (coreSDK.isMetaTxConfigSet) {
+    if (isMetaTx) {
       await coreSDK.signMetaTxUpdateSellerAndOptIn(newSeller);
     } else {
       await coreSDK.updateSellerAndOptIn(newSeller);
