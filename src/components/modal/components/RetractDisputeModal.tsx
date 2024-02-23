@@ -5,7 +5,7 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, hooks, Provider, subgraph } from "@bosonprotocol/react-kit";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
@@ -13,7 +13,7 @@ import {
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish, providers } from "ethers";
-import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
+import { useSigner } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import {
   sendAndAddMessageToUI,
@@ -101,7 +101,7 @@ export default function RetractDisputeModal({
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
   const { showModal } = useModal();
-  const { account: address } = useAccount();
+  const { isMetaTx, signerAddress: address } = hooks.useMetaTx(coreSDK);
   const [retractDisputeError, setRetractDisputeError] = useState<Error | null>(
     null
   );
@@ -198,7 +198,6 @@ export default function RetractDisputeModal({
                   xs: "400px"
                 }
               );
-              const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
 
               await sendErrorMessageIfTxFails({
                 sendsTxFn: async () => {

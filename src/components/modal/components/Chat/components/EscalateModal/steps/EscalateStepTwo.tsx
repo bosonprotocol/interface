@@ -5,7 +5,7 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, hooks, Provider, subgraph } from "@bosonprotocol/react-kit";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
@@ -15,7 +15,6 @@ import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, ethers, providers, utils } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import {
-  useAccount,
   useSigner,
   useSignMessage
 } from "lib/utils/hooks/connection/connection";
@@ -203,7 +202,8 @@ function EscalateStepTwo({
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
-  const { account: address } = useAccount();
+  const { isMetaTx: _useMetaTx, signerAddress: address } =
+    hooks.useMetaTx(coreSDK);
   const { isLoading, mutateAsync: signMessage } = useSignMessage();
 
   const threadId = useMemo<ThreadId | null>(() => {
@@ -498,13 +498,11 @@ function EscalateStepTwo({
                             .buyerEscalationDeposit;
                         const exchangeTokenAddress =
                           exchange.offer.exchangeToken.address;
-                        const isMetaTx = Boolean(
-                          coreSDK?.isMetaTxConfigSet &&
-                            address &&
-                            (exchangeTokenAddress !==
-                              ethers.constants.AddressZero ||
-                              BigNumber.from(buyerEscalationDeposit).eq(0))
-                        );
+                        const isMetaTx =
+                          _useMetaTx &&
+                          (exchangeTokenAddress !==
+                            ethers.constants.AddressZero ||
+                            BigNumber.from(buyerEscalationDeposit).eq(0));
                         await handleSendingEscalateMessage();
 
                         await sendErrorMessageIfTxFails({

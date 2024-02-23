@@ -1,6 +1,6 @@
 import { MessageType } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, hooks, Provider, subgraph } from "@bosonprotocol/react-kit";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
@@ -12,7 +12,7 @@ import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
 import { BigNumberish, providers } from "ethers";
 import { Formik } from "formik";
-import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
+import { useSigner } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
@@ -132,8 +132,8 @@ function RaiseDisputePage() {
   const { config } = useConfigContext();
   const { bosonXmtp } = useChatContext();
   const { showModal, hideModal } = useModal();
-  const { account: address } = useAccount();
   const coreSDK = useCoreSDK();
+  const { isMetaTx, signerAddress: address } = hooks.useMetaTx(coreSDK);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const [isRightArrowEnabled, setIsRightArrowEnabled] =
@@ -308,9 +308,6 @@ function RaiseDisputePage() {
                     {
                       xs: "400px"
                     }
-                  );
-                  const isMetaTx = Boolean(
-                    coreSDK?.isMetaTxConfigSet && address
                   );
                   await sendErrorMessageIfTxFails({
                     sendsTxFn: async () => {

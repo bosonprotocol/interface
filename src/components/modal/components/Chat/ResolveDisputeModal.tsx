@@ -6,7 +6,7 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, Provider, subgraph } from "@bosonprotocol/react-kit";
+import { CoreSDK, hooks, Provider, subgraph } from "@bosonprotocol/react-kit";
 import {
   extractUserFriendlyError,
   getHasUserRejectedTx
@@ -14,7 +14,7 @@ import {
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumber, BigNumberish, providers, utils } from "ethers";
-import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
+import { useSigner } from "lib/utils/hooks/connection/connection";
 import { poll } from "lib/utils/promises";
 import {
   sendAndAddMessageToUI,
@@ -125,7 +125,7 @@ export default function ResolveDisputeModal({
   const { bosonXmtp } = useChatContext();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const { account: address } = useAccount();
+  const { isMetaTx, signerAddress: address } = hooks.useMetaTx(coreSDK);
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
       return null;
@@ -249,7 +249,6 @@ export default function ResolveDisputeModal({
                 }
               );
               await handleSendingAcceptProposalMessage();
-              const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
 
               await sendErrorMessageIfTxFails({
                 sendsTxFn: async () => {
