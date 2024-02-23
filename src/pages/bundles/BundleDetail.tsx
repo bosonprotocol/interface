@@ -1,4 +1,3 @@
-import { useEffectDebugger } from "@bosonprotocol/react-kit/dist/cjs/hooks";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
@@ -73,9 +72,6 @@ export default function BundleDetail() {
   const [selectedVariant, setSelectedVariant] = useState<VariantV1 | undefined>(
     defaultVariant
   );
-  useEffectDebugger(() => {
-    //
-  }, [selectedVariant]);
   const selectedOffer: Offer | undefined = selectedVariant?.offer;
   const hasVariants =
     !!variantsWithV1?.length &&
