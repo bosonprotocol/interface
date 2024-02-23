@@ -5,7 +5,7 @@ import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import styled from "styled-components";
 
 import Image from "../../components/ui/Image";
-import SellerID, { Seller } from "../../components/ui/SellerID";
+import SellerID from "../../components/ui/SellerID";
 import { isTruthy } from "../../lib/types/helpers";
 import { useForm } from "../../lib/utils/hooks/useForm";
 import { VariantV1 } from "../../pages/products/types";
@@ -175,8 +175,8 @@ export default function Preview({
                 )}
                 <SellerAndOpenSeaGrid>
                   <SellerID
-                    offer={offer}
-                    buyerOrSeller={offer?.seller as Seller}
+                    offerMetadata={offer.metadata}
+                    accountToShow={offer?.seller}
                     justifyContent="flex-start"
                     withProfileImage
                     onClick={null}

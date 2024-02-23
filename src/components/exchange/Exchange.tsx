@@ -93,7 +93,7 @@ export default function Exchange({
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
-  const imageSrc = getImageUrl(offer.metadata.imageUrl, {
+  const imageSrc = getImageUrl(offer.metadata.imageUrl ?? "", {
     height: 500
   });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");

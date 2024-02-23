@@ -2,6 +2,7 @@ import { lazy } from "react";
 
 import {
   BosonRoutes,
+  BundleRoutes,
   OffersRoutes,
   ProductRoutes,
   SellerCenterRoutes
@@ -19,6 +20,7 @@ const ExchangePage = lazy(() => import("../pages/exchange/Exchange"));
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 const OfferDetailPage = lazy(() => import("../pages/offers/OfferDetail"));
 const ProductDetailPage = lazy(() => import("../pages/products/ProductDetail"));
+const BundleDetailPage = lazy(() => import("../pages/bundles/BundleDetail"));
 const PrivateAccountPage = lazy(
   () => import("../pages/account/private/PrivateAccountContainer")
 );
@@ -197,6 +199,15 @@ export default [
     ...base,
     path: ProductRoutes.ProductDetail,
     component: ProductDetailPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
+  },
+  {
+    ...base,
+    path: BundleRoutes.BundleDetail,
+    component: BundleDetailPage,
     app: {
       ...base.app,
       withBosonStyles: false

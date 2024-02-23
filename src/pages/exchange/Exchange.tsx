@@ -20,13 +20,13 @@ import SellerID from "../../components/ui/SellerID";
 import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useLensProfilesPerSellerIds } from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
   useSellerCurationListFn,
   useSellers
 } from "../../lib/utils/hooks/useSellers";
+import { getOfferDetails } from "../../lib/utils/offer/getOfferDetails";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
@@ -132,7 +132,7 @@ export default function Exchange() {
     return <NotFound />;
   }
 
-  const { name, offerImg, animationUrl } = getOfferDetails(offer);
+  const { name, offerImg, animationUrl } = getOfferDetails(offer.metadata);
   const OfferImage = (
     <ObjectContainImage
       src={offerImg || ""}
@@ -158,8 +158,8 @@ export default function Exchange() {
               )}
               <SellerAndOpenSeaGrid>
                 <SellerID
-                  offer={offer}
-                  buyerOrSeller={exchange?.seller}
+                  offerMetadata={offer.metadata}
+                  accountToShow={exchange?.seller}
                   justifyContent="flex-start"
                   withProfileImage
                   lensProfile={sellerLensProfile}

@@ -135,7 +135,7 @@ export default function ProductCard({
       ? getLensImageUrl(fallbackSellerAvatar, config.lens.ipfsGateway)
       : fallbackSellerAvatar;
   const imageSrc = getImageUrl(
-    offer?.metadata?.image || offer?.metadata?.imageUrl,
+    (offer?.metadata?.image || offer?.metadata?.imageUrl) ?? "",
     { height: 500 }
   );
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");

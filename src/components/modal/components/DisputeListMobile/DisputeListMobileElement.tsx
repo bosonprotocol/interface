@@ -103,8 +103,8 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
       <MessageInfo>
         <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
         <StyledSellerID
-          offer={exchange?.offer}
-          buyerOrSeller={exchange?.offer.seller}
+          offerMetadata={exchange?.offer.metadata}
+          accountToShow={exchange?.offer.seller}
           withProfileImage
           onClick={() => null}
         />

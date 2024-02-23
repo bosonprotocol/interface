@@ -95,8 +95,8 @@ export default function RevokeProduct({
                 <b>{exchange?.offer?.metadata?.name}</b>
               </Typography>
               <SellerID
-                offer={exchange?.offer}
-                buyerOrSeller={exchange?.offer?.seller}
+                offerMetadata={exchange?.offer.metadata}
+                accountToShow={exchange?.offer?.seller}
                 withProfileImage
               />
             </div>

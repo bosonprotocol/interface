@@ -79,8 +79,8 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           <MessageInfo>
             <ExchangeName>{exchange.offer.metadata.name}</ExchangeName>
             <SellerID
-              offer={exchange.offer}
-              buyerOrSeller={exchange.offer.seller}
+              offerMetadata={exchange.offer.metadata}
+              accountToShow={exchange.offer.seller}
               withProfileImage
               onClick={() => null}
             />

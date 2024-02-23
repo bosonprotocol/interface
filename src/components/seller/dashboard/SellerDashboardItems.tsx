@@ -130,8 +130,8 @@ export default function SellerDashboardItems({
               <MessageInfo>
                 <ExchangeName>{item?.offer?.metadata?.name}</ExchangeName>
                 <SellerID
-                  offer={item?.offer}
-                  buyerOrSeller={item?.seller}
+                  offerMetadata={item?.offer.metadata}
+                  accountToShow={item?.seller}
                   withProfileImage
                   onClick={() => null}
                   withBosonStyles

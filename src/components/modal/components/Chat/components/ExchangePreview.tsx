@@ -64,11 +64,14 @@ export default function ExchangePreview({ exchange }: Props) {
                 autoPlay: true
               }}
               componentWhileLoading={() => (
-                <Image src={offer.metadata.imageUrl} alt="Exchange image" />
+                <Image
+                  src={offer.metadata.imageUrl ?? ""}
+                  alt="Exchange image"
+                />
               )}
             />
           ) : (
-            <Image src={offer.metadata.imageUrl} alt="Exchange image" />
+            <Image src={offer.metadata.imageUrl ?? ""} alt="Exchange image" />
           )}
         </ImageWrapper>
         <Grid
@@ -79,8 +82,8 @@ export default function ExchangePreview({ exchange }: Props) {
         >
           <Name>{offer.metadata.name}</Name>
           <SellerID
-            offer={offer}
-            buyerOrSeller={offer?.seller}
+            offerMetadata={offer.metadata}
+            accountToShow={offer?.seller}
             justifyContent="flex-start"
             withProfileImage
             onClick={() => {

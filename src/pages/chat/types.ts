@@ -29,4 +29,4 @@ export type NewProposal = ProposalContent["value"];
 
 export type ProposalItem = ProposalContent["value"]["proposals"][number];
 
-export type BuyerOrSeller = Parameters<typeof SellerID>[0]["buyerOrSeller"];
+export type BuyerOrSeller = Parameters<typeof SellerID>[0]["accountToShow"];

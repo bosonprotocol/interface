@@ -116,8 +116,8 @@ function VoidProductOffer({ offer, single = false }: OfferProps) {
               <OfferVariation color={color} size={size} />
               <div style={{ marginTop: "0.5rem" }}>
                 <SellerID
-                  offer={offer}
-                  buyerOrSeller={offer?.seller}
+                  offerMetadata={offer.metadata}
+                  accountToShow={offer?.seller}
                   withProfileImage
                 />
               </div>

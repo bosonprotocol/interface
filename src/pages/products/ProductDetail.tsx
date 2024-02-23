@@ -17,17 +17,17 @@ import {
 } from "../../components/detail/Detail.style";
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
-import SellerID, { Seller } from "../../components/ui/SellerID";
+import SellerID from "../../components/ui/SellerID";
 import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import {
-  getOfferAnimationUrl,
-  getOfferDetails
-} from "../../lib/utils/getOfferDetails";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
+import {
+  getOfferAnimationUrl,
+  getOfferDetails
+} from "../../lib/utils/offer/getOfferDetails";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
@@ -49,26 +49,14 @@ export default function ProductDetail() {
 
   const product = productResult?.product;
   const variants = productResult?.variants;
-  const bundleSets = productResult?.bundleSets;
   const variantsWithV1 = variants?.filter(
     ({ offer: { metadata } }) =>
       metadata?.type === MetadataType.PRODUCT_V1.toString()
   ) as VariantV1[] | undefined;
-  console.log("variantsWithV1", variantsWithV1, { variants, productResult });
-  const firstBundle = Array.from(bundleSets?.values() || [])?.[0]?.[0]; // TODO: what about the other bundles here?
-  const defaultVariantFromBundle: VariantV1 | undefined = useMemo(() => {
-    if (!firstBundle) {
-      return undefined;
-    }
-    return {
-      offer: firstBundle.bundle.offer as unknown as Offer,
-      variations: firstBundle.variations as VariantV1["variations"]
-    };
-  }, [firstBundle]);
+
   const defaultVariant: VariantV1 | undefined =
     variantsWithV1?.find((variant) => !variant.offer.voided) ??
-    variantsWithV1?.[0] ??
-    defaultVariantFromBundle;
+    variantsWithV1?.[0];
 
   const [selectedVariant, setSelectedVariant] = useState<VariantV1 | undefined>(
     defaultVariant
@@ -78,7 +66,7 @@ export default function ProductDetail() {
   const animationUrl = useMemo(
     () =>
       selectedOffer?.metadata && "animationUrl" in selectedOffer.metadata
-        ? getOfferAnimationUrl(selectedOffer)
+        ? getOfferAnimationUrl(selectedOffer.metadata)
         : "",
     [selectedOffer]
   );
@@ -144,7 +132,7 @@ export default function ProductDetail() {
     return <NotFound />;
   }
 
-  const { name, offerImg } = getOfferDetails(selectedOffer);
+  const { name, offerImg } = getOfferDetails(selectedOffer.metadata);
   const OfferImage = (
     <ObjectContainImage
       src={offerImg || ""}
@@ -172,8 +160,8 @@ export default function ProductDetail() {
             )}
             <SellerAndOpenSeaGrid>
               <SellerID
-                offer={selectedOffer}
-                buyerOrSeller={selectedOffer?.seller as Seller}
+                offerMetadata={selectedOffer.metadata}
+                accountToShow={selectedOffer?.seller}
                 justifyContent="flex-start"
                 withProfileImage
               />

@@ -73,8 +73,8 @@ function CompleteOffer({ offer }: OfferProps) {
                 <b>{offer.metadata?.name}</b>
               </Typography>
               <SellerID
-                offer={offer}
-                buyerOrSeller={offer?.seller}
+                offerMetadata={offer.metadata}
+                accountToShow={offer?.seller}
                 withProfileImage
               />
             </div>

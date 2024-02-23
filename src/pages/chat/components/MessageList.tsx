@@ -256,7 +256,7 @@ export default memo(function MessageList({
             const renderProductImage = () => {
               return (
                 <StyledImage
-                  src={exchange?.offer.metadata.imageUrl}
+                  src={exchange?.offer.metadata.imageUrl ?? ""}
                   alt={"exchange image" + exchange.id}
                   style={{
                     height: "3.125rem",
@@ -304,8 +304,8 @@ export default memo(function MessageList({
                       {exchange.id} - {exchange?.offer.metadata.name}
                     </ExchangeName>
                     <SellerID
-                      offer={exchange?.offer}
-                      buyerOrSeller={buyerOrSellerToShow}
+                      offerMetadata={exchange?.offer.metadata}
+                      accountToShow={buyerOrSellerToShow}
                       withProfileImage
                       onClick={() => null}
                       withBosonStyles={false}

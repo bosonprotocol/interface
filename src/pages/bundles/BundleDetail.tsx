@@ -1,9 +1,15 @@
+import { useEffectDebugger } from "@bosonprotocol/react-kit/dist/cjs/hooks";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
-import useProductByOfferId from "lib/utils/hooks/product/useProductByOfferId";
+import { isTruthy } from "lib/types/helpers";
+import { Offer } from "lib/types/offer";
+import { getProductV1BundleItemsFilter } from "lib/utils/bundle/filter";
+import useBundleByUuid from "lib/utils/hooks/bundles/useBundleByUuid";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { VariantV1 } from "pages/products/types";
+import VariationSelects from "pages/products/VariationSelects";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
@@ -17,44 +23,68 @@ import {
 } from "../../components/detail/Detail.style";
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
-import SellerID, { Seller } from "../../components/ui/SellerID";
+import SellerID from "../../components/ui/SellerID";
 import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
-import { getOfferDetails } from "../../lib/utils/offer/getOfferDetails";
 import NotFound from "../not-found/NotFound";
+// import { VariantV1 } from "./types";
+// import VariationSelects from "./VariationSelects";
 const ObjectContainImage = styled(Image)`
   > * {
     object-fit: contain;
   }
 `;
-export default function OfferDetail() {
-  const { [UrlParameters.offerId]: offerId } = useParams();
-
+export default function BundleDetail() {
   const {
-    data: productResult,
+    [UrlParameters.uuid]: bundleUuid = "",
+    [UrlParameters.sellerId]: sellerId = ""
+  } = useParams();
+  const {
+    data: bundleResult,
     isError,
     isLoading
-  } = useProductByOfferId(offerId || "", { enabled: !!offerId });
+  } = useBundleByUuid(sellerId, bundleUuid, { enabled: !!bundleUuid });
 
-  const variants = productResult?.variants;
-  const variantsWithV1 = variants?.filter(
-    ({ offer: { metadata } }) => metadata?.type === "PRODUCT_V1"
-  ) as VariantV1[] | undefined;
-  const defaultVariant =
-    variantsWithV1?.find((variant) => !variant.offer.voided) ||
+  const variantsWithV1: VariantV1[] | undefined = bundleResult
+    ?.flatMap((bundle) => {
+      const bundleItems = bundle.items;
+      const productV1Items = bundleItems
+        ? getProductV1BundleItemsFilter(bundleItems)
+        : undefined;
+      if (!productV1Items) {
+        return null;
+      }
+      return productV1Items.map(
+        (productV1Item) =>
+          ({
+            variations: productV1Item.variations,
+            offer: bundle.offer
+          } as VariantV1)
+      );
+    })
+    .filter(isTruthy);
+
+  const defaultVariant: VariantV1 | undefined =
+    variantsWithV1?.find((variant) => !variant.offer.voided) ??
     variantsWithV1?.[0];
-  const { offer } = defaultVariant || {};
+
   const [selectedVariant, setSelectedVariant] = useState<VariantV1 | undefined>(
     defaultVariant
   );
+  useEffectDebugger(() => {
+    //
+  }, [selectedVariant]);
+  const selectedOffer: Offer | undefined = selectedVariant?.offer;
+  const hasVariants =
+    !!variantsWithV1?.length &&
+    variantsWithV1.every((variant) => !!variant.variations.length);
   useEffect(() => {
     if (defaultVariant) {
       setSelectedVariant(defaultVariant);
     }
   }, [defaultVariant]);
-  const sellerId = offer?.seller.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
   const isSellerCurated = useMemo(() => {
@@ -63,10 +93,6 @@ export default function OfferDetail() {
     return isSellerInCurationList;
   }, [sellerId, checkIfSellerIsInCurationList]);
 
-  if (!offerId) {
-    return null;
-  }
-
   if (isLoading) {
     return <LoadingMessage />;
   }
@@ -74,29 +100,35 @@ export default function OfferDetail() {
   if (isError) {
     return (
       <EmptyErrorMessage
-        title="Error"
+        title="Error while retrieving this bundle"
         message="There has been an error, please try again later..."
       />
     );
   }
 
-  if (!offer) {
+  if (
+    (!bundleResult && !isLoading && !isError) ||
+    !selectedOffer ||
+    !selectedOffer.metadata
+  ) {
     return (
       <EmptyErrorMessage
-        title="Not found"
-        message="This offer does not exist"
+        title="This bundle does not exist"
+        message="Check if you selected the appropiate chain in the top bar"
       />
     );
   }
 
-  if (!isSellerCurated || !selectedVariant) {
+  if (!isSellerCurated) {
     return <NotFound />;
   }
+  const { name, offerImg, animationUrl, images } = getOfferDetails(
+    selectedOffer.metadata
+  );
 
-  const { name, offerImg, animationUrl } = getOfferDetails(offer.metadata);
   const OfferImage = (
     <ObjectContainImage
-      src={offerImg || ""}
+      src={offerImg || images[0] || ""}
       dataTestId="offerImage"
       alt="Offer"
     />
@@ -109,8 +141,11 @@ export default function OfferDetail() {
             {animationUrl ? (
               <Video
                 src={animationUrl}
-                dataTestId="offerAnimationUrl"
-                videoProps={{ muted: true, loop: true, autoPlay: true }}
+                videoProps={{
+                  muted: true,
+                  loop: true,
+                  autoPlay: true
+                }}
                 componentWhileLoading={() => OfferImage}
               />
             ) : (
@@ -118,8 +153,8 @@ export default function OfferDetail() {
             )}
             <SellerAndOpenSeaGrid>
               <SellerID
-                offer={offer}
-                accountToShow={offer?.seller as Seller}
+                offerMetadata={selectedOffer.metadata}
+                accountToShow={selectedOffer?.seller}
                 justifyContent="flex-start"
                 withProfileImage
               />
@@ -134,17 +169,26 @@ export default function OfferDetail() {
               >
                 {name}
               </Typography>
-            </>
 
-            <CommitDetailWidget
-              selectedVariant={selectedVariant}
-              isPreview={false}
-            />
+              {hasVariants && selectedVariant && variantsWithV1 && (
+                <VariationSelects
+                  selectedVariant={selectedVariant}
+                  setSelectedVariant={setSelectedVariant}
+                  variants={variantsWithV1}
+                />
+              )}
+            </>
+            {selectedVariant && (
+              <CommitDetailWidget
+                selectedVariant={selectedVariant}
+                isPreview={false}
+              />
+            )}
           </div>
           <DetailShare />
         </MainDetailGrid>
       </LightBackground>
-      <OfferFullDescription offer={selectedVariant.offer} exchange={null} />
+      <OfferFullDescription offer={selectedOffer} exchange={null} />
     </DetailWrapper>
   );
 }
