@@ -58,7 +58,7 @@ export function getDigitalMetadatas({
           contract: undefined,
           tokenId: undefined, // nothing to map to in the UI
           tokenIdRange: undefined,
-          quantity: undefined, // nothing to map to in the UI
+          quantity: 1,
           transferMethod: bundleItem.howWillItBeSentToTheBuyer,
           transferDelay: bundleItem.whenWillItBeSentToTheBuyer
         });

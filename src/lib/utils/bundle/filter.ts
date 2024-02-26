@@ -15,3 +15,14 @@ export const getProductV1BundleItemsFilter = (
       item.type === subgraph.ItemMetadataType.ItemProductV1
   );
 };
+
+type NftItem = Extract<BundleItem, { __typename?: "NftItemMetadataEntity" }>;
+export const getNftItemBundleItemsFilter = (
+  items: Pick<BundleItem, "type" | "__typename">[]
+) => {
+  return items.filter(
+    (item): item is NftItem =>
+      item.__typename === "NftItemMetadataEntity" ||
+      item.type === subgraph.ItemMetadataType.ItemNft
+  );
+};
