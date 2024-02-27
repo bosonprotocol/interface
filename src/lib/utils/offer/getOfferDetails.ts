@@ -1,5 +1,10 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
-import { offers, subgraph } from "@bosonprotocol/react-kit";
+import {
+  isBundle,
+  isProductV1,
+  offers,
+  subgraph
+} from "@bosonprotocol/react-kit";
 
 import { Offer } from "../../types/offer";
 import { getProductV1BundleItemsFilter } from "../bundle/filter";
@@ -46,6 +51,7 @@ export const getOfferAnimationUrl = (
 export const getOfferDetails = (
   offerMetadata: Offer["metadata"]
 ): IGetOfferDetails => {
+  const offer = { metadata: offerMetadata };
   const productV1ItemMetadataEntity:
     | (Pick<subgraph.ProductV1MetadataEntity, "shipping"> & {
         product: Pick<
@@ -67,20 +73,18 @@ export const getOfferDetails = (
           "images" | "description"
         > | null;
       })
-    | undefined =
-    offerMetadata?.__typename === "ProductV1MetadataEntity"
-      ? offerMetadata
-      : offerMetadata?.__typename === "BundleMetadataEntity"
-      ? offerMetadata?.items
-        ? getProductV1BundleItemsFilter(offerMetadata.items).map(
-            (productV1ItemMetadataEntity) => ({
-              ...productV1ItemMetadataEntity,
-              productV1Seller:
-                productV1ItemMetadataEntity.product.productV1Seller
-            })
-          )[0]
-        : undefined
-      : undefined;
+    | undefined = isProductV1(offer)
+    ? offer.metadata
+    : isBundle(offer)
+    ? offer.metadata?.items
+      ? getProductV1BundleItemsFilter(offer.metadata.items).map(
+          (productV1ItemMetadataEntity) => ({
+            ...productV1ItemMetadataEntity,
+            productV1Seller: productV1ItemMetadataEntity.product.productV1Seller
+          })
+        )[0]
+      : undefined
+    : undefined;
   const name =
     productV1ItemMetadataEntity?.product?.title ||
     offerMetadata?.name ||

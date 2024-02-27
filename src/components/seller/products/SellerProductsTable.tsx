@@ -6,6 +6,8 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import { NO_EXPIRATION } from "lib/constants/offer";
 import { defaultFontFamily } from "lib/styles/fonts";
 import { formatDate } from "lib/utils/date";
+import { getOfferDetailPage } from "lib/utils/offer/getOfferDetailPage";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import uniqBy from "lodash/uniqBy";
 import {
   CaretDown,
@@ -16,7 +18,6 @@ import {
   WarningCircle
 } from "phosphor-react";
 import { forwardRef, useCallback, useEffect, useMemo, useRef } from "react";
-import { generatePath } from "react-router-dom";
 import {
   CellProps,
   useExpanded,
@@ -28,11 +29,8 @@ import {
 } from "react-table";
 import styled from "styled-components";
 
-import {
-  SellerHubQueryParameters,
-  UrlParameters
-} from "../../../lib/routing/parameters";
-import { ProductRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
+import { SellerHubQueryParameters } from "../../../lib/routing/parameters";
+import { SellerCenterRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
@@ -469,10 +467,20 @@ export default function SellerProductsTable({
               }
             );
           }
+          const uuid =
+            offer?.metadata?.__typename === "ProductV1MetadataEntity"
+              ? offer?.metadata?.product?.uuid
+              : offer?.metadata?.__typename === "BundleMetadataEntity"
+              ? offer.metadata.bundleUuid
+              : "";
+
+          const { offerImg, images } = getOfferDetails(offer?.metadata);
+          const image = offer?.metadata?.image || offerImg || images?.[0] || "";
           return {
+            offer,
             offerStatus: status,
             offerId: offer?.id,
-            uuid: offer?.metadata?.product?.uuid,
+            uuid,
             isSubRow: false,
             subRows: showVariant
               ? (offer?.additional?.variants || [])
@@ -624,7 +632,7 @@ export default function SellerProductsTable({
             warningIcon: shouldDisplayFundWarning(offer?.exchangeToken?.symbol),
             image: (
               <Image
-                src={offer?.metadata?.image ?? ""}
+                src={image}
                 style={{
                   width: "2.5rem",
                   height: "2.5rem",
@@ -637,13 +645,11 @@ export default function SellerProductsTable({
             sku: (
               <Tooltip
                 content={
-                  <Typography fontSize="0.75rem">
-                    {offer?.metadata?.product?.uuid || ""}
-                  </Typography>
+                  <Typography fontSize="0.75rem">{uuid || ""}</Typography>
                 }
               >
                 <Typography fontSize="0.75rem">
-                  {offer?.metadata?.product?.uuid?.substring(0, 4) + "..."}
+                  {uuid?.substring(0, 4) + "..."}
                 </Typography>
               </Tooltip>
             ),
@@ -1096,15 +1102,12 @@ export default function SellerProductsTable({
                             } else if (
                               cell.column.id !== "action" &&
                               cell.column.id !== "selection" &&
-                              cell.column.id !== "status"
+                              cell.column.id !== "status" &&
+                              row?.original.offer
                             ) {
-                              const pathname = generatePath(
-                                ProductRoutes.ProductDetail,
-                                {
-                                  [UrlParameters.uuid]:
-                                    row?.original?.uuid ?? "",
-                                  [UrlParameters.sellerId]: sellerId
-                                }
+                              const pathname: string = getOfferDetailPage(
+                                row?.original.offer,
+                                sellerId
                               );
                               navigate({ pathname });
                             }

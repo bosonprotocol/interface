@@ -1,11 +1,12 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
 import { isTruthy } from "lib/types/helpers";
 import { Offer } from "lib/types/offer";
 import { getProductV1BundleItemsFilter } from "lib/utils/bundle/filter";
-import useBundleByUuid from "lib/utils/hooks/bundles/useBundleByUuid";
 import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
+import { useCoreSDK } from "lib/utils/useCoreSdk";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { VariantV1 } from "pages/products/types";
 import VariationSelects from "pages/products/VariationSelects";
@@ -28,8 +29,7 @@ import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import NotFound from "../not-found/NotFound";
-// import { VariantV1 } from "./types";
-// import VariationSelects from "./VariationSelects";
+
 const ObjectContainImage = styled(Image)`
   > * {
     object-fit: contain;
@@ -40,11 +40,14 @@ export default function BundleDetail() {
     [UrlParameters.uuid]: bundleUuid = "",
     [UrlParameters.sellerId]: sellerId = ""
   } = useParams();
+  const coreSDK = useCoreSDK();
   const {
     data: bundleResult,
     isError,
     isLoading
-  } = useBundleByUuid(sellerId, bundleUuid, { enabled: !!bundleUuid });
+  } = hooks.useBundleByUuid(sellerId, bundleUuid, coreSDK, {
+    enabled: !!bundleUuid
+  });
 
   const variantsWithV1: VariantV1[] | undefined = bundleResult
     ?.flatMap((bundle) => {
@@ -121,7 +124,6 @@ export default function BundleDetail() {
   const { name, offerImg, animationUrl, images } = getOfferDetails(
     selectedOffer.metadata
   );
-
   const OfferImage = (
     <ObjectContainImage
       src={offerImg || images[0] || ""}

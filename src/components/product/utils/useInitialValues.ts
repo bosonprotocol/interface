@@ -1,12 +1,9 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { hooks, subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { isTruthy } from "lib/types/helpers";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
-import useProductByUuid, {
-  ReturnUseProductByUuid
-} from "lib/utils/hooks/product/useProductByUuid";
 import { useCurrentSellers } from "lib/utils/hooks/useCurrentSellers";
 import { didReleaseVersionChange } from "lib/utils/release";
 import { useCoreSDK } from "lib/utils/useCoreSdk";
@@ -82,9 +79,14 @@ export function useInitialValues() {
     return savedProduct;
   }, []);
 
-  const { data: product } = useProductByUuid(sellerId, fromProductUuid, {
-    enabled: !!fromProductUuid && !!sellerId
-  });
+  const { data: product } = hooks.useProductByUuid(
+    sellerId,
+    fromProductUuid,
+    core,
+    {
+      enabled: !!fromProductUuid && !!sellerId
+    }
+  );
 
   const OPTIONS_CURRENCIES = useMemo(
     () => getOptionsCurrencies(config.envConfig),
@@ -144,7 +146,7 @@ export function useInitialValues() {
   } as const;
 }
 function loadExistingProduct<T extends CreateProductForm>(
-  productWithVariants: ReturnUseProductByUuid,
+  productWithVariants: hooks.ReturnUseProductByUuid,
   tokenDecimals: number | undefined,
   cloneBaseValues: T,
   OPTIONS_CURRENCIES: {

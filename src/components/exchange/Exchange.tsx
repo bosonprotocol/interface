@@ -11,6 +11,7 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { CONFIG } from "lib/config";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { CameraSlash } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
 import { generatePath } from "react-router-dom";
@@ -93,9 +94,13 @@ export default function Exchange({
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
-  const imageSrc = getImageUrl(offer.metadata.imageUrl ?? "", {
-    height: 500
-  });
+  const { offerImg, images } = getOfferDetails(offer.metadata);
+  const imageSrc = getImageUrl(
+    (offerImg || offer?.metadata?.imageUrl || images[0]) ?? "",
+    {
+      height: 500
+    }
+  );
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const { account: address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
@@ -240,7 +245,7 @@ export default function Exchange({
         onCardClick={handleOnCardClick}
         dataCard="exchange-card"
         id={offer.id}
-        title={offer.metadata.name}
+        title={offer.metadata?.name || ""}
         avatarName={sellerName}
         avatar={avatar || mockedAvatar}
         imageProps={{

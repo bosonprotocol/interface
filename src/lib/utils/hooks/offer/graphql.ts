@@ -1,176 +1,5 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
-
-const offerGraphQl = gql`
-  {
-    id
-    createdAt
-    price
-    sellerDeposit
-    protocolFee
-    agentFee
-    agentId
-    buyerCancelPenalty
-    quantityAvailable
-    quantityInitial
-    validFromDate
-    validUntilDate
-    voucherRedeemableFromDate
-    voucherRedeemableUntilDate
-    disputePeriodDuration
-    voucherValidDuration
-    resolutionPeriodDuration
-    metadataUri
-    metadataHash
-    voided
-    voidedAt
-    collectionIndex
-    disputeResolverId
-    numberOfCommits
-    numberOfRedemptions
-    condition {
-      id
-      method
-      tokenType
-      tokenAddress
-      gatingType
-      minTokenId
-      maxTokenId
-      threshold
-      maxCommits
-    }
-    exchanges {
-      cancelledDate
-      committedDate
-      completedDate
-      disputedDate
-      finalizedDate
-      redeemedDate
-      revokedDate
-      buyer {
-        id
-      }
-    }
-    seller {
-      id
-      admin
-      treasury
-      assistant
-      active
-    }
-    exchangeToken {
-      address
-      decimals
-      name
-      symbol
-    }
-    disputeResolutionTerms {
-      id
-      disputeResolverId
-      escalationResponsePeriod
-      feeAmount
-      buyerEscalationDeposit
-    }
-    metadata {
-      id
-      name
-      description
-      animationUrl
-      externalUrl
-      licenseUrl
-      schemaUrl
-      type
-      ... on ProductV1MetadataEntity {
-        image
-        attributes {
-          id
-          traitType
-          value
-          displayType
-        }
-        createdAt
-        voided
-        validFromDate
-        validUntilDate
-        uuid
-        product {
-          id
-          uuid
-          version
-          title
-          description
-          identification_sKU
-          identification_productId
-          identification_productIdType
-          productionInformation_brandName
-          productionInformation_manufacturer
-          productionInformation_manufacturerPartNumber
-          productionInformation_modelNumber
-          productionInformation_materials
-          details_category
-          details_subCategory
-          details_subCategory2
-          details_offerCategory
-          offerCategory
-          details_tags
-          details_sections
-          details_personalisation
-          packaging_packageQuantity
-          packaging_dimensions_length
-          packaging_dimensions_width
-          packaging_dimensions_height
-          packaging_dimensions_unit
-          packaging_weight_value
-          packaging_weight_unit
-          tags {
-            name
-          }
-          visuals_images {
-            url
-            type
-            tag
-          }
-        }
-        productV1Seller {
-          id
-          defaultVersion
-          name
-          description
-          externalUrl
-          tokenId
-          images {
-            id
-            url
-            tag
-            type
-          }
-          contactLinks {
-            id
-            url
-            tag
-          }
-        }
-        exchangePolicy {
-          id
-          uuid
-          version
-          label
-          template
-        }
-        shipping {
-          id
-          defaultVersion
-          countryOfOrigin
-          supportedJurisdictions {
-            id
-            label
-            deliveryTime
-          }
-          redemptionPoint
-        }
-      }
-    }
-  }
-`;
 
 export const getBuildGetOffersQuery =
   (defaultDisputeResolverId: string) =>
@@ -206,6 +35,7 @@ export const getBuildGetOffersQuery =
     const disputeResolverId = defaultDisputeResolverId;
 
     return gql`
+    ${subgraph.BaseOfferFieldsFragmentDoc}
   query GetOffers(
     $first: Int
     ${skip ? "$skip: Int" : ""}
@@ -233,7 +63,9 @@ export const getBuildGetOffersQuery =
         }
       }
     ) {
-      offer ${offerGraphQl}
+      offer {
+        ...BaseOfferFields
+      }
     }
   }
 `;

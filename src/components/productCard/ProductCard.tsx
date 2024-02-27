@@ -6,6 +6,8 @@ import {
 import { useConfigContext } from "components/config/ConfigContext";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
+import { getOfferDetailPage } from "lib/utils/offer/getOfferDetailPage";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { CameraSlash, Lock } from "phosphor-react";
 import { useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
@@ -13,11 +15,7 @@ import styled, { css } from "styled-components";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
-import {
-  BosonRoutes,
-  BundleRoutes,
-  ProductRoutes
-} from "../../lib/routing/routes";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
@@ -138,8 +136,9 @@ export default function ProductCard({
     fallbackSellerAvatar && config.lens.ipfsGateway
       ? getLensImageUrl(fallbackSellerAvatar, config.lens.ipfsGateway)
       : fallbackSellerAvatar;
+  const { offerImg, images } = getOfferDetails(offer.metadata);
   const imageSrc = getImageUrl(
-    (offer?.metadata?.image || offer?.metadata?.imageUrl) ?? "",
+    (offerImg || offer?.metadata?.imageUrl || images[0]) ?? "",
     { height: 500 }
   );
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
@@ -168,21 +167,9 @@ export default function ProductCard({
   }, [offer, filterOptions]);
 
   const price = useConvertedPrice(priceValue);
-  console.log("title", offer?.metadata?.name, { offer });
 
   const handleOnCardClick = () => {
-    let pathname: string;
-    if (offer.metadata?.__typename === "BundleMetadataEntity") {
-      pathname = generatePath(BundleRoutes.BundleDetail, {
-        [UrlParameters.sellerId]: offer?.seller?.id,
-        [UrlParameters.uuid]: offer?.metadata.bundleUuid || ""
-      });
-    } else {
-      pathname = generatePath(ProductRoutes.ProductDetail, {
-        [UrlParameters.sellerId]: offer?.seller?.id,
-        [UrlParameters.uuid]: offer?.uuid || ""
-      });
-    }
+    const pathname: string = getOfferDetailPage(offer);
 
     navigate(
       {

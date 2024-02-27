@@ -1,3 +1,4 @@
+import { isProductV1 } from "@bosonprotocol/react-kit";
 import { ExchangeDetailWidget } from "components/detail/DetailWidget/ExchangeDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
@@ -63,8 +64,8 @@ export default function Exchange() {
   );
   const exchange = exchanges?.[0];
   const offer = exchange?.offer;
-  const metadata = offer?.metadata;
-  const variations = metadata?.variations;
+  const variations =
+    offer && isProductV1(offer) ? offer.metadata?.variations : [];
   const hasVariations = !!variations?.length;
   const sellerId = exchange?.seller.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
@@ -132,10 +133,12 @@ export default function Exchange() {
     return <NotFound />;
   }
 
-  const { name, offerImg, animationUrl } = getOfferDetails(offer.metadata);
+  const { name, offerImg, animationUrl, images } = getOfferDetails(
+    offer.metadata
+  );
   const OfferImage = (
     <ObjectContainImage
-      src={offerImg || ""}
+      src={offerImg || images[0] || ""}
       dataTestId="offerImage"
       alt="Offer"
     />

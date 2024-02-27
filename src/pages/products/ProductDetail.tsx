@@ -1,8 +1,9 @@
-import { MetadataType } from "@bosonprotocol/react-kit";
+import { hooks, MetadataType } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
 import { Offer } from "lib/types/offer";
+import { useCoreSDK } from "lib/utils/useCoreSdk";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -21,7 +22,6 @@ import SellerID from "../../components/ui/SellerID";
 import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import {
@@ -41,11 +41,14 @@ export default function ProductDetail() {
     [UrlParameters.uuid]: productUuid = "",
     [UrlParameters.sellerId]: sellerId = ""
   } = useParams();
+  const coreSDK = useCoreSDK();
   const {
     data: productResult,
     isError,
     isLoading
-  } = useProductByUuid(sellerId, productUuid, { enabled: !!productUuid });
+  } = hooks.useProductByUuid(sellerId, productUuid, coreSDK, {
+    enabled: !!productUuid
+  });
 
   const product = productResult?.product;
   const variants = productResult?.variants;

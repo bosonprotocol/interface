@@ -15,7 +15,7 @@ const TagsList = styled.ul`
   list-style-type: none;
   justify-content: flex-start;
 `;
-const TagItem = styled.li<{ $active: boolean; $disabled: boolean }>`
+const TagItem = styled.li<{ $active: boolean; $disabled?: boolean }>`
   border-bottom: ${(props) =>
     props.$active ? `1px solid ${colors.black}` : colors.black};
   color: ${(props) =>
@@ -54,12 +54,7 @@ export default function SellerTags({ tags, currentTag, setCurrentTag }: Props) {
             <TagItem
               key={`seller_tags_${key}`}
               $active={currentTag === tag.value}
-              $disabled={tag.value === "phygital"}
               onClick={() => {
-                // TODO: REMOVE IN FURTHER DEVELOPMENT FOR NOW WE DONT HAVE phygital
-                if (tag.value === "phygital") {
-                  return;
-                }
                 handleChangeTag(tag.value);
               }}
             >
