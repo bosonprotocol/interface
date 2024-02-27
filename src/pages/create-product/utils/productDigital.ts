@@ -1,7 +1,6 @@
 import {
   buildUuid,
   bundle,
-  CoreSDK,
   MetadataType,
   nftItem
 } from "@bosonprotocol/react-kit";
@@ -19,12 +18,10 @@ export function getItemNFTMetadata(
 
 export function getDigitalMetadatas({
   chainId,
-  values,
-  coreSDK
+  values
 }: {
   chainId: number;
   values: CreateProductForm;
-  coreSDK: CoreSDK;
 }) {
   const { productDigital, bundleItemsMedia } = values;
   const attributes: nftItem.NftItem["attributes"] = [

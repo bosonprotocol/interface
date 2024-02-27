@@ -729,8 +729,7 @@ function CreateProductInner({
           } else {
             const newNftMetadatas = getDigitalMetadatas({
               chainId,
-              values,
-              coreSDK
+              values
             });
             nftMetadataIpfsLinks = (
               await Promise.all(

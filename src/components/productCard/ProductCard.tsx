@@ -13,7 +13,11 @@ import styled, { css } from "styled-components";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, ProductRoutes } from "../../lib/routing/routes";
+import {
+  BosonRoutes,
+  BundleRoutes,
+  ProductRoutes
+} from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
@@ -164,14 +168,25 @@ export default function ProductCard({
   }, [offer, filterOptions]);
 
   const price = useConvertedPrice(priceValue);
+  console.log("title", offer?.metadata?.name, { offer });
 
   const handleOnCardClick = () => {
+    let pathname: string;
+    if (offer.metadata?.__typename === "BundleMetadataEntity") {
+      pathname = generatePath(BundleRoutes.BundleDetail, {
+        [UrlParameters.sellerId]: offer?.seller?.id,
+        [UrlParameters.uuid]: offer?.metadata.bundleUuid || ""
+      });
+    } else {
+      pathname = generatePath(ProductRoutes.ProductDetail, {
+        [UrlParameters.sellerId]: offer?.seller?.id,
+        [UrlParameters.uuid]: offer?.uuid || ""
+      });
+    }
+
     navigate(
       {
-        pathname: generatePath(ProductRoutes.ProductDetail, {
-          [UrlParameters.sellerId]: offer?.seller?.id,
-          [UrlParameters.uuid]: offer?.uuid || ""
-        })
+        pathname
       },
       {
         state: {
@@ -234,7 +249,7 @@ export default function ProductCard({
         dataTestId={dataTestId}
         productId={offer?.id}
         onCardClick={handleOnCardClick}
-        title={offer?.metadata?.name}
+        title={offer?.metadata?.name ?? ""}
         avatarName={name ? name : `Seller ID: ${offer.seller.id}`}
         avatar={avatarObj.avatarUrl || fallbackSellerAvatarUrl || mockedAvatar}
         onAvatarError={() => {
