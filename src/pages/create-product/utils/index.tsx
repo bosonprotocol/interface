@@ -1,7 +1,7 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import ConfirmProductDetails from "components/product/confirmProductDetailsPage/ConfirmProductDetails";
 import CoreTermsOfSale from "components/product/coreTermsOfSale/CoreTermsOfSale";
-import { ProductDigital } from "components/product/ProductDigital";
+import { ProductDigital } from "components/product/productDigital/ProductDigital";
 import ProductImages from "components/product/ProductImages";
 import ProductInformation from "components/product/ProductInformation";
 import ProductType from "components/product/ProductType";
@@ -12,11 +12,11 @@ import TokenGating from "components/product/tokenGating/TokenGating";
 import {
   getCoreTermsOfSaleValidationSchema,
   getProductImagesValidationSchema,
+  getProductInformationValidationSchema,
   getProductVariantsImagesValidationSchema,
   getProductVariantsValidationSchema,
   getTokenGatingValidationSchema,
   productDigitalValidationSchema,
-  productInformationValidationSchema,
   productTypeValidationSchema,
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
@@ -92,7 +92,7 @@ export const createProductSteps = ({
         <ProductInformation />
       </>
     ),
-    validation: productInformationValidationSchema,
+    validation: getProductInformationValidationSchema({ isPhygital }),
     helpSection: productInformationHelp
   };
   const productImages = {

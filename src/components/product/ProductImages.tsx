@@ -13,6 +13,8 @@ import { Grid } from "../ui/Grid";
 import { DigitalUploadImages } from "./DigitalProductImages";
 import { PhysicalUploadImages } from "./PhysicalProductImages";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
+import { getBundleItemId } from "./productDigital/getBundleItemId";
+import { getBundleItemName } from "./productDigital/getBundleItemName";
 import {
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
@@ -56,8 +58,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     !hasVariants ||
     values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
   const withTokenGatedImages =
-    values.productType.productType === ProductTypeTypeValues.phygital &&
-    values.productDigital.isNftMintedAlready.value === "false";
+    values.productType.productType === ProductTypeTypeValues.phygital;
   const tabsData = useMemo(() => {
     return [
       ...(oneSetOfImages
@@ -82,25 +83,23 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
       ...(withTokenGatedImages
         ? values.productDigital?.bundleItems
             ?.map((bi, index) => {
-              if ("name" in bi) {
-                const error =
-                  errors.bundleItemsMedia &&
-                  typeof errors.bundleItemsMedia === "string"
-                    ? errors.bundleItemsMedia
-                    : null;
-                return {
-                  id: `${bi.name}-${bi.description}-${index}`,
-                  title: bi.name,
-                  content: (
-                    <DigitalUploadImages
-                      className="digital"
-                      prefix={`bundleItemsMedia[${index}]`}
-                      error={error}
-                    />
-                  )
-                };
-              }
-              return null;
+              const error =
+                errors.bundleItemsMedia &&
+                typeof errors.bundleItemsMedia === "string"
+                  ? errors.bundleItemsMedia
+                  : null;
+              const name = getBundleItemName(bi);
+              return {
+                id: `${getBundleItemId(bi)}-${index}`,
+                title: name,
+                content: (
+                  <DigitalUploadImages
+                    className="digital"
+                    prefix={`bundleItemsMedia[${index}]`}
+                    error={error}
+                  />
+                )
+              };
             })
             .filter(isTruthy) ?? []
         : [])

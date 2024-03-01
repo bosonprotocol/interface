@@ -97,11 +97,7 @@ import {
   getDisputePeriodDurationInMS,
   getResolutionPeriodDurationInMS
 } from "./utils/helpers";
-import {
-  getBundleMetadata,
-  getDigitalMetadatas,
-  getDoesBundleItemExist
-} from "./utils/productDigital";
+import { getBundleMetadata, getDigitalMetadatas } from "./utils/productDigital";
 import { SupportedJuridiction } from "./utils/types";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
@@ -702,43 +698,19 @@ function CreateProductInner({
             supportedJurisdictions,
             redemptionPointUrl
           });
-          let nftMetadataIpfsLinks: string[] = [];
-          if (getDoesBundleItemExist(values.productDigital.bundleItems[0])) {
-            for (const bundleItem of values.productDigital.bundleItems) {
-              if (getDoesBundleItemExist(bundleItem)) {
-                const tokenUri = await coreSDK.erc721TokenUri({
-                  contractAddress: bundleItem.contractAddress,
-                  tokenId: bundleItem.tokenIdRangeMin
-                });
-                console.log({ tokenUri });
-                for (
-                  let bundleItemTokenId = bundleItem.tokenIdRangeMin;
-                  bundleItemTokenId <= bundleItem.tokenIdRangeMax;
-                  bundleItemTokenId++
-                ) {
-                  nftMetadataIpfsLinks.push(
-                    tokenUri // "token id uri for bundleItemTokenId"
-                  );
-                }
-              } else {
-                throw new Error(
-                  "There is a bundle item that is an existing nft and another that is not"
-                );
-              }
-            }
-          } else {
-            const newNftMetadatas = getDigitalMetadatas({
-              chainId,
-              values
-            });
-            nftMetadataIpfsLinks = (
-              await Promise.all(
-                newNftMetadatas.map((nftMetadata) => {
-                  return coreSDK.storeMetadata(nftMetadata);
-                })
-              )
-            ).map((hash) => `ipfs://${hash}`);
-          }
+
+          const newNftMetadatas = getDigitalMetadatas({
+            chainId,
+            values
+          });
+          const nftMetadataIpfsLinks: string[] = (
+            await Promise.all(
+              newNftMetadatas.map((nftMetadata) => {
+                return coreSDK.storeMetadata(nftMetadata);
+              })
+            )
+          ).map((hash) => `ipfs://${hash}`);
+
           nftMetadataIpfsLinks.push(
             `ipfs://${await coreSDK.storeMetadata(productItemV1Metadata)}`
           );
@@ -749,9 +721,9 @@ function CreateProductInner({
           // as this is the no variants flow, it's just 1 bundle with the variant metadata ipfs hash and the digital metadata ipfs hash
           const bundleMetadata: bundle.BundleMetadata = getBundleMetadata(
             {
-              name: "bundle name no variants", // TODO: where to get these values from?
-              description: "bundle name no variants - description",
-              externalUrl: "externalUrl",
+              name: values.productInformation.bundleName ?? "",
+              description: values.productInformation.bundleDescription ?? "",
+              externalUrl: "externalUrl", // TODO: where to get these values from?
               licenseUrl: "licenseUrl",
               seller: {
                 ...(currentAssistant?.metadata || ({} as any)), // TODO: check this,

@@ -1,5 +1,8 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
-import { ProtocolConfig } from "@bosonprotocol/react-kit";
+import {
+  digitalTypeMappingDisplay,
+  ProtocolConfig
+} from "@bosonprotocol/react-kit";
 import countries from "lib/constants/countries.json";
 import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 
@@ -82,12 +85,7 @@ export const CATEGORY_OPTIONS = [
   }
 ] as const;
 
-export const digitalTypeMapping = {
-  "digital-nft": "Digital NFT",
-  "digital-file": "Digital File",
-  experiential: "Experiential"
-};
-export const DIGITAL_TYPE = Object.entries(digitalTypeMapping).map(
+export const DIGITAL_TYPE = Object.entries(digitalTypeMappingDisplay).map(
   ([key, value]) => ({
     value: key,
     label: value

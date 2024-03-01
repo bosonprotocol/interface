@@ -6,7 +6,7 @@ import {
   imagesSpecificOrAllValidationSchema,
   productDigitalValidationSchema,
   ProductImagesValidationSchema,
-  productInformationValidationSchema,
+  ProductInformationValidationSchema,
   productTypeValidationSchema,
   ProductVariantsImagesValidationSchema,
   ProductVariantsValidationSchema,
@@ -25,9 +25,8 @@ export type CreateProfile = CreateYourProfile["createYourProfile"];
 
 export type ProductType = Yup.InferType<typeof productTypeValidationSchema>;
 
-export type ProductInformation = Yup.InferType<
-  typeof productInformationValidationSchema
->;
+export type ProductInformation =
+  Yup.InferType<ProductInformationValidationSchema>;
 
 export type ProductDigital = Yup.InferType<
   typeof productDigitalValidationSchema

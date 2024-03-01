@@ -31,6 +31,7 @@ import { useMemo } from "react";
 import styled from "styled-components";
 
 import { SectionTitle } from "../Product.styles";
+import { getBundleItemName } from "../productDigital/getBundleItemName";
 import {
   ChatDotsIcon,
   CheckIcon,
@@ -373,12 +374,12 @@ export default function ConfirmProductDetails({
                 {values.bundleItemsMedia.map((biMedia, index) => {
                   const bundleItem =
                     values.productDigital?.bundleItems?.[index];
-                  const name =
-                    bundleItem && "name" in bundleItem ? bundleItem.name : "";
+                  const name = getBundleItemName(bundleItem);
                   return (
                     <Grid
                       key={`${biMedia.image?.[0]?.src}-${biMedia.video?.[0]?.src}`}
                       flexDirection="column"
+                      alignItems="initial"
                     >
                       <Typography>{name}</Typography>
                       <SpaceContainer>

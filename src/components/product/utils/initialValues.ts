@@ -44,6 +44,8 @@ export const productTypeInitialValues = {
 
 export const productInformationInitialValues = {
   productInformation: {
+    bundleName: "",
+    bundleDescription: "",
     productTitle: "",
     description: "",
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,10 +71,6 @@ export const productInformationInitialValues = {
 export const productDigitalInitialValues = {
   productDigital: {
     type: undefined as unknown as ProductDigital["productDigital"]["type"],
-    nftType:
-      undefined as unknown as ProductDigital["productDigital"]["nftType"],
-    isNftMintedAlready:
-      undefined as unknown as ProductDigital["productDigital"]["isNftMintedAlready"],
     bundleItems: []
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<keyof ProductDigital["productDigital"], any>
