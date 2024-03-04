@@ -334,11 +334,11 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   };
   const BASE_MODAL_DATA = useMemo(
     () => ({
-      animationUrl: offer.metadata.animationUrl || "",
+      animationUrl: offer.metadata?.animationUrl || "",
       image,
       name
     }),
-    [image, name, offer.metadata.animationUrl]
+    [image, name, offer.metadata?.animationUrl]
   );
   const onCommitSuccess = async (
     _receipt: ethers.providers.TransactionReceipt,
@@ -380,7 +380,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       toast((t) => (
         <SuccessTransactionToast
           t={t}
-          action={`Commit to offer: ${offer.metadata.name}`}
+          action={`Commit to offer: ${offer.metadata?.name || ""}`}
           onViewDetails={() => {
             showDetailWidgetModal();
           }}

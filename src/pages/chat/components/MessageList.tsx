@@ -1,3 +1,4 @@
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { ArrowLeft } from "phosphor-react";
 import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
@@ -252,11 +253,12 @@ export default memo(function MessageList({
               : iAmTheBuyer
               ? exchange?.seller
               : exchange?.buyer;
-            const animationUrl = exchange?.offer.metadata.animationUrl || "";
+            const { mainImage } = getOfferDetails(exchange.offer.metadata);
+            const animationUrl = exchange?.offer.metadata?.animationUrl || "";
             const renderProductImage = () => {
               return (
                 <StyledImage
-                  src={exchange?.offer.metadata.imageUrl ?? ""}
+                  src={exchange?.offer.metadata?.imageUrl || mainImage}
                   alt={"exchange image" + exchange.id}
                   style={{
                     height: "3.125rem",
@@ -301,7 +303,7 @@ export default memo(function MessageList({
 
                   <MessageInfo>
                     <ExchangeName>
-                      {exchange.id} - {exchange?.offer.metadata.name}
+                      {exchange.id} - {exchange?.offer.metadata?.name}
                     </ExchangeName>
                     <SellerID
                       offerMetadata={exchange?.offer.metadata}

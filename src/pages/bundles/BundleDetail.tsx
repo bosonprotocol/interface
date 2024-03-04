@@ -112,7 +112,11 @@ export default function BundleDetail() {
   ) {
     return (
       <EmptyErrorMessage
-        title="This bundle does not exist"
+        title={
+          bundleResult
+            ? "This bundle does not have a physical item"
+            : "This bundle does not exist"
+        }
         message="Check if you selected the appropiate chain in the top bar"
       />
     );
@@ -121,15 +125,11 @@ export default function BundleDetail() {
   if (!isSellerCurated) {
     return <NotFound />;
   }
-  const { name, offerImg, animationUrl, images } = getOfferDetails(
+  const { name, mainImage, animationUrl } = getOfferDetails(
     selectedOffer.metadata
   );
   const OfferImage = (
-    <ObjectContainImage
-      src={offerImg || images[0] || ""}
-      dataTestId="offerImage"
-      alt="Offer"
-    />
+    <ObjectContainImage src={mainImage} dataTestId="offerImage" alt="Offer" />
   );
   return (
     <DetailWrapper>

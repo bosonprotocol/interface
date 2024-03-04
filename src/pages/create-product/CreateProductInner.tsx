@@ -3,6 +3,8 @@ import { TransactionResponse } from "@bosonprotocol/common";
 import {
   AnyMetadata,
   bundle,
+  isBundle,
+  isProductV1,
   offers,
   productV1,
   productV1Item,
@@ -72,7 +74,7 @@ import {
   SellerLandingPageParameters,
   UrlParameters
 } from "../../lib/routing/parameters";
-import { ProductRoutes } from "../../lib/routing/routes";
+import { BundleRoutes, ProductRoutes } from "../../lib/routing/routes";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { saveItemInStorage } from "../../lib/utils/hooks/localstorage/useLocalStorage";
@@ -252,16 +254,28 @@ function CreateProductInner({
       );
     }) || null;
 
-  const onViewMyItem = (id: string | null) => {
+  const onViewMyItem = ({
+    productUuid,
+    bundleUuid
+  }: {
+    productUuid: string | null;
+    bundleUuid: string | null;
+  }) => {
     hideModal();
     setCurrentStepWithHistory(FIRST_STEP);
     setIsPreviewVisible(false);
-    const pathname = id
-      ? generatePath(ProductRoutes.ProductDetail, {
-          [UrlParameters.sellerId]: currentAssistant?.id || null,
-          [UrlParameters.uuid]: id
-        })
-      : generatePath(ProductRoutes.Root);
+    const pathname =
+      productUuid || bundleUuid
+        ? productUuid
+          ? generatePath(ProductRoutes.ProductDetail, {
+              [UrlParameters.sellerId]: currentAssistant?.id || null,
+              [UrlParameters.uuid]: productUuid
+            })
+          : generatePath(BundleRoutes.BundleDetail, {
+              [UrlParameters.sellerId]: currentAssistant?.id || null,
+              [UrlParameters.uuid]: bundleUuid
+            })
+        : generatePath(ProductRoutes.Root);
     navigate({ pathname });
   };
   const handleOpenSuccessModal = async ({
@@ -272,54 +286,46 @@ function CreateProductInner({
     values: CreateProductForm;
   }) => {
     const offerId = offerInfo.id;
-    const metadataInfo = (await coreSDK.getMetadata(
-      offerInfo.metadataUri
-    )) as any;
 
     showModal(
       modalTypes.PRODUCT_CREATE_SUCCESS,
       {
         title: `Offer ${offerId}`,
-        name: metadataInfo.name,
+        name: offerInfo.metadata?.name || "",
         message: "You have successfully created:",
-        image: metadataInfo.image,
+        image:
+          offerInfo.metadata?.image ||
+          values.productImages.thumbnail?.[0].src ||
+          "",
         price: offerInfo.price,
         offer: {
-          id: offerInfo.id,
-          createdAt: offerInfo.createdAt,
-          price: offerInfo.price,
-          sellerDeposit: offerInfo.sellerDeposit,
-          protocolFee: offerInfo.protocolFee,
-          agentFee: offerInfo.agentFee,
-          agentId: offerInfo.agentId,
-          buyerCancelPenalty: offerInfo.buyerCancelPenalty,
-          quantityAvailable: offerInfo.quantityAvailable,
-          quantityInitial: offerInfo.quantityInitial,
-          validFromDate: offerInfo.validFromDate,
-          validUntilDate: offerInfo.validUntilDate,
-          voucherRedeemableFromDate: offerInfo.voucherRedeemableFromDate,
-          voucherRedeemableUntilDate: offerInfo.voucherRedeemableUntilDate,
-          disputePeriodDuration: offerInfo.disputePeriodDuration,
-          voucherValidDuration: offerInfo.voucherValidDuration,
-          resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
-          metadataUri: offerInfo.metadataUri,
-          metadataHash: offerInfo.metadataHash,
-          voidedAt: offerInfo.voidedAt,
-          disputeResolverId: offerInfo.disputeResolverId,
-          seller: offerInfo.seller,
-          exchangeToken: offerInfo.exchangeToken,
+          ...offerInfo,
           metadata: {
+            ...offerInfo.metadata,
             animationUrl: values.productAnimation?.[0]?.src,
             exchangePolicy: {
               label: OPTIONS_EXCHANGE_POLICY[0].label,
               template: OPTIONS_EXCHANGE_POLICY[0].value
             }
           },
-          condition: offerInfo.condition ?? values.tokenGating ?? null
+          condition:
+            offerInfo.condition ?? values.tokenGating.tokenContract
+              ? values.tokenGating ?? null
+              : null
         },
         // these are the ones that we already had before
         onCreateNew: onCreateNew,
-        onViewMyItem: () => onViewMyItem(metadataInfo.product?.uuid)
+        onViewMyItem: () =>
+          onViewMyItem({
+            productUuid:
+              offerInfo.metadata && isProductV1(offerInfo)
+                ? offerInfo.metadata.product?.uuid
+                : null,
+            bundleUuid:
+              offerInfo.metadata && isBundle(offerInfo)
+                ? offerInfo.metadata.bundleUuid
+                : null
+          })
       },
       "auto"
     );
@@ -728,7 +734,9 @@ function CreateProductInner({
               seller: {
                 ...(currentAssistant?.metadata || ({} as any)), // TODO: check this,
                 defaultVersion: SELLER_DEFAULT_VERSION
-              }
+              },
+              image: undefined,
+              imageData: undefined
             },
             nftMetadataIpfsLinks
           );

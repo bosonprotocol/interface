@@ -94,13 +94,10 @@ export default function Exchange({
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
-  const { offerImg, images } = getOfferDetails(offer.metadata);
-  const imageSrc = getImageUrl(
-    (offerImg || offer?.metadata?.imageUrl || images[0]) ?? "",
-    {
-      height: 500
-    }
-  );
+  const { mainImage } = getOfferDetails(offer.metadata);
+  const imageSrc = getImageUrl((mainImage || offer?.metadata?.imageUrl) ?? "", {
+    height: 500
+  });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const { account: address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();

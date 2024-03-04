@@ -133,15 +133,9 @@ export default function Exchange() {
     return <NotFound />;
   }
 
-  const { name, offerImg, animationUrl, images } = getOfferDetails(
-    offer.metadata
-  );
+  const { name, animationUrl, mainImage } = getOfferDetails(offer.metadata);
   const OfferImage = (
-    <ObjectContainImage
-      src={offerImg || images[0] || ""}
-      dataTestId="offerImage"
-      alt="Offer"
-    />
+    <ObjectContainImage src={mainImage} dataTestId="offerImage" alt="Offer" />
   );
   return (
     <>

@@ -18,19 +18,23 @@ interface IShippingInfo {
   shippingTable: Array<ITable>;
 }
 
+type ProductV1ProductSeller = Pick<
+  subgraph.ProductV1MetadataEntity["productV1Seller"],
+  "images" | "description" | "contactLinks"
+>;
+type ProductV1ItemProductSeller = Pick<
+  subgraph.ProductV1ItemMetadataEntity["productV1Seller"],
+  "images" | "description" | "contactLinks"
+>;
+
 type ProductV1OrProductV1ItemSubProductV1Seller =
-  | Pick<
-      subgraph.ProductV1ItemMetadataEntity["productV1Seller"],
-      "images" | "description"
-    >
-  | Pick<
-      subgraph.ProductV1MetadataEntity["productV1Seller"],
-      "images" | "description"
-    >;
+  | ProductV1ProductSeller
+  | ProductV1ItemProductSeller;
 interface IGetOfferDetails {
   display: boolean;
   name: string;
   offerImg: string | undefined;
+  mainImage: string;
   animationUrl: string;
   shippingInfo: IShippingInfo;
   description: string;
@@ -58,20 +62,14 @@ export const getOfferDetails = (
           subgraph.ProductV1MetadataEntity["product"],
           "title" | "description" | "visuals_images"
         >;
-        productV1Seller: Pick<
-          subgraph.ProductV1MetadataEntity["productV1Seller"],
-          "images" | "description"
-        >;
+        productV1Seller: ProductV1ProductSeller;
       })
     | (Pick<subgraph.ProductV1ItemMetadataEntity, "shipping"> & {
         product: Pick<
           subgraph.ProductV1ItemMetadataEntity["product"],
           "title" | "description" | "visuals_images"
         >;
-        productV1Seller?: Pick<
-          subgraph.ProductV1ItemMetadataEntity["productV1Seller"],
-          "images" | "description"
-        > | null;
+        productV1Seller?: ProductV1ItemProductSeller | null;
       })
     | undefined = isProductV1(offer)
     ? offer.metadata
@@ -114,7 +112,7 @@ export const getOfferDetails = (
     productV1ItemMetadataEntity?.product?.visuals_images?.map(
       ({ url }: { url: string }) => url
     ) || [];
-
+  const mainImage = offerImg || images?.[0] || "";
   return {
     display: false,
     name,
@@ -124,6 +122,7 @@ export const getOfferDetails = (
     description,
     artist,
     artistDescription,
-    images
+    images,
+    mainImage
   };
 };

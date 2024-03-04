@@ -474,8 +474,7 @@ export default function SellerProductsTable({
               ? offer.metadata.bundleUuid
               : "";
 
-          const { offerImg, images } = getOfferDetails(offer?.metadata);
-          const image = offer?.metadata?.image || offerImg || images?.[0] || "";
+          const { mainImage } = getOfferDetails(offer?.metadata);
           return {
             offer,
             offerStatus: status,
@@ -632,7 +631,7 @@ export default function SellerProductsTable({
             warningIcon: shouldDisplayFundWarning(offer?.exchangeToken?.symbol),
             image: (
               <Image
-                src={image}
+                src={mainImage}
                 style={{
                   width: "2.5rem",
                   height: "2.5rem",

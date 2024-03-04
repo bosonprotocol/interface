@@ -12,6 +12,7 @@ import {
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { poll } from "lib/utils/promises";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -88,6 +89,8 @@ function VoidProductOffer({ offer, single = false }: OfferProps) {
   )?.attributes?.find(
     (attribute) => attribute?.traitType?.toLowerCase() === "size"
   )?.value;
+  const { mainImage } = getOfferDetails(offer.metadata);
+
   return (
     <>
       <OfferWrapper>
@@ -100,7 +103,7 @@ function VoidProductOffer({ offer, single = false }: OfferProps) {
             flexBasis="0%"
           >
             <Image
-              src={offer?.metadata?.image}
+              src={mainImage}
               showPlaceholderText={false}
               style={{
                 width: "4rem",
@@ -265,7 +268,7 @@ export default function VoidProduct({
         await batchVoidPool(payload.offerIds);
       }
       const text = offer
-        ? `Voided offer: ${offer?.metadata.name}`
+        ? `Voided offer: ${offer?.metadata?.name}`
         : `Voided offers: ${payload.offerIds?.join(",")}`;
       toast((t) => (
         <SuccessTransactionToast

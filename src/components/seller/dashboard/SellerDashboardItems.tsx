@@ -2,6 +2,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { NO_EXPIRATION } from "lib/constants/offer";
 import { formatDate } from "lib/utils/date";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { ArrowRight } from "phosphor-react";
 
 import { CONFIG } from "../../../lib/config";
@@ -121,11 +122,12 @@ export default function SellerDashboardItems({
         )}
         {items.map((item: Exchange) => {
           const itemDate = ItemDates(item, item?.state);
+          const { mainImage } = getOfferDetails(item.offer.metadata);
 
           return (
             <ItemsGrid key={`dashboard_items_${item?.id}`}>
               <OfferImage>
-                <Image src={item?.offer?.metadata?.image} />
+                <Image src={mainImage} />
               </OfferImage>
               <MessageInfo>
                 <ExchangeName>{item?.offer?.metadata?.name}</ExchangeName>

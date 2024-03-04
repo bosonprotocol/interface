@@ -11,6 +11,7 @@ import {
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { BigNumberish } from "ethers";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { poll } from "lib/utils/promises";
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
@@ -53,13 +54,15 @@ interface OfferProps {
 }
 
 function CompleteOffer({ offer }: OfferProps) {
+  const { mainImage } = getOfferDetails(offer.metadata);
+
   return (
     <>
       <CompleteExchangeWrapper>
         <Grid justifyContent="space-between" alignItems="center" gap="1rem">
           <Grid justifyContent="flex-start" gap="1rem" style={{ flex: "1 1" }}>
             <Image
-              src={offer?.metadata?.image}
+              src={mainImage}
               showPlaceholderText={false}
               style={{
                 width: "4rem",
@@ -161,7 +164,7 @@ export default function CompleteExchange({
         toast((t) => (
           <SuccessTransactionToast
             t={t}
-            action={`Completed exchange: ${exchange?.offer.metadata.name}`}
+            action={`Completed exchange: ${exchange?.offer.metadata?.name}`}
             url={config.envConfig.getTxExplorerUrl?.(receipt.transactionHash)}
           />
         ));

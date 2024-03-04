@@ -1,7 +1,9 @@
 import {
   AuthTokenType,
   Currencies,
-  ProductCard as BosonProductCard
+  isBundle,
+  ProductCard as BosonProductCard,
+  ProductType
 } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
@@ -136,11 +138,10 @@ export default function ProductCard({
     fallbackSellerAvatar && config.lens.ipfsGateway
       ? getLensImageUrl(fallbackSellerAvatar, config.lens.ipfsGateway)
       : fallbackSellerAvatar;
-  const { offerImg, images } = getOfferDetails(offer.metadata);
-  const imageSrc = getImageUrl(
-    (offerImg || offer?.metadata?.imageUrl || images[0]) ?? "",
-    { height: 500 }
-  );
+  const { mainImage } = getOfferDetails(offer.metadata);
+  const imageSrc = getImageUrl((mainImage || offer?.metadata?.imageUrl) ?? "", {
+    height: 500
+  });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
@@ -219,6 +220,7 @@ export default function ProductCard({
     color1: colors.accent,
     contrastThreshold: 4
   });
+  const isPhygital = isBundle(offer);
   return (
     <ProductCardWrapper
       $isCustomStoreFront={!!isCustomStoreFront}
@@ -272,6 +274,7 @@ export default function ProductCard({
         }}
         bottomText={handleText}
         isHoverDisabled={isHoverDisabled}
+        productType={isPhygital ? ProductType.phygital : ProductType.physical}
       />
     </ProductCardWrapper>
   );

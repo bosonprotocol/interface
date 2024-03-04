@@ -37,6 +37,7 @@ type OfferFullDescriptionProps = Omit<
   | "onClickBuyOrSwap"
   | "walletConnectProjectId"
   | "includeGeneralProductDataTab"
+  | "includeOverviewTab"
 >;
 
 export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
