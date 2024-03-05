@@ -228,13 +228,14 @@ export const ProductDigital: React.FC = () => {
                   <>
                     {bundleItems.map((_el, index, array) => {
                       const arrayPrefix = `${prefix}bundleItems[${index}].`;
+                      const showDeleteButton = array.length > 1;
                       if (type === digitalTypeMapping["digital-nft"]) {
                         if (isNftMintedAlready) {
                           return (
                             <MintedNftBundleItems
                               key={`minted_nft_container_${index}`}
                               prefix={arrayPrefix}
-                              showDeleteButton={array.length > 1}
+                              showDeleteButton={showDeleteButton}
                               bundleItemsError={bundleItemsError}
                               onClickDelete={() => {
                                 arrayHelpers.remove(index);
@@ -246,7 +247,7 @@ export const ProductDigital: React.FC = () => {
                             <NewNftBundleItems
                               key={`new_nft_container_${index}`}
                               prefix={arrayPrefix}
-                              showDeleteButton={array.length > 1}
+                              showDeleteButton={showDeleteButton}
                               bundleItemsError={bundleItemsError}
                               onClickDelete={() => {
                                 arrayHelpers.remove(index);
@@ -259,7 +260,7 @@ export const ProductDigital: React.FC = () => {
                           <DigitalFileBundleItems
                             key={`digital_file_container_${index}`}
                             prefix={arrayPrefix}
-                            showDeleteButton={array.length > 1}
+                            showDeleteButton={showDeleteButton}
                             bundleItemsError={bundleItemsError}
                             onClickDelete={() => {
                               arrayHelpers.remove(index);
@@ -271,7 +272,7 @@ export const ProductDigital: React.FC = () => {
                           <ExperientialBundleItems
                             key={`experiential_container_${index}`}
                             prefix={arrayPrefix}
-                            showDeleteButton={array.length > 1}
+                            showDeleteButton={showDeleteButton}
                             bundleItemsError={bundleItemsError}
                             onClickDelete={() => {
                               arrayHelpers.remove(index);

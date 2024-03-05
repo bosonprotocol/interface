@@ -5,6 +5,8 @@ import {
   ExchangeCardStatus,
   exchanges,
   hooks,
+  isBundle,
+  ProductType,
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
@@ -235,7 +237,7 @@ export default function Exchange({
         };
     }
   };
-
+  const isPhygital = isBundle(offer);
   return (
     <ExchangeCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <ExchangeCard
@@ -256,6 +258,7 @@ export default function Exchange({
         onAvatarNameClick={handleOnAvatarClick}
         price={Number(price)}
         currency={offer.exchangeToken.symbol as Currencies}
+        productType={isPhygital ? ProductType.phygital : ProductType.physical}
         {...createSpecificCardConfig()}
       />
     </ExchangeCardWrapper>
