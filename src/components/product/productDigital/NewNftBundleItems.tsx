@@ -3,6 +3,7 @@ import { FormField, Input } from "components/form";
 import React from "react";
 import { styled } from "styled-components";
 
+import { newNftInfo } from "../utils";
 import { Delete } from "./styles";
 const NewNftContainer = styled.div`
   width: 100%;
@@ -31,28 +32,38 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
   return (
     <Grid flexDirection="column" marginBottom="4rem">
       <NewNftContainer>
-        <FormField title="Name" required>
-          <Input placeholder="" name={`${prefix}newNftName`} />
-        </FormField>
-        <FormField title="Description" required>
-          <Input placeholder="" name={`${prefix}newNftDescription`} />
-        </FormField>
-        <FormField title="How will it be sent to the buyer?">
+        <FormField title={newNftInfo["newNftName"].displayKey} required>
           <Input
             placeholder=""
-            name={`${prefix}newNftHowWillItBeSentToTheBuyer`}
+            name={`${prefix}${newNftInfo["newNftName"].key}`}
           />
         </FormField>
-        <FormField title="When will it be sent to the buyer?">
+        <FormField title={newNftInfo["newNftDescription"].displayKey} required>
           <Input
             placeholder=""
-            name={`${prefix}newNftWhenWillItBeSentToTheBuyer`}
+            name={`${prefix}${newNftInfo["newNftDescription"].key}`}
           />
         </FormField>
-        <FormField title="Shipping in days">
+        <FormField
+          title={newNftInfo["newNftHowWillItBeSentToTheBuyer"].displayKey}
+        >
           <Input
             placeholder=""
-            name={`${prefix}newNftShippingInDays`}
+            name={`${prefix}${newNftInfo["newNftHowWillItBeSentToTheBuyer"].key}`}
+          />
+        </FormField>
+        <FormField
+          title={newNftInfo["newNftWhenWillItBeSentToTheBuyer"].displayKey}
+        >
+          <Input
+            placeholder=""
+            name={`${prefix}${newNftInfo["newNftWhenWillItBeSentToTheBuyer"].key}`}
+          />
+        </FormField>
+        <FormField title={newNftInfo["newNftShippingInDays"].displayKey}>
+          <Input
+            placeholder=""
+            name={`${prefix}${newNftInfo["newNftShippingInDays"].key}`}
             type="number"
           />
         </FormField>

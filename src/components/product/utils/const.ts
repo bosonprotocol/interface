@@ -106,6 +106,111 @@ export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
 );
 
 export const isNftMintedAlreadyOptions = [...yesOrNoOptions] as const;
+export const newNftInfo = {
+  newNftName: {
+    key: "newNftName",
+    displayKey: "Name"
+  },
+  newNftDescription: {
+    key: "newNftDescription",
+    displayKey: "Description"
+  },
+  newNftHowWillItBeSentToTheBuyer: {
+    key: "newNftHowWillItBeSentToTheBuyer",
+    displayKey: "How will it be sent to the buyer?"
+  },
+  newNftWhenWillItBeSentToTheBuyer: {
+    key: "newNftWhenWillItBeSentToTheBuyer",
+    displayKey: "When will it be sent to the buyer?"
+  },
+  newNftShippingInDays: {
+    key: "newNftShippingInDays",
+    displayKey: "Shipping in days"
+  }
+} as const;
+export const mintedNftInfo = {
+  mintedNftContractAddress: {
+    key: "mintedNftContractAddress",
+    displayKey: "Contract address"
+  },
+  mintedNftTokenIdRangeMin: {
+    key: "mintedNftTokenIdRangeMin",
+    displayKey: "Min token ID"
+  },
+  mintedNftTokenIdRangeMax: {
+    key: "mintedNftTokenIdRangeMax",
+    displayKey: "Max token ID"
+  },
+  mintedNftExternalUrl: {
+    key: "mintedNftExternalUrl",
+    displayKey: "External URL"
+  },
+  mintedNftWhenWillItBeSentToTheBuyer: {
+    key: "mintedNftWhenWillItBeSentToTheBuyer",
+    displayKey: "When will it be sent to the buyer?"
+  },
+  mintedNftShippingInDays: {
+    key: "mintedNftShippingInDays",
+    displayKey: "Shipping in days"
+  }
+} as const;
+export const digitalFileInfo = {
+  digitalFileName: {
+    key: "digitalFileName",
+    displayKey: "Digital file name"
+  },
+  digitalFileDescription: {
+    key: "digitalFileDescription",
+    displayKey: "Digital file description"
+  },
+  digitalFileFormat: {
+    key: "digitalFileFormat",
+    displayKey: "Digital file format"
+  },
+  digitalFileHowWillItBeSentToTheBuyer: {
+    key: "digitalFileHowWillItBeSentToTheBuyer",
+    displayKey: "How will it be sent to the buyer?"
+  },
+  digitalFileWhenWillItBeSentToTheBuyer: {
+    key: "digitalFileWhenWillItBeSentToTheBuyer",
+    displayKey: "When will it be sent to the buyer?"
+  },
+  digitalFileShippingInDays: {
+    key: "digitalFileShippingInDays",
+    displayKey: "Shipping in days"
+  }
+} as const;
+
+export const experientialInfo = {
+  experientialName: {
+    key: "experientialName",
+    displayKey: "Experience name"
+  },
+  experientialDescription: {
+    key: "experientialDescription",
+    displayKey: "Description of experience"
+  },
+  experientialWhatWillTheBuyerReceieve: {
+    key: "experientialWhatWillTheBuyerReceieve",
+    displayKey: "What will the buyer receive in order to access the experience?"
+  },
+  experientialHowCanTheBuyerClaimAttendTheExperience: {
+    key: "experientialHowCanTheBuyerClaimAttendTheExperience",
+    displayKey: "How can a buyer claim / attend the experience?"
+  },
+  experientialHowWillTheBuyerReceiveIt: {
+    key: "experientialHowWillTheBuyerReceiveIt",
+    displayKey: "How will the Buyer receive the access pass?"
+  },
+  experientialWhenWillItBeSentToTheBuyer: {
+    key: "experientialWhenWillItBeSentToTheBuyer",
+    displayKey: "When will it be sent to the buyer?"
+  },
+  experientialShippingInDays: {
+    key: "experientialShippingInDays",
+    displayKey: "Shipping in days"
+  }
+} as const;
 
 export const getOptionsCurrencies = (
   envConfig: ProtocolConfig

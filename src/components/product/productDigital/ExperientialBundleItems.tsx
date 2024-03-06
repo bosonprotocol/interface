@@ -3,6 +3,7 @@ import { FormField, Input } from "components/form";
 import React from "react";
 import { styled } from "styled-components";
 
+import { experientialInfo } from "../utils";
 import { Delete } from "./styles";
 const Wrapper = styled.div`
   width: 100%;
@@ -30,61 +31,78 @@ export const ExperientialBundleItems: React.FC<
     <Grid flexDirection="column" marginBottom="4rem">
       <Wrapper>
         <FormField
-          title="Experience name"
+          title={experientialInfo["experientialName"].displayKey}
           required
           subTitle="Use words people would search for when looking for your item."
         >
           <Input
-            name={`${prefix}experientialName`}
+            name={`${prefix}${experientialInfo["experientialName"].key}`}
             placeholder="Experience name"
           />
         </FormField>
         <FormField
-          title="Description of experience"
+          title={experientialInfo["experientialDescription"].displayKey}
           required
           subTitle="Describe the experience with as much detail as possible."
         >
           <Input
-            name={`${prefix}experientialDescription`}
+            name={`${prefix}${experientialInfo["experientialDescription"].key}`}
             placeholder="Experience description"
           />
         </FormField>
         <FormField
-          title="What will the buyer receive in order to access the experience?"
+          title={
+            experientialInfo["experientialWhatWillTheBuyerReceieve"].displayKey
+          }
           required
           subTitle="Describe it as much as possible"
         >
           <Input
-            name={`${prefix}experientialWhatWillTheBuyerReceieve`}
+            name={`${prefix}${experientialInfo["experientialWhatWillTheBuyerReceieve"].key}`}
             placeholder=""
           />
         </FormField>
         <FormField
-          title="How can a buyer claim / attend the experience?"
+          title={
+            experientialInfo[
+              "experientialHowCanTheBuyerClaimAttendTheExperience"
+            ].displayKey
+          }
           required
           subTitle="Describe it as much as possible"
         >
           <Input
-            name={`${prefix}experientialHowCanTheBuyerClaimAttendTheExperience`}
+            name={`${prefix}${experientialInfo["experientialHowCanTheBuyerClaimAttendTheExperience"].key}`}
             placeholder=""
           />
         </FormField>
-        <FormField title="How will the Buyer receive the access pass?">
+        <FormField
+          title={
+            experientialInfo["experientialHowWillTheBuyerReceiveIt"].displayKey
+          }
+        >
           <Input
             placeholder=""
-            name={`${prefix}experientialHowWillTheBuyerReceiveIt`}
+            name={`${prefix}${experientialInfo["experientialHowWillTheBuyerReceiveIt"].key}`}
           />
         </FormField>
-        <FormField title="When will it be sent to the buyer?">
+        <FormField
+          title={
+            experientialInfo["experientialWhenWillItBeSentToTheBuyer"]
+              .displayKey
+          }
+        >
           <Input
             placeholder=""
-            name={`${prefix}experientialWhenWillItBeSentToTheBuyer`}
+            name={`${prefix}${experientialInfo["experientialWhenWillItBeSentToTheBuyer"].key}`}
           />
         </FormField>
-        <FormField title="Shipping in days">
+        <FormField
+          title={experientialInfo["experientialShippingInDays"].displayKey}
+        >
           <Input
             placeholder=""
-            name={`${prefix}experientialShippingInDays`}
+            name={`${prefix}${experientialInfo["experientialShippingInDays"].key}`}
             type="number"
           />
         </FormField>

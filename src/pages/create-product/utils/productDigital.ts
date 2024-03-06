@@ -12,7 +12,13 @@ import {
   getIsBundleItem,
   NewNFT
 } from "components/product/productDigital/getIsBundleItem";
-import { CreateProductForm } from "components/product/utils";
+import {
+  CreateProductForm,
+  digitalFileInfo,
+  experientialInfo,
+  mintedNftInfo,
+  newNftInfo
+} from "components/product/utils";
 import { isTruthy } from "lib/types/helpers";
 
 export function getItemNFTMetadata(
@@ -24,7 +30,28 @@ export function getItemNFTMetadata(
     type: MetadataType.ITEM_NFT
   };
 }
-
+const newNftTermsKeys = [
+  "newNftHowWillItBeSentToTheBuyer",
+  "newNftWhenWillItBeSentToTheBuyer",
+  "newNftShippingInDays"
+] as const;
+const mintedNftTermsKeys = [
+  "mintedNftWhenWillItBeSentToTheBuyer",
+  "mintedNftShippingInDays"
+] as const;
+const digitalFileTermsKeys = [
+  "digitalFileFormat",
+  "digitalFileHowWillItBeSentToTheBuyer",
+  "digitalFileWhenWillItBeSentToTheBuyer",
+  "digitalFileShippingInDays"
+] as const;
+const experientialTermsKeys = [
+  "experientialWhatWillTheBuyerReceieve",
+  "experientialHowCanTheBuyerClaimAttendTheExperience",
+  "experientialHowWillTheBuyerReceiveIt",
+  "experientialWhenWillItBeSentToTheBuyer",
+  "experientialShippingInDays"
+] as const;
 export function getDigitalMetadatas({
   chainId,
   values
@@ -39,24 +66,24 @@ export function getDigitalMetadatas({
       const image = bundleItemsMedia?.[index]?.image?.[0]?.src;
       const animationUrl = bundleItemsMedia?.[index]?.video?.[0]?.src;
       const quantity = 1;
-      const commonAttributes: nftItem.NftItem["attributes"] = [
+      const attributes: nftItem.NftItem["attributes"] = [
         {
-          traitType: "Type",
-          value: productDigital.type.value
+          traitType: "type",
+          value: productDigital.type.value,
+          displayType: "Type"
         },
         ...(productDigital.type.value === digitalTypeMapping["digital-nft"] &&
         productDigital.nftType.value
           ? [
               {
-                traitType: "NFT type",
-                value: productDigital.nftType.value
+                traitType: "nft-type",
+                value: productDigital.nftType.value,
+                displayType: "NFT type"
               }
             ]
           : [])
       ];
-      // TODO: where to save shipping days? bundleItem.shippingInDays
       if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
-        const attributes: nftItem.NftItem["attributes"] = commonAttributes;
         return getItemNFTMetadata({
           name: bundleItem.newNftName,
           description: bundleItem.newNftDescription,
@@ -75,15 +102,19 @@ export function getDigitalMetadatas({
           tokenId: undefined, // nothing to map to in the UI
           tokenIdRange: undefined,
           quantity,
-          transferMethod: bundleItem.newNftHowWillItBeSentToTheBuyer,
-          transferDelay: bundleItem.newNftWhenWillItBeSentToTheBuyer
+          terms: newNftTermsKeys.map((termKey) => {
+            const { key, displayKey } = newNftInfo[termKey];
+            return {
+              key,
+              displayKey,
+              value: bundleItem[termKey]?.toString() || ""
+            };
+          })
         });
       }
       if (
         getIsBundleItem<ExistingNFT>(bundleItem, "mintedNftContractAddress")
       ) {
-        const attributes: nftItem.NftItem["attributes"] = commonAttributes;
-
         const minTokenId = bundleItem.mintedNftTokenIdRangeMin.toString();
         const maxTokenId = bundleItem.mintedNftTokenIdRangeMax.toString();
         const externalUrl = bundleItem.mintedNftExternalUrl;
@@ -108,13 +139,17 @@ export function getDigitalMetadatas({
             max: maxTokenId
           },
           quantity,
-          transferMethod: undefined,
-          transferDelay: bundleItem.mintedNftShippingInDays?.toString()
+          terms: mintedNftTermsKeys.map((termKey) => {
+            const { key, displayKey } = mintedNftInfo[termKey];
+            return {
+              key,
+              displayKey,
+              value: bundleItem[termKey]?.toString() || ""
+            };
+          })
         });
       }
       if (getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")) {
-        const attributes: nftItem.NftItem["attributes"] = commonAttributes;
-
         return getItemNFTMetadata({
           name: bundleItem.digitalFileName,
           description: bundleItem.digitalFileDescription,
@@ -133,13 +168,17 @@ export function getDigitalMetadatas({
           tokenId: undefined,
           tokenIdRange: undefined,
           quantity,
-          transferMethod: bundleItem.digitalFileHowWillItBeSentToTheBuyer,
-          transferDelay: bundleItem.digitalFileShippingInDays?.toString()
+          terms: digitalFileTermsKeys.map((termKey) => {
+            const { key, displayKey } = digitalFileInfo[termKey];
+            return {
+              key,
+              displayKey,
+              value: bundleItem[termKey]?.toString() || ""
+            };
+          })
         });
       }
       if (getIsBundleItem<Experiential>(bundleItem, "experientialName")) {
-        const attributes: nftItem.NftItem["attributes"] = commonAttributes;
-
         return getItemNFTMetadata({
           name: bundleItem.experientialName,
           description: bundleItem.experientialDescription,
@@ -158,8 +197,14 @@ export function getDigitalMetadatas({
           tokenId: undefined,
           tokenIdRange: undefined,
           quantity,
-          transferMethod: bundleItem.experientialHowWillTheBuyerReceiveIt,
-          transferDelay: bundleItem.experientialShippingInDays?.toString()
+          terms: experientialTermsKeys.map((termKey) => {
+            const { key, displayKey } = experientialInfo[termKey];
+            return {
+              key,
+              displayKey,
+              value: bundleItem[termKey]?.toString() || ""
+            };
+          })
         });
       }
       return null;

@@ -1,5 +1,6 @@
 import {
   getIsOfferExpired,
+  isBundle,
   offers as OffersKit
 } from "@bosonprotocol/react-kit";
 import { subgraph } from "@bosonprotocol/react-kit";
@@ -836,10 +837,15 @@ export default function SellerProductsTable({
                               }
                               navigate({
                                 pathname: SellerCenterRoutes.CreateProduct,
-                                search: {
-                                  [SellerHubQueryParameters.fromProductUuid]:
-                                    offer.uuid
-                                }
+                                search: isBundle(offer)
+                                  ? {
+                                      [SellerHubQueryParameters.fromBundleUuid]:
+                                        offer.metadata.bundleUuid
+                                    }
+                                  : {
+                                      [SellerHubQueryParameters.fromProductUuid]:
+                                        offer.uuid
+                                    }
                               });
                             }}
                           >
