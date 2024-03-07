@@ -66,17 +66,6 @@ import { initialValues as baseValues } from "./initialValues";
 import type { CreateProductForm, ProductImages } from "./types";
 
 const MAIN_KEY = "create-product";
-type SubsetProduct = Omit<
-  subgraph.ProductV1Product,
-  | "disputeResolverId"
-  | "maxValidFromDate"
-  | "maxValidUntilDate"
-  | "minValidFromDate"
-  | "minValidUntilDate"
-  | "sellerId"
-  | "products"
-  | "brand"
->;
 export function useInitialValues() {
   const core = useCoreSDK();
 

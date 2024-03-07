@@ -1,4 +1,4 @@
-import { hooks } from "@bosonprotocol/react-kit";
+import { hooks, PhygitalLabel } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
@@ -136,6 +136,7 @@ export default function BundleDetail() {
       <LightBackground>
         <MainDetailGrid>
           <ImageWrapper>
+            <PhygitalLabel />
             {animationUrl ? (
               <Video
                 src={animationUrl}

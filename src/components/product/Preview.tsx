@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { PhygitalLabel, subgraph } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import map from "lodash/map";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
@@ -21,6 +21,7 @@ import BosonButton from "../ui/BosonButton";
 import { Typography } from "../ui/Typography";
 import Video from "../ui/Video";
 import { ProductButtonGroup } from "./Product.styles";
+import { ProductTypeTypeValues } from "./utils";
 import { usePreviewOffers } from "./utils/usePreviewOffer";
 const ObjectContainImage = styled(Image)`
   > * {
@@ -163,6 +164,8 @@ export default function Preview({
           <LightBackground>
             <MainDetailGrid>
               <ImageWrapper>
+                {values.productType.productType ===
+                  ProductTypeTypeValues.phygital && <PhygitalLabel />}
                 {animationUrl ? (
                   <Video
                     src={animationUrl}
