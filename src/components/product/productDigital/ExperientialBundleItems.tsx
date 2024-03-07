@@ -80,6 +80,7 @@ export const ExperientialBundleItems: React.FC<
           title={
             experientialInfo["experientialHowWillTheBuyerReceiveIt"].displayKey
           }
+          required
         >
           <Input
             placeholder=""
@@ -91,6 +92,7 @@ export const ExperientialBundleItems: React.FC<
             experientialInfo["experientialWhenWillItBeSentToTheBuyer"]
               .displayKey
           }
+          required
         >
           <Input
             placeholder=""
@@ -99,6 +101,7 @@ export const ExperientialBundleItems: React.FC<
         </FormField>
         <FormField
           title={experientialInfo["experientialShippingInDays"].displayKey}
+          required
         >
           <Input
             placeholder=""

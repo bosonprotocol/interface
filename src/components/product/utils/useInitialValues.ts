@@ -529,7 +529,7 @@ function loadExistingProduct<T extends CreateProductForm>(
                       )?.value ?? "",
                     digitalFileShippingInDays: shippingDays
                       ? Number(shippingDays)
-                      : undefined,
+                      : (undefined as unknown as number),
                     digitalFileWhenWillItBeSentToTheBuyer:
                       nftItem.terms?.find(
                         (term) =>
@@ -566,7 +566,7 @@ function loadExistingProduct<T extends CreateProductForm>(
                       )?.value ?? "",
                     experientialShippingInDays: shippingDays
                       ? Number(shippingDays)
-                      : undefined,
+                      : (undefined as unknown as number),
                     experientialWhatWillTheBuyerReceieve:
                       nftItem.terms?.find(
                         (term) =>

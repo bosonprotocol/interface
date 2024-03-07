@@ -78,7 +78,9 @@ interface IImage {
   alt?: string;
   showPlaceholderText?: boolean;
   withLoading?: boolean;
-  optimizationOpts?: Partial<ImageOptimizationOpts>;
+  optimizationOpts?: Partial<ImageOptimizationOpts> & {
+    gateway: string;
+  };
   onSetStatus?: (status: LoadingStatus) => void;
 }
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({

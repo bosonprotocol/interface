@@ -351,9 +351,15 @@ const digitalFileSchema = Yup.array(
     digitalFileName: Yup.string().required(validationMessage.required),
     digitalFileDescription: Yup.string().required(validationMessage.required),
     digitalFileFormat: Yup.string().required(validationMessage.required),
-    digitalFileHowWillItBeSentToTheBuyer: howWillItBeSentToTheBuyer,
-    digitalFileWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer,
-    digitalFileShippingInDays: shippingInDays
+    digitalFileHowWillItBeSentToTheBuyer: howWillItBeSentToTheBuyer.required(
+      validationMessage.required
+    ),
+    digitalFileWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer.required(
+      validationMessage.required
+    ),
+    digitalFileShippingInDays: shippingInDays.required(
+      validationMessage.required
+    )
   })
 )
   .required(validationMessage.required)
@@ -368,9 +374,15 @@ const experientialSchema = Yup.array(
     experientialHowCanTheBuyerClaimAttendTheExperience: Yup.string().required(
       validationMessage.required
     ),
-    experientialHowWillTheBuyerReceiveIt: howWillItBeSentToTheBuyer,
-    experientialWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer,
-    experientialShippingInDays: shippingInDays
+    experientialHowWillTheBuyerReceiveIt: howWillItBeSentToTheBuyer.required(
+      validationMessage.required
+    ),
+    experientialWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer.required(
+      validationMessage.required
+    ),
+    experientialShippingInDays: shippingInDays.required(
+      validationMessage.required
+    )
   })
 )
   .required(validationMessage.required)

@@ -68,6 +68,7 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
           title={
             digitalFileInfo["digitalFileHowWillItBeSentToTheBuyer"].displayKey
           }
+          required
         >
           <Input
             placeholder=""
@@ -78,6 +79,7 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
           title={
             digitalFileInfo["digitalFileWhenWillItBeSentToTheBuyer"].displayKey
           }
+          required
         >
           <Input
             placeholder=""
@@ -86,6 +88,7 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
         </FormField>
         <FormField
           title={digitalFileInfo["digitalFileShippingInDays"].displayKey}
+          required
         >
           <Input
             placeholder=""

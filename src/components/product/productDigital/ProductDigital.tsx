@@ -226,9 +226,12 @@ export const ProductDigital: React.FC = () => {
               <>
                 {render && (
                   <>
-                    {bundleItems.map((_el, index, array) => {
+                    {bundleItems.map((bundleItem, index, array) => {
                       const arrayPrefix = `${prefix}bundleItems[${index}].`;
                       const showDeleteButton = array.length > 1;
+                      if (!bundleItem) {
+                        return null;
+                      }
                       if (type === digitalTypeMapping["digital-nft"]) {
                         if (isNftMintedAlready) {
                           return (
@@ -237,6 +240,7 @@ export const ProductDigital: React.FC = () => {
                               prefix={arrayPrefix}
                               showDeleteButton={showDeleteButton}
                               bundleItemsError={bundleItemsError}
+                              bundleItem={bundleItem as ExistingNFT}
                               onClickDelete={() => {
                                 arrayHelpers.remove(index);
                               }}
