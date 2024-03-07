@@ -1,3 +1,4 @@
+import { digitalTypeMapping } from "@bosonprotocol/react-kit";
 import { isTruthy } from "lib/types/helpers";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
@@ -80,7 +81,12 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
               )
             };
           }) || []),
-      ...(withTokenGatedImages
+      ...(withTokenGatedImages &&
+      ((values.productDigital?.type?.value ===
+        digitalTypeMapping["digital-nft"] &&
+        values.productDigital?.isNftMintedAlready?.value === "false") ||
+        values.productDigital?.type?.value !==
+          digitalTypeMapping["digital-nft"])
         ? values.productDigital?.bundleItems
             ?.map((bi, index) => {
               const error =
@@ -105,10 +111,12 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         : [])
     ];
   }, [
-    values.productDigital?.bundleItems,
-    values.productVariants?.variants,
-    withTokenGatedImages,
     oneSetOfImages,
+    values.productVariants?.variants,
+    values.productDigital?.type?.value,
+    values.productDigital?.isNftMintedAlready?.value,
+    values.productDigital?.bundleItems,
+    withTokenGatedImages,
     errors.bundleItemsMedia
   ]);
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {

@@ -48,6 +48,7 @@ import {
   useChainId,
   useSigner
 } from "lib/utils/hooks/connection/connection";
+import { useForm } from "lib/utils/hooks/useForm";
 import { useEffect } from "react";
 
 import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
@@ -957,6 +958,7 @@ function CreateProductInner({
 
             return (
               <Form onKeyPress={onKeyPress}>
+                <ClearErrorsOnStepChange currentStep={currentStep} />
                 {isPreviewVisible ? (
                   <ErrorBoundary
                     FallbackComponent={({ resetErrorBoundary }) => (
@@ -1003,6 +1005,15 @@ function CreateProductInner({
       </ProductLayoutContainer>
     </CreateProductWrapper>
   );
+}
+
+function ClearErrorsOnStepChange({ currentStep }: { currentStep: number }) {
+  const { setErrors } = useForm();
+  useEffect(() => {
+    setErrors({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]);
+  return null;
 }
 
 export default CreateProductInner;
