@@ -40,6 +40,8 @@ import { isTruthy } from "lib/types/helpers";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
 import React from "react";
 
+import type { ProductDigital as ProductDigitalType } from "../../../components/product/utils/types";
+
 type CreateProductStepsParams = {
   setIsPreviewVisible: React.Dispatch<React.SetStateAction<boolean>>;
   chatInitializationStatus: ChatInitializationStatus;
@@ -49,6 +51,7 @@ type CreateProductStepsParams = {
   isMultiVariant: boolean;
   isPhygital: boolean;
   isTokenGated: boolean;
+  productDigital: ProductDigitalType["productDigital"];
   onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
   isOneSetOfImages: boolean;
   config: DappConfig;
@@ -63,6 +66,7 @@ export const createProductSteps = ({
   isDraftModalClosed,
   isMultiVariant,
   isPhygital,
+  productDigital: productDigitalValues,
   isTokenGated,
   onChangeOneSetOfImages,
   isOneSetOfImages,
@@ -103,8 +107,14 @@ export const createProductSteps = ({
       </>
     ),
     validation: isOneSetOfImages
-      ? getProductImagesValidationSchema({ isPhygital })
-      : getProductVariantsImagesValidationSchema({ isPhygital }),
+      ? getProductImagesValidationSchema({
+          isPhygital,
+          productDigital: productDigitalValues
+        })
+      : getProductVariantsImagesValidationSchema({
+          isPhygital,
+          productDigital: productDigitalValues
+        }),
     helpSection: productImagesHelp
   };
   const coreTermsOfSale = {

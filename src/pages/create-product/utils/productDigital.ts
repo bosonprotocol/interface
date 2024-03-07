@@ -73,7 +73,7 @@ export function getDigitalMetadatas({
           displayType: "Type"
         },
         ...(productDigital.type.value === digitalTypeMapping["digital-nft"] &&
-        productDigital.nftType.value
+        productDigital.nftType?.value
           ? [
               {
                 traitType: "nft-type",
