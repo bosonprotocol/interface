@@ -17,6 +17,7 @@ import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { getBundleItemId } from "./productDigital/getBundleItemId";
 import { getBundleItemName } from "./productDigital/getBundleItemName";
 import {
+  CreateProductForm,
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
   MAX_VIDEO_FILE_SIZE,
@@ -49,6 +50,25 @@ interface Props {
   onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
 }
 const productImagesPrefix = "productImages";
+const getProductImageError = (
+  index: number,
+  errors: ReturnType<typeof useForm<CreateProductForm>>["errors"]
+) => {
+  const error =
+    errors.productImages && typeof errors.productImages === "string"
+      ? errors.productImages
+      : typeof errors.productImages === "object" &&
+        Array.isArray(errors.productImages) &&
+        typeof errors.productImages[index] === "object" &&
+        typeof Object.values(errors.productImages[index])?.[0] === "string"
+      ? (Object.values(errors.productImages[index])?.[0] as string) || ""
+      : typeof errors.productImages === "object" &&
+        typeof Object.values(errors.productImages)?.[0] === "string"
+      ? Object.values(errors.productImages)?.[0]
+      : null;
+  console.log("errors.productImages", errors.productImages);
+  return error;
+};
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const { nextIsDisabled, values, errors } = useForm();
   const [isVideoLoading, setVideoLoading] = useState<boolean>();
@@ -67,7 +87,12 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
             {
               id: "physical-item",
               title: "Physical item",
-              content: <PhysicalUploadImages prefix={productImagesPrefix} />
+              content: (
+                <PhysicalUploadImages
+                  prefix={productImagesPrefix}
+                  error={getProductImageError(0, errors)}
+                />
+              )
             }
           ]
         : values.productVariants?.variants?.map((variant, index) => {
@@ -77,6 +102,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
               content: (
                 <PhysicalUploadImages
                   prefix={`productVariantsImages[${index}].productImages`}
+                  error={getProductImageError(index, errors)}
                 />
               )
             };
@@ -93,6 +119,15 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
                 errors.bundleItemsMedia &&
                 typeof errors.bundleItemsMedia === "string"
                   ? errors.bundleItemsMedia
+                  : typeof errors.bundleItemsMedia === "object" &&
+                    Array.isArray(errors.bundleItemsMedia) &&
+                    typeof errors.bundleItemsMedia[index] === "object" &&
+                    typeof Object.values(
+                      errors.bundleItemsMedia[index]
+                    )?.[0] === "string"
+                  ? (Object.values(
+                      errors.bundleItemsMedia[index]
+                    )?.[0] as string) || ""
                   : null;
               const name = getBundleItemName(bi);
               return {
@@ -111,13 +146,13 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         : [])
     ];
   }, [
+    errors,
     oneSetOfImages,
-    values.productVariants?.variants,
-    values.productDigital?.type?.value,
-    values.productDigital?.isNftMintedAlready?.value,
     values.productDigital?.bundleItems,
-    withTokenGatedImages,
-    errors.bundleItemsMedia
+    values.productDigital?.isNftMintedAlready?.value,
+    values.productDigital?.type?.value,
+    values.productVariants?.variants,
+    withTokenGatedImages
   ]);
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
@@ -168,7 +203,10 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         subTitle={`Use a max. size of ${bytesToSize(MAX_FILE_SIZE)} per image`}
       >
         {oneSetOfImages && !withTokenGatedImages ? (
-          <PhysicalUploadImages prefix={productImagesPrefix} />
+          <PhysicalUploadImages
+            prefix={productImagesPrefix}
+            error={getProductImageError(0, errors)}
+          />
         ) : (
           <StyledTabs tabsData={tabsData} Content={TabsContent} />
         )}

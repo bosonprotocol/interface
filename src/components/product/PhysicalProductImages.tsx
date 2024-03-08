@@ -1,3 +1,4 @@
+import SimpleError from "components/error/SimpleError";
 import { ElementRef, HTMLAttributes } from "react";
 import styled from "styled-components";
 
@@ -21,54 +22,60 @@ const SpaceContainer = styled.div`
 
 export function PhysicalUploadImages({
   prefix,
+  error,
   ...rest
-}: { prefix: string } & HTMLAttributes<ElementRef<"div">>) {
+}: { prefix: string; error: string | null } & HTMLAttributes<
+  ElementRef<"div">
+>) {
   return (
-    <SpaceContainer {...rest}>
-      <div>
-        <Upload
-          name={`${prefix}.thumbnail`}
-          placeholder="Thumbnail"
-          withUpload
-        />
-      </div>
-      <div>
-        <Upload
-          name={`${prefix}.secondary`}
-          placeholder="Secondary"
-          withUpload
-        />
-      </div>
-      <div>
-        <Upload
-          name={`${prefix}.everyAngle`}
-          placeholder="Every angle"
-          withUpload
-        />
-      </div>
-      <div>
-        <Upload name={`${prefix}.details`} placeholder="Details" withUpload />
-      </div>
-      <div>
-        <Upload name={`${prefix}.inUse`} placeholder="In Use" withUpload />
-      </div>
-      <div>
-        <Upload
-          name={`${prefix}.styledScene`}
-          placeholder="Styled Scene"
-          withUpload
-        />
-      </div>
-      <div>
-        <Upload
-          name={`${prefix}.sizeAndScale`}
-          placeholder="Size and scale"
-          withUpload
-        />
-      </div>
-      <div>
-        <Upload name={`${prefix}.more`} placeholder="More" withUpload />
-      </div>
-    </SpaceContainer>
+    <>
+      <SpaceContainer {...rest}>
+        <div>
+          <Upload
+            name={`${prefix}.thumbnail`}
+            placeholder="Thumbnail"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload
+            name={`${prefix}.secondary`}
+            placeholder="Secondary"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload
+            name={`${prefix}.everyAngle`}
+            placeholder="Every angle"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload name={`${prefix}.details`} placeholder="Details" withUpload />
+        </div>
+        <div>
+          <Upload name={`${prefix}.inUse`} placeholder="In Use" withUpload />
+        </div>
+        <div>
+          <Upload
+            name={`${prefix}.styledScene`}
+            placeholder="Styled Scene"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload
+            name={`${prefix}.sizeAndScale`}
+            placeholder="Size and scale"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload name={`${prefix}.more`} placeholder="More" withUpload />
+        </div>
+      </SpaceContainer>
+      {error && <SimpleError>{error}</SimpleError>}
+    </>
   );
 }

@@ -6,6 +6,7 @@ import {
 } from "components/modal/components/Profile/const";
 import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
+import { isTruthy } from "lib/types/helpers";
 import { checkValidUrl, notUrlErrorMessage } from "lib/validation/regex/url";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
@@ -100,43 +101,53 @@ const getProductAnimation = ({
     productDigital?.type?.value === digitalTypeMapping["digital-nft"] &&
     productDigital?.isNftMintedAlready?.value === "true"
       ? Yup.array()
-      : Yup.array(
-          productDigital?.type?.value === digitalTypeMapping["digital-nft"]
-            ? Yup.object({
-                image: validationOfRequiredIpfsImage(),
-                video: validationOfIpfsImage()
-              })
-            : Yup.object({
-                image: validationOfIpfsImage(),
-                video: validationOfIpfsImage()
-              })
-        )
-          // .when("productAnimation", {
-          //   is: () => {
-          //     return isPhygital;
-          //   },
-          //   then: (schema) => {
-          //     return schema.min(
-          //       1,
-          //       "Either image or video has to be uploaded for the digital items"
-          //     );
-          //   },
-          //   otherwise: (schema) => schema
-          // })
-          .test({
-            message:
-              "Either image or video has to be uploaded for the digital items",
-            test: (value, context) => {
-              if (
-                isPhygital &&
-                (value?.length ?? 0) !==
-                  context.parent.productDigital.bundleItems.length
-              ) {
-                return false;
-              }
-              return true;
-            }
+      : productDigital?.type?.value === digitalTypeMapping["digital-nft"]
+      ? Yup.array(
+          Yup.object({
+            image: validationOfRequiredIpfsImage(),
+            video: validationOfIpfsImage()
           })
+        ).test({
+          message: "An image has to be uploaded for the digital items",
+          test: (value, context) => {
+            return !(
+              isPhygital &&
+              (value?.filter((v) => v.image).filter(isTruthy)?.length ?? 0) !==
+                context.parent.productDigital.bundleItems.length
+            );
+          }
+        })
+      : Yup.array(
+          Yup.object({
+            image: validationOfIpfsImage(),
+            video: validationOfIpfsImage()
+          })
+        ).test({
+          message:
+            "Either image or video has to be uploaded for the digital items",
+          test: (value, context) => {
+            if (
+              isPhygital &&
+              (value?.length ?? 0) !==
+                context.parent.productDigital.bundleItems.length
+            ) {
+              return false;
+            }
+            return true;
+          }
+        })
+  // .when("productAnimation", {
+  //   is: () => {
+  //     return isPhygital;
+  //   },
+  //   then: (schema) => {
+  //     return schema.min(
+  //       1,
+  //       "Either image or video has to be uploaded for the digital items"
+  //     );
+  //   },
+  //   otherwise: (schema) => schema
+  // })
 });
 
 export const getProductVariantsValidationSchema = (config: DappConfig) =>

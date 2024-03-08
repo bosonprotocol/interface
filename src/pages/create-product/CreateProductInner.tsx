@@ -909,7 +909,7 @@ function CreateProductInner({
       }
     }
   };
-  console.log("wizardStep.currentValidation", wizardStep.currentValidation);
+
   return (
     <CreateProductWrapper>
       <MultiStepsContainer>

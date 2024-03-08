@@ -1,5 +1,6 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
 import {
+  digitalNftTypeMapping,
   digitalTypeMappingDisplay,
   ProtocolConfig
 } from "@bosonprotocol/react-kit";
@@ -92,12 +93,6 @@ export const DIGITAL_TYPE = Object.entries(digitalTypeMappingDisplay).map(
   })
 );
 
-export const digitalNftTypeMapping = {
-  wearable: "Wearable",
-  image: "Image",
-  event: "Event",
-  other: "Other"
-};
 export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
   ([key, value]) => ({
     value: key,
