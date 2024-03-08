@@ -89,14 +89,13 @@ const testPrice = (config: DappConfig) =>
     }
   };
 
-const getProductAnimation = ({
+const getBundleItemsMedia = ({
   isPhygital,
   productDigital
 }: {
   isPhygital: boolean;
   productDigital: ProductDigital["productDigital"];
 }) => ({
-  productAnimation: validationOfIpfsImage(),
   bundleItemsMedia:
     productDigital?.type?.value === digitalTypeMapping["digital-nft"] &&
     productDigital?.isNftMintedAlready?.value === "true"
@@ -110,11 +109,17 @@ const getProductAnimation = ({
         ).test({
           message: "An image has to be uploaded for the digital items",
           test: (value, context) => {
-            return !(
-              isPhygital &&
-              (value?.filter((v) => v.image).filter(isTruthy)?.length ?? 0) !==
-                context.parent.productDigital.bundleItems.length
-            );
+            const productDigital =
+              context.parent.productDigital ??
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              context.options?.from?.find((from) => from.value.productDigital)
+                ?.value?.productDigital;
+            const isValid = isPhygital
+              ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
+                  ?.length ?? 0) === productDigital.bundleItems.length
+              : true;
+            return isValid;
           }
         })
       : Yup.array(
@@ -126,14 +131,17 @@ const getProductAnimation = ({
           message:
             "Either image or video has to be uploaded for the digital items",
           test: (value, context) => {
-            if (
-              isPhygital &&
-              (value?.length ?? 0) !==
-                context.parent.productDigital.bundleItems.length
-            ) {
-              return false;
-            }
-            return true;
+            const productDigital =
+              context.parent.productDigital ??
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              context.options?.from?.find((from) => from.value.productDigital)
+                ?.value?.productDigital;
+            const isValid = isPhygital
+              ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
+                  ?.length ?? 0) === productDigital.bundleItems.length
+              : true;
+            return isValid;
           }
         })
   // .when("productAnimation", {
@@ -148,6 +156,10 @@ const getProductAnimation = ({
   //   },
   //   otherwise: (schema) => schema
   // })
+});
+
+const getProductAnimation = () => ({
+  productAnimation: validationOfIpfsImage()
 });
 
 export const getProductVariantsValidationSchema = (config: DappConfig) =>
@@ -190,6 +202,19 @@ export type ProductVariantsValidationSchema = ReturnType<
   typeof getProductVariantsValidationSchema
 >;
 
+const getSinglePhysicalProductImagesValidationSchema = () => ({
+  productImages: Yup.object({
+    thumbnail: validationOfRequiredIpfsImage(),
+    secondary: validationOfIpfsImage(),
+    everyAngle: validationOfIpfsImage(),
+    details: validationOfIpfsImage(),
+    inUse: validationOfIpfsImage(),
+    styledScene: validationOfIpfsImage(),
+    sizeAndScale: validationOfIpfsImage(),
+    more: validationOfIpfsImage()
+  }),
+  ...getProductAnimation()
+});
 export const getProductImagesValidationSchema = ({
   isPhygital,
   productDigital
@@ -198,17 +223,8 @@ export const getProductImagesValidationSchema = ({
   productDigital: ProductDigital["productDigital"];
 }) =>
   Yup.object({
-    productImages: Yup.object({
-      thumbnail: validationOfRequiredIpfsImage(),
-      secondary: validationOfIpfsImage(),
-      everyAngle: validationOfIpfsImage(),
-      details: validationOfIpfsImage(),
-      inUse: validationOfIpfsImage(),
-      styledScene: validationOfIpfsImage(),
-      sizeAndScale: validationOfIpfsImage(),
-      more: validationOfIpfsImage()
-    }),
-    ...getProductAnimation({ isPhygital, productDigital })
+    ...getSinglePhysicalProductImagesValidationSchema(),
+    ...getBundleItemsMedia({ isPhygital, productDigital })
   });
 export type ProductImagesValidationSchema = ReturnType<
   typeof getProductImagesValidationSchema
@@ -222,17 +238,17 @@ export const getProductVariantsImagesValidationSchema = ({
   productDigital: ProductDigital["productDigital"];
 }) =>
   Yup.object({
+    ...getBundleItemsMedia({ isPhygital, productDigital }),
     productVariantsImages: Yup.array(
-      Yup.object().concat(
-        getProductImagesValidationSchema({ isPhygital, productDigital })
-      )
+      Yup.object({
+        ...getSinglePhysicalProductImagesValidationSchema()
+      })
     ).test({
       name: "minLength",
       test: function (value) {
         return value?.length === this.parent.productVariants?.variants.length;
       }
-    }),
-    ...getProductAnimation({ isPhygital, productDigital })
+    })
   });
 export type ProductVariantsImagesValidationSchema = ReturnType<
   typeof getProductVariantsImagesValidationSchema
