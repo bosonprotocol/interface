@@ -550,8 +550,8 @@ function CreateProductInner({
         ? `${redemptionPointUrl}/#/bundle-uuid/${currentAssistant.id}/${bundleUuid}`
         : `${redemptionPointUrl}/#/bundle-uuid/${offerUuid}`;
       const bundleLicenseUrl = currentAssistant
-        ? `${window.origin}/#/license/${currentAssistant.id}/${bundleUuid}`
-        : `${window.origin}/#/license/${bundleUuid}`;
+        ? `${window.origin}/#/license-bundle/${currentAssistant.id}/${bundleUuid}`
+        : `${window.origin}/#/license-bundle/${bundleUuid}`;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
       const productAnimation = values.productAnimation?.[0];
