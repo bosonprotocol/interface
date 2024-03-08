@@ -14,7 +14,7 @@ import { getIpfsGatewayUrl } from "../../../lib/utils/ipfs";
 import { SupportedJuridiction } from "./types";
 
 type GetProductItemV1MetadataProps = {
-  offerUuid: string;
+  uuid: string;
   productInformation: CreateProductForm["productInformation"];
   productAnimation: FileProps | undefined;
   createYourProfile: CreateProductForm["createYourProfile"];
@@ -26,7 +26,7 @@ type GetProductItemV1MetadataProps = {
   redemptionPointUrl: string;
 };
 export async function getProductItemV1Metadata({
-  offerUuid,
+  uuid: productItemV1Uuid,
   productInformation,
   productAnimation,
   createYourProfile,
@@ -50,7 +50,7 @@ export async function getProductItemV1Metadata({
 
   return {
     schemaUrl: "https://schema.org/",
-    uuid: offerUuid,
+    uuid: productItemV1Uuid,
     type: MetadataType.ITEM_PRODUCT_V1,
     product: {
       uuid: uuid(),

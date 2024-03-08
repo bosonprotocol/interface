@@ -537,14 +537,21 @@ function CreateProductInner({
       // Be sure the uuid is unique (for all users).
       // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
       const offerUuid = uuid();
+      const bundleUuid = uuid();
 
       // Ddd sellerId in the license and offer-uuid routes (if known)
-      const externalUrl = currentAssistant
+      const offerExternalUrl = currentAssistant
         ? `${redemptionPointUrl}/#/offer-uuid/${currentAssistant.id}/${offerUuid}`
         : `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
-      const licenseUrl = currentAssistant
+      const offerLicenseUrl = currentAssistant
         ? `${window.origin}/#/license/${currentAssistant.id}/${offerUuid}`
         : `${window.origin}/#/license/${offerUuid}`;
+      const bundleExternalUrl = currentAssistant
+        ? `${redemptionPointUrl}/#/bundle-uuid/${currentAssistant.id}/${bundleUuid}`
+        : `${redemptionPointUrl}/#/bundle-uuid/${offerUuid}`;
+      const bundleLicenseUrl = currentAssistant
+        ? `${window.origin}/#/license/${currentAssistant.id}/${bundleUuid}`
+        : `${window.origin}/#/license/${bundleUuid}`;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
       const productAnimation = values.productAnimation?.[0];
@@ -603,49 +610,72 @@ function CreateProductInner({
             });
           }
         }
-        const productV1Metadata = await getProductV1Metadata({
-          contactPreference,
-          offerUuid,
-          productInformation,
-          productAnimation,
-          externalUrl,
-          licenseUrl,
-          productMainImageLink,
-          nftAttributes,
-          additionalAttributes,
-          createYourProfile,
-          productType,
-          visualImages,
-          shippingInfo,
-          termsOfExchange,
-          supportedJurisdictions,
-          redemptionPointUrl
-        });
-        const metadatas = productV1.createVariantProductMetadata(
-          productV1Metadata,
-          variantsForMetadataCreation
-        );
-
-        if (!isOneSetOfImages) {
-          // fix main variant image as it should be the variant's thumbnail
-          metadatas.forEach((variantMetadata, index) => {
-            const productImages =
-              productVariantsImages?.[Number(index)]?.productImages;
-            if (productImages?.thumbnail?.[0]?.src) {
-              variantMetadata.image = productImages.thumbnail[0].src;
-            } else {
-              // this else clause should never occur
-              if (variantMetadata.productOverrides?.visuals_images?.[0]?.url) {
-                variantMetadata.image =
-                  variantMetadata.productOverrides?.visuals_images[0].url;
-              }
-            }
+        let metadatas: AnyMetadata[];
+        if (isPhygital) {
+          const productItemV1Metadata = await getProductItemV1Metadata({
+            uuid: bundleUuid,
+            productInformation,
+            productAnimation,
+            createYourProfile,
+            productType,
+            visualImages,
+            shippingInfo,
+            termsOfExchange,
+            supportedJurisdictions,
+            redemptionPointUrl
           });
+          metadatas = productV1Item.createVariantProductItem(
+            productItemV1Metadata,
+            variantsForMetadataCreation
+          );
+        } else {
+          const productV1Metadata = await getProductV1Metadata({
+            contactPreference,
+            offerUuid,
+            productInformation,
+            productAnimation,
+            externalUrl: offerExternalUrl,
+            licenseUrl: offerLicenseUrl,
+            productMainImageLink,
+            nftAttributes,
+            additionalAttributes,
+            createYourProfile,
+            productType,
+            visualImages,
+            shippingInfo,
+            termsOfExchange,
+            supportedJurisdictions,
+            redemptionPointUrl
+          });
+          const variantsMetadatas = productV1.createVariantProductMetadata(
+            productV1Metadata,
+            variantsForMetadataCreation
+          );
+          // Fix description as the licenseUrl has changed
+          variantsMetadatas.forEach((variantMetadata) => {
+            variantMetadata.description = `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${variantMetadata.licenseUrl}`;
+          });
+          if (!isOneSetOfImages) {
+            // fix main variant image as it should be the variant's thumbnail
+            variantsMetadatas.forEach((variantMetadata, index) => {
+              const productImages =
+                productVariantsImages?.[Number(index)]?.productImages;
+              if (productImages?.thumbnail?.[0]?.src) {
+                variantMetadata.image = productImages.thumbnail[0].src;
+              } else {
+                // this else clause should never occur
+                if (
+                  variantMetadata.productOverrides?.visuals_images?.[0]?.url
+                ) {
+                  variantMetadata.image =
+                    variantMetadata.productOverrides?.visuals_images[0].url;
+                }
+              }
+            });
+          }
+          metadatas = variantsMetadatas;
         }
-        // Fix description as the licenseUrl has changed
-        metadatas.forEach((variantMetadata) => {
-          variantMetadata.description = `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${variantMetadata.licenseUrl}`;
-        });
+
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map(async (metadata, index) => {
             const exchangeToken = config.envConfig.defaultTokens?.find(
@@ -667,8 +697,8 @@ function CreateProductInner({
                   name: values.productInformation.bundleName ?? "",
                   description:
                     values.productInformation.bundleDescription ?? "",
-                  externalUrl: "externalUrl", // TODO: where to get these values from?
-                  licenseUrl: "licenseUrl",
+                  externalUrl: bundleExternalUrl,
+                  licenseUrl: bundleLicenseUrl,
                   seller: {
                     ...(currentAssistant?.metadata || ({} as any)), // TODO: check this,
                     defaultVersion: SELLER_DEFAULT_VERSION
@@ -679,7 +709,8 @@ function CreateProductInner({
                 [
                   ...nftMetadataIpfsLinks,
                   `ipfs://${await coreSDK.storeMetadata(metadata)}`
-                ]
+                ],
+                bundleUuid
               );
               metadataForOffer = bundleMetadata;
             } else {
@@ -737,7 +768,7 @@ function CreateProductInner({
         };
         if (isPhygital) {
           const productItemV1Metadata = await getProductItemV1Metadata({
-            offerUuid,
+            uuid: bundleUuid,
             productInformation,
             productAnimation,
             createYourProfile,
@@ -761,8 +792,8 @@ function CreateProductInner({
             {
               name: values.productInformation.bundleName ?? "",
               description: values.productInformation.bundleDescription ?? "",
-              externalUrl: "externalUrl", // TODO: where to get these values from?
-              licenseUrl: "licenseUrl",
+              externalUrl: bundleExternalUrl,
+              licenseUrl: bundleLicenseUrl,
               seller: {
                 ...(currentAssistant?.metadata || ({} as any)), // TODO: check this,
                 defaultVersion: SELLER_DEFAULT_VERSION
@@ -770,7 +801,8 @@ function CreateProductInner({
               image: undefined,
               imageData: undefined
             },
-            nftMetadataIpfsLinks
+            nftMetadataIpfsLinks,
+            bundleUuid
           );
           await pushOfferData(bundleMetadata);
         } else {
@@ -779,8 +811,8 @@ function CreateProductInner({
             offerUuid,
             productInformation,
             productAnimation,
-            externalUrl,
-            licenseUrl,
+            externalUrl: offerExternalUrl,
+            licenseUrl: offerLicenseUrl,
             productMainImageLink,
             nftAttributes,
             additionalAttributes,
