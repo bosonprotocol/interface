@@ -548,6 +548,17 @@ function CreateProductInner({
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
       const productAnimation = values.productAnimation?.[0];
+      const newNftMetadatas = getDigitalMetadatas({
+        chainId,
+        values
+      });
+      const nftMetadataIpfsLinks: string[] = (
+        await Promise.all(
+          newNftMetadatas.map((nftMetadata) => {
+            return coreSDK.storeMetadata(nftMetadata);
+          })
+        )
+      ).map((hash) => `ipfs://${hash}`);
       if (isMultiVariant) {
         const { variants = [] } = values.productVariants;
         const variantsForMetadataCreation: Parameters<
@@ -636,7 +647,7 @@ function CreateProductInner({
           variantMetadata.description = `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${variantMetadata.licenseUrl}`;
         });
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
-          metadatas.map((metadata, index) => {
+          metadatas.map(async (metadata, index) => {
             const exchangeToken = config.envConfig.defaultTokens?.find(
               (n) => n.symbol === variants[index].currency.label
             );
@@ -649,7 +660,33 @@ function CreateProductInner({
                 price,
                 decimals
               });
-            return getOfferDataFromMetadata(metadata, {
+            let metadataForOffer: typeof metadata | bundle.BundleMetadata;
+            if (isPhygital) {
+              const bundleMetadata: bundle.BundleMetadata = getBundleMetadata(
+                {
+                  name: values.productInformation.bundleName ?? "",
+                  description:
+                    values.productInformation.bundleDescription ?? "",
+                  externalUrl: "externalUrl", // TODO: where to get these values from?
+                  licenseUrl: "licenseUrl",
+                  seller: {
+                    ...(currentAssistant?.metadata || ({} as any)), // TODO: check this,
+                    defaultVersion: SELLER_DEFAULT_VERSION
+                  },
+                  image: undefined,
+                  imageData: undefined
+                },
+                [
+                  ...nftMetadataIpfsLinks,
+                  `ipfs://${await coreSDK.storeMetadata(metadata)}`
+                ]
+              );
+              metadataForOffer = bundleMetadata;
+            } else {
+              metadataForOffer = metadata;
+            }
+
+            return getOfferDataFromMetadata(metadataForOffer, {
               coreSDK,
               config,
               priceBN,
@@ -711,18 +748,6 @@ function CreateProductInner({
             supportedJurisdictions,
             redemptionPointUrl
           });
-
-          const newNftMetadatas = getDigitalMetadatas({
-            chainId,
-            values
-          });
-          const nftMetadataIpfsLinks: string[] = (
-            await Promise.all(
-              newNftMetadatas.map((nftMetadata) => {
-                return coreSDK.storeMetadata(nftMetadata);
-              })
-            )
-          ).map((hash) => `ipfs://${hash}`);
 
           nftMetadataIpfsLinks.push(
             `ipfs://${await coreSDK.storeMetadata(productItemV1Metadata)}`
