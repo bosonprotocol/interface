@@ -77,16 +77,7 @@ export const getOfferDetails = (
   const offer = { metadata: offerMetadata };
   const productV1ItemMetadataEntity:
     | ProductV1Sub
-    | (Pick<
-        subgraph.ProductV1ItemMetadataEntity,
-        "shipping" | "productOverrides"
-      > & {
-        product: Pick<
-          subgraph.ProductV1ItemMetadataEntity["product"],
-          "title" | "description" | "visuals_images"
-        >;
-        productV1Seller?: ProductV1ItemProductSeller | null;
-      })
+    | ProductV1SubItem
     | undefined = isProductV1(offer)
     ? (offer.metadata as ProductV1Sub)
     : isBundle(offer)
