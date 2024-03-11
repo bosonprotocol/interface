@@ -17,7 +17,6 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
-import map from "lodash/map";
 import {
   Dispatch,
   SetStateAction,
@@ -93,6 +92,10 @@ import {
 import { createProductSteps, FIRST_STEP } from "./utils";
 import { SELLER_DEFAULT_VERSION } from "./utils/const";
 import { extractOfferTimestamps } from "./utils/dataValidator";
+import {
+  extractVisualImages,
+  VisualImages
+} from "./utils/extractVisualsImages";
 import { getOfferDataFromMetadata } from "./utils/getOfferDataFromMetadata";
 import { getProductItemV1Metadata } from "./utils/getProductItemV1Metadata";
 import { getProductV1Metadata } from "./utils/getProductV1Metadata";
@@ -111,29 +114,6 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
   if (!isTargetTextArea && event.key === "Enter") {
     event.preventDefault();
   }
-}
-type VisualImages = productV1Item.ProductBase["visuals_images"];
-function extractVisualImages(
-  productImages: CreateProductForm["productImages"]
-): VisualImages {
-  const visualImages = Array.from(
-    new Set(
-      map(
-        productImages,
-        (v) =>
-          v?.[0]?.src &&
-          ({
-            url: v?.[0]?.src,
-            tag: "product_image",
-            height: v?.[0]?.height,
-            width: v?.[0]?.width,
-            type: v?.[0]?.type,
-            name: v?.[0]?.name
-          } as VisualImages[number])
-      ).filter((n): n is VisualImages[number] => !!n)
-    ).values()
-  );
-  return visualImages;
 }
 
 interface Props {

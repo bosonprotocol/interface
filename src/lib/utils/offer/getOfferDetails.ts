@@ -51,20 +51,36 @@ export const getOfferAnimationUrl = (
     ? ""
     : offerMetadata?.animationUrl || "";
 };
-
+type ProductV1Sub = Pick<
+  subgraph.ProductV1MetadataEntity,
+  "shipping" | "productOverrides"
+> & {
+  product: Pick<
+    subgraph.ProductV1MetadataEntity["product"],
+    "title" | "description" | "visuals_images"
+  >;
+  productV1Seller: ProductV1ProductSeller;
+};
+type ProductV1SubItem = Pick<
+  subgraph.ProductV1ItemMetadataEntity,
+  "shipping" | "productOverrides"
+> & {
+  product: Pick<
+    subgraph.ProductV1ItemMetadataEntity["product"],
+    "title" | "description" | "visuals_images"
+  >;
+  productV1Seller?: ProductV1ItemProductSeller | null;
+};
 export const getOfferDetails = (
   offerMetadata: Offer["metadata"]
 ): IGetOfferDetails => {
   const offer = { metadata: offerMetadata };
   const productV1ItemMetadataEntity:
-    | (Pick<subgraph.ProductV1MetadataEntity, "shipping"> & {
-        product: Pick<
-          subgraph.ProductV1MetadataEntity["product"],
-          "title" | "description" | "visuals_images"
-        >;
-        productV1Seller: ProductV1ProductSeller;
-      })
-    | (Pick<subgraph.ProductV1ItemMetadataEntity, "shipping"> & {
+    | ProductV1Sub
+    | (Pick<
+        subgraph.ProductV1ItemMetadataEntity,
+        "shipping" | "productOverrides"
+      > & {
         product: Pick<
           subgraph.ProductV1ItemMetadataEntity["product"],
           "title" | "description" | "visuals_images"
@@ -72,14 +88,16 @@ export const getOfferDetails = (
         productV1Seller?: ProductV1ItemProductSeller | null;
       })
     | undefined = isProductV1(offer)
-    ? offer.metadata
+    ? (offer.metadata as ProductV1Sub)
     : isBundle(offer)
     ? offer.metadata?.items
       ? getProductV1BundleItemsFilter(offer.metadata.items).map(
-          (productV1ItemMetadataEntity) => ({
-            ...productV1ItemMetadataEntity,
-            productV1Seller: productV1ItemMetadataEntity.product.productV1Seller
-          })
+          (productV1ItemMetadataEntity) =>
+            ({
+              ...productV1ItemMetadataEntity,
+              productV1Seller:
+                productV1ItemMetadataEntity.product.productV1Seller
+            } as ProductV1SubItem)
         )[0]
       : undefined
     : undefined;
@@ -112,7 +130,11 @@ export const getOfferDetails = (
     productV1ItemMetadataEntity?.product?.visuals_images?.map(
       ({ url }: { url: string }) => url
     ) || [];
-  const mainImage = offerImg || images?.[0] || "";
+  const variantsImages =
+    productV1ItemMetadataEntity?.productOverrides?.visuals_images?.map(
+      ({ url }: { url: string }) => url
+    ) || [];
+  const mainImage = offerImg || variantsImages?.[0] || images?.[0] || "";
   return {
     display: false,
     name,
@@ -122,7 +144,7 @@ export const getOfferDetails = (
     description,
     artist,
     artistDescription,
-    images,
+    images: variantsImages?.length ? variantsImages : images,
     mainImage
   };
 };
