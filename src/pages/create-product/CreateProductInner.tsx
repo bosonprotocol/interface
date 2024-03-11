@@ -480,7 +480,11 @@ function CreateProductInner({
       );
       const resolutionPeriodDurationInMS = getResolutionPeriodDurationInMS();
 
-      const nftAttributes = [];
+      const nftAttributes: {
+        traitType: string;
+        value: string;
+        displayType?: string;
+      }[] = [];
       nftAttributes.push({
         traitType: ProductMetadataAttributeKeys["Token Type"],
         value: "BOSON rNFT"
@@ -692,7 +696,8 @@ function CreateProductInner({
                     metadata.type === "ITEM_PRODUCT_V1"
                       ? metadata.productOverrides?.visuals_videos?.[0].url ||
                         metadata.product?.visuals_videos?.[0].url
-                      : undefined
+                      : undefined,
+                  attributes: nftAttributes
                 },
                 [
                   ...nftMetadataIpfsLinks,
@@ -790,7 +795,9 @@ function CreateProductInner({
               imageData: undefined,
               animationUrl:
                 productItemV1Metadata.productOverrides?.visuals_videos?.[0]
-                  .url || productItemV1Metadata.product?.visuals_videos?.[0].url
+                  .url ||
+                productItemV1Metadata.product?.visuals_videos?.[0].url,
+              attributes: nftAttributes
             },
             nftMetadataIpfsLinks,
             bundleUuid
