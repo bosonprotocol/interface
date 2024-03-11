@@ -57,7 +57,7 @@ type ProductV1Sub = Pick<
 > & {
   product: Pick<
     subgraph.ProductV1MetadataEntity["product"],
-    "title" | "description" | "visuals_images"
+    "title" | "description" | "visuals_images" | "productV1Seller"
   >;
   productV1Seller: ProductV1ProductSeller;
 };
@@ -67,7 +67,7 @@ type ProductV1SubItem = Pick<
 > & {
   product: Pick<
     subgraph.ProductV1ItemMetadataEntity["product"],
-    "title" | "description" | "visuals_images"
+    "title" | "description" | "visuals_images" | "productV1Seller"
   >;
   productV1Seller?: ProductV1ItemProductSeller | null;
 };
@@ -116,7 +116,9 @@ export const getOfferDetails = (
     "";
   const artist = productV1ItemMetadataEntity?.productV1Seller || null;
   const artistDescription =
-    productV1ItemMetadataEntity?.productV1Seller?.description || "";
+    artist?.description ||
+    productV1ItemMetadataEntity?.product.productV1Seller?.description ||
+    "";
   const images =
     productV1ItemMetadataEntity?.product?.visuals_images?.map(
       ({ url }: { url: string }) => url

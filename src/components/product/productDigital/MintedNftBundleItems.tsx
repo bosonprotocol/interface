@@ -77,15 +77,6 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
     { enabled: !!(erc1155Uri && erc1155Uri[0] && tokenId) }
   );
   const imageSrc = erc721Image?.[0] || erc1155Image?.[0] || "";
-  console.log({
-    tokenAddress,
-    tokenId,
-    erc721TokenUri,
-    erc1155Uri,
-    erc721Image,
-    erc1155Image,
-    imageSrc
-  });
   return (
     <Grid flexDirection="column" marginBottom="4rem">
       <ExistingNftContainer>

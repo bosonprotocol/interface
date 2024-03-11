@@ -687,7 +687,12 @@ function CreateProductInner({
                     metadata.type === "ITEM_PRODUCT_V1"
                       ? metadata.productOverrides?.visuals_images?.[0].url
                       : undefined,
-                  imageData: undefined
+                  imageData: undefined,
+                  animationUrl:
+                    metadata.type === "ITEM_PRODUCT_V1"
+                      ? metadata.productOverrides?.visuals_videos?.[0].url ||
+                        metadata.product?.visuals_videos?.[0].url
+                      : undefined
                 },
                 [
                   ...nftMetadataIpfsLinks,
@@ -782,7 +787,10 @@ function CreateProductInner({
                 defaultVersion: SELLER_DEFAULT_VERSION
               },
               image: visualImages?.[0].url,
-              imageData: undefined
+              imageData: undefined,
+              animationUrl:
+                productItemV1Metadata.productOverrides?.visuals_videos?.[0]
+                  .url || productItemV1Metadata.product?.visuals_videos?.[0].url
             },
             nftMetadataIpfsLinks,
             bundleUuid

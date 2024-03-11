@@ -66,7 +66,6 @@ const getProductImageError = (
         typeof Object.values(errors.productImages)?.[0] === "string"
       ? Object.values(errors.productImages)?.[0]
       : null;
-  console.log("errors.productImages", errors.productImages);
   return error;
 };
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
