@@ -700,10 +700,13 @@ function CreateProductInner({
                   externalUrl: bundleExternalUrl,
                   licenseUrl: bundleLicenseUrl,
                   seller: {
-                    ...(currentAssistant?.metadata || ({} as any)), // TODO: check this,
+                    ...(currentAssistant?.metadata || ({} as any)),
                     defaultVersion: SELLER_DEFAULT_VERSION
                   },
-                  image: undefined,
+                  image:
+                    metadata.type === "ITEM_PRODUCT_V1"
+                      ? metadata.productOverrides?.visuals_images?.[0].url
+                      : undefined,
                   imageData: undefined
                 },
                 [
@@ -795,10 +798,10 @@ function CreateProductInner({
               externalUrl: bundleExternalUrl,
               licenseUrl: bundleLicenseUrl,
               seller: {
-                ...(currentAssistant?.metadata || ({} as any)), // TODO: check this,
+                ...(currentAssistant?.metadata || ({} as any)),
                 defaultVersion: SELLER_DEFAULT_VERSION
               },
-              image: undefined,
+              image: visualImages?.[0].url,
               imageData: undefined
             },
             nftMetadataIpfsLinks,
@@ -994,8 +997,7 @@ function CreateProductInner({
           validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
-          {({ values, ...rest }) => {
-            console.log({ values, ...rest });
+          {({ values }) => {
             // TODO: fix: these setState calls cause this warning: Warning: Cannot update a component (`CreateProductInner`) while rendering a different component (`Formik`). To locate the bad setState() call inside `Formik`, follow the stack trace as described in
             if (productType !== values?.productType?.productType) {
               setProductType(values?.productType?.productType);

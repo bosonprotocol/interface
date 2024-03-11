@@ -500,6 +500,9 @@ export default function SellerProductsTable({
                       (attribute) =>
                         attribute?.traitType?.toLowerCase() === "size"
                     )?.value;
+                    const { mainImage } = variant?.metadata
+                      ? getOfferDetails(variant?.metadata)
+                      : { mainImage: null };
                     return {
                       offerStatus: variantStatus,
                       isSubRow: true,
@@ -512,20 +515,19 @@ export default function SellerProductsTable({
                       warningIcon: shouldDisplayFundWarning(
                         offer?.exchangeToken?.symbol
                       ),
-                      image: variant.metadata &&
-                        "image" in variant.metadata && (
-                          <Image
-                            src={variant.metadata.image}
-                            style={{
-                              width: "2.5rem",
-                              height: "2.5rem",
-                              paddingTop: "0%",
-                              fontSize: "0.75rem",
-                              marginLeft: "2.1875rem"
-                            }}
-                            showPlaceholderText={false}
-                          />
-                        ),
+                      image: mainImage && (
+                        <Image
+                          src={mainImage}
+                          style={{
+                            width: "2.5rem",
+                            height: "2.5rem",
+                            paddingTop: "0%",
+                            fontSize: "0.75rem",
+                            marginLeft: "2.1875rem"
+                          }}
+                          showPlaceholderText={false}
+                        />
+                      ),
                       sku: (
                         <Typography
                           justifyContent="flex-start"
@@ -1096,6 +1098,9 @@ export default function SellerProductsTable({
                           {...cell.getCellProps()}
                           key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                           onClick={() => {
+                            const offer =
+                              row?.original.offer ||
+                              rows[Math.floor(Number(row.id))].original.offer;
                             if (hasSubRows) {
                               if (
                                 (!cell.row.isExpanded &&
@@ -1108,10 +1113,10 @@ export default function SellerProductsTable({
                               cell.column.id !== "action" &&
                               cell.column.id !== "selection" &&
                               cell.column.id !== "status" &&
-                              row?.original.offer
+                              offer
                             ) {
                               const pathname: string = getOfferDetailPage(
-                                row?.original.offer,
+                                offer,
                                 sellerId
                               );
                               navigate({ pathname });

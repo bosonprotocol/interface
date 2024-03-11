@@ -1,6 +1,6 @@
 import { Loading } from "@bosonprotocol/react-kit";
 import { CameraSlash, Image as ImageIcon } from "phosphor-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { buttonText } from "../../components/ui/styles";
@@ -105,7 +105,13 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
     getImageUrl(src, optimizationOpts)
   );
   const [didOriginalSrcFail, setDidOriginalSrcFail] = useState<boolean>(false);
-
+  useEffect(() => {
+    // reset all if src changes
+    setStatus(withLoading ? "loading" : "success");
+    setCurrentSrc(getImageUrl(src, optimizationOpts));
+    setDidOriginalSrcFail(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src]);
   const isError = status === "error";
   const isLoading = status === "loading";
   const isSuccess = status === "success";

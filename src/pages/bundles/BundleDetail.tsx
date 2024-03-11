@@ -49,24 +49,28 @@ export default function BundleDetail() {
     enabled: !!bundleUuid
   });
 
-  const variantsWithV1: VariantV1[] | undefined = bundleResult
-    ?.flatMap((bundle) => {
-      const bundleItems = bundle.items;
-      const productV1Items = bundleItems
-        ? getProductV1BundleItemsFilter(bundleItems)
-        : undefined;
-      if (!productV1Items) {
-        return null;
-      }
-      return productV1Items.map(
-        (productV1Item) =>
-          ({
-            variations: productV1Item.variations,
-            offer: bundle.offer
-          } as VariantV1)
-      );
-    })
-    .filter(isTruthy);
+  const variantsWithV1: VariantV1[] | undefined = useMemo(
+    () =>
+      bundleResult
+        ?.flatMap((bundle) => {
+          const bundleItems = bundle.items;
+          const productV1Items = bundleItems
+            ? getProductV1BundleItemsFilter(bundleItems)
+            : undefined;
+          if (!productV1Items) {
+            return null;
+          }
+          return productV1Items.map(
+            (productV1Item) =>
+              ({
+                variations: productV1Item.variations,
+                offer: bundle.offer
+              } as VariantV1)
+          );
+        })
+        .filter(isTruthy),
+    [bundleResult]
+  );
 
   const defaultVariant: VariantV1 | undefined =
     variantsWithV1?.find((variant) => !variant.offer.voided) ??
