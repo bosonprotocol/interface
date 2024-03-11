@@ -1,6 +1,7 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import {
   CoreSDK,
+  hooks,
   Provider,
   subgraph,
   VoidButton
@@ -207,6 +208,7 @@ export default function VoidProduct({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const signer = useSigner();
   const { hideModal } = useModal();
+  const { isMetaTx } = hooks.useMetaTx(coreSdk);
 
   const handleFinish = useCallback(() => {
     hideModal();
@@ -289,7 +291,6 @@ export default function VoidProduct({
     try {
       setIsLoading(true);
       let txResponse: TransactionResponse;
-      const isMetaTx = Boolean(coreSdk?.isMetaTxConfigSet && signer);
       if (isMetaTx) {
         txResponse = await voidOfferBatchWithMetaTx(coreSdk, offerIds);
       } else {
@@ -309,7 +310,7 @@ export default function VoidProduct({
       console.error("onError", error);
       Sentry.captureException(error);
     }
-  }, [offers, coreSdk, signer, handleSuccess]);
+  }, [offers, isMetaTx, handleSuccess, coreSdk]);
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
