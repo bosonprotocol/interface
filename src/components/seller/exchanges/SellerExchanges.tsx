@@ -73,12 +73,12 @@ const productTags = [
 
 const statusOrder = [
   ExchangesKit.ExtendedExchangeState.NotRedeemableYet,
-  subgraph.ExchangeState.Committed,
-  subgraph.ExchangeState.Redeemed,
-  subgraph.ExchangeState.Disputed,
-  subgraph.ExchangeState.Cancelled,
-  subgraph.ExchangeState.Completed,
-  subgraph.ExchangeState.Revoked,
+  subgraph.ExchangeState.COMMITTED,
+  subgraph.ExchangeState.REDEEMED,
+  subgraph.ExchangeState.DISPUTED,
+  subgraph.ExchangeState.CANCELLED,
+  subgraph.ExchangeState.COMPLETED,
+  subgraph.ExchangeState.REVOKED,
   ExchangesKit.ExtendedExchangeState.Expired
 ] as ExchangesKit.AllExchangeStates[];
 
@@ -112,30 +112,30 @@ const compareExchangesSortByStatus = (
     stateA === stateB ||
     ([
       ExchangesKit.ExtendedExchangeState.NotRedeemableYet,
-      subgraph.ExchangeState.Committed
+      subgraph.ExchangeState.COMMITTED
     ].includes(stateA) &&
       [
         ExchangesKit.ExtendedExchangeState.NotRedeemableYet,
-        subgraph.ExchangeState.Committed
+        subgraph.ExchangeState.COMMITTED
       ].includes(stateB))
   ) {
     switch (true) {
       case (
         [
           ExchangesKit.ExtendedExchangeState.NotRedeemableYet,
-          subgraph.ExchangeState.Committed
+          subgraph.ExchangeState.COMMITTED
         ] as ExchangesKit.AllExchangeStates[]
       ).includes(stateA):
         return Number(committedDateB) - Number(committedDateA);
-      case stateA === subgraph.ExchangeState.Redeemed:
+      case stateA === subgraph.ExchangeState.REDEEMED:
         return Number(redeemedDateB) - Number(redeemedDateA);
-      case stateA === subgraph.ExchangeState.Disputed:
+      case stateA === subgraph.ExchangeState.DISPUTED:
         return Number(disputedDateB) - Number(disputedDateA);
-      case stateA === subgraph.ExchangeState.Cancelled:
+      case stateA === subgraph.ExchangeState.CANCELLED:
         return Number(cancelledDateB) - Number(cancelledDateA);
-      case stateA === subgraph.ExchangeState.Completed:
+      case stateA === subgraph.ExchangeState.COMPLETED:
         return Number(completedDateB) - Number(completedDateA);
-      case stateA === subgraph.ExchangeState.Revoked:
+      case stateA === subgraph.ExchangeState.REVOKED:
         return Number(revokedDateB) - Number(revokedDateA);
       case stateA === ExchangesKit.ExtendedExchangeState.Expired:
         return Number(validUntilDateB) - Number(validUntilDateA);
@@ -207,19 +207,19 @@ export default function SellerExchanges({
         ?.map((exchange: Exchange) => {
           const status = ExchangesKit.getExchangeState(exchange);
           if (currentTag === "live-rnfts") {
-            return status === subgraph.ExchangeState.Committed
+            return status === subgraph.ExchangeState.COMMITTED
               ? exchange
               : null;
           }
           if (currentTag === "redemptions") {
-            return status === subgraph.ExchangeState.Redeemed ? exchange : null;
+            return status === subgraph.ExchangeState.REDEEMED ? exchange : null;
           }
           if (currentTag === "disputes") {
-            return status === subgraph.ExchangeState.Disputed ? exchange : null;
+            return status === subgraph.ExchangeState.DISPUTED ? exchange : null;
           }
           if (currentTag === "past-exchanges") {
             return status === ExchangesKit.ExtendedExchangeState.Expired ||
-              status === subgraph.ExchangeState.Completed
+              status === subgraph.ExchangeState.COMPLETED
               ? exchange
               : null;
           }

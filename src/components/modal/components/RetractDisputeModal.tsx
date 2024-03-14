@@ -234,7 +234,7 @@ export default function RetractDisputeModal({
                 txHash: tx.hash
               });
               addPendingTransaction({
-                type: subgraph.EventType.DisputeRetracted,
+                type: subgraph.EventType.DISPUTE_RETRACTED,
                 hash: tx.hash,
                 isMetaTx,
                 accountType: "Buyer",

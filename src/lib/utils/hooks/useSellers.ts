@@ -68,8 +68,8 @@ export function useSellers(
               ...filter,
               id_in: curationLists.sellerCurationList
             },
-            sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-            sellersOrderDirection: subgraph.OrderDirection.Asc,
+            sellersOrderBy: subgraph.Seller_OrderBy.SELLERID,
+            sellersOrderDirection: subgraph.OrderDirection.ASC,
             includeFunds: includeFunds
           })
         : [];

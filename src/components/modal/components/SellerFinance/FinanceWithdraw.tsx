@@ -177,7 +177,7 @@ export default function FinanceWithdraw({
               txHash: hash
             });
             addPendingTransaction({
-              type: subgraph.EventType.FundsWithdrawn,
+              type: subgraph.EventType.FUNDS_WITHDRAWN,
               hash: hash,
               isMetaTx: isMetaTx,
               accountType: "Account"

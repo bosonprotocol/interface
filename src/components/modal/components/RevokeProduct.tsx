@@ -179,7 +179,7 @@ export default function RevokeProduct({
                 txHash: hash
               });
               addPendingTransaction({
-                type: subgraph.EventType.VoucherRevoked,
+                type: subgraph.EventType.VOUCHER_REVOKED,
                 hash,
                 isMetaTx,
                 accountType: "Seller",

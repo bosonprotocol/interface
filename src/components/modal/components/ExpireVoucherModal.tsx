@@ -228,7 +228,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
                 txHash: hash
               });
               addPendingTransaction({
-                type: subgraph.EventType.VoucherExpired,
+                type: subgraph.EventType.VOUCHER_EXPIRED,
                 hash,
                 isMetaTx,
                 accountType: "Buyer",

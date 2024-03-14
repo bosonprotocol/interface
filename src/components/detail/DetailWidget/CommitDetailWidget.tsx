@@ -321,7 +321,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         txHash: hash
       });
       addPendingTransaction({
-        type: subgraph.EventType.BuyerCommitted,
+        type: subgraph.EventType.BUYER_COMMITTED,
         hash,
         isMetaTx,
         accountType: "Buyer",

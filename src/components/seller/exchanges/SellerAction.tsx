@@ -117,7 +117,7 @@ export const SellerActionButton = ({
       >
         Chat <Chat size={14} />
       </BosonButton>
-      {status === subgraph.ExchangeState.Committed && (
+      {status === subgraph.ExchangeState.COMMITTED && (
         <StyledBosonButton
           variant="accentInvertedNoBorder"
           size="small"
@@ -161,7 +161,7 @@ export const SellerCompleteActionButton = ({
   const isDisputeExpired = useMemo(
     () =>
       exchange &&
-      exchange?.state !== subgraph.ExchangeState.Completed &&
+      exchange?.state !== subgraph.ExchangeState.COMPLETED &&
       exchange?.redeemedDate &&
       exchange?.offer.disputePeriodDuration &&
       dayjs(

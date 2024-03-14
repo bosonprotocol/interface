@@ -29,8 +29,8 @@ export function useSellerBlacklist(
       const maxSellerPerReq = 1000;
       const fetched = await accounts.subgraph.getSellers(subgraphUrl, {
         sellersFirst: maxSellerPerReq,
-        sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-        sellersOrderDirection: subgraph.OrderDirection.Asc
+        sellersOrderBy: subgraph.Seller_OrderBy.SELLERID,
+        sellersOrderDirection: subgraph.OrderDirection.ASC
       });
       let loop = fetched.length === maxSellerPerReq;
       let sellersSkip = maxSellerPerReq;
@@ -38,8 +38,8 @@ export function useSellerBlacklist(
         const toAdd = await accounts.subgraph.getSellers(subgraphUrl, {
           sellersFirst: maxSellerPerReq,
           sellersSkip,
-          sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-          sellersOrderDirection: subgraph.OrderDirection.Asc
+          sellersOrderBy: subgraph.Seller_OrderBy.SELLERID,
+          sellersOrderDirection: subgraph.OrderDirection.ASC
         });
         fetched.push(...toAdd);
         loop = toAdd.length === maxSellerPerReq;

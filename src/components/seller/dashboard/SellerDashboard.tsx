@@ -88,13 +88,13 @@ const filterItems = (exchanges: Exchange[] | undefined, type: string) => {
       const status = ExchangesKit.getExchangeState(exchange);
 
       if (type === "Commits") {
-        return status === subgraph.ExchangeState.Committed ? exchange : null;
+        return status === subgraph.ExchangeState.COMMITTED ? exchange : null;
       }
       if (type === "Redemptions") {
-        return status === subgraph.ExchangeState.Redeemed ? exchange : null;
+        return status === subgraph.ExchangeState.REDEEMED ? exchange : null;
       }
       if (type === "Disputes") {
-        return status === subgraph.ExchangeState.Disputed ? exchange : null;
+        return status === subgraph.ExchangeState.DISPUTED ? exchange : null;
       }
     }) || []
   );

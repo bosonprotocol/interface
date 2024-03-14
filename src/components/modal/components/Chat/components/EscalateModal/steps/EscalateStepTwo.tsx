@@ -546,7 +546,7 @@ function EscalateStepTwo({
                           txHash: tx.hash
                         });
                         addPendingTransaction({
-                          type: subgraph.EventType.DisputeEscalated,
+                          type: subgraph.EventType.DISPUTE_ESCALATED,
                           hash: tx.hash,
                           isMetaTx,
                           accountType: "Buyer",

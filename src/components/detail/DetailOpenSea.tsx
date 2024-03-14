@@ -67,7 +67,7 @@ export default function DetailOpenSea({ exchange, className }: Props) {
       )
     : null;
   const isToRedeem =
-    !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;
+    !exchangeStatus || exchangeStatus === subgraph.ExchangeState.COMMITTED;
 
   const openSeaUrl = useMemo(() => {
     if (!exchange) {

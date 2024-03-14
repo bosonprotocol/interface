@@ -36,94 +36,94 @@ const buildTransactionLabelAndPath = (
     : "/";
 
   switch (eventLog.type) {
-    case subgraph.EventType.BuyerCommitted:
+    case subgraph.EventType.BUYER_COMMITTED:
       return {
         label: `Committed to offer with id: ${offerId}`,
         pathname: offerPath
       };
-    case subgraph.EventType.BuyerCreated:
+    case subgraph.EventType.BUYER_CREATED:
       return { label: "Buyer created" };
-    case subgraph.EventType.DisputeDecided:
+    case subgraph.EventType.DISPUTE_DECIDED:
       return {
         label: `Decided dispute with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.DisputeEscalated:
+    case subgraph.EventType.DISPUTE_ESCALATED:
       return {
         label: `Escalated dispute with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.DisputeRetracted:
+    case subgraph.EventType.DISPUTE_RETRACTED:
       return {
         label: `Retracted dispute with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.DisputeTimeoutExtended:
+    case subgraph.EventType.DISPUTE_TIMEOUT_EXTENDED:
       return {
         label: `Dispute timeout extended with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.DisputeRaised:
+    case subgraph.EventType.DISPUTE_RAISED:
       return {
         label: `Raised dispute with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.DisputeResolved:
+    case subgraph.EventType.DISPUTE_RESOLVED:
       return {
         label: `Resolved dispute with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.EscalatedDisputeRefused:
+    case subgraph.EventType.ESCALATED_DISPUTE_REFUSED:
       return {
         label: `Refused dispute with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.ExchangeCompleted:
+    case subgraph.EventType.EXCHANGE_COMPLETED:
       return {
         label: `Complete exchange with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.FundsDeposited:
+    case subgraph.EventType.FUNDS_DEPOSITED:
       return { label: `Funds deposited` };
-    case subgraph.EventType.FundsEncumbered:
+    case subgraph.EventType.FUNDS_ENCUMBERED:
       return { label: `Funds encumbered` };
-    case subgraph.EventType.FundsReleased:
+    case subgraph.EventType.FUNDS_RELEASED:
       return { label: `Funds released` };
-    case subgraph.EventType.FundsWithdrawn:
+    case subgraph.EventType.FUNDS_WITHDRAWN:
       return { label: `Funds withdrawn` };
-    case subgraph.EventType.OfferCreated:
+    case subgraph.EventType.OFFER_CREATED:
       return {
         label: `Created offer with id: ${offerId || "pending"}`,
         pathname: offerPath
       };
-    case subgraph.EventType.OfferVoided:
+    case subgraph.EventType.OFFER_VOIDED:
       return {
         label: `Voided offer with id: ${offerId}`,
         pathname: offerPath
       };
-    case subgraph.EventType.VoucherCanceled:
+    case subgraph.EventType.VOUCHER_CANCELED:
       return {
         label: `Canceled offer with id: ${offerId}`,
         pathname: offerPath
       };
-    case subgraph.EventType.VoucherRedeemed:
+    case subgraph.EventType.VOUCHER_REDEEMED:
       return {
         label: `Redeemed offer with id: ${offerId}`,
         pathname: offerPath
       };
-    case subgraph.EventType.VoucherRevoked:
+    case subgraph.EventType.VOUCHER_REVOKED:
       return {
         label: `Revoked voucher with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.VoucherExpired:
+    case subgraph.EventType.VOUCHER_EXPIRED:
       return {
         label: `Expired voucher with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
-    case subgraph.EventType.SellerUpdated:
+    case subgraph.EventType.SELLER_UPDATED:
       return { label: `Seller updated` };
-    case subgraph.EventType.SellerCreated:
+    case subgraph.EventType.SELLER_CREATED:
       return { label: `Seller created` };
     default:
       return { label: `Unknown transaction ${eventLog.type}` };

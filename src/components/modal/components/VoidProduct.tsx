@@ -382,7 +382,7 @@ export default function VoidProduct({
                   txHash: hash
                 });
                 addPendingTransaction({
-                  type: subgraph.EventType.OfferVoided,
+                  type: subgraph.EventType.OFFER_VOIDED,
                   hash,
                   isMetaTx,
                   accountType: "Seller",
