@@ -162,7 +162,7 @@ export default function FinanceDeposit({
                   txHash: hash
                 });
                 addPendingTransaction({
-                  type: subgraph.EventType.FundsDeposited,
+                  type: subgraph.EventType.FUNDS_DEPOSITED,
                   hash: hash,
                   isMetaTx,
                   accountType: "Seller"

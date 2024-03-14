@@ -18,13 +18,13 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
   const renderValues = useMemo(
     () =>
       ({
-        [subgraph.ExchangeState.Committed]: {
+        [subgraph.ExchangeState.COMMITTED]: {
           text: "Redeemable Until",
           value: dayjs(
             getDateTimestamp(exchange?.offer?.voucherRedeemableUntilDate)
           ).format(CONFIG.dateFormat)
         },
-        [subgraph.ExchangeState.Disputed]: {
+        [subgraph.ExchangeState.DISPUTED]: {
           text: "Resolution period ends",
           value: dayjs(
             getDateTimestamp(
@@ -35,7 +35,7 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
             )
           ).format(CONFIG.dateFormat)
         },
-        [subgraph.ExchangeState.Redeemed]: {
+        [subgraph.ExchangeState.REDEEMED]: {
           text: "Dispute period ends",
           value: dayjs(
             getDateTimestamp(
@@ -46,7 +46,7 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
             )
           ).format(CONFIG.dateFormat)
         },
-        [subgraph.ExchangeState.Completed]: {
+        [subgraph.ExchangeState.COMPLETED]: {
           text: "Expired on",
           value: formatDate(getDateTimestamp(exchange?.validUntilDate), {
             textIfTooBig: NO_EXPIRATION
@@ -59,10 +59,10 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
           })
         },
         // rest of them
-        [subgraph.ExchangeState.Revoked]: {
+        [subgraph.ExchangeState.REVOKED]: {
           display: false
         },
-        [subgraph.ExchangeState.Cancelled]: {
+        [subgraph.ExchangeState.CANCELLED]: {
           display: false
         },
         [ExchangesKit.ExtendedExchangeState.NotRedeemableYet]: {

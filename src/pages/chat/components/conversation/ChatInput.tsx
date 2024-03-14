@@ -160,12 +160,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       return true;
     }
     const disputeState =
-      exchange?.dispute?.state || subgraph.DisputeState.Resolving;
+      exchange?.dispute?.state || subgraph.DisputeState.RESOLVING;
     const badStates = [
-      subgraph.DisputeState.Decided,
-      subgraph.DisputeState.Escalated,
-      subgraph.DisputeState.Decided,
-      subgraph.DisputeState.Refused
+      subgraph.DisputeState.DECIDED,
+      subgraph.DisputeState.ESCALATED,
+      subgraph.DisputeState.DECIDED,
+      subgraph.DisputeState.REFUSED
     ];
 
     return (

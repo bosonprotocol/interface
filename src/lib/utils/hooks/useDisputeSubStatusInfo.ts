@@ -21,37 +21,37 @@ export function useDisputeSubStatusInfo(exchange: Exchange | null) {
     }
     if (exchange?.disputed) {
       if (
-        exchange?.dispute?.state === subgraph.DisputeState.Resolving &&
+        exchange?.dispute?.state === subgraph.DisputeState.RESOLVING &&
         exchange.redeemedDate &&
         exchange.offer.disputePeriodDuration &&
         dayjs(
           getDateTimestamp(exchange.redeemedDate) +
             getDateTimestamp(exchange.offer.disputePeriodDuration)
         ).isAfter(currentTime) &&
-        exchange.state !== subgraph.ExchangeState.Completed
+        exchange.state !== subgraph.ExchangeState.COMPLETED
       ) {
         status = "Resolving";
         color = "";
         background = "";
       }
       if (
-        exchange?.dispute?.state === subgraph.DisputeState.Retracted &&
-        exchange.state !== subgraph.ExchangeState.Completed
+        exchange?.dispute?.state === subgraph.DisputeState.RETRACTED &&
+        exchange.state !== subgraph.ExchangeState.COMPLETED
       ) {
         status = "Retracted";
         color = "";
         background = "";
       }
       if (
-        exchange?.dispute?.state === subgraph.DisputeState.Resolved &&
-        exchange.state !== subgraph.ExchangeState.Completed
+        exchange?.dispute?.state === subgraph.DisputeState.RESOLVED &&
+        exchange.state !== subgraph.ExchangeState.COMPLETED
       ) {
         status = "Resolved";
         color = "";
         background = "";
       }
       if (
-        exchange.state !== subgraph.ExchangeState.Completed &&
+        exchange.state !== subgraph.ExchangeState.COMPLETED &&
         exchange.redeemedDate &&
         exchange.offer.disputePeriodDuration &&
         dayjs(
@@ -64,8 +64,8 @@ export function useDisputeSubStatusInfo(exchange: Exchange | null) {
         background = "";
       }
       if (
-        exchange?.dispute?.state === subgraph.DisputeState.Escalated &&
-        exchange.state !== subgraph.ExchangeState.Completed &&
+        exchange?.dispute?.state === subgraph.DisputeState.ESCALATED &&
+        exchange.state !== subgraph.ExchangeState.COMPLETED &&
         exchange.dispute?.escalatedDate &&
         exchange.offer?.disputeResolver?.escalationResponsePeriod &&
         dayjs(
@@ -80,24 +80,24 @@ export function useDisputeSubStatusInfo(exchange: Exchange | null) {
         background = "";
       }
       if (
-        exchange.dispute?.state === subgraph.DisputeState.Decided &&
-        exchange.state !== subgraph.ExchangeState.Completed
+        exchange.dispute?.state === subgraph.DisputeState.DECIDED &&
+        exchange.state !== subgraph.ExchangeState.COMPLETED
       ) {
         status = "Decided";
         color = "";
         background = "";
       }
       if (
-        exchange.dispute?.state === subgraph.DisputeState.Refused &&
-        exchange.state !== subgraph.ExchangeState.Completed
+        exchange.dispute?.state === subgraph.DisputeState.REFUSED &&
+        exchange.state !== subgraph.ExchangeState.COMPLETED
       ) {
         status = "Refused";
         color = "";
         background = "";
       }
       if (
-        exchange.dispute?.state === subgraph.DisputeState.Escalated &&
-        exchange.state !== subgraph.ExchangeState.Completed &&
+        exchange.dispute?.state === subgraph.DisputeState.ESCALATED &&
+        exchange.state !== subgraph.ExchangeState.COMPLETED &&
         exchange.dispute.escalatedDate &&
         exchange?.offer?.disputeResolver?.escalationResponsePeriod &&
         dayjs(

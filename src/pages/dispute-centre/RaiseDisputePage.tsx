@@ -344,7 +344,7 @@ function RaiseDisputePage() {
                   });
                   addPendingTransaction(
                     createPendingTx({
-                      type: subgraph.EventType.DisputeRaised,
+                      type: subgraph.EventType.DISPUTE_RAISED,
                       executedBy: address,
                       accountType: "Buyer",
                       hash: tx.hash,

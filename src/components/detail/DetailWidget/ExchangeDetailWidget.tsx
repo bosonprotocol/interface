@@ -73,11 +73,11 @@ const RedeemButton = styled(BosonButton)`
 `;
 
 const NOT_REDEEMED_YET = [
-  subgraph.ExchangeState.Committed,
-  subgraph.ExchangeState.Revoked,
-  subgraph.ExchangeState.Cancelled,
+  subgraph.ExchangeState.COMMITTED,
+  subgraph.ExchangeState.REVOKED,
+  subgraph.ExchangeState.CANCELLED,
   exchanges.ExtendedExchangeState.Expired,
-  subgraph.ExchangeState.Completed,
+  subgraph.ExchangeState.COMPLETED,
   exchanges.ExtendedExchangeState.NotRedeemableYet
 ];
 
@@ -109,7 +109,7 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
     : null;
 
   const isToRedeem =
-    !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;
+    !exchangeStatus || exchangeStatus === subgraph.ExchangeState.COMMITTED;
   const isBeforeRedeem =
     !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
   const isExchangeExpired =
@@ -257,9 +257,9 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
                 <>
                   {![
                     exchanges.ExtendedExchangeState.Expired,
-                    subgraph.ExchangeState.Cancelled,
-                    subgraph.ExchangeState.Revoked,
-                    subgraph.ExchangeState.Completed
+                    subgraph.ExchangeState.CANCELLED,
+                    subgraph.ExchangeState.REVOKED,
+                    subgraph.ExchangeState.COMPLETED
                   ].includes(
                     exchangeStatus as
                       | exchanges.ExtendedExchangeState
