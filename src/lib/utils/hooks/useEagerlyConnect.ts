@@ -25,7 +25,9 @@ async function connect(connector: Connector) {
 export default function useEagerlyConnect() {
   const dispatch = useAppDispatch();
 
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet);
+  const selectedWallet = useAppSelector((state) => {
+    return state.user.selectedWallet;
+  });
   const rehydrated = useAppSelector((state) => state._persist.rehydrated);
 
   useEffect(() => {
