@@ -37,7 +37,8 @@ export const BasicCommitDetailWidget: React.FC<
         minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
         contactSellerForExchangeUrl: "",
         sellerCurationListBetweenCommas:
-          curationLists?.sellerCurationList?.join(",") || ""
+          curationLists?.sellerCurationList?.join(",") || "",
+        withReduxProvider: false
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}

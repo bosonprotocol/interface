@@ -1,3 +1,4 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import { asSupportedChain } from "lib/constants/chains";
 import {
   useAccount,
@@ -5,7 +6,6 @@ import {
   useProvider
 } from "lib/utils/hooks/connection/connection";
 import useDebounce from "lib/utils/hooks/useDebounce";
-import useIsWindowVisible from "lib/utils/hooks/useIsWindowVisible";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "state/hooks";
 
@@ -18,7 +18,7 @@ export function ApplicationUpdater(): null {
   const { account } = useAccount();
 
   const dispatch = useAppDispatch();
-  const windowVisible = useIsWindowVisible();
+  const windowVisible = hooks.useIsWindowVisible();
 
   const [activeChainId, setActiveChainId] = useState(chainId);
 

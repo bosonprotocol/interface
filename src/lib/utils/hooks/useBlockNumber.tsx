@@ -1,6 +1,6 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { RPC_PROVIDERS } from "lib/constants/providers";
-import useIsWindowVisible from "lib/utils/hooks/useIsWindowVisible";
 import {
   createContext,
   ReactNode,
@@ -74,7 +74,7 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const windowVisible = useIsWindowVisible();
+  const windowVisible = hooks.useIsWindowVisible();
   useEffect(() => {
     let stale = false;
 
