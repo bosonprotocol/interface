@@ -328,7 +328,7 @@ export default function SellerExchangeTable({
                 status={status}
                 sellerRoles={sellerRoles}
               />
-              {status === subgraph.ExchangeState.Disputed ? (
+              {status === subgraph.ExchangeState.DISPUTED ? (
                 <SellerResolveDisputeButton
                   exchange={element}
                   navigate={navigate}

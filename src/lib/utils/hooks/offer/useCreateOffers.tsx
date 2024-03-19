@@ -134,7 +134,7 @@ export function useCreateOffers() {
               }
             );
             addPendingTransaction({
-              type: subgraph.EventType.SellerCreated,
+              type: subgraph.EventType.SELLER_CREATED,
               hash: txResponse.hash,
               isMetaTx,
               accountType: "Seller"
@@ -182,7 +182,7 @@ export function useCreateOffers() {
             }
           );
           addPendingTransaction({
-            type: subgraph.EventType.OfferCreated,
+            type: subgraph.EventType.OFFER_CREATED,
             hash: txResponse.hash,
             isMetaTx,
             accountType: "Seller"
@@ -298,7 +298,7 @@ export function useCreateOffers() {
                 }
               );
               addPendingTransaction({
-                type: subgraph.EventType.SellerCreated,
+                type: subgraph.EventType.SELLER_CREATED,
                 hash: createSellerResponse.hash,
                 isMetaTx,
                 accountType: "Seller"
@@ -385,7 +385,7 @@ export function useCreateOffers() {
           );
 
           addPendingTransaction({
-            type: subgraph.EventType.OfferCreated,
+            type: subgraph.EventType.OFFER_CREATED,
             hash: txResponse.hash,
             isMetaTx,
             accountType: "Seller"
@@ -393,7 +393,7 @@ export function useCreateOffers() {
 
           if (!hasSellerAccount && seller) {
             addPendingTransaction({
-              type: subgraph.EventType.SellerCreated,
+              type: subgraph.EventType.SELLER_CREATED,
               hash: txResponse.hash,
               isMetaTx,
               accountType: "Seller"

@@ -297,7 +297,7 @@ export default function ResolveDisputeModal({
                 txHash: tx.hash
               });
               addPendingTransaction({
-                type: subgraph.EventType.DisputeRaised,
+                type: subgraph.EventType.DISPUTE_RAISED,
                 hash: tx.hash,
                 isMetaTx,
                 accountType: "Buyer",

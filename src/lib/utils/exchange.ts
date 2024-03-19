@@ -11,7 +11,7 @@ export const isExchangeCompletableBySeller = (exchange: Exchange) => {
     exchange.redeemedDate &&
     !exchange.disputedDate &&
     exchange.offer.disputePeriodDuration &&
-    exchange.state !== subgraph.ExchangeState.Completed;
+    exchange.state !== subgraph.ExchangeState.COMPLETED;
 
   if (isFulfilled) {
     const disputePeriodTime = dayjs(
@@ -26,7 +26,7 @@ export const isExchangeCompletableBySeller = (exchange: Exchange) => {
 
 export const isExchangeCompletableByBuyer = (exchange: Exchange) => {
   return (
-    exchange.state === subgraph.ExchangeState.Redeemed &&
+    exchange.state === subgraph.ExchangeState.REDEEMED &&
     !exchange.finalizedDate
   );
 };

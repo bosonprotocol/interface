@@ -1,3 +1,4 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import { getVersionUpgrade, VersionUpgrade } from "@uniswap/token-lists";
 import {
   DEFAULT_LIST_OF_LISTS,
@@ -6,7 +7,6 @@ import {
 import { useProvider } from "lib/utils/hooks/connection/connection";
 import { useFetchListCallback } from "lib/utils/hooks/useFetchListCallback";
 import useInterval from "lib/utils/hooks/useInterval";
-import useIsWindowVisible from "lib/utils/hooks/useIsWindowVisible";
 import ms from "ms";
 import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "state/hooks";
@@ -18,7 +18,7 @@ import { shouldAcceptVersionUpdate } from "./utils";
 export function ListsUpdater(): null {
   const provider = useProvider();
   const dispatch = useAppDispatch();
-  const isWindowVisible = useIsWindowVisible();
+  const isWindowVisible = hooks.useIsWindowVisible();
 
   // get all loaded lists, and the active urls
   const lists = useAllLists();

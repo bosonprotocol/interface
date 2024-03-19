@@ -439,7 +439,7 @@ export default memo(function ExchangeSidePreview({
   if (!exchange || !offer) {
     return null;
   }
-  const isInRedeemed = subgraph.ExchangeState.Redeemed === exchange.state;
+  const isInRedeemed = subgraph.ExchangeState.REDEEMED === exchange.state;
   const isInDispute = exchange.disputed && !dispute?.finalizedDate;
   const isResolved = !!dispute?.resolvedDate;
   const isEscalated = !!dispute?.escalatedDate;

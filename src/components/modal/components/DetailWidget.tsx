@@ -59,7 +59,7 @@ export default function DetailWidget({
     <>
       <ModalGrid>
         <ModalImageWrapper>
-          {type === "SUCCESS" && state === subgraph.ExchangeState.Committed && (
+          {type === "SUCCESS" && state === subgraph.ExchangeState.COMMITTED && (
             <DetailOpenSea exchange={exchange} />
           )}
           {animationUrl ? (

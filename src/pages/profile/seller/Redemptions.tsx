@@ -27,7 +27,7 @@ export default function Redemptions({ sellerId }: Props) {
       ...orderProps,
       disputed: null,
       sellerId,
-      state: subgraph.ExchangeState.Redeemed
+      state: subgraph.ExchangeState.REDEEMED
     },
     { enabled: !!sellerId }
   );

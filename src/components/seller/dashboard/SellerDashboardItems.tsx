@@ -32,7 +32,7 @@ interface Props {
 const ItemDates = (item: Exchange, type: string) => {
   const component = () =>
     ({
-      [subgraph.ExchangeState.Committed]: {
+      [subgraph.ExchangeState.COMMITTED]: {
         first: {
           label: "Expires",
           value: item?.offer?.validUntilDate
@@ -56,7 +56,7 @@ const ItemDates = (item: Exchange, type: string) => {
                 } days`
         }
       },
-      [subgraph.ExchangeState.Redeemed]: {
+      [subgraph.ExchangeState.REDEEMED]: {
         first: {
           label: "Redeemed",
           value: item?.redeemedDate
@@ -74,7 +74,7 @@ const ItemDates = (item: Exchange, type: string) => {
             : ""
         }
       },
-      [subgraph.ExchangeState.Disputed]: {
+      [subgraph.ExchangeState.DISPUTED]: {
         first: {
           label: "Dispute raised",
           value: item?.disputedDate

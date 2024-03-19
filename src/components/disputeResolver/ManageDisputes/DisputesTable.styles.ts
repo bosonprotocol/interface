@@ -115,17 +115,17 @@ export const DisputeStateWrapper = styled.button<{
   border-radius: 5%;
   color: ${colors.black};
   ${({ state }) =>
-    state === subgraph.DisputeState.Escalated &&
+    state === subgraph.DisputeState.ESCALATED &&
     css`
       background-color: ${colors.green};
     `}
   ${({ state }) =>
-    state === subgraph.DisputeState.Decided &&
+    state === subgraph.DisputeState.DECIDED &&
     css`
       background-color: ${colors.blue};
     `}
     ${({ state }) =>
-    state === subgraph.DisputeState.Refused &&
+    state === subgraph.DisputeState.REFUSED &&
     css`
       background-color: ${colors.red};
     `};

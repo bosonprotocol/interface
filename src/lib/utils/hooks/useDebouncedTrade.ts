@@ -1,3 +1,4 @@
+import { hooks } from "@bosonprotocol/react-kit";
 import { Currency, CurrencyAmount, TradeType } from "@uniswap/sdk-core";
 import { WRAPPED_NATIVE_CURRENCY } from "lib/constants/tokens";
 import { useMemo } from "react";
@@ -14,7 +15,6 @@ import { useRouterPreference } from "state/user/hooks";
 import { useChainId } from "./connection/connection";
 import useAutoRouterSupported from "./useAutoRouterSupported";
 import useDebounce from "./useDebounce";
-import useIsWindowVisible from "./useIsWindowVisible";
 
 // Prevents excessive quote requests between keystrokes.
 const DEBOUNCE_TIME = 350;
@@ -68,7 +68,7 @@ export function useDebouncedTrade(
 } {
   const chainId = useChainId();
   const autoRouterSupported = useAutoRouterSupported();
-  const isWindowVisible = useIsWindowVisible();
+  const isWindowVisible = hooks.useIsWindowVisible();
 
   const debouncedSwapQuoteFlagEnabled = false;
   const [debouncedAmount, debouncedOtherCurrency] = useDebounce(

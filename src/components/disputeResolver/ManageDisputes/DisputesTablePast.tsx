@@ -149,7 +149,7 @@ export default function DisputesTablePast({ disputes }: Props) {
               <span>
                 {dayjs(
                   getDateTimestamp(
-                    (dispute.state === subgraph.DisputeState.Decided
+                    (dispute.state === subgraph.DisputeState.DECIDED
                       ? dispute.decidedDate
                       : dispute.refusedDate) || ""
                   )
@@ -158,7 +158,7 @@ export default function DisputesTablePast({ disputes }: Props) {
             </Typography>
           ),
           decision: dispute &&
-            dispute.state === subgraph.DisputeState.Decided && (
+            dispute.state === subgraph.DisputeState.DECIDED && (
               <Typography tag="p" style={{ justifyContent: "center" }}>
                 {parseInt(dispute.buyerPercent) / 100}%
               </Typography>

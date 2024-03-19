@@ -30,7 +30,7 @@ export const ChatInfoBox: React.FC<ChatInfoBoxProps> = ({
   const isResolved = !!dispute?.resolvedDate;
   const isEscalated = !!dispute?.escalatedDate;
   const isRetracted = !!dispute?.retractedDate;
-  const isDecided = dispute?.state === subgraph.DisputeState.Decided;
+  const isDecided = dispute?.state === subgraph.DisputeState.DECIDED;
 
   const buyerPercent = dispute?.buyerPercent;
   const { daysLeftToResolveDispute, totalDaysToResolveDispute } =

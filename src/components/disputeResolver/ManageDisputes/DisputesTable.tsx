@@ -187,7 +187,7 @@ export default function DisputesTable({ disputes }: Props) {
                   Copy email
                 </BosonButton>
               )}
-              {dispute.state === subgraph.DisputeState.Escalated && (
+              {dispute.state === subgraph.DisputeState.ESCALATED && (
                 <>
                   <BosonButton
                     variant="secondaryInverted"

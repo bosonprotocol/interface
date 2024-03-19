@@ -122,7 +122,7 @@ const StatusToComponent = (
   }
   const component = () => {
     return {
-      [subgraph.ExchangeState.Cancelled]: (
+      [subgraph.ExchangeState.CANCELLED]: (
         <Status
           $color={colors.darkGrey}
           $background={colors.red}
@@ -134,7 +134,7 @@ const StatusToComponent = (
           Cancelled
         </Status>
       ),
-      [subgraph.ExchangeState.Committed]: (
+      [subgraph.ExchangeState.COMMITTED]: (
         <Status
           $color={colors.darkGrey}
           $background={colors.green}
@@ -146,7 +146,7 @@ const StatusToComponent = (
           Committed
         </Status>
       ),
-      [subgraph.ExchangeState.Completed]: (
+      [subgraph.ExchangeState.COMPLETED]: (
         <Status
           $color={colors.darkGrey}
           $background={colors.lightGrey}
@@ -158,7 +158,7 @@ const StatusToComponent = (
           Completed
         </Status>
       ),
-      [subgraph.ExchangeState.Disputed]: (
+      [subgraph.ExchangeState.DISPUTED]: (
         <Status
           $color={colors.darkGrey}
           $background={colors.torquise}
@@ -170,7 +170,7 @@ const StatusToComponent = (
           In Dispute
         </Status>
       ),
-      [subgraph.ExchangeState.Revoked]: (
+      [subgraph.ExchangeState.REVOKED]: (
         <Status
           $color={colors.darkGrey}
           $background={colors.blue}
@@ -182,7 +182,7 @@ const StatusToComponent = (
           Revoked
         </Status>
       ),
-      [subgraph.ExchangeState.Redeemed]: (
+      [subgraph.ExchangeState.REDEEMED]: (
         <Status
           $color={colors.darkGrey}
           $background={colors.lime}

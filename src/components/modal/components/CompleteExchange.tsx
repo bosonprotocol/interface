@@ -270,7 +270,7 @@ export default function CompleteExchange({
                 txHash: hash
               });
               addPendingTransaction({
-                type: subgraph.EventType.ExchangeCompleted,
+                type: subgraph.EventType.EXCHANGE_COMPLETED,
                 hash,
                 isMetaTx,
                 accountType: "Seller",
@@ -338,7 +338,7 @@ export default function CompleteExchange({
               exchanges.forEach((exchange) => {
                 if (exchange) {
                   addPendingTransaction({
-                    type: subgraph.EventType.ExchangeCompleted,
+                    type: subgraph.EventType.EXCHANGE_COMPLETED,
                     hash,
                     isMetaTx,
                     accountType: "Seller",

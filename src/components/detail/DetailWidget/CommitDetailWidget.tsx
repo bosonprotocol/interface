@@ -322,7 +322,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         txHash: hash
       });
       addPendingTransaction({
-        type: subgraph.EventType.BuyerCommitted,
+        type: subgraph.EventType.BUYER_COMMITTED,
         hash,
         isMetaTx,
         accountType: "Buyer",
@@ -461,7 +461,8 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         withExternalConnectionProps: true,
         externalConnectedChainId: connectedChainId,
         externalConnectedAccount: account,
-        externalConnectedSigner: signer
+        externalConnectedSigner: signer,
+        withReduxProvider: false
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}

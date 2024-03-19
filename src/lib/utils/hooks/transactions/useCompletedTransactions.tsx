@@ -31,8 +31,8 @@ export const useCompletedTransactions = (page = 0) => {
           executedBy: address?.toLowerCase(),
           account_in: [...sellerIds, currentBuyer ? currentBuyer.id : ""]
         },
-        logsOrderBy: subgraph.EventLog_OrderBy.Timestamp,
-        logsOrderDirection: subgraph.OrderDirection.Desc
+        logsOrderBy: subgraph.EventLog_OrderBy.TIMESTAMP,
+        logsOrderDirection: subgraph.OrderDirection.DESC
       });
       return logs.map((log) => ({
         ...log,
