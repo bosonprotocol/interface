@@ -149,7 +149,7 @@ export const DrCenterFooter: React.FC = () => {
           }}
         >
           <Typography fontSize="0.8rem">
-            Copyright © ${year} Boson Protocol. All rights reserved.
+            Copyright © {year} Boson Protocol. All rights reserved.
           </Typography>
           <Socials />
           <NavigationLinks style={{ flex: "1" }}>
