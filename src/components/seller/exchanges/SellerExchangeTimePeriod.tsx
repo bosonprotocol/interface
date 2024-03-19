@@ -23,9 +23,9 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
         offer.voucherRedeemableUntilDate !== "0"
           ? {
               text: "Redeemable Until",
-              value: dayjs(getDateTimestamp(exchange?.validUntilDate)).format(
-                CONFIG.dateFormat
-              )
+              value: dayjs(
+                getDateTimestamp(offer.voucherRedeemableUntilDate)
+              ).format(CONFIG.dateFormat)
             }
           : {
               text: "Redeemable for",
