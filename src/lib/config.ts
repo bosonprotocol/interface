@@ -212,7 +212,7 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
       lensHandleExtension: envConfig.chainId === 137 ? ".lens" : ".test",
       availableOnNetwork: [80001, 137].includes(envConfig.chainId),
       apiLink: envConfig.lens?.apiLink,
-      ipfsGateway: CONFIG.ipfsGateway,
+      ipfsGateway: CONFIG.ipfsGateway, // this is our ipfs gateway, not lens'
       LENS_HUB_CONTRACT: envConfig.lens?.LENS_HUB_CONTRACT,
       LENS_PERIPHERY_CONTRACT: envConfig.lens?.LENS_PERIPHERY_CONTRACT,
       LENS_PROFILES_CONTRACT_ADDRESS:

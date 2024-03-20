@@ -31,10 +31,11 @@ interface Props {
   itemsPerRow?: Partial<ItemsPerRow>;
   breadcrumbs?: boolean;
   numOffers: number;
-  seller: {
+  seller?: {
     sellerId: string;
     lensProfile?: Profile;
   };
+  sellerLensProfilePerSellerId?: Map<string, Profile> | undefined;
 }
 
 const Container = styled.div<{ $isPrimaryBgChanged: boolean }>`
@@ -67,7 +68,8 @@ export default function OfferList({
   showInvalidOffers,
   itemsPerRow,
   breadcrumbs,
-  seller
+  seller,
+  sellerLensProfilePerSellerId
 }: Props) {
   const isPrimaryBgChanged = useIsCustomStoreValueChanged("primaryBgColor");
   const navigate = useKeepQueryParamsNavigate();
@@ -171,7 +173,10 @@ export default function OfferList({
                       key={offer.id}
                       offer={offer}
                       dataTestId="offer"
-                      lensProfile={seller?.lensProfile}
+                      lensProfile={
+                        seller?.lensProfile ||
+                        sellerLensProfilePerSellerId?.get(offer.seller.id)
+                      }
                     />
                   )
                 );
