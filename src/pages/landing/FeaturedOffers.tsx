@@ -61,12 +61,13 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
 }) => {
   const { isLteXS } = useBreakpoints();
   const numOffers = isLteXS ? 6 : 12;
-  const { products, isLoading, isError } = useProductsByFilteredOffers({
-    voided: false,
-    valid: true,
-    first: numOffers,
-    quantityAvailable_gte: 1
-  });
+  const { products, isLoading, isError, sellerLensProfilePerSellerId } =
+    useProductsByFilteredOffers({
+      voided: false,
+      valid: true,
+      first: numOffers,
+      quantityAvailable_gte: 1
+    });
   const shuffledOffers = useMemo(() => {
     try {
       return extractUniqueRandomProducts({
@@ -108,6 +109,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
           l: 4,
           xl: 4
         }}
+        sellerLensProfilePerSellerId={sellerLensProfilePerSellerId}
       />
     </Root>
   );

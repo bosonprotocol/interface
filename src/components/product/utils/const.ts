@@ -132,7 +132,7 @@ export const TOKEN_CRITERIA = [
   {
     value: "tokenid",
     label: "Specific token",
-    method: EvaluationMethod.SpecificToken
+    method: EvaluationMethod.TokenRange
   }
 ] as const;
 
