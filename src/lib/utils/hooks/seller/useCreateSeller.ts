@@ -13,7 +13,7 @@ import { getLensTokenIdDecimal } from "../../../../components/modal/components/P
 import { useCoreSDK } from "../../useCoreSdk";
 import { useIpfsStorage } from "../useIpfsStorage";
 
-type Props = Parameters<typeof createSellerAccount>[1];
+type Props = Parameters<typeof createSellerAccount>[2];
 
 export default function useCreateSeller() {
   const coreSDK = useCoreSDK();
