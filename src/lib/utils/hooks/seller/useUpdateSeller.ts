@@ -1,12 +1,12 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { accounts, CoreSDK } from "@bosonprotocol/react-kit";
+import { accounts, CoreSDK, hooks } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useMutation } from "react-query";
 
 import { authTokenTypes } from "../../../../components/modal/components/Profile/Lens/const";
 import { useCoreSDK } from "../../useCoreSdk";
 
-type Props = Parameters<typeof updateSellerAccount>[1];
+type Props = Parameters<typeof updateSellerAccount>[2];
 
 export default function useUpdateSeller() {
   const coreSDK = useCoreSDK();
