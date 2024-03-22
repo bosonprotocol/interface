@@ -1,11 +1,13 @@
-import { Loading } from "@bosonprotocol/react-kit";
+import { Loading, MuteButton } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { VideoCamera as VideoIcon, VideoCameraSlash } from "phosphor-react";
 import React, {
+  ElementRef,
   ReactElement,
   ReactNode,
   useEffect,
   useMemo,
+  useRef,
   useState,
   VideoHTMLAttributes
 } from "react";
@@ -17,7 +19,11 @@ import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { buttonText } from "./styles";
 import { Typography } from "./Typography";
-
+const StyledMuteButton = styled(MuteButton)`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+`;
 const VideoWrapper = styled.div<{ $hasOnClick?: boolean }>`
   overflow: hidden;
   position: relative;
@@ -97,6 +103,8 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
   componentWhileLoading: ComponentWhileLoading,
   ...rest
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { muted: _, ...vidProps } = videoProps ?? {};
   const [isLoaded, setIsLoaded] = useState<boolean>(noPreload);
   const [isError, setIsError] = useState<boolean>(false);
   const [videoSrc, setVideoSrc] = useState<string | null>(
@@ -155,7 +163,22 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
     }
     return videoSrc || "";
   }, [videoSrc]);
-
+  const videoRef = useRef<ElementRef<"video">>(null);
+  const [muted, setMuted] = useState<boolean>(!!videoProps?.muted);
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = muted;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoRef.current?.defaultMuted]);
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.autoplay = false;
+      videoRef.current.pause();
+      videoRef.current.muted = muted;
+      videoRef.current.play();
+    }
+  }, [muted]);
   if (!isLoaded && !isError) {
     if (ComponentWhileLoading) {
       return <ComponentWhileLoading />;
@@ -192,11 +215,18 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
     <VideoWrapper {...rest} $hasOnClick={!!rest.onClick}>
       {children || ""}
       {videoSrc && (
-        <VideoContainer
-          data-testid={dataTestId}
-          {...videoProps}
-          src={mp4Src || ""}
-        />
+        <>
+          <StyledMuteButton
+            muted={muted}
+            onClick={() => setMuted((prev) => !prev)}
+          />
+          <VideoContainer
+            ref={videoRef}
+            data-testid={dataTestId}
+            {...vidProps}
+            src={mp4Src || ""}
+          />
+        </>
       )}
     </VideoWrapper>
   );
