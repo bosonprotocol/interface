@@ -169,6 +169,7 @@ export default function Preview({
                     dataTestId="offerAnimationUrl"
                     videoProps={{ muted: true, loop: true, autoPlay: true }}
                     componentWhileLoading={() => OfferImage}
+                    withMuteButton
                   />
                 ) : (
                   OfferImage

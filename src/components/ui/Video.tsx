@@ -91,6 +91,7 @@ interface IVideo {
   showPlaceholderText?: boolean;
   noPreload?: boolean;
   videoProps?: VideoHTMLAttributes<HTMLElement>;
+  withMuteButton?: boolean;
   componentWhileLoading?: () => ReactElement;
 }
 const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
@@ -100,11 +101,10 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
   showPlaceholderText = true,
   noPreload = false,
   videoProps,
+  withMuteButton,
   componentWhileLoading: ComponentWhileLoading,
   ...rest
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { muted: _, ...vidProps } = videoProps ?? {};
   const [isLoaded, setIsLoaded] = useState<boolean>(noPreload);
   const [isError, setIsError] = useState<boolean>(false);
   const [videoSrc, setVideoSrc] = useState<string | null>(
@@ -216,14 +216,16 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
       {children || ""}
       {videoSrc && (
         <>
-          <StyledMuteButton
-            muted={muted}
-            onClick={() => setMuted((prev) => !prev)}
-          />
+          {withMuteButton && (
+            <StyledMuteButton
+              muted={muted}
+              onClick={() => setMuted((prev) => !prev)}
+            />
+          )}
           <VideoContainer
             ref={videoRef}
             data-testid={dataTestId}
-            {...vidProps}
+            {...videoProps}
             src={mp4Src || ""}
           />
         </>

@@ -116,6 +116,7 @@ export default function ProductCreateSuccess({
               src={animationUrl}
               dataTestId="offerAnimationUrl"
               videoProps={{ muted: true, loop: true, autoPlay: true }}
+              withMuteButton
             />
           ) : (
             <Image
