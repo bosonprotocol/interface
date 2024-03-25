@@ -37,6 +37,7 @@ type OfferFullDescriptionProps = Omit<
   | "onClickBuyOrSwap"
   | "walletConnectProjectId"
   | "includeGeneralProductDataTab"
+  | "includeOverviewTab"
 >;
 
 export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
@@ -52,6 +53,7 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
   return (
     <StyledExternalOfferFullDescription
       {...props}
+      includeOverviewTab
       imagesToShow={3}
       includeGeneralProductDataTab={false}
       defaultSelectedOfferTabsIdTab="physical-product-data"

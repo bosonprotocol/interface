@@ -70,6 +70,7 @@ export default function DetailWidget({
               componentWhileLoading={() => (
                 <Image src={image} dataTestId="offerImage" />
               )}
+              withMuteButton
             />
           ) : (
             <Image src={image} dataTestId="offerImage" />
