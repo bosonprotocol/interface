@@ -53,7 +53,7 @@ export const BasicCommitDetailWidget: React.FC<
       }}
       onPurchaseOverview={() => {
         showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
-          title: "Commit and Redeem"
+          title: "Commit to Buy and Redeem"
         });
       }}
       onClickBuyOrSwap={({ swapParams }) => {
