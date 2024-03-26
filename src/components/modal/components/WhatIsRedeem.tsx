@@ -22,9 +22,9 @@ export default function WhatIsRedeem() {
           <b>How does the purchase process work?</b>
         </Typography>
         <Typography tag="p">
-          When Committing, the item price will be transferred into escrow and
-          you will receive a redeemable NFT (rNFT) that can be exchanged for the
-          real-world item it represents.
+          When Committing to Buy, the item price will be transferred into escrow
+          and you will receive a redeemable NFT (rNFT) that can be exchanged for
+          the real-world item it represents.
         </Typography>
       </Grid>
       <CommitStepWrapper>

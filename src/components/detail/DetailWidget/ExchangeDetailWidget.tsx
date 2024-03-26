@@ -196,7 +196,7 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
       }}
       onPurchaseOverview={() => {
         showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
-          title: "Commit and Redeem"
+          title: "Commit to Buy and Redeem"
         });
       }}
       topChildren={

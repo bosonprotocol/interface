@@ -5,9 +5,9 @@ import { breakpointNumbers } from "../../lib/styles/breakpoint";
 export const COMMIT_STEPS = [
   {
     icon: ShoppingCart,
-    header: "Commit",
+    header: "Commit to Buy",
     description:
-      "Commit to an Offer to receive a Redeemable NFT (rNFT) that can be exchanged for the real-world item it represents"
+      "Commit to buy an offer to receive a Redeemable NFT (rNFT) that can be exchanged for the real-world item it represents"
   },
   {
     icon: CurrencyCircleDollar,
