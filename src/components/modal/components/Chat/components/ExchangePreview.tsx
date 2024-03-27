@@ -1,3 +1,4 @@
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import styled from "styled-components";
 
 import { useBreakpoints } from "../../../../../lib/utils/hooks/useBreakpoints";
@@ -46,8 +47,8 @@ const StyledGrid = styled(Grid)`
 export default function ExchangePreview({ exchange }: Props) {
   const { offer } = exchange;
   const { isLteS } = useBreakpoints();
-  const animationUrl = exchange?.offer.metadata.animationUrl || "";
-
+  const animationUrl = exchange?.offer.metadata?.animationUrl || "";
+  const { mainImage } = getOfferDetails(exchange.offer.metadata);
   return (
     <StyledGrid
       justifyContent="space-between"
@@ -64,11 +65,11 @@ export default function ExchangePreview({ exchange }: Props) {
                 autoPlay: true
               }}
               componentWhileLoading={() => (
-                <Image src={offer.metadata.imageUrl} alt="Exchange image" />
+                <Image src={mainImage} alt="Exchange image" />
               )}
             />
           ) : (
-            <Image src={offer.metadata.imageUrl} alt="Exchange image" />
+            <Image src={mainImage} alt="Exchange image" />
           )}
         </ImageWrapper>
         <Grid
@@ -77,10 +78,10 @@ export default function ExchangePreview({ exchange }: Props) {
           margin="1rem"
           gap="0.5rem"
         >
-          <Name>{offer.metadata.name}</Name>
+          <Name>{offer.metadata?.name}</Name>
           <SellerID
-            offer={offer}
-            buyerOrSeller={offer?.seller}
+            offerMetadata={offer.metadata}
+            accountToShow={offer?.seller}
             justifyContent="flex-start"
             withProfileImage
             onClick={() => {

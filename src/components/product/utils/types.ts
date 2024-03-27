@@ -4,10 +4,11 @@ import {
   confirmProductDetailsSchema,
   CoreTermsOfSaleValidationSchema,
   imagesSpecificOrAllValidationSchema,
-  productImagesValidationSchema,
-  productInformationValidationSchema,
+  ProductDigital,
+  ProductImagesValidationSchema,
+  ProductInformationValidationSchema,
   productTypeValidationSchema,
-  productVariantsImagesValidationSchema,
+  ProductVariantsImagesValidationSchema,
   ProductVariantsValidationSchema,
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
@@ -15,7 +16,7 @@ import {
   TokenGatingValidationSchema,
   variantsCoreTermsOfSaleValidationSchema
 } from "./validationSchema";
-
+export type { ProductDigital } from "./validationSchema";
 export type CreateYourProfile = Yup.InferType<
   typeof regularProfileValidationSchema
 >;
@@ -24,9 +25,8 @@ export type CreateProfile = CreateYourProfile["createYourProfile"];
 
 export type ProductType = Yup.InferType<typeof productTypeValidationSchema>;
 
-export type ProductInformation = Yup.InferType<
-  typeof productInformationValidationSchema
->;
+export type ProductInformation =
+  Yup.InferType<ProductInformationValidationSchema>;
 
 export type ProductVariants = Yup.InferType<ProductVariantsValidationSchema>;
 
@@ -44,11 +44,10 @@ export type TermsOfExchange = Yup.InferType<
 
 export type ShippingInfo = Yup.InferType<typeof shippingInfoValidationSchema>;
 
-export type ProductImages = Yup.InferType<typeof productImagesValidationSchema>;
+export type ProductImages = Yup.InferType<ProductImagesValidationSchema>;
 
-export type ProductVariantsImages = Yup.InferType<
-  typeof productVariantsImagesValidationSchema
->;
+export type ProductVariantsImages =
+  Yup.InferType<ProductVariantsImagesValidationSchema>;
 
 export type ImagesSpecificOrAll = Yup.InferType<
   typeof imagesSpecificOrAllValidationSchema
@@ -61,6 +60,7 @@ export type ConfirmProductDetails = Yup.InferType<
 export type CreateProductForm = CreateYourProfile &
   ProductType &
   ProductInformation &
+  ProductDigital &
   ProductVariants &
   ShippingInfo &
   CoreTermsOfSale &

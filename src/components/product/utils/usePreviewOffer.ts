@@ -1,17 +1,21 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { ProductV1Metadata, subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { ethers } from "ethers";
 import { CONFIG } from "lib/config";
 import { Offer } from "lib/types/offer";
+import { useChainId } from "lib/utils/hooks/connection/connection";
 import { useDisputeResolver } from "lib/utils/hooks/useDisputeResolver";
 import { buildCondition } from "pages/create-product/utils/buildCondition";
 import { extractOfferTimestamps } from "pages/create-product/utils/dataValidator";
 import { getTermsOfExchange } from "pages/create-product/utils/getTermsOfExchange";
 import { getDisputeResolverContactMethod } from "pages/create-product/utils/helpers";
+import { getDigitalMetadatas } from "pages/create-product/utils/productDigital";
+import { SupportedJuridiction } from "pages/create-product/utils/types";
 import { useCallback, useMemo } from "react";
 
 import { useForm } from "../../../lib/utils/hooks/useForm";
+import { ProductTypeTypeValues } from "./const";
 
 type UsePreviewOfferProps = {
   isMultiVariant: boolean;
@@ -29,6 +33,7 @@ export const usePreviewOffers = ({
   overrides = {}
 }: UsePreviewOfferProps): Offer[] => {
   const { values } = useForm();
+  const chainId = useChainId();
   const { config } = useConfigContext();
   const disputeResolverId = config.envConfig.defaultDisputeResolverId;
   const { disputeResolver } = useDisputeResolver(disputeResolverId);
@@ -103,6 +108,53 @@ export const usePreviewOffers = ({
           price,
           decimals
         });
+      const productV1Seller = {
+        name: values.createYourProfile.name,
+        description: values.createYourProfile.description
+      };
+      const shipping: ProductV1Metadata["shipping"] = {
+        id: "shipping",
+        defaultVersion: 1,
+        countryOfOrigin: "",
+        supportedJurisdictions:
+          values.shippingInfo.jurisdiction.length > 0
+            ? values.shippingInfo.jurisdiction
+                .filter((v) => v.time && v.region)
+                .reduce((prev, current) => {
+                  const { region, time } = current;
+                  if (
+                    !region ||
+                    region.length === 0 ||
+                    !time ||
+                    time.length === 0
+                  ) {
+                    return prev;
+                  } else {
+                    return [
+                      ...prev,
+                      {
+                        id: `${region}-${time}`,
+                        label: region,
+                        deliveryTime: time
+                      }
+                    ];
+                  }
+                }, [] as Array<SupportedJuridiction & { id: string }>)
+            : undefined,
+        returnPeriodInDays: values.shippingInfo.returnPeriod.toString(),
+        redemptionPoint: values.shippingInfo.redemptionPointUrl
+      };
+      const product = {
+        title: values.productInformation.productTitle,
+        description: values.productInformation.description,
+        ...(overrides.visuals_images && {
+          visuals_images: overrides.visuals_images.map((ipfsLink) => ({
+            url: ipfsLink
+          }))
+        }),
+        shipping
+      };
+
       const offer = {
         price: priceBN.toString(),
         sellerDeposit,
@@ -148,35 +200,48 @@ export const usePreviewOffers = ({
           escalationResponsePeriod: escalationResponsePeriod
         },
         metadata: {
-          product: {
-            description: values.productInformation.description,
-            ...(overrides.visuals_images && {
-              visuals_images: overrides.visuals_images.map((ipfsLink) => ({
-                url: ipfsLink
-              }))
-            })
-          },
+          name:
+            values.productType.productType === ProductTypeTypeValues.phygital
+              ? values.productInformation.bundleName
+              : values.productInformation.productTitle,
+          description:
+            values.productType.productType === ProductTypeTypeValues.phygital
+              ? values.productInformation.bundleDescription
+              : values.productInformation.description,
+          type:
+            values.productType.productType === ProductTypeTypeValues.phygital
+              ? subgraph.MetadataType.Bundle
+              : subgraph.MetadataType.ProductV1,
+          ...(values.productType.productType ===
+            ProductTypeTypeValues.phygital && {
+            items: [
+              {
+                type: subgraph.ItemMetadataType.ItemProductV1,
+                product,
+                productV1Seller,
+                shipping
+              },
+              ...getDigitalMetadatas({ chainId, values })
+            ]
+          }),
+          product,
           ...(overrides.offerImg && { image: overrides.offerImg }),
           animationUrl: values.productAnimation?.[0]?.src,
-          shipping: {
-            returnPeriodInDays: parseInt(values.shippingInfo.returnPeriod)
-          },
+          shipping,
           exchangePolicy: {
             sellerContactMethod: CONFIG.defaultSellerContactMethod,
             disputeResolverContactMethod: getDisputeResolverContactMethod(),
             template: values.termsOfExchange.exchangePolicy.value,
             label: values.termsOfExchange.exchangePolicy.label
           },
-          productV1Seller: {
-            name: values.createYourProfile.name,
-            description: values.createYourProfile.description
-          }
+          productV1Seller
         },
-        condition: condition
+        condition
       } as unknown as Offer;
       return offer;
     },
     [
+      chainId,
       config.envConfig.defaultTokens,
       config.envConfig.nativeCoin?.decimals,
       disputeResolver,
@@ -189,14 +254,7 @@ export const usePreviewOffers = ({
       tokenGating,
       validFromDateInMS,
       validUntilDateInMS,
-      values.coreTermsOfSale.currency.value,
-      values.createYourProfile.description,
-      values.createYourProfile.name,
-      values.productAnimation,
-      values.productInformation.description,
-      values.productType?.tokenGatedOffer,
-      values.shippingInfo.returnPeriod,
-      values.termsOfExchange,
+      values,
       voucherRedeemableFromDateInMS,
       voucherRedeemableUntilDateInMS,
       voucherValidDurationInMS

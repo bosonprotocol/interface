@@ -1,11 +1,15 @@
 import {
   AuthTokenType,
   Currencies,
-  ProductCard as BosonProductCard
+  isBundle,
+  ProductCard as BosonProductCard,
+  ProductType
 } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { getColor1OverColor2WithContrast } from "lib/styles/contrast";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
+import { getOfferDetailPage } from "lib/utils/offer/getOfferDetailPage";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { CameraSlash, Lock } from "phosphor-react";
 import { useEffect, useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
@@ -13,7 +17,7 @@ import styled, { css } from "styled-components";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, ProductRoutes } from "../../lib/routing/routes";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
@@ -148,10 +152,10 @@ export default function ProductCard({
     fallbackSellerAvatar && config.lens.ipfsGateway
       ? getLensImageUrl(fallbackSellerAvatar, config.lens.ipfsGateway)
       : fallbackSellerAvatar;
-  const imageSrc = getImageUrl(
-    offer?.metadata?.image || offer?.metadata?.imageUrl,
-    { height: 500 }
-  );
+  const { mainImage } = getOfferDetails(offer.metadata);
+  const imageSrc = getImageUrl((mainImage || offer?.metadata?.imageUrl) ?? "", {
+    height: 500
+  });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
@@ -180,12 +184,11 @@ export default function ProductCard({
   const price = useConvertedPrice(priceValue);
 
   const handleOnCardClick = () => {
+    const pathname: string = getOfferDetailPage(offer);
+
     navigate(
       {
-        pathname: generatePath(ProductRoutes.ProductDetail, {
-          [UrlParameters.sellerId]: offer?.seller?.id,
-          [UrlParameters.uuid]: offer?.uuid || ""
-        })
+        pathname
       },
       {
         state: {
@@ -231,6 +234,7 @@ export default function ProductCard({
     color1: colors.accent,
     contrastThreshold: 4
   });
+  const isPhygital = isBundle(offer);
   return (
     <ProductCardWrapper
       $isCustomStoreFront={!!isCustomStoreFront}
@@ -248,7 +252,7 @@ export default function ProductCard({
         dataTestId={dataTestId}
         productId={offer?.id}
         onCardClick={handleOnCardClick}
-        title={offer?.metadata?.name}
+        title={offer?.metadata?.name ?? ""}
         avatarName={name ? name : `Seller ID: ${offer.seller.id}`}
         avatar={avatarObj.avatarUrl || fallbackSellerAvatarUrl || mockedAvatar}
         onAvatarError={() => {
@@ -292,6 +296,7 @@ export default function ProductCard({
         }}
         bottomText={handleText}
         isHoverDisabled={isHoverDisabled}
+        productType={isPhygital ? ProductType.phygital : ProductType.physical}
       />
     </ProductCardWrapper>
   );

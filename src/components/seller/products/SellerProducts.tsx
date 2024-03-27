@@ -90,12 +90,12 @@ export default function SellerProducts({
         const status = offers.getOfferStatus(offer);
 
         if (currentTag === "physical") {
-          return offer?.metadata?.product?.offerCategory === "PHYSICAL"
+          return offer.metadata?.__typename === "ProductV1MetadataEntity"
             ? offer
             : null;
         }
         if (currentTag === "phygital") {
-          return offer?.metadata?.product?.offerCategory === "PHYGITAL"
+          return offer.metadata?.__typename === "BundleMetadataEntity"
             ? offer
             : null;
         }
@@ -113,7 +113,7 @@ export default function SellerProducts({
         return (
           n !== null &&
           (n.id.includes(search) ||
-            n.metadata.name.toLowerCase().includes(search.toLowerCase()))
+            !!n.metadata?.name.toLowerCase().includes(search.toLowerCase()))
         );
       });
     }

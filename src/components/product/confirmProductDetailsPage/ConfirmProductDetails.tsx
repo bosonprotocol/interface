@@ -5,8 +5,13 @@ import { Spinner } from "components/loading/Spinner";
 import InitializeChat from "components/modal/components/Chat/components/InitializeChat";
 import differentVariantsProduct from "components/product/img/different-variants-product.png";
 import oneItemTypeProductSmall from "components/product/img/one-item-product-small.png";
+import phygitalProductSmall from "components/product/img/phygital-product-small.png";
 import physicalProductSmall from "components/product/img/physical-product-small.png";
-import { optionUnitValues, ProductTypeValues } from "components/product/utils";
+import {
+  optionUnitValues,
+  ProductTypeTypeValues,
+  ProductTypeVariantsValues
+} from "components/product/utils";
 import Tooltip from "components/tooltip/Tooltip";
 import BosonButton from "components/ui/BosonButton";
 import { Grid } from "components/ui/Grid";
@@ -26,6 +31,7 @@ import { useMemo } from "react";
 import styled from "styled-components";
 
 import { SectionTitle } from "../Product.styles";
+import { getBundleItemName } from "../productDigital/getBundleItemName";
 import {
   ChatDotsIcon,
   CheckIcon,
@@ -50,6 +56,7 @@ import {
   TagsWrapper,
   TermsOfSaleContent
 } from "./ConfirmProductDetails.styles";
+import { ConfirmProductDigital } from "./ConfirmProductDigital";
 
 const VariantsTable = styled.table`
   th:not(:first-child),
@@ -112,12 +119,14 @@ export default function ConfirmProductDetails({
   const renderProductType = useMemo(() => {
     let src = "";
     let description = "";
-    if (values.productType?.productType === "physical") {
+    if (values.productType?.productType === ProductTypeTypeValues.physical) {
       src = physicalProductSmall;
       description = "Physical";
-    } else if (values.productType?.productType === "phygital") {
-      // TODO: MISSING UI AND FOR NOW ONLY physical available
-      // description = "Phygital";
+    } else if (
+      values.productType?.productType === ProductTypeTypeValues.phygital
+    ) {
+      src = phygitalProductSmall;
+      description = "Phygital";
     }
     return (
       <>
@@ -135,11 +144,15 @@ export default function ConfirmProductDetails({
   const renderProductVariant = useMemo(() => {
     let src = "";
     let description = "";
-    if (values.productType.productVariant === ProductTypeValues.oneItemType) {
+    if (
+      values.productType.productVariant ===
+      ProductTypeVariantsValues.oneItemType
+    ) {
       src = oneItemTypeProductSmall;
       description = "One item type";
     } else if (
-      values.productType.productVariant === ProductTypeValues.differentVariants
+      values.productType.productVariant ===
+      ProductTypeVariantsValues.differentVariants
     ) {
       src = differentVariantsProduct;
       description = "Different variants";
@@ -319,6 +332,7 @@ export default function ConfirmProductDetails({
                 </VariantsTable>
               </div>
             )}
+            <ConfirmProductDigital />
             {(!isMultiVariant || (isMultiVariant && isOneSetOfImages)) && (
               <div>
                 <ProductSubtitle tag="h4">Product Images</ProductSubtitle>
@@ -350,6 +364,38 @@ export default function ConfirmProductDetails({
                     }}
                   />
                 </SpaceContainer>
+              </div>
+            )}
+            {values.bundleItemsMedia?.length && (
+              <div>
+                <ProductSubtitle tag="h4">
+                  Digital images & videos
+                </ProductSubtitle>
+                {values.bundleItemsMedia.map((biMedia, index) => {
+                  const bundleItem =
+                    values.productDigital?.bundleItems?.[index];
+                  const name = getBundleItemName(bundleItem);
+                  return (
+                    <Grid
+                      key={`${biMedia.image?.[0]?.src}-${biMedia.video?.[0]?.src}`}
+                      flexDirection="column"
+                      alignItems="initial"
+                    >
+                      <Typography>{name}</Typography>
+                      <SpaceContainer>
+                        <Image src={biMedia.image?.[0]?.src || ""} />
+                        <Video
+                          src={biMedia.video?.[0]?.src || ""}
+                          videoProps={{
+                            autoPlay: true,
+                            loop: true,
+                            muted: true
+                          }}
+                        />
+                      </SpaceContainer>
+                    </Grid>
+                  );
+                })}
               </div>
             )}
           </ProductInformationContent>

@@ -50,7 +50,8 @@ import {
   CreateYourProfile,
   getOptionsCurrencies,
   initialValues,
-  ProductTypeValues
+  ProductTypeTypeValues,
+  ProductTypeVariantsValues
 } from "./utils";
 
 const productTypeItemsPerRow = {
@@ -403,8 +404,11 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productType"
-                  value="physical"
-                  checked={values.productType?.productType === "physical"}
+                  value={ProductTypeTypeValues.physical}
+                  checked={
+                    values.productType?.productType ===
+                    ProductTypeTypeValues.physical
+                  }
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -430,11 +434,13 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productType"
-                  value="phygital"
-                  checked={values.productType?.productType === "phygital"}
+                  value={ProductTypeTypeValues.phygital}
+                  checked={
+                    values.productType?.productType ===
+                    ProductTypeTypeValues.phygital
+                  }
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  disabled
                 />
                 <Grid
                   justifyContent="center"
@@ -447,19 +453,10 @@ export default function ProductType({
                     tag="p"
                     fontWeight="600"
                     fontSize="1rem"
-                    margin="1rem 0 0 0"
+                    margin="1.5rem 0"
                     color={colors.darkGrey}
                   >
                     Phygital
-                  </Typography>
-                  <Typography
-                    tag="p"
-                    fontWeight="600"
-                    fontSize="0.7rem"
-                    margin="0.3rem 0 1.3125rem 0"
-                    color={colors.darkGrey}
-                  >
-                    COMING SOON
                   </Typography>
                 </Grid>
               </Label>
@@ -484,10 +481,10 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productVariant"
-                  value={ProductTypeValues.oneItemType}
+                  value={ProductTypeVariantsValues.oneItemType}
                   checked={
                     values.productType?.productVariant ===
-                    ProductTypeValues.oneItemType
+                    ProductTypeVariantsValues.oneItemType
                   }
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -514,10 +511,10 @@ export default function ProductType({
                 <RadioButton
                   type="radio"
                   name="productType.productVariant"
-                  value={ProductTypeValues.differentVariants}
+                  value={ProductTypeVariantsValues.differentVariants}
                   checked={
                     values.productType?.productVariant ===
-                    ProductTypeValues.differentVariants
+                    ProductTypeVariantsValues.differentVariants
                   }
                   onChange={handleChange}
                   onBlur={handleBlur}

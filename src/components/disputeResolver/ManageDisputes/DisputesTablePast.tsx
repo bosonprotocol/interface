@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -93,12 +94,13 @@ export default function DisputesTablePast({ disputes }: Props) {
         }
 
         const offer = dispute.exchange.offer;
+        const { mainImage } = getOfferDetails(offer.metadata);
 
         return {
           offerId: offer?.id,
           image: (
             <Image
-              src={offer?.metadata?.image ?? ""}
+              src={mainImage}
               style={{
                 width: "2.5rem",
                 height: "2.5rem",

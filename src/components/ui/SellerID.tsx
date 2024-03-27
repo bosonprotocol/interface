@@ -12,10 +12,10 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getLensImageUrl } from "../../lib/utils/images";
+import { getOfferDetails } from "../../lib/utils/offer/getOfferDetails";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import Image from "./Image";
 
@@ -74,8 +74,8 @@ export type Seller = Pick<
 const SellerID: React.FC<
   {
     children?: React.ReactNode;
-    offer: Offer;
-    buyerOrSeller?: Buyer | Seller;
+    offerMetadata: Offer["metadata"];
+    accountToShow?: Buyer | Seller;
     accountImageSize?: number;
     withProfileImage: boolean;
     withProfileText?: boolean;
@@ -86,8 +86,8 @@ const SellerID: React.FC<
     Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">
 > = ({
   children,
-  offer,
-  buyerOrSeller,
+  offerMetadata,
+  accountToShow,
   withProfileImage,
   onClick,
   accountImageSize,
@@ -99,32 +99,34 @@ const SellerID: React.FC<
   const { config } = useConfigContext();
   const { account: address } = useAccount();
   const navigate = useKeepQueryParamsNavigate();
-  const { artist } = getOfferDetails(offer);
+  const { artist } = getOfferDetails(offerMetadata);
 
-  const userId = buyerOrSeller?.id;
-  const isSeller = buyerOrSeller ? "assistant" in buyerOrSeller : false;
-  const userAddress = buyerOrSeller
+  const userId = accountToShow?.id;
+  const isSeller = accountToShow ? "assistant" in accountToShow : false;
+  const userAddress = accountToShow
     ? isSeller
-      ? (buyerOrSeller as Seller).assistant
-      : (buyerOrSeller as Buyer).wallet
+      ? (accountToShow as Seller).assistant
+      : (accountToShow as Buyer).wallet
     : address;
   const hasCursorPointer = !!onClick || onClick === undefined;
-  const seller = isSeller ? (buyerOrSeller as Seller) : offer?.seller;
-  const metadata = seller?.metadata;
+  const seller = isSeller ? (accountToShow as Seller) : null;
+  const sellerMetadata = seller?.metadata;
   const useLens = seller?.authTokenType === AuthTokenType.LENS;
-  const regularProfilePicture =
-    metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
+  const sellerRegularProfilePicture =
+    sellerMetadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const lensProfilePicture = getLensProfilePictureUrl(lensProfile);
   const productV1SellerProfileImage =
     artist?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const profilePicture =
-    (useLens ? lensProfilePicture : regularProfilePicture) ??
+    (useLens ? lensProfilePicture : sellerRegularProfilePicture) ??
     productV1SellerProfileImage;
   const profilePictureToShow =
     useLens && config.lens.ipfsGateway
       ? getLensImageUrl(profilePicture, config.lens.ipfsGateway)
-      : regularProfilePicture;
-  const name = (useLens ? lensProfile?.name : metadata?.name) ?? metadata?.name;
+      : sellerRegularProfilePicture;
+  const sellerName =
+    (useLens ? lensProfile?.name : sellerMetadata?.name) ??
+    sellerMetadata?.name;
   return (
     <AddressContainer {...rest} data-address-container>
       <SellerContainer
@@ -134,6 +136,9 @@ const SellerID: React.FC<
             onClick(e);
           } else if (onClick !== null) {
             e.stopPropagation();
+            if (!userId) {
+              return;
+            }
             if (isSeller) {
               navigate({
                 pathname: generatePath(BosonRoutes.SellerPage, {
@@ -177,8 +182,8 @@ const SellerID: React.FC<
             $withBosonStyles={withBosonStyles}
           >
             {isSeller
-              ? name
-                ? name
+              ? sellerName
+                ? sellerName
                 : `Seller ID: ${userId}`
               : `Buyer ID: ${userId}`}
           </SellerInfo>

@@ -49,6 +49,7 @@ import {
 } from "lib/utils/hooks/transactions/usePendingTransactions";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellers } from "lib/utils/hooks/useSellers";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { poll } from "lib/utils/promises";
 import { useCoreSDK } from "lib/utils/useCoreSdk";
 import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
@@ -332,13 +333,14 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       });
     }
   };
+  const { mainImage } = getOfferDetails(offer.metadata);
   const BASE_MODAL_DATA = useMemo(
     () => ({
-      animationUrl: offer.metadata.animationUrl || "",
-      image,
+      animationUrl: offer.metadata?.animationUrl || "",
+      image: image || mainImage,
       name
     }),
-    [image, name, offer.metadata.animationUrl]
+    [image, name, offer.metadata?.animationUrl, mainImage]
   );
   const onCommitSuccess = async (
     _receipt: ethers.providers.TransactionReceipt,
@@ -380,7 +382,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       toast((t) => (
         <SuccessTransactionToast
           t={t}
-          action={`Commit to offer: ${offer.metadata.name}`}
+          action={`Commit to offer: ${offer.metadata?.name || ""}`}
           onViewDetails={() => {
             showDetailWidgetModal();
           }}

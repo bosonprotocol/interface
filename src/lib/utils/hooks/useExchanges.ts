@@ -5,7 +5,6 @@ import { useQuery } from "react-query";
 
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
-import { offerGraphQl } from "./offers/graphql";
 import { useCurationLists } from "./useCurationLists";
 
 export type Exchange = subgraph.ExchangeFieldsFragment & {
@@ -52,6 +51,7 @@ const getExchangesFunction = (subgraphUrl: string) => async (props: Props) => {
   }>(
     subgraphUrl,
     gql`
+    ${subgraph.BaseOfferFieldsFragmentDoc}
     query GetExchanges(
       $disputed: Boolean
       $sellerId: String
@@ -129,9 +129,12 @@ const getExchangesFunction = (subgraphUrl: string) => async (props: Props) => {
           wallet
           active
         }
-        offer ${offerGraphQl}
+        offer {
+          ...BaseOfferFields
+        }
       }
     }
+    
   `,
     {
       disputed,
@@ -199,7 +202,7 @@ export function useExchanges(
               metadata: isCuratedSeller
                 ? {
                     ...exchange.offer.metadata,
-                    imageUrl: exchange.offer.metadata.image
+                    imageUrl: exchange.offer.metadata?.image || ""
                   }
                 : {
                     name: `${exchange.offer.id}`,

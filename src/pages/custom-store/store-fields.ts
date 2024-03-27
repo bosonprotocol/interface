@@ -4,7 +4,10 @@ import * as Yup from "yup";
 
 import { SelectDataProps } from "../../components/form/types";
 import { colors } from "../../lib/styles/colors";
-import { checkValidUrl } from "../../lib/validation/regex/url";
+import {
+  checkValidUrl,
+  notUrlErrorMessage
+} from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
 import { AdditionalFooterLink } from "./AdditionalFooterLinksTypes";
 import { StoreFields } from "./store-fields-types";
@@ -61,7 +64,6 @@ const getYesNoOptions = (defaultValue: "yes" | "no") => {
 };
 
 const standardRequiredErrorMessage = "This field is required";
-const notUrlErrorMessage = "This is not a URL like: www.example.com";
 const withOwnProductsOptions = [
   { label: "Only my own products", value: "mine", default: true },
   { label: "All products", value: "all" },

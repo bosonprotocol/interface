@@ -62,8 +62,7 @@ function Upload({
   );
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
-  const displayError =
-    typeof errorMessage === typeof "string" && errorMessage !== "";
+  const displayError = typeof errorMessage === "string" && errorMessage !== "";
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [nativeFiles, setNativeFiles] = useState<File[] | null>(null);
@@ -205,6 +204,9 @@ function Upload({
 
   const handleSave = useCallback(
     async (efiles: File[] | null) => {
+      if (!meta.touched) {
+        helpers.setTouched(true);
+      }
       handleLoading(true);
       const files = await saveToIpfs(efiles);
       if (files) {
@@ -217,7 +219,7 @@ function Upload({
       }
       handleLoading(false);
     },
-    [saveToIpfs, setFiles, handleLoading]
+    [meta.touched, handleLoading, saveToIpfs, helpers, setFiles]
   );
   const saveFn = withUpload ? handleSave : handleChange;
   const style = {

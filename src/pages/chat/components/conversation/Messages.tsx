@@ -108,7 +108,7 @@ export const Messages: React.FC<MessagesProps> = memo(
           size={32}
           withProfileText={false}
           exchange={exchange}
-          buyerOrSeller={exchange.buyer}
+          accountToShow={exchange.buyer}
         />
       );
     }, [exchange]);
@@ -118,7 +118,7 @@ export const Messages: React.FC<MessagesProps> = memo(
           size={32}
           withProfileText={false}
           exchange={exchange}
-          buyerOrSeller={exchange.seller}
+          accountToShow={exchange.seller}
         />
       );
     }, [exchange]);

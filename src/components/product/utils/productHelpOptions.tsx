@@ -5,7 +5,7 @@ export const productTypeHelp = [
     title: "What is a phygital?",
     description:
       "A Phygital item is one that exists both digitally (in the form of an NFT) and also in a physical form. The digital item must be a visual representation of the physical."
-  } as const,
+  },
   {
     title: "Why would I sell a phygital item?",
     description:
@@ -15,14 +15,14 @@ export const productTypeHelp = [
     title: "What are variants?",
     description:
       "Variants are alternate forms of the same product, for example, color and size. Choosing the 'Different variants' option on the left allows you to leverage all of the same product data for the different variants, instead of manually creating a new product offer for each variant."
-  } as const,
+  },
   {
     title: "What is a token gated offer?",
     description:
       "A token gated offer allows you to make the product exclusive by limiting the ability to purchase it only to users holding a specific token."
-  } as const
-];
-
+  }
+] as const;
+export const productDigitalHelp = productTypeHelp;
 export const productInformationHelp = [
   {
     title: "How do I describe my item?",

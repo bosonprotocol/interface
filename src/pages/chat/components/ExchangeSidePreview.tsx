@@ -9,6 +9,7 @@ import {
 } from "lib/constants/policies";
 import { getDisputeDates } from "lib/utils/dispute";
 import { useDisputeResolver } from "lib/utils/hooks/useDisputeResolver";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
 import { ArrowSquareOut } from "phosphor-react";
 import {
@@ -271,7 +272,7 @@ const getOfferDetailData = (
         ) : (
           <Typography
             tag="p"
-            color={colors.orange}
+            color={colors.accent}
             fontSize={fontSizeExchangePolicy}
             alignItems="center"
           >
@@ -330,15 +331,19 @@ const ExchangeMedia = ({
     )}
   </>
 );
-const ExchangeImage = ({ exchange }: { exchange: Exchange | undefined }) => (
-  <ExchangeMedia exchange={exchange}>
-    <StyledImage
-      src={exchange?.offer.metadata.imageUrl ?? ""}
-      alt="exchange image"
-      dataTestId="exchange-image"
-    />
-  </ExchangeMedia>
-);
+const ExchangeImage = ({ exchange }: { exchange: Exchange | undefined }) => {
+  const { mainImage } = getOfferDetails(exchange?.offer.metadata);
+  const imageSrc = exchange?.offer.metadata?.imageUrl || mainImage || "";
+  return (
+    <ExchangeMedia exchange={exchange}>
+      <StyledImage
+        src={imageSrc}
+        alt="exchange image"
+        dataTestId="exchange-image"
+      />
+    </ExchangeMedia>
+  );
+};
 interface Props {
   exchange: Exchange | undefined;
   dispute: subgraph.DisputeFieldsFragment | undefined;
@@ -447,7 +452,7 @@ export default memo(function ExchangeSidePreview({
 
   const hasDisputePeriodElapsed: boolean =
     getHasExchangeDisputeResolutionElapsed(exchange, offer);
-  const animationUrl = exchange?.offer.metadata.animationUrl || "";
+  const animationUrl = exchange?.offer.metadata?.animationUrl || "";
   return (
     <Container $disputeOpen={disputeOpen}>
       {animationUrl ? (
@@ -468,7 +473,7 @@ export default memo(function ExchangeSidePreview({
       )}
 
       <ExchangeInfo>
-        <Name tag="h3">{exchange.offer.metadata.name}</Name>
+        <Name tag="h3">{exchange.offer.metadata?.name}</Name>
         <StyledPrice
           isExchange={false}
           currencySymbol={offer.exchangeToken.symbol}
@@ -534,7 +539,7 @@ export default memo(function ExchangeSidePreview({
                 {
                   title: "Retract",
                   exchangeId: exchange.id,
-                  offerName: offer.metadata.name,
+                  offerName: offer.metadata?.name || "",
                   refetch: refetchItAll,
                   disputeId: exchange.dispute?.id ?? "",
                   addMessage,

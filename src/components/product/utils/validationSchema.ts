@@ -1,4 +1,4 @@
-import { CoreSDK } from "@bosonprotocol/react-kit";
+import { CoreSDK, digitalTypeMapping } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import {
   maxLengthErrorMessage,
@@ -6,6 +6,8 @@ import {
 } from "components/modal/components/Profile/const";
 import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
+import { isTruthy } from "lib/types/helpers";
+import { checkValidUrl, notUrlErrorMessage } from "lib/validation/regex/url";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
@@ -16,12 +18,16 @@ import { getCommonFieldsValidation } from "../../modal/components/Profile/valida
 import { CONFIG, DappConfig } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
+  DIGITAL_NFT_TYPE,
+  DIGITAL_TYPE,
+  isNftMintedAlreadyOptions,
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_LENGTH,
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
-  ProductTypeValues,
+  ProductTypeTypeValues,
+  ProductTypeVariantsValues,
   TOKEN_CRITERIA,
   TOKEN_TYPES,
   TokenTypes
@@ -45,7 +51,7 @@ export const productTypeValidationSchema = Yup.object({
   productType: Yup.object({
     productType: Yup.string()
       .min(1)
-      .oneOf(["physical", "phygital"])
+      .oneOf([ProductTypeTypeValues.physical, ProductTypeTypeValues.phygital])
       .required(validationMessage.required),
     productVariant: Yup.string().min(1).required(validationMessage.required),
     tokenGatedOffer: Yup.string()
@@ -83,9 +89,78 @@ const testPrice = (config: DappConfig) =>
     }
   };
 
-const productAnimation = {
+const getBundleItemsMedia = ({
+  isPhygital,
+  productDigital
+}: {
+  isPhygital: boolean;
+  productDigital: ProductDigital["productDigital"];
+}) => ({
+  bundleItemsMedia:
+    productDigital?.type?.value === digitalTypeMapping["digital-nft"] &&
+    productDigital?.isNftMintedAlready?.value === "true"
+      ? Yup.array()
+      : productDigital?.type?.value === digitalTypeMapping["digital-nft"]
+      ? Yup.array(
+          Yup.object({
+            image: validationOfRequiredIpfsImage(),
+            video: validationOfIpfsImage()
+          })
+        ).test({
+          message: "An image has to be uploaded for the digital items",
+          test: (value, context) => {
+            const productDigital =
+              context.parent.productDigital ??
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              context.options?.from?.find((from) => from.value.productDigital)
+                ?.value?.productDigital;
+            const isValid = isPhygital
+              ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
+                  ?.length ?? 0) === productDigital.bundleItems.length
+              : true;
+            return isValid;
+          }
+        })
+      : Yup.array(
+          Yup.object({
+            image: validationOfIpfsImage(),
+            video: validationOfIpfsImage()
+          })
+        ).test({
+          message:
+            "Either image or video has to be uploaded for the digital items",
+          test: (value, context) => {
+            const productDigital =
+              context.parent.productDigital ??
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              context.options?.from?.find((from) => from.value.productDigital)
+                ?.value?.productDigital;
+            const isValid = isPhygital
+              ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
+                  ?.length ?? 0) === productDigital.bundleItems.length
+              : true;
+            return isValid;
+          }
+        })
+  // .when("productAnimation", {
+  //   is: () => {
+  //     return isPhygital;
+  //   },
+  //   then: (schema) => {
+  //     return schema.min(
+  //       1,
+  //       "Either image or video has to be uploaded for the digital items"
+  //     );
+  //   },
+  //   otherwise: (schema) => schema
+  // })
+});
+
+const getProductAnimation = () => ({
   productAnimation: validationOfIpfsImage()
-};
+});
 
 export const getProductVariantsValidationSchema = (config: DappConfig) =>
   Yup.object({
@@ -127,7 +202,7 @@ export type ProductVariantsValidationSchema = ReturnType<
   typeof getProductVariantsValidationSchema
 >;
 
-export const productImagesValidationSchema = Yup.object({
+const getSinglePhysicalProductImagesValidationSchema = () => ({
   productImages: Yup.object({
     thumbnail: validationOfRequiredIpfsImage(),
     secondary: validationOfIpfsImage(),
@@ -138,20 +213,46 @@ export const productImagesValidationSchema = Yup.object({
     sizeAndScale: validationOfIpfsImage(),
     more: validationOfIpfsImage()
   }),
-  ...productAnimation
+  ...getProductAnimation()
 });
+export const getProductImagesValidationSchema = ({
+  isPhygital,
+  productDigital
+}: {
+  isPhygital: boolean;
+  productDigital: ProductDigital["productDigital"];
+}) =>
+  Yup.object({
+    ...getSinglePhysicalProductImagesValidationSchema(),
+    ...getBundleItemsMedia({ isPhygital, productDigital })
+  });
+export type ProductImagesValidationSchema = ReturnType<
+  typeof getProductImagesValidationSchema
+>;
 
-export const productVariantsImagesValidationSchema = Yup.object({
-  productVariantsImages: Yup.array(
-    Yup.object().concat(productImagesValidationSchema)
-  ).test({
-    name: "minLength",
-    test: function (value) {
-      return value?.length === this.parent.productVariants?.variants.length;
-    }
-  }),
-  ...productAnimation
-});
+export const getProductVariantsImagesValidationSchema = ({
+  isPhygital,
+  productDigital
+}: {
+  isPhygital: boolean;
+  productDigital: ProductDigital["productDigital"];
+}) =>
+  Yup.object({
+    ...getBundleItemsMedia({ isPhygital, productDigital }),
+    productVariantsImages: Yup.array(
+      Yup.object({
+        ...getSinglePhysicalProductImagesValidationSchema()
+      })
+    ).test({
+      name: "minLength",
+      test: function (value) {
+        return value?.length === this.parent.productVariants?.variants.length;
+      }
+    })
+  });
+export type ProductVariantsImagesValidationSchema = ReturnType<
+  typeof getProductVariantsImagesValidationSchema
+>;
 
 export const imagesSpecificOrAllValidationSchema = Yup.object({
   imagesSpecificOrAll: Yup.object({
@@ -162,38 +263,278 @@ export const imagesSpecificOrAllValidationSchema = Yup.object({
   }).nullable()
 });
 
-export const productInformationValidationSchema = Yup.object({
-  productInformation: Yup.object({
-    productTitle: Yup.string()
-      .max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
-      .required(validationMessage.required),
-    category: Yup.object({
-      value: Yup.string(),
+const getBundleGeneralInfo = ({ isPhygital }: { isPhygital: boolean }) => ({
+  bundleName: isPhygital
+    ? Yup.string().required(validationMessage.required)
+    : Yup.string(),
+  bundleDescription: isPhygital
+    ? Yup.string().required(validationMessage.required)
+    : Yup.string()
+});
+export type ProductInformationValidationSchema = ReturnType<
+  typeof getProductInformationValidationSchema
+>;
+export const getProductInformationValidationSchema = ({
+  isPhygital
+}: {
+  isPhygital: boolean;
+}) =>
+  Yup.object({
+    productInformation: Yup.object({
+      ...getBundleGeneralInfo({ isPhygital }),
+      productTitle: Yup.string()
+        .max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
+        .required(validationMessage.required),
+      category: Yup.object({
+        value: Yup.string(),
+        label: Yup.string()
+      }).required(validationMessage.required),
+      tags: Yup.array(Yup.string().required(validationMessage.required))
+        .default([])
+        .min(1, "Please provide at least one tag"),
+      attributes: Yup.array(
+        Yup.object({
+          name: Yup.string(),
+          value: Yup.string()
+        })
+      ).default([{ name: "", value: "" }]),
+      description: Yup.string()
+        .max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
+        .required(validationMessage.required),
+      sku: Yup.string(),
+      id: Yup.string(),
+      idType: Yup.string(),
+      brandName: Yup.string(),
+      manufacture: Yup.string(),
+      manufactureModelName: Yup.string(),
+      partNumber: Yup.string(),
+      materials: Yup.string()
+    })
+  });
+const howWillItBeSentToTheBuyer = Yup.string();
+const whenWillItBeSentToTheBuyer = Yup.string();
+const shippingInDays = Yup.number().min(0, "Shipping cannot be negative");
+const existingNftSchema = Yup.array(
+  Yup.object({
+    mintedNftContractAddress: Yup.string()
+      .required(validationMessage.required)
+      .test("FORMAT", "Must be a valid address", (value) =>
+        value ? ethers.utils.isAddress(value) : true
+      ),
+    mintedNftTokenIdRangeMin: Yup.number()
+      .required(validationMessage.required)
+      .min(1, "It should be at least 1"),
+    mintedNftTokenIdRangeMax: Yup.number()
+      .required(validationMessage.required)
+      .min(1, "It should be at least 1")
+      .test({
+        message: 'It should be greater than or equal to "Min token ID"',
+        test: (value, context) => {
+          if (value && value < context.parent.mintedNftTokenIdRangeMin) {
+            return false;
+          }
+          return true;
+        }
+      }),
+    mintedNftExternalUrl: Yup.string().test(
+      "FORMAT",
+      notUrlErrorMessage,
+      (value) => {
+        return value ? checkValidUrl(value) : true;
+      }
+    ),
+    mintedNftWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer,
+    mintedNftShippingInDays: shippingInDays
+  })
+)
+  .required(validationMessage.required)
+  .min(1, "The bundle should have at least 1 item")
+  .test({
+    message: "No overlapping token IDs for the same contract",
+    test: (bundleItems) => {
+      if (!bundleItems || bundleItems.length <= 1) {
+        return true;
+      }
+      function hasOverlap(innerBundleItems: NonNullable<typeof bundleItems>) {
+        for (let i = 0; i < innerBundleItems.length; i++) {
+          for (let j = i + 1; j < innerBundleItems.length; j++) {
+            if (
+              innerBundleItems[i].mintedNftContractAddress &&
+              innerBundleItems[j].mintedNftContractAddress &&
+              innerBundleItems[i].mintedNftContractAddress?.toLowerCase() ===
+                innerBundleItems[j].mintedNftContractAddress?.toLowerCase()
+            ) {
+              const range1 = {
+                min: innerBundleItems[i].mintedNftTokenIdRangeMin || 0,
+                max: innerBundleItems[i].mintedNftTokenIdRangeMax || 0
+              };
+              const range2 = {
+                min: innerBundleItems[j].mintedNftTokenIdRangeMin || 0,
+                max: innerBundleItems[j].mintedNftTokenIdRangeMax || 0
+              };
+
+              if (!(range1.min > range2.max || range2.min > range1.max)) {
+                return true;
+              }
+            }
+          }
+        }
+        return false;
+      }
+      return !hasOverlap(bundleItems);
+    }
+  });
+const newNftSchema = Yup.array(
+  Yup.object({
+    newNftName: Yup.string().required(validationMessage.required),
+    newNftDescription: Yup.string().required(validationMessage.required),
+    newNftHowWillItBeSentToTheBuyer: howWillItBeSentToTheBuyer,
+    newNftWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer,
+    newNftShippingInDays: shippingInDays
+  })
+)
+  .required(validationMessage.required)
+  .min(1, "The bundle should have at least 1 item");
+const digitalFileSchema = Yup.array(
+  Yup.object({
+    digitalFileName: Yup.string().required(validationMessage.required),
+    digitalFileDescription: Yup.string().required(validationMessage.required),
+    digitalFileFormat: Yup.string().required(validationMessage.required),
+    digitalFileHowWillItBeSentToTheBuyer: howWillItBeSentToTheBuyer.required(
+      validationMessage.required
+    ),
+    digitalFileWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer.required(
+      validationMessage.required
+    ),
+    digitalFileShippingInDays: shippingInDays.required(
+      validationMessage.required
+    )
+  })
+)
+  .required(validationMessage.required)
+  .min(1, "The bundle should have at least 1 item");
+const experientialSchema = Yup.array(
+  Yup.object({
+    experientialName: Yup.string().required(validationMessage.required),
+    experientialDescription: Yup.string().required(validationMessage.required),
+    experientialWhatWillTheBuyerReceieve: Yup.string().required(
+      validationMessage.required
+    ),
+    experientialHowCanTheBuyerClaimAttendTheExperience: Yup.string().required(
+      validationMessage.required
+    ),
+    experientialHowWillTheBuyerReceiveIt: howWillItBeSentToTheBuyer.required(
+      validationMessage.required
+    ),
+    experientialWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer.required(
+      validationMessage.required
+    ),
+    experientialShippingInDays: shippingInDays.required(
+      validationMessage.required
+    )
+  })
+)
+  .required(validationMessage.required)
+  .min(1, "The bundle should have at least 1 item");
+export type NewNftBundleItemsType = Yup.InferType<typeof newNftSchema>;
+export type MintedNftBundleItemsType = Yup.InferType<typeof existingNftSchema>;
+export type DigitalFileBundleItemsType = Yup.InferType<
+  typeof digitalFileSchema
+>;
+export type ExperientialBundleItemsType = Yup.InferType<
+  typeof experientialSchema
+>;
+
+export const productDigitalValidationSchema = Yup.object({
+  productDigital: Yup.object({
+    type: Yup.object({
+      value: Yup.string()
+        .oneOf(DIGITAL_TYPE.map(({ value }) => value))
+        .required(validationMessage.required),
       label: Yup.string()
-    }).required(validationMessage.required),
-    tags: Yup.array(Yup.string().required(validationMessage.required))
-      .default([])
-      .min(1, "Please provide at least one tag"),
-    attributes: Yup.array(
-      Yup.object({
-        name: Yup.string(),
-        value: Yup.string()
+    })
+      .required(validationMessage.required)
+      .default(undefined),
+    nftType: Yup.object({
+      value: Yup.string().oneOf(DIGITAL_NFT_TYPE.map(({ value }) => value)),
+      label: Yup.string()
+    })
+
+      .when("type", {
+        is: (type: typeof DIGITAL_TYPE[number] | null) => {
+          return type?.value === digitalTypeMapping["digital-nft"];
+        },
+        then: (schema) => schema.required(validationMessage.required),
+        otherwise: (schema) => schema
       })
-    ).default([{ name: "", value: "" }]),
-    description: Yup.string()
-      .max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
-      .required(validationMessage.required),
-    sku: Yup.string(),
-    id: Yup.string(),
-    idType: Yup.string(),
-    brandName: Yup.string(),
-    manufacture: Yup.string(),
-    manufactureModelName: Yup.string(),
-    partNumber: Yup.string(),
-    materials: Yup.string()
+      .default(undefined),
+    isNftMintedAlready: Yup.object({
+      value: Yup.string().oneOf(
+        isNftMintedAlreadyOptions.map(({ value }) => value)
+      ),
+      label: Yup.string()
+    })
+      .when("type", {
+        is: (type: typeof DIGITAL_TYPE[number] | null) => {
+          return type?.value === digitalTypeMapping["digital-nft"];
+        },
+        then: (schema) => schema.required(validationMessage.required),
+        otherwise: (schema) => schema
+      })
+      .default(undefined),
+    bundleItems: Yup.mixed<
+      | MintedNftBundleItemsType
+      | NewNftBundleItemsType
+      | DigitalFileBundleItemsType
+      | ExperientialBundleItemsType
+    >()
+      .default(undefined)
+      .required(validationMessage.required)
+      .when(["type", "isNftMintedAlready"], {
+        is: (
+          type: typeof DIGITAL_TYPE[number] | null,
+          isNftMintedAlready: typeof isNftMintedAlreadyOptions[number] | null
+        ) => {
+          return (
+            type?.value === digitalTypeMapping["digital-nft"] &&
+            isNftMintedAlready?.value === "true"
+          );
+        },
+        then: existingNftSchema,
+        otherwise: (schema) => schema
+      })
+      .when(["type", "isNftMintedAlready"], {
+        is: (
+          type: typeof DIGITAL_TYPE[number] | null,
+          isNftMintedAlready: typeof isNftMintedAlreadyOptions[number] | null
+        ) => {
+          return (
+            type?.value === digitalTypeMapping["digital-nft"] &&
+            isNftMintedAlready?.value === "false"
+          );
+        },
+        then: newNftSchema,
+        otherwise: (schema) => schema
+      })
+      .when(["type"], {
+        is: (type: typeof DIGITAL_TYPE[number] | null) => {
+          return type?.value === digitalTypeMapping["digital-file"];
+        },
+        then: digitalFileSchema,
+        otherwise: (schema) => schema
+      })
+      .when(["type"], {
+        is: (type: typeof DIGITAL_TYPE[number] | null) => {
+          return type?.value === digitalTypeMapping["experiential"];
+        },
+        then: experientialSchema,
+        otherwise: (schema) => schema
+      })
   })
 });
-
+export type ProductDigital = Yup.InferType<
+  typeof productDigitalValidationSchema
+>;
 export const commonCoreTermsOfSaleValidationSchema = {
   infiniteExpirationOffers: Yup.boolean(),
   offerValidityPeriod: Yup.mixed<Dayjs | Dayjs[]>()
@@ -356,7 +697,7 @@ export const getTokenGatingValidationSchema = ({
             const formValues = context.from[1].value;
             const isOneVariant =
               formValues.productType.productVariant ===
-              ProductTypeValues.oneItemType;
+              ProductTypeVariantsValues.oneItemType;
             const variantsQuantity = isOneVariant
               ? 0
               : (

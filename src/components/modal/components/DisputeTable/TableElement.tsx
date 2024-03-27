@@ -1,3 +1,4 @@
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { ClockClockwise } from "phosphor-react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -65,6 +66,8 @@ function TableElement({ exchange }: { exchange: Exchange }) {
   const deadlineTimeLeft = `${daysLeftToResolveDispute}/${totalDaysToResolveDispute}`;
   const isResolved =
     exchange.dispute?.buyerPercent && exchange.dispute?.buyerPercent !== "0";
+  const { mainImage } = getOfferDetails(exchange.offer.metadata);
+
   return (
     <>
       <td colSpan={colspans[0].colspan}>{exchange.id}</td>
@@ -75,13 +78,13 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           width="max-content"
         >
           <OfferImage>
-            <Image src={exchange.offer.metadata.image} />
+            <Image src={mainImage} />
           </OfferImage>
           <MessageInfo>
-            <ExchangeName>{exchange.offer.metadata.name}</ExchangeName>
+            <ExchangeName>{exchange.offer.metadata?.name}</ExchangeName>
             <SellerID
-              offer={exchange.offer}
-              buyerOrSeller={exchange.offer.seller}
+              offerMetadata={exchange.offer.metadata}
+              accountToShow={exchange.offer.seller}
               withProfileImage
               onClick={() => null}
             />

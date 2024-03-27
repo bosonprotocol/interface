@@ -1,5 +1,6 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import { defaultFontFamily } from "lib/styles/fonts";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import {
   CaretDown,
   CaretLeft,
@@ -257,12 +258,14 @@ export default function SellerExchangeTable({
           | subgraph.DisputeFieldsFragment
           | null
           | undefined;
+        const { mainImage } = getOfferDetails(element?.offer.metadata);
+
         return {
           exchangeId: element?.id,
           isSelectable: element && isExchangeCompletableBySeller(element),
           image: (
             <Image
-              src={element?.offer?.metadata?.image ?? ""}
+              src={mainImage}
               style={{
                 width: "2.5rem",
                 height: "2.5rem",

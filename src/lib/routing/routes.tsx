@@ -68,6 +68,15 @@ export const ProductRoutes = addViewModePrefixToPaths(
   } as const
 );
 
+export const BundleRoutes = addViewModePrefixToPaths(
+  viewMode.current,
+  ViewMode.DAPP,
+  {
+    Root: "/products",
+    BundleDetail: `/bundles/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`
+  } as const
+);
+
 export const OffersRoutes = addViewModePrefixToPaths(
   viewMode.current,
   ViewMode.DAPP,

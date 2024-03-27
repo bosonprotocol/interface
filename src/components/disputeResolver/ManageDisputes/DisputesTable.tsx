@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
@@ -99,16 +100,17 @@ export default function DisputesTable({ disputes }: Props) {
         }
 
         const offer = dispute.exchange.offer;
-        const emailAddress =
-          dispute?.exchange?.offer?.metadata?.productV1Seller?.contactLinks?.find(
-            (e) => e.tag === "email"
-          )?.url || false;
 
+        const { mainImage, artist } = getOfferDetails(
+          dispute.exchange.offer.metadata
+        );
+        const emailAddress =
+          artist?.contactLinks?.find((e) => e.tag === "email")?.url || false;
         return {
           offerId: offer?.id,
           image: (
             <Image
-              src={offer?.metadata?.image ?? ""}
+              src={mainImage}
               style={{
                 width: "2.5rem",
                 height: "2.5rem",
