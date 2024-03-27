@@ -121,7 +121,7 @@ const AddSupportedJurisdictions = () => {
                           </div>
                           <div>
                             <Input
-                              placeholder="Time"
+                              placeholder="Delivery Time"
                               name={`shippingInfo.jurisdiction[${index}].time`}
                               onBlur={(e) => {
                                 handleBlur(e);
