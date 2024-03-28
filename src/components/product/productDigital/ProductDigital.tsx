@@ -67,37 +67,28 @@ const checkLastElementIsPristine = (
 };
 const prefix = "productDigital.";
 const getNewExistingBundleItem = () => {
-  const bundleItem: Record<
-    keyof MintedNftBundleItemsType[number],
-    undefined | string
-  > = {
+  const bundleItem: Record<keyof MintedNftBundleItemsType[number], string> = {
     mintedNftContractAddress: "",
-    mintedNftTokenIdRangeMin: undefined,
-    mintedNftTokenIdRangeMax: undefined,
+    mintedNftTokenIdRangeMin: "",
+    mintedNftTokenIdRangeMax: "",
     mintedNftExternalUrl: "",
-    mintedNftShippingInDays: undefined,
+    mintedNftShippingInDays: "",
     mintedNftWhenWillItBeSentToTheBuyer: ""
   };
   return bundleItem;
 };
 const getNewNewBundleItem = () => {
-  const bundleItem: Record<
-    keyof NewNftBundleItemsType[number],
-    undefined | string
-  > = {
+  const bundleItem: Record<keyof NewNftBundleItemsType[number], string> = {
     newNftName: "",
     newNftDescription: "",
     newNftHowWillItBeSentToTheBuyer: "",
     newNftWhenWillItBeSentToTheBuyer: "",
-    newNftShippingInDays: undefined
+    newNftShippingInDays: ""
   };
   return bundleItem;
 };
 const getNewDigitalFileBundleItem = () => {
-  const bundleItem: Record<
-    keyof DigitalFileBundleItemsType[number],
-    undefined | string
-  > = {
+  const bundleItem: Record<keyof DigitalFileBundleItemsType[number], string> = {
     digitalFileName: "",
     digitalFileDescription: "",
     digitalFileFormat: "",
@@ -108,23 +99,21 @@ const getNewDigitalFileBundleItem = () => {
   return bundleItem;
 };
 const getNewExperientialBundleItem = () => {
-  const bundleItem: Record<
-    keyof ExperientialBundleItemsType[number],
-    undefined | string
-  > = {
-    experientialName: "",
-    experientialDescription: "",
-    experientialWhatWillTheBuyerReceieve: "",
-    experientialHowCanTheBuyerClaimAttendTheExperience: "",
-    experientialHowWillTheBuyerReceiveIt: "",
-    experientialWhenWillItBeSentToTheBuyer: "",
-    experientialShippingInDays: ""
-  };
+  const bundleItem: Record<keyof ExperientialBundleItemsType[number], string> =
+    {
+      experientialName: "",
+      experientialDescription: "",
+      experientialWhatWillTheBuyerReceieve: "",
+      experientialHowCanTheBuyerClaimAttendTheExperience: "",
+      experientialHowWillTheBuyerReceiveIt: "",
+      experientialWhenWillItBeSentToTheBuyer: "",
+      experientialShippingInDays: ""
+    };
   return bundleItem;
 };
 export const ProductDigital: React.FC = () => {
   const { nextIsDisabled, values, setFieldValue, errors } = useForm();
-  const { bundleItems } = values.productDigital;
+  const { bundleItems } = values.productDigital || {};
   const type = (values.productDigital.type || {}).value;
   const isNftMintedAlreadyValue = (
     values.productDigital.isNftMintedAlready || {}
@@ -169,7 +158,7 @@ export const ProductDigital: React.FC = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, setFieldValue]);
+  }, [type, setFieldValue, isNftMintedAlreadyValue]);
   const bundleItemsError: JSX.Element | null =
     errors.productDigital?.bundleItems &&
     typeof errors.productDigital.bundleItems === "string" &&
