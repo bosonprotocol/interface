@@ -1,7 +1,11 @@
-import { PhygitalLabel, subgraph } from "@bosonprotocol/react-kit";
+import { Grid, PhygitalLabel, subgraph } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
+import { Spinner } from "components/loading/Spinner";
+import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
 import map from "lodash/map";
+import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
+import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTermsAndSellerAgreement";
 import styled from "styled-components";
 
 import Image from "../../components/ui/Image";
@@ -20,7 +24,7 @@ import {
 import BosonButton from "../ui/BosonButton";
 import { Typography } from "../ui/Typography";
 import Video from "../ui/Video";
-import { ProductButtonGroup } from "./Product.styles";
+import { ConfirmProductDetailsButtonGroup } from "./confirmProductDetailsPage/ConfirmProductDetails.styles";
 import { ProductTypeTypeValues } from "./utils";
 import { usePreviewOffers } from "./utils/usePreviewOffer";
 const ObjectContainImage = styled(Image)`
@@ -34,6 +38,7 @@ interface Props {
   isMultiVariant: boolean;
   isOneSetOfImages: boolean;
   decimals?: number;
+  chatInitializationStatus: ChatInitializationStatus;
 }
 
 const PreviewWrapper = styled.div`
@@ -50,8 +55,11 @@ export default function Preview({
   seller,
   isMultiVariant,
   isOneSetOfImages,
-  decimals
+  decimals,
+  chatInitializationStatus
 }: Props) {
+  const { bosonXmtp } = useChatContext();
+
   const { values } = useForm();
 
   // if we have variants defined, then we show the first one in the preview
@@ -172,6 +180,7 @@ export default function Preview({
                     dataTestId="offerAnimationUrl"
                     videoProps={{ muted: true, loop: true, autoPlay: true }}
                     componentWhileLoading={() => OfferImage}
+                    withMuteButton
                   />
                 ) : (
                   OfferImage
@@ -214,18 +223,41 @@ export default function Preview({
           <OfferFullDescription offer={offer} exchange={null} />
         </DetailWrapper>
       </PreviewWrapperContent>
-      <ProductButtonGroup>
-        <BosonButton variant="primaryFill" type="submit">
-          Confirm
-        </BosonButton>
-        <BosonButton
-          variant="accentInverted"
-          type="button"
-          onClick={handleClosePreview}
-        >
-          Back to overview
-        </BosonButton>
-      </ProductButtonGroup>
+      <Grid
+        flexDirection="column"
+        marginTop="5rem"
+        alignItems="flex-start"
+        gap="1rem"
+      >
+        <AgreeToTermsAndSellerAgreement isMultiVariant={isMultiVariant} />
+        <ConfirmProductDetailsButtonGroup>
+          <BosonButton
+            variant="primaryFill"
+            type="submit"
+            disabled={
+              ![
+                ChatInitializationStatus.INITIALIZED,
+                ChatInitializationStatus.ALREADY_INITIALIZED
+              ].includes(chatInitializationStatus) ||
+              !values.confirmProductDetails?.acceptsTerms
+            }
+          >
+            {chatInitializationStatus ===
+              ChatInitializationStatus.NOT_INITIALIZED && bosonXmtp ? (
+              <Spinner size={20} />
+            ) : (
+              "Confirm"
+            )}
+          </BosonButton>
+          <BosonButton
+            variant="accentInverted"
+            type="button"
+            onClick={handleClosePreview}
+          >
+            Back to overview
+          </BosonButton>
+        </ConfirmProductDetailsButtonGroup>
+      </Grid>
     </PreviewWrapper>
   );
 }

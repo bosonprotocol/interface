@@ -34,9 +34,10 @@ const InEscrowPriceWrapper = styled.div`
 
 interface Props {
   exchange: Exchange;
+  iAmTheBuyer: boolean;
 }
 
-export default function RefundRequest({ exchange }: Props) {
+export default function RefundRequest({ exchange, iAmTheBuyer }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { setFieldValue, handleChange } = useFormikContext<any>();
 
@@ -57,7 +58,9 @@ export default function RefundRequest({ exchange }: Props) {
         Refund request
       </Typography>
       <Typography fontSize="1rem">
-        You will keep your purchased product and get a partial refund.
+        {iAmTheBuyer
+          ? "You will keep your purchased product and get a partial refund."
+          : "The buyer will keep the purchased product and also get a partial refund."}
       </Typography>
       <Grid gap="1rem" alignItems="flex-start" flexDirection="column">
         <Grid flexDirection="column" flexBasis="40%" alignItems="flex-start">

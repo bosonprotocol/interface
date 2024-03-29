@@ -93,7 +93,7 @@ export default function MakeAProposalStep({
               padding="3.5rem 0 0 0"
               gap="2rem"
             >
-              <RefundRequest exchange={exchange} />
+              <RefundRequest exchange={exchange} iAmTheBuyer={iAmTheBuyer} />
             </Grid>
           )}
       </Grid>

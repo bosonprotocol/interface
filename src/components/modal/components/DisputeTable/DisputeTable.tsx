@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import { TableHeaderFields } from "./const";
 import TableElement from "./TableElement";
 
 const Table = styled.table`
@@ -38,39 +39,6 @@ const TableElementContainer = styled.tr`
     height: 0.125rem;
   }
 `;
-
-const TableHeaderFields = [
-  {
-    label: "ID",
-    value: -1,
-    colspan: 1
-  },
-  {
-    label: "Exchange",
-    value: 0,
-    colspan: 1
-  },
-  {
-    label: "Dispute status",
-    value: 1,
-    colspan: 3
-  },
-  {
-    label: "Days left to resolve dispute",
-    value: 2,
-    colspan: 3
-  },
-  {
-    label: "Resolution summary",
-    value: 3,
-    colspan: 3
-  },
-  {
-    label: "Actions",
-    value: 4,
-    colspan: 3
-  }
-];
 
 function DisputeTable({ exchanges }: { exchanges: Exchange[] }) {
   return (

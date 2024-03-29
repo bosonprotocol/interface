@@ -15,6 +15,7 @@ import { Grid } from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
 import ProposalTypeSummary from "../Chat/components/ProposalTypeSummary";
+import { TableHeaderFields } from "./const";
 
 const OfferImage = styled.div`
   width: 3.75rem;
@@ -50,7 +51,7 @@ const DisputeEndDate = styled(ClockClockwise)`
   margin-right: 0.625rem;
   font-weight: 400;
 `;
-
+const colspans = TableHeaderFields;
 function TableElement({ exchange }: { exchange: Exchange }) {
   const { status } = useDisputeSubStatusInfo(exchange);
   const navigate = useKeepQueryParamsNavigate();
@@ -69,8 +70,8 @@ function TableElement({ exchange }: { exchange: Exchange }) {
 
   return (
     <>
-      <td>{exchange.id}</td>
-      <td>
+      <td colSpan={colspans[0].colspan}>{exchange.id}</td>
+      <td colSpan={colspans[1].colspan}>
         <Grid
           alignItems="center"
           justifyContent="flex-start"
@@ -90,8 +91,8 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           </MessageInfo>
         </Grid>
       </td>
-      <DisputeRaised>{status}</DisputeRaised>
-      <td>
+      <DisputeRaised colSpan={colspans[2].colspan}>{status}</DisputeRaised>
+      <td colSpan={colspans[3].colspan}>
         {isResolved ? (
           "-"
         ) : (
@@ -101,7 +102,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           </Grid>
         )}
       </td>
-      <td>
+      <td colSpan={colspans[4].colspan}>
         {isResolved && (
           <ProposalTypeSummary
             exchange={exchange}
@@ -112,7 +113,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           />
         )}
       </td>
-      <td>
+      <td colSpan={colspans[5].colspan}>
         <Grid justifyContent="flex-end" gap="1rem">
           <Button
             type="button"

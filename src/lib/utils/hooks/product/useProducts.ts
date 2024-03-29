@@ -333,16 +333,15 @@ export default function useProducts(
 
   const allExtendedSellers = useMemo(() => {
     return (
-      sellerIds?.map((brandName) => {
-        const sellerId = brandName;
+      sellerIds?.map((sellerId) => {
         const products =
-          groupedSellers[brandName as keyof typeof groupedSellers];
+          groupedSellers[sellerId as keyof typeof groupedSellers];
         const seller = products?.[0]?.seller || {};
         const title = products?.[0]?.title || {};
         return {
           ...seller,
           title,
-          brandName,
+          brandName: sellerId,
           createdAt:
             orderBy(products, "createdAt", "desc").find(
               (n) => n?.createdAt !== null
@@ -389,6 +388,7 @@ export default function useProducts(
     isError: productsVariants.isError || exchangesBySellers.isError,
     products: allProducts as unknown as ExtendedOffer[],
     sellers: allExtendedSellers as unknown as ExtendedSeller[],
+    sellerLensProfilePerSellerId,
     refetch: () => {
       productsVariants.refetch();
       if (options.withNumExchanges) {

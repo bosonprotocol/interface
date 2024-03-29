@@ -53,6 +53,7 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
   return (
     <StyledExternalOfferFullDescription
       {...props}
+      includeOverviewTab
       imagesToShow={3}
       includeGeneralProductDataTab={false}
       includeOverviewTab

@@ -11,7 +11,7 @@ import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import { getOfferDetailPage } from "lib/utils/offer/getOfferDetailPage";
 import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { CameraSlash, Lock } from "phosphor-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -120,16 +120,30 @@ export default function ProductCard({
     (useLens && config.lens.ipfsGateway
       ? getLensImageUrl(
           getLensProfilePictureUrl(lensProfile),
-          config.lens.ipfsGateway
+          config.lens.ipfsGateway // this is our ipfs gateway, not lens'
         )
       : regularProfilePicture) ?? regularProfilePicture;
   const [avatarObj, setAvatarObj] = useState<{
     avatarUrl: string | null | undefined;
-    status: "lens" | "fallback" | "mocked";
+    status: "lens" | "fallback0" | "fallback1" | "mocked";
   }>({
     avatarUrl: avatar,
     status: "lens"
   });
+  useEffect(() => {
+    setAvatarObj({
+      avatarUrl: avatar,
+      status: "lens"
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lensProfile]);
+  const avatarDifferentIpfsGateway =
+    (useLens
+      ? getLensImageUrl(
+          getLensProfilePictureUrl(lensProfile),
+          "https://ipfs.io/ipfs"
+        )
+      : regularProfilePicture) ?? regularProfilePicture;
   const fallbackSellerAvatar =
     offer.additional?.product?.productV1Seller?.images?.find(
       (img) => img.tag === "profile"
@@ -243,12 +257,20 @@ export default function ProductCard({
         avatar={avatarObj.avatarUrl || fallbackSellerAvatarUrl || mockedAvatar}
         onAvatarError={() => {
           // to avoid infinite loop
-          if (avatarObj.status === "lens") {
+          if (avatarObj.status === "lens" && avatarDifferentIpfsGateway) {
+            setAvatarObj({
+              avatarUrl: avatarDifferentIpfsGateway,
+              status: "fallback0"
+            });
+          } else if (
+            avatarObj.status === "fallback0" &&
+            fallbackSellerAvatarUrl
+          ) {
             setAvatarObj({
               avatarUrl: fallbackSellerAvatarUrl,
-              status: "fallback"
+              status: "fallback1"
             });
-          } else if (avatarObj.status === "fallback") {
+          } else {
             setAvatarObj({
               avatarUrl: mockedAvatar,
               status: "mocked"

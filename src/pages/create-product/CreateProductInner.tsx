@@ -1041,6 +1041,7 @@ function CreateProductInner({
                       seller={currentAssistant as any}
                       isMultiVariant={isMultiVariant}
                       isOneSetOfImages={isOneSetOfImages}
+                      chatInitializationStatus={chatInitializationStatus}
                       decimals={decimals}
                     />
                   </ErrorBoundary>

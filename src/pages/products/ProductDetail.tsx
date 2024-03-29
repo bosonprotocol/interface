@@ -157,6 +157,7 @@ export default function ProductDetail() {
                   autoPlay: true
                 }}
                 componentWhileLoading={() => OfferImage}
+                withMuteButton
               />
             ) : (
               OfferImage
