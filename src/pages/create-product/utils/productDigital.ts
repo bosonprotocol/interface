@@ -119,7 +119,7 @@ export function getDigitalMetadatas({
         const maxTokenId = bundleItem.mintedNftTokenIdRangeMax.toString();
         const externalUrl = bundleItem.mintedNftExternalUrl;
         return getItemNFTMetadata({
-          name: "",
+          name: bundleItem.mintedNftContractAddress,
           description: undefined,
           image,
           imageData: undefined,
