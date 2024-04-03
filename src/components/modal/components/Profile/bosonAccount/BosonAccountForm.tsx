@@ -34,7 +34,7 @@ export default function BosonAccountForm({
   );
   const { sellers } = useCurrentSellers();
   const seller = sellers?.[0];
-  const { contractURI } = seller || {};
+  const contractURI = seller?.collections[0]?.collectionContract.contractUri;
   const alreadyHasRoyaltiesDefined = !!contractURI;
   useEffect(() => {
     if (contractURI && !formValues) {

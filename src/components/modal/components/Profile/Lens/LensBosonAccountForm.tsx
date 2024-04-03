@@ -24,7 +24,7 @@ export default function LensBosonAccountForm({
 }: Props) {
   const { sellers } = useCurrentSellers();
   const seller = sellers?.[0];
-  const { contractURI } = seller || {};
+  const contractURI = seller?.collections[0]?.collectionContract.contractUri;
   const alreadyHasRoyaltiesDefined = !!contractURI;
   const { updateProps, store } = useModal();
   useEffect(() => {
