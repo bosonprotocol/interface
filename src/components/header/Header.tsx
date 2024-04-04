@@ -327,7 +327,10 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
       <>
         <div
           style={{
-            height: ref?.current?.offsetHeight
+            height:
+              (ref?.current?.offsetHeight
+                ? `${ref.current.offsetHeight}px`
+                : undefined) || HEADER_HEIGHT
           }}
         />
         <Header
