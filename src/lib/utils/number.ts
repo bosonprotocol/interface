@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { utils } from "ethers";
 
 /**
  * Given a small number, it returns its string representation without the scientific 'e' notation.
@@ -37,18 +37,12 @@ export const getNumberWithoutDecimals = (
   value: string,
   decimals: string
 ): string => {
-  const valueAsNumber = Number(value);
-  if (!Number.isInteger(valueAsNumber)) {
-    return Math.floor(valueAsNumber * 10 ** Number(decimals)).toString();
-  }
-  return BigNumber.from(valueAsNumber + "")
-    .mul(BigNumber.from(10).pow(BigNumber.from(decimals)))
-    .toString();
+  return utils.parseUnits(value, decimals).toString();
 };
 
 export const getNumberWithDecimals = (
   value: string,
   decimals: string
 ): number => {
-  return Number(value) * 10 ** -Number(decimals);
+  return Number(utils.formatUnits(value, decimals));
 };
