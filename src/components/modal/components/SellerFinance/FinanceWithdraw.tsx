@@ -82,12 +82,16 @@ export default function FinanceWithdraw({
     const value = e.target.valueAsNumber || 0;
     setIsWithdrawInvalid(false);
 
-    const availableFundsBig = getNumberWithDecimals(
-      availableAmount,
-      tokenDecimals
-    );
+    try {
+      const availableFundsBig = getNumberWithDecimals(
+        availableAmount,
+        tokenDecimals
+      );
 
-    if (value < tokenStep || value > availableFundsBig || !value) {
+      if (value < tokenStep || value > availableFundsBig || !value) {
+        setIsWithdrawInvalid(true);
+      }
+    } catch (e) {
       setIsWithdrawInvalid(true);
     }
 
