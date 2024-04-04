@@ -23,6 +23,7 @@ import useUserRoles from "router/useUserRoles";
 import styled, { css } from "styled-components";
 
 import { AccountDrawer } from "./accountDrawer";
+import { AnnouncementBanner } from "./AnnouncementBanner";
 import { BurgerButton } from "./BurgerButton";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
@@ -324,6 +325,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
         $isSideBarOpen={isOpen}
         ref={ref}
       >
+        <AnnouncementBanner />
         <HeaderContainer
           fluidHeader={fluidHeader}
           $navigationBarPosition={navigationBarPosition}
