@@ -17,12 +17,20 @@ import { useBreakpoints } from "lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { X } from "phosphor-react";
-import { forwardRef, useEffect, useMemo, useState } from "react";
+import {
+  ElementRef,
+  forwardRef,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { generatePath, useLocation } from "react-router-dom";
 import useUserRoles from "router/useUserRoles";
 import styled, { css } from "styled-components";
 
 import { AccountDrawer } from "./accountDrawer";
+import { AnnouncementBanner } from "./AnnouncementBanner";
 import { BurgerButton } from "./BurgerButton";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
@@ -121,9 +129,6 @@ const Header = styled.header<{
       top: 0;
       left: 0;
       right: 0;
-      + * {
-        padding-top: ${HEADER_HEIGHT};
-      }
       border-bottom: 2px solid ${colors.border};
       > div {
         > * {
@@ -207,7 +212,7 @@ interface Props {
   fluidHeader: boolean | undefined;
 }
 export const HeaderComponent = forwardRef<HTMLElement, Props>(
-  ({ fluidHeader = false }, ref) => {
+  ({ fluidHeader = false }) => {
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
@@ -317,99 +322,110 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
       isFetching,
       isLteXS
     ]);
-
+    const ref = useRef<ElementRef<"header">>(null);
     return (
-      <Header
-        $navigationBarPosition={navigationBarPosition}
-        $isSideBarOpen={isOpen}
-        ref={ref}
-      >
-        <HeaderContainer
-          fluidHeader={fluidHeader}
+      <>
+        <div
+          style={{
+            height:
+              (ref?.current?.offsetHeight
+                ? `${ref.current.offsetHeight}px`
+                : undefined) || HEADER_HEIGHT
+          }}
+        />
+        <Header
           $navigationBarPosition={navigationBarPosition}
+          $isSideBarOpen={isOpen}
+          ref={ref}
         >
-          {isSideBurgerVisible ? (
-            <Grid justifyContent="center">
-              <BurgerButton onClick={toggleMenu} />
-            </Grid>
-          ) : (
-            <>
-              <Grid
-                flexDirection="row"
-                alignItems="center"
-                width="initial"
-                gap="1rem"
-              >
-                <LinkWithQuery
-                  to={BosonRoutes.Root}
-                  style={{ display: "flex" }}
-                >
-                  <LogoImg
-                    src={logoUrl || logo}
-                    alt="logo image"
-                    data-testid="logo"
-                    style={{ maxWidth: "100%" }}
-                    width={logoUrl ? undefined : isLteXS ? 104 : 204}
-                    height={
-                      logoUrl
-                        ? undefined
-                        : isLteXS
-                        ? logoXXSHeightPx
-                        : logoSHeightPx
-                    }
-                  />
-                </LinkWithQuery>
-                {isSideCrossVisible && (
-                  <X
-                    color={colors.secondary}
-                    onClick={toggleMenu}
-                    style={{
-                      cursor: "pointer",
-                      minWidth: "24px",
-                      maxWidth: "24px"
-                    }}
-                    size="24"
-                  />
-                )}
+          {!isCustomStoreFront && <AnnouncementBanner />}
+          <HeaderContainer
+            fluidHeader={fluidHeader}
+            $navigationBarPosition={navigationBarPosition}
+          >
+            {isSideBurgerVisible ? (
+              <Grid justifyContent="center">
+                <BurgerButton onClick={toggleMenu} />
               </Grid>
-              <HeaderItems $navigationBarPosition={navigationBarPosition}>
-                {burgerMenuBreakpoint && (
-                  <>
-                    {CTA}
-                    {!isLteXS && <ChainSelector />}
-                    {!isXXS && <ConnectButton showOnlyIcon />}
-                    <BurgerButton onClick={toggleMenu} />
-                  </>
-                )}
-                <HeaderLinks
-                  isMobile={burgerMenuBreakpoint}
-                  isOpen={isOpen}
-                  navigationBarPosition={navigationBarPosition}
+            ) : (
+              <>
+                <Grid
+                  flexDirection="row"
+                  alignItems="center"
+                  width="initial"
+                  gap="1rem"
                 >
-                  {burgerMenuBreakpoint && (
-                    <Grid justifyContent="flex-start">
-                      <ChainSelector leftAlign={true} />
-                      <ConnectButton />
-                    </Grid>
-                  )}
-                </HeaderLinks>
-                {!burgerMenuBreakpoint && (
-                  <>
-                    {CTA}
-                    <ChainSelector
-                      leftAlign={navigationBarPosition === "left"}
+                  <LinkWithQuery
+                    to={BosonRoutes.Root}
+                    style={{ display: "flex" }}
+                  >
+                    <LogoImg
+                      src={logoUrl || logo}
+                      alt="logo image"
+                      data-testid="logo"
+                      style={{ maxWidth: "100%" }}
+                      width={logoUrl ? undefined : isLteXS ? 104 : 204}
+                      height={
+                        logoUrl
+                          ? undefined
+                          : isLteXS
+                          ? logoXXSHeightPx
+                          : logoSHeightPx
+                      }
                     />
-                    <ConnectButton />
-                  </>
-                )}
-              </HeaderItems>
-            </>
-          )}
-        </HeaderContainer>
-        <Portal>
-          <AccountDrawer />
-        </Portal>
-      </Header>
+                  </LinkWithQuery>
+                  {isSideCrossVisible && (
+                    <X
+                      color={colors.secondary}
+                      onClick={toggleMenu}
+                      style={{
+                        cursor: "pointer",
+                        minWidth: "24px",
+                        maxWidth: "24px"
+                      }}
+                      size="24"
+                    />
+                  )}
+                </Grid>
+                <HeaderItems $navigationBarPosition={navigationBarPosition}>
+                  {burgerMenuBreakpoint && (
+                    <>
+                      {CTA}
+                      {!isLteXS && <ChainSelector />}
+                      {!isXXS && <ConnectButton showOnlyIcon />}
+                      <BurgerButton onClick={toggleMenu} />
+                    </>
+                  )}
+                  <HeaderLinks
+                    isMobile={burgerMenuBreakpoint}
+                    isOpen={isOpen}
+                    navigationBarPosition={navigationBarPosition}
+                  >
+                    {burgerMenuBreakpoint && (
+                      <Grid justifyContent="flex-start">
+                        <ChainSelector leftAlign={true} />
+                        <ConnectButton />
+                      </Grid>
+                    )}
+                  </HeaderLinks>
+                  {!burgerMenuBreakpoint && (
+                    <>
+                      {CTA}
+                      <ChainSelector
+                        leftAlign={navigationBarPosition === "left"}
+                      />
+                      <ConnectButton />
+                    </>
+                  )}
+                </HeaderItems>
+              </>
+            )}
+          </HeaderContainer>
+          <Portal>
+            <AccountDrawer />
+          </Portal>
+        </Header>
+      </>
     );
   }
 );
