@@ -338,7 +338,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
           $isSideBarOpen={isOpen}
           ref={ref}
         >
-          <AnnouncementBanner />
+          {!isCustomStoreFront && <AnnouncementBanner />}
           <HeaderContainer
             fluidHeader={fluidHeader}
             $navigationBarPosition={navigationBarPosition}
