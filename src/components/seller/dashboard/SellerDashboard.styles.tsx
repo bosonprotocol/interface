@@ -110,6 +110,8 @@ export const SellerInner = styled.div<{
   background: ${({ background }) => background || colors.white};
   color: ${({ color }) => color || colors.black};
   padding: ${({ padding }) => padding || "1rem"};
-  box-shadow: 0px 0px 5px 0px rgb(0 0 0 / 2%), 0px 0px 10px 0px rgb(0 0 0 / 2%),
+  box-shadow:
+    0px 0px 5px 0px rgb(0 0 0 / 2%),
+    0px 0px 10px 0px rgb(0 0 0 / 2%),
     0px 0px 15px 0px rgb(0 0 0 / 5%);
 `;

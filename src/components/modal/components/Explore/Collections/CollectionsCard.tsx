@@ -28,8 +28,11 @@ const CardContainer = styled.div<{
   transition: all 300ms ease-in-out;
   box-shadow: 0px 4px 110px rgb(21 30 52 / 10%);
   &:hover {
-    box-shadow: 0px 0px 0px rgb(0 0 0 / 5%), 4px 4px 4px rgb(0 0 0 / 5%),
-      8px 8px 8px rgb(0 0 0 / 5%), 16px 16px 16px rgb(0 0 0 / 5%);
+    box-shadow:
+      0px 0px 0px rgb(0 0 0 / 5%),
+      4px 4px 4px rgb(0 0 0 / 5%),
+      8px 8px 8px rgb(0 0 0 / 5%),
+      16px 16px 16px rgb(0 0 0 / 5%);
     img[data-testid] {
       transform: translate(-50%, -50%) scale(1.05);
     }

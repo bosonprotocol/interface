@@ -64,7 +64,7 @@ const IconWrapper = styled.div`
   }
   ${breakpoint.m} {
     align-items: flex-end;
-  } ;
+  }
 `;
 
 const Wrapper = styled.div<{

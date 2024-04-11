@@ -1,1 +1,1 @@
-export { type TypographyProps, Typography } from "@bosonprotocol/react-kit";
+export { Typography, type TypographyProps } from "@bosonprotocol/react-kit";

@@ -7,7 +7,7 @@ import { updateSelectedWallet } from "state/user/reducer";
 import { createProductKeys } from "./localstorage/const";
 import { removeItemInStorage } from "./localstorage/useLocalStorage";
 
-const keysToDeleteMap = new Map<typeof createProductKeys[number], true>();
+const keysToDeleteMap = new Map<(typeof createProductKeys)[number], true>();
 createProductKeys.forEach((key) => {
   keysToDeleteMap.set(key, true);
 });

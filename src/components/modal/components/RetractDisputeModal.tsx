@@ -245,9 +245,8 @@ export default function RetractDisputeModal({
               await tx.wait();
               await poll(
                 async () => {
-                  const retractedDispute = await coreSDK.getDisputeById(
-                    disputeId
-                  );
+                  const retractedDispute =
+                    await coreSDK.getDisputeById(disputeId);
                   return retractedDispute.retractedDate;
                 },
                 (retractedDate) => {

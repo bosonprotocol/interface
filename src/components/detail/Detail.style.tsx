@@ -432,8 +432,11 @@ export const Widget = styled.div`
   }
 
   box-shadow: 0px 4.318px 107.946px rgba(21, 30, 52, 0.1);
-  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.05), 0px 0px 16px rgba(0, 0, 0, 0.05),
-    0px 0px 32px rgba(0, 0, 0, 0.05), 0px 0px 64px rgba(0, 0, 0, 0.05),
+  box-shadow:
+    0px 0px 0px rgba(0, 0, 0, 0.05),
+    0px 0px 16px rgba(0, 0, 0, 0.05),
+    0px 0px 32px rgba(0, 0, 0, 0.05),
+    0px 0px 64px rgba(0, 0, 0, 0.05),
     0px 0px 128px rgba(0, 0, 0, 0.05);
 
   > div {

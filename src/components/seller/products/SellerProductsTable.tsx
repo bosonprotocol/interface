@@ -976,14 +976,17 @@ export default function SellerProductsTable({
   }, [pageCount, pageIndex]);
 
   const subRows = useMemo(() => {
-    return rows.reduce((acc, row) => {
-      if (row.subRows.length > 1) {
-        row.subRows.forEach((sub) => {
-          acc.push(sub);
-        });
-      }
-      return acc;
-    }, [] as typeof rows);
+    return rows.reduce(
+      (acc, row) => {
+        if (row.subRows.length > 1) {
+          row.subRows.forEach((sub) => {
+            acc.push(sub);
+          });
+        }
+        return acc;
+      },
+      [] as typeof rows
+    );
   }, [rows]);
 
   useEffect(() => {

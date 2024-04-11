@@ -104,8 +104,8 @@ export const SwapOptInSmallContainer = styled.div<{
     !shouldAnimate
       ? ""
       : visible
-      ? `spring-down 900ms ease forwards`
-      : "back-up 200ms ease forwards"};
+        ? `spring-down 900ms ease forwards`
+        : "back-up 200ms ease forwards"};
 
   ${springDownKeyframes}
   ${backUpKeyframes}

@@ -1,1 +1,1 @@
-export { type GridProps, Grid } from "@bosonprotocol/react-kit";
+export { Grid, type GridProps } from "@bosonprotocol/react-kit";

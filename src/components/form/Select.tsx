@@ -61,8 +61,8 @@ const customStyles = (
       border: state.isFocused
         ? `1px solid ${colors.secondary}`
         : !checkIfValueIsEmpty(error)
-        ? `1px solid ${colors.orange}`
-        : `1px solid ${colors.border}`,
+          ? `1px solid ${colors.orange}`
+          : `1px solid ${colors.border}`,
       ...before
     };
   },
@@ -139,8 +139,8 @@ export default function SelectForm({
     meta.error && meta.touched && !errorMessage
       ? meta.error
       : meta.error && meta.touched && errorMessage
-      ? errorMessage
-      : "";
+        ? errorMessage
+        : "";
 
   const displayError =
     typeof displayErrorMessage === typeof "string" &&
@@ -233,11 +233,11 @@ export function Select({
   displayError?: boolean;
   displayErrorMessage?: string;
   name?: string;
-  value?: typeof options[number];
+  value?: (typeof options)[number];
 }) {
   return (
     <>
-      <StyledSelect<typeof options[number], boolean>
+      <StyledSelect<(typeof options)[number], boolean>
         styles={customStyles(displayErrorMessage, useSelectColors())}
         {...props}
         placeholder={placeholder}

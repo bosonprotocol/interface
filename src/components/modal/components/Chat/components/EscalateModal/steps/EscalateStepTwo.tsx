@@ -223,18 +223,18 @@ function EscalateStepTwo({
   const validationSchema = validationSchemaPerStep[activeStep];
   const initialValues = useMemo(
     () => ({
-      [FormModel.formFields.message
-        .name]: `I, ${address}, wish to escalate the dispute relating to exchange with ID: ${exchange.id}`,
+      [FormModel.formFields.message.name]:
+        `I, ${address}, wish to escalate the dispute relating to exchange with ID: ${exchange.id}`,
       [emailFormField.name]: emailFormField.value,
       [FormModel.formFields.exchangeId.name]: `Exchange ID: ${exchange?.id}`,
-      [FormModel.formFields.subject
-        .name]: `Escalated Dispute (ID: ${exchange?.id})`,
+      [FormModel.formFields.subject.name]:
+        `Escalated Dispute (ID: ${exchange?.id})`,
       [FormModel.formFields.disputeId.name]: `Dispute ID: ${
         exchange?.dispute?.id || exchange?.id
       }`,
       [FormModel.formFields.signature.name]: `Signature: ${signature}`,
-      [FormModel.formFields.buyerAddress
-        .name]: `Buyer address: ${exchange.buyer.wallet}`,
+      [FormModel.formFields.buyerAddress.name]:
+        `Buyer address: ${exchange.buyer.wallet}`,
       [FormModel.formFields.confirm.name]: false
     }),
     [signature, exchange, address, emailFormField]
@@ -346,8 +346,8 @@ function EscalateStepTwo({
                   <FormField
                     title="Email Subject"
                     valueToCopy={{
-                      [FormModel.formFields.subject
-                        .name]: `Escalated Dispute (ID: ${exchange.id})`
+                      [FormModel.formFields.subject.name]:
+                        `Escalated Dispute (ID: ${exchange.id})`
                     }}
                   >
                     <Input {...FormModel.formFields.subject} />

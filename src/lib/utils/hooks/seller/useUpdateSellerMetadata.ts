@@ -125,8 +125,8 @@ async function updateSellerMedatata(
             : [])
         ]
       : kindUsed === ProfileType.REGULAR
-      ? metadataImages ?? undefined
-      : undefined;
+        ? metadataImages ?? undefined
+        : undefined;
 
   const meta: Parameters<typeof storeSellerMetadata>[0] = {
     ...seller.metadata,
@@ -154,15 +154,15 @@ async function updateSellerMedatata(
     salesChannels: values.salesChannels
       ? values.salesChannels
       : seller.metadata?.salesChannels
-      ? (seller.metadata?.salesChannels?.map((saleChannel) => {
-          return {
-            ...removeEmpty(saleChannel),
-            deployments: saleChannel?.deployments?.map((deployment) =>
-              removeEmpty(deployment)
-            )
-          };
-        }) as SalesChannels)
-      : undefined
+        ? (seller.metadata?.salesChannels?.map((saleChannel) => {
+            return {
+              ...removeEmpty(saleChannel),
+              deployments: saleChannel?.deployments?.map((deployment) =>
+                removeEmpty(deployment)
+              )
+            };
+          }) as SalesChannels)
+        : undefined
   };
   const { metadataUri } = await storeSellerMetadata(meta);
   await updateSeller({

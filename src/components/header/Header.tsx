@@ -369,8 +369,8 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                         logoUrl
                           ? undefined
                           : isLteXS
-                          ? logoXXSHeightPx
-                          : logoSHeightPx
+                            ? logoXXSHeightPx
+                            : logoSHeightPx
                       }
                     />
                   </LinkWithQuery>

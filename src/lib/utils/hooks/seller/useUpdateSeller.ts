@@ -34,7 +34,7 @@ async function updateSellerAccount(
     assistant: string;
     treasury: string;
     authTokenId: string | null;
-    authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
+    authTokenType: (typeof authTokenTypes)[keyof typeof authTokenTypes];
     metadataUri: string;
   }
 ) {

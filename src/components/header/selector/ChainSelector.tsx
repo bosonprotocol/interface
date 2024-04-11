@@ -38,10 +38,9 @@ const IconAndChevron = styled.div<{ $isOpen: boolean }>`
   height: 40px;
   gap: 8px;
   flex-direction: row;
-  ${({ $isOpen }) =>
-    css`
-      background: ${$isOpen ? css`var(--buttonBgColor)` : "none"};
-    `}
+  ${({ $isOpen }) => css`
+    background: ${$isOpen ? css`var(--buttonBgColor)` : "none"};
+  `}
   border-radius: 8px;
   padding: 1px 6px;
   &:hover {

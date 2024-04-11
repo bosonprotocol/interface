@@ -76,8 +76,8 @@ export default function MultiSteps({
                       currentKey === current
                         ? StepState.Active
                         : currentKey < current
-                        ? StepState.Done
-                        : StepState.Inactive;
+                          ? StepState.Done
+                          : StepState.Inactive;
 
                     const isStepDisabled =
                       !callback ||

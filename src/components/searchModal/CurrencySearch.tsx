@@ -106,8 +106,8 @@ export function CurrencySearch({
       disableNonToken || native.equals(wrapped)
         ? [wrapped]
         : shouldShowWrapped
-        ? [native, wrapped]
-        : [native]
+          ? [native, wrapped]
+          : [native]
     ).filter(
       (n) =>
         n.symbol?.toLowerCase()?.indexOf(s) !== -1 ||

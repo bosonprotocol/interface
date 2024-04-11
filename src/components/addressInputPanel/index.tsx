@@ -27,8 +27,8 @@ const ContainerRow = styled.div<{ error: boolean }>`
   border: 1px solid
     ${({ error, theme }) =>
       error ? theme.accentFailure : theme.backgroundInteractive};
-  transition: border-color 300ms
-      ${({ error }) => (error ? "step-end" : "step-start")},
+  transition:
+    border-color 300ms ${({ error }) => (error ? "step-end" : "step-start")},
     color 500ms ${({ error }) => (error ? "step-end" : "step-start")};
   background-color: ${colors.darkGrey};
 `;

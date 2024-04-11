@@ -48,8 +48,8 @@ export function useSwapActionHandlers(dispatch: React.Dispatch<AnyAction>): {
           currencyId: currency.isToken
             ? currency.address
             : currency.isNative
-            ? "ETH"
-            : ""
+              ? "ETH"
+              : ""
         })
       );
     },

@@ -25,8 +25,11 @@ export const clamp = css`
   -webkit-box-orient: vertical;
 `;
 export const boxShadow = css`
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.05), 0px 0px 8px rgba(0, 0, 0, 0.05),
-    0px 0px 16px rgba(0, 0, 0, 0.05), 0px 0px 32px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0px 0px 4px rgba(0, 0, 0, 0.05),
+    0px 0px 8px rgba(0, 0, 0, 0.05),
+    0px 0px 16px rgba(0, 0, 0, 0.05),
+    0px 0px 32px rgba(0, 0, 0, 0.05);
 `;
 
 export const text = css`

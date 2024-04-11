@@ -40,7 +40,9 @@ const IconStyles = css<{ hideHorizontal?: boolean; $color: string }>`
   width: ${({ hideHorizontal }) => (hideHorizontal ? "0px" : "32px")};
   &:hover {
     background-color: color-mix(in srgb, var(--buttonBgColor) 90%, black);
-    transition: 125ms background-color ease-in, ${getWidthTransition};
+    transition:
+      125ms background-color ease-in,
+      ${getWidthTransition};
 
     ${IconHoverText} {
       opacity: 1;
@@ -48,7 +50,9 @@ const IconStyles = css<{ hideHorizontal?: boolean; $color: string }>`
   }
   &:active {
     background-color: var(--buttonBgColor);
-    transition: background-color 125ms linear, ${getWidthTransition};
+    transition:
+      background-color 125ms linear,
+      ${getWidthTransition};
   }
 `;
 
@@ -125,7 +129,9 @@ const TextWrapper = styled.div`
 
 const TextHide = styled.div`
   overflow: hidden;
-  transition: width ease-in-out 125ms, max-width ease-in-out 125ms;
+  transition:
+    width ease-in-out 125ms,
+    max-width ease-in-out 125ms;
 `;
 
 /**
