@@ -20,8 +20,8 @@ const customStyles = (error: any) => ({
     border: state.isFocused
       ? `1px solid ${colors.secondary}`
       : !checkIfValueIsEmpty(error)
-      ? `1px solid ${colors.orange}`
-      : `1px solid ${colors.border}`
+        ? `1px solid ${colors.orange}`
+        : `1px solid ${colors.border}`
   }),
   container: (provided: any, state: any) => ({
     ...provided,

@@ -250,8 +250,8 @@ export default memo(function MessageList({
             const buyerOrSellerToShow = iAmBoth
               ? exchange?.seller
               : iAmTheBuyer
-              ? exchange?.seller
-              : exchange?.buyer;
+                ? exchange?.seller
+                : exchange?.buyer;
             const animationUrl = exchange?.offer.metadata.animationUrl || "";
             const renderProductImage = () => {
               return (

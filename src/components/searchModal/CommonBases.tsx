@@ -13,7 +13,7 @@ const MobileWrapper = styled(AutoColumn)`
   ${breakpoint.s} {
     // TODO: check
     display: none;
-  } ;
+  }
 `;
 
 const BaseWrapper = styled.div<{ disable?: boolean }>`

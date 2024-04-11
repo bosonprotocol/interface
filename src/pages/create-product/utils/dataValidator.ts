@@ -44,8 +44,8 @@ export const extractOfferTimestamps = ({
   let voucherRedeemableFromDateInMS = Array.isArray(redemptionPeriod)
     ? redemptionPeriod[0].toDate().getTime()
     : redemptionPeriod
-    ? redemptionPeriod.toDate().getTime()
-    : undefined;
+      ? redemptionPeriod.toDate().getTime()
+      : undefined;
   if (voucherRedeemableFromDateInMS === undefined) {
     voucherRedeemableFromDateInMS = 0;
   } else if (voucherRedeemableFromDateInMS < now) {

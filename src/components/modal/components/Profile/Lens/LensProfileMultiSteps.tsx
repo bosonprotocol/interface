@@ -38,8 +38,8 @@ export default function LensProfileMultiSteps({
         createOrViewRoyalties === "create"
           ? "Create Royalties"
           : createOrViewRoyalties === "view"
-          ? "View Royalties"
-          : "Create or View Royalties"
+            ? "View Royalties"
+            : "Create or View Royalties"
       }`,
       step: LensStep.BOSON_ACCOUNT
     },

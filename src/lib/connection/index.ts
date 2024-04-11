@@ -128,7 +128,7 @@ export const walletConnectV2Connection: Connection = new (class
       set: (target, p, receiver) =>
         Reflect.set(this.activeConnector[0], p, receiver)
     }
-  ) as typeof this.activeConnector[0];
+  ) as (typeof this.activeConnector)[0];
   private proxyHooks = new Proxy(
     {},
     {
@@ -148,7 +148,7 @@ export const walletConnectV2Connection: Connection = new (class
         };
       }
     }
-  ) as typeof this.activeConnector[1];
+  ) as (typeof this.activeConnector)[1];
 
   private onActivate?: () => void;
 

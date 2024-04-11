@@ -34,7 +34,7 @@ const UX_SUPPORTED_GQL_CHAINS = [
   ...GQL_MAINNET_CHAINS,
   ...GQL_TESTNET_CHAINS
 ] as const;
-type InterfaceGqlChain = typeof UX_SUPPORTED_GQL_CHAINS[number];
+type InterfaceGqlChain = (typeof UX_SUPPORTED_GQL_CHAINS)[number];
 
 const CHAIN_ID_TO_BACKEND_NAME: { [key: number]: InterfaceGqlChain } = {
   [ChainId.MAINNET]: Chain.Ethereum,
@@ -68,7 +68,7 @@ const GQL_CHAINS = [
   ChainId.ARBITRUM_ONE,
   ChainId.CELO
 ] as const;
-type GqlChainsType = typeof GQL_CHAINS[number];
+type GqlChainsType = (typeof GQL_CHAINS)[number];
 
 export function isGqlSupportedChain(
   chainId: number | undefined

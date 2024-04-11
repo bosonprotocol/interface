@@ -14,8 +14,10 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   border-radius: 20px;
-  box-shadow: 12px 16px 24px rgba(0, 0, 0, 0.24),
-    12px 8px 12px rgba(0, 0, 0, 0.24), 4px 4px 8px rgba(0, 0, 0, 0.32);
+  box-shadow:
+    12px 16px 24px rgba(0, 0, 0, 0.24),
+    12px 8px 12px rgba(0, 0, 0, 0.24),
+    4px 4px 8px rgba(0, 0, 0, 0.32);
   display: flex;
   flex-flow: column nowrap;
   margin: 0;

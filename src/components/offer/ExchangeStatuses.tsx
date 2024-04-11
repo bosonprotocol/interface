@@ -65,16 +65,16 @@ const Status = styled.div<{
     $size === "regular"
       ? "0.5rem 1rem"
       : $size === "small"
-      ? "0.4375rem 0.625rem"
-      : "0.75rem 1.5rem"};
+        ? "0.4375rem 0.625rem"
+        : "0.75rem 1.5rem"};
   font-family: ${defaultFontFamily};
   font-style: normal;
   font-size: ${({ $size }) =>
     $size === "regular"
       ? "0.875rem"
       : $size === "small"
-      ? "0.75rem"
-      : "0.1rem"};
+        ? "0.75rem"
+        : "0.1rem"};
 
   font-weight: 600;
   line-height: 1.5;

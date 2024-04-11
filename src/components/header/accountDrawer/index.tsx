@@ -156,8 +156,10 @@ const AccountDrawerWrapper = styled.div<{ open: boolean }>`
 
   border: 1px solid var(--primaryBgColor);
 
-  box-shadow: 12px 16px 24px rgba(0, 0, 0, 0.24),
-    12px 8px 12px rgba(0, 0, 0, 0.24), 4px 4px 8px rgba(0, 0, 0, 0.32);
+  box-shadow:
+    12px 16px 24px rgba(0, 0, 0, 0.24),
+    12px 8px 12px rgba(0, 0, 0, 0.24),
+    4px 4px 8px rgba(0, 0, 0, 0.32);
   transition: margin-right 250ms;
 `;
 
@@ -176,7 +178,9 @@ const CloseDrawer = styled.div`
   // When the drawer is not hovered, the icon should be 18px from the edge of the sidebar.
   padding: 24px calc(18px + ${DRAWER_OFFSET}) 24px 14px;
   border-radius: 20px 0 0 20px;
-  transition: 250ms ease background-color, 250ms ease margin;
+  transition:
+    250ms ease background-color,
+    250ms ease margin;
   &:hover {
     margin: 0 -16px 0 0;
     filter: brightness(0.85);

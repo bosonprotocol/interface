@@ -253,15 +253,15 @@ export function useCurrentSellers({
   const sellerType: string[] = resultById?.data
     ? Object.keys(resultById.data)
     : resultByLensId?.data
-    ? Object.keys(resultByLensId.data)
-    : resultByAddress?.data?.sellerType || [];
+      ? Object.keys(resultByLensId.data)
+      : resultByAddress?.data?.sellerType || [];
 
   const sellerIdsToQuery: string[] =
     sellerAddressType === "SELLER_ID"
       ? [sellerAddress as string]
       : sellerAddressType === "LENS_TOKEN_ID" && resultByLensId?.data?.sellerId
-      ? [resultByLensId?.data.sellerId]
-      : [];
+        ? [resultByLensId?.data.sellerId]
+        : [];
   const enableSellerById = !!sellerIdsToQuery?.length;
   const { data: sellers2, refetch: refetchFetchSellers } = fetchSellers(
     sellerIdsToQuery,
@@ -332,8 +332,8 @@ export function useCurrentSellers({
       resultByAddress.data
         ? resultByAddress.data.sellers.map((seller) => seller.id)
         : sellerAddressType === "SELLER_ID"
-        ? [sellerAddress]
-        : []
+          ? [sellerAddress]
+          : []
     ).filter((sellerId) => !!sellerId) as string[];
   }, [resultByAddress.data, sellerAddress, sellerAddressType]);
   return {

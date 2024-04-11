@@ -756,7 +756,7 @@ function CreateProductInner({
       if (isMultiVariant) {
         const { variants = [] } = values.productVariants;
         const variantsForMetadataCreation: Parameters<
-          typeof productV1["createVariantProductMetadata"]
+          (typeof productV1)["createVariantProductMetadata"]
         >[1] = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =

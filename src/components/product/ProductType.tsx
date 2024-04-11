@@ -81,8 +81,11 @@ export const RadioButton = styled.input`
   }
   &:checked + div {
     border: 1px solid ${colors.green};
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
-      0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0px 0px 4px rgba(0, 0, 0, 0.1),
+      0px 0px 8px rgba(0, 0, 0, 0.1),
+      0px 0px 16px rgba(0, 0, 0, 0.1),
+      0px 0px 32px rgba(0, 0, 0, 0.1);
   }
   &:disabled + div {
     opacity: 0.5;

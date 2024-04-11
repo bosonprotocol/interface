@@ -33,12 +33,12 @@ export interface ModalContextType {
   showModal: <T extends keyof typeof MODAL_TYPES>(
     modalType: T,
     modalProps?: Omit<
-      Parameters<typeof MODAL_COMPONENTS[T]>,
+      Parameters<(typeof MODAL_COMPONENTS)[T]>,
       "hideModal"
     >[0] extends undefined
       ? Omit<ModalProps, "hideModal">
       : Omit<ModalProps, "hideModal"> &
-          Omit<Parameters<typeof MODAL_COMPONENTS[T]>[0], "hideModal">,
+          Omit<Parameters<(typeof MODAL_COMPONENTS)[T]>[0], "hideModal">,
     modalSize?: Store["modalSize"],
     theme?: Store["theme"],
     modalMaxWidth?: Store["modalMaxWidth"]
@@ -48,13 +48,13 @@ export interface ModalContextType {
   updateProps: <T extends keyof typeof MODAL_TYPES>(
     store: Store & {
       modalProps: Omit<
-        Parameters<typeof MODAL_COMPONENTS[T]>,
+        Parameters<(typeof MODAL_COMPONENTS)[T]>,
         "hideModal"
       >[0] extends undefined
         ? Partial<Omit<ModalProps, "hideModal">>
         : Partial<
             Omit<ModalProps, "hideModal"> &
-              Omit<Parameters<typeof MODAL_COMPONENTS[T]>[0], "hideModal">
+              Omit<Parameters<(typeof MODAL_COMPONENTS)[T]>[0], "hideModal">
           >;
       modalSize?: Store["modalSize"];
       modalMaxWidth?: Store["modalMaxWidth"];

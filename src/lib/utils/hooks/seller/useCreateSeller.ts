@@ -45,7 +45,7 @@ async function createSellerAccount(
     name: string;
     description: string;
     authTokenId: string | null;
-    authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
+    authTokenType: (typeof authTokenTypes)[keyof typeof authTokenTypes];
     profileLogoUrl: string;
     metadataUri: string;
   },

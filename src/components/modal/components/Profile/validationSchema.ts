@@ -51,7 +51,7 @@ export const getCommonFieldsValidation = ({
       : validation;
   })(),
   contactPreference: Yup.object({
-    value: Yup.mixed<typeof contactPreferences[number]>()
+    value: Yup.mixed<(typeof contactPreferences)[number]>()
       .required(validationMessage.required)
       .oneOf(contactPreferences),
     label: Yup.string()

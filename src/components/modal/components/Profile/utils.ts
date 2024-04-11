@@ -17,7 +17,7 @@ import {
 export function buildProfileFromMetadata(
   metadata: SellerFieldsFragment["metadata"] | undefined | null,
   sellerAuthTokenType:
-    | typeof AuthTokenType[keyof typeof AuthTokenType]
+    | (typeof AuthTokenType)[keyof typeof AuthTokenType]
     | undefined
     | null,
   lensProfile: Profile | undefined | null

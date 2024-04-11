@@ -75,17 +75,17 @@ function AboutPage() {
           {curationLists.isError
             ? "- ERROR -"
             : curationLists.sellerCurationList
-            ? (curationLists.sellerCurationList || []).map((s, i) => {
-                const lastElem =
-                  i === (curationLists.sellerCurationList || []).length - 1;
-                return (
-                  <span key={`sellerCurationList_${s}_${i}`}>
-                    {s}
-                    {!lastElem ? "," : ""}
-                  </span>
-                );
-              })
-            : "undefined"}
+              ? (curationLists.sellerCurationList || []).map((s, i) => {
+                  const lastElem =
+                    i === (curationLists.sellerCurationList || []).length - 1;
+                  return (
+                    <span key={`sellerCurationList_${s}_${i}`}>
+                      {s}
+                      {!lastElem ? "," : ""}
+                    </span>
+                  );
+                })
+              : "undefined"}
         </span>
       </Text>
       <Text margin="0 0 0.5rem 0">

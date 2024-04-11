@@ -34,10 +34,13 @@ export default function Updater() {
   const transactions = useAppSelector((state) => state.transactions);
   const pendingTransactions = useMemo(() => {
     if (!chainId || !transactions[chainId]) return {};
-    return Object.values(transactions[chainId]).reduce((acc, tx) => {
-      if (isPendingTx(tx)) acc[tx.hash] = tx;
-      return acc;
-    }, {} as Record<string, TransactionDetails>);
+    return Object.values(transactions[chainId]).reduce(
+      (acc, tx) => {
+        if (isPendingTx(tx)) acc[tx.hash] = tx;
+        return acc;
+      },
+      {} as Record<string, TransactionDetails>
+    );
   }, [chainId, transactions]);
 
   const dispatch = useAppDispatch();

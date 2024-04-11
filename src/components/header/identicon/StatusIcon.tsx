@@ -23,7 +23,7 @@ const IconWrapper = styled.div<{ size?: number }>`
   }
   ${breakpoint.m} {
     align-items: flex-end;
-  } ;
+  }
 `;
 
 const MiniIconContainer = styled.div<{ side: "left" | "right" }>`

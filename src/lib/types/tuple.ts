@@ -9,8 +9,8 @@ type TupleSplit<
 > = O["length"] extends N
   ? [O, T]
   : T extends readonly [infer F, ...infer R]
-  ? TupleSplit<readonly [...R], N, readonly [...O, F]>
-  : [O, T];
+    ? TupleSplit<readonly [...R], N, readonly [...O, F]>
+    : [O, T];
 
 export type SkipFirst<T extends readonly any[], N extends number> = TupleSplit<
   T,

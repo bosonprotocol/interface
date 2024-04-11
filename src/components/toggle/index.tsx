@@ -64,8 +64,8 @@ const ToggleElement = styled.span<{
     isActive
       ? bgColor ?? lighten(0.09, colors.secondary)
       : bgColor
-      ? colors.lightGrey
-      : colors.darkGrey};
+        ? colors.lightGrey
+        : colors.darkGrey};
   border-radius: 50%;
   height: 24px;
   &:hover {

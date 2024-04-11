@@ -256,8 +256,8 @@ const MessageContent = ({
         {isFileMessage
           ? "Corrupt image."
           : isProposalMessage
-          ? "Corrupt proposal"
-          : "Corrupt message"}
+            ? "Corrupt proposal"
+            : "Corrupt message"}
         &nbsp; Please re-send in a new message
       </div>
     );

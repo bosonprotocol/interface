@@ -126,7 +126,7 @@ export const L1_CHAIN_IDS = [
   // ChainId.AVALANCHE
 ] as const;
 
-export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number];
+export type SupportedL1ChainId = (typeof L1_CHAIN_IDS)[number];
 
 /**
  * Controls some L2 specific behavior, e.g. slippage tolerance, special UI behavior.
@@ -141,7 +141,7 @@ export const L2_CHAIN_IDS = [
   // ChainId.BASE_GOERLI
 ] as const;
 
-export type SupportedL2ChainId = typeof L2_CHAIN_IDS[number];
+export type SupportedL2ChainId = (typeof L2_CHAIN_IDS)[number];
 
 /**
  * Get the priority of a chainId based on its relevance to the user.

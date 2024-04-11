@@ -27,9 +27,9 @@ function parseStringOrBytes32(
   return str && str.length > 0
     ? str
     : // need to check for proper bytes string and valid terminator
-    bytes32 && BYTES32_REGEX.test(bytes32) && arrayify(bytes32)[31] === 0
-    ? parseBytes32String(bytes32)
-    : defaultValue;
+      bytes32 && BYTES32_REGEX.test(bytes32) && arrayify(bytes32)[31] === 0
+      ? parseBytes32String(bytes32)
+      : defaultValue;
 }
 
 const UNKNOWN_TOKEN_SYMBOL = "UNKNOWN";

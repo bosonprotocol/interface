@@ -47,7 +47,7 @@ export default function MakeAProposalStep({
   const myBuyerId = buyers[0]?.id;
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const counterPartyText = iAmTheBuyer ? "seller" : "buyer";
-  const [proposalTypeField] = useField<typeof proposals[0]>(
+  const [proposalTypeField] = useField<(typeof proposals)[0]>(
     FormModel.formFields.proposalType.name
   );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

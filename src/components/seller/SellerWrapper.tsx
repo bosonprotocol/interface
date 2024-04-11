@@ -15,7 +15,9 @@ const SellerTitle = styled(Typography)`
 const SellerInner = styled.div`
   background: ${colors.white};
   padding: 1rem;
-  box-shadow: 0px 0px 5px 0px rgb(0 0 0 / 2%), 0px 0px 10px 0px rgb(0 0 0 / 2%),
+  box-shadow:
+    0px 0px 5px 0px rgb(0 0 0 / 2%),
+    0px 0px 10px 0px rgb(0 0 0 / 2%),
     0px 0px 15px 0px rgb(0 0 0 / 5%);
   overflow: auto;
   height: calc(100% - ${margin});

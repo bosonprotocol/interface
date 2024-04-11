@@ -240,9 +240,8 @@ export default function ExpireVoucherModal({ exchange }: Props) {
             onSuccess={async (_, { exchangeId }) => {
               await poll(
                 async () => {
-                  const expiredExchange = await coreSDK.getExchangeById(
-                    exchangeId
-                  );
+                  const expiredExchange =
+                    await coreSDK.getExchangeById(exchangeId);
                   return expiredExchange.expired;
                 },
                 (expired) => {

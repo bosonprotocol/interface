@@ -102,13 +102,12 @@ const SelectFilterWrapper = styled.div<{ $color: string }>`
   display: flex;
   align-items: center;
   width: max-content;
-  ${({ $color }) =>
-    css`
-      [class$="-ValueContainer"] > *,
-      [class$="-indicatorContainer"] {
-        color: ${$color};
-      }
-    `}
+  ${({ $color }) => css`
+    [class$="-ValueContainer"] > *,
+    [class$="-indicatorContainer"] {
+      color: ${$color};
+    }
+  `}
 `;
 
 interface Props {

@@ -116,7 +116,7 @@ export default function Chat() {
         map.set(seller.id, seller);
       }
       return map;
-    }, new Map<string, typeof allSellersWithDup[0]>());
+    }, new Map<string, (typeof allSellersWithDup)[0]>());
     return {
       sellers: Array.from(sellersMap.values()),
       exchanges: Array.from(
@@ -278,8 +278,8 @@ export default function Chat() {
                       {exchangeIdNotOwned
                         ? "You don't have this exchange"
                         : isSellerOrBuyer && exchanges.length
-                        ? "Select a message"
-                        : "You need to have an exchange to chat"}
+                          ? "Select a message"
+                          : "You need to have an exchange to chat"}
                     </SimpleMessage>
                   </SelectMessageContainer>
                 )}

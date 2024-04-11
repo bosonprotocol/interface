@@ -97,7 +97,7 @@ const ItemDates = (item: Exchange, type: string) => {
               : ""
         }
       }
-    }[type]);
+    })[type];
 
   return component();
 };
