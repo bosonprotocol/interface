@@ -205,6 +205,21 @@ const CHAIN_INFO: ChainInfoMap = {
       decimals: 18
     }
   },
+  80002: {
+    networkType: NetworkType.L1,
+    blockWaitMsBeforeWarning: ms(`10m`),
+    bridge: "https://wallet.polygon.technology/polygon/bridge/deposit",
+    docs: "https://polygon.io/",
+    explorer: "https://www.oklink.com/amoy/",
+    infoLink: "https://info.uniswap.org/#/polygon/",
+    label: "Polygon Amoy",
+    logoUrl: polygonMaticLogo,
+    nativeCurrency: {
+      name: "Polygon Amoy Matic",
+      symbol: "aMATIC",
+      decimals: 18
+    }
+  },
   [ChainId.CELO]: {
     networkType: NetworkType.L1,
     blockWaitMsBeforeWarning: ms(`10m`),
@@ -297,6 +312,21 @@ const CHAIN_INFO: ChainInfoMap = {
     label: "Local",
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 }
+  },
+  80002: {
+    networkType: NetworkType.L1,
+    blockWaitMsBeforeWarning: ms(`10m`),
+    bridge: "https://wallet.polygon.technology/polygon/bridge/deposit",
+    docs: "https://polygon.io/",
+    explorer: "https://www.oklink.com/amoy/",
+    infoLink: "https://info.uniswap.org/#/polygon/",
+    label: "Polygon Amoy",
+    logoUrl: polygonMaticLogo,
+    nativeCurrency: {
+      name: "Polygon Amoy Matic",
+      symbol: "aMATIC",
+      decimals: 18
+    }
   }
 } as const;
 

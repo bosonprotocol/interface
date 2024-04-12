@@ -42,6 +42,7 @@ const CHAIN_ID_TO_BACKEND_NAME: { [key: number]: InterfaceGqlChain } = {
   [ChainId.SEPOLIA]: Chain.EthereumSepolia,
   [ChainId.POLYGON]: Chain.Polygon,
   [ChainId.POLYGON_MUMBAI]: Chain.Polygon,
+  80002: Chain.Polygon,
   [ChainId.CELO]: Chain.Celo,
   [ChainId.CELO_ALFAJORES]: Chain.Celo,
   [ChainId.ARBITRUM_ONE]: Chain.Arbitrum,

@@ -1,5 +1,5 @@
 import { FALLBACK_URLS } from "@bosonprotocol/react-kit";
-import { ChainId, SupportedChainsType } from "@uniswap/sdk-core";
+import { ChainId } from "@uniswap/sdk-core";
 import { Connector } from "@web3-react/types";
 import { CONFIG } from "lib/config";
 import { useCallback } from "react";
@@ -12,7 +12,7 @@ import {
   walletConnectV2Connection
 } from "../../connection";
 import { getChainInfo } from "../../constants/chainInfo";
-import { isSupportedChain } from "../../constants/chains";
+import { isSupportedChain, SupportedChainsType } from "../../constants/chains";
 import { useChainId } from "./connection/connection";
 const RPC_URLS = CONFIG.rpcUrls;
 
