@@ -13,17 +13,12 @@ interface Props {
 
 const openSeaUrlMap = new Map([
   [
-    "testing", // Mumbai
+    "testing", // testnets
     new Map([
       [
-        "testing-80001-0",
+        "testing-80002-0",
         (tokenId: string, contractAddress: string) =>
-          `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
-      ],
-      [
-        "testing-5-0",
-        (tokenId: string, contractAddress: string) =>
-          `https://testnets.opensea.io/assets/goerli/${contractAddress}/${tokenId}`
+          `https://testnets.opensea.io/assets/amoy/${contractAddress}/${tokenId}`
       ],
       [
         "testing-11155111-0",
@@ -33,17 +28,12 @@ const openSeaUrlMap = new Map([
     ])
   ],
   [
-    "staging", // Mumbai
+    "staging", // testnets
     new Map([
       [
-        "staging-80001-0",
+        "staging-80002-0",
         (tokenId: string, contractAddress: string) =>
-          `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
-      ],
-      [
-        "staging-5-0",
-        (tokenId: string, contractAddress: string) =>
-          `https://testnets.opensea.io/assets/goerli/${contractAddress}/${tokenId}`
+          `https://testnets.opensea.io/assets/amoy/${contractAddress}/${tokenId}`
       ],
       [
         "staging-11155111-0",

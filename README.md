@@ -26,8 +26,8 @@ For ease of use, each environment has a DNS name that always points to the lates
 
 | Env          | Networks   | Endpoint                                                        |
 | ------------ | --------- | --------------------------------------------------------------- |
-| testing    | mumbai, goerli | https://interface-test.on.fleek.co/                             |
-| staging    | mumbai, goerli | https://interface-staging.on.fleek.co/                          |
+| testing    | amoy, sepolia | https://interface-test.on.fleek.co/                             |
+| staging    | amoy, sepolia | https://interface-staging.on.fleek.co/                          |
 | production | polygon, ethereum | https://dapp-interface-production.on.fleek.co/                                                           |
 
 ## Local development

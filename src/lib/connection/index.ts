@@ -26,7 +26,7 @@ import {
   getIsMetaMaskWallet
 } from "./utils";
 import { WalletConnectV2 } from "./WalletConnectV2";
-const RPC_URLS = CONFIG.rpcUrls;
+const RPC_URLS = CONFIG.rpcUrls as { [key: number]: string[] };
 
 function onError(error: Error) {
   console.debug(`web3-react error: ${error}`);
