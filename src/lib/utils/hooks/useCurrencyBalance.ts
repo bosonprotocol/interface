@@ -1,12 +1,7 @@
-import { Interface } from "@ethersproject/abi";
 import { Currency, CurrencyAmount, Token } from "@uniswap/sdk-core";
-import ERC20ABI from "abis/erc20.json";
-import { Erc20Interface } from "abis/types/Erc20";
 import JSBI from "jsbi";
-import {
-  useMultipleContractSingleData,
-  useSingleContractMultipleData
-} from "lib/utils/hooks/multicall";
+import { useTokenBalances as useTokenBalancesSDK } from "lib/utils/hooks/defaultTokenList/useTokenBalances";
+import { useSingleContractMultipleData } from "lib/utils/hooks/multicall";
 import { useInterfaceMulticall } from "lib/utils/hooks/useContract";
 import { useMemo } from "react";
 
@@ -60,9 +55,6 @@ export function useNativeCurrencyBalances(
   );
 }
 
-const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface;
-const tokenBalancesGasRequirement = { gasRequired: 185_000 };
-
 /**
  * Returns a map of token addresses to their eventually consistent token balances for a single account.
  */
@@ -82,25 +74,21 @@ export function useTokenBalancesWithLoadingIndicator(
       ) ?? [],
     [chainId, tokens]
   );
-  const validatedTokenAddresses = useMemo(
-    () => validatedTokens.map((vt) => vt.address),
-    [validatedTokens]
-  );
 
-  const balances = useMultipleContractSingleData(
+  const balances = useTokenBalancesSDK({
     chainId,
-    0, // not used
-    validatedTokenAddresses,
-    ERC20Interface,
-    "balanceOf",
-    useMemo(() => [address], [address]),
-    tokenBalancesGasRequirement
-  );
+    address,
+    tokens: validatedTokens.map((t) => {
+      return {
+        symbol: t.symbol || "",
+        name: t.name || "",
+        address: t.address,
+        decimals: t.decimals.toString()
+      };
+    })
+  });
 
-  const anyLoading: boolean = useMemo(
-    () => balances.some((callState) => callState.loading),
-    [balances]
-  );
+  const anyLoading: boolean = useMemo(() => balances.isLoading, [balances]);
 
   const result = useMemo(
     () =>
@@ -109,8 +97,8 @@ export function useTokenBalancesWithLoadingIndicator(
           ? validatedTokens.reduce<{
               [tokenAddress: string]: CurrencyAmount<Token> | undefined;
             }>((memo, token, i) => {
-              const value = balances?.[i]?.result?.[0];
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined;
+              const value = balances?.data?.[i]?.balance;
+              const amount = value ? JSBI.BigInt(value) : undefined;
               if (amount) {
                 memo[token.address] = CurrencyAmount.fromRawAmount(
                   token,
