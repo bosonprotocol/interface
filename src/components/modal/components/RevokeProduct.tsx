@@ -193,9 +193,8 @@ export default function RevokeProduct({
             onSuccess={async (receipt, { exchangeId }) => {
               await poll(
                 async () => {
-                  const canceledExchange = await coreSDK.getExchangeById(
-                    exchangeId
-                  );
+                  const canceledExchange =
+                    await coreSDK.getExchangeById(exchangeId);
                   return canceledExchange.revokedDate;
                 },
                 (revokedDate) => {

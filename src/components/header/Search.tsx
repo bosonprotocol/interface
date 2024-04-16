@@ -26,16 +26,16 @@ const InputWrapper = styled(Grid)<{
     isMobile
       ? ""
       : ["left", "right"].includes($navigationBarPosition ?? "")
-      ? css`
-          border-bottom: none;
-          padding: 0.25rem 1rem;
-        `
-      : css`
-          max-width: 487px;
-          border-bottom: none;
-          margin: 1.25rem 0.5rem 1.25rem 0;
-          padding: 0.25rem 1rem 0.25rem 1rem;
-        `}
+        ? css`
+            border-bottom: none;
+            padding: 0.25rem 1rem;
+          `
+        : css`
+            max-width: 487px;
+            border-bottom: none;
+            margin: 1.25rem 0.5rem 1.25rem 0;
+            padding: 0.25rem 1rem 0.25rem 1rem;
+          `}
 `;
 
 const Input = styled.input`

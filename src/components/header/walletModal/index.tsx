@@ -39,7 +39,7 @@ const OptionGrid = styled.div`
   overflow: hidden;
   ${breakpoint.m} {
     grid-template-columns: 1fr;
-  } ;
+  }
 `;
 
 const PrivacyPolicyWrapper = styled.div`

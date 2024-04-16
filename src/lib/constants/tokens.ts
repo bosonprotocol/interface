@@ -413,6 +413,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
       "WMATIC",
       "Wrapped MATIC"
     ),
+    80002: new Token(
+      80002,
+      "0x52eF3d68BaB452a294342DC3e5f464d7f610f72E",
+      18,
+      "WMATIC",
+      "Wrapped MATIC"
+    ),
     [ChainId.CELO]: new Token(
       ChainId.CELO,
       "0x471ece3750da237f93b8e339c536989b8978a438",

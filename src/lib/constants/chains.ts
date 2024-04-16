@@ -1,11 +1,11 @@
 import {
   ChainId,
-  SUPPORTED_CHAINS as _SUPPORTED_CHAINS,
-  SupportedChainsType
+  SUPPORTED_CHAINS as _SUPPORTED_CHAINS
 } from "@uniswap/sdk-core";
 import { envChainIds } from "lib/config";
 
 export const LocalChainId = 31337;
+export const ChainId_POLYGON_AMOY = 80002;
 
 export const UniWalletSupportedChains = [
   ChainId.MAINNET,
@@ -21,6 +21,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.SEPOLIA]: "sepolia",
   [ChainId.POLYGON]: "polygon",
   [ChainId.POLYGON_MUMBAI]: "polygon_mumbai",
+  80002: "polygon_amoy",
   [ChainId.CELO]: "celo",
   [ChainId.CELO_ALFAJORES]: "celo_alfajores",
   [ChainId.ARBITRUM_ONE]: "arbitrum",
@@ -40,6 +41,7 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
   [ChainId.SEPOLIA]: "Sepolia",
   [ChainId.POLYGON]: "Polygon",
   [ChainId.POLYGON_MUMBAI]: "Polygon Mumbai",
+  80002: "Polygon Amoy",
   [ChainId.CELO]: "Celo",
   [ChainId.CELO_ALFAJORES]: "Celo Alfajores",
   [ChainId.ARBITRUM_ONE]: "Arbitrum",
@@ -53,7 +55,12 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
   [LocalChainId]: "Local Hardhat"
 } as const;
 
-const SUPPORTED_CHAINS = [LocalChainId, ..._SUPPORTED_CHAINS];
+const SUPPORTED_CHAINS = [
+  LocalChainId,
+  ChainId_POLYGON_AMOY,
+  ..._SUPPORTED_CHAINS
+];
+export declare type SupportedChainsType = (typeof SUPPORTED_CHAINS)[number];
 
 // Include ChainIds in this array if they are not supported by the UX yet, but are already in the SDK.
 const NOT_YET_UX_SUPPORTED_CHAIN_IDS: number[] = [];
@@ -103,6 +110,7 @@ export const TESTNET_CHAIN_IDS = [
   ChainId.GOERLI,
   // ChainId.SEPOLIA,
   ChainId.POLYGON_MUMBAI,
+  80002,
   LocalChainId
   // ChainId.ARBITRUM_GOERLI,
   // ChainId.OPTIMISM_GOERLI,
@@ -119,6 +127,7 @@ export const L1_CHAIN_IDS = [
   // ChainId.SEPOLIA,
   ChainId.POLYGON,
   ChainId.POLYGON_MUMBAI,
+  80002,
   LocalChainId
   // ChainId.CELO,
   // ChainId.CELO_ALFAJORES
@@ -126,7 +135,7 @@ export const L1_CHAIN_IDS = [
   // ChainId.AVALANCHE
 ] as const;
 
-export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number];
+export type SupportedL1ChainId = (typeof L1_CHAIN_IDS)[number];
 
 /**
  * Controls some L2 specific behavior, e.g. slippage tolerance, special UI behavior.
@@ -141,14 +150,14 @@ export const L2_CHAIN_IDS = [
   // ChainId.BASE_GOERLI
 ] as const;
 
-export type SupportedL2ChainId = typeof L2_CHAIN_IDS[number];
+export type SupportedL2ChainId = (typeof L2_CHAIN_IDS)[number];
 
 /**
  * Get the priority of a chainId based on its relevance to the user.
  * @param {ChainId} chainId - The chainId to determine the priority for.
  * @returns {number} The priority of the chainId, the lower the priority, the earlier it should be displayed, with base of MAINNET=0.
  */
-export function getChainPriority(chainId: ChainId): number {
+export function getChainPriority(chainId: number): number {
   switch (chainId) {
     case ChainId.MAINNET:
     case ChainId.GOERLI:
@@ -156,6 +165,7 @@ export function getChainPriority(chainId: ChainId): number {
       return 0;
     case ChainId.POLYGON:
     case ChainId.POLYGON_MUMBAI:
+    case 80002:
       return 1;
     // case ChainId.ARBITRUM_ONE:
     // case ChainId.ARBITRUM_GOERLI:

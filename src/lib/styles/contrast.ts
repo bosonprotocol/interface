@@ -20,6 +20,6 @@ export const getColor1OverColor2WithContrast = ({
   return contrast > contrastThreshold
     ? color1
     : contrastWithWhite > contrastWithBlack
-    ? defaultLightColor1
-    : defaultDarkColor1;
+      ? defaultLightColor1
+      : defaultDarkColor1;
 };

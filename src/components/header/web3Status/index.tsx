@@ -110,7 +110,7 @@ const getCommonWalletButtonProps = (isXXS: boolean) =>
     style: {
       whiteSpace: "pre"
     }
-  } as const);
+  }) as const;
 function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   const switchingChain = useAppSelector(
     (state) => state.wallets.switchingChain
@@ -159,8 +159,8 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   const connectedToWrongChainId = isMagicLoggedIn
     ? false
     : account
-    ? !configsCurrentChain?.length
-    : wasConnected && !configsPreviousChain?.length && isActive;
+      ? !configsCurrentChain?.length
+      : wasConnected && !configsPreviousChain?.length && isActive;
 
   if (!connectedToWrongChainId && account) {
     const color = getColor1OverColor2WithContrast({

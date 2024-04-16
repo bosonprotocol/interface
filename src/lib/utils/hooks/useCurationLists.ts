@@ -28,8 +28,8 @@ export function useCurationLists() {
         )
       : sellerCurationList
     : sellerCurationListFromUrlParam
-    ? sellerCurationListFromUrl
-    : undefined;
+      ? sellerCurationListFromUrl
+      : undefined;
 
   return {
     enableCurationLists: CONFIG.enableCurationLists,
@@ -45,8 +45,8 @@ export function useCurationLists() {
     offerCurationList: offerCurationListFromUrl
       ? parseCurationList(offerCurationListFromUrl)
       : CONFIG.enableCurationLists
-      ? CONFIG.offerCurationList
-      : undefined,
+        ? CONFIG.offerCurationList
+        : undefined,
     isError: sellerBlacklist.isError
   };
 }

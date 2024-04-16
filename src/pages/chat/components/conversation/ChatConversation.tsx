@@ -197,8 +197,8 @@ const ChatConversation = ({
       iAmBoth
         ? exchange?.seller
         : iAmTheBuyer
-        ? exchange?.seller
-        : exchange?.buyer || ({} as BuyerOrSeller),
+          ? exchange?.seller
+          : exchange?.buyer || ({} as BuyerOrSeller),
     [exchange?.buyer, exchange?.seller, iAmBoth, iAmTheBuyer]
   );
   const destinationAddressLowerCase = iAmTheBuyer

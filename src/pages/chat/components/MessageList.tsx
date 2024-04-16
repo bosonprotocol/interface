@@ -251,8 +251,8 @@ export default memo(function MessageList({
             const buyerOrSellerToShow = iAmBoth
               ? exchange?.seller
               : iAmTheBuyer
-              ? exchange?.seller
-              : exchange?.buyer;
+                ? exchange?.seller
+                : exchange?.buyer;
             const { mainImage } = getOfferDetails(exchange.offer.metadata);
             const animationUrl = exchange?.offer.metadata?.animationUrl || "";
             const renderProductImage = () => {

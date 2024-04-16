@@ -472,8 +472,8 @@ export default function SellerProductsTable({
             offer?.metadata?.__typename === "ProductV1MetadataEntity"
               ? offer?.metadata?.product?.uuid
               : offer?.metadata?.__typename === "BundleMetadataEntity"
-              ? offer.metadata.bundleUuid
-              : "";
+                ? offer.metadata.bundleUuid
+                : "";
 
           const { mainImage } = getOfferDetails(offer?.metadata);
           return {
@@ -989,14 +989,17 @@ export default function SellerProductsTable({
   }, [pageCount, pageIndex]);
 
   const subRows = useMemo(() => {
-    return rows.reduce((acc, row) => {
-      if (row.subRows.length > 1) {
-        row.subRows.forEach((sub) => {
-          acc.push(sub);
-        });
-      }
-      return acc;
-    }, [] as typeof rows);
+    return rows.reduce(
+      (acc, row) => {
+        if (row.subRows.length > 1) {
+          row.subRows.forEach((sub) => {
+            acc.push(sub);
+          });
+        }
+        return acc;
+      },
+      [] as typeof rows
+    );
   }, [rows]);
 
   useEffect(() => {

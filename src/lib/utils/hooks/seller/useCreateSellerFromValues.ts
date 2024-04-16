@@ -43,7 +43,7 @@ async function createSellerFromValues(
     values: CreateProfile;
     bosonAccount: BosonAccount;
     authTokenId?: string | null;
-    authTokenType?: typeof AuthTokenType[keyof typeof AuthTokenType];
+    authTokenType?: (typeof AuthTokenType)[keyof typeof AuthTokenType];
     kind: ProfileType;
   },
   { address }: { address: string },

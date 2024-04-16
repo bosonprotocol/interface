@@ -149,8 +149,8 @@ function getPendingConfirmationContent({
   const title = swapPending
     ? `Swap submitted`
     : swapConfirmed
-    ? `Swap success!`
-    : `Confirm Swap`;
+      ? `Swap success!`
+      : `Confirm Swap`;
   const tradeSummary = trade ? <TradeSummary trade={trade} /> : null;
   if (swapPending && trade?.fillType === TradeFillType.UniswapX) {
     return {

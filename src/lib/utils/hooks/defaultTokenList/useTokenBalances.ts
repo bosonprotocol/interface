@@ -7,10 +7,20 @@ import { useProvider } from "../connection/connection";
 type UseTokensBalancesProps = {
   address: string | undefined | null;
   chainId: number | undefined | null;
+  tokens?: SDKToken[] | undefined | null;
 };
+// TODO: Token should be exported by core-sdk / react-kit
+type SDKToken = {
+  symbol: string;
+  name: string;
+  address: string;
+  decimals: string;
+};
+
 export const useTokenBalances = ({
   address,
-  chainId
+  chainId,
+  tokens
 }: UseTokensBalancesProps) => {
   const {
     config: {
@@ -20,13 +30,14 @@ export const useTokenBalances = ({
   const coreSDK = useCoreSDK();
   const provider = useProvider();
   return useQuery(
-    ["use-token-balances", address, chainId, defaultTokens],
+    ["use-token-balances", address, chainId, tokens, defaultTokens],
     async () => {
-      if (!address || !chainId || !defaultTokens?.length) {
+      tokens = tokens || defaultTokens;
+      if (!address || !chainId || !tokens?.length) {
         return;
       }
 
-      const promises = defaultTokens.map((token) => {
+      const promises = tokens.map((token) => {
         const isNative = token.address === ethers.constants.AddressZero;
         if (isNative) {
           return provider?.getBalance(address);
@@ -37,7 +48,7 @@ export const useTokenBalances = ({
         });
       });
       const balances = await Promise.all(promises);
-      const tokenBalance = defaultTokens.map((token, index) => {
+      const tokenBalance = tokens.map((token, index) => {
         const balance = balances[index]?.toString();
         return {
           ...token,

@@ -51,7 +51,9 @@ export enum AnimationType {
 }
 
 const FadeWrapper = styled.div<{ $scale: boolean }>`
-  transition: display 250ms ease-in-out, transform 250ms ease-in-out;
+  transition:
+    display 250ms ease-in-out,
+    transform 250ms ease-in-out;
   ${({ $scale }) => ($scale ? fadeAndScaleInAnimation : fadeInAnimation)}
 
   &.${AnimationType.EXITING} {

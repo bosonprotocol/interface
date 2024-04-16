@@ -30,6 +30,7 @@ const SHOULD_SHOW_ALERT = {
   [ChainId.ARBITRUM_GOERLI]: true,
   [ChainId.POLYGON]: true,
   [ChainId.POLYGON_MUMBAI]: true,
+  80002: true,
   [ChainId.CELO]: true,
   [ChainId.CELO_ALFAJORES]: true,
   [ChainId.BNB]: true,
@@ -41,12 +42,14 @@ const SHOULD_SHOW_ALERT = {
 type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT;
 
 const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
-  [darkMode in "dark" | "light"]: { [chainId in NetworkAlertChains]: string };
+  [darkMode in "dark" | "light"]: { [chainId: number]: string };
 } = {
   dark: {
     [ChainId.POLYGON]:
       "radial-gradient(100% 93.36% at 0% 6.64%, rgba(160, 108, 247, 0.1) 0%, rgba(82, 32, 166, 0.1) 100%)",
     [ChainId.POLYGON_MUMBAI]:
+      "radial-gradient(100% 93.36% at 0% 6.64%, rgba(160, 108, 247, 0.1) 0%, rgba(82, 32, 166, 0.1) 100%)",
+    80002:
       "radial-gradient(100% 93.36% at 0% 6.64%, rgba(160, 108, 247, 0.1) 0%, rgba(82, 32, 166, 0.1) 100%)",
     [ChainId.CELO]:
       "radial-gradient(182.71% 150.59% at 2.81% 7.69%, rgba(90, 190, 170, 0.15) 0%, rgba(80, 160, 40, 0.15) 100%)",
@@ -73,6 +76,8 @@ const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
     [ChainId.POLYGON]:
       "radial-gradient(182.71% 205.59% at 2.81% 7.69%, rgba(130, 71, 229, 0.2) 0%, rgba(167, 202, 255, 0.2) 100%)",
     [ChainId.POLYGON_MUMBAI]:
+      "radial-gradient(182.71% 205.59% at 2.81% 7.69%, rgba(130, 71, 229, 0.2) 0%, rgba(167, 202, 255, 0.2) 100%)",
+    80002:
       "radial-gradient(182.71% 205.59% at 2.81% 7.69%, rgba(130, 71, 229, 0.2) 0%, rgba(167, 202, 255, 0.2) 100%)",
     [ChainId.CELO]:
       "radial-gradient(182.71% 150.59% at 2.81% 7.69%, rgba(63, 208, 137, 0.15) 0%, rgba(49, 205, 50, 0.15) 100%)",
@@ -148,9 +153,10 @@ const StyledArrowUpRight = styled(ArrowUpRight)`
   height: 24px;
 `;
 
-const TEXT_COLORS: { [chainId in NetworkAlertChains]: string } = {
+const TEXT_COLORS: { [chainId: number]: string } = {
   [ChainId.POLYGON]: "rgba(130, 71, 229)",
   [ChainId.POLYGON_MUMBAI]: "rgba(130, 71, 229)",
+  80002: "rgba(130, 71, 229)",
   [ChainId.CELO]: "rgba(53, 178, 97)",
   [ChainId.CELO_ALFAJORES]: "rgba(53, 178, 97)",
   [ChainId.OPTIMISM]: "#ff3856",

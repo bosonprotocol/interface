@@ -439,8 +439,8 @@ export default function CreateBosonLensAccountSummary({
               {isUpdateSellerError
                 ? "while updating your seller account"
                 : isCreateSellerError
-                ? "while creating your seller account"
-                : ""}
+                  ? "while creating your seller account"
+                  : ""}
               , please contact us on
               <a href={`mailto:${CONFIG.defaultSupportEmail}`}>
                 {" "}

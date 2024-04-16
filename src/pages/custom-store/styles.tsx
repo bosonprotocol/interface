@@ -17,7 +17,9 @@ export const FieldTitle = styled.div`
   font-weight: 600;
   font-size: 1rem;
   line-height: 150%;
-  font-feature-settings: "zero" on, "ordn" on;
+  font-feature-settings:
+    "zero" on,
+    "ordn" on;
 `;
 
 export const FieldDescription = styled(Typography)`

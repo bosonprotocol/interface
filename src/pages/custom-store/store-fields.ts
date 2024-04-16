@@ -472,7 +472,7 @@ export const validationSchema = Yup.object({
   [storeFields.copyright]: Yup.string(),
   [storeFields.withOwnProducts]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
-    value: Yup.mixed<typeof withOwnProductsValues[number]>()
+    value: Yup.mixed<(typeof withOwnProductsValues)[number]>()
       .oneOf(withOwnProductsValues)
       .required(standardRequiredErrorMessage)
   }).nullable(),

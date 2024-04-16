@@ -305,16 +305,19 @@ export const optionUnitValues = {
 } as const;
 export const optionUnitKeys = (
   Object.keys(optionUnitValues) as Array<keyof typeof optionUnitValues>
-).reduce((prev, key) => {
-  prev[key] = key;
-  return prev;
-}, {} as Record<keyof typeof optionUnitValues, keyof typeof optionUnitValues>);
+).reduce(
+  (prev, key) => {
+    prev[key] = key;
+    return prev;
+  },
+  {} as Record<keyof typeof optionUnitValues, keyof typeof optionUnitValues>
+);
 
 export const OPTIONS_UNIT = (
   Object.entries(optionUnitValues) as Entries<typeof optionUnitValues>
 ).map(([key, value]) => ({
   value: key,
-  label: value as typeof optionUnitValues[typeof key]
+  label: value as (typeof optionUnitValues)[typeof key]
 }));
 export const PERCENT_OPTIONS_UNIT = [
   {

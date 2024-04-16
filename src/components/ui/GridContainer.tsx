@@ -1,6 +1,6 @@
 export {
   type ColumnGapPerRow,
+  GridContainer,
   type ItemsPerRow,
-  type RowGapPerRow,
-  GridContainer
+  type RowGapPerRow
 } from "@bosonprotocol/react-kit";
