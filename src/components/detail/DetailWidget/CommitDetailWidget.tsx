@@ -32,6 +32,7 @@ import { CONFIG } from "lib/config";
 import { BosonRoutes } from "lib/routing/routes";
 import { isTruthy } from "lib/types/helpers";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
+import { getOfferDetails } from "lib/utils/getOfferDetails";
 import {
   useAccount,
   useChainId,
@@ -332,13 +333,14 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       });
     }
   };
+  const { offerImg } = getOfferDetails(offer);
   const BASE_MODAL_DATA = useMemo(
     () => ({
       animationUrl: offer.metadata.animationUrl || "",
-      image,
+      image: image || offerImg || "",
       name
     }),
-    [image, name, offer.metadata.animationUrl]
+    [image, offerImg, name, offer.metadata.animationUrl]
   );
   const onCommitSuccess = async (
     _receipt: ethers.providers.TransactionReceipt,

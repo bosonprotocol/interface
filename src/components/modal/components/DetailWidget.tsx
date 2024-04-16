@@ -2,6 +2,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import { BasicCommitDetailWidget } from "components/detail/DetailWidget/BasicCommitDetailWidget";
 import { Offer } from "lib/types/offer";
 import { generatePath } from "react-router-dom";
+import { styled } from "styled-components";
 
 import {
   ModalGrid,
@@ -23,7 +24,11 @@ import Image from "../../ui/Image";
 import { Typography } from "../../ui/Typography";
 import Video from "../../ui/Video";
 import { useModal } from "../useModal";
-
+const ObjectContainImage = styled(Image)`
+  > * {
+    object-fit: contain;
+  }
+`;
 type Props = {
   state: string;
   message: string;
@@ -54,7 +59,9 @@ export default function DetailWidget({
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { hideModal } = useModal();
-
+  const OfferImage = (
+    <ObjectContainImage src={image} dataTestId="offerImage" alt="Offer" />
+  );
   return (
     <>
       <ModalGrid>
@@ -67,13 +74,11 @@ export default function DetailWidget({
               src={animationUrl}
               dataTestId="offerAnimationUrl"
               videoProps={{ muted: true, loop: true, autoPlay: true }}
-              componentWhileLoading={() => (
-                <Image src={image} dataTestId="offerImage" />
-              )}
+              componentWhileLoading={() => OfferImage}
               withMuteButton
             />
           ) : (
-            <Image src={image} dataTestId="offerImage" />
+            OfferImage
           )}
         </ModalImageWrapper>
         <div style={{ width: "100%" }}>
