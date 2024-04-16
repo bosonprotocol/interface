@@ -21,8 +21,8 @@ export function getOfferDetailPage(
   const sellerIdValue = sellerId
     ? sellerId
     : "seller" in offer
-    ? offer.seller?.id || ""
-    : "";
+      ? offer.seller?.id || ""
+      : "";
   if (offer.metadata?.__typename === "BundleMetadataEntity") {
     pathname = generatePath(BundleRoutes.BundleDetail, {
       [UrlParameters.sellerId]: sellerIdValue,

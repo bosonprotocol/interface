@@ -16,14 +16,14 @@ import {
   SectionTitle
 } from "../Product.styles";
 import {
-  type ProductDigital as ProductDigitalType,
   DIGITAL_NFT_TYPE,
   DIGITAL_TYPE,
   DigitalFileBundleItemsType,
   ExperientialBundleItemsType,
   isNftMintedAlreadyOptions,
   MintedNftBundleItemsType,
-  NewNftBundleItemsType
+  NewNftBundleItemsType,
+  type ProductDigital as ProductDigitalType
 } from "../utils";
 import { DigitalFileBundleItems } from "./DigitalFileBundleItems";
 import { ExperientialBundleItems } from "./ExperientialBundleItems";

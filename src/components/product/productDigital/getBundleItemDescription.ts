@@ -11,10 +11,10 @@ export const getBundleItemDescription = (bundleItem: BundleItem): string => {
     ? getIsBundleItem<NewNFT>(bundleItem, "newNftName")
       ? bundleItem.newNftDescription
       : getIsBundleItem<ExistingNFT>(bundleItem, "mintedNftContractAddress")
-      ? ""
-      : getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")
-      ? bundleItem.digitalFileDescription
-      : bundleItem.experientialDescription
+        ? ""
+        : getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")
+          ? bundleItem.digitalFileDescription
+          : bundleItem.experientialDescription
     : "";
   return description;
 };

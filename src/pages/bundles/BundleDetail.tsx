@@ -65,7 +65,7 @@ export default function BundleDetail() {
               ({
                 variations: productV1Item.variations,
                 offer: bundle.offer
-              } as VariantV1)
+              }) as VariantV1
           );
         })
         .filter(isTruthy),

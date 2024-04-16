@@ -58,14 +58,14 @@ const getProductImageError = (
     errors.productImages && typeof errors.productImages === "string"
       ? errors.productImages
       : typeof errors.productImages === "object" &&
-        Array.isArray(errors.productImages) &&
-        typeof errors.productImages[index] === "object" &&
-        typeof Object.values(errors.productImages[index])?.[0] === "string"
-      ? (Object.values(errors.productImages[index])?.[0] as string) || ""
-      : typeof errors.productImages === "object" &&
-        typeof Object.values(errors.productImages)?.[0] === "string"
-      ? Object.values(errors.productImages)?.[0]
-      : null;
+          Array.isArray(errors.productImages) &&
+          typeof errors.productImages[index] === "object" &&
+          typeof Object.values(errors.productImages[index])?.[0] === "string"
+        ? (Object.values(errors.productImages[index])?.[0] as string) || ""
+        : typeof errors.productImages === "object" &&
+            typeof Object.values(errors.productImages)?.[0] === "string"
+          ? Object.values(errors.productImages)?.[0]
+          : null;
   return error;
 };
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
@@ -119,15 +119,15 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
                 typeof errors.bundleItemsMedia === "string"
                   ? errors.bundleItemsMedia
                   : typeof errors.bundleItemsMedia === "object" &&
-                    Array.isArray(errors.bundleItemsMedia) &&
-                    typeof errors.bundleItemsMedia[index] === "object" &&
-                    typeof Object.values(
-                      errors.bundleItemsMedia[index]
-                    )?.[0] === "string"
-                  ? (Object.values(
-                      errors.bundleItemsMedia[index]
-                    )?.[0] as string) || ""
-                  : null;
+                      Array.isArray(errors.bundleItemsMedia) &&
+                      typeof errors.bundleItemsMedia[index] === "object" &&
+                      typeof Object.values(
+                        errors.bundleItemsMedia[index]
+                      )?.[0] === "string"
+                    ? (Object.values(
+                        errors.bundleItemsMedia[index]
+                      )?.[0] as string) || ""
+                    : null;
               const name = getBundleItemName(bi);
               return {
                 id: `${getBundleItemId(bi)}-${index}`,

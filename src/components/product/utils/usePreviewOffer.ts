@@ -120,26 +120,29 @@ export const usePreviewOffers = ({
           values.shippingInfo.jurisdiction.length > 0
             ? values.shippingInfo.jurisdiction
                 .filter((v) => v.time && v.region)
-                .reduce((prev, current) => {
-                  const { region, time } = current;
-                  if (
-                    !region ||
-                    region.length === 0 ||
-                    !time ||
-                    time.length === 0
-                  ) {
-                    return prev;
-                  } else {
-                    return [
-                      ...prev,
-                      {
-                        id: `${region}-${time}`,
-                        label: region,
-                        deliveryTime: time
-                      }
-                    ];
-                  }
-                }, [] as Array<SupportedJuridiction & { id: string }>)
+                .reduce(
+                  (prev, current) => {
+                    const { region, time } = current;
+                    if (
+                      !region ||
+                      region.length === 0 ||
+                      !time ||
+                      time.length === 0
+                    ) {
+                      return prev;
+                    } else {
+                      return [
+                        ...prev,
+                        {
+                          id: `${region}-${time}`,
+                          label: region,
+                          deliveryTime: time
+                        }
+                      ];
+                    }
+                  },
+                  [] as Array<SupportedJuridiction & { id: string }>
+                )
             : undefined,
         returnPeriodInDays: values.shippingInfo.returnPeriod.toString(),
         redemptionPoint: values.shippingInfo.redemptionPointUrl

@@ -81,17 +81,17 @@ export const getOfferDetails = (
     | undefined = isProductV1(offer)
     ? (offer.metadata as ProductV1Sub)
     : isBundle(offer)
-    ? offer.metadata?.items
-      ? getProductV1BundleItemsFilter(offer.metadata.items).map(
-          (productV1ItemMetadataEntity) =>
-            ({
-              ...productV1ItemMetadataEntity,
-              productV1Seller:
-                productV1ItemMetadataEntity.product.productV1Seller
-            } as ProductV1SubItem)
-        )[0]
-      : undefined
-    : undefined;
+      ? offer.metadata?.items
+        ? getProductV1BundleItemsFilter(offer.metadata.items).map(
+            (productV1ItemMetadataEntity) =>
+              ({
+                ...productV1ItemMetadataEntity,
+                productV1Seller:
+                  productV1ItemMetadataEntity.product.productV1Seller
+              }) as ProductV1SubItem
+          )[0]
+        : undefined
+      : undefined;
   const name =
     productV1ItemMetadataEntity?.product?.title ||
     offerMetadata?.name ||

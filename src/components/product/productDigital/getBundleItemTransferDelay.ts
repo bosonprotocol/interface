@@ -11,10 +11,10 @@ export const getBundleItemTransferDelay = (bundleItem: BundleItem): string => {
     ? getIsBundleItem<NewNFT>(bundleItem, "newNftName")
       ? bundleItem.newNftShippingInDays?.toString()
       : getIsBundleItem<ExistingNFT>(bundleItem, "mintedNftContractAddress")
-      ? bundleItem.mintedNftShippingInDays?.toString()
-      : getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")
-      ? bundleItem.digitalFileShippingInDays?.toString()
-      : bundleItem.experientialShippingInDays?.toString()
+        ? bundleItem.mintedNftShippingInDays?.toString()
+        : getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")
+          ? bundleItem.digitalFileShippingInDays?.toString()
+          : bundleItem.experientialShippingInDays?.toString()
     : "";
   return transferDelay || "";
 };

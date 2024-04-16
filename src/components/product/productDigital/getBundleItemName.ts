@@ -14,12 +14,12 @@ export const getBundleItemName = (
     ? getIsBundleItem<NewNFT>(bundleItem, "newNftName")
       ? bundleItem.newNftName
       : getIsBundleItem<ExistingNFT>(bundleItem, "mintedNftContractAddress")
-      ? defaultToContractAddress
-        ? bundleItem.mintedNftContractAddress
-        : ""
-      : getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")
-      ? bundleItem.digitalFileName
-      : bundleItem.experientialName
+        ? defaultToContractAddress
+          ? bundleItem.mintedNftContractAddress
+          : ""
+        : getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")
+          ? bundleItem.digitalFileName
+          : bundleItem.experientialName
     : "";
   return name;
 };

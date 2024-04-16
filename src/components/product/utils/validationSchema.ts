@@ -101,49 +101,49 @@ const getBundleItemsMedia = ({
     productDigital?.isNftMintedAlready?.value === "true"
       ? Yup.array()
       : productDigital?.type?.value === digitalTypeMapping["digital-nft"]
-      ? Yup.array(
-          Yup.object({
-            image: validationOfRequiredIpfsImage(),
-            video: validationOfIpfsImage()
+        ? Yup.array(
+            Yup.object({
+              image: validationOfRequiredIpfsImage(),
+              video: validationOfIpfsImage()
+            })
+          ).test({
+            message: "An image has to be uploaded for the digital items",
+            test: (value, context) => {
+              const productDigital =
+                context.parent.productDigital ??
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                context.options?.from?.find((from) => from.value.productDigital)
+                  ?.value?.productDigital;
+              const isValid = isPhygital
+                ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
+                    ?.length ?? 0) === productDigital.bundleItems.length
+                : true;
+              return isValid;
+            }
           })
-        ).test({
-          message: "An image has to be uploaded for the digital items",
-          test: (value, context) => {
-            const productDigital =
-              context.parent.productDigital ??
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              context.options?.from?.find((from) => from.value.productDigital)
-                ?.value?.productDigital;
-            const isValid = isPhygital
-              ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
-                  ?.length ?? 0) === productDigital.bundleItems.length
-              : true;
-            return isValid;
-          }
-        })
-      : Yup.array(
-          Yup.object({
-            image: validationOfIpfsImage(),
-            video: validationOfIpfsImage()
+        : Yup.array(
+            Yup.object({
+              image: validationOfIpfsImage(),
+              video: validationOfIpfsImage()
+            })
+          ).test({
+            message:
+              "Either image or video has to be uploaded for the digital items",
+            test: (value, context) => {
+              const productDigital =
+                context.parent.productDigital ??
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                context.options?.from?.find((from) => from.value.productDigital)
+                  ?.value?.productDigital;
+              const isValid = isPhygital
+                ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
+                    ?.length ?? 0) === productDigital.bundleItems.length
+                : true;
+              return isValid;
+            }
           })
-        ).test({
-          message:
-            "Either image or video has to be uploaded for the digital items",
-          test: (value, context) => {
-            const productDigital =
-              context.parent.productDigital ??
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              context.options?.from?.find((from) => from.value.productDigital)
-                ?.value?.productDigital;
-            const isValid = isPhygital
-              ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
-                  ?.length ?? 0) === productDigital.bundleItems.length
-              : true;
-            return isValid;
-          }
-        })
   // .when("productAnimation", {
   //   is: () => {
   //     return isPhygital;
@@ -461,7 +461,7 @@ export const productDigitalValidationSchema = Yup.object({
     })
 
       .when("type", {
-        is: (type: typeof DIGITAL_TYPE[number] | null) => {
+        is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
           return type?.value === digitalTypeMapping["digital-nft"];
         },
         then: (schema) => schema.required(validationMessage.required),
@@ -475,7 +475,7 @@ export const productDigitalValidationSchema = Yup.object({
       label: Yup.string()
     })
       .when("type", {
-        is: (type: typeof DIGITAL_TYPE[number] | null) => {
+        is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
           return type?.value === digitalTypeMapping["digital-nft"];
         },
         then: (schema) => schema.required(validationMessage.required),
@@ -492,8 +492,8 @@ export const productDigitalValidationSchema = Yup.object({
       .required(validationMessage.required)
       .when(["type", "isNftMintedAlready"], {
         is: (
-          type: typeof DIGITAL_TYPE[number] | null,
-          isNftMintedAlready: typeof isNftMintedAlreadyOptions[number] | null
+          type: (typeof DIGITAL_TYPE)[number] | null,
+          isNftMintedAlready: (typeof isNftMintedAlreadyOptions)[number] | null
         ) => {
           return (
             type?.value === digitalTypeMapping["digital-nft"] &&
@@ -505,8 +505,8 @@ export const productDigitalValidationSchema = Yup.object({
       })
       .when(["type", "isNftMintedAlready"], {
         is: (
-          type: typeof DIGITAL_TYPE[number] | null,
-          isNftMintedAlready: typeof isNftMintedAlreadyOptions[number] | null
+          type: (typeof DIGITAL_TYPE)[number] | null,
+          isNftMintedAlready: (typeof isNftMintedAlreadyOptions)[number] | null
         ) => {
           return (
             type?.value === digitalTypeMapping["digital-nft"] &&
@@ -517,14 +517,14 @@ export const productDigitalValidationSchema = Yup.object({
         otherwise: (schema) => schema
       })
       .when(["type"], {
-        is: (type: typeof DIGITAL_TYPE[number] | null) => {
+        is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
           return type?.value === digitalTypeMapping["digital-file"];
         },
         then: digitalFileSchema,
         otherwise: (schema) => schema
       })
       .when(["type"], {
-        is: (type: typeof DIGITAL_TYPE[number] | null) => {
+        is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
           return type?.value === digitalTypeMapping["experiential"];
         },
         then: experientialSchema,
