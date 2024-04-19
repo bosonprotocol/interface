@@ -337,10 +337,10 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   const BASE_MODAL_DATA = useMemo(
     () => ({
       animationUrl: offer.metadata?.animationUrl || "",
-      image: image || mainImage,
+      image: image || mainImage || "",
       name
     }),
-    [image, name, offer.metadata?.animationUrl, mainImage]
+    [image, mainImage, name, offer.metadata?.animationUrl]
   );
   const onCommitSuccess = async (
     _receipt: ethers.providers.TransactionReceipt,
