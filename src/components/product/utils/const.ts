@@ -101,6 +101,7 @@ export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
 );
 
 export const isNftMintedAlreadyOptions = [...yesOrNoOptions] as const;
+export const buyerTranferInfoTitle = "Buyer information required for transfer";
 export const newNftInfo = {
   newNftName: {
     key: "newNftName",
@@ -112,21 +113,29 @@ export const newNftInfo = {
   },
   newNftHowWillItBeSentToTheBuyer: {
     key: "newNftHowWillItBeSentToTheBuyer",
-    displayKey: "How will it be sent to the buyer?"
+    displayKey: "Transfer criteria"
   },
   newNftWhenWillItBeSentToTheBuyer: {
     key: "newNftWhenWillItBeSentToTheBuyer",
-    displayKey: "When will it be sent to the buyer?"
+    displayKey: "Transfer time"
   },
   newNftShippingInDays: {
     key: "newNftShippingInDays",
-    displayKey: "Shipping in days"
+    displayKey: "NFT transfer time"
+  },
+  newNftBuyerTransferInfo: {
+    key: "newNftBuyerTransferInfo",
+    displayKey: buyerTranferInfoTitle
   }
 } as const;
 export const mintedNftInfo = {
   mintedNftContractAddress: {
     key: "mintedNftContractAddress",
     displayKey: "Contract address"
+  },
+  mintedNftTokenType: {
+    key: "mintedNftTokenType",
+    displayKey: "Token type"
   },
   mintedNftTokenIdRangeMin: {
     key: "mintedNftTokenIdRangeMin",
@@ -142,17 +151,21 @@ export const mintedNftInfo = {
   },
   mintedNftWhenWillItBeSentToTheBuyer: {
     key: "mintedNftWhenWillItBeSentToTheBuyer",
-    displayKey: "When will it be sent to the buyer?"
+    displayKey: "Transfer time"
   },
   mintedNftShippingInDays: {
     key: "mintedNftShippingInDays",
-    displayKey: "Shipping in days"
+    displayKey: "NFT transfer time"
+  },
+  mintedNftBuyerTransferInfo: {
+    key: "mintedNftBuyerTransferInfo",
+    displayKey: buyerTranferInfoTitle
   }
 } as const;
 export const digitalFileInfo = {
   digitalFileName: {
     key: "digitalFileName",
-    displayKey: "Digital file name"
+    displayKey: "Digital file title"
   },
   digitalFileDescription: {
     key: "digitalFileDescription",
@@ -164,34 +177,30 @@ export const digitalFileInfo = {
   },
   digitalFileHowWillItBeSentToTheBuyer: {
     key: "digitalFileHowWillItBeSentToTheBuyer",
-    displayKey: "How will it be sent to the buyer?"
+    displayKey: "Transfer criteria"
   },
   digitalFileWhenWillItBeSentToTheBuyer: {
     key: "digitalFileWhenWillItBeSentToTheBuyer",
-    displayKey: "When will it be sent to the buyer?"
+    displayKey: "Transfer time"
   },
   digitalFileShippingInDays: {
     key: "digitalFileShippingInDays",
     displayKey: "Shipping in days"
+  },
+  digitalFileBuyerTransferInfo: {
+    key: "digitalFileBuyerTransferInfo",
+    displayKey: buyerTranferInfoTitle
   }
 } as const;
 
 export const experientialInfo = {
   experientialName: {
     key: "experientialName",
-    displayKey: "Experience name"
+    displayKey: "Experience title"
   },
   experientialDescription: {
     key: "experientialDescription",
     displayKey: "Description of experience"
-  },
-  experientialWhatWillTheBuyerReceieve: {
-    key: "experientialWhatWillTheBuyerReceieve",
-    displayKey: "What will the buyer receive in order to access the experience?"
-  },
-  experientialHowCanTheBuyerClaimAttendTheExperience: {
-    key: "experientialHowCanTheBuyerClaimAttendTheExperience",
-    displayKey: "How can a buyer claim / attend the experience?"
   },
   experientialHowWillTheBuyerReceiveIt: {
     key: "experientialHowWillTheBuyerReceiveIt",
@@ -199,11 +208,15 @@ export const experientialInfo = {
   },
   experientialWhenWillItBeSentToTheBuyer: {
     key: "experientialWhenWillItBeSentToTheBuyer",
-    displayKey: "When will it be sent to the buyer?"
+    displayKey: "Transfer time"
   },
   experientialShippingInDays: {
     key: "experientialShippingInDays",
     displayKey: "Shipping in days"
+  },
+  experientialBuyerTransferInfo: {
+    key: "experientialBuyerTransferInfo",
+    displayKey: buyerTranferInfoTitle
   }
 } as const;
 
@@ -253,6 +266,33 @@ export const TOKEN_TYPES = [
   {
     value: TokenTypes.erc1155,
     label: "ERC1155"
+  }
+] as const;
+
+export const NFT_TOKEN_TYPES = [
+  {
+    value: TokenTypes.erc721,
+    label: "ERC721"
+  },
+  {
+    value: TokenTypes.erc1155,
+    label: "ERC1155"
+  }
+] as const;
+
+export enum BuyerTransferInfo {
+  "email" = "email",
+  "walletAddress" = "walletAddress"
+}
+
+export const BUYER_TRANSFER_INFO_OPTIONS = [
+  {
+    value: BuyerTransferInfo.email,
+    label: "E-mail"
+  },
+  {
+    value: BuyerTransferInfo.walletAddress,
+    label: "Wallet address"
   }
 ] as const;
 

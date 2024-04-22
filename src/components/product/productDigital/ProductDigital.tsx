@@ -16,6 +16,8 @@ import {
   SectionTitle
 } from "../Product.styles";
 import {
+  BUYER_TRANSFER_INFO_OPTIONS,
+  BuyerTransferInfo,
   DIGITAL_NFT_TYPE,
   DIGITAL_TYPE,
   DigitalFileBundleItemsType,
@@ -60,61 +62,82 @@ const checkLastElementIsPristine = (
   }
   return (
     !element?.experientialName?.length ||
-    !element?.experientialDescription?.length ||
-    !element?.experientialWhatWillTheBuyerReceieve?.length ||
-    !element?.experientialHowCanTheBuyerClaimAttendTheExperience?.length
+    !element?.experientialDescription?.length
   );
 };
 const prefix = "productDigital.";
 const getNewExistingBundleItem = () => {
-  const bundleItem: Record<keyof MintedNftBundleItemsType[number], string> = {
+  const bundleItem: Record<
+    keyof MintedNftBundleItemsType[number],
+    string | null | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+  > = {
+    mintedNftTokenType: null,
     mintedNftContractAddress: "",
     mintedNftTokenIdRangeMin: "",
     mintedNftTokenIdRangeMax: "",
     mintedNftExternalUrl: "",
     mintedNftShippingInDays: "",
-    mintedNftWhenWillItBeSentToTheBuyer: ""
+    mintedNftWhenWillItBeSentToTheBuyer: "",
+    mintedNftBuyerTransferInfo:
+      BUYER_TRANSFER_INFO_OPTIONS.find(
+        (option) => option.value === BuyerTransferInfo.walletAddress
+      ) || null
   };
   return bundleItem;
 };
 const getNewNewBundleItem = () => {
-  const bundleItem: Record<keyof NewNftBundleItemsType[number], string> = {
+  const bundleItem: Record<
+    keyof NewNftBundleItemsType[number],
+    string | null | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+  > = {
     newNftName: "",
     newNftDescription: "",
     newNftHowWillItBeSentToTheBuyer: "",
     newNftWhenWillItBeSentToTheBuyer: "",
-    newNftShippingInDays: ""
+    newNftShippingInDays: "",
+    newNftBuyerTransferInfo:
+      BUYER_TRANSFER_INFO_OPTIONS.find(
+        (option) => option.value === BuyerTransferInfo.walletAddress
+      ) || null
   };
   return bundleItem;
 };
 const getNewDigitalFileBundleItem = () => {
-  const bundleItem: Record<keyof DigitalFileBundleItemsType[number], string> = {
+  const bundleItem: Record<
+    keyof DigitalFileBundleItemsType[number],
+    string | null | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+  > = {
     digitalFileName: "",
     digitalFileDescription: "",
     digitalFileFormat: "",
     digitalFileHowWillItBeSentToTheBuyer: "",
     digitalFileWhenWillItBeSentToTheBuyer: "",
-    digitalFileShippingInDays: ""
+    digitalFileShippingInDays: "",
+    digitalFileBuyerTransferInfo:
+      BUYER_TRANSFER_INFO_OPTIONS.find(
+        (option) => option.value === BuyerTransferInfo.email
+      ) || null
   };
   return bundleItem;
 };
 const getNewExperientialBundleItem = () => {
-  const bundleItem: Record<keyof ExperientialBundleItemsType[number], string> =
-    {
-      experientialName: "",
-      experientialDescription: "",
-      experientialWhatWillTheBuyerReceieve: "",
-      experientialHowCanTheBuyerClaimAttendTheExperience: "",
-      experientialHowWillTheBuyerReceiveIt: "",
-      experientialWhenWillItBeSentToTheBuyer: "",
-      experientialShippingInDays: ""
-    };
+  const bundleItem: Record<
+    keyof ExperientialBundleItemsType[number],
+    string | null | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+  > = {
+    experientialName: "",
+    experientialDescription: "",
+    experientialHowWillTheBuyerReceiveIt: "",
+    experientialWhenWillItBeSentToTheBuyer: "",
+    experientialShippingInDays: "",
+    experientialBuyerTransferInfo: null // both options are fine so nothing preselected
+  };
   return bundleItem;
 };
 export const ProductDigital: React.FC = () => {
   const { nextIsDisabled, values, setFieldValue, errors } = useForm();
   const { bundleItems } = values.productDigital || {};
-  const type = (values.productDigital.type || {}).value;
+  const type = (values.productDigital?.type || {}).value;
   const isNftMintedAlreadyValue = (
     values.productDigital.isNftMintedAlready || {}
   ).value;
@@ -173,9 +196,9 @@ export const ProductDigital: React.FC = () => {
       <SectionTitle tag="h2">Digital & Experiential Items</SectionTitle>
       <div>
         <FormField
-          title="Choose the digital or experiential type in your bundle"
+          title="Choose the digital or experiential items in your bundle"
           required
-          subTitle="Items can be a digital NFT, a digital file, or an experiential offering."
+          subTitle="Items can be an NFT, a digital file, or an experiential offering."
         >
           <Select
             placeholder="Choose one..."
@@ -187,7 +210,11 @@ export const ProductDigital: React.FC = () => {
         </FormField>
         {type === digitalTypeMapping["digital-nft"] && (
           <>
-            <FormField title="NFT Type" required subTitle="Describe the type.">
+            <FormField
+              title="NFT Type"
+              required
+              subTitle="Provide buyers more information about your NFT's traits"
+            >
               <Select
                 placeholder="Choose one..."
                 name={`${prefix}nftType`}
@@ -277,33 +304,35 @@ export const ProductDigital: React.FC = () => {
                     })}
                   </>
                 )}
-
-                {/* <Error
-                  display={hasDuplicatedTokenIds}
-                  message={"You can't have duplicate NFT IDs!"}
-                /> */}
                 {(!bundleItems.length ||
-                  !checkLastElementIsPristine(bundleItems)) && (
-                  <Button
-                    onClick={() => {
-                      if (type === digitalTypeMapping["digital-nft"]) {
-                        if (isNftMintedAlready) {
-                          arrayHelpers.push(getNewExistingBundleItem());
-                        } else {
-                          arrayHelpers.push(getNewNewBundleItem());
+                  !checkLastElementIsPristine(bundleItems)) &&
+                  type === digitalTypeMapping["digital-nft"] &&
+                  isNftMintedAlreadyValue !== undefined &&
+                  type !== digitalTypeMapping["digital-nft"] && (
+                    <Button
+                      onClick={() => {
+                        if (type === digitalTypeMapping["digital-nft"]) {
+                          if (isNftMintedAlready) {
+                            arrayHelpers.push(getNewExistingBundleItem());
+                          } else {
+                            arrayHelpers.push(getNewNewBundleItem());
+                          }
+                        } else if (
+                          type === digitalTypeMapping["digital-file"]
+                        ) {
+                          arrayHelpers.push(getNewDigitalFileBundleItem());
+                        } else if (
+                          type === digitalTypeMapping["experiential"]
+                        ) {
+                          arrayHelpers.push(getNewExperientialBundleItem());
                         }
-                      } else if (type === digitalTypeMapping["digital-file"]) {
-                        arrayHelpers.push(getNewDigitalFileBundleItem());
-                      } else if (type === digitalTypeMapping["experiential"]) {
-                        arrayHelpers.push(getNewExperientialBundleItem());
-                      }
-                    }}
-                    themeVal="blankSecondary"
-                    style={{ borderBottom: `1px solid ${colors.border}` }}
-                  >
-                    Add new <Plus size={18} />
-                  </Button>
-                )}
+                      }}
+                      themeVal="blankSecondary"
+                      style={{ borderBottom: `1px solid ${colors.border}` }}
+                    >
+                      Add new <Plus size={18} />
+                    </Button>
+                  )}
               </>
             );
           }}

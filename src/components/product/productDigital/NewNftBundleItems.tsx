@@ -1,21 +1,11 @@
 import { Grid } from "@bosonprotocol/react-kit";
 import { FormField, Input } from "components/form";
 import React from "react";
-import { styled } from "styled-components";
 
 import { newNftInfo } from "../utils";
-import { Delete } from "./styles";
-const NewNftContainer = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  align-items: start;
-  grid-gap: 1rem;
-  > * {
-    margin: initial;
-  }
-`;
+import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
+import { Delete, Wrapper } from "./styles";
+
 type NewNftBundleItemsProps = {
   prefix: string;
   showDeleteButton: boolean;
@@ -31,7 +21,7 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
 }) => {
   return (
     <Grid flexDirection="column" marginBottom="4rem">
-      <NewNftContainer>
+      <Wrapper>
         <FormField title={newNftInfo["newNftName"].displayKey} required>
           <Input
             placeholder=""
@@ -44,27 +34,35 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
             name={`${prefix}${newNftInfo["newNftDescription"].key}`}
           />
         </FormField>
-        <FormField
-          title={newNftInfo["newNftHowWillItBeSentToTheBuyer"].displayKey}
-        >
-          <Input
-            placeholder=""
-            name={`${prefix}${newNftInfo["newNftHowWillItBeSentToTheBuyer"].key}`}
-          />
-        </FormField>
-        <FormField
-          title={newNftInfo["newNftWhenWillItBeSentToTheBuyer"].displayKey}
-        >
-          <Input
-            placeholder=""
-            name={`${prefix}${newNftInfo["newNftWhenWillItBeSentToTheBuyer"].key}`}
-          />
-        </FormField>
-        <FormField title={newNftInfo["newNftShippingInDays"].displayKey}>
-          <Input
-            placeholder=""
-            name={`${prefix}${newNftInfo["newNftShippingInDays"].key}`}
-            type="number"
+        <FormField title="NFT Delivery Info">
+          <FormField
+            title={newNftInfo["newNftHowWillItBeSentToTheBuyer"].displayKey}
+            marginTop="1rem"
+          >
+            <Input
+              placeholder=""
+              name={`${prefix}${newNftInfo["newNftHowWillItBeSentToTheBuyer"].key}`}
+            />
+          </FormField>
+          <FormField
+            title={newNftInfo["newNftWhenWillItBeSentToTheBuyer"].displayKey}
+          >
+            <Input
+              placeholder=""
+              name={`${prefix}${newNftInfo["newNftWhenWillItBeSentToTheBuyer"].key}`}
+            />
+          </FormField>
+          <FormField title={newNftInfo["newNftShippingInDays"].displayKey}>
+            <Input
+              placeholder=""
+              name={`${prefix}${newNftInfo["newNftShippingInDays"].key}`}
+              type="number"
+            />
+          </FormField>
+          <BundleItemsTransferInfo
+            selectName={`${prefix}${newNftInfo["newNftBuyerTransferInfo"].key}`}
+            withBuyerAddressOption
+            withBuyerEmailOption={false}
           />
         </FormField>
         {showDeleteButton && (
@@ -79,7 +77,7 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
             />
           </FormField>
         )}
-      </NewNftContainer>
+      </Wrapper>
       {bundleItemsError}
     </Grid>
   );

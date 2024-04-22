@@ -1,8 +1,10 @@
 import styled, { css } from "styled-components";
 
-export const ProductLayoutContainer = styled.div<{ isPreviewVisible: boolean }>`
-  ${({ isPreviewVisible }) =>
-    !isPreviewVisible &&
+export const ProductLayoutContainer = styled.div<{
+  $isPreviewVisible: boolean;
+}>`
+  ${({ $isPreviewVisible }) =>
+    !$isPreviewVisible &&
     css`
       display: flex;
       justify-content: space-between;

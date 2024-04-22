@@ -33,25 +33,40 @@ export function getItemNFTMetadata(
 const newNftTermsKeys = [
   "newNftHowWillItBeSentToTheBuyer",
   "newNftWhenWillItBeSentToTheBuyer",
-  "newNftShippingInDays"
+  "newNftShippingInDays",
+  "newNftBuyerTransferInfo"
 ] as const;
 const mintedNftTermsKeys = [
+  "mintedNftTokenType",
   "mintedNftWhenWillItBeSentToTheBuyer",
-  "mintedNftShippingInDays"
+  "mintedNftShippingInDays",
+  "mintedNftBuyerTransferInfo"
 ] as const;
 const digitalFileTermsKeys = [
   "digitalFileFormat",
   "digitalFileHowWillItBeSentToTheBuyer",
   "digitalFileWhenWillItBeSentToTheBuyer",
-  "digitalFileShippingInDays"
+  "digitalFileShippingInDays",
+  "digitalFileBuyerTransferInfo"
 ] as const;
 const experientialTermsKeys = [
-  "experientialWhatWillTheBuyerReceieve",
-  "experientialHowCanTheBuyerClaimAttendTheExperience",
   "experientialHowWillTheBuyerReceiveIt",
   "experientialWhenWillItBeSentToTheBuyer",
-  "experientialShippingInDays"
+  "experientialShippingInDays",
+  "experientialBuyerTransferInfo"
 ] as const;
+const getTermValue = (value: unknown): string => {
+  if (!value) {
+    return "";
+  }
+  if (typeof value === "object") {
+    const obj = value;
+    if ("value" in obj && obj["value"]) {
+      return obj["value"].toString() || "";
+    }
+  }
+  return value?.toString() || "";
+};
 export function getDigitalMetadatas({
   chainId,
   values
@@ -107,7 +122,7 @@ export function getDigitalMetadatas({
             return {
               key,
               displayKey,
-              value: bundleItem[termKey]?.toString() || ""
+              value: getTermValue(bundleItem[termKey])
             };
           })
         });
@@ -144,7 +159,7 @@ export function getDigitalMetadatas({
             return {
               key,
               displayKey,
-              value: bundleItem[termKey]?.toString() || ""
+              value: getTermValue(bundleItem[termKey])
             };
           })
         });
@@ -173,7 +188,7 @@ export function getDigitalMetadatas({
             return {
               key,
               displayKey,
-              value: bundleItem[termKey]?.toString() || ""
+              value: getTermValue(bundleItem[termKey])
             };
           })
         });
@@ -202,7 +217,7 @@ export function getDigitalMetadatas({
             return {
               key,
               displayKey,
-              value: bundleItem[termKey]?.toString() || ""
+              value: getTermValue(bundleItem[termKey])
             };
           })
         });

@@ -39,6 +39,7 @@ import {
   NewNFT
 } from "../productDigital/getIsBundleItem";
 import {
+  BUYER_TRANSFER_INFO_OPTIONS,
   CATEGORY_OPTIONS,
   DIGITAL_NFT_TYPE,
   DIGITAL_TYPE,
@@ -50,6 +51,7 @@ import {
   isNftMintedAlreadyOptions,
   mintedNftInfo,
   newNftInfo,
+  NFT_TOKEN_TYPES,
   OPTIONS_LENGTH,
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
@@ -457,7 +459,22 @@ function loadExistingProduct<T extends CreateProductForm>(
                         (term) =>
                           term.key === mintedNftInfo.mintedNftShippingInDays.key
                       )?.value ?? "";
+                    const tokenTypeValue =
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key === mintedNftInfo.mintedNftTokenType.key
+                      )?.value ?? "";
+                    const buyerTransferInfo =
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key ===
+                          mintedNftInfo.mintedNftBuyerTransferInfo.key
+                      )?.value ?? "";
                     const existingNft: ExistingNFT = {
+                      mintedNftTokenType:
+                        NFT_TOKEN_TYPES.find(
+                          (tokenType) => tokenType.value === tokenTypeValue
+                        ) || NFT_TOKEN_TYPES[0],
                       mintedNftContractAddress: nftItem.contract,
                       mintedNftExternalUrl: nftItem.externalUrl ?? undefined,
                       mintedNftShippingInDays: shippingDays
@@ -475,7 +492,11 @@ function loadExistingProduct<T extends CreateProductForm>(
                             term.key ===
                             mintedNftInfo.mintedNftWhenWillItBeSentToTheBuyer
                               .key
-                        )?.value ?? ""
+                        )?.value ?? "",
+                      mintedNftBuyerTransferInfo:
+                        BUYER_TRANSFER_INFO_OPTIONS.find(
+                          (option) => option.value === buyerTransferInfo
+                        ) || BUYER_TRANSFER_INFO_OPTIONS[0]
                     };
                     return existingNft;
                   } else {
@@ -483,6 +504,12 @@ function loadExistingProduct<T extends CreateProductForm>(
                       nftItem.terms?.find(
                         (term) =>
                           term.key === newNftInfo.newNftShippingInDays.key
+                      )?.value ?? "";
+                    const buyerTransferInfo =
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key ===
+                          mintedNftInfo.mintedNftBuyerTransferInfo.key
                       )?.value ?? "";
                     const newNft: NewNFT = {
                       newNftName: nftItem.name,
@@ -501,7 +528,11 @@ function loadExistingProduct<T extends CreateProductForm>(
                           (term) =>
                             term.key ===
                             newNftInfo.newNftWhenWillItBeSentToTheBuyer.key
-                        )?.value ?? ""
+                        )?.value ?? "",
+                      newNftBuyerTransferInfo:
+                        BUYER_TRANSFER_INFO_OPTIONS.find(
+                          (option) => option.value === buyerTransferInfo
+                        ) || BUYER_TRANSFER_INFO_OPTIONS[0]
                     };
                     return newNft;
                   }
@@ -511,6 +542,12 @@ function loadExistingProduct<T extends CreateProductForm>(
                       (term) =>
                         term.key ===
                         digitalFileInfo.digitalFileShippingInDays.key
+                    )?.value ?? "";
+                  const buyerTransferInfo =
+                    nftItem.terms?.find(
+                      (term) =>
+                        term.key ===
+                        mintedNftInfo.mintedNftBuyerTransferInfo.key
                     )?.value ?? "";
                   const digitalFile: DigitalFile = {
                     digitalFileName: nftItem.name,
@@ -536,7 +573,11 @@ function loadExistingProduct<T extends CreateProductForm>(
                           term.key ===
                           digitalFileInfo.digitalFileWhenWillItBeSentToTheBuyer
                             .key
-                      )?.value ?? ""
+                      )?.value ?? "",
+                    digitalFileBuyerTransferInfo:
+                      BUYER_TRANSFER_INFO_OPTIONS.find(
+                        (option) => option.value === buyerTransferInfo
+                      ) || BUYER_TRANSFER_INFO_OPTIONS[0]
                   };
                   return digitalFile;
                 } else if (type === digitalTypeMapping.experiential) {
@@ -546,17 +587,15 @@ function loadExistingProduct<T extends CreateProductForm>(
                         term.key ===
                         experientialInfo.experientialShippingInDays.key
                     )?.value ?? "";
+                  const buyerTransferInfo =
+                    nftItem.terms?.find(
+                      (term) =>
+                        term.key ===
+                        mintedNftInfo.mintedNftBuyerTransferInfo.key
+                    )?.value ?? "";
                   const experiential: Experiential = {
                     experientialName: nftItem.name,
                     experientialDescription: nftItem.description ?? "",
-                    experientialHowCanTheBuyerClaimAttendTheExperience:
-                      nftItem.terms?.find(
-                        (term) =>
-                          term.key ===
-                          experientialInfo
-                            .experientialHowCanTheBuyerClaimAttendTheExperience
-                            .key
-                      )?.value ?? "",
                     experientialHowWillTheBuyerReceiveIt:
                       nftItem.terms?.find(
                         (term) =>
@@ -567,20 +606,17 @@ function loadExistingProduct<T extends CreateProductForm>(
                     experientialShippingInDays: shippingDays
                       ? Number(shippingDays)
                       : (undefined as unknown as number),
-                    experientialWhatWillTheBuyerReceieve:
-                      nftItem.terms?.find(
-                        (term) =>
-                          term.key ===
-                          experientialInfo.experientialWhatWillTheBuyerReceieve
-                            .key
-                      )?.value ?? "",
                     experientialWhenWillItBeSentToTheBuyer:
                       nftItem.terms?.find(
                         (term) =>
                           term.key ===
                           experientialInfo
                             .experientialWhenWillItBeSentToTheBuyer.key
-                      )?.value ?? ""
+                      )?.value ?? "",
+                    experientialBuyerTransferInfo:
+                      BUYER_TRANSFER_INFO_OPTIONS.find(
+                        (option) => option.value === buyerTransferInfo
+                      ) || BUYER_TRANSFER_INFO_OPTIONS[0]
                   };
                   return experiential;
                 }

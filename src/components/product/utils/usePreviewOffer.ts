@@ -213,13 +213,13 @@ export const usePreviewOffers = ({
               : values.productInformation.description,
           type:
             values.productType.productType === ProductTypeTypeValues.phygital
-              ? subgraph.MetadataType.Bundle
-              : subgraph.MetadataType.ProductV1,
+              ? subgraph.MetadataType.BUNDLE
+              : subgraph.MetadataType.PRODUCT_V1,
           ...(values.productType.productType ===
             ProductTypeTypeValues.phygital && {
             items: [
               {
-                type: subgraph.ItemMetadataType.ItemProductV1,
+                type: subgraph.ItemMetadataType.ITEM_PRODUCT_V1,
                 product,
                 productV1Seller,
                 shipping

@@ -11,12 +11,12 @@ import TermsOfExchange from "components/product/TermsOfExchange";
 import TokenGating from "components/product/tokenGating/TokenGating";
 import {
   getCoreTermsOfSaleValidationSchema,
+  getProductDigitalValidationSchema,
   getProductImagesValidationSchema,
   getProductInformationValidationSchema,
   getProductVariantsImagesValidationSchema,
   getProductVariantsValidationSchema,
   getTokenGatingValidationSchema,
-  productDigitalValidationSchema,
   productTypeValidationSchema,
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
@@ -181,7 +181,7 @@ export const createProductSteps = ({
         <ProductDigital />
       </>
     ),
-    validation: productDigitalValidationSchema,
+    validation: getProductDigitalValidationSchema({ coreSDK }),
     helpSection: productDigitalHelp
   };
   const productVariants = {

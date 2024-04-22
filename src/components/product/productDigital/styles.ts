@@ -14,3 +14,15 @@ export const Delete = styled(Trash)`
     background-color: ${colors.lightGrey};
   }
 `;
+
+export const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 1rem;
+
+  > * {
+    flex: 1 1 100%;
+  }
+`;

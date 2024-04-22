@@ -1,22 +1,11 @@
 import { Grid } from "@bosonprotocol/react-kit";
 import { FormField, Input } from "components/form";
 import React from "react";
-import { styled } from "styled-components";
 
 import { digitalFileInfo } from "../utils";
-import { Delete } from "./styles";
-const Wrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: start;
-  gap: 1rem;
+import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
+import { Delete, Wrapper } from "./styles";
 
-  > * {
-    flex: 1 1 100%;
-    margin: initial;
-  }
-`;
 type DigitalFileBundleItemsProps = {
   prefix: string;
   showDeleteButton: boolean;
@@ -40,7 +29,7 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
         >
           <Input
             name={`${prefix}${digitalFileInfo["digitalFileName"].key}`}
-            placeholder="Digital file name"
+            placeholder={digitalFileInfo["digitalFileName"].displayKey}
           />
         </FormField>
         <FormField
@@ -63,37 +52,44 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
             placeholder="PDF, MP4, MP3..."
           />
         </FormField>
-
-        <FormField
-          title={
-            digitalFileInfo["digitalFileHowWillItBeSentToTheBuyer"].displayKey
-          }
-          required
-        >
-          <Input
-            placeholder=""
-            name={`${prefix}${digitalFileInfo["digitalFileHowWillItBeSentToTheBuyer"].key}`}
-          />
-        </FormField>
-        <FormField
-          title={
-            digitalFileInfo["digitalFileWhenWillItBeSentToTheBuyer"].displayKey
-          }
-          required
-        >
-          <Input
-            placeholder=""
-            name={`${prefix}${digitalFileInfo["digitalFileWhenWillItBeSentToTheBuyer"].key}`}
-          />
-        </FormField>
-        <FormField
-          title={digitalFileInfo["digitalFileShippingInDays"].displayKey}
-          required
-        >
-          <Input
-            placeholder=""
-            name={`${prefix}${digitalFileInfo["digitalFileShippingInDays"].key}`}
-            type="number"
+        <FormField title="Digital Delivery Info" required>
+          <FormField
+            title={
+              digitalFileInfo["digitalFileHowWillItBeSentToTheBuyer"].displayKey
+            }
+            required
+          >
+            <Input
+              placeholder=""
+              name={`${prefix}${digitalFileInfo["digitalFileHowWillItBeSentToTheBuyer"].key}`}
+            />
+          </FormField>
+          <FormField
+            title={
+              digitalFileInfo["digitalFileWhenWillItBeSentToTheBuyer"]
+                .displayKey
+            }
+            required
+          >
+            <Input
+              placeholder=""
+              name={`${prefix}${digitalFileInfo["digitalFileWhenWillItBeSentToTheBuyer"].key}`}
+            />
+          </FormField>
+          <FormField
+            title={digitalFileInfo["digitalFileShippingInDays"].displayKey}
+            required
+          >
+            <Input
+              placeholder=""
+              name={`${prefix}${digitalFileInfo["digitalFileShippingInDays"].key}`}
+              type="number"
+            />
+          </FormField>
+          <BundleItemsTransferInfo
+            selectName={`${prefix}${digitalFileInfo["digitalFileBuyerTransferInfo"].key}`}
+            withBuyerAddressOption={false}
+            withBuyerEmailOption
           />
         </FormField>
         {showDeleteButton && (

@@ -163,20 +163,7 @@ export const ConfirmProductDigital: React.FC = () => {
                       <span>Name:</span> {bi.experientialName}
                     </li>
                     <li>
-                      <span>Token Range:</span> {bi.experientialDescription}
-                    </li>
-                    <li>
-                      <span>
-                        What will the buyer receive in order to access the
-                        experience?
-                      </span>{" "}
-                      {bi.experientialWhatWillTheBuyerReceieve}
-                    </li>
-                    <li>
-                      <span>
-                        How can a buyer claim / attend the experience?
-                      </span>{" "}
-                      {bi.experientialHowCanTheBuyerClaimAttendTheExperience}
+                      <span>Description:</span> {bi.experientialDescription}
                     </li>
                     <li>
                       <span>How will the Buyer receive the access pass?</span>{" "}

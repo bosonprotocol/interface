@@ -168,7 +168,7 @@ export default function ProductInformation() {
           <FormField
             title="Phygital title"
             required
-            subTitle="Use words people would search for when looking for your item."
+            subTitle="Give you phygital bundle a title, using words people would look for when searching for it."
           >
             <Input
               name="productInformation.bundleName"
@@ -178,7 +178,7 @@ export default function ProductInformation() {
           <FormField
             title="Description"
             required
-            subTitle="Describe your phygital with as much detail as possible."
+            subTitle="Describe the items in your phygital giving as much detail as possible."
           >
             <StyledTextarea
               name="productInformation.bundleDescription"
@@ -187,7 +187,7 @@ export default function ProductInformation() {
           </FormField>
         </>
       )}
-      <SectionTitle tag="h2">Product Information</SectionTitle>
+      <SectionTitle tag="h2">Physical Product Information</SectionTitle>
       <FormField
         title="Product title"
         required
