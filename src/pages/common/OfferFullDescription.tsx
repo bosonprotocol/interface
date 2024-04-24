@@ -56,7 +56,6 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
       includeOverviewTab
       imagesToShow={3}
       includeGeneralProductDataTab={false}
-      includeOverviewTab
       defaultSelectedOfferTabsIdTab="physical-product-data"
       withFullViewportWidth={true}
       onExchangePolicyClick={({ exchangePolicyCheckResult }) =>

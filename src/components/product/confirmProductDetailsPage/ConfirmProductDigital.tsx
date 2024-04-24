@@ -83,15 +83,15 @@ export const ConfirmProductDigital: React.FC = () => {
                       <span>Description:</span> {bi.newNftDescription}
                     </li>
                     <li>
-                      <span>How will it be sent to the buyer?</span>{" "}
-                      {bi.newNftHowWillItBeSentToTheBuyer}
+                      <span>Transfer criteria:</span>{" "}
+                      {bi.newNftTransferCriteria}
                     </li>
                     <li>
-                      <span>When will it be sent to the buyer?</span>{" "}
-                      {bi.newNftWhenWillItBeSentToTheBuyer}
+                      <span>Transfer time:</span> {bi.newNftTransferTime}
                     </li>
                     <li>
-                      <span>Shipping in days</span> {bi.newNftShippingInDays}
+                      <span>Buyer information required for transfer:</span>{" "}
+                      {bi.newNftBuyerTransferInfo.label}
                     </li>
                   </BundleItemWrapper>
                 </div>
@@ -114,11 +114,15 @@ export const ConfirmProductDigital: React.FC = () => {
                       <span>External URL:</span> {bi.mintedNftExternalUrl}
                     </li>
                     <li>
-                      <span>When will it be sent to the buyer?</span>{" "}
-                      {bi.mintedNftWhenWillItBeSentToTheBuyer}
+                      <span>Transfer criteria:</span>{" "}
+                      {bi.mintedNftTransferCriteria}
                     </li>
                     <li>
-                      <span>Shipping in days</span> {bi.mintedNftShippingInDays}
+                      <span>Transfer time:</span> {bi.mintedNftTransferTime}
+                    </li>
+                    <li>
+                      <span>Buyer information required for transfer:</span>{" "}
+                      {bi.mintedNftBuyerTransferInfo.label}
                     </li>
                   </BundleItemWrapper>
                 </div>
@@ -139,16 +143,15 @@ export const ConfirmProductDigital: React.FC = () => {
                       <span>File format</span> {bi.digitalFileFormat}
                     </li>
                     <li>
-                      <span>How will it be sent to the buyer?</span>{" "}
-                      {bi.digitalFileHowWillItBeSentToTheBuyer}
+                      <span>Transfer criteria:</span>{" "}
+                      {bi.digitalFileTransferCriteria}
                     </li>
                     <li>
-                      <span>When will it be sent to the buyer?</span>{" "}
-                      {bi.digitalFileWhenWillItBeSentToTheBuyer}
+                      <span>Transfer time:</span> {bi.digitalFileTransferTime}
                     </li>
                     <li>
-                      <span>Shipping in days</span>{" "}
-                      {bi.digitalFileShippingInDays}
+                      <span>Buyer information required for transfer:</span>{" "}
+                      {bi.digitalFileBuyerTransferInfo.label}
                     </li>
                   </BundleItemWrapper>
                 </div>
@@ -166,16 +169,15 @@ export const ConfirmProductDigital: React.FC = () => {
                       <span>Description:</span> {bi.experientialDescription}
                     </li>
                     <li>
-                      <span>How will the Buyer receive the access pass?</span>{" "}
-                      {bi.experientialHowWillTheBuyerReceiveIt}
+                      <span>Transfer criteria:</span>{" "}
+                      {bi.experientialTransferCriteria}
                     </li>
                     <li>
-                      <span>When will it be sent to the buyer?</span>{" "}
-                      {bi.experientialWhenWillItBeSentToTheBuyer}
+                      <span>Transfer time:</span> {bi.experientialTransferTime}
                     </li>
                     <li>
-                      <span>Shipping in days</span>{" "}
-                      {bi.experientialShippingInDays}
+                      <span>Buyer information required for transfer:</span>{" "}
+                      {bi.experientialBuyerTransferInfo.label}
                     </li>
                   </BundleItemWrapper>
                 </div>

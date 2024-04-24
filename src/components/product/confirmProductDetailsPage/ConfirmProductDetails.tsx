@@ -366,7 +366,7 @@ export default function ConfirmProductDetails({
                 </SpaceContainer>
               </div>
             )}
-            {values.bundleItemsMedia?.length && (
+            {!!values.bundleItemsMedia?.length && (
               <div>
                 <ProductSubtitle tag="h4">
                   Digital images & videos

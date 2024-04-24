@@ -134,5 +134,11 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.PREPARING_TRANSACTION]: PreparingTransactionModal,
   [MODAL_TYPES.CONFIRMATION]: ConfirmationModal,
   [MODAL_TYPES.BUYER_SELLER_AGREEMENT]: BuyerSellerAgreementModal,
-  [MODAL_TYPES.REDEEMABLE_NFT_TERMS]: RedeemableNftTermsModal
+  [MODAL_TYPES.REDEEMABLE_NFT_TERMS]: RedeemableNftTermsModal,
+  [MODAL_TYPES.PROFILE_PREVIEW]: () => <div></div>,
+  [MODAL_TYPES.MOON_PAY]: () => <div></div>,
+  [MODAL_TYPES.TOKEN_SAFETY]: () => <div></div>,
+  [MODAL_TYPES.CURRENCY_SEARCH]: () => <div></div>,
+  [MODAL_TYPES.PRICE_IMPACT]: () => <div></div>,
+  [MODAL_TYPES.CONFIRM_SWAP]: () => <div></div>
 } as const;
