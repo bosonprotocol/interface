@@ -8,6 +8,7 @@ import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
 import { isTruthy } from "lib/types/helpers";
 import { checkValidUrl, notUrlErrorMessage } from "lib/validation/regex/url";
+import { AnyObject } from "yup/lib/types";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
@@ -328,11 +329,13 @@ const buyerTransferInfo = Yup.object({
 const testTokenAddress = async function ({
   tokenType,
   coreSDK,
-  tokenContract
+  tokenContract,
+  this: that
 }: {
   tokenType: { value: string | undefined; label: string | undefined } | null;
   coreSDK: CoreSDK;
   tokenContract: string | undefined;
+  this: Yup.TestContext<AnyObject>;
 }) {
   if (
     tokenType?.value &&
@@ -350,8 +353,8 @@ const testTokenAddress = async function ({
     const erc721InterfaceId = "0x80ac58cd";
     const erc1155InterfaceId = "0xd9b67a26";
     const throwNotValidContractError = () => {
-      throw this.createError({
-        path: this.path,
+      throw that.createError({
+        path: that.path,
         message: `This is not an ${tokenType.label} contract address`
       });
     };
@@ -432,9 +435,7 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
         value: Yup.string().test("validTokenType", (value) => {
           return (
             !!value &&
-            NFT_TOKEN_TYPES.includes(
-              value as unknown as (typeof NFT_TOKEN_TYPES)[number]
-            )
+            !!NFT_TOKEN_TYPES.find((option) => option.value === value)
           );
         }),
         label: Yup.string()
@@ -448,6 +449,7 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
         )
         .test("wrongTokenAddress", async function (tokenContract) {
           return await testTokenAddress({
+            this: this,
             coreSDK,
             tokenType: this.parent.mintedNftTokenType,
             tokenContract
