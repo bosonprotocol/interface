@@ -20,7 +20,7 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
   onClickDelete
 }) => {
   return (
-    <Grid flexDirection="column" marginBottom="4rem">
+    <Grid flexDirection="column">
       <Wrapper>
         <FormField
           title={digitalFileInfo["digitalFileName"].displayKey}
@@ -55,7 +55,10 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
             placeholder="PDF, MP4, MP3..."
           />
         </FormField>
-        <FormField title="Digital Delivery Info">
+        <FormField
+          title="Digital Delivery Info"
+          style={{ margin: "0 0 1rem 0" }}
+        >
           <FormField
             title={digitalFileInfo["digitalFileTransferCriteria"].displayKey}
             subTitle={digitalFileInfo["digitalFileTransferCriteria"].subtitle}

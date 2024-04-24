@@ -17,7 +17,7 @@ export const ExperientialBundleItems: React.FC<
   ExperientialBundleItemsProps
 > = ({ prefix, showDeleteButton, bundleItemsError, onClickDelete }) => {
   return (
-    <Grid flexDirection="column" marginBottom="4rem">
+    <Grid flexDirection="column">
       <Wrapper>
         <FormField
           title={experientialInfo["experientialName"].displayKey}
@@ -41,7 +41,10 @@ export const ExperientialBundleItems: React.FC<
             placeholder="Experience description"
           />
         </FormField>
-        <FormField title="Experiential Delivery Info">
+        <FormField
+          title="Experiential Delivery Info"
+          style={{ margin: "0 0 1rem 0" }}
+        >
           <FormField
             title={experientialInfo["experientialTransferCriteria"].displayKey}
             subTitle={experientialInfo["experientialTransferCriteria"].subtitle}

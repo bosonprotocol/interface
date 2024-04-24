@@ -21,6 +21,7 @@ export const BundleItemsTransferInfo: React.FC<
       title={buyerTranferInfoTitle}
       subTitle="Describe what information the buyer needs to provide to receive the digital or experiential item"
       required={!isDisabled}
+      style={{ margin: "0 0 1rem 0" }}
     >
       <SelectForm
         name={selectName}

@@ -446,6 +446,7 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
         label: Yup.string()
       })
         .required(validationMessage.required)
+        .nullable(true)
         .default([{ value: "", label: "" }]),
       mintedNftContractAddress: Yup.string()
         .required(validationMessage.required)

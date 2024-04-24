@@ -20,7 +20,7 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
   onClickDelete
 }) => {
   return (
-    <Grid flexDirection="column" marginBottom="4rem">
+    <Grid flexDirection="column">
       <Wrapper>
         <FormField
           title={newNftInfo["newNftName"].displayKey}
@@ -42,7 +42,7 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
             name={`${prefix}${newNftInfo["newNftDescription"].key}`}
           />
         </FormField>
-        <FormField title="NFT Delivery Info">
+        <FormField title="NFT Delivery Info" style={{ margin: "0 0 1rem 0" }}>
           <FormField
             title={newNftInfo["newNftTransferCriteria"].displayKey}
             subTitle={newNftInfo["newNftTransferCriteria"].subtitle}

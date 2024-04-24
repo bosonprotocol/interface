@@ -77,7 +77,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
   );
   const imageSrc = erc721Image?.[0] || erc1155Image?.[0] || "";
   return (
-    <Grid flexDirection="column" marginBottom="4rem">
+    <Grid flexDirection="column">
       <Wrapper>
         <FormField
           title="Token Type"
@@ -151,7 +151,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
             name={`${prefix}${mintedNftInfo["mintedNftExternalUrl"].key}`}
           />
         </FormField>
-        <FormField title="NFT Delivery Info">
+        <FormField title="NFT Delivery Info" style={{ margin: "0 0 1rem 0" }}>
           <FormField
             style={{ margin: "0 0 1rem 0" }}
             title={mintedNftInfo["mintedNftTransferCriteria"].displayKey}
