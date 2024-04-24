@@ -740,7 +740,8 @@ export const getTokenGatingValidationSchema = ({
           return await testTokenAddress({
             coreSDK,
             tokenType: this.parent.tokenType,
-            tokenContract
+            tokenContract,
+            this: this
           });
         }),
       maxCommits: Yup.string()
@@ -786,10 +787,7 @@ export const getTokenGatingValidationSchema = ({
           .required(validationMessage.required)
           .test("validTokenType", (value) => {
             return (
-              !!value &&
-              TOKEN_TYPES.includes(
-                value as unknown as (typeof TOKEN_TYPES)[number]
-              )
+              !!value && !!TOKEN_TYPES.find((option) => option.value === value)
             );
           }),
         label: Yup.string()
