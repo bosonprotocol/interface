@@ -35,7 +35,8 @@ export const productDigitalHelp = [
   },
   {
     title: "What digital file formats can I list?",
-    description: "There are no restrictions on the file format."
+    description:
+      "While there are no restrictions on the file format you can list, some email providers or softwares that send files impose restrictions."
   },
   {
     title:

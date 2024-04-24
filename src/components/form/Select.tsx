@@ -33,7 +33,7 @@ const customStyles = (
   singleValue: (provided: any, state: any) => {
     return {
       ...provided,
-      color: textColor,
+      color: state.isDisabled ? colors.darkGrey : textColor,
       fontSize: "13.33px"
     };
   },
