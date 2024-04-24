@@ -102,10 +102,10 @@ export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
 
 export const isNftMintedAlreadyOptions = [...yesOrNoOptions] as const;
 export const buyerTranferInfoTitle = "Buyer information required for transfer";
-const getTransferCriteriaCopy = (item: "NFT" | "Digital File" | "Experience") =>
+const getTransferCriteriaCopy = (item: "NFT" | "digital file" | "experience") =>
   `Describe when the ${item} will be transferred to the buyer & what conditions need to be met`;
-const getTransferTimeCopy = (item: "NFT" | "Digital File" | "Experience") =>
-  `Describe when the buyer can expect to receive the ${item} once the transfer criteria has been met in days`;
+const getTransferTimeCopy = (item: "NFT" | "digital file" | "experience") =>
+  `The time by when the buyer can expect to receive the ${item} once the transfer criteria has been met`;
 export const newNftInfo = {
   newNftName: {
     key: "newNftName",
@@ -188,12 +188,12 @@ export const digitalFileInfo = {
   digitalFileTransferCriteria: {
     key: "digitalFileTransferCriteria",
     displayKey: "Transfer criteria",
-    subtitle: getTransferCriteriaCopy("Digital File")
+    subtitle: getTransferCriteriaCopy("digital file")
   },
   digitalFileTransferTime: {
     key: "digitalFileTransferTime",
     displayKey: "Transfer time",
-    subtitle: getTransferTimeCopy("Digital File")
+    subtitle: getTransferTimeCopy("digital file")
   },
   digitalFileTransferTimeUnit: {
     key: "digitalFileTransferTimeUnit"
@@ -216,7 +216,7 @@ export const experientialInfo = {
   experientialTransferTime: {
     key: "experientialTransferTime",
     displayKey: "Transfer time",
-    subtitle: getTransferTimeCopy("Experience")
+    subtitle: getTransferTimeCopy("experience")
   },
   experientialTransferTimeUnit: {
     key: "experientialTransferTimeUnit"
@@ -224,7 +224,7 @@ export const experientialInfo = {
   experientialTransferCriteria: {
     key: "experientialTransferCriteria",
     displayKey: "Transfer criteria",
-    subtitle: getTransferCriteriaCopy("Experience")
+    subtitle: getTransferCriteriaCopy("experience")
   },
   experientialBuyerTransferInfo: {
     key: "experientialBuyerTransferInfo",
