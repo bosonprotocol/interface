@@ -1,4 +1,4 @@
-import { digitalTypeMapping } from "@bosonprotocol/react-kit";
+import { digitalTypeMapping, Typography } from "@bosonprotocol/react-kit";
 import SimpleError from "components/error/SimpleError";
 import { FormField } from "components/form";
 import { Select } from "components/form";
@@ -8,7 +8,7 @@ import { FieldArray } from "formik";
 import { colors } from "lib/styles/colors";
 import { useForm } from "lib/utils/hooks/useForm";
 import { Plus } from "phosphor-react";
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 
 import {
   ContainerProductPage,
@@ -39,30 +39,32 @@ import {
 import { MintedNftBundleItems } from "./MintedNftBundleItems";
 import { NewNftBundleItems } from "./NewNftBundleItems";
 
-const checkLastElementIsPristine = (
+const getIsLastElementFilledOut = (
   elements: ProductDigitalType["productDigital"]["bundleItems"]
 ): boolean => {
   const element = elements[elements.length - 1];
   if (getIsBundleItem<ExistingNFT>(element, "mintedNftContractAddress")) {
     return (
-      !element?.mintedNftContractAddress?.length ||
-      element?.mintedNftTokenIdRangeMin === undefined ||
-      element?.mintedNftTokenIdRangeMax === undefined
+      !!element?.mintedNftContractAddress?.length &&
+      element?.mintedNftTokenIdRangeMin !== undefined &&
+      element?.mintedNftTokenIdRangeMax !== undefined
     );
   }
   if (getIsBundleItem<NewNFT>(element, "newNftName")) {
-    return !element?.newNftName?.length || !element?.newNftDescription?.length;
+    return (
+      !!element?.newNftName?.length && !!element?.newNftDescription?.length
+    );
   }
   if (getIsBundleItem<DigitalFile>(element, "digitalFileName")) {
     return (
-      !element?.digitalFileName?.length ||
-      !element?.digitalFileDescription?.length ||
-      !element?.digitalFileFormat?.length
+      !!element?.digitalFileName?.length &&
+      !!element?.digitalFileDescription?.length &&
+      !!element?.digitalFileFormat?.length
     );
   }
   return (
-    !element?.experientialName?.length ||
-    !element?.experientialDescription?.length
+    !!element?.experientialName?.length &&
+    !!element?.experientialDescription?.length
   );
 };
 const prefix = "productDigital.";
@@ -76,8 +78,8 @@ const getNewExistingBundleItem = () => {
     mintedNftTokenIdRangeMin: "",
     mintedNftTokenIdRangeMax: "",
     mintedNftExternalUrl: "",
-    mintedNftShippingInDays: "",
-    mintedNftWhenWillItBeSentToTheBuyer: "",
+    mintedNftTransferTime: "",
+    mintedNftTransferCriteria: "",
     mintedNftBuyerTransferInfo:
       BUYER_TRANSFER_INFO_OPTIONS.find(
         (option) => option.value === BuyerTransferInfo.walletAddress
@@ -92,9 +94,8 @@ const getNewNewBundleItem = () => {
   > = {
     newNftName: "",
     newNftDescription: "",
-    newNftHowWillItBeSentToTheBuyer: "",
-    newNftWhenWillItBeSentToTheBuyer: "",
-    newNftShippingInDays: "",
+    newNftTransferCriteria: "",
+    newNftTransferTime: "",
     newNftBuyerTransferInfo:
       BUYER_TRANSFER_INFO_OPTIONS.find(
         (option) => option.value === BuyerTransferInfo.walletAddress
@@ -110,9 +111,8 @@ const getNewDigitalFileBundleItem = () => {
     digitalFileName: "",
     digitalFileDescription: "",
     digitalFileFormat: "",
-    digitalFileHowWillItBeSentToTheBuyer: "",
-    digitalFileWhenWillItBeSentToTheBuyer: "",
-    digitalFileShippingInDays: "",
+    digitalFileTransferCriteria: "",
+    digitalFileTransferTime: "",
     digitalFileBuyerTransferInfo:
       BUYER_TRANSFER_INFO_OPTIONS.find(
         (option) => option.value === BuyerTransferInfo.email
@@ -127,9 +127,8 @@ const getNewExperientialBundleItem = () => {
   > = {
     experientialName: "",
     experientialDescription: "",
-    experientialHowWillTheBuyerReceiveIt: "",
-    experientialWhenWillItBeSentToTheBuyer: "",
-    experientialShippingInDays: "",
+    experientialTransferCriteria: "",
+    experientialTransferTime: "",
     experientialBuyerTransferInfo: null // both options are fine so nothing preselected
   };
   return bundleItem;
@@ -196,6 +195,7 @@ export const ProductDigital: React.FC = () => {
       <SectionTitle tag="h2">Digital & Experiential Items</SectionTitle>
       <div>
         <FormField
+          style={{ margin: "0 0 1rem 0" }}
           title="Choose the digital or experiential items in your bundle"
           required
           subTitle="Items can be an NFT, a digital file, or an experiential offering."
@@ -211,6 +211,7 @@ export const ProductDigital: React.FC = () => {
         {type === digitalTypeMapping["digital-nft"] && (
           <>
             <FormField
+              style={{ margin: "0 0 1rem 0" }}
               title="NFT Type"
               required
               subTitle="Provide buyers more information about your NFT's traits"
@@ -223,7 +224,11 @@ export const ProductDigital: React.FC = () => {
                 errorMessage="Please select the NFT type that best matches your product."
               />
             </FormField>
-            <FormField title="Is the NFT minted already?" required>
+            <FormField
+              style={{ margin: "0 0 1rem 0" }}
+              title="Is the NFT minted already?"
+              required
+            >
               <Select
                 placeholder="Choose one..."
                 name={`${prefix}isNftMintedAlready`}
@@ -248,56 +253,67 @@ export const ProductDigital: React.FC = () => {
                       if (!bundleItem) {
                         return null;
                       }
+                      const itemTitle = (
+                        <Typography tag="h3">Item {index + 1}</Typography>
+                      );
                       if (type === digitalTypeMapping["digital-nft"]) {
                         if (isNftMintedAlready) {
                           return (
-                            <MintedNftBundleItems
-                              key={`minted_nft_container_${index}`}
-                              prefix={arrayPrefix}
-                              showDeleteButton={showDeleteButton}
-                              bundleItemsError={bundleItemsError}
-                              bundleItem={bundleItem as ExistingNFT}
-                              onClickDelete={() => {
-                                arrayHelpers.remove(index);
-                              }}
-                            />
+                            <Fragment key={`minted_nft_container_${index}`}>
+                              {itemTitle}
+                              <MintedNftBundleItems
+                                prefix={arrayPrefix}
+                                showDeleteButton={showDeleteButton}
+                                bundleItemsError={bundleItemsError}
+                                bundleItem={bundleItem as ExistingNFT}
+                                onClickDelete={() => {
+                                  arrayHelpers.remove(index);
+                                }}
+                              />
+                            </Fragment>
                           );
                         } else {
                           return (
-                            <NewNftBundleItems
-                              key={`new_nft_container_${index}`}
-                              prefix={arrayPrefix}
-                              showDeleteButton={showDeleteButton}
-                              bundleItemsError={bundleItemsError}
-                              onClickDelete={() => {
-                                arrayHelpers.remove(index);
-                              }}
-                            />
+                            <Fragment key={`new_nft_container_${index}`}>
+                              {itemTitle}
+                              <NewNftBundleItems
+                                prefix={arrayPrefix}
+                                showDeleteButton={showDeleteButton}
+                                bundleItemsError={bundleItemsError}
+                                onClickDelete={() => {
+                                  arrayHelpers.remove(index);
+                                }}
+                              />
+                            </Fragment>
                           );
                         }
                       } else if (type === digitalTypeMapping["digital-file"]) {
                         return (
-                          <DigitalFileBundleItems
-                            key={`digital_file_container_${index}`}
-                            prefix={arrayPrefix}
-                            showDeleteButton={showDeleteButton}
-                            bundleItemsError={bundleItemsError}
-                            onClickDelete={() => {
-                              arrayHelpers.remove(index);
-                            }}
-                          />
+                          <Fragment key={`digital_file_container_${index}`}>
+                            {itemTitle}
+                            <DigitalFileBundleItems
+                              prefix={arrayPrefix}
+                              showDeleteButton={showDeleteButton}
+                              bundleItemsError={bundleItemsError}
+                              onClickDelete={() => {
+                                arrayHelpers.remove(index);
+                              }}
+                            />
+                          </Fragment>
                         );
                       } else if (type === digitalTypeMapping["experiential"]) {
                         return (
-                          <ExperientialBundleItems
-                            key={`experiential_container_${index}`}
-                            prefix={arrayPrefix}
-                            showDeleteButton={showDeleteButton}
-                            bundleItemsError={bundleItemsError}
-                            onClickDelete={() => {
-                              arrayHelpers.remove(index);
-                            }}
-                          />
+                          <Fragment key={`experiential_container_${index}`}>
+                            {itemTitle}
+                            <ExperientialBundleItems
+                              prefix={arrayPrefix}
+                              showDeleteButton={showDeleteButton}
+                              bundleItemsError={bundleItemsError}
+                              onClickDelete={() => {
+                                arrayHelpers.remove(index);
+                              }}
+                            />
+                          </Fragment>
                         );
                       }
                       return <></>;
@@ -305,10 +321,11 @@ export const ProductDigital: React.FC = () => {
                   </>
                 )}
                 {(!bundleItems.length ||
-                  !checkLastElementIsPristine(bundleItems)) &&
-                  type === digitalTypeMapping["digital-nft"] &&
-                  isNftMintedAlreadyValue !== undefined &&
-                  type !== digitalTypeMapping["digital-nft"] && (
+                  getIsLastElementFilledOut(bundleItems)) &&
+                  ((type === digitalTypeMapping["digital-nft"] &&
+                    isNftMintedAlreadyValue !== undefined) ||
+                    type !== digitalTypeMapping["digital-nft"]) &&
+                  type && (
                     <Button
                       onClick={() => {
                         if (type === digitalTypeMapping["digital-nft"]) {

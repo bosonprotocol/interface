@@ -26,6 +26,7 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
           title={digitalFileInfo["digitalFileName"].displayKey}
           required
           subTitle="Use words people would search for when looking for your item."
+          style={{ margin: "0 0 1rem 0" }}
         >
           <Input
             name={`${prefix}${digitalFileInfo["digitalFileName"].key}`}
@@ -36,6 +37,7 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
           title={digitalFileInfo["digitalFileDescription"].displayKey}
           required
           subTitle="Describe your digital file with as much detail as possible."
+          style={{ margin: "0 0 1rem 0" }}
         >
           <Input
             name={`${prefix}${digitalFileInfo["digitalFileDescription"].key}`}
@@ -46,43 +48,34 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
           title={digitalFileInfo["digitalFileFormat"].displayKey}
           required
           subTitle="Type the expected file format"
+          style={{ margin: "0 0 1rem 0" }}
         >
           <Input
             name={`${prefix}${digitalFileInfo["digitalFileFormat"].key}`}
             placeholder="PDF, MP4, MP3..."
           />
         </FormField>
-        <FormField title="Digital Delivery Info" required>
+        <FormField title="Digital Delivery Info">
           <FormField
-            title={
-              digitalFileInfo["digitalFileHowWillItBeSentToTheBuyer"].displayKey
-            }
+            title={digitalFileInfo["digitalFileTransferCriteria"].displayKey}
+            subTitle={digitalFileInfo["digitalFileTransferCriteria"].subtitle}
             required
+            style={{ margin: "0 0 1rem 0" }}
           >
             <Input
               placeholder=""
-              name={`${prefix}${digitalFileInfo["digitalFileHowWillItBeSentToTheBuyer"].key}`}
+              name={`${prefix}${digitalFileInfo["digitalFileTransferCriteria"].key}`}
             />
           </FormField>
           <FormField
-            title={
-              digitalFileInfo["digitalFileWhenWillItBeSentToTheBuyer"]
-                .displayKey
-            }
+            title={digitalFileInfo["digitalFileTransferTime"].displayKey}
+            subTitle={digitalFileInfo["digitalFileTransferTime"].subtitle}
             required
+            style={{ margin: "0 0 1rem 0" }}
           >
             <Input
               placeholder=""
-              name={`${prefix}${digitalFileInfo["digitalFileWhenWillItBeSentToTheBuyer"].key}`}
-            />
-          </FormField>
-          <FormField
-            title={digitalFileInfo["digitalFileShippingInDays"].displayKey}
-            required
-          >
-            <Input
-              placeholder=""
-              name={`${prefix}${digitalFileInfo["digitalFileShippingInDays"].key}`}
+              name={`${prefix}${digitalFileInfo["digitalFileTransferTime"].key}`}
               type="number"
             />
           </FormField>

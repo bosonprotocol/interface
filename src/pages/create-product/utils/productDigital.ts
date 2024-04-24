@@ -31,28 +31,25 @@ export function getItemNFTMetadata(
   };
 }
 const newNftTermsKeys = [
-  "newNftHowWillItBeSentToTheBuyer",
-  "newNftWhenWillItBeSentToTheBuyer",
-  "newNftShippingInDays",
+  "newNftTransferCriteria",
+  "newNftTransferTime",
   "newNftBuyerTransferInfo"
 ] as const;
 const mintedNftTermsKeys = [
   "mintedNftTokenType",
-  "mintedNftWhenWillItBeSentToTheBuyer",
-  "mintedNftShippingInDays",
+  "mintedNftTransferTime",
+  "mintedNftTransferCriteria",
   "mintedNftBuyerTransferInfo"
 ] as const;
 const digitalFileTermsKeys = [
   "digitalFileFormat",
-  "digitalFileHowWillItBeSentToTheBuyer",
-  "digitalFileWhenWillItBeSentToTheBuyer",
-  "digitalFileShippingInDays",
+  "digitalFileTransferCriteria",
+  "digitalFileTransferTime",
   "digitalFileBuyerTransferInfo"
 ] as const;
 const experientialTermsKeys = [
-  "experientialHowWillTheBuyerReceiveIt",
-  "experientialWhenWillItBeSentToTheBuyer",
-  "experientialShippingInDays",
+  "experientialTransferCriteria",
+  "experientialTransferTime",
   "experientialBuyerTransferInfo"
 ] as const;
 const getTermValue = (value: unknown): string => {

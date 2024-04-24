@@ -314,9 +314,8 @@ export const getProductInformationValidationSchema = ({
       materials: Yup.string()
     })
   });
-const howWillItBeSentToTheBuyer = Yup.string();
-const whenWillItBeSentToTheBuyer = Yup.string();
-const shippingInDays = Yup.number().min(0, "It cannot be negative");
+const transferCriteria = Yup.string();
+const transferTime = Yup.number().min(0, "It cannot be negative");
 const buyerTransferInfo = Yup.object({
   value: Yup.string().test("validBuyerTransferInfo", (value) => {
     return (
@@ -325,7 +324,9 @@ const buyerTransferInfo = Yup.object({
     );
   }),
   label: Yup.string()
-}).required(validationMessage.required);
+})
+  .required(validationMessage.required)
+  .nullable(true);
 const testTokenAddress = async function ({
   tokenType,
   coreSDK,
@@ -477,8 +478,8 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
           return value ? checkValidUrl(value) : true;
         }
       ),
-      mintedNftWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer,
-      mintedNftShippingInDays: shippingInDays,
+      mintedNftTransferTime: transferTime,
+      mintedNftTransferCriteria: transferCriteria,
       mintedNftBuyerTransferInfo: buyerTransferInfo
     })
   )
@@ -523,9 +524,8 @@ const newNftSchema = Yup.array(
   Yup.object({
     newNftName: Yup.string().required(validationMessage.required),
     newNftDescription: Yup.string().required(validationMessage.required),
-    newNftHowWillItBeSentToTheBuyer: howWillItBeSentToTheBuyer,
-    newNftWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer,
-    newNftShippingInDays: shippingInDays,
+    newNftTransferTime: transferTime,
+    newNftTransferCriteria: transferCriteria,
     newNftBuyerTransferInfo: buyerTransferInfo
   })
 )
@@ -536,15 +536,10 @@ const digitalFileSchema = Yup.array(
     digitalFileName: Yup.string().required(validationMessage.required),
     digitalFileDescription: Yup.string().required(validationMessage.required),
     digitalFileFormat: Yup.string().required(validationMessage.required),
-    digitalFileHowWillItBeSentToTheBuyer: howWillItBeSentToTheBuyer.required(
+    digitalFileTransferCriteria: transferCriteria.required(
       validationMessage.required
     ),
-    digitalFileWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer.required(
-      validationMessage.required
-    ),
-    digitalFileShippingInDays: shippingInDays.required(
-      validationMessage.required
-    ),
+    digitalFileTransferTime: transferTime.required(validationMessage.required),
     digitalFileBuyerTransferInfo: buyerTransferInfo
   })
 )
@@ -554,13 +549,8 @@ const experientialSchema = Yup.array(
   Yup.object({
     experientialName: Yup.string().required(validationMessage.required),
     experientialDescription: Yup.string().required(validationMessage.required),
-    experientialHowWillTheBuyerReceiveIt: howWillItBeSentToTheBuyer.required(
-      validationMessage.required
-    ),
-    experientialWhenWillItBeSentToTheBuyer: whenWillItBeSentToTheBuyer.required(
-      validationMessage.required
-    ),
-    experientialShippingInDays: shippingInDays.required(
+    experientialTransferTime: transferTime.required(validationMessage.required),
+    experientialTransferCriteria: transferCriteria.required(
       validationMessage.required
     ),
     experientialBuyerTransferInfo: buyerTransferInfo

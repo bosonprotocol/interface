@@ -22,13 +22,21 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
   return (
     <Grid flexDirection="column" marginBottom="4rem">
       <Wrapper>
-        <FormField title={newNftInfo["newNftName"].displayKey} required>
+        <FormField
+          title={newNftInfo["newNftName"].displayKey}
+          required
+          style={{ margin: "0 0 1rem 0" }}
+        >
           <Input
             placeholder=""
             name={`${prefix}${newNftInfo["newNftName"].key}`}
           />
         </FormField>
-        <FormField title={newNftInfo["newNftDescription"].displayKey} required>
+        <FormField
+          title={newNftInfo["newNftDescription"].displayKey}
+          required
+          style={{ margin: "0 0 1rem 0" }}
+        >
           <Input
             placeholder=""
             name={`${prefix}${newNftInfo["newNftDescription"].key}`}
@@ -36,26 +44,23 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
         </FormField>
         <FormField title="NFT Delivery Info">
           <FormField
-            title={newNftInfo["newNftHowWillItBeSentToTheBuyer"].displayKey}
-            marginTop="1rem"
+            title={newNftInfo["newNftTransferCriteria"].displayKey}
+            subTitle={newNftInfo["newNftTransferCriteria"].subtitle}
+            style={{ margin: "1rem 0 1rem 0" }}
           >
             <Input
               placeholder=""
-              name={`${prefix}${newNftInfo["newNftHowWillItBeSentToTheBuyer"].key}`}
+              name={`${prefix}${newNftInfo["newNftTransferCriteria"].key}`}
             />
           </FormField>
           <FormField
-            title={newNftInfo["newNftWhenWillItBeSentToTheBuyer"].displayKey}
+            title={newNftInfo["newNftTransferTime"].displayKey}
+            subTitle={newNftInfo["newNftTransferTime"].subtitle}
+            style={{ margin: "0 0 1rem 0" }}
           >
             <Input
               placeholder=""
-              name={`${prefix}${newNftInfo["newNftWhenWillItBeSentToTheBuyer"].key}`}
-            />
-          </FormField>
-          <FormField title={newNftInfo["newNftShippingInDays"].displayKey}>
-            <Input
-              placeholder=""
-              name={`${prefix}${newNftInfo["newNftShippingInDays"].key}`}
+              name={`${prefix}${newNftInfo["newNftTransferTime"].key}`}
               type="number"
             />
           </FormField>

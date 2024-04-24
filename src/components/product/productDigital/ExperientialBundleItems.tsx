@@ -23,6 +23,7 @@ export const ExperientialBundleItems: React.FC<
           title={experientialInfo["experientialName"].displayKey}
           required
           subTitle="Use words people would search for when looking for your item."
+          style={{ margin: "0 0 1rem 0" }}
         >
           <Input
             name={`${prefix}${experientialInfo["experientialName"].key}`}
@@ -33,44 +34,34 @@ export const ExperientialBundleItems: React.FC<
           title={experientialInfo["experientialDescription"].displayKey}
           required
           subTitle="Describe the experience in detail, including what the buyer will receive in order to access the experience"
+          style={{ margin: "0 0 1rem 0" }}
         >
           <Input
             name={`${prefix}${experientialInfo["experientialDescription"].key}`}
             placeholder="Experience description"
           />
         </FormField>
-        <FormField title="Experiential Delivery Info" required>
+        <FormField title="Experiential Delivery Info">
           <FormField
-            title={
-              experientialInfo["experientialHowWillTheBuyerReceiveIt"]
-                .displayKey
-            }
+            title={experientialInfo["experientialTransferCriteria"].displayKey}
+            subTitle={experientialInfo["experientialTransferCriteria"].subtitle}
             required
+            style={{ margin: "0 0 1rem 0" }}
           >
             <Input
               placeholder=""
-              name={`${prefix}${experientialInfo["experientialHowWillTheBuyerReceiveIt"].key}`}
+              name={`${prefix}${experientialInfo["experientialTransferCriteria"].key}`}
             />
           </FormField>
           <FormField
-            title={
-              experientialInfo["experientialWhenWillItBeSentToTheBuyer"]
-                .displayKey
-            }
+            title={experientialInfo["experientialTransferTime"].displayKey}
+            subTitle={experientialInfo["experientialTransferTime"].subtitle}
             required
+            style={{ margin: "0 0 1rem 0" }}
           >
             <Input
               placeholder=""
-              name={`${prefix}${experientialInfo["experientialWhenWillItBeSentToTheBuyer"].key}`}
-            />
-          </FormField>
-          <FormField
-            title={experientialInfo["experientialShippingInDays"].displayKey}
-            required
-          >
-            <Input
-              placeholder=""
-              name={`${prefix}${experientialInfo["experientialShippingInDays"].key}`}
+              name={`${prefix}${experientialInfo["experientialTransferTime"].key}`}
               type="number"
             />
           </FormField>

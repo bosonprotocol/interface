@@ -106,6 +106,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
           />
         </FormField>
         <FormField
+          style={{ margin: "0 0 1rem 0" }}
           title="Token ID Range"
           subTitle="Enter the Token ID Range"
           required
@@ -136,6 +137,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
           </Grid>
         </FormField>
         <FormField
+          style={{ margin: "0 0 1rem 0" }}
           title={mintedNftInfo["mintedNftExternalUrl"].displayKey}
           subTitle="Provide buyers a link to the NFT"
         >
@@ -146,22 +148,24 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
         </FormField>
         <FormField title="NFT Delivery Info">
           <FormField
-            title={
-              mintedNftInfo["mintedNftWhenWillItBeSentToTheBuyer"].displayKey
-            }
+            style={{ margin: "0 0 1rem 0" }}
+            title={mintedNftInfo["mintedNftTransferCriteria"].displayKey}
+            subTitle={mintedNftInfo["mintedNftTransferCriteria"].subtitle}
             marginTop="1rem"
           >
             <Input
               placeholder=""
-              name={`${prefix}${mintedNftInfo["mintedNftWhenWillItBeSentToTheBuyer"].key}`}
+              name={`${prefix}${mintedNftInfo["mintedNftTransferCriteria"].key}`}
             />
           </FormField>
           <FormField
-            title={mintedNftInfo["mintedNftShippingInDays"].displayKey}
+            style={{ margin: "0 0 1rem 0" }}
+            title={mintedNftInfo["mintedNftTransferTime"].displayKey}
+            subTitle={mintedNftInfo["mintedNftTransferTime"].subtitle}
           >
             <Input
               placeholder=""
-              name={`${prefix}${mintedNftInfo["mintedNftShippingInDays"].key}`}
+              name={`${prefix}${mintedNftInfo["mintedNftTransferTime"].key}`}
               type="number"
             />
           </FormField>

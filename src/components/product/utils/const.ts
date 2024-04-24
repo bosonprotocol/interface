@@ -102,6 +102,10 @@ export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
 
 export const isNftMintedAlreadyOptions = [...yesOrNoOptions] as const;
 export const buyerTranferInfoTitle = "Buyer information required for transfer";
+const getTransferCriteriaCopy = (item: "NFT" | "Digital File" | "Experience") =>
+  `Describe when the ${item} will be transferred to the buyer & what conditions need to be met`;
+const getTransferTimeCopy = (item: "NFT" | "Digital File" | "Experience") =>
+  `Describe when the buyer can expect to receive the ${item} once the transfer criteria has been met in days`;
 export const newNftInfo = {
   newNftName: {
     key: "newNftName",
@@ -111,17 +115,15 @@ export const newNftInfo = {
     key: "newNftDescription",
     displayKey: "Description"
   },
-  newNftHowWillItBeSentToTheBuyer: {
-    key: "newNftHowWillItBeSentToTheBuyer",
-    displayKey: "Transfer criteria"
+  newNftTransferCriteria: {
+    key: "newNftTransferCriteria",
+    displayKey: "Transfer criteria",
+    subtitle: getTransferCriteriaCopy("NFT")
   },
-  newNftWhenWillItBeSentToTheBuyer: {
-    key: "newNftWhenWillItBeSentToTheBuyer",
-    displayKey: "Transfer time"
-  },
-  newNftShippingInDays: {
-    key: "newNftShippingInDays",
-    displayKey: "NFT transfer time"
+  newNftTransferTime: {
+    key: "newNftTransferTime",
+    displayKey: "Transfer time",
+    subtitle: getTransferTimeCopy("NFT")
   },
   newNftBuyerTransferInfo: {
     key: "newNftBuyerTransferInfo",
@@ -149,13 +151,15 @@ export const mintedNftInfo = {
     key: "mintedNftExternalUrl",
     displayKey: "External URL"
   },
-  mintedNftWhenWillItBeSentToTheBuyer: {
-    key: "mintedNftWhenWillItBeSentToTheBuyer",
-    displayKey: "Transfer time"
+  mintedNftTransferTime: {
+    key: "mintedNftTransferTime",
+    displayKey: "Transfer time",
+    subtitle: getTransferTimeCopy("NFT")
   },
-  mintedNftShippingInDays: {
-    key: "mintedNftShippingInDays",
-    displayKey: "NFT transfer time"
+  mintedNftTransferCriteria: {
+    key: "mintedNftTransferCriteria",
+    displayKey: "Transfer criteria",
+    subtitle: getTransferCriteriaCopy("NFT")
   },
   mintedNftBuyerTransferInfo: {
     key: "mintedNftBuyerTransferInfo",
@@ -175,17 +179,15 @@ export const digitalFileInfo = {
     key: "digitalFileFormat",
     displayKey: "Digital file format"
   },
-  digitalFileHowWillItBeSentToTheBuyer: {
-    key: "digitalFileHowWillItBeSentToTheBuyer",
-    displayKey: "Transfer criteria"
+  digitalFileTransferCriteria: {
+    key: "digitalFileTransferCriteria",
+    displayKey: "Transfer criteria",
+    subtitle: getTransferCriteriaCopy("Digital File")
   },
-  digitalFileWhenWillItBeSentToTheBuyer: {
-    key: "digitalFileWhenWillItBeSentToTheBuyer",
-    displayKey: "Transfer time"
-  },
-  digitalFileShippingInDays: {
-    key: "digitalFileShippingInDays",
-    displayKey: "Shipping in days"
+  digitalFileTransferTime: {
+    key: "digitalFileTransferTime",
+    displayKey: "Transfer time",
+    subtitle: getTransferTimeCopy("Digital File")
   },
   digitalFileBuyerTransferInfo: {
     key: "digitalFileBuyerTransferInfo",
@@ -202,17 +204,15 @@ export const experientialInfo = {
     key: "experientialDescription",
     displayKey: "Description of experience"
   },
-  experientialHowWillTheBuyerReceiveIt: {
-    key: "experientialHowWillTheBuyerReceiveIt",
-    displayKey: "How will the Buyer receive the access pass?"
+  experientialTransferTime: {
+    key: "experientialTransferTime",
+    displayKey: "Transfer time",
+    subtitle: getTransferTimeCopy("Experience")
   },
-  experientialWhenWillItBeSentToTheBuyer: {
-    key: "experientialWhenWillItBeSentToTheBuyer",
-    displayKey: "Transfer time"
-  },
-  experientialShippingInDays: {
-    key: "experientialShippingInDays",
-    displayKey: "Shipping in days"
+  experientialTransferCriteria: {
+    key: "experientialTransferCriteria",
+    displayKey: "Transfer criteria",
+    subtitle: getTransferCriteriaCopy("Experience")
   },
   experientialBuyerTransferInfo: {
     key: "experientialBuyerTransferInfo",
