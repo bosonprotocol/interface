@@ -1,8 +1,8 @@
 import { Grid } from "@bosonprotocol/react-kit";
-import { FormField, Input } from "components/form";
+import { FormField, Input, Select } from "components/form";
 import React from "react";
 
-import { newNftInfo } from "../utils";
+import { newNftInfo, OPTIONS_PERIOD } from "../utils";
 import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
 import { Delete, Wrapper } from "./styles";
 
@@ -58,11 +58,21 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
             subTitle={newNftInfo["newNftTransferTime"].subtitle}
             style={{ margin: "0 0 1rem 0" }}
           >
-            <Input
-              placeholder=""
-              name={`${prefix}${newNftInfo["newNftTransferTime"].key}`}
-              type="number"
-            />
+            <Grid gap="1rem" alignItems="flex-start">
+              <Grid flexDirection="column" alignItems="flex-start">
+                <Input
+                  placeholder=""
+                  name={`${prefix}${newNftInfo["newNftTransferTime"].key}`}
+                  type="number"
+                  step="1"
+                />
+              </Grid>
+              <Select
+                placeholder="Choose..."
+                name={`${prefix}${newNftInfo["newNftTransferTimeUnit"].key}`}
+                options={OPTIONS_PERIOD}
+              />
+            </Grid>
           </FormField>
           <BundleItemsTransferInfo
             selectName={`${prefix}${newNftInfo["newNftBuyerTransferInfo"].key}`}

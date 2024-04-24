@@ -1,8 +1,8 @@
 import { Grid } from "@bosonprotocol/react-kit";
-import { FormField, Input } from "components/form";
+import { FormField, Input, Select } from "components/form";
 import React from "react";
 
-import { experientialInfo } from "../utils";
+import { experientialInfo, OPTIONS_PERIOD } from "../utils";
 import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
 import { Delete, Wrapper } from "./styles";
 
@@ -59,11 +59,21 @@ export const ExperientialBundleItems: React.FC<
             required
             style={{ margin: "0 0 1rem 0" }}
           >
-            <Input
-              placeholder=""
-              name={`${prefix}${experientialInfo["experientialTransferTime"].key}`}
-              type="number"
-            />
+            <Grid gap="1rem" alignItems="flex-start">
+              <Grid flexDirection="column" alignItems="flex-start">
+                <Input
+                  placeholder=""
+                  name={`${prefix}${experientialInfo["experientialTransferTime"].key}`}
+                  type="number"
+                  step="1"
+                />
+              </Grid>
+              <Select
+                placeholder="Choose..."
+                name={`${prefix}${experientialInfo["experientialTransferTimeUnit"].key}`}
+                options={OPTIONS_PERIOD}
+              />
+            </Grid>
           </FormField>
 
           <BundleItemsTransferInfo

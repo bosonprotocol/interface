@@ -316,6 +316,10 @@ export const getProductInformationValidationSchema = ({
   });
 const transferCriteria = Yup.string();
 const transferTime = Yup.number().min(0, "It cannot be negative");
+const transferTimeUnit = Yup.object({
+  value: Yup.string(),
+  label: Yup.string()
+}).required(validationMessage.required);
 const buyerTransferInfo = Yup.object({
   value: Yup.string().test("validBuyerTransferInfo", (value) => {
     return (
@@ -479,6 +483,7 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
         }
       ),
       mintedNftTransferTime: transferTime,
+      mintedNftTransferTimeUnit: transferTimeUnit,
       mintedNftTransferCriteria: transferCriteria,
       mintedNftBuyerTransferInfo: buyerTransferInfo
     })
@@ -525,6 +530,7 @@ const newNftSchema = Yup.array(
     newNftName: Yup.string().required(validationMessage.required),
     newNftDescription: Yup.string().required(validationMessage.required),
     newNftTransferTime: transferTime,
+    newNftTransferTimeUnit: transferTimeUnit,
     newNftTransferCriteria: transferCriteria,
     newNftBuyerTransferInfo: buyerTransferInfo
   })
@@ -540,6 +546,7 @@ const digitalFileSchema = Yup.array(
       validationMessage.required
     ),
     digitalFileTransferTime: transferTime.required(validationMessage.required),
+    digitalFileTransferTimeUnit: transferTimeUnit,
     digitalFileBuyerTransferInfo: buyerTransferInfo
   })
 )
@@ -550,6 +557,7 @@ const experientialSchema = Yup.array(
     experientialName: Yup.string().required(validationMessage.required),
     experientialDescription: Yup.string().required(validationMessage.required),
     experientialTransferTime: transferTime.required(validationMessage.required),
+    experientialTransferTimeUnit: transferTimeUnit,
     experientialTransferCriteria: transferCriteria.required(
       validationMessage.required
     ),

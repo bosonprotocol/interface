@@ -125,6 +125,9 @@ export const newNftInfo = {
     displayKey: "Transfer time",
     subtitle: getTransferTimeCopy("NFT")
   },
+  newNftTransferTimeUnit: {
+    key: "newNftTransferTimeUnit"
+  },
   newNftBuyerTransferInfo: {
     key: "newNftBuyerTransferInfo",
     displayKey: buyerTranferInfoTitle
@@ -155,6 +158,9 @@ export const mintedNftInfo = {
     key: "mintedNftTransferTime",
     displayKey: "Transfer time",
     subtitle: getTransferTimeCopy("NFT")
+  },
+  mintedNftTransferTimeUnit: {
+    key: "mintedNftTransferTimeUnit"
   },
   mintedNftTransferCriteria: {
     key: "mintedNftTransferCriteria",
@@ -189,6 +195,9 @@ export const digitalFileInfo = {
     displayKey: "Transfer time",
     subtitle: getTransferTimeCopy("Digital File")
   },
+  digitalFileTransferTimeUnit: {
+    key: "digitalFileTransferTimeUnit"
+  },
   digitalFileBuyerTransferInfo: {
     key: "digitalFileBuyerTransferInfo",
     displayKey: buyerTranferInfoTitle
@@ -208,6 +217,9 @@ export const experientialInfo = {
     key: "experientialTransferTime",
     displayKey: "Transfer time",
     subtitle: getTransferTimeCopy("Experience")
+  },
+  experientialTransferTimeUnit: {
+    key: "experientialTransferTimeUnit"
   },
   experientialTransferCriteria: {
     key: "experientialTransferCriteria",

@@ -25,6 +25,7 @@ import {
   isNftMintedAlreadyOptions,
   MintedNftBundleItemsType,
   NewNftBundleItemsType,
+  OPTIONS_PERIOD,
   type ProductDigital as ProductDigitalType
 } from "../utils";
 import { DigitalFileBundleItems } from "./DigitalFileBundleItems";
@@ -71,7 +72,10 @@ const prefix = "productDigital.";
 const getNewExistingBundleItem = () => {
   const bundleItem: Record<
     keyof MintedNftBundleItemsType[number],
-    string | null | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | string
+    | null
+    | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | (typeof OPTIONS_PERIOD)[number]
   > = {
     mintedNftTokenType: null,
     mintedNftContractAddress: "",
@@ -79,6 +83,7 @@ const getNewExistingBundleItem = () => {
     mintedNftTokenIdRangeMax: "",
     mintedNftExternalUrl: "",
     mintedNftTransferTime: "",
+    mintedNftTransferTimeUnit: OPTIONS_PERIOD[0],
     mintedNftTransferCriteria: "",
     mintedNftBuyerTransferInfo:
       BUYER_TRANSFER_INFO_OPTIONS.find(
@@ -90,12 +95,16 @@ const getNewExistingBundleItem = () => {
 const getNewNewBundleItem = () => {
   const bundleItem: Record<
     keyof NewNftBundleItemsType[number],
-    string | null | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | string
+    | null
+    | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | (typeof OPTIONS_PERIOD)[number]
   > = {
     newNftName: "",
     newNftDescription: "",
     newNftTransferCriteria: "",
     newNftTransferTime: "",
+    newNftTransferTimeUnit: OPTIONS_PERIOD[0],
     newNftBuyerTransferInfo:
       BUYER_TRANSFER_INFO_OPTIONS.find(
         (option) => option.value === BuyerTransferInfo.walletAddress
@@ -106,13 +115,17 @@ const getNewNewBundleItem = () => {
 const getNewDigitalFileBundleItem = () => {
   const bundleItem: Record<
     keyof DigitalFileBundleItemsType[number],
-    string | null | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | string
+    | null
+    | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | (typeof OPTIONS_PERIOD)[number]
   > = {
     digitalFileName: "",
     digitalFileDescription: "",
     digitalFileFormat: "",
     digitalFileTransferCriteria: "",
     digitalFileTransferTime: "",
+    digitalFileTransferTimeUnit: OPTIONS_PERIOD[0],
     digitalFileBuyerTransferInfo:
       BUYER_TRANSFER_INFO_OPTIONS.find(
         (option) => option.value === BuyerTransferInfo.email
@@ -123,12 +136,16 @@ const getNewDigitalFileBundleItem = () => {
 const getNewExperientialBundleItem = () => {
   const bundleItem: Record<
     keyof ExperientialBundleItemsType[number],
-    string | null | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | string
+    | null
+    | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | (typeof OPTIONS_PERIOD)[number]
   > = {
     experientialName: "",
     experientialDescription: "",
     experientialTransferCriteria: "",
     experientialTransferTime: "",
+    experientialTransferTimeUnit: OPTIONS_PERIOD[0],
     experientialBuyerTransferInfo: null // both options are fine so nothing preselected
   };
   return bundleItem;

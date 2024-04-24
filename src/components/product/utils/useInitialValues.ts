@@ -53,6 +53,7 @@ import {
   newNftInfo,
   NFT_TOKEN_TYPES,
   OPTIONS_LENGTH,
+  OPTIONS_PERIOD,
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
   ProductMetadataAttributeKeys,
@@ -454,10 +455,10 @@ function loadExistingProduct<T extends CreateProductForm>(
                 )?.value;
                 if (type === digitalTypeMapping["digital-nft"]) {
                   if (nftItem.contract) {
-                    const shippingDays =
+                    const transferTime =
                       nftItem.terms?.find(
                         (term) =>
-                          term.key === mintedNftInfo.mintedNftShippingInDays.key
+                          term.key === mintedNftInfo.mintedNftTransferTime.key
                       )?.value ?? "";
                     const tokenTypeValue =
                       nftItem.terms?.find(
@@ -477,8 +478,8 @@ function loadExistingProduct<T extends CreateProductForm>(
                         ) || NFT_TOKEN_TYPES[0],
                       mintedNftContractAddress: nftItem.contract,
                       mintedNftExternalUrl: nftItem.externalUrl ?? undefined,
-                      mintedNftShippingInDays: shippingDays
-                        ? Number(shippingDays)
+                      mintedNftTransferTime: transferTime
+                        ? Number(transferTime)
                         : undefined,
                       mintedNftTokenIdRangeMax: Number(
                         nftItem.tokenIdRange?.max || "0"
@@ -486,13 +487,13 @@ function loadExistingProduct<T extends CreateProductForm>(
                       mintedNftTokenIdRangeMin: Number(
                         nftItem.tokenIdRange?.min || "0"
                       ),
-                      mintedNftWhenWillItBeSentToTheBuyer:
+                      mintedNftTransferCriteria:
                         nftItem.terms?.find(
                           (term) =>
                             term.key ===
-                            mintedNftInfo.mintedNftWhenWillItBeSentToTheBuyer
-                              .key
+                            mintedNftInfo.mintedNftTransferCriteria.key
                         )?.value ?? "",
+                      mintedNftTransferTimeUnit: OPTIONS_PERIOD[0],
                       mintedNftBuyerTransferInfo:
                         BUYER_TRANSFER_INFO_OPTIONS.find(
                           (option) => option.value === buyerTransferInfo
@@ -500,10 +501,9 @@ function loadExistingProduct<T extends CreateProductForm>(
                     };
                     return existingNft;
                   } else {
-                    const shippingDays =
+                    const transferTime =
                       nftItem.terms?.find(
-                        (term) =>
-                          term.key === newNftInfo.newNftShippingInDays.key
+                        (term) => term.key === newNftInfo.newNftTransferTime.key
                       )?.value ?? "";
                     const buyerTransferInfo =
                       nftItem.terms?.find(
@@ -514,21 +514,15 @@ function loadExistingProduct<T extends CreateProductForm>(
                     const newNft: NewNFT = {
                       newNftName: nftItem.name,
                       newNftDescription: nftItem.description || "",
-                      newNftHowWillItBeSentToTheBuyer:
+                      newNftTransferCriteria:
                         nftItem.terms?.find(
                           (term) =>
-                            term.key ===
-                            newNftInfo.newNftHowWillItBeSentToTheBuyer.key
+                            term.key === newNftInfo.newNftTransferCriteria.key
                         )?.value ?? "",
-                      newNftShippingInDays: shippingDays
-                        ? Number(shippingDays)
+                      newNftTransferTime: transferTime
+                        ? Number(transferTime)
                         : undefined,
-                      newNftWhenWillItBeSentToTheBuyer:
-                        nftItem.terms?.find(
-                          (term) =>
-                            term.key ===
-                            newNftInfo.newNftWhenWillItBeSentToTheBuyer.key
-                        )?.value ?? "",
+                      newNftTransferTimeUnit: OPTIONS_PERIOD[0],
                       newNftBuyerTransferInfo:
                         BUYER_TRANSFER_INFO_OPTIONS.find(
                           (option) => option.value === buyerTransferInfo
@@ -537,11 +531,10 @@ function loadExistingProduct<T extends CreateProductForm>(
                     return newNft;
                   }
                 } else if (type === digitalTypeMapping["digital-file"]) {
-                  const shippingDays =
+                  const transferTime =
                     nftItem.terms?.find(
                       (term) =>
-                        term.key ===
-                        digitalFileInfo.digitalFileShippingInDays.key
+                        term.key === digitalFileInfo.digitalFileTransferTime.key
                     )?.value ?? "";
                   const buyerTransferInfo =
                     nftItem.terms?.find(
@@ -557,22 +550,16 @@ function loadExistingProduct<T extends CreateProductForm>(
                         (term) =>
                           term.key === digitalFileInfo.digitalFileFormat.key
                       )?.value ?? "",
-                    digitalFileHowWillItBeSentToTheBuyer:
-                      nftItem.terms?.find(
-                        (term) =>
-                          term.key ===
-                          digitalFileInfo.digitalFileHowWillItBeSentToTheBuyer
-                            .key
-                      )?.value ?? "",
-                    digitalFileShippingInDays: shippingDays
-                      ? Number(shippingDays)
+                    digitalFileTransferTimeUnit: OPTIONS_PERIOD[0],
+
+                    digitalFileTransferTime: transferTime
+                      ? Number(transferTime)
                       : (undefined as unknown as number),
-                    digitalFileWhenWillItBeSentToTheBuyer:
+                    digitalFileTransferCriteria:
                       nftItem.terms?.find(
                         (term) =>
                           term.key ===
-                          digitalFileInfo.digitalFileWhenWillItBeSentToTheBuyer
-                            .key
+                          digitalFileInfo.digitalFileTransferCriteria.key
                       )?.value ?? "",
                     digitalFileBuyerTransferInfo:
                       BUYER_TRANSFER_INFO_OPTIONS.find(
@@ -581,11 +568,11 @@ function loadExistingProduct<T extends CreateProductForm>(
                   };
                   return digitalFile;
                 } else if (type === digitalTypeMapping.experiential) {
-                  const shippingDays =
+                  const transferTime =
                     nftItem.terms?.find(
                       (term) =>
                         term.key ===
-                        experientialInfo.experientialShippingInDays.key
+                        experientialInfo.experientialTransferTime.key
                     )?.value ?? "";
                   const buyerTransferInfo =
                     nftItem.terms?.find(
@@ -596,23 +583,16 @@ function loadExistingProduct<T extends CreateProductForm>(
                   const experiential: Experiential = {
                     experientialName: nftItem.name,
                     experientialDescription: nftItem.description ?? "",
-                    experientialHowWillTheBuyerReceiveIt:
+                    experientialTransferCriteria:
                       nftItem.terms?.find(
                         (term) =>
                           term.key ===
-                          experientialInfo.experientialHowWillTheBuyerReceiveIt
-                            .key
+                          experientialInfo.experientialTransferCriteria.key
                       )?.value ?? "",
-                    experientialShippingInDays: shippingDays
-                      ? Number(shippingDays)
+                    experientialTransferTime: transferTime
+                      ? Number(transferTime)
                       : (undefined as unknown as number),
-                    experientialWhenWillItBeSentToTheBuyer:
-                      nftItem.terms?.find(
-                        (term) =>
-                          term.key ===
-                          experientialInfo
-                            .experientialWhenWillItBeSentToTheBuyer.key
-                      )?.value ?? "",
+                    experientialTransferTimeUnit: OPTIONS_PERIOD[0],
                     experientialBuyerTransferInfo:
                       BUYER_TRANSFER_INFO_OPTIONS.find(
                         (option) => option.value === buyerTransferInfo

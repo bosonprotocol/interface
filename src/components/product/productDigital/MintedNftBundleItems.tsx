@@ -5,7 +5,12 @@ import { useForm } from "lib/utils/hooks/useForm";
 import { useCoreSDK } from "lib/utils/useCoreSdk";
 import React from "react";
 
-import { mintedNftInfo, NFT_TOKEN_TYPES, TOKEN_TYPES } from "../utils";
+import {
+  mintedNftInfo,
+  NFT_TOKEN_TYPES,
+  OPTIONS_PERIOD,
+  TOKEN_TYPES
+} from "../utils";
 import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
 import { ExistingNFT } from "./getIsBundleItem";
 import { Delete, Wrapper } from "./styles";
@@ -163,11 +168,21 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
             title={mintedNftInfo["mintedNftTransferTime"].displayKey}
             subTitle={mintedNftInfo["mintedNftTransferTime"].subtitle}
           >
-            <Input
-              placeholder=""
-              name={`${prefix}${mintedNftInfo["mintedNftTransferTime"].key}`}
-              type="number"
-            />
+            <Grid gap="1rem" alignItems="flex-start">
+              <Grid flexDirection="column" alignItems="flex-start">
+                <Input
+                  placeholder=""
+                  name={`${prefix}${mintedNftInfo["mintedNftTransferTime"].key}`}
+                  type="number"
+                  step="1"
+                />
+              </Grid>
+              <Select
+                placeholder="Choose..."
+                name={`${prefix}${mintedNftInfo["mintedNftTransferTimeUnit"].key}`}
+                options={OPTIONS_PERIOD}
+              />
+            </Grid>
           </FormField>
           {tokenId && (
             <FormField
