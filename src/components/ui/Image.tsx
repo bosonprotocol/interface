@@ -118,7 +118,6 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   const isError = status === "error";
   const isLoading = status === "loading";
   const isSuccess = status === "success";
-  alt === "token ID 1" && console.log({ currentSrc, status, alt });
   return (
     <>
       <ImageWrapper {...rest} hide={!isLoading}>
