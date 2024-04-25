@@ -271,7 +271,9 @@ export const ProductDigital: React.FC = () => {
                         return null;
                       }
                       const itemTitle = (
-                        <Typography tag="h3">Item {index + 1}</Typography>
+                        <Typography tag="h3" marginBottom="0">
+                          Item {index + 1}
+                        </Typography>
                       );
                       if (type === digitalTypeMapping["digital-nft"]) {
                         if (isNftMintedAlready) {

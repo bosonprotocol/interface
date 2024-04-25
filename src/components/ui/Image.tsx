@@ -106,6 +106,9 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   );
   const [didOriginalSrcFail, setDidOriginalSrcFail] = useState<boolean>(false);
   useEffect(() => {
+    if (src === currentSrc) {
+      return;
+    }
     // reset all if src changes
     setStatus(withLoading ? "loading" : "success");
     setCurrentSrc(getImageUrl(src, optimizationOpts));
@@ -115,7 +118,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   const isError = status === "error";
   const isLoading = status === "loading";
   const isSuccess = status === "success";
-
+  alt === "token ID 1" && console.log({ currentSrc, status, alt });
   return (
     <>
       <ImageWrapper {...rest} hide={!isLoading}>

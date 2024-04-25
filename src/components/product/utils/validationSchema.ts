@@ -147,18 +147,6 @@ const getBundleItemsMedia = ({
               return isValid;
             }
           })
-  // .when("productAnimation", {
-  //   is: () => {
-  //     return isPhygital;
-  //   },
-  //   then: (schema) => {
-  //     return schema.min(
-  //       1,
-  //       "Either image or video has to be uploaded for the digital items"
-  //     );
-  //   },
-  //   otherwise: (schema) => schema
-  // })
 });
 
 const getProductAnimation = () => ({
@@ -314,8 +302,10 @@ export const getProductInformationValidationSchema = ({
       materials: Yup.string()
     })
   });
-const transferCriteria = Yup.string();
-const transferTime = Yup.number().min(0, "It cannot be negative");
+const transferCriteria = Yup.string().required(validationMessage.required);
+const transferTime = Yup.number()
+  .min(0, "It cannot be negative")
+  .required(validationMessage.required);
 const transferTimeUnit = Yup.object({
   value: Yup.string(),
   label: Yup.string()
@@ -543,10 +533,8 @@ const digitalFileSchema = Yup.array(
     digitalFileName: Yup.string().required(validationMessage.required),
     digitalFileDescription: Yup.string().required(validationMessage.required),
     digitalFileFormat: Yup.string().required(validationMessage.required),
-    digitalFileTransferCriteria: transferCriteria.required(
-      validationMessage.required
-    ),
-    digitalFileTransferTime: transferTime.required(validationMessage.required),
+    digitalFileTransferCriteria: transferCriteria,
+    digitalFileTransferTime: transferTime,
     digitalFileTransferTimeUnit: transferTimeUnit,
     digitalFileBuyerTransferInfo: buyerTransferInfo
   })
@@ -559,9 +547,7 @@ const experientialSchema = Yup.array(
     experientialDescription: Yup.string().required(validationMessage.required),
     experientialTransferTime: transferTime.required(validationMessage.required),
     experientialTransferTimeUnit: transferTimeUnit,
-    experientialTransferCriteria: transferCriteria.required(
-      validationMessage.required
-    ),
+    experientialTransferCriteria: transferCriteria,
     experientialBuyerTransferInfo: buyerTransferInfo
   })
 )

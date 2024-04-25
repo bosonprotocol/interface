@@ -83,7 +83,7 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
           />
         </FormField>
         {showDeleteButton && (
-          <FormField title="Action">
+          <FormField title="Action" marginBottom="0">
             <Delete
               size={18}
               style={{

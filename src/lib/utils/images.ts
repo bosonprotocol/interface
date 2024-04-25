@@ -31,7 +31,16 @@ export function getImageUrl(
   }
   const { gateway = CONFIG.ipfsImageGateway, ...optimizationOpts } = opts;
   const ipfsGatewayUrl = getIpfsGatewayUrl(uri, { gateway });
-  return `${ipfsGatewayUrl}?${optsToQueryParams(optimizationOpts)}`;
+  const url = new URL(ipfsGatewayUrl);
+  for (const [key, value] of Array.from(
+    optsToQueryParams(optimizationOpts).entries()
+  )) {
+    if (!url.searchParams.has(key)) {
+      // no duplicated query params
+      url.searchParams.append(key, value);
+    }
+  }
+  return url.toString();
 }
 
 export function getLensImageUrl(uri: string, lensIpfsGateway: string) {
@@ -60,7 +69,7 @@ function optsToQueryParams(opts: Partial<ImageOptimizationOpts> = {}) {
       "img-format": "auto"
     }
   );
-  return new URLSearchParams(transformedOpts).toString();
+  return new URLSearchParams(transformedOpts);
 }
 
 type ImageMetadata = {

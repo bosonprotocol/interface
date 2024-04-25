@@ -75,7 +75,8 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
     },
     { enabled: !!(erc1155Uri && erc1155Uri[0] && tokenId && isErc1155) }
   );
-  const imageSrc = erc721Image?.[0] || erc1155Image?.[0] || "";
+  const imageSrc =
+    (isErc721 ? erc721Image?.[0] : isErc1155 ? erc1155Image?.[0] : "") || "";
   return (
     <Grid flexDirection="column">
       <Wrapper>
@@ -116,7 +117,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
           subTitle="Enter the Token ID Range"
           required
         >
-          <Grid flexWrap="wrap" gap="1rem">
+          <Grid flexWrap="wrap" gap="1rem" alignItems="flex-start">
             <FormField
               title={mintedNftInfo["mintedNftTokenIdRangeMin"].displayKey}
               required
@@ -144,12 +145,13 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
         {tokenId && (
           <FormField
             title={`Image of token ID ${tokenId}`}
-            style={{ alignItems: "stretch" }}
+            style={{ alignItems: "stretch", margin: "0 0 1rem 0" }}
           >
             {imageSrc ? (
               <Image
                 src={imageSrc}
                 optimizationOpts={{ gateway: "https://ipfs.io/ipfs" }}
+                alt={`token ID ${tokenId}`}
               />
             ) : (
               <Typography>Not available</Typography>
@@ -209,7 +211,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
           />
         </FormField>
         {showDeleteButton && (
-          <FormField title="Action">
+          <FormField title="Action" marginBottom="0">
             <Delete
               size={18}
               style={{

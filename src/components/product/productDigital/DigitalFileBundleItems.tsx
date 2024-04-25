@@ -99,7 +99,7 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
           />
         </FormField>
         {showDeleteButton && (
-          <FormField title="Action">
+          <FormField title="Action" marginBottom="0">
             <Delete
               size={18}
               style={{
