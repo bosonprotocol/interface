@@ -47,6 +47,7 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
             title={newNftInfo["newNftTransferCriteria"].displayKey}
             subTitle={newNftInfo["newNftTransferCriteria"].subtitle}
             style={{ margin: "1rem 0 1rem 0" }}
+            required
           >
             <Input
               placeholder=""
@@ -57,6 +58,7 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
             title={newNftInfo["newNftTransferTime"].displayKey}
             subTitle={newNftInfo["newNftTransferTime"].subtitle}
             style={{ margin: "0 0 1rem 0" }}
+            required
           >
             <Grid gap="1rem" alignItems="flex-start">
               <Grid flexDirection="column" alignItems="flex-start">

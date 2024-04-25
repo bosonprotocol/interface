@@ -141,6 +141,21 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
             </FormField>
           </Grid>
         </FormField>
+        {tokenId && (
+          <FormField
+            title={`Image of token ID ${tokenId}`}
+            style={{ alignItems: "stretch" }}
+          >
+            {imageSrc ? (
+              <Image
+                src={imageSrc}
+                optimizationOpts={{ gateway: "https://ipfs.io/ipfs" }}
+              />
+            ) : (
+              <Typography>Not available</Typography>
+            )}
+          </FormField>
+        )}
         <FormField
           style={{ margin: "0 0 1rem 0" }}
           title={mintedNftInfo["mintedNftExternalUrl"].displayKey}
@@ -157,6 +172,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
             title={mintedNftInfo["mintedNftTransferCriteria"].displayKey}
             subTitle={mintedNftInfo["mintedNftTransferCriteria"].subtitle}
             marginTop="1rem"
+            required
           >
             <Input
               placeholder=""
@@ -167,6 +183,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
             style={{ margin: "0 0 1rem 0" }}
             title={mintedNftInfo["mintedNftTransferTime"].displayKey}
             subTitle={mintedNftInfo["mintedNftTransferTime"].subtitle}
+            required
           >
             <Grid gap="1rem" alignItems="flex-start">
               <Grid flexDirection="column" alignItems="flex-start">
@@ -184,21 +201,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
               />
             </Grid>
           </FormField>
-          {tokenId && (
-            <FormField
-              title={`Image of token ID ${tokenId}`}
-              style={{ alignItems: "stretch" }}
-            >
-              {imageSrc ? (
-                <Image
-                  src={imageSrc}
-                  optimizationOpts={{ gateway: "https://ipfs.io/ipfs" }}
-                />
-              ) : (
-                <Typography>Not available</Typography>
-              )}
-            </FormField>
-          )}
+
           <BundleItemsTransferInfo
             selectName={`${prefix}${mintedNftInfo["mintedNftBuyerTransferInfo"].key}`}
             withBuyerAddressOption
