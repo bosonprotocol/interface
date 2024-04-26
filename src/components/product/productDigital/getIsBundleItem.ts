@@ -12,9 +12,7 @@ export type Experiential = Extract<BundleItem, { experientialName: string }>;
 
 export function getIsBundleItem<
   T extends NewNFT | ExistingNFT | DigitalFile | Experiential
->(
-  bundleItem: NewNFT | ExistingNFT | DigitalFile | Experiential,
-  type: keyof T
-): bundleItem is T {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+>(bundleItem: any, type: keyof T): bundleItem is T {
   return type in bundleItem;
 }

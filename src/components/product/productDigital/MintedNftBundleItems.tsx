@@ -13,23 +13,19 @@ import {
 } from "../utils";
 import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
 import { ExistingNFT } from "./getIsBundleItem";
-import { Delete, Wrapper } from "./styles";
+import { Wrapper } from "./styles";
 
 type MintedNftBundleItemsProps = {
   prefix: string;
   bundleItem: ExistingNFT;
-  showDeleteButton: boolean;
   bundleItemsError: JSX.Element | null;
-  onClickDelete: () => void;
 };
 
 const [, { value: erc721 }, { value: erc1155 }] = TOKEN_TYPES;
 export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
   prefix,
   bundleItem,
-  showDeleteButton,
-  bundleItemsError,
-  onClickDelete
+  bundleItemsError
 }) => {
   const { handleBlur } = useForm();
   const coreSDK = useCoreSDK();
@@ -227,18 +223,6 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
             withBuyerEmailOption={false}
           />
         </FormField>
-        {showDeleteButton && (
-          <FormField title="Action" marginBottom="0">
-            <Delete
-              size={18}
-              style={{
-                gridColumn: "delete",
-                gridRow: "delete"
-              }}
-              onClick={onClickDelete}
-            />
-          </FormField>
-        )}
       </Wrapper>
       {bundleItemsError}
     </Grid>

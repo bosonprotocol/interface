@@ -16,6 +16,13 @@ import Yup from "../../../lib/validation/index";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../form/Upload/types";
 import { getCommonFieldsValidation } from "../../modal/components/Profile/validationSchema";
+import {
+  DigitalFile,
+  ExistingNFT,
+  Experiential,
+  getIsBundleItem,
+  NewNFT
+} from "../productDigital/getIsBundleItem";
 import { CONFIG, DappConfig } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
@@ -425,135 +432,83 @@ const testTokenAddress = async function ({
 };
 
 const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
-  Yup.array(
-    Yup.object({
-      mintedNftTokenType: Yup.object({
-        value: Yup.string().test("validTokenType", (value) => {
-          return (
-            !!value &&
-            !!NFT_TOKEN_TYPES.find((option) => option.value === value)
-          );
-        }),
-        label: Yup.string()
-      })
-        .required(validationMessage.required)
-        .nullable(true)
-        .default([{ value: "", label: "" }]),
-      mintedNftContractAddress: Yup.string()
-        .required(validationMessage.required)
-        .test("FORMAT", "Must be a valid address", (value) =>
-          value ? ethers.utils.isAddress(value) : true
-        )
-        .test("wrongTokenAddress", async function (tokenContract) {
-          return await testTokenAddress({
-            this: this,
-            coreSDK,
-            tokenType: this.parent.mintedNftTokenType,
-            tokenContract
-          });
-        }),
-      mintedNftTokenIdRangeMin: Yup.number()
-        .required(validationMessage.required)
-        .min(1, "It should be at least 1"),
-      mintedNftTokenIdRangeMax: Yup.number()
-        .required(validationMessage.required)
-        .min(1, "It should be at least 1")
-        .test({
-          message: 'It should be greater than or equal to "Min token ID"',
-          test: (value, context) => {
-            if (value && value < context.parent.mintedNftTokenIdRangeMin) {
-              return false;
-            }
-            return true;
-          }
-        }),
-      mintedNftExternalUrl: Yup.string().test(
-        "FORMAT",
-        notUrlErrorMessage,
-        (value) => {
-          return value ? checkValidUrl(value) : true;
-        }
-      ),
-      mintedNftTransferTime: transferTime,
-      mintedNftTransferTimeUnit: transferTimeUnit,
-      mintedNftTransferCriteria: transferCriteria,
-      mintedNftBuyerTransferInfo: buyerTransferInfo
+  Yup.object({
+    mintedNftTokenType: Yup.object({
+      value: Yup.string().test("validTokenType", (value) => {
+        return (
+          !!value && !!NFT_TOKEN_TYPES.find((option) => option.value === value)
+        );
+      }),
+      label: Yup.string()
     })
-  )
-    .required(validationMessage.required)
-    .min(1, "The bundle should have at least 1 item")
-    .test({
-      message: "No overlapping token IDs for the same contract",
-      test: (bundleItems) => {
-        if (!bundleItems || bundleItems.length <= 1) {
+      .required(validationMessage.required)
+      .nullable(true)
+      .default([{ value: "", label: "" }]),
+    mintedNftContractAddress: Yup.string()
+      .required(validationMessage.required)
+      .test("FORMAT", "Must be a valid address", (value) =>
+        value ? ethers.utils.isAddress(value) : true
+      )
+      .test("wrongTokenAddress", async function (tokenContract) {
+        return await testTokenAddress({
+          this: this,
+          coreSDK,
+          tokenType: this.parent.mintedNftTokenType,
+          tokenContract
+        });
+      }),
+    mintedNftTokenIdRangeMin: Yup.number()
+      .required(validationMessage.required)
+      .min(1, "It should be at least 1"),
+    mintedNftTokenIdRangeMax: Yup.number()
+      .required(validationMessage.required)
+      .min(1, "It should be at least 1")
+      .test({
+        message: 'It should be greater than or equal to "Min token ID"',
+        test: (value, context) => {
+          if (value && value < context.parent.mintedNftTokenIdRangeMin) {
+            return false;
+          }
           return true;
         }
-        function hasOverlap(innerBundleItems: NonNullable<typeof bundleItems>) {
-          for (let i = 0; i < innerBundleItems.length; i++) {
-            for (let j = i + 1; j < innerBundleItems.length; j++) {
-              if (
-                innerBundleItems[i].mintedNftContractAddress &&
-                innerBundleItems[j].mintedNftContractAddress &&
-                innerBundleItems[i].mintedNftContractAddress?.toLowerCase() ===
-                  innerBundleItems[j].mintedNftContractAddress?.toLowerCase()
-              ) {
-                const range1 = {
-                  min: innerBundleItems[i].mintedNftTokenIdRangeMin || 0,
-                  max: innerBundleItems[i].mintedNftTokenIdRangeMax || 0
-                };
-                const range2 = {
-                  min: innerBundleItems[j].mintedNftTokenIdRangeMin || 0,
-                  max: innerBundleItems[j].mintedNftTokenIdRangeMax || 0
-                };
-
-                if (!(range1.min > range2.max || range2.min > range1.max)) {
-                  return true;
-                }
-              }
-            }
-          }
-          return false;
-        }
-        return !hasOverlap(bundleItems);
+      }),
+    mintedNftExternalUrl: Yup.string().test(
+      "FORMAT",
+      notUrlErrorMessage,
+      (value) => {
+        return value ? checkValidUrl(value) : true;
       }
-    });
-const newNftSchema = Yup.array(
-  Yup.object({
-    newNftName: Yup.string().required(validationMessage.required),
-    newNftDescription: Yup.string().required(validationMessage.required),
-    newNftTransferTime: transferTime,
-    newNftTransferTimeUnit: transferTimeUnit,
-    newNftTransferCriteria: transferCriteria,
-    newNftBuyerTransferInfo: buyerTransferInfo
-  })
-)
-  .required(validationMessage.required)
-  .min(1, "The bundle should have at least 1 item");
-const digitalFileSchema = Yup.array(
-  Yup.object({
-    digitalFileName: Yup.string().required(validationMessage.required),
-    digitalFileDescription: Yup.string().required(validationMessage.required),
-    digitalFileFormat: Yup.string().required(validationMessage.required),
-    digitalFileTransferCriteria: transferCriteria,
-    digitalFileTransferTime: transferTime,
-    digitalFileTransferTimeUnit: transferTimeUnit,
-    digitalFileBuyerTransferInfo: buyerTransferInfo
-  })
-)
-  .required(validationMessage.required)
-  .min(1, "The bundle should have at least 1 item");
-const experientialSchema = Yup.array(
-  Yup.object({
-    experientialName: Yup.string().required(validationMessage.required),
-    experientialDescription: Yup.string().required(validationMessage.required),
-    experientialTransferTime: transferTime.required(validationMessage.required),
-    experientialTransferTimeUnit: transferTimeUnit,
-    experientialTransferCriteria: transferCriteria,
-    experientialBuyerTransferInfo: buyerTransferInfo
-  })
-)
-  .required(validationMessage.required)
-  .min(1, "The bundle should have at least 1 item");
+    ),
+    mintedNftTransferTime: transferTime,
+    mintedNftTransferTimeUnit: transferTimeUnit,
+    mintedNftTransferCriteria: transferCriteria,
+    mintedNftBuyerTransferInfo: buyerTransferInfo
+  });
+const newNftSchema = Yup.object({
+  newNftName: Yup.string().required(validationMessage.required),
+  newNftDescription: Yup.string().required(validationMessage.required),
+  newNftTransferTime: transferTime,
+  newNftTransferTimeUnit: transferTimeUnit,
+  newNftTransferCriteria: transferCriteria,
+  newNftBuyerTransferInfo: buyerTransferInfo
+});
+const digitalFileSchema = Yup.object({
+  digitalFileName: Yup.string().required(validationMessage.required),
+  digitalFileDescription: Yup.string().required(validationMessage.required),
+  digitalFileFormat: Yup.string().required(validationMessage.required),
+  digitalFileTransferCriteria: transferCriteria,
+  digitalFileTransferTime: transferTime,
+  digitalFileTransferTimeUnit: transferTimeUnit,
+  digitalFileBuyerTransferInfo: buyerTransferInfo
+});
+const experientialSchema = Yup.object({
+  experientialName: Yup.string().required(validationMessage.required),
+  experientialDescription: Yup.string().required(validationMessage.required),
+  experientialTransferTime: transferTime.required(validationMessage.required),
+  experientialTransferTimeUnit: transferTimeUnit,
+  experientialTransferCriteria: transferCriteria,
+  experientialBuyerTransferInfo: buyerTransferInfo
+});
 export type NewNftBundleItemsType = Yup.InferType<typeof newNftSchema>;
 export type MintedNftBundleItemsType = Yup.InferType<
   ReturnType<typeof getExistingNftSchema>
@@ -608,56 +563,62 @@ export const getProductDigitalValidationSchema = ({
         })
         .default(undefined),
       bundleItems: Yup.mixed<
-        | MintedNftBundleItemsType
-        | NewNftBundleItemsType
-        | DigitalFileBundleItemsType
-        | ExperientialBundleItemsType
+        (
+          | MintedNftBundleItemsType
+          | NewNftBundleItemsType
+          | DigitalFileBundleItemsType
+          | ExperientialBundleItemsType
+        )[]
       >()
         .default(undefined)
         .required(validationMessage.required)
-        .when(["type", "isNftMintedAlready"], {
-          is: (
-            type: (typeof DIGITAL_TYPE)[number] | null,
-            isNftMintedAlready:
-              | (typeof isNftMintedAlreadyOptions)[number]
-              | null
-          ) => {
-            return (
-              type?.value === digitalTypeMapping["digital-nft"] &&
-              isNftMintedAlready?.value === "true"
-            );
-          },
-          then: getExistingNftSchema({ coreSDK }),
-          otherwise: (schema) => schema
-        })
-        .when(["type", "isNftMintedAlready"], {
-          is: (
-            type: (typeof DIGITAL_TYPE)[number] | null,
-            isNftMintedAlready:
-              | (typeof isNftMintedAlreadyOptions)[number]
-              | null
-          ) => {
-            return (
-              type?.value === digitalTypeMapping["digital-nft"] &&
-              isNftMintedAlready?.value === "false"
-            );
-          },
-          then: newNftSchema,
-          otherwise: (schema) => schema
-        })
-        .when(["type"], {
-          is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
-            return type?.value === digitalTypeMapping["digital-file"];
-          },
-          then: digitalFileSchema,
-          otherwise: (schema) => schema
-        })
-        .when(["type"], {
-          is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
-            return type?.value === digitalTypeMapping["experiential"];
-          },
-          then: experientialSchema,
-          otherwise: (schema) => schema
+        .test("wrongBundleItems", async function (bundleItems) {
+          if (!bundleItems) {
+            throw this.createError({
+              path: this.path,
+              message: "No items"
+            });
+          }
+          if (Array.isArray(bundleItems) && !bundleItems.length) {
+            throw this.createError({
+              path: this.path,
+              message: "There should be at least one item"
+            });
+          }
+          await Promise.all(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (bundleItems as any).map(async (bundleItem: unknown) => {
+              if (
+                getIsBundleItem<ExistingNFT>(
+                  bundleItem,
+                  "mintedNftContractAddress"
+                )
+              ) {
+                const existingNftValid = await getExistingNftSchema({
+                  coreSDK
+                }).validate(bundleItem);
+                return !existingNftValid;
+              }
+              if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
+                const newNftValid = newNftSchema.validateSync(bundleItem);
+                return !newNftValid;
+              }
+              if (getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")) {
+                const digitalFileValid =
+                  digitalFileSchema.validateSync(bundleItem);
+                return !digitalFileValid;
+              }
+              if (
+                getIsBundleItem<Experiential>(bundleItem, "experientialName")
+              ) {
+                const experienceValid =
+                  experientialSchema.validateSync(bundleItem);
+                return !experienceValid;
+              }
+              return false;
+            })
+          );
+          return true;
         })
     })
   });

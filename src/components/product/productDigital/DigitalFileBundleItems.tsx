@@ -4,20 +4,16 @@ import React from "react";
 
 import { digitalFileInfo, OPTIONS_PERIOD } from "../utils";
 import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
-import { Delete, Wrapper } from "./styles";
+import { Wrapper } from "./styles";
 
 type DigitalFileBundleItemsProps = {
   prefix: string;
-  showDeleteButton: boolean;
   bundleItemsError: JSX.Element | null;
-  onClickDelete: () => void;
 };
 
 export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
   prefix,
-  showDeleteButton,
-  bundleItemsError,
-  onClickDelete
+  bundleItemsError
 }) => {
   return (
     <Grid flexDirection="column">
@@ -98,18 +94,6 @@ export const DigitalFileBundleItems: React.FC<DigitalFileBundleItemsProps> = ({
             withBuyerEmailOption
           />
         </FormField>
-        {showDeleteButton && (
-          <FormField title="Action" marginBottom="0">
-            <Delete
-              size={18}
-              style={{
-                gridColumn: "delete",
-                gridRow: "delete"
-              }}
-              onClick={onClickDelete}
-            />
-          </FormField>
-        )}
       </Wrapper>
       {bundleItemsError}
     </Grid>

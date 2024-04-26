@@ -4,18 +4,16 @@ import React from "react";
 
 import { experientialInfo, OPTIONS_PERIOD } from "../utils";
 import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
-import { Delete, Wrapper } from "./styles";
+import { Wrapper } from "./styles";
 
 type ExperientialBundleItemsProps = {
   prefix: string;
-  showDeleteButton: boolean;
   bundleItemsError: JSX.Element | null;
-  onClickDelete: () => void;
 };
 
 export const ExperientialBundleItems: React.FC<
   ExperientialBundleItemsProps
-> = ({ prefix, showDeleteButton, bundleItemsError, onClickDelete }) => {
+> = ({ prefix, bundleItemsError }) => {
   return (
     <Grid flexDirection="column">
       <Wrapper>
@@ -85,18 +83,6 @@ export const ExperientialBundleItems: React.FC<
             withBuyerEmailOption
           />
         </FormField>
-        {showDeleteButton && (
-          <FormField title="Action" marginBottom="0">
-            <Delete
-              size={18}
-              style={{
-                gridColumn: "delete",
-                gridRow: "delete"
-              }}
-              onClick={onClickDelete}
-            />
-          </FormField>
-        )}
       </Wrapper>
       {bundleItemsError}
     </Grid>

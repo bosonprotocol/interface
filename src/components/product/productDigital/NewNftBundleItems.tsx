@@ -4,20 +4,16 @@ import React from "react";
 
 import { newNftInfo, OPTIONS_PERIOD } from "../utils";
 import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
-import { Delete, Wrapper } from "./styles";
+import { Wrapper } from "./styles";
 
 type NewNftBundleItemsProps = {
   prefix: string;
-  showDeleteButton: boolean;
   bundleItemsError: JSX.Element | null;
-  onClickDelete: () => void;
 };
 
 export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
   prefix,
-  showDeleteButton,
-  bundleItemsError,
-  onClickDelete
+  bundleItemsError
 }) => {
   return (
     <Grid flexDirection="column">
@@ -82,18 +78,6 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
             withBuyerEmailOption={false}
           />
         </FormField>
-        {showDeleteButton && (
-          <FormField title="Action" marginBottom="0">
-            <Delete
-              size={18}
-              style={{
-                gridColumn: "delete",
-                gridRow: "delete"
-              }}
-              onClick={onClickDelete}
-            />
-          </FormField>
-        )}
       </Wrapper>
       {bundleItemsError}
     </Grid>
