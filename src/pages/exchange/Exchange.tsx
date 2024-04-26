@@ -1,7 +1,8 @@
-import { isProductV1 } from "@bosonprotocol/react-kit";
+import { isBundle, isProductV1 } from "@bosonprotocol/react-kit";
 import { ExchangeDetailWidget } from "components/detail/DetailWidget/ExchangeDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { PhygitalLabel } from "components/ui/PhygitalLabel";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -143,6 +144,7 @@ export default function Exchange() {
         <LightBackground>
           <MainDetailGrid>
             <ImageWrapper>
+              {isBundle(offer) && <PhygitalLabel />}
               {animationUrl ? (
                 <Video
                   src={animationUrl}
