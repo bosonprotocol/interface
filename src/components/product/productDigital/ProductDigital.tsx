@@ -40,14 +40,18 @@ import { MintedNftBundleItems } from "./MintedNftBundleItems";
 import { NewNftBundleItems } from "./NewNftBundleItems";
 
 const prefix = "productDigital.";
-const getNewExistingBundleItem = () => {
+const getNewExistingNftBundleItem = (
+  nftType: (typeof DIGITAL_NFT_TYPE)[number]
+) => {
   const bundleItem: Record<
     keyof MintedNftBundleItemsType,
     | string
     | null
     | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
     | (typeof OPTIONS_PERIOD)[number]
+    | (typeof DIGITAL_NFT_TYPE)[number]
   > = {
+    mintedNftType: nftType,
     mintedNftTokenType: null,
     mintedNftContractAddress: "",
     mintedNftTokenIdRangeMin: "",
@@ -63,14 +67,16 @@ const getNewExistingBundleItem = () => {
   };
   return bundleItem;
 };
-const getNewNewBundleItem = () => {
+const getNewNewNftBundleItem = (nftType: (typeof DIGITAL_NFT_TYPE)[number]) => {
   const bundleItem: Record<
     keyof NewNftBundleItemsType,
     | string
     | null
     | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
     | (typeof OPTIONS_PERIOD)[number]
+    | (typeof DIGITAL_NFT_TYPE)[number]
   > = {
+    newNftType: nftType,
     newNftName: "",
     newNftDescription: "",
     newNftTransferCriteria: "",
@@ -125,6 +131,7 @@ export const ProductDigital: React.FC = () => {
   const { nextIsDisabled, values, setFieldValue, errors } = useForm();
   const { bundleItems } = values.productDigital || {};
   const type = (values.productDigital?.type || {}).value;
+  const nftType = values.productDigital?.nftType || {};
   const isNftMintedAlreadyValue = (
     values.productDigital.isNftMintedAlready || {}
   ).value;
@@ -293,12 +300,14 @@ export const ProductDigital: React.FC = () => {
                   if (isNftMintedAlready) {
                     setFieldValue("productDigital.bundleItems", [
                       ...bundleItems,
-                      getNewExistingBundleItem()
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      getNewExistingNftBundleItem(nftType as any)
                     ]);
                   } else {
                     setFieldValue("productDigital.bundleItems", [
                       ...bundleItems,
-                      getNewNewBundleItem()
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      getNewNewNftBundleItem(nftType as any)
                     ]);
                   }
                 } else if (type === digitalTypeMapping["digital-file"]) {

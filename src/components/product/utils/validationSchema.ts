@@ -430,9 +430,17 @@ const testTokenAddress = async function ({
   }
   return true;
 };
-
+const nftType = Yup.object({
+  value: Yup.string()
+    .oneOf(DIGITAL_NFT_TYPE.map(({ value }) => value))
+    .required(validationMessage.required),
+  label: Yup.string()
+})
+  .required(validationMessage.required)
+  .nullable(true);
 const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
   Yup.object({
+    mintedNftType: nftType,
     mintedNftTokenType: Yup.object({
       value: Yup.string().test("validTokenType", (value) => {
         return (
@@ -485,6 +493,7 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
     mintedNftBuyerTransferInfo: buyerTransferInfo
   });
 const newNftSchema = Yup.object({
+  newNftType: nftType,
   newNftName: Yup.string().required(validationMessage.required),
   newNftDescription: Yup.string().required(validationMessage.required),
   newNftTransferTime: transferTime,

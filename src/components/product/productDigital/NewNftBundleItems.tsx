@@ -2,7 +2,7 @@ import { Grid } from "@bosonprotocol/react-kit";
 import { FormField, Input, Select } from "components/form";
 import React from "react";
 
-import { newNftInfo, OPTIONS_PERIOD } from "../utils";
+import { DIGITAL_NFT_TYPE, newNftInfo, OPTIONS_PERIOD } from "../utils";
 import { BundleItemsTransferInfo } from "./BundleItemsTransferInfo";
 import { Wrapper } from "./styles";
 
@@ -18,6 +18,20 @@ export const NewNftBundleItems: React.FC<NewNftBundleItemsProps> = ({
   return (
     <Grid flexDirection="column">
       <Wrapper>
+        <FormField
+          style={{ margin: "1rem 0 1rem 0" }}
+          title={newNftInfo["newNftType"].displayKey}
+          required
+          subTitle="Provide buyers more information about your NFT's traits"
+        >
+          <Select
+            placeholder="Choose one..."
+            name={`${prefix}${newNftInfo["newNftType"].key}`}
+            options={DIGITAL_NFT_TYPE}
+            isClearable
+            errorMessage="Please select the NFT type that best matches your product."
+          />
+        </FormField>
         <FormField
           title={newNftInfo["newNftName"].displayKey}
           required

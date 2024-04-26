@@ -71,31 +71,31 @@ export function getDigitalMetadatas({
   chainId: number;
   values: CreateProductForm;
 }) {
-  const { productDigital, bundleItemsMedia } = values;
+  const {
+    productDigital: { bundleItems },
+    bundleItemsMedia
+  } = values;
 
-  return productDigital.bundleItems
+  return bundleItems
     .map((bundleItem, index): nftItem.NftItem | null => {
       const image = bundleItemsMedia?.[index]?.image?.[0]?.src;
       const animationUrl = bundleItemsMedia?.[index]?.video?.[0]?.src;
       const quantity = 1;
-      const attributes: nftItem.NftItem["attributes"] = [
-        {
-          traitType: "type",
-          value: productDigital.type.value,
-          displayType: "Type"
-        },
-        ...(productDigital.type.value === digitalTypeMapping["digital-nft"] &&
-        productDigital.nftType?.value
-          ? [
-              {
-                traitType: "nft-type",
-                value: productDigital.nftType.value,
-                displayType: "NFT type"
-              }
-            ]
-          : [])
-      ];
+
       if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
+        const attributes: nftItem.NftItem["attributes"] = [
+          {
+            traitType: "type",
+            value: digitalTypeMapping["digital-nft"],
+            displayType: "Type"
+          },
+
+          {
+            traitType: "nft-type",
+            value: bundleItem.newNftType.value,
+            displayType: "NFT type"
+          }
+        ];
         return getItemNFTMetadata({
           name: bundleItem.newNftName,
           description: bundleItem.newNftDescription,
@@ -130,6 +130,19 @@ export function getDigitalMetadatas({
         const minTokenId = bundleItem.mintedNftTokenIdRangeMin.toString();
         const maxTokenId = bundleItem.mintedNftTokenIdRangeMax.toString();
         const externalUrl = bundleItem.mintedNftExternalUrl;
+        const attributes: nftItem.NftItem["attributes"] = [
+          {
+            traitType: "type",
+            value: digitalTypeMapping["digital-nft"],
+            displayType: "Type"
+          },
+
+          {
+            traitType: "nft-type",
+            value: bundleItem.mintedNftType.value,
+            displayType: "NFT type"
+          }
+        ];
         return getItemNFTMetadata({
           name: bundleItem.mintedNftContractAddress,
           description: undefined,
@@ -162,6 +175,13 @@ export function getDigitalMetadatas({
         });
       }
       if (getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName")) {
+        const attributes: nftItem.NftItem["attributes"] = [
+          {
+            traitType: "type",
+            value: digitalTypeMapping["digital-file"],
+            displayType: "Type"
+          }
+        ];
         return getItemNFTMetadata({
           name: bundleItem.digitalFileName,
           description: bundleItem.digitalFileDescription,
@@ -191,6 +211,13 @@ export function getDigitalMetadatas({
         });
       }
       if (getIsBundleItem<Experiential>(bundleItem, "experientialName")) {
+        const attributes: nftItem.NftItem["attributes"] = [
+          {
+            traitType: "type",
+            value: digitalTypeMapping["experiential"],
+            displayType: "Type"
+          }
+        ];
         return getItemNFTMetadata({
           name: bundleItem.experientialName,
           description: bundleItem.experientialDescription,

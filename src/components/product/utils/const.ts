@@ -107,6 +107,10 @@ const getTransferCriteriaCopy = (item: "NFT" | "digital file" | "experience") =>
 const getTransferTimeCopy = (item: "NFT" | "digital file" | "experience") =>
   `The time by when the buyer can expect to receive the ${item} once the transfer criteria has been met`;
 export const newNftInfo = {
+  newNftType: {
+    key: "newNftType",
+    displayKey: "NFT type"
+  },
   newNftName: {
     key: "newNftName",
     displayKey: "Name"
@@ -137,6 +141,10 @@ export const mintedNftInfo = {
   mintedNftContractAddress: {
     key: "mintedNftContractAddress",
     displayKey: "Contract address"
+  },
+  mintedNftType: {
+    key: "mintedNftType",
+    displayKey: "NFT type"
   },
   mintedNftTokenType: {
     key: "mintedNftTokenType",

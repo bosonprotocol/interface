@@ -6,6 +6,7 @@ import { useCoreSDK } from "lib/utils/useCoreSdk";
 import React from "react";
 
 import {
+  DIGITAL_NFT_TYPE,
   mintedNftInfo,
   NFT_TOKEN_TYPES,
   OPTIONS_PERIOD,
@@ -94,9 +95,23 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
     <Grid flexDirection="column">
       <Wrapper>
         <FormField
+          style={{ margin: "1rem 0 1rem 0" }}
+          title={mintedNftInfo["mintedNftType"].displayKey}
+          required
+          subTitle="Provide buyers more information about your NFT's traits"
+        >
+          <Select
+            placeholder="Choose one..."
+            name={`${prefix}${mintedNftInfo["mintedNftType"].key}`}
+            options={DIGITAL_NFT_TYPE}
+            isClearable
+            errorMessage="Please select the NFT type that best matches your product."
+          />
+        </FormField>
+        <FormField
           title="Token Type"
           subTitle="Choose an option"
-          style={{ margin: "1rem 0 0 0" }}
+          style={{ margin: "0 0 1rem 0" }}
           required
         >
           <Select
@@ -112,7 +127,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
               ? `Enter the ${bundleItem.mintedNftTokenType?.label}'s contract address`
               : "Enter the contract address"
           }
-          style={{ margin: "1rem 0 0 0", width: "100%" }}
+          style={{ margin: "0 0 1rem 0", width: "100%" }}
           required
         >
           <Input
