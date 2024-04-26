@@ -40,20 +40,25 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
   const tokenId = tokenIdNumber?.toString();
   const isErc721 = bundleItem.mintedNftTokenType?.value === erc721;
   const isErc1155 = bundleItem.mintedNftTokenType?.value === erc1155;
-  const { data: erc721TokenUri } = hooks.useErc721TokenUri(
+  const { data: erc721TokenUri } = hooks.useErc721TokenUris(
     {
-      contractAddress: tokenAddress,
-      tokenIds: [tokenId]
+      pairsContractTokens: [
+        {
+          contractAddress: tokenAddress,
+          tokenIds: [tokenId]
+        }
+      ]
     },
     {
       enabled: !!tokenAddress && !!tokenId && isErc721,
       coreSDK
     }
   );
-  const { data: erc1155Uri } = hooks.useErc1155Uri(
+  const { data: erc1155Uri } = hooks.useErc1155Uris(
     {
-      contractAddress: tokenAddress,
-      tokenIds: [tokenId]
+      pairsContractTokens: [
+        { contractAddress: tokenAddress, tokenIds: [tokenId] }
+      ]
     },
     {
       enabled: !!tokenAddress && !!tokenId && isErc1155,
@@ -61,22 +66,34 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
     }
   );
 
-  const { data: erc721Image } = hooks.useGetTokenUriImage(
+  const { data: erc721Image } = hooks.useGetTokenUriImages(
     {
-      tokenUris: erc721TokenUri,
-      tokenIds: [tokenId]
+      pairsTokenUrisIds: [
+        {
+          tokenUris: erc721TokenUri?.[0],
+          tokenIds: [tokenId]
+        }
+      ]
     },
     { enabled: !!(erc721TokenUri && erc721TokenUri[0] && tokenId && isErc721) }
   );
-  const { data: erc1155Image } = hooks.useGetTokenUriImage(
+  const { data: erc1155Image } = hooks.useGetTokenUriImages(
     {
-      tokenUris: erc1155Uri,
-      tokenIds: [tokenId]
+      pairsTokenUrisIds: [
+        {
+          tokenUris: erc1155Uri?.[0],
+          tokenIds: [tokenId]
+        }
+      ]
     },
     { enabled: !!(erc1155Uri && erc1155Uri[0] && tokenId && isErc1155) }
   );
   const imageSrc =
-    (isErc721 ? erc721Image?.[0] : isErc1155 ? erc1155Image?.[0] : "") || "";
+    (isErc721
+      ? erc721Image?.[0]?.[0]
+      : isErc1155
+        ? erc1155Image?.[0]?.[0]
+        : "") || "";
   return (
     <Grid flexDirection="column">
       <Wrapper>

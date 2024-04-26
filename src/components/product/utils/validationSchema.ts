@@ -305,7 +305,8 @@ export const getProductInformationValidationSchema = ({
 const transferCriteria = Yup.string().required(validationMessage.required);
 const transferTime = Yup.number()
   .min(0, "It cannot be negative")
-  .required(validationMessage.required);
+  .required(validationMessage.required)
+  .nullable(true);
 const transferTimeUnit = Yup.object({
   value: Yup.string(),
   label: Yup.string()

@@ -477,10 +477,12 @@ function loadExistingProduct<T extends CreateProductForm>(
                           (tokenType) => tokenType.value === tokenTypeValue
                         ) || NFT_TOKEN_TYPES[0],
                       mintedNftContractAddress: nftItem.contract,
-                      mintedNftExternalUrl: nftItem.externalUrl ?? undefined,
+                      mintedNftExternalUrl: nftItem.externalUrl ?? "",
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
                       mintedNftTransferTime: transferTime
                         ? Number(transferTime)
-                        : undefined,
+                        : null,
                       mintedNftTokenIdRangeMax: Number(
                         nftItem.tokenIdRange?.max || "0"
                       ),
@@ -519,9 +521,11 @@ function loadExistingProduct<T extends CreateProductForm>(
                           (term) =>
                             term.key === newNftInfo.newNftTransferCriteria.key
                         )?.value ?? "",
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
                       newNftTransferTime: transferTime
                         ? Number(transferTime)
-                        : undefined,
+                        : null,
                       newNftTransferTimeUnit: OPTIONS_PERIOD[0],
                       newNftBuyerTransferInfo:
                         BUYER_TRANSFER_INFO_OPTIONS.find(
@@ -551,10 +555,11 @@ function loadExistingProduct<T extends CreateProductForm>(
                           term.key === digitalFileInfo.digitalFileFormat.key
                       )?.value ?? "",
                     digitalFileTransferTimeUnit: OPTIONS_PERIOD[0],
-
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     digitalFileTransferTime: transferTime
                       ? Number(transferTime)
-                      : (undefined as unknown as number),
+                      : null,
                     digitalFileTransferCriteria:
                       nftItem.terms?.find(
                         (term) =>
