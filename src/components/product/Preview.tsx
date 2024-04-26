@@ -1,6 +1,7 @@
-import { Grid, PhygitalLabel, subgraph } from "@bosonprotocol/react-kit";
+import { Grid, subgraph } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { Spinner } from "components/loading/Spinner";
+import { PhygitalLabel } from "components/ui/PhygitalLabel";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
 import map from "lodash/map";
 import { useChatContext } from "pages/chat/ChatProvider/ChatContext";

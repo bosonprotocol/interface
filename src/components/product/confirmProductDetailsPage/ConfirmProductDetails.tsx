@@ -20,6 +20,7 @@ import { Typography } from "components/ui/Typography";
 import Video from "components/ui/Video";
 import dayjs from "dayjs";
 import { CONFIG } from "lib/config";
+import { isTruthy } from "lib/types/helpers";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { useForm } from "lib/utils/hooks/useForm";
@@ -371,31 +372,33 @@ export default function ConfirmProductDetails({
                 <ProductSubtitle tag="h4">
                   Digital images & videos
                 </ProductSubtitle>
-                {values.bundleItemsMedia.map((biMedia, index) => {
-                  const bundleItem =
-                    values.productDigital?.bundleItems?.[index];
-                  const name = getBundleItemName(bundleItem);
-                  return (
-                    <Grid
-                      key={`${biMedia.image?.[0]?.src}-${biMedia.video?.[0]?.src}`}
-                      flexDirection="column"
-                      alignItems="initial"
-                    >
-                      <Typography>{name}</Typography>
-                      <SpaceContainer>
-                        <Image src={biMedia.image?.[0]?.src || ""} />
-                        <Video
-                          src={biMedia.video?.[0]?.src || ""}
-                          videoProps={{
-                            autoPlay: true,
-                            loop: true,
-                            muted: true
-                          }}
-                        />
-                      </SpaceContainer>
-                    </Grid>
-                  );
-                })}
+                {values.bundleItemsMedia
+                  .filter(isTruthy)
+                  .map((biMedia, index) => {
+                    const bundleItem =
+                      values.productDigital?.bundleItems?.[index];
+                    const name = getBundleItemName(bundleItem);
+                    return (
+                      <Grid
+                        key={`${biMedia.image?.[0]?.src}-${biMedia.video?.[0]?.src}`}
+                        flexDirection="column"
+                        alignItems="initial"
+                      >
+                        <Typography>{name}</Typography>
+                        <SpaceContainer>
+                          <Image src={biMedia.image?.[0]?.src || ""} />
+                          <Video
+                            src={biMedia.video?.[0]?.src || ""}
+                            videoProps={{
+                              autoPlay: true,
+                              loop: true,
+                              muted: true
+                            }}
+                          />
+                        </SpaceContainer>
+                      </Grid>
+                    );
+                  })}
               </div>
             )}
           </ProductInformationContent>

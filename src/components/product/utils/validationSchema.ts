@@ -6,7 +6,6 @@ import {
 } from "components/modal/components/Profile/const";
 import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
-import { isTruthy } from "lib/types/helpers";
 import { checkValidUrl, notUrlErrorMessage } from "lib/validation/regex/url";
 import { AnyObject } from "yup/lib/types";
 
@@ -98,62 +97,84 @@ const testPrice = (config: DappConfig) =>
       return false;
     }
   };
-
+const arrayOfMedia = {
+  bundleItemsMedia: Yup.array(
+    Yup.object({
+      image: validationOfIpfsImage(),
+      video: validationOfIpfsImage()
+    })
+  )
+};
+type ArrayOfMedia = typeof arrayOfMedia;
 const getBundleItemsMedia = ({
-  isPhygital,
-  productDigital
+  isPhygital
 }: {
   isPhygital: boolean;
-  productDigital: ProductDigital["productDigital"];
-}) => ({
-  bundleItemsMedia:
-    productDigital?.type?.value === digitalTypeMapping["digital-nft"] &&
-    productDigital?.isNftMintedAlready?.value === "true"
-      ? Yup.array()
-      : productDigital?.type?.value === digitalTypeMapping["digital-nft"]
-        ? Yup.array(
-            Yup.object({
-              image: validationOfRequiredIpfsImage(),
-              video: validationOfIpfsImage()
-            })
-          ).test({
-            message: "An image has to be uploaded for the digital items",
-            test: (value, context) => {
-              const productDigital =
-                context.parent.productDigital ??
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                context.options?.from?.find((from) => from.value.productDigital)
-                  ?.value?.productDigital;
-              const isValid = isPhygital
-                ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
-                    ?.length ?? 0) === productDigital.bundleItems.length
-                : true;
-              return isValid;
+}): ArrayOfMedia => ({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  bundleItemsMedia: Yup.array(
+    Yup.object({
+      image: validationOfIpfsImage(),
+      video: validationOfIpfsImage()
+    })
+  ).test(
+    "invalidBundleItemsMedia",
+    "Please add an image/video for new NFTs, digital files or experiences",
+    (bundleItemsMedia, context) => {
+      const productDigital =
+        context.parent.productDigital ??
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        context.options?.from?.find((from) => from.value.productDigital)?.value
+          ?.productDigital;
+
+      let numMedia = 0;
+      bundleItemsMedia?.forEach((bundleItemMedia, index) => {
+        const bundleItem = productDigital.bundleItems[index];
+        if (!bundleItem) {
+          throw new Error(
+            `something went wrong as bundleItem could not be found from bundleItemMedia=${JSON.stringify(bundleItemMedia)}, all bundleItems=${JSON.stringify(productDigital.bundleItems)}, index=${index}`
+          );
+        }
+        if (
+          getIsBundleItem<ExistingNFT>(bundleItem, "mintedNftContractAddress")
+        ) {
+          return; // nothing to test, no images must be uploaded
+        }
+        if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
+          numMedia++;
+          return Yup.object({
+            image: validationOfRequiredIpfsImage(),
+            video: validationOfIpfsImage()
+          }).validateSync(bundleItemMedia);
+        }
+        if (
+          getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
+          getIsBundleItem<Experiential>(bundleItem, "experientialName")
+        ) {
+          numMedia++;
+          return Yup.object({
+            image: validationOfIpfsImage(),
+            video: validationOfIpfsImage()
+          }).validateSync(bundleItemMedia);
+        }
+      });
+      const isValid: boolean = isPhygital
+        ? numMedia ===
+          (productDigital.bundleItems.filter(
+            (bundleItem: NewNFT | DigitalFile | Experiential) => {
+              return (
+                getIsBundleItem<NewNFT>(bundleItem, "newNftName") ||
+                getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
+                getIsBundleItem<Experiential>(bundleItem, "experientialName")
+              );
             }
-          })
-        : Yup.array(
-            Yup.object({
-              image: validationOfIpfsImage(),
-              video: validationOfIpfsImage()
-            })
-          ).test({
-            message:
-              "Either image or video has to be uploaded for the digital items",
-            test: (value, context) => {
-              const productDigital =
-                context.parent.productDigital ??
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                context.options?.from?.find((from) => from.value.productDigital)
-                  ?.value?.productDigital;
-              const isValid = isPhygital
-                ? (value?.filter((v) => v.image?.[0]?.src).filter(isTruthy)
-                    ?.length ?? 0) === productDigital.bundleItems.length
-                : true;
-              return isValid;
-            }
-          })
+          ).length as number)
+        : true;
+      return isValid;
+    }
+  ) as unknown as ArrayOfMedia
 });
 
 const getProductAnimation = () => ({
@@ -214,29 +235,25 @@ const getSinglePhysicalProductImagesValidationSchema = () => ({
   ...getProductAnimation()
 });
 export const getProductImagesValidationSchema = ({
-  isPhygital,
-  productDigital
+  isPhygital
 }: {
   isPhygital: boolean;
-  productDigital: ProductDigital["productDigital"];
 }) =>
   Yup.object({
     ...getSinglePhysicalProductImagesValidationSchema(),
-    ...getBundleItemsMedia({ isPhygital, productDigital })
+    ...getBundleItemsMedia({ isPhygital })
   });
 export type ProductImagesValidationSchema = ReturnType<
   typeof getProductImagesValidationSchema
 >;
 
 export const getProductVariantsImagesValidationSchema = ({
-  isPhygital,
-  productDigital
+  isPhygital
 }: {
   isPhygital: boolean;
-  productDigital: ProductDigital["productDigital"];
 }) =>
   Yup.object({
-    ...getBundleItemsMedia({ isPhygital, productDigital }),
+    ...getBundleItemsMedia({ isPhygital }),
     productVariantsImages: Yup.array(
       Yup.object({
         ...getSinglePhysicalProductImagesValidationSchema()

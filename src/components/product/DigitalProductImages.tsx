@@ -18,9 +18,10 @@ export function DigitalUploadImages({
   prefix,
   error,
   ...rest
-}: { prefix: string; error?: string | null } & HTMLAttributes<
-  ElementRef<"div">
->) {
+}: {
+  prefix: string;
+  error?: string | null;
+} & HTMLAttributes<ElementRef<"div">>) {
   return (
     <SpaceContainer {...rest}>
       <div>

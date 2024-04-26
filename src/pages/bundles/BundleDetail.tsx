@@ -1,7 +1,8 @@
-import { hooks, PhygitalLabel } from "@bosonprotocol/react-kit";
+import { hooks } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { PhygitalLabel } from "components/ui/PhygitalLabel";
 import { isTruthy } from "lib/types/helpers";
 import { Offer } from "lib/types/offer";
 import { getProductV1BundleItemsFilter } from "lib/utils/bundle/filter";

@@ -1,4 +1,3 @@
-import { digitalTypeMapping } from "@bosonprotocol/react-kit";
 import { isTruthy } from "lib/types/helpers";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
@@ -16,6 +15,12 @@ import { PhysicalUploadImages } from "./PhysicalProductImages";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { getBundleItemId } from "./productDigital/getBundleItemId";
 import { getBundleItemName } from "./productDigital/getBundleItemName";
+import {
+  DigitalFile,
+  Experiential,
+  getIsBundleItem,
+  NewNFT
+} from "./productDigital/getIsBundleItem";
 import {
   CreateProductForm,
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
@@ -77,7 +82,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const oneSetOfImages =
     !hasVariants ||
     values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
-  const withTokenGatedImages =
+  const isPhygital =
     values.productType.productType === ProductTypeTypeValues.phygital;
   const tabsData = useMemo(() => {
     return [
@@ -106,40 +111,42 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
               )
             };
           }) || []),
-      ...(withTokenGatedImages &&
-      ((values.productDigital?.type?.value ===
-        digitalTypeMapping["digital-nft"] &&
-        values.productDigital?.isNftMintedAlready?.value === "false") ||
-        values.productDigital?.type?.value !==
-          digitalTypeMapping["digital-nft"])
+      ...(isPhygital
         ? values.productDigital?.bundleItems
             ?.map((bi, index) => {
-              const error =
-                errors.bundleItemsMedia &&
-                typeof errors.bundleItemsMedia === "string"
-                  ? errors.bundleItemsMedia
-                  : typeof errors.bundleItemsMedia === "object" &&
-                      Array.isArray(errors.bundleItemsMedia) &&
-                      typeof errors.bundleItemsMedia[index] === "object" &&
-                      typeof Object.values(
-                        errors.bundleItemsMedia[index]
-                      )?.[0] === "string"
-                    ? (Object.values(
-                        errors.bundleItemsMedia[index]
-                      )?.[0] as string) || ""
-                    : null;
-              const name = getBundleItemName(bi);
-              return {
-                id: `${getBundleItemId(bi)}-${index}`,
-                title: name,
-                content: (
-                  <DigitalUploadImages
-                    className="digital"
-                    prefix={`bundleItemsMedia[${index}]`}
-                    error={error}
-                  />
-                )
-              };
+              const isNewNft = getIsBundleItem<NewNFT>(bi, "newNftName");
+              const isNotNFT =
+                getIsBundleItem<DigitalFile>(bi, "digitalFileName") ||
+                getIsBundleItem<Experiential>(bi, "experientialName");
+              if (isNewNft || isNotNFT) {
+                const error =
+                  errors.bundleItemsMedia &&
+                  typeof errors.bundleItemsMedia === "string"
+                    ? errors.bundleItemsMedia
+                    : typeof errors.bundleItemsMedia === "object" &&
+                        Array.isArray(errors.bundleItemsMedia) &&
+                        typeof errors.bundleItemsMedia[index] === "object" &&
+                        typeof Object.values(
+                          errors.bundleItemsMedia[index]
+                        )?.[0] === "string"
+                      ? (Object.values(
+                          errors.bundleItemsMedia[index]
+                        )?.[0] as string) || ""
+                      : null;
+                const name = getBundleItemName(bi);
+                return {
+                  id: `${getBundleItemId(bi)}-${index}`,
+                  title: name,
+                  content: (
+                    <DigitalUploadImages
+                      className="digital"
+                      prefix={`bundleItemsMedia[${index}]`}
+                      error={error}
+                    />
+                  )
+                };
+              }
+              return null;
             })
             .filter(isTruthy) ?? []
         : [])
@@ -148,10 +155,8 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     errors,
     oneSetOfImages,
     values.productDigital?.bundleItems,
-    values.productDigital?.isNftMintedAlready?.value,
-    values.productDigital?.type?.value,
     values.productVariants?.variants,
-    withTokenGatedImages
+    isPhygital
   ]);
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
@@ -201,7 +206,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         title="Upload your product images"
         subTitle={`Use a max. size of ${bytesToSize(MAX_FILE_SIZE)} per image`}
       >
-        {oneSetOfImages && !withTokenGatedImages ? (
+        {oneSetOfImages && !isPhygital ? (
           <PhysicalUploadImages
             prefix={productImagesPrefix}
             error={getProductImageError(0, errors)}
