@@ -13,7 +13,7 @@ import {
   NewNFT
 } from "../productDigital/getIsBundleItem";
 import { ProductTypeTypeValues } from "../utils";
-import { ContentValue, ProductSubtitle } from "./ConfirmProductDetails.styles";
+import { ProductSubtitle } from "./ConfirmProductDetails.styles";
 
 const Wrapper = styled.div`
   #lastRegularField {
@@ -41,27 +41,6 @@ export const ConfirmProductDigital: React.FC = () => {
   return (
     <Wrapper>
       <ProductSubtitle tag="h4">Digital & Experiential Items</ProductSubtitle>
-      <FormField title="Bundle type" required>
-        <ContentValue tag="p">{values.productDigital.type.label}</ContentValue>
-      </FormField>
-      {values.productDigital.nftType && (
-        <FormField title="NFT type" required>
-          <ContentValue tag="p">
-            {values.productDigital.nftType.label}
-          </ContentValue>
-        </FormField>
-      )}
-      {values.productDigital.isNftMintedAlready && (
-        <FormField
-          title="Is the NFT minted already?"
-          required
-          id="lastRegularField"
-        >
-          <ContentValue tag="p">
-            {values.productDigital.isNftMintedAlready.label}
-          </ContentValue>
-        </FormField>
-      )}
       <FormField title="Bundle items" required marginTop="1rem">
         <Grid
           flexDirection="column"
@@ -75,6 +54,14 @@ export const ConfirmProductDigital: React.FC = () => {
                 <div key={getBundleItemId(bi)}>
                   <div>{index + 1}.</div>
                   <BundleItemWrapper>
+                    <li>
+                      <span>Type: </span>
+                      {bi.type.label}
+                    </li>
+                    <li>
+                      <span>NFT type: </span>
+                      {bi.newNftType.label}
+                    </li>
                     <li>
                       <span>Name: </span>
                       {bi.newNftName}
@@ -102,6 +89,14 @@ export const ConfirmProductDigital: React.FC = () => {
                 <div key={getBundleItemId(bi)}>
                   <div>{index + 1}.</div>
                   <BundleItemWrapper>
+                    <li>
+                      <span>Type: </span>
+                      {bi.type.label}
+                    </li>
+                    <li>
+                      <span>NFT type: </span>
+                      {bi.mintedNftType.label}
+                    </li>
                     <li>
                       <span>ContractAddress:</span>{" "}
                       {bi.mintedNftContractAddress}
@@ -134,6 +129,10 @@ export const ConfirmProductDigital: React.FC = () => {
                   <div>{index + 1}.</div>
                   <BundleItemWrapper>
                     <li>
+                      <span>Type: </span>
+                      {bi.type.label}
+                    </li>
+                    <li>
                       <span>Name:</span> {bi.digitalFileName}
                     </li>
                     <li>
@@ -162,6 +161,10 @@ export const ConfirmProductDigital: React.FC = () => {
                 <div key={getBundleItemId(bi)}>
                   <div>{index + 1}.</div>
                   <BundleItemWrapper>
+                    <li>
+                      <span>Type: </span>
+                      {bi.type.label}
+                    </li>
                     <li>
                       <span>Name:</span> {bi.experientialName}
                     </li>

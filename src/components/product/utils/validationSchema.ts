@@ -448,6 +448,32 @@ const testTokenAddress = async function ({
   }
   return true;
 };
+const commonFieldsBundleItem = {
+  type: Yup.object({
+    value: Yup.string()
+      .oneOf(DIGITAL_TYPE.map(({ value }) => value))
+      .required(validationMessage.required),
+    label: Yup.string()
+  })
+    .required(validationMessage.required)
+    .nullable(true)
+    .default(undefined),
+  isNftMintedAlready: Yup.object({
+    value: Yup.string().oneOf(
+      isNftMintedAlreadyOptions.map(({ value }) => value)
+    ),
+    label: Yup.string()
+  })
+    .when("type", {
+      is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
+        return type?.value === digitalTypeMapping["digital-nft"];
+      },
+      then: (schema) => schema.required(validationMessage.required),
+      otherwise: (schema) => schema
+    })
+    .default(undefined)
+    .nullable(true)
+};
 const nftType = Yup.object({
   value: Yup.string()
     .oneOf(DIGITAL_NFT_TYPE.map(({ value }) => value))
@@ -458,6 +484,7 @@ const nftType = Yup.object({
   .nullable(true);
 const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
   Yup.object({
+    ...commonFieldsBundleItem,
     mintedNftType: nftType,
     mintedNftTokenType: Yup.object({
       value: Yup.string().test("validTokenType", (value) => {
@@ -511,6 +538,7 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
     mintedNftBuyerTransferInfo: buyerTransferInfo
   });
 const newNftSchema = Yup.object({
+  ...commonFieldsBundleItem,
   newNftType: nftType,
   newNftName: Yup.string().required(validationMessage.required),
   newNftDescription: Yup.string().required(validationMessage.required),
@@ -520,6 +548,7 @@ const newNftSchema = Yup.object({
   newNftBuyerTransferInfo: buyerTransferInfo
 });
 const digitalFileSchema = Yup.object({
+  ...commonFieldsBundleItem,
   digitalFileName: Yup.string().required(validationMessage.required),
   digitalFileDescription: Yup.string().required(validationMessage.required),
   digitalFileFormat: Yup.string().required(validationMessage.required),
@@ -529,6 +558,7 @@ const digitalFileSchema = Yup.object({
   digitalFileBuyerTransferInfo: buyerTransferInfo
 });
 const experientialSchema = Yup.object({
+  ...commonFieldsBundleItem,
   experientialName: Yup.string().required(validationMessage.required),
   experientialDescription: Yup.string().required(validationMessage.required),
   experientialTransferTime: transferTime.required(validationMessage.required),
@@ -554,41 +584,6 @@ export const getProductDigitalValidationSchema = ({
 }) =>
   Yup.object({
     productDigital: Yup.object({
-      type: Yup.object({
-        value: Yup.string()
-          .oneOf(DIGITAL_TYPE.map(({ value }) => value))
-          .required(validationMessage.required),
-        label: Yup.string()
-      })
-        .required(validationMessage.required)
-        .default(undefined),
-      nftType: Yup.object({
-        value: Yup.string().oneOf(DIGITAL_NFT_TYPE.map(({ value }) => value)),
-        label: Yup.string()
-      })
-
-        .when("type", {
-          is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
-            return type?.value === digitalTypeMapping["digital-nft"];
-          },
-          then: (schema) => schema.required(validationMessage.required),
-          otherwise: (schema) => schema
-        })
-        .default(undefined),
-      isNftMintedAlready: Yup.object({
-        value: Yup.string().oneOf(
-          isNftMintedAlreadyOptions.map(({ value }) => value)
-        ),
-        label: Yup.string()
-      })
-        .when("type", {
-          is: (type: (typeof DIGITAL_TYPE)[number] | null) => {
-            return type?.value === digitalTypeMapping["digital-nft"];
-          },
-          then: (schema) => schema.required(validationMessage.required),
-          otherwise: (schema) => schema
-        })
-        .default(undefined),
       bundleItems: Yup.mixed<
         (
           | MintedNftBundleItemsType

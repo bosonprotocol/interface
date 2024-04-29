@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { digitalTypeMapping, Grid, Typography } from "@bosonprotocol/react-kit";
 import SimpleError from "components/error/SimpleError";
-import { FormField } from "components/form";
-import { Select } from "components/form";
+import { FormField, Select } from "components/form";
 import BosonButton from "components/ui/BosonButton";
 import Button from "components/ui/Button";
 import { FieldArray } from "formik";
 import { colors } from "lib/styles/colors";
+import { isTruthy } from "lib/types/helpers";
 import { useForm } from "lib/utils/hooks/useForm";
 import { Plus } from "phosphor-react";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useMemo, useRef } from "react";
 
 import {
   ContainerProductPage,
@@ -22,6 +23,8 @@ import {
   DIGITAL_TYPE,
   DigitalFileBundleItemsType,
   ExperientialBundleItemsType,
+  getDigitalTypeOption,
+  getIsMintedAlreadyOption,
   isNftMintedAlreadyOptions,
   MintedNftBundleItemsType,
   NewNftBundleItemsType,
@@ -40,8 +43,37 @@ import { MintedNftBundleItems } from "./MintedNftBundleItems";
 import { NewNftBundleItems } from "./NewNftBundleItems";
 
 const prefix = "productDigital.";
+const getNewEmptyRow = () => {
+  const bundleItem: Record<
+    keyof MintedNftBundleItemsType,
+    | string
+    | null
+    | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
+    | (typeof OPTIONS_PERIOD)[number]
+    | (typeof DIGITAL_NFT_TYPE)[number]
+    | (typeof isNftMintedAlreadyOptions)[number]
+    | (typeof DIGITAL_TYPE)[number]
+  > = {
+    type: null,
+    isNftMintedAlready: null,
+    mintedNftType: null,
+    mintedNftTokenType: null,
+    mintedNftContractAddress: "",
+    mintedNftTokenIdRangeMin: "",
+    mintedNftTokenIdRangeMax: "",
+    mintedNftExternalUrl: "",
+    mintedNftTransferTime: "",
+    mintedNftTransferTimeUnit: OPTIONS_PERIOD[0],
+    mintedNftTransferCriteria: "",
+    mintedNftBuyerTransferInfo:
+      BUYER_TRANSFER_INFO_OPTIONS.find(
+        (option) => option.value === BuyerTransferInfo.walletAddress
+      ) || null
+  };
+  return bundleItem;
+};
 const getNewExistingNftBundleItem = (
-  nftType: (typeof DIGITAL_NFT_TYPE)[number]
+  nftType: (typeof DIGITAL_NFT_TYPE)[number] | null
 ) => {
   const bundleItem: Record<
     keyof MintedNftBundleItemsType,
@@ -50,7 +82,11 @@ const getNewExistingNftBundleItem = (
     | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
     | (typeof OPTIONS_PERIOD)[number]
     | (typeof DIGITAL_NFT_TYPE)[number]
+    | (typeof isNftMintedAlreadyOptions)[number]
+    | (typeof DIGITAL_TYPE)[number]
   > = {
+    type: getDigitalTypeOption("digital-nft") || null,
+    isNftMintedAlready: getIsMintedAlreadyOption("true") || null,
     mintedNftType: nftType,
     mintedNftTokenType: null,
     mintedNftContractAddress: "",
@@ -67,7 +103,9 @@ const getNewExistingNftBundleItem = (
   };
   return bundleItem;
 };
-const getNewNewNftBundleItem = (nftType: (typeof DIGITAL_NFT_TYPE)[number]) => {
+const getNewNewNftBundleItem = (
+  nftType: (typeof DIGITAL_NFT_TYPE)[number] | null
+) => {
   const bundleItem: Record<
     keyof NewNftBundleItemsType,
     | string
@@ -75,7 +113,11 @@ const getNewNewNftBundleItem = (nftType: (typeof DIGITAL_NFT_TYPE)[number]) => {
     | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
     | (typeof OPTIONS_PERIOD)[number]
     | (typeof DIGITAL_NFT_TYPE)[number]
+    | (typeof isNftMintedAlreadyOptions)[number]
+    | (typeof DIGITAL_TYPE)[number]
   > = {
+    type: getDigitalTypeOption("digital-nft") || null,
+    isNftMintedAlready: getIsMintedAlreadyOption("false") || null,
     newNftType: nftType,
     newNftName: "",
     newNftDescription: "",
@@ -96,7 +138,11 @@ const getNewDigitalFileBundleItem = () => {
     | null
     | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
     | (typeof OPTIONS_PERIOD)[number]
+    | (typeof isNftMintedAlreadyOptions)[number]
+    | (typeof DIGITAL_TYPE)[number]
   > = {
+    type: getDigitalTypeOption("digital-file") || null,
+    isNftMintedAlready: null,
     digitalFileName: "",
     digitalFileDescription: "",
     digitalFileFormat: "",
@@ -117,7 +163,11 @@ const getNewExperientialBundleItem = () => {
     | null
     | (typeof BUYER_TRANSFER_INFO_OPTIONS)[number]
     | (typeof OPTIONS_PERIOD)[number]
+    | (typeof isNftMintedAlreadyOptions)[number]
+    | (typeof DIGITAL_TYPE)[number]
   > = {
+    type: getDigitalTypeOption("experiential") || null,
+    isNftMintedAlready: null,
     experientialName: "",
     experientialDescription: "",
     experientialTransferCriteria: "",
@@ -129,13 +179,7 @@ const getNewExperientialBundleItem = () => {
 };
 export const ProductDigital: React.FC = () => {
   const { nextIsDisabled, values, setFieldValue, errors } = useForm();
-  const { bundleItems } = values.productDigital || {};
-  const type = (values.productDigital?.type || {}).value;
-  const nftType = values.productDigital?.nftType || {};
-  const isNftMintedAlreadyValue = (
-    values.productDigital.isNftMintedAlready || {}
-  ).value;
-  const isNftMintedAlready = isNftMintedAlreadyValue === "true";
+  const { bundleItems } = values.productDigital;
   const bundleItemsError: JSX.Element | null =
     errors.productDigital?.bundleItems &&
     typeof errors.productDigital.bundleItems === "string" &&
@@ -144,56 +188,70 @@ export const ProductDigital: React.FC = () => {
         {errors.productDigital.bundleItems}
       </SimpleError>
     ) : null;
-
+  const hasBundleItems = useMemo(() => !!bundleItems?.length, [bundleItems]);
+  const bundleItemsJson = useMemo(
+    () => JSON.stringify(bundleItems),
+    [bundleItems]
+  ); // TODO: investigate why this is necessary
+  useEffect(() => {
+    if (!bundleItems?.length) {
+      setFieldValue("productDigital.bundleItems", [getNewEmptyRow()]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasBundleItems]);
+  const previousBundleItems = useRef<typeof bundleItems | null>(null);
+  useEffect(() => {
+    if (previousBundleItems.current?.length) {
+      const didAnyTypeOrMintedChange = bundleItems
+        ?.map((bundleItem, index) => {
+          const previousBundleItem = previousBundleItems.current?.[index];
+          const diffType =
+            previousBundleItem?.type?.value !== bundleItem?.type?.value;
+          const diffIsMinted =
+            previousBundleItem?.isNftMintedAlready?.value !==
+            bundleItem?.isNftMintedAlready?.value;
+          return diffType || diffIsMinted;
+        })
+        .some(isTruthy);
+      if (didAnyTypeOrMintedChange) {
+        const newBundleItems = bundleItems?.map((bundleItem, index) => {
+          const previousBundleItem = previousBundleItems.current?.[index];
+          const diffType =
+            previousBundleItem?.type?.value !== bundleItem?.type?.value;
+          const diffIsMinted =
+            previousBundleItem?.isNftMintedAlready?.value !==
+            bundleItem?.isNftMintedAlready?.value;
+          const currentType = bundleItem?.type?.value;
+          const currentIsMinted = bundleItem?.isNftMintedAlready?.value;
+          if (diffType) {
+            if (currentType === digitalTypeMapping["digital-nft"]) {
+              return currentIsMinted
+                ? getNewExistingNftBundleItem(null)
+                : getNewNewNftBundleItem(null);
+            } else if (currentType === digitalTypeMapping["digital-file"]) {
+              return getNewDigitalFileBundleItem();
+            } else if (currentType === digitalTypeMapping["experiential"]) {
+              return getNewExperientialBundleItem();
+            }
+          } else if (diffIsMinted) {
+            if (currentIsMinted === "true") {
+              return getNewExistingNftBundleItem(null);
+            } else if (currentIsMinted === "false") {
+              return getNewNewNftBundleItem(null);
+            }
+          }
+          return bundleItem;
+        });
+        setFieldValue("productDigital.bundleItems", newBundleItems);
+      }
+    }
+    previousBundleItems.current = bundleItems;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bundleItemsJson]);
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Digital & Experiential Items</SectionTitle>
       <div>
-        <FormField
-          style={{ margin: "0 0 1rem 0" }}
-          title="Choose the digital or experiential items in your bundle"
-          required
-          subTitle="Items can be an NFT, a digital file, or an experiential offering."
-        >
-          <Select
-            placeholder="Choose one..."
-            name={`${prefix}type`}
-            options={DIGITAL_TYPE}
-            isClearable
-            errorMessage="Please select the type that best matches your product."
-          />
-        </FormField>
-        {type === digitalTypeMapping["digital-nft"] && (
-          <>
-            <FormField
-              style={{ margin: "0 0 1rem 0" }}
-              title="NFT Type"
-              required
-              subTitle="Provide buyers more information about your NFT's traits"
-            >
-              <Select
-                placeholder="Choose one..."
-                name={`${prefix}nftType`}
-                options={DIGITAL_NFT_TYPE}
-                isClearable
-                errorMessage="Please select the NFT type that best matches your product."
-              />
-            </FormField>
-            <FormField
-              style={{ margin: "0 0 1rem 0" }}
-              title="Is the NFT minted already?"
-              required
-            >
-              <Select
-                placeholder="Choose one..."
-                name={`${prefix}isNftMintedAlready`}
-                options={isNftMintedAlreadyOptions}
-                isClearable
-                errorMessage="Please select an option."
-              />
-            </FormField>
-          </>
-        )}
         <FieldArray
           name={`${prefix}bundleItems`}
           render={(arrayHelpers) => {
@@ -208,20 +266,54 @@ export const ProductDigital: React.FC = () => {
                         return null;
                       }
                       const CommonItemHeader = (
-                        <Grid>
-                          <Typography tag="h3" marginBottom="0">
-                            Item {index + 1}
-                          </Typography>
-                          <BosonButton
-                            variant="secondaryInverted"
-                            size="small"
-                            onClick={() => {
-                              arrayHelpers.remove(index);
-                            }}
+                        <>
+                          <Grid marginBottom="0">
+                            <Typography tag="h3">
+                              Digital Item {index + 1}
+                            </Typography>
+                            <BosonButton
+                              variant="secondaryInverted"
+                              size="small"
+                              onClick={() => {
+                                arrayHelpers.remove(index);
+                              }}
+                            >
+                              Remove
+                            </BosonButton>
+                          </Grid>
+                          <FormField
+                            style={{ margin: "0 0 1rem 0" }}
+                            title="Choose the digital or experiential items in your bundle"
+                            required
+                            subTitle="Items can be an NFT, a digital file, or an experiential offering."
                           >
-                            Remove
-                          </BosonButton>
-                        </Grid>
+                            <Select
+                              placeholder="Choose one..."
+                              name={`${arrayPrefix}type`}
+                              options={DIGITAL_TYPE}
+                              isClearable
+                              errorMessage="Please select the type that best matches your product."
+                            />
+                          </FormField>
+                          {bundleItem.type?.value ===
+                            digitalTypeMapping["digital-nft"] && (
+                            <>
+                              <FormField
+                                style={{ margin: "0 0 1rem 0" }}
+                                title="Is the NFT minted already?"
+                                required
+                              >
+                                <Select
+                                  placeholder="Choose one..."
+                                  name={`${arrayPrefix}isNftMintedAlready`}
+                                  options={isNftMintedAlreadyOptions}
+                                  isClearable
+                                  errorMessage="Please select an option."
+                                />
+                              </FormField>
+                            </>
+                          )}
+                        </>
                       );
                       if (
                         getIsBundleItem<ExistingNFT>(
@@ -232,11 +324,13 @@ export const ProductDigital: React.FC = () => {
                         return (
                           <Fragment key={`minted_nft_container_${index}`}>
                             {CommonItemHeader}
-                            <MintedNftBundleItems
-                              prefix={arrayPrefix}
-                              bundleItemsError={bundleItemsError}
-                              bundleItem={bundleItem as ExistingNFT}
-                            />
+                            {bundleItem.type && (
+                              <MintedNftBundleItems
+                                prefix={arrayPrefix}
+                                bundleItemsError={bundleItemsError}
+                                bundleItem={bundleItem}
+                              />
+                            )}
                           </Fragment>
                         );
                       } else if (
@@ -245,10 +339,12 @@ export const ProductDigital: React.FC = () => {
                         return (
                           <Fragment key={`new_nft_container_${index}`}>
                             {CommonItemHeader}
-                            <NewNftBundleItems
-                              prefix={arrayPrefix}
-                              bundleItemsError={bundleItemsError}
-                            />
+                            {bundleItem.type && (
+                              <NewNftBundleItems
+                                prefix={arrayPrefix}
+                                bundleItemsError={bundleItemsError}
+                              />
+                            )}
                           </Fragment>
                         );
                       } else if (
@@ -260,10 +356,12 @@ export const ProductDigital: React.FC = () => {
                         return (
                           <Fragment key={`digital_file_container_${index}`}>
                             {CommonItemHeader}
-                            <DigitalFileBundleItems
-                              prefix={arrayPrefix}
-                              bundleItemsError={bundleItemsError}
-                            />
+                            {bundleItem.type && (
+                              <DigitalFileBundleItems
+                                prefix={arrayPrefix}
+                                bundleItemsError={bundleItemsError}
+                              />
+                            )}
                           </Fragment>
                         );
                       } else if (
@@ -275,10 +373,12 @@ export const ProductDigital: React.FC = () => {
                         return (
                           <Fragment key={`experiential_container_${index}`}>
                             {CommonItemHeader}
-                            <ExperientialBundleItems
-                              prefix={arrayPrefix}
-                              bundleItemsError={bundleItemsError}
-                            />
+                            {bundleItem.type && (
+                              <ExperientialBundleItems
+                                prefix={arrayPrefix}
+                                bundleItemsError={bundleItemsError}
+                              />
+                            )}
                           </Fragment>
                         );
                       }
@@ -290,44 +390,19 @@ export const ProductDigital: React.FC = () => {
             );
           }}
         />
-        {((type === digitalTypeMapping["digital-nft"] &&
-          isNftMintedAlreadyValue !== undefined) ||
-          type !== digitalTypeMapping["digital-nft"]) &&
-          type && (
-            <Button
-              onClick={() => {
-                if (type === digitalTypeMapping["digital-nft"]) {
-                  if (isNftMintedAlready) {
-                    setFieldValue("productDigital.bundleItems", [
-                      ...bundleItems,
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      getNewExistingNftBundleItem(nftType as any)
-                    ]);
-                  } else {
-                    setFieldValue("productDigital.bundleItems", [
-                      ...bundleItems,
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      getNewNewNftBundleItem(nftType as any)
-                    ]);
-                  }
-                } else if (type === digitalTypeMapping["digital-file"]) {
-                  setFieldValue("productDigital.bundleItems", [
-                    ...bundleItems,
-                    getNewDigitalFileBundleItem()
-                  ]);
-                } else if (type === digitalTypeMapping["experiential"]) {
-                  setFieldValue("productDigital.bundleItems", [
-                    ...bundleItems,
-                    getNewExperientialBundleItem()
-                  ]);
-                }
-              }}
-              themeVal="blankSecondary"
-              style={{ borderBottom: `1px solid ${colors.border}` }}
-            >
-              Add new <Plus size={18} />
-            </Button>
-          )}
+
+        <Button
+          onClick={() => {
+            setFieldValue("productDigital.bundleItems", [
+              ...bundleItems,
+              getNewEmptyRow()
+            ]);
+          }}
+          themeVal="blankSecondary"
+          style={{ borderBottom: `1px solid ${colors.border}` }}
+        >
+          Add new <Plus size={18} />
+        </Button>
         <ProductButtonGroup>
           <BosonButton
             variant="primaryFill"

@@ -45,6 +45,8 @@ import {
   DIGITAL_TYPE,
   digitalFileInfo,
   experientialInfo,
+  getDigitalTypeOption,
+  getIsMintedAlreadyOption,
   getOptionsCurrencies,
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
@@ -476,6 +478,10 @@ function loadExistingProduct<T extends CreateProductForm>(
                           mintedNftInfo.mintedNftBuyerTransferInfo.normalizedKey
                       )?.value ?? "";
                     const existingNft: ExistingNFT = {
+                      type:
+                        getDigitalTypeOption("digital-nft") || DIGITAL_TYPE[0],
+                      isNftMintedAlready:
+                        getIsMintedAlreadyOption("true") || null,
                       mintedNftType:
                         DIGITAL_NFT_TYPE.find(
                           (tokenType) => tokenType.value === nftType
@@ -526,6 +532,10 @@ function loadExistingProduct<T extends CreateProductForm>(
                         (term) => term.key === newNftInfo.newNftType.key
                       )?.value ?? "";
                     const newNft: NewNFT = {
+                      type:
+                        getDigitalTypeOption("digital-nft") || DIGITAL_TYPE[0],
+                      isNftMintedAlready:
+                        getIsMintedAlreadyOption("false") || null,
                       newNftType:
                         DIGITAL_NFT_TYPE.find(
                           (tokenType) => tokenType.value === nftType
@@ -564,6 +574,9 @@ function loadExistingProduct<T extends CreateProductForm>(
                           .normalizedKey
                     )?.value ?? "";
                   const digitalFile: DigitalFile = {
+                    type:
+                      getDigitalTypeOption("digital-file") || DIGITAL_TYPE[0],
+                    isNftMintedAlready: null,
                     digitalFileName: nftItem.name,
                     digitalFileDescription: nftItem.description ?? "",
                     digitalFileFormat:
@@ -604,6 +617,9 @@ function loadExistingProduct<T extends CreateProductForm>(
                           .normalizedKey
                     )?.value ?? "";
                   const experiential: Experiential = {
+                    type:
+                      getDigitalTypeOption("experiential") || DIGITAL_TYPE[0],
+                    isNftMintedAlready: null,
                     experientialName: nftItem.name,
                     experientialDescription: nftItem.description ?? "",
                     experientialTransferCriteria:

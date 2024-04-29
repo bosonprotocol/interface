@@ -1,5 +1,8 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
-import { BuyerTransferInfo } from "@bosonprotocol/react-kit";
+import {
+  BuyerTransferInfo,
+  digitalTypeMapping
+} from "@bosonprotocol/react-kit";
 export { BuyerTransferInfo } from "@bosonprotocol/react-kit";
 import {
   digitalNftTypeMapping,
@@ -96,6 +99,10 @@ export const DIGITAL_TYPE = Object.entries(digitalTypeMappingDisplay).map(
   })
 );
 
+export const getDigitalTypeOption = (key: keyof typeof digitalTypeMapping) => {
+  return DIGITAL_TYPE.find((digitalType) => digitalType.value === key);
+};
+
 export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
   ([key, value]) => ({
     value: key,
@@ -104,9 +111,12 @@ export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
 );
 
 export const isNftMintedAlreadyOptions = [...yesOrNoOptions] as const;
+export const getIsMintedAlreadyOption = (key: "true" | "false") => {
+  return isNftMintedAlreadyOptions.find((option) => option.value === key);
+};
 export const buyerTranferInfoTitle = "Buyer information required for transfer";
 const getTransferCriteriaCopy = (item: "NFT" | "digital file" | "experience") =>
-  `Describe when the ${item} will be transferred to the buyer & what conditions need to be met`;
+  `Describe when the ${item} will be transferred to the buyer & the conditions that need to be met to receive it`;
 const getTransferTimeCopy = (item: "NFT" | "digital file" | "experience") =>
   `The time by when the buyer can expect to receive the ${item} once the transfer criteria has been met`;
 export const newNftInfo = {
