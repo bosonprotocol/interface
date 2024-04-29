@@ -57,9 +57,7 @@ export default function LicenseBundle() {
     [bundleResult]
   );
 
-  const defaultVariant: VariantV1 | undefined =
-    variantsWithV1?.find((variant) => !variant.offer.voided) ??
-    variantsWithV1?.[0];
+  const defaultVariant: VariantV1 | undefined = variantsWithV1?.[0];
   const offer = defaultVariant?.offer;
   const offerId = offer?.id;
   if (!offerId) {
