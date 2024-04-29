@@ -25,6 +25,7 @@ export const BosonRoutes = addViewModePrefixToPaths(
     SellerPage: `/seller/:${UrlParameters.sellerId}`,
     LicenseLegacy: `/license/:${UrlParameters.uuid}`,
     License: `/license/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`,
+    LicenseBundle: `/license-bundle/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`,
     ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
     DRAdmin: "/dr-admin",
     DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,

@@ -26,6 +26,7 @@ const PrivateAccountPage = lazy(
 );
 const ProfilePagePage = lazy(() => import("../pages/profile/ProfilePage"));
 const LicensePage = lazy(() => import("../pages/license/License"));
+const LicenseBundlePage = lazy(() => import("../pages/license/LicenseBundle"));
 const ContractualAgreementPage = lazy(
   () => import("../pages/contractualAgreement/ContractualAgreement")
 );
@@ -240,6 +241,11 @@ export default [
     ...base,
     path: BosonRoutes.LicenseLegacy,
     component: LicensePage
+  },
+  {
+    ...base,
+    path: BosonRoutes.LicenseBundle,
+    component: LicenseBundlePage
   },
   {
     ...base,
