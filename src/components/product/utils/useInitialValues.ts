@@ -465,13 +465,21 @@ function loadExistingProduct<T extends CreateProductForm>(
                         (term) =>
                           term.key === mintedNftInfo.mintedNftTokenType.key
                       )?.value ?? "";
+                    const nftType =
+                      nftItem.terms?.find(
+                        (term) => term.key === mintedNftInfo.mintedNftType.key
+                      )?.value ?? "";
                     const buyerTransferInfo =
                       nftItem.terms?.find(
                         (term) =>
                           term.key ===
-                          mintedNftInfo.mintedNftBuyerTransferInfo.key
+                          mintedNftInfo.mintedNftBuyerTransferInfo.normalizedKey
                       )?.value ?? "";
                     const existingNft: ExistingNFT = {
+                      mintedNftType:
+                        DIGITAL_NFT_TYPE.find(
+                          (tokenType) => tokenType.value === nftType
+                        ) || DIGITAL_NFT_TYPE[0],
                       mintedNftTokenType:
                         NFT_TOKEN_TYPES.find(
                           (tokenType) => tokenType.value === tokenTypeValue
@@ -511,9 +519,17 @@ function loadExistingProduct<T extends CreateProductForm>(
                       nftItem.terms?.find(
                         (term) =>
                           term.key ===
-                          mintedNftInfo.mintedNftBuyerTransferInfo.key
+                          newNftInfo.newNftBuyerTransferInfo.normalizedKey
+                      )?.value ?? "";
+                    const nftType =
+                      nftItem.terms?.find(
+                        (term) => term.key === newNftInfo.newNftType.key
                       )?.value ?? "";
                     const newNft: NewNFT = {
+                      newNftType:
+                        DIGITAL_NFT_TYPE.find(
+                          (tokenType) => tokenType.value === nftType
+                        ) || DIGITAL_NFT_TYPE[0],
                       newNftName: nftItem.name,
                       newNftDescription: nftItem.description || "",
                       newNftTransferCriteria:
@@ -544,7 +560,8 @@ function loadExistingProduct<T extends CreateProductForm>(
                     nftItem.terms?.find(
                       (term) =>
                         term.key ===
-                        mintedNftInfo.mintedNftBuyerTransferInfo.key
+                        digitalFileInfo.digitalFileBuyerTransferInfo
+                          .normalizedKey
                     )?.value ?? "";
                   const digitalFile: DigitalFile = {
                     digitalFileName: nftItem.name,
@@ -583,7 +600,8 @@ function loadExistingProduct<T extends CreateProductForm>(
                     nftItem.terms?.find(
                       (term) =>
                         term.key ===
-                        mintedNftInfo.mintedNftBuyerTransferInfo.key
+                        experientialInfo.experientialBuyerTransferInfo
+                          .normalizedKey
                     )?.value ?? "";
                   const experiential: Experiential = {
                     experientialName: nftItem.name,
@@ -652,9 +670,10 @@ function loadExistingProduct<T extends CreateProductForm>(
               size: sizeVariation?.option
             }),
             price: utils.formatUnits(offer.price, offer.exchangeToken.decimals),
-            currency: OPTIONS_CURRENCIES.find(
-              (currency) => currency.value === offer.exchangeToken.symbol
-            ),
+            currency:
+              OPTIONS_CURRENCIES.find(
+                (currency) => currency.value === offer.exchangeToken.symbol
+              ) || OPTIONS_CURRENCIES[0],
             quantity: offer.quantityInitial,
             color: colorVariation?.option,
             size: sizeVariation?.option
@@ -717,23 +736,22 @@ function loadExistingProduct<T extends CreateProductForm>(
       ...cloneBaseValues.variantsCoreTermsOfSale,
       ...commonCoreTermsOfSale
     },
-    coreTermsOfSale: {
-      ...cloneBaseValues.coreTermsOfSale,
-      ...commonCoreTermsOfSale,
-      currency: {
-        value: OPTIONS_CURRENCIES.find(
+    coreTermsOfSale: (() => {
+      const currency =
+        OPTIONS_CURRENCIES.find(
           (currency) => currency.value === firstOffer.exchangeToken.symbol
-        )?.value,
-        label: OPTIONS_CURRENCIES.find(
-          (currency) => currency.value === firstOffer.exchangeToken.symbol
-        )?.label
-      },
-      price: utils.formatUnits(
-        firstOffer.price,
-        firstOffer.exchangeToken.decimals
-      ),
-      quantity: firstOffer.quantityInitial
-    },
+        ) || OPTIONS_CURRENCIES[0];
+      return {
+        ...cloneBaseValues.coreTermsOfSale,
+        ...commonCoreTermsOfSale,
+        currency,
+        price: utils.formatUnits(
+          firstOffer.price,
+          firstOffer.exchangeToken.decimals
+        ),
+        quantity: firstOffer.quantityInitial
+      };
+    })(),
     termsOfExchange: {
       ...cloneBaseValues.termsOfExchange,
       exchangePolicy: cloneBaseValues.termsOfExchange.exchangePolicy, // default exchange policy

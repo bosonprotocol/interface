@@ -1,4 +1,6 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
+import { BuyerTransferInfo } from "@bosonprotocol/react-kit";
+export { BuyerTransferInfo } from "@bosonprotocol/react-kit";
 import {
   digitalNftTypeMapping,
   digitalTypeMappingDisplay,
@@ -6,6 +8,7 @@ import {
 } from "@bosonprotocol/react-kit";
 import countries from "lib/constants/countries.json";
 import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
+import { BUYER_TRANSFER_INFO_KEY } from "pages/create-product/utils/const";
 
 import { CONFIG } from "../../../lib/config";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
@@ -134,7 +137,8 @@ export const newNftInfo = {
   },
   newNftBuyerTransferInfo: {
     key: "newNftBuyerTransferInfo",
-    displayKey: buyerTranferInfoTitle
+    displayKey: buyerTranferInfoTitle,
+    normalizedKey: BUYER_TRANSFER_INFO_KEY
   }
 } as const;
 export const mintedNftInfo = {
@@ -177,7 +181,8 @@ export const mintedNftInfo = {
   },
   mintedNftBuyerTransferInfo: {
     key: "mintedNftBuyerTransferInfo",
-    displayKey: buyerTranferInfoTitle
+    displayKey: buyerTranferInfoTitle,
+    normalizedKey: BUYER_TRANSFER_INFO_KEY
   }
 } as const;
 export const digitalFileInfo = {
@@ -208,7 +213,8 @@ export const digitalFileInfo = {
   },
   digitalFileBuyerTransferInfo: {
     key: "digitalFileBuyerTransferInfo",
-    displayKey: buyerTranferInfoTitle
+    displayKey: buyerTranferInfoTitle,
+    normalizedKey: BUYER_TRANSFER_INFO_KEY
   }
 } as const;
 
@@ -236,7 +242,8 @@ export const experientialInfo = {
   },
   experientialBuyerTransferInfo: {
     key: "experientialBuyerTransferInfo",
-    displayKey: buyerTranferInfoTitle
+    displayKey: buyerTranferInfoTitle,
+    normalizedKey: BUYER_TRANSFER_INFO_KEY
   }
 } as const;
 
@@ -299,11 +306,6 @@ export const NFT_TOKEN_TYPES = [
     label: "ERC1155"
   }
 ] as const;
-
-export enum BuyerTransferInfo {
-  "email" = "email",
-  "walletAddress" = "walletAddress"
-}
 
 export const BUYER_TRANSFER_INFO_OPTIONS = [
   {

@@ -21,6 +21,8 @@ import {
 } from "components/product/utils";
 import { isTruthy } from "lib/types/helpers";
 
+import { mapKeys } from "./const";
+
 export function getItemNFTMetadata(
   bundleProps: Omit<nftItem.NftItem, "schemaUrl" | "type">
 ): nftItem.NftItem {
@@ -52,6 +54,7 @@ const experientialTermsKeys = [
   "experientialTransferTime",
   "experientialBuyerTransferInfo"
 ] as const;
+
 const getTermValue = (value: unknown): string => {
   if (!value) {
     return "";
@@ -117,7 +120,7 @@ export function getDigitalMetadatas({
           terms: newNftTermsKeys.map((termKey) => {
             const { key, displayKey } = newNftInfo[termKey];
             return {
-              key,
+              key: mapKeys[key as keyof typeof mapKeys] || key,
               displayKey,
               value: getTermValue(bundleItem[termKey])
             };
@@ -167,7 +170,7 @@ export function getDigitalMetadatas({
           terms: mintedNftTermsKeys.map((termKey) => {
             const { key, displayKey } = mintedNftInfo[termKey];
             return {
-              key,
+              key: mapKeys[key as keyof typeof mapKeys] || key,
               displayKey,
               value: getTermValue(bundleItem[termKey])
             };
@@ -203,7 +206,7 @@ export function getDigitalMetadatas({
           terms: digitalFileTermsKeys.map((termKey) => {
             const { key, displayKey } = digitalFileInfo[termKey];
             return {
-              key,
+              key: mapKeys[key as keyof typeof mapKeys] || key,
               displayKey,
               value: getTermValue(bundleItem[termKey])
             };
@@ -239,7 +242,7 @@ export function getDigitalMetadatas({
           terms: experientialTermsKeys.map((termKey) => {
             const { key, displayKey } = experientialInfo[termKey];
             return {
-              key,
+              key: mapKeys[key as keyof typeof mapKeys] || key,
               displayKey,
               value: getTermValue(bundleItem[termKey])
             };
