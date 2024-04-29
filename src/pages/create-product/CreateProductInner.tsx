@@ -528,12 +528,8 @@ function CreateProductInner({
       const offerLicenseUrl = currentAssistant
         ? `${window.origin}/#/license/${currentAssistant.id}/${offerUuid}`
         : `${window.origin}/#/license/${offerUuid}`;
-      const bundleExternalUrl = currentAssistant
-        ? `${redemptionPointUrl}/#/bundle-uuid/${currentAssistant.id}/${bundleUuid}`
-        : `${redemptionPointUrl}/#/bundle-uuid/${offerUuid}`;
-      const bundleLicenseUrl = currentAssistant
-        ? `${window.origin}/#/license-bundle/${currentAssistant.id}/${bundleUuid}`
-        : `${window.origin}/#/license-bundle/${bundleUuid}`;
+      const bundleExternalUrl = offerExternalUrl;
+      const bundleLicenseUrl = offerLicenseUrl;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
       const productAnimation = values.productAnimation?.[0];
