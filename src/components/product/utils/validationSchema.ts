@@ -7,6 +7,7 @@ import {
 import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
 import { checkValidUrl, notUrlErrorMessage } from "lib/validation/regex/url";
+import { ValidationError } from "yup";
 import { AnyObject } from "yup/lib/types";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
@@ -598,7 +599,7 @@ export const getProductDigitalValidationSchema = ({
       >()
         .default(undefined)
         .required(validationMessage.required)
-        .test("wrongBundleItems", async function (bundleItems) {
+        .test("wrongBundleItems", async function (bundleItems, context) {
           if (!bundleItems) {
             throw this.createError({
               path: this.path,
@@ -611,7 +612,8 @@ export const getProductDigitalValidationSchema = ({
               message: "There should be at least one item"
             });
           }
-          await Promise.all(
+
+          const results = await Promise.allSettled(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (bundleItems as any).map(async (bundleItem: unknown) => {
               if (
@@ -644,6 +646,27 @@ export const getProductDigitalValidationSchema = ({
               return false;
             })
           );
+          results.forEach((result, index) => {
+            if (
+              result.status === "rejected" &&
+              result.reason instanceof ValidationError
+            ) {
+              const thrownError = result.reason;
+              const e = context.createError({
+                path: `${this.path}[${index}].${thrownError.path}`,
+                message: thrownError.message
+              });
+              throw e;
+            } else if (result.status === "rejected") {
+              const thrownError = result.reason;
+              const e = context.createError({
+                path: `${this.path}[${index}]`,
+                message: thrownError.message
+              });
+              throw e;
+            }
+          });
+
           return true;
         })
     })
