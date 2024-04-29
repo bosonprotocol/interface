@@ -57,10 +57,12 @@ export const productInformationHelp = [
           inspiration behind it.
         </Typography>
         <Typography tag="p" style={{ margin: "0" }}>
-          It is also beneficial to include other operational details like
-          whether duties and taxes are included in price. We also recommend
+          It is also beneficial to include other operational details, such as
+          whether duties and taxes are included in the price. We also recommend
           including any relevant details pertaining to consumer protection laws
-          in your jurisdiction.
+          in your jurisdiction, for example, the compatibility of digital
+          content with hardware and other software, and information about
+          copyright protections.
         </Typography>
       </>
     )
