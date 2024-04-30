@@ -1,15 +1,12 @@
-import { Grid } from "@bosonprotocol/react-kit";
+import { Grid, subgraph } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { Spinner } from "components/loading/Spinner";
 import Loading from "components/ui/Loading";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
-import { useAccount } from "lib/utils/hooks/connection/connection";
-import { useCurrentSellers } from "lib/utils/hooks/useCurrentSellers";
 import map from "lodash/map";
 import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTermsAndSellerAgreement";
-import { useEffect } from "react";
 import styled from "styled-components";
 
 import Image from "../../components/ui/Image";
@@ -37,6 +34,7 @@ const ObjectContainImage = styled(Image)`
 `;
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
+  seller?: subgraph.SellerFieldsFragment;
   isMultiVariant: boolean;
   isOneSetOfImages: boolean;
   decimals?: number;
@@ -57,28 +55,12 @@ const PreviewWrapperContent = styled.div`
 `;
 export default function Preview({
   togglePreview,
+  seller,
   isMultiVariant,
   isOneSetOfImages,
   decimals,
   chatInitializationStatus
 }: Props) {
-  const { account: address } = useAccount();
-  const { sellers, refetch, ...rest } = useCurrentSellers();
-  const seller = sellers.find((seller) => {
-    return seller?.assistant.toLowerCase() === address?.toLowerCase();
-  });
-  useEffect(() => {
-    console.log("useEffectPreview refetch");
-    refetch()
-      .then((value) => {
-        console.log("result refetch preview", value);
-      })
-      .catch((error) => {
-        console.log("error refetch preview", error);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  console.log("Preview", { sellers, refetch, ...rest });
   const { bosonXmtp } = useChatContext();
 
   const { values } = useForm();
@@ -108,7 +90,18 @@ export default function Preview({
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const [offer] = previewOffers;
   if (!offer.seller) {
-    return <Loading />;
+    return (
+      <>
+        <Loading />
+        <BosonButton
+          variant="accentInverted"
+          type="button"
+          onClick={handleClosePreview}
+        >
+          Back to overview
+        </BosonButton>
+      </>
+    );
   }
   /*
   // TODO: hidden for now

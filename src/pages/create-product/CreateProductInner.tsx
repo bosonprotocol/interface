@@ -1125,6 +1125,7 @@ function CreateProductInner({
                       isOneSetOfImages={isOneSetOfImages}
                       chatInitializationStatus={chatInitializationStatus}
                       decimals={decimals}
+                      seller={currentAssistant}
                     />
                   </ErrorBoundary>
                 ) : (
