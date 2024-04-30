@@ -89,18 +89,18 @@ const CustomGridContainer = styled.div`
 `;
 
 interface INavigationLinks {
-  flexDirection?: "row" | "column";
-  gap?: string;
+  $flexDirection?: "row" | "column";
+  $gap?: string;
 }
 
 const NavigationLinks = styled.nav<INavigationLinks>`
   display: flex;
-  gap: ${({ gap }) => gap || "16px"};
+  gap: ${({ $gap }) => $gap || "16px"};
   flex-wrap: wrap;
   align-items: self-start;
   max-width: 100%;
   justify-content: center;
-  flex-direction: ${({ flexDirection }) => flexDirection || "row"};
+  flex-direction: ${({ $flexDirection }) => $flexDirection || "row"};
 
   a {
     cursor: pointer;
@@ -163,7 +163,7 @@ function Socials() {
         </Typography>
       )}
       <NavigationLinks
-        gap={isLteS && !isXXS ? "16px" : "32px"}
+        $gap={isLteS && !isXXS ? "16px" : "32px"}
         style={{ justifyContent: "flex-start" }}
       >
         {renderSocialLinks}
@@ -228,8 +228,8 @@ function ContactInfoLinks() {
         GET IN TOUCH
       </Typography>
       <NavigationLinks
-        flexDirection="column"
-        gap={"0"}
+        $flexDirection="column"
+        $gap={"0"}
         style={{ alignItems: "center", justifyContent: "flex-end" }}
       >
         {renderContactInfoLinks}
@@ -266,8 +266,8 @@ function CustomStoreAdditionalLinks() {
         CLIENT SERVICE
       </Typography>
       <NavigationLinks
-        flexDirection="column"
-        gap={"0"}
+        $flexDirection="column"
+        $gap={"0"}
         style={{ alignItems: "flex-start", justifyContent: "flex-end" }}
       >
         {renderAdditionalLinks}
@@ -476,8 +476,8 @@ function FullFooter() {
                   <div>
                     <Typography tag="h5">Shop</Typography>
                     <NavigationLinks
-                      flexDirection="column"
-                      gap={"0"}
+                      $flexDirection="column"
+                      $gap={"0"}
                       style={{ width: "fit-content" }}
                     >
                       {shopLinks}
@@ -488,8 +488,8 @@ function FullFooter() {
                   <div>
                     <Typography tag="h5">Sell</Typography>
                     <NavigationLinks
-                      flexDirection="column"
-                      gap={"0"}
+                      $flexDirection="column"
+                      $gap={"0"}
                       style={{ width: "fit-content" }}
                     >
                       {sellLinks}
@@ -500,8 +500,8 @@ function FullFooter() {
                   <div>
                     <Typography tag="h5">Help</Typography>
                     <NavigationLinks
-                      flexDirection="column"
-                      gap={"0"}
+                      $flexDirection="column"
+                      $gap={"0"}
                       style={{ width: "fit-content" }}
                     >
                       {helpLinks}

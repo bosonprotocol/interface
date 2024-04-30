@@ -23,7 +23,7 @@ const Nav = styled(Grid)`
   gap: 20px;
 `;
 
-const NavItem = styled(Typography)<{ active?: boolean }>`
+const NavItem = styled(Typography)`
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -65,11 +65,7 @@ export default function MiniPortfolio({ account }: { account: string }) {
             setCurrentPage(index);
           };
           return (
-            <NavItem
-              onClick={handleNavItemClick}
-              active={currentPage === index}
-              key={key}
-            >
+            <NavItem onClick={handleNavItemClick} key={key}>
               <span>{title}</span>
             </NavItem>
           );

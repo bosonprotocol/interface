@@ -10,7 +10,7 @@ import BosonButton from "../ui/BosonButton";
 import { Grid } from "../ui/Grid";
 
 const InputWrapper = styled(Grid)<{
-  isMobile: boolean;
+  $isMobile: boolean;
   $navigationBarPosition?: string;
 }>`
   flex: 1;
@@ -22,8 +22,8 @@ const InputWrapper = styled(Grid)<{
 
   margin: 0rem;
 
-  ${({ isMobile, $navigationBarPosition }) =>
-    isMobile
+  ${({ $isMobile, $navigationBarPosition }) =>
+    $isMobile
       ? ""
       : ["left", "right"].includes($navigationBarPosition ?? "")
         ? css`
@@ -82,7 +82,7 @@ export default function Search({ isMobile, navigationBarPosition }: Props) {
 
   return (
     <InputWrapper
-      isMobile={isMobile}
+      $isMobile={isMobile}
       $navigationBarPosition={navigationBarPosition}
     >
       {!isMobile && <MagnifyingGlass size={24} style={{ minWidth: "24px" }} />}

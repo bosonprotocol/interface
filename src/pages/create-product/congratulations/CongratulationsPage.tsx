@@ -27,7 +27,7 @@ export const CongratulationsPage: React.FC<CongratulationsPageProps> = (
   // }, []);
   return (
     <Background>
-      <LayoutRoot fullWidth>
+      <LayoutRoot $fullWidth>
         <Congratulations {...props} />
       </LayoutRoot>
     </Background>

@@ -21,10 +21,10 @@ const layoutPadding = css`
   }
 `;
 
-export const LayoutRoot = styled.div<{ fullWidth?: boolean }>`
+export const LayoutRoot = styled.div<{ $fullWidth?: boolean }>`
   position: relative;
-  ${({ fullWidth }) => {
-    if (fullWidth) {
+  ${({ $fullWidth }) => {
+    if ($fullWidth) {
       return css``;
     }
     return css`
@@ -55,7 +55,7 @@ export default function Layout({
   const [fullWidth, setFullWidth] = useState<boolean>(!!initialFullWidth);
   return (
     <LayoutContext.Provider value={{ fullWidth: fullWidth, setFullWidth }}>
-      <LayoutRoot {...props} fullWidth={fullWidth} data-layout>
+      <LayoutRoot {...props} $fullWidth={fullWidth} data-layout>
         {children}
       </LayoutRoot>
     </LayoutContext.Provider>

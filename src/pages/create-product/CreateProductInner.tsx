@@ -1070,7 +1070,7 @@ function CreateProductInner({
         />
       </MultiStepsContainer>
 
-      <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
+      <ProductLayoutContainer $isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
           innerRef={formikRef}
           initialValues={initial}
