@@ -48,6 +48,13 @@ const StyledTabs = styled(Tabs)`
   [data-tab-title] {
     padding-right: 2rem;
     font-size: 0.8063rem;
+    &.digital[data-active="false"] {
+      width: 16ch;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: content-box;
+    }
   }
 `;
 
@@ -136,7 +143,8 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
                 const name = getBundleItemName(bi);
                 return {
                   id: `${getBundleItemId(bi)}-${index}`,
-                  title: name,
+                  title: `Digital Item - ${name}`,
+                  className: "digital",
                   content: (
                     <DigitalUploadImages
                       className="digital"

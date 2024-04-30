@@ -28,6 +28,7 @@ type TabsData = {
   id: string;
   title: string;
   content: JSX.Element;
+  className?: string;
 };
 const tabIdentifier = "id" as const;
 
@@ -63,8 +64,10 @@ export default function Tabs({
             <TabTitle
               key={tab.id}
               $isActive={isActive}
+              data-active={isActive}
               data-tab-title
               data-testid={`tab-${tab.title}`}
+              className={tab.className}
               onClick={handleActive(index, tab)}
             >
               {tab.title}

@@ -152,7 +152,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
               style={{ minWidth: "225px", width: "auto", margin: 0 }}
             >
               <Input
-                placeholder="1"
+                placeholder=""
                 name={`${prefix}${mintedNftInfo["mintedNftTokenIdRangeMin"].key}`}
                 type="number"
               />
@@ -163,7 +163,7 @@ export const MintedNftBundleItems: React.FC<MintedNftBundleItemsProps> = ({
               style={{ minWidth: "225px", width: "auto", margin: 0 }}
             >
               <Input
-                placeholder="999999"
+                placeholder=""
                 name={`${prefix}${mintedNftInfo["mintedNftTokenIdRangeMax"].key}`}
                 type="number"
               />
