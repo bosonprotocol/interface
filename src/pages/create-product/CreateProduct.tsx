@@ -23,8 +23,6 @@ import { CreateProductForm } from "../../components/product/utils/types";
 import { useInitialValues } from "../../components/product/utils/useInitialValues";
 import { SellerLandingPageParameters } from "../../lib/routing/parameters";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
-import NotFound from "../not-found/NotFound";
 import { CongratulationsType } from "./congratulations/Congratulations";
 import { CongratulationsPage } from "./congratulations/CongratulationsPage";
 import CreateProductInner from "./CreateProductInner";
@@ -75,8 +73,6 @@ function CreateProduct() {
   const { showModal, modalTypes, hideModal } = useModal();
   const { sellers } = useCurrentSellers();
   const seller = sellers?.[0];
-  const checkIfSellerIsInCurationList = useSellerCurationListFn();
-  const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
 
   const chooseNew = () => {
     store.remove(store.key);
@@ -146,10 +142,6 @@ function CreateProduct() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createdOffersIds, removeLandingQueryParams, nextStepResult]);
-
-  if (!!seller && !isSellerCurated) {
-    return <NotFound />;
-  }
 
   return !nextStepResult && createdOffersIds.length ? (
     <CongratulationsPage

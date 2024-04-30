@@ -1121,7 +1121,6 @@ function CreateProductInner({
                   >
                     <Preview
                       togglePreview={setIsPreviewVisible}
-                      seller={currentAssistant}
                       isMultiVariant={isMultiVariant}
                       isOneSetOfImages={isOneSetOfImages}
                       chatInitializationStatus={chatInitializationStatus}
