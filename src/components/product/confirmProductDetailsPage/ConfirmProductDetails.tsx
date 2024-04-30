@@ -17,7 +17,6 @@ import dayjs from "dayjs";
 import { CONFIG } from "lib/config";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
 import { useAccount } from "lib/utils/hooks/connection/connection";
-import { useWaitForCreatedSeller } from "lib/utils/hooks/seller/useWaitForCreatedSeller";
 import { useForm } from "lib/utils/hooks/useForm";
 import map from "lodash/map";
 import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
@@ -94,7 +93,6 @@ export default function ConfirmProductDetails({
   const { bosonXmtp } = useChatContext();
   const { values } = useForm();
   const { account: address } = useAccount();
-  useWaitForCreatedSeller();
   const showSuccessInitialization =
     [
       ChatInitializationStatus.INITIALIZED,
