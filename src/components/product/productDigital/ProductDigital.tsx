@@ -404,11 +404,7 @@ export const ProductDigital: React.FC = () => {
           Add new <Plus size={18} />
         </Button>
         <ProductButtonGroup>
-          <BosonButton
-            variant="primaryFill"
-            type="submit"
-            disabled={nextIsDisabled}
-          >
+          <BosonButton variant="primaryFill" type="submit">
             Next
           </BosonButton>
         </ProductButtonGroup>
