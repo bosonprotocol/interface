@@ -82,7 +82,7 @@ async function createSellerFromValues(
         height: cover?.height ?? undefined,
         type: cover?.type,
         width: cover?.width ?? undefined,
-        fit: cover?.fit,
+        fit: cover?.fit ?? undefined,
         position: cover?.position
       }
     ]
