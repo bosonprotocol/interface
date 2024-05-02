@@ -45,6 +45,8 @@ function Upload({
   width,
   height,
   imgPreviewStyle,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  removeFile,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
   const { updateProps, store } = useModal();

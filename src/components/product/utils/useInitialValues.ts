@@ -50,7 +50,6 @@ import {
   getOptionsCurrencies,
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
-  isNftMintedAlreadyOptions,
   mintedNftInfo,
   newNftInfo,
   NFT_TOKEN_TYPES,
@@ -211,7 +210,8 @@ export function useInitialValues() {
   }
 
   return {
-    shouldDisplayModal: cloneInitialValues !== null && !fromProductUuid,
+    shouldDisplayModal:
+      cloneInitialValues !== null && !fromProductUuid && !fromBundleUuid,
     base: cloneBaseValues,
     draft: cloneInitialValues,
     fromProductUuid: valuesFromExistingProduct,
@@ -418,37 +418,8 @@ function loadExistingProduct<T extends CreateProductForm>(
     },
     productDigital: isBundle(firstOffer)
       ? (() => {
-          const type = firstOffer.metadata.attributes?.find(
-            (attribute) => attribute.traitType === "type"
-          );
-          const nftType = firstOffer.metadata.attributes?.find(
-            (attribute) => attribute.traitType === "nft-type"
-          );
-          const firstNftItem = firstOffer.metadata.items.find(
-            (item): item is NftItem => isNftItem(item)
-          );
-
-          const isNftMintedAlready: "true" | "false" = firstNftItem
-            ? type?.value === digitalTypeMapping["digital-nft"] &&
-              !!firstNftItem.contract
-              ? "true"
-              : "false"
-            : "false";
           return {
             ...cloneBaseValues.productDigital,
-            type: type
-              ? DIGITAL_TYPE.find(
-                  (digitalType) => digitalType.value === type.value
-                ) ?? DIGITAL_TYPE[0]
-              : DIGITAL_TYPE[0],
-            nftType: nftType
-              ? DIGITAL_NFT_TYPE.find(
-                  (digitalNftType) => digitalNftType.value === nftType.value
-                ) ?? DIGITAL_NFT_TYPE[0]
-              : DIGITAL_NFT_TYPE[0],
-            isNftMintedAlready: isNftMintedAlreadyOptions.find(
-              (option) => option.value === isNftMintedAlready
-            ),
             bundleItems: firstOffer.metadata.items
               .filter((item): item is NftItem => isNftItem(item))
               .map((nftItem) => {
@@ -494,9 +465,10 @@ function loadExistingProduct<T extends CreateProductForm>(
                       mintedNftExternalUrl: nftItem.externalUrl ?? "",
                       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                       // @ts-ignore
-                      mintedNftTransferTime: transferTime
-                        ? Number(transferTime)
-                        : null,
+                      mintedNftTransferTime:
+                        transferTime && !isNaN(Number(transferTime))
+                          ? Number(transferTime)
+                          : "",
                       mintedNftTokenIdRangeMax: Number(
                         nftItem.tokenIdRange?.max || "0"
                       ),
@@ -549,9 +521,10 @@ function loadExistingProduct<T extends CreateProductForm>(
                         )?.value ?? "",
                       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                       // @ts-ignore
-                      newNftTransferTime: transferTime
-                        ? Number(transferTime)
-                        : null,
+                      newNftTransferTime:
+                        transferTime && !isNaN(Number(transferTime))
+                          ? Number(transferTime)
+                          : "",
                       newNftTransferTimeUnit: OPTIONS_PERIOD[0],
                       newNftBuyerTransferInfo:
                         BUYER_TRANSFER_INFO_OPTIONS.find(
@@ -587,9 +560,10 @@ function loadExistingProduct<T extends CreateProductForm>(
                     digitalFileTransferTimeUnit: OPTIONS_PERIOD[0],
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    digitalFileTransferTime: transferTime
-                      ? Number(transferTime)
-                      : null,
+                    digitalFileTransferTime:
+                      transferTime && !isNaN(Number(transferTime))
+                        ? Number(transferTime)
+                        : "",
                     digitalFileTransferCriteria:
                       nftItem.terms?.find(
                         (term) =>
@@ -628,9 +602,10 @@ function loadExistingProduct<T extends CreateProductForm>(
                           term.key ===
                           experientialInfo.experientialTransferCriteria.key
                       )?.value ?? "",
-                    experientialTransferTime: transferTime
-                      ? Number(transferTime)
-                      : (undefined as unknown as number),
+                    experientialTransferTime:
+                      transferTime && !isNaN(Number(transferTime))
+                        ? Number(transferTime)
+                        : ("" as unknown as number),
                     experientialTransferTimeUnit: OPTIONS_PERIOD[0],
                     experientialBuyerTransferInfo:
                       BUYER_TRANSFER_INFO_OPTIONS.find(

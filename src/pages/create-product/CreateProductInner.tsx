@@ -62,7 +62,6 @@ import {
   TOKEN_TYPES,
   TypeKeys
 } from "../../components/product/utils";
-import type { ProductDigital as ProductDigitalType } from "../../components/product/utils/types";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import BosonButton from "../../components/ui/BosonButton";
@@ -137,9 +136,6 @@ function CreateProductInner({
     initial?.productType?.productVariant ||
       ProductTypeVariantsValues.oneItemType
   );
-  const [productDigital, setProductDigital] = useState<
-    ProductDigitalType["productDigital"]
-  >(initial?.productDigital);
   const [productType, setProductType] = useState<string>(
     initial?.productType?.productType || ProductTypeTypeValues.physical
   );
@@ -983,16 +979,12 @@ function CreateProductInner({
           enableReinitialize
         >
           {({ values }) => {
-            // console.log({ values, ...rest });
             // TODO: fix: these setState calls cause this warning: Warning: Cannot update a component (`CreateProductInner`) while rendering a different component (`Formik`). To locate the bad setState() call inside `Formik`, follow the stack trace as described in
             if (productType !== values?.productType?.productType) {
               setProductType(values?.productType?.productType);
             }
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
-            }
-            if (productDigital !== values?.productDigital) {
-              setProductDigital(values?.productDigital);
             }
             const formTokenGated =
               values.productType?.tokenGatedOffer === "true";
