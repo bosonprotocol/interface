@@ -118,7 +118,7 @@ export default function BundleDetail() {
     return (
       <EmptyErrorMessage
         title={
-          bundleResult
+          bundleResult?.length
             ? "This bundle does not have a physical item"
             : "This bundle does not exist"
         }
