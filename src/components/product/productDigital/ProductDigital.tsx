@@ -178,7 +178,7 @@ const getNewExperientialBundleItem = () => {
   return bundleItem;
 };
 export const ProductDigital: React.FC = () => {
-  const { nextIsDisabled, values, setFieldValue, errors } = useForm();
+  const { values, setFieldValue, errors } = useForm();
   const { bundleItems } = values.productDigital;
   const bundleItemsError: JSX.Element | null =
     errors.productDigital?.bundleItems &&
