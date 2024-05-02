@@ -20,7 +20,7 @@ export const getFirstNOffers = (numberOfOffers: number): Offer[] => {
             ...defaultMockOffers[0].seller,
             id
           }
-        };
+        } as Offer;
       })
   ]
     .slice(0, numberOfOffers)

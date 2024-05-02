@@ -83,7 +83,7 @@ async function createSellerFromValues(
         type: cover?.type,
         width: cover?.width ?? undefined,
         fit: cover?.fit ?? undefined,
-        position: cover?.position
+        position: cover?.position ?? undefined
       }
     ]
   });

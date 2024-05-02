@@ -51,7 +51,7 @@ export const regularProfileValidationSchema = Yup.object({
   createYourProfile: Yup.object({
     logo: validationOfRequiredIpfsImage(),
     coverPicture: validationOfRequiredIpfsImage<
-      FileProps & { fit?: string | null; position?: string }
+      FileProps & { fit?: string | null; position?: string | null }
     >(),
     ...getCommonFieldsValidation({ withMaxLengthValidation: false })
   })

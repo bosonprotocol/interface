@@ -91,7 +91,9 @@ export const Scrim = ({
   return <ScrimBackground data-testid={testId} onClick={onClick} open={open} />;
 };
 
-const AccountDrawerScrollWrapper = styled.div`
+const AccountDrawerScrollWrapper = styled.div<{
+  $isHorizontalScroll?: boolean; // used in ScrollBarStyles
+}>`
   overflow: hidden;
   &:hover {
     overflow-y: auto;

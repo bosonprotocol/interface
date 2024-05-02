@@ -69,7 +69,7 @@ const TagsInput = ({
     validateForm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field.value]);
-  const labelRef = useRef<HTMLElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
   const hitEnterWidth = useRef<HTMLDivElement>(null);
   return (
     <>

@@ -18,8 +18,8 @@ const SellerImagesSectionContainer = styled.div`
 type ProfilePreviewProps = {
   metadataCoverImage?:
     | (FileProps & {
-        fit?: string | undefined;
-        position?: string | undefined;
+        fit?: string | undefined | null;
+        position?: string | undefined | null;
       })
     | undefined;
   profileImage?: string;

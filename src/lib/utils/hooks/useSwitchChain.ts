@@ -21,7 +21,10 @@ function getRpcUrl(chainId: SupportedChainsType): string {
     case ChainId.MAINNET:
     case ChainId.GOERLI:
     case ChainId.SEPOLIA:
+    case 80002:
       return RPC_URLS[chainId][0];
+    case 31337:
+      throw new Error("chain 31337 is not supported");
     // Attempting to add a chain using an infura URL will not work, as the URL will be unreachable from the MetaMask background page.
     // MetaMask allows switching to any publicly reachable URL, but for novel chains, it will display a warning if it is not on the "Safe" list.
     // See the definition of FALLBACK_URLS for more details.

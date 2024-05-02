@@ -14,12 +14,12 @@ const WarningIconStyle = css<{ size?: string }>`
   height: ${({ size }) => size ?? "1em"};
 `;
 
-const WarningIcon = styled(WarningTriangle)`
+const WarningIcon = styled(WarningTriangle)<{ size?: string }>`
   ${WarningIconStyle};
   color: ${({ theme }) => theme.textTertiary};
 `;
 
-const BlockedIcon = styled(Prohibit)`
+const BlockedIcon = styled(Prohibit)<{ size?: string }>`
   ${WarningIconStyle}
   color: ${colors.lightGrey};
 `;

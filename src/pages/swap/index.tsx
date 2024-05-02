@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import {
   ChainId,
   Currency,
@@ -63,6 +64,7 @@ import {
   useReducer,
   useState
 } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "state/hooks";
 import { InterfaceTrade, TradeState } from "state/routing/types";
@@ -180,25 +182,39 @@ export default function SwapPage({ className }: { className?: string }) {
             <ArrowLeft size={14} /> Back to product page
           </LinkWithQuery>
         )}
-        <Swap
-          className={className}
-          chainId={
-            supportedChainId ??
-            (config.envConfig.chainId as ChainId) ??
-            ChainId.MAINNET
-          }
-          prefilledState={{
-            [Field.INPUT]: {
-              currencyId: loadedUrlParams?.[Field.INPUT]?.currencyId
-            },
-            [Field.OUTPUT]: {
-              currencyId: loadedUrlParams?.[Field.OUTPUT]?.currencyId
-            },
-            typedValue: loadedUrlParams.typedValue
+        <ErrorBoundary
+          FallbackComponent={() => (
+            <Grid flexDirection="column" gap="1rem">
+              <Typography fontWeight="600">
+                Sorry, the swap page is unavailable right now, please try again
+                later.
+              </Typography>
+            </Grid>
+          )}
+          onError={(error) => {
+            Sentry.captureException(error);
           }}
-          disableTokenInputs={supportedChainId === undefined}
-        />
-        <NetworkAlert />
+        >
+          <Swap
+            className={className}
+            chainId={
+              (supportedChainId as ChainId) ??
+              (config.envConfig.chainId as ChainId) ??
+              ChainId.MAINNET
+            }
+            prefilledState={{
+              [Field.INPUT]: {
+                currencyId: loadedUrlParams?.[Field.INPUT]?.currencyId
+              },
+              [Field.OUTPUT]: {
+                currencyId: loadedUrlParams?.[Field.OUTPUT]?.currencyId
+              },
+              typedValue: loadedUrlParams.typedValue
+            }}
+            disableTokenInputs={supportedChainId === undefined}
+          />
+          <NetworkAlert />
+        </ErrorBoundary>
       </PageWrapper>
     </Grid>
   );
@@ -282,7 +298,9 @@ export function Swap({
           if (!supported) return true;
           return !Object.keys(TOKEN_SHORTHANDS).some((shorthand) => {
             const shorthandTokenAddress =
-              TOKEN_SHORTHANDS[shorthand][supported];
+              TOKEN_SHORTHANDS[shorthand][
+                supported as keyof (typeof TOKEN_SHORTHANDS)[typeof shorthand]
+              ];
             return (
               shorthandTokenAddress && shorthandTokenAddress === token.address
             );

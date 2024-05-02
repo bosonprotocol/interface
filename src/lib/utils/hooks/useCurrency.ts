@@ -183,7 +183,9 @@ export function useCurrencyFromMap(
   const shorthandMatchAddress = useMemo(() => {
     const chain = asSupportedChain(chainId);
     return chain && currencyId
-      ? TOKEN_SHORTHANDS[currencyId.toUpperCase()]?.[chain]
+      ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        TOKEN_SHORTHANDS[currencyId.toUpperCase()]?.[chain]
       : undefined;
   }, [chainId, currencyId]);
 

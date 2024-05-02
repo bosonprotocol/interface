@@ -126,8 +126,8 @@ const StyledImage = styled(Image)`
 interface SellerImagesSectionProps {
   metadataCoverImage?:
     | (FileProps & {
-        fit?: string | undefined;
-        position?: string | undefined;
+        fit?: string | undefined | null;
+        position?: string | undefined | null;
       })
     | undefined;
   profileImage?: string;
