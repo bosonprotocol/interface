@@ -79,7 +79,7 @@ interface IImage {
   showPlaceholderText?: boolean;
   withLoading?: boolean;
   optimizationOpts?: Partial<ImageOptimizationOpts> & {
-    gateway: string;
+    gateway?: string;
   };
   onSetStatus?: (status: LoadingStatus) => void;
 }

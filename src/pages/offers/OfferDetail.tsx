@@ -17,7 +17,7 @@ import {
 } from "../../components/detail/Detail.style";
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
-import SellerID, { Seller } from "../../components/ui/SellerID";
+import SellerID from "../../components/ui/SellerID";
 import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -119,8 +119,8 @@ export default function OfferDetail() {
             )}
             <SellerAndOpenSeaGrid>
               <SellerID
-                offer={offer}
-                accountToShow={offer?.seller as Seller}
+                offerMetadata={offer.metadata}
+                accountToShow={offer?.seller}
                 justifyContent="flex-start"
                 withProfileImage
               />

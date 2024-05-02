@@ -70,7 +70,6 @@ export const productInformationInitialValues = {
 
 export const productDigitalInitialValues = {
   productDigital: {
-    type: undefined as unknown as ProductDigital["productDigital"]["type"],
     bundleItems: []
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<keyof ProductDigital["productDigital"], any>

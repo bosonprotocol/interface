@@ -190,7 +190,7 @@ export function CurrencySearch({
 
   return (
     <ContentWrapper>
-      <PaddedColumn gap="16px">
+      <PaddedColumn $gap="16px">
         <Grid>
           <Typography fontWeight={500} fontSize={16}>
             <>Select a token</>

@@ -141,7 +141,7 @@ interface Props {
   myBuyerId: string;
   mySellerId: string;
   exchanges: Exchange[];
-  sellerLensProfilePerSellerId: Map<string, Profile>;
+  sellerLensProfilePerSellerId: Map<string, Profile> | undefined;
   onChangeConversation: (exchange: Exchange) => void;
   chatListOpen: boolean;
   currentExchange?: Exchange;
