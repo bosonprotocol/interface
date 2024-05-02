@@ -102,7 +102,7 @@ const StyledImage = styled(Image)`
     ${breakpoint.l} {
       max-height: unset;
       max-width: unset;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 

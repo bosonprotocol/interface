@@ -123,81 +123,73 @@ const getBundleItemsMedia = ({
     "invalidBundleItemsMedia",
     "Please add an image for new NFTs",
     async function (bundleItemsMedia, context) {
-      const productDigital =
-        context.parent.productDigital ??
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        context.options?.from?.find((from) => from.value.productDigital)?.value
-          ?.productDigital;
+      if (isPhygital) {
+        const productDigital =
+          context.parent.productDigital ??
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          context.options?.from?.find((from) => from.value.productDigital)
+            ?.value?.productDigital;
 
-      let numMedia = 0;
-      const results = await Promise.allSettled(
-        bundleItemsMedia?.map(async (bundleItemMedia, index) => {
-          const bundleItem = productDigital.bundleItems[index];
-          if (!bundleItem) {
-            throw new Error(
-              `something went wrong as bundleItem could not be found from bundleItemMedia=${JSON.stringify(bundleItemMedia)}, all bundleItems=${JSON.stringify(productDigital.bundleItems)}, index=${index}`
-            );
-          }
-          if (
-            getIsBundleItem<ExistingNFT>(bundleItem, "mintedNftContractAddress")
-          ) {
-            return; // nothing to test, no images must be uploaded
-          }
-          if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
-            const isValid = await Yup.object({
-              image: validationOfRequiredIpfsImage(),
-              video: validationOfIpfsImage()
-            }).validate(bundleItemMedia);
-            numMedia++;
-            return isValid;
-          }
-          if (
-            getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
-            getIsBundleItem<Experiential>(bundleItem, "experientialName")
-          ) {
-            const isValid = await Yup.object({
-              image: validationOfIpfsImage(),
-              video: validationOfIpfsImage()
-            }).validate(bundleItemMedia);
-            numMedia++;
-            return isValid;
-          }
-        }) || []
-      );
-      results.forEach((result, index) => {
-        if (
-          result.status === "rejected" &&
-          result.reason instanceof ValidationError
-        ) {
-          const thrownError = result.reason;
-          const e = context.createError({
-            path: `${this.path}[${index}].${thrownError.path}`,
-            message: thrownError.message
-          });
-          throw e;
-        } else if (result.status === "rejected") {
-          const thrownError = result.reason;
-          const e = context.createError({
-            path: `${this.path}[${index}]`,
-            message: thrownError.message
-          });
-          throw e;
-        }
-      });
-      const isValid: boolean = isPhygital
-        ? numMedia ===
-          (productDigital.bundleItems.filter(
-            (bundleItem: NewNFT | DigitalFile | Experiential) => {
-              return (
-                getIsBundleItem<NewNFT>(bundleItem, "newNftName") ||
-                getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
-                getIsBundleItem<Experiential>(bundleItem, "experientialName")
+        const results = await Promise.allSettled(
+          bundleItemsMedia?.map(async (bundleItemMedia, index) => {
+            const bundleItem = productDigital.bundleItems[index];
+            if (!bundleItem) {
+              throw new Error(
+                `something went wrong as bundleItem could not be found from bundleItemMedia=${JSON.stringify(bundleItemMedia)}, all bundleItems=${JSON.stringify(productDigital.bundleItems)}, index=${index}`
               );
             }
-          ).length as number)
-        : true;
-      return isValid;
+            if (
+              getIsBundleItem<ExistingNFT>(
+                bundleItem,
+                "mintedNftContractAddress"
+              )
+            ) {
+              return; // nothing to test, no images must be uploaded
+            }
+            if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
+              const isValid = await Yup.object({
+                image: validationOfRequiredIpfsImage(),
+                video: validationOfIpfsImage()
+              }).validate(bundleItemMedia);
+              return isValid;
+            }
+            if (
+              getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
+              getIsBundleItem<Experiential>(bundleItem, "experientialName")
+            ) {
+              const isValid = await Yup.object({
+                image: validationOfIpfsImage(),
+                video: validationOfIpfsImage()
+              }).validate(bundleItemMedia);
+              return isValid;
+            }
+          }) || []
+        );
+
+        results.forEach((result, index) => {
+          if (
+            result.status === "rejected" &&
+            result.reason instanceof ValidationError
+          ) {
+            const thrownError = result.reason;
+            const e = context.createError({
+              path: `${this.path}[${index}].${thrownError.path}`,
+              message: thrownError.message
+            });
+            throw e;
+          } else if (result.status === "rejected") {
+            const thrownError = result.reason;
+            const e = context.createError({
+              path: `${this.path}[${index}]`,
+              message: thrownError.message
+            });
+            throw e;
+          }
+        });
+      }
+
+      return true;
     }
   ) as unknown as ArrayOfMedia
 });
