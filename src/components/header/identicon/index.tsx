@@ -4,9 +4,9 @@ import useENSAvatar from "lib/utils/hooks/useENSAvatar";
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
-const StyledIdenticon = styled.div<{ iconSize: number }>`
-  height: ${({ iconSize }) => `${iconSize}px`};
-  width: ${({ iconSize }) => `${iconSize}px`};
+const StyledIdenticon = styled.div<{ $iconSize: number }>`
+  height: ${({ $iconSize }) => `${$iconSize}px`};
+  width: ${({ $iconSize }) => `${$iconSize}px`};
   border-radius: 50%;
   background-color: ${colors.lightGrey};
   font-size: initial;
@@ -52,7 +52,7 @@ export default function Identicon({
   const handleError = useCallback(() => setFetchable(false), []);
 
   return (
-    <StyledIdenticon iconSize={iconSize}>
+    <StyledIdenticon $iconSize={iconSize}>
       {avatar && fetchable ? (
         <StyledAvatar
           alt="avatar"

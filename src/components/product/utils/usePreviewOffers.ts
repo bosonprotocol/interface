@@ -148,6 +148,11 @@ export const usePreviewOffers = ({
           escalationResponsePeriod: escalationResponsePeriod
         },
         metadata: {
+          type:
+            values.productType.productType === "phygital"
+              ? subgraph.MetadataType.BUNDLE
+              : subgraph.MetadataType.PRODUCT_V1,
+          description: values.productInformation.description,
           product: {
             description: values.productInformation.description,
             ...(overrides.visuals_images && {
@@ -194,6 +199,7 @@ export const usePreviewOffers = ({
       values.createYourProfile.name,
       values.productAnimation,
       values.productInformation.description,
+      values.productType.productType,
       values.productType?.tokenGatedOffer,
       values.shippingInfo.returnPeriod,
       values.termsOfExchange,

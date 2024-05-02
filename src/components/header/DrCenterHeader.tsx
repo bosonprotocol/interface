@@ -47,32 +47,32 @@ const Header = styled.header`
 `;
 
 const HeaderContainer = styled(Layout)<{
-  fluidHeader?: boolean;
+  $fluidHeader?: boolean;
 }>`
-  ${({ fluidHeader }) => {
+  ${({ $fluidHeader }) => {
     return css`
       display: flex;
       justify-content: space-between;
       align-items: center;
       height: ${HEADER_HEIGHT};
       ${breakpoint.xs} {
-        max-width: ${fluidHeader ? "none" : "93.75rem;"};
+        max-width: ${$fluidHeader ? "none" : "93.75rem;"};
       }
     `;
   }}
 `;
 
 const HeaderItems = styled.nav<{
-  fluidHeader?: boolean;
+  $fluidHeader?: boolean;
 }>`
   gap: 1rem;
-  ${({ fluidHeader }) => {
+  ${({ $fluidHeader }) => {
     return css`
       display: flex;
       align-items: center;
       justify-content: end;
       width: 100%;
-      margin-left: ${fluidHeader ? "2.3rem" : "0"};
+      margin-left: ${$fluidHeader ? "2.3rem" : "0"};
     `;
   }}
 `;
@@ -103,7 +103,7 @@ export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
     return (
       <>
         <Header ref={ref}>
-          <HeaderContainer fluidHeader={fluidHeader}>
+          <HeaderContainer $fluidHeader={fluidHeader}>
             <>
               <Grid flexDirection="row" alignItems="center" width="initial">
                 <LinkWithQuery
@@ -119,7 +119,7 @@ export const DrCenterHeader = forwardRef<HTMLElement, DrCenterHeaderProps>(
                   />
                 </LinkWithQuery>
               </Grid>
-              <HeaderItems fluidHeader={fluidHeader}>
+              <HeaderItems $fluidHeader={fluidHeader}>
                 {burgerMenuBreakpoint && (
                   <>
                     <ChainSelector />

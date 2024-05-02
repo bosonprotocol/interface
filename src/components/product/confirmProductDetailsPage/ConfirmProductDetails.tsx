@@ -93,7 +93,6 @@ export default function ConfirmProductDetails({
   const { bosonXmtp } = useChatContext();
   const { values } = useForm();
   const { account: address } = useAccount();
-
   const showSuccessInitialization =
     [
       ChatInitializationStatus.INITIALIZED,

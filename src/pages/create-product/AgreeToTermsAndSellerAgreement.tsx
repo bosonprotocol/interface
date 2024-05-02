@@ -1,6 +1,6 @@
 import { Checkbox } from "components/form";
 import { useModal } from "components/modal/useModal";
-import { usePreviewOffers } from "components/product/utils/usePreviewOffer";
+import { usePreviewOffers } from "components/product/utils/usePreviewOffers";
 import { Grid } from "components/ui/Grid";
 import { colors } from "lib/styles/colors";
 import { useForm } from "lib/utils/hooks/useForm";
