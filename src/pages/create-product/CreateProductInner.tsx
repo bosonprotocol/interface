@@ -42,11 +42,8 @@ import {
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { providers } from "ethers";
-import {
-  useAccount,
-  useChainId,
-  useSigner
-} from "lib/utils/hooks/connection/connection";
+import { useChainId, useSigner } from "lib/utils/hooks/connection/connection";
+import { useWaitForCreatedSeller } from "lib/utils/hooks/seller/useWaitForCreatedSeller";
 import { useForm } from "lib/utils/hooks/useForm";
 import { useEffect } from "react";
 
@@ -80,7 +77,6 @@ import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { saveItemInStorage } from "../../lib/utils/hooks/localstorage/useLocalStorage";
 import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
-import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
@@ -222,13 +218,9 @@ function CreateProductInner({
   };
 
   const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
-  const { account: address } = useAccount();
-
-  const { sellers, lens: lensProfiles } = useCurrentSellers();
+  const { seller: currentAssistant, lens: lensProfiles } =
+    useWaitForCreatedSeller();
   const { mutateAsync: createOffers } = useCreateOffers();
-  const currentAssistant = sellers.find((seller) => {
-    return seller?.assistant.toLowerCase() === address?.toLowerCase();
-  });
   const contactPreference = currentAssistant?.metadata?.contactPreference ?? "";
   // lens profile of the current user
   const assistantLens: Profile | null =
@@ -1037,11 +1029,11 @@ function CreateProductInner({
                   >
                     <Preview
                       togglePreview={setIsPreviewVisible}
-                      seller={currentAssistant}
                       isMultiVariant={isMultiVariant}
                       isOneSetOfImages={isOneSetOfImages}
                       chatInitializationStatus={chatInitializationStatus}
                       decimals={decimals}
+                      seller={currentAssistant}
                     />
                   </ErrorBoundary>
                 ) : (

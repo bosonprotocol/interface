@@ -146,10 +146,10 @@ const Header = styled.header<{
 `;
 
 const HeaderContainer = styled(Layout)<{
-  fluidHeader?: boolean;
+  $fluidHeader?: boolean;
   $navigationBarPosition: string;
 }>`
-  ${({ $navigationBarPosition, fluidHeader }) => {
+  ${({ $navigationBarPosition, $fluidHeader }) => {
     if (["left", "right"].includes($navigationBarPosition)) {
       return css`
         display: flex;
@@ -170,7 +170,7 @@ const HeaderContainer = styled(Layout)<{
       align-items: center;
       height: ${HEADER_HEIGHT};
       ${breakpoint.xs} {
-        max-width: ${fluidHeader ? "none" : "93.75rem;"};
+        max-width: ${$fluidHeader ? "none" : "93.75rem;"};
       }
     `;
   }}
@@ -340,7 +340,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
         >
           {!isCustomStoreFront && <AnnouncementBanner />}
           <HeaderContainer
-            fluidHeader={fluidHeader}
+            $fluidHeader={fluidHeader}
             $navigationBarPosition={navigationBarPosition}
           >
             {isSideBurgerVisible ? (

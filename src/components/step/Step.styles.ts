@@ -133,7 +133,7 @@ export const StepStyle = styled.div<{
     `}
 `;
 
-export const MultiStepStyle = styled.div<{ isLteS: boolean }>`
+export const MultiStepStyle = styled.div<{ $isLteS: boolean }>`
   display: flex;
   gap: 1rem;
   flex-direction: row;
@@ -142,7 +142,7 @@ export const MultiStepStyle = styled.div<{ isLteS: boolean }>`
   width: 100%;
   align-items: center;
   div div {
-    display: ${({ isLteS }) => isLteS && "none"};
+    display: ${({ $isLteS }) => $isLteS && "none"};
   }
 
   p {
@@ -155,13 +155,13 @@ export const MultiStepStyle = styled.div<{ isLteS: boolean }>`
   }
 `;
 
-export const MultiStepWrapper = styled.div<{ isLteS: boolean }>`
+export const MultiStepWrapper = styled.div<{ $isLteS: boolean }>`
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-  position: ${({ isLteS }) => isLteS && "absolute"};
-  left: ${({ isLteS }) => isLteS && "50%"};
-  transform: ${({ isLteS }) => isLteS && "translate(-50%, 0)"};
+  position: ${({ $isLteS }) => $isLteS && "absolute"};
+  left: ${({ $isLteS }) => $isLteS && "50%"};
+  transform: ${({ $isLteS }) => $isLteS && "translate(-50%, 0)"};
 `;
 
 export const StepWrapper = styled.div`

@@ -1,6 +1,7 @@
 import { Grid, subgraph } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { Spinner } from "components/loading/Spinner";
+import Loading from "components/ui/Loading";
 import { PhygitalLabel } from "components/ui/PhygitalLabel";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
 import map from "lodash/map";
@@ -27,7 +28,7 @@ import { Typography } from "../ui/Typography";
 import Video from "../ui/Video";
 import { ConfirmProductDetailsButtonGroup } from "./confirmProductDetailsPage/ConfirmProductDetails.styles";
 import { ProductTypeTypeValues } from "./utils";
-import { usePreviewOffers } from "./utils/usePreviewOffer";
+import { usePreviewOffers } from "./utils/usePreviewOffers";
 const ObjectContainImage = styled(Image)`
   > * {
     object-fit: contain;
@@ -90,6 +91,20 @@ export default function Preview({
   });
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const [offer] = previewOffers;
+  if (!offer.seller) {
+    return (
+      <>
+        <Loading />
+        <BosonButton
+          variant="accentInverted"
+          type="button"
+          onClick={handleClosePreview}
+        >
+          Back to overview
+        </BosonButton>
+      </>
+    );
+  }
   /*
   // TODO: hidden for now
   const redemptionPointUrl =

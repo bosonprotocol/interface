@@ -82,7 +82,7 @@ const SellerID: React.FC<
     withBosonStyles?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
     lensProfile?: Profile;
-  } & GridProps &
+  } & Omit<GridProps, "onClick"> &
     Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">
 > = ({
   children,
@@ -142,13 +142,13 @@ const SellerID: React.FC<
             if (isSeller) {
               navigate({
                 pathname: generatePath(BosonRoutes.SellerPage, {
-                  [UrlParameters.sellerId]: userId
+                  [UrlParameters.sellerId]: userId ?? null
                 })
               });
             } else {
               navigate({
                 pathname: generatePath(BosonRoutes.BuyerPage, {
-                  [UrlParameters.buyerId]: userId
+                  [UrlParameters.buyerId]: userId ?? null
                 })
               });
             }

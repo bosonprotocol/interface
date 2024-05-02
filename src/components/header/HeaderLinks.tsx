@@ -21,8 +21,8 @@ import Search from "./Search";
 export const HEADER_HEIGHT = "5.4rem";
 
 const NavigationLinks = styled.div<{
-  isMobile: boolean;
-  isOpen: boolean;
+  $isMobile: boolean;
+  $isOpen: boolean;
   $navigationBarPosition?: string;
   $hoverHeaderTextColor: string;
 }>`
@@ -40,8 +40,8 @@ const NavigationLinks = styled.div<{
       color: ${({ $hoverHeaderTextColor }) => $hoverHeaderTextColor};
     }
   }
-  ${({ isMobile, isOpen, $navigationBarPosition }) =>
-    isMobile
+  ${({ $isMobile, $isOpen, $navigationBarPosition }) =>
+    $isMobile
       ? css`
           position: absolute;
           top: calc(${HEADER_HEIGHT} + 1px);
@@ -49,7 +49,7 @@ const NavigationLinks = styled.div<{
           right: 0;
           bottom: 0;
           height: 100vh;
-          transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
+          transform: ${$isOpen ? "translateX(0%)" : "translateX(100%)"};
 
           a,
           [data-anchor] {
@@ -131,13 +131,13 @@ const NavigationLinks = styled.div<{
 `;
 
 const ItemsList = styled.div<{
-  isMobile: boolean;
+  $isMobile: boolean;
   $navigationBarPosition?: string;
 }>`
   display: flex;
   justify-content: end;
-  flex-direction: ${({ isMobile, $navigationBarPosition }) =>
-    isMobile || ["left", "right"].includes($navigationBarPosition ?? "")
+  flex-direction: ${({ $isMobile, $navigationBarPosition }) =>
+    $isMobile || ["left", "right"].includes($navigationBarPosition ?? "")
       ? "column"
       : "row"};
   align-items: ${({ $navigationBarPosition }) =>
@@ -145,8 +145,8 @@ const ItemsList = styled.div<{
   > * {
     padding: 2rem;
   }
-  ${({ isMobile }) =>
-    !isMobile &&
+  ${({ $isMobile }) =>
+    !$isMobile &&
     css`
       gap: 1rem;
     `}
@@ -191,8 +191,8 @@ export default function HeaderLinks({
 
   return (
     <NavigationLinks
-      isMobile={isMobile}
-      isOpen={isOpen}
+      $isMobile={isMobile}
+      $isOpen={isOpen}
       $navigationBarPosition={navigationBarPosition}
       $hoverHeaderTextColor={getColor1OverColor2WithContrast({
         color2: useCSSVariable("--headerBgColor") || colors.white,
@@ -206,7 +206,7 @@ export default function HeaderLinks({
         />
       )}
       <ItemsList
-        isMobile={isMobile}
+        $isMobile={isMobile}
         $navigationBarPosition={navigationBarPosition}
       >
         {!onlySeller && withExploreProducts && (

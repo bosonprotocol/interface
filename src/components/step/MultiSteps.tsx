@@ -53,7 +53,7 @@ export default function MultiSteps({
           />
         </Grid>
       )}
-      <MultiStepStyle {...props} data-steps-wrapper isLteS={isLteS}>
+      <MultiStepStyle {...props} data-steps-wrapper $isLteS={isLteS}>
         {data.map((el, i) => {
           const steps = Array.from(Array(el.steps).keys());
           const newData = data.slice(0, i);
@@ -68,7 +68,7 @@ export default function MultiSteps({
             !isLteS
           ) {
             return (
-              <MultiStepWrapper isLteS={isLteS} key={`multi_${i}`}>
+              <MultiStepWrapper $isLteS={isLteS} key={`multi_${i}`}>
                 <StepWrapper>
                   {steps.map((_: number, key: number) => {
                     const currentKey = previousLength + key;
