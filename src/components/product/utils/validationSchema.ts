@@ -118,7 +118,7 @@ const getBundleItemsMedia = ({
     Yup.object({
       image: validationOfIpfsImage(),
       video: validationOfIpfsImage()
-    })
+    }).nullable(true)
   ).test(
     "invalidBundleItemsMedia",
     "Please add an image for new NFTs",
