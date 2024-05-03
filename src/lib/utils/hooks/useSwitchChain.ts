@@ -1,4 +1,4 @@
-import { FALLBACK_URLS } from "@bosonprotocol/react-kit";
+import { FALLBACK_URLS, getEnvConfigs } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { Connector } from "@web3-react/types";
 import { CONFIG } from "lib/config";
@@ -15,7 +15,10 @@ import { getChainInfo } from "../../constants/chainInfo";
 import { isSupportedChain, SupportedChainsType } from "../../constants/chains";
 import { useChainId } from "./connection/connection";
 const RPC_URLS = CONFIG.rpcUrls;
-
+const localChainId = 31337;
+const localRpcUrl = getEnvConfigs("local").find(
+  (localConfig) => localConfig.chainId === localChainId
+)?.jsonRpcUrl;
 function getRpcUrl(chainId: SupportedChainsType): string {
   switch (chainId) {
     case ChainId.MAINNET:
@@ -23,8 +26,12 @@ function getRpcUrl(chainId: SupportedChainsType): string {
     case ChainId.SEPOLIA:
     case 80002:
       return RPC_URLS[chainId][0];
-    case 31337:
-      throw new Error("chain 31337 is not supported");
+    case localChainId: {
+      if (localRpcUrl) {
+        return localRpcUrl;
+      }
+      throw new Error(`chain ${localChainId} is not supported`);
+    }
     // Attempting to add a chain using an infura URL will not work, as the URL will be unreachable from the MetaMask background page.
     // MetaMask allows switching to any publicly reachable URL, but for novel chains, it will display a warning if it is not on the "Safe" list.
     // See the definition of FALLBACK_URLS for more details.
