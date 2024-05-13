@@ -1,3 +1,4 @@
+import { GridProps, TypographyProps } from "@bosonprotocol/react-kit";
 import type { DatePickerProps } from "components/datepicker/DatePicker";
 import { CSSProperties, ReactNode } from "react";
 import { MultiValue, SingleValue } from "react-select";
@@ -28,19 +29,18 @@ export type CheckboxProps = BaseProps & {
 export type TextareaProps = BaseProps &
   React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-export type ErrorProps = {
+export type ErrorProps = Omit<TypographyProps, "display"> & {
   display?: boolean;
   message?: string;
 };
 
-export type FormFieldProps = {
+export type FormFieldProps = GridProps & {
   title: string;
   titleIcon?: ReactNode;
   subTitle?: ReactNode | false;
   required?: boolean;
   tooltip?: string;
   children: React.ReactNode | string;
-  style?: React.CSSProperties;
   valueToCopy?:
     | string
     | {

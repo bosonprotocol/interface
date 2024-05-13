@@ -13,7 +13,13 @@ export default function useProductsByFilteredOffers(
     () =>
       Array.from(
         new Set(
-          data?.map((d) => d?.metadata?.product?.id || null).filter(isTruthy)
+          data
+            ?.map((d) =>
+              d?.metadata && "product" in d.metadata
+                ? d.metadata.product?.id || null
+                : null
+            )
+            .filter(isTruthy)
         )
       ) || [],
     [data]

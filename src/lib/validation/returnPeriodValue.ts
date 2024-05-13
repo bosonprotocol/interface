@@ -5,6 +5,7 @@ function returnPeriodValue(msg: string) {
     const numberValue = value && Number(value);
     if (
       numberValue !== undefined &&
+      typeof numberValue === "number" &&
       numberValue < CONFIG.minimumReturnPeriodInDays
     ) {
       throw this.createError({

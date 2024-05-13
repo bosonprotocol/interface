@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionResponse } from "@bosonprotocol/common";
-import { productV1Item } from "@bosonprotocol/metadata";
 import {
-  CoreSDK,
-  MetadataType,
+  AnyMetadata,
+  bundle,
+  isBundle,
+  isProductV1,
   offers,
   productV1,
+  productV1Item,
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
@@ -15,7 +17,6 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
-import map from "lodash/map";
 import {
   Dispatch,
   SetStateAction,
@@ -40,23 +41,24 @@ import {
 } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
-import { BigNumber, ethers, providers } from "ethers";
-import { useSigner } from "lib/utils/hooks/connection/connection";
+import { providers } from "ethers";
+import { useChainId, useSigner } from "lib/utils/hooks/connection/connection";
 import { useWaitForCreatedSeller } from "lib/utils/hooks/seller/useWaitForCreatedSeller";
+import { useForm } from "lib/utils/hooks/useForm";
 import { useEffect } from "react";
 
-import { FileProps } from "../../components/form/Upload/types";
 import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
 import {
-  CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  getCreateProductSteps,
   ImageSpecificOrAll,
   OPTIONS_EXCHANGE_POLICY,
   ProductMetadataAttributeKeys,
-  ProductTypeValues,
+  ProductTypeTypeValues,
+  ProductTypeVariantsValues,
   TOKEN_TYPES,
   TypeKeys
 } from "../../components/product/utils";
@@ -65,18 +67,16 @@ import SuccessTransactionToast from "../../components/toasts/SuccessTransactionT
 import BosonButton from "../../components/ui/BosonButton";
 import { Grid } from "../../components/ui/Grid";
 import { Typography } from "../../components/ui/Typography";
-import { CONFIG, DappConfig } from "../../lib/config";
 import {
   SellerLandingPageParameters,
   UrlParameters
 } from "../../lib/routing/parameters";
-import { ProductRoutes } from "../../lib/routing/routes";
+import { BundleRoutes, ProductRoutes } from "../../lib/routing/routes";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { saveItemInStorage } from "../../lib/utils/hooks/localstorage/useLocalStorage";
 import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
   CreateProductWrapper,
@@ -85,13 +85,22 @@ import {
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP } from "./utils";
+import { SELLER_DEFAULT_VERSION } from "./utils/const";
 import { extractOfferTimestamps } from "./utils/dataValidator";
+import {
+  extractVisualImages,
+  VisualImages
+} from "./utils/extractVisualsImages";
+import { getOfferDataFromMetadata } from "./utils/getOfferDataFromMetadata";
+import { getProductItemV1Metadata } from "./utils/getProductItemV1Metadata";
+import { getProductV1Metadata } from "./utils/getProductV1Metadata";
 import { getTermsOfExchange } from "./utils/getTermsOfExchange";
 import {
   getDisputePeriodDurationInMS,
   getResolutionPeriodDurationInMS
 } from "./utils/helpers";
-import { CreateProductSteps } from "./utils/index";
+import { getBundleMetadata, getDigitalMetadatas } from "./utils/productDigital";
+import { SupportedJuridiction } from "./utils/types";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
@@ -101,263 +110,12 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
     event.preventDefault();
   }
 }
-type GetProductV1MetadataProps = {
-  contactPreference: string;
-  offerUuid: string;
-  productInformation: CreateProductForm["productInformation"];
-  productAnimation: FileProps | undefined;
-  externalUrl: string;
-  licenseUrl: string;
-  productMainImageLink: string | undefined;
-  nftAttributes: {
-    traitType: string;
-    value: string;
-    displayType?: string;
-  }[];
-  additionalAttributes: {
-    traitType: string;
-    value: string;
-    displayType?: string;
-  }[];
-  createYourProfile: CreateProductForm["createYourProfile"];
-  productType: CreateProductForm["productType"];
-  visualImages: productV1Item.ProductBase["visuals_images"];
-  shippingInfo: CreateProductForm["shippingInfo"];
-  termsOfExchange: CreateProductForm["termsOfExchange"];
-  supportedJurisdictions: Array<SupportedJuridiction>;
-  redemptionPointUrl: string;
-};
-async function getProductV1Metadata({
-  contactPreference,
-  offerUuid,
-  productInformation,
-  productAnimation,
-  externalUrl,
-  licenseUrl,
-  productMainImageLink,
-  nftAttributes,
-  additionalAttributes,
-  createYourProfile,
-  productType,
-  visualImages,
-  shippingInfo,
-  termsOfExchange,
-  supportedJurisdictions,
-  redemptionPointUrl
-}: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
-  const profileImage = createYourProfile?.logo?.[0];
-  const coverImage = createYourProfile?.coverPicture?.[0];
-
-  const sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
-    {
-      url: profileImage?.src || "",
-      tag: "profile",
-      height: profileImage?.height ?? undefined,
-      width: profileImage?.width ?? undefined,
-      type: profileImage?.type
-    },
-    {
-      url: coverImage?.src || "",
-      tag: "cover",
-      height: coverImage?.height ?? undefined,
-      width: coverImage?.width ?? undefined,
-      type: coverImage?.type
-    }
-  ];
-
-  const animationUrl = getIpfsGatewayUrl(productAnimation?.src || "");
-  const visualsVideos: productV1.Media[] =
-    animationUrl === ""
-      ? []
-      : [
-          {
-            url: animationUrl,
-            tag: ""
-          }
-        ];
-
-  return {
-    schemaUrl: "https://schema.org/",
-    uuid: offerUuid,
-    name: productInformation.productTitle,
-    description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
-    animationUrl,
-    animationMetadata: productAnimation
-      ? {
-          height: productAnimation.height ?? undefined,
-          width: productAnimation.width ?? undefined,
-          type: productAnimation.type
-        }
-      : undefined,
-    externalUrl,
-    licenseUrl,
-    image: productMainImageLink ? productMainImageLink : "",
-    type: MetadataType.PRODUCT_V1,
-    attributes: [...nftAttributes, ...additionalAttributes],
-    condition: /*tokenGating?.tokenGatingDesc ||*/ undefined,
-    product: {
-      uuid: uuid(),
-      version: 1,
-      title: productInformation.productTitle?.toString(),
-      description: productInformation.description?.toString(),
-      identification_sKU: productInformation.sku?.toString(),
-      identification_productId: productInformation.id?.toString(),
-      identification_productIdType: productInformation.idType?.toString(),
-      productionInformation_brandName:
-        productInformation.brandName?.toString() || createYourProfile.name,
-      productionInformation_manufacturer:
-        productInformation.manufacture?.toString(),
-      productionInformation_manufacturerPartNumber:
-        productInformation.manufactureModelName?.toString(),
-      productionInformation_modelNumber:
-        productInformation.partNumber?.toString(),
-      productionInformation_materials: productInformation.materials?.split(","),
-      details_category: productInformation.category.value?.toString(),
-      details_subCategory: undefined, // no entry in the UI
-      details_subCategory2: undefined, // no entry in the UI
-      details_offerCategory: productType.productType.toUpperCase(),
-      details_tags: productInformation.tags,
-      details_sections: undefined, // no entry in the UI
-      details_personalisation: undefined, // no entry in the UI
-      visuals_images: visualImages,
-      visuals_videos: visualsVideos, // no entry in the UI
-      packaging_packageQuantity: undefined, // no entry in the UI
-      packaging_dimensions_length: shippingInfo.length?.toString(),
-      packaging_dimensions_width: shippingInfo.width?.toString(),
-      packaging_dimensions_height: shippingInfo.height?.toString(),
-      packaging_dimensions_unit: shippingInfo.measurementUnit.value?.toString(),
-      packaging_weight_value: shippingInfo?.weight?.toString() || "",
-      packaging_weight_unit: shippingInfo?.weightUnit.value?.toString() || ""
-    },
-    seller: {
-      defaultVersion: 1,
-      name: createYourProfile.name,
-      description: createYourProfile.description,
-      externalUrl: createYourProfile.website,
-      tokenId: undefined, // no entry in the UI
-      contactLinks: [
-        {
-          url: createYourProfile.email,
-          tag: "email"
-        }
-      ],
-      images: sellerImages,
-      contactPreference
-    },
-    exchangePolicy: {
-      uuid: Date.now().toString(),
-      version: 1,
-      label: termsOfExchange.exchangePolicy.label,
-      template:
-        termsOfExchange.exchangePolicy.value === "fairExchangePolicy" // if there is data in localstorage, the exchangePolicy.value might be the old 'fairExchangePolicy'
-          ? OPTIONS_EXCHANGE_POLICY[0].value
-          : termsOfExchange.exchangePolicy.value || "",
-      sellerContactMethod: CONFIG.defaultSellerContactMethod,
-      disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
-    },
-    shipping: {
-      defaultVersion: 1,
-      countryOfOrigin:
-        /*TODO: NOTE: we might add it back in the future: shippingInfo.country?.label || */ "",
-      supportedJurisdictions:
-        supportedJurisdictions.length > 0 ? supportedJurisdictions : undefined,
-      returnPeriod: shippingInfo.returnPeriod.toString(),
-      redemptionPoint: redemptionPointUrl
-    }
-  };
-}
-
-type GetOfferDataFromMetadataProps = {
-  coreSDK: CoreSDK;
-  config: DappConfig;
-  priceBN: BigNumber;
-  sellerDeposit: BigNumber | string;
-  buyerCancellationPenaltyValue: BigNumber | string;
-  quantityAvailable: number;
-  voucherRedeemableFromDateInMS: number;
-  voucherRedeemableUntilDateInMS: number;
-  voucherValidDurationInMS: number;
-  validFromDateInMS: number;
-  validUntilDateInMS: number;
-  disputePeriodDurationInMS: number;
-  resolutionPeriodDurationInMS: number;
-  exchangeToken: Token | undefined;
-};
-async function getOfferDataFromMetadata(
-  productV1Metadata: productV1.ProductV1Metadata,
-  {
-    coreSDK,
-    config,
-    priceBN,
-    sellerDeposit,
-    buyerCancellationPenaltyValue,
-    quantityAvailable,
-    voucherRedeemableFromDateInMS,
-    voucherRedeemableUntilDateInMS,
-    voucherValidDurationInMS,
-    validFromDateInMS,
-    validUntilDateInMS,
-    disputePeriodDurationInMS,
-    resolutionPeriodDurationInMS,
-    exchangeToken
-  }: GetOfferDataFromMetadataProps
-): Promise<offers.CreateOfferArgs> {
-  const metadataHash = await coreSDK.storeMetadata(productV1Metadata);
-
-  const offerData: offers.CreateOfferArgs = {
-    price: priceBN.toString(),
-    sellerDeposit: sellerDeposit.toString(),
-    buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
-    quantityAvailable: quantityAvailable,
-    voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
-    voucherRedeemableUntilDateInMS: voucherRedeemableUntilDateInMS.toString(),
-    voucherValidDurationInMS: voucherValidDurationInMS.toString(),
-    validFromDateInMS: validFromDateInMS.toString(),
-    validUntilDateInMS: validUntilDateInMS.toString(),
-    disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
-    resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-    exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
-    disputeResolverId: config.envConfig.defaultDisputeResolverId,
-    agentId: 0, // no agent
-    metadataUri: `ipfs://${metadataHash}`,
-    metadataHash: metadataHash,
-    collectionIndex: "0"
-  };
-  return offerData;
-}
-
-function extractVisualImages(
-  productImages: CreateProductForm["productImages"]
-): productV1.ProductBase["visuals_images"] {
-  const visualImages = Array.from(
-    new Set(
-      map(
-        productImages,
-        (v) =>
-          v?.[0]?.src &&
-          ({
-            url: v?.[0]?.src,
-            tag: "product_image",
-            height: v?.[0]?.height,
-            width: v?.[0]?.width,
-            type: v?.[0]?.type,
-            name: v?.[0]?.name
-          } as productV1.ProductBase["visuals_images"][number])
-      ).filter((n): n is productV1.ProductBase["visuals_images"][number] => !!n)
-    ).values()
-  );
-  return visualImages;
-}
 
 interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
   setCreatedOffersIds: Dispatch<SetStateAction<string[]>>;
   isDraftModalClosed: boolean;
-}
-interface SupportedJuridiction {
-  label: string;
-  deliveryTime: string;
 }
 
 function CreateProductInner({
@@ -366,6 +124,7 @@ function CreateProductInner({
   setCreatedOffersIds,
   isDraftModalClosed
 }: Props) {
+  const chainId = useChainId();
   const signer = useSigner();
   const { config } = useConfigContext();
   const history = useNavigate();
@@ -374,12 +133,15 @@ function CreateProductInner({
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
-    initial?.productType?.productVariant || ProductTypeValues.oneItemType
+    initial?.productType?.productVariant ||
+      ProductTypeVariantsValues.oneItemType
   );
-  const isMultiVariant = useMemo(
-    () => productVariant === ProductTypeValues.differentVariants || false,
-    [productVariant]
+  const [productType, setProductType] = useState<string>(
+    initial?.productType?.productType || ProductTypeTypeValues.physical
   );
+  const isMultiVariant =
+    productVariant === ProductTypeVariantsValues.differentVariants;
+  const isPhygital = productType === ProductTypeTypeValues.phygital;
   const [isTokenGated, setIsTokenGated] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(
     location?.state?.step || FIRST_STEP
@@ -465,16 +227,28 @@ function CreateProductInner({
       );
     }) || null;
 
-  const onViewMyItem = (id: string | null) => {
+  const onViewMyItem = ({
+    productUuid,
+    bundleUuid
+  }: {
+    productUuid: string | null;
+    bundleUuid: string | null;
+  }) => {
     hideModal();
     setCurrentStepWithHistory(FIRST_STEP);
     setIsPreviewVisible(false);
-    const pathname = id
-      ? generatePath(ProductRoutes.ProductDetail, {
-          [UrlParameters.sellerId]: currentAssistant?.id || null,
-          [UrlParameters.uuid]: id
-        })
-      : generatePath(ProductRoutes.Root);
+    const pathname =
+      productUuid || bundleUuid
+        ? productUuid
+          ? generatePath(ProductRoutes.ProductDetail, {
+              [UrlParameters.sellerId]: currentAssistant?.id || null,
+              [UrlParameters.uuid]: productUuid
+            })
+          : generatePath(BundleRoutes.BundleDetail, {
+              [UrlParameters.sellerId]: currentAssistant?.id || null,
+              [UrlParameters.uuid]: bundleUuid
+            })
+        : generatePath(ProductRoutes.Root);
     navigate({ pathname });
   };
   const handleOpenSuccessModal = async ({
@@ -485,54 +259,46 @@ function CreateProductInner({
     values: CreateProductForm;
   }) => {
     const offerId = offerInfo.id;
-    const metadataInfo = (await coreSDK.getMetadata(
-      offerInfo.metadataUri
-    )) as any;
 
     showModal(
       modalTypes.PRODUCT_CREATE_SUCCESS,
       {
         title: `Offer ${offerId}`,
-        name: metadataInfo.name,
+        name: offerInfo.metadata?.name || "",
         message: "You have successfully created:",
-        image: metadataInfo.image,
+        image:
+          offerInfo.metadata?.image ||
+          values.productImages.thumbnail?.[0].src ||
+          "",
         price: offerInfo.price,
         offer: {
-          id: offerInfo.id,
-          createdAt: offerInfo.createdAt,
-          price: offerInfo.price,
-          sellerDeposit: offerInfo.sellerDeposit,
-          protocolFee: offerInfo.protocolFee,
-          agentFee: offerInfo.agentFee,
-          agentId: offerInfo.agentId,
-          buyerCancelPenalty: offerInfo.buyerCancelPenalty,
-          quantityAvailable: offerInfo.quantityAvailable,
-          quantityInitial: offerInfo.quantityInitial,
-          validFromDate: offerInfo.validFromDate,
-          validUntilDate: offerInfo.validUntilDate,
-          voucherRedeemableFromDate: offerInfo.voucherRedeemableFromDate,
-          voucherRedeemableUntilDate: offerInfo.voucherRedeemableUntilDate,
-          disputePeriodDuration: offerInfo.disputePeriodDuration,
-          voucherValidDuration: offerInfo.voucherValidDuration,
-          resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
-          metadataUri: offerInfo.metadataUri,
-          metadataHash: offerInfo.metadataHash,
-          voidedAt: offerInfo.voidedAt,
-          disputeResolverId: offerInfo.disputeResolverId,
-          seller: offerInfo.seller,
-          exchangeToken: offerInfo.exchangeToken,
+          ...offerInfo,
           metadata: {
+            ...offerInfo.metadata,
             animationUrl: values.productAnimation?.[0]?.src,
             exchangePolicy: {
               label: OPTIONS_EXCHANGE_POLICY[0].label,
               template: OPTIONS_EXCHANGE_POLICY[0].value
             }
           },
-          condition: offerInfo.condition ?? values.tokenGating ?? null
+          condition:
+            offerInfo.condition ?? values.tokenGating.tokenContract
+              ? values.tokenGating ?? null
+              : null
         },
         // these are the ones that we already had before
         onCreateNew: onCreateNew,
-        onViewMyItem: () => onViewMyItem(metadataInfo.product?.uuid)
+        onViewMyItem: () =>
+          onViewMyItem({
+            productUuid:
+              offerInfo.metadata && isProductV1(offerInfo)
+                ? offerInfo.metadata.product?.uuid
+                : null,
+            bundleUuid:
+              offerInfo.metadata && isBundle(offerInfo)
+                ? offerInfo.metadata.bundleUuid
+                : null
+          })
       },
       "auto"
     );
@@ -546,6 +312,7 @@ function CreateProductInner({
       isDraftModalClosed,
       showInvalidRoleModal,
       isMultiVariant,
+      isPhygital,
       isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
       isOneSetOfImages,
@@ -553,12 +320,9 @@ function CreateProductInner({
       coreSDK
     });
     return {
-      currentStep:
-        wizard?.[currentStep as keyof CreateProductSteps]?.ui || null,
-      currentValidation:
-        wizard?.[currentStep as keyof CreateProductSteps]?.validation || null,
-      helpSection:
-        wizard?.[currentStep as keyof CreateProductSteps]?.helpSection || null,
+      currentStep: wizard?.[currentStep]?.ui || null,
+      currentValidation: wizard?.[currentStep]?.validation || null,
+      helpSection: wizard?.[currentStep]?.helpSection || null,
       wizardLength: keys(wizard).length - 1
     };
   }, [
@@ -567,6 +331,7 @@ function CreateProductInner({
     isDraftModalClosed,
     showInvalidRoleModal,
     isMultiVariant,
+    isPhygital,
     isTokenGated,
     isOneSetOfImages,
     currentStep,
@@ -701,7 +466,11 @@ function CreateProductInner({
       );
       const resolutionPeriodDurationInMS = getResolutionPeriodDurationInMS();
 
-      const nftAttributes = [];
+      const nftAttributes: {
+        traitType: string;
+        value: string;
+        displayType?: string;
+      }[] = [];
       nftAttributes.push({
         traitType: ProductMetadataAttributeKeys["Token Type"],
         value: "BOSON rNFT"
@@ -738,23 +507,41 @@ function CreateProductInner({
       // Be sure the uuid is unique (for all users).
       // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
       const offerUuid = uuid();
+      const bundleUuid = uuid();
 
       // Ddd sellerId in the license and offer-uuid routes (if known)
-      const externalUrl = currentAssistant
+      const offerExternalUrl = currentAssistant
         ? `${redemptionPointUrl}/#/offer-uuid/${currentAssistant.id}/${offerUuid}`
         : `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
-      const licenseUrl = currentAssistant
+      const offerLicenseUrl = currentAssistant
         ? `${window.origin}/#/license/${currentAssistant.id}/${offerUuid}`
         : `${window.origin}/#/license/${offerUuid}`;
+      const bundleExternalUrl = currentAssistant
+        ? `${redemptionPointUrl}/#/bundles/${currentAssistant.id}/${bundleUuid}`
+        : `${redemptionPointUrl}/#/bundles/${bundleUuid}`;
+      const bundleLicenseUrl = currentAssistant
+        ? `${redemptionPointUrl}/#/license-bundle/${currentAssistant.id}/${bundleUuid}`
+        : `${redemptionPointUrl}/#/license-bundle/${bundleUuid}`;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
       const productAnimation = values.productAnimation?.[0];
+      const newNftMetadatas = getDigitalMetadatas({
+        chainId,
+        values
+      });
+      const nftMetadataIpfsLinks: string[] = (
+        await Promise.all(
+          newNftMetadatas.map((nftMetadata) => {
+            return coreSDK.storeMetadata(nftMetadata);
+          })
+        )
+      ).map((hash) => `ipfs://${hash}`);
       if (isMultiVariant) {
         const { variants = [] } = values.productVariants;
         const variantsForMetadataCreation: Parameters<
           (typeof productV1)["createVariantProductMetadata"]
         >[1] = [];
-        const visualImages: productV1.ProductBase["visuals_images"] = [];
+        const visualImages: VisualImages = [];
         const allVariationsWithSameImages =
           values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
         if (allVariationsWithSameImages) {
@@ -793,51 +580,74 @@ function CreateProductInner({
             });
           }
         }
-        const productV1Metadata = await getProductV1Metadata({
-          contactPreference,
-          offerUuid,
-          productInformation,
-          productAnimation,
-          externalUrl,
-          licenseUrl,
-          productMainImageLink,
-          nftAttributes,
-          additionalAttributes,
-          createYourProfile,
-          productType,
-          visualImages,
-          shippingInfo,
-          termsOfExchange,
-          supportedJurisdictions,
-          redemptionPointUrl
-        });
-        const metadatas = productV1.createVariantProductMetadata(
-          productV1Metadata,
-          variantsForMetadataCreation
-        );
-
-        if (!isOneSetOfImages) {
-          // fix main variant image as it should be the variant's thumbnail
-          metadatas.forEach((variantMetadata, index) => {
-            const productImages =
-              productVariantsImages?.[Number(index)]?.productImages;
-            if (productImages?.thumbnail?.[0]?.src) {
-              variantMetadata.image = productImages.thumbnail[0].src;
-            } else {
-              // this else clause should never occur
-              if (variantMetadata.productOverrides?.visuals_images?.[0]?.url) {
-                variantMetadata.image =
-                  variantMetadata.productOverrides?.visuals_images[0].url;
-              }
-            }
+        let metadatas: AnyMetadata[];
+        if (isPhygital) {
+          const productItemV1Metadata = await getProductItemV1Metadata({
+            uuid: bundleUuid,
+            productInformation,
+            productAnimation,
+            createYourProfile,
+            productType,
+            visualImages,
+            shippingInfo,
+            termsOfExchange,
+            supportedJurisdictions,
+            redemptionPointUrl
           });
+          metadatas = productV1Item.createVariantProductItem(
+            productItemV1Metadata,
+            variantsForMetadataCreation
+          );
+        } else {
+          const productV1Metadata = await getProductV1Metadata({
+            contactPreference,
+            offerUuid,
+            productInformation,
+            productAnimation,
+            externalUrl: offerExternalUrl,
+            licenseUrl: offerLicenseUrl,
+            productMainImageLink,
+            nftAttributes,
+            additionalAttributes,
+            createYourProfile,
+            productType,
+            visualImages,
+            shippingInfo,
+            termsOfExchange,
+            supportedJurisdictions,
+            redemptionPointUrl
+          });
+          const variantsMetadatas = productV1.createVariantProductMetadata(
+            productV1Metadata,
+            variantsForMetadataCreation
+          );
+          // Fix description as the licenseUrl has changed
+          variantsMetadatas.forEach((variantMetadata) => {
+            variantMetadata.description = `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${variantMetadata.licenseUrl}`;
+          });
+          if (!isOneSetOfImages) {
+            // fix main variant image as it should be the variant's thumbnail
+            variantsMetadatas.forEach((variantMetadata, index) => {
+              const productImages =
+                productVariantsImages?.[Number(index)]?.productImages;
+              if (productImages?.thumbnail?.[0]?.src) {
+                variantMetadata.image = productImages.thumbnail[0].src;
+              } else {
+                // this else clause should never occur
+                if (
+                  variantMetadata.productOverrides?.visuals_images?.[0]?.url
+                ) {
+                  variantMetadata.image =
+                    variantMetadata.productOverrides?.visuals_images[0].url;
+                }
+              }
+            });
+          }
+          metadatas = variantsMetadatas;
         }
-        // Fix description as the licenseUrl has changed
-        metadatas.forEach((variantMetadata) => {
-          variantMetadata.description = `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${variantMetadata.licenseUrl}`;
-        });
+
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
-          metadatas.map((metadata, index) => {
+          metadatas.map(async (metadata, index) => {
             const exchangeToken = config.envConfig.defaultTokens?.find(
               (n) => n.symbol === variants[index].currency.label
             );
@@ -850,7 +660,43 @@ function CreateProductInner({
                 price,
                 decimals
               });
-            return getOfferDataFromMetadata(metadata, {
+            let metadataForOffer: typeof metadata | bundle.BundleMetadata;
+            if (isPhygital) {
+              const bundleMetadata: bundle.BundleMetadata = getBundleMetadata(
+                {
+                  name: values.productInformation.bundleName ?? "",
+                  description:
+                    values.productInformation.bundleDescription ?? "",
+                  externalUrl: bundleExternalUrl,
+                  licenseUrl: bundleLicenseUrl,
+                  seller: {
+                    ...(currentAssistant?.metadata || ({} as any)),
+                    defaultVersion: SELLER_DEFAULT_VERSION
+                  },
+                  image:
+                    metadata.type === "ITEM_PRODUCT_V1"
+                      ? metadata.productOverrides?.visuals_images?.[0]?.url
+                      : undefined,
+                  imageData: undefined,
+                  animationUrl:
+                    metadata.type === "ITEM_PRODUCT_V1"
+                      ? metadata.productOverrides?.visuals_videos?.[0]?.url ||
+                        metadata.product?.visuals_videos?.[0]?.url
+                      : undefined,
+                  attributes: nftAttributes
+                },
+                [
+                  ...nftMetadataIpfsLinks,
+                  `ipfs://${await coreSDK.storeMetadata(metadata)}`
+                ],
+                bundleUuid
+              );
+              metadataForOffer = bundleMetadata;
+            } else {
+              metadataForOffer = metadata;
+            }
+
+            return getOfferDataFromMetadata(metadataForOffer, {
               coreSDK,
               config,
               priceBN,
@@ -869,25 +715,9 @@ function CreateProductInner({
           });
         offersToCreate.push(...(await Promise.all(offerDataPromises)));
       } else {
+        // no variants case
         const visualImages = extractVisualImages(productImages);
-        const productV1Metadata = await getProductV1Metadata({
-          contactPreference,
-          offerUuid,
-          productInformation,
-          productAnimation,
-          externalUrl,
-          licenseUrl,
-          productMainImageLink,
-          nftAttributes,
-          additionalAttributes,
-          createYourProfile,
-          productType,
-          visualImages,
-          shippingInfo,
-          termsOfExchange,
-          supportedJurisdictions,
-          redemptionPointUrl
-        });
+
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
         const { priceBN, buyerCancellationPenaltyValue, sellerDeposit } =
@@ -896,24 +726,90 @@ function CreateProductInner({
             price,
             decimals
           });
+        const pushOfferData = async (metadata: AnyMetadata): Promise<void> => {
+          const offerData = await getOfferDataFromMetadata(metadata, {
+            coreSDK,
+            config,
+            priceBN,
+            sellerDeposit,
+            buyerCancellationPenaltyValue,
+            quantityAvailable: coreTermsOfSale.quantity,
+            voucherRedeemableFromDateInMS,
+            voucherRedeemableUntilDateInMS,
+            voucherValidDurationInMS,
+            validFromDateInMS,
+            validUntilDateInMS,
+            disputePeriodDurationInMS,
+            resolutionPeriodDurationInMS,
+            exchangeToken
+          });
+          offersToCreate.push(offerData);
+        };
+        if (isPhygital) {
+          const productItemV1Metadata = await getProductItemV1Metadata({
+            uuid: bundleUuid,
+            productInformation,
+            productAnimation,
+            createYourProfile,
+            productType,
+            visualImages,
+            shippingInfo,
+            termsOfExchange,
+            supportedJurisdictions,
+            redemptionPointUrl
+          });
 
-        const offerData = await getOfferDataFromMetadata(productV1Metadata, {
-          coreSDK,
-          config,
-          priceBN,
-          sellerDeposit,
-          buyerCancellationPenaltyValue,
-          quantityAvailable: coreTermsOfSale.quantity,
-          voucherRedeemableFromDateInMS,
-          voucherRedeemableUntilDateInMS,
-          voucherValidDurationInMS,
-          validFromDateInMS,
-          validUntilDateInMS,
-          disputePeriodDurationInMS,
-          resolutionPeriodDurationInMS,
-          exchangeToken
-        });
-        offersToCreate.push(offerData);
+          nftMetadataIpfsLinks.push(
+            `ipfs://${await coreSDK.storeMetadata(productItemV1Metadata)}`
+          );
+          // 1 bundle for each variant-digital1-digital2-digital3
+          // digital1 is nft with tokenId_n1 of contract C1
+          // digital2 is nft with tokenId_n2 of contract C1
+          // digital3 is nft with tokenId_n1 of contract C2
+          // as this is the no variants flow, it's just 1 bundle with the variant metadata ipfs hash and the digital metadata ipfs hash
+          const bundleMetadata: bundle.BundleMetadata = getBundleMetadata(
+            {
+              name: values.productInformation.bundleName ?? "",
+              description: values.productInformation.bundleDescription ?? "",
+              externalUrl: bundleExternalUrl,
+              licenseUrl: bundleLicenseUrl,
+              seller: {
+                ...(currentAssistant?.metadata || ({} as any)),
+                defaultVersion: SELLER_DEFAULT_VERSION
+              },
+              image: visualImages?.[0]?.url,
+              imageData: undefined,
+              animationUrl:
+                productItemV1Metadata.productOverrides?.visuals_videos?.[0]
+                  ?.url ||
+                productItemV1Metadata.product?.visuals_videos?.[0]?.url,
+              attributes: nftAttributes
+            },
+            nftMetadataIpfsLinks,
+            bundleUuid
+          );
+          await pushOfferData(bundleMetadata);
+        } else {
+          const productV1Metadata = await getProductV1Metadata({
+            contactPreference,
+            offerUuid,
+            productInformation,
+            productAnimation,
+            externalUrl: offerExternalUrl,
+            licenseUrl: offerLicenseUrl,
+            productMainImageLink,
+            nftAttributes,
+            additionalAttributes,
+            createYourProfile,
+            productType,
+            visualImages,
+            shippingInfo,
+            termsOfExchange,
+            supportedJurisdictions,
+            redemptionPointUrl
+          });
+          await pushOfferData(productV1Metadata);
+        }
       }
       const isTokenGated = productType?.tokenGatedOffer === "true";
       const result = await createOffers({
@@ -1059,7 +955,11 @@ function CreateProductInner({
     <CreateProductWrapper>
       <MultiStepsContainer>
         <MultiSteps
-          data={CREATE_PRODUCT_STEPS(isMultiVariant, isTokenGated)}
+          data={getCreateProductSteps({
+            isMultiVariant,
+            isTokenGated,
+            isPhygital
+          })}
           active={currentStep}
           callback={handleClickStep}
           disableInactiveSteps
@@ -1080,6 +980,9 @@ function CreateProductInner({
         >
           {({ values }) => {
             // TODO: fix: these setState calls cause this warning: Warning: Cannot update a component (`CreateProductInner`) while rendering a different component (`Formik`). To locate the bad setState() call inside `Formik`, follow the stack trace as described in
+            if (productType !== values?.productType?.productType) {
+              setProductType(values?.productType?.productType);
+            }
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
@@ -1092,6 +995,7 @@ function CreateProductInner({
 
             return (
               <Form onKeyPress={onKeyPress}>
+                <ClearErrorsOnStepChange currentStep={currentStep} />
                 {isPreviewVisible ? (
                   <ErrorBoundary
                     FallbackComponent={({ resetErrorBoundary }) => (
@@ -1139,6 +1043,15 @@ function CreateProductInner({
       </ProductLayoutContainer>
     </CreateProductWrapper>
   );
+}
+
+function ClearErrorsOnStepChange({ currentStep }: { currentStep: number }) {
+  const { setErrors } = useForm();
+  useEffect(() => {
+    setErrors({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]);
+  return null;
 }
 
 export default CreateProductInner;

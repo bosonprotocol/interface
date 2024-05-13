@@ -43,7 +43,7 @@ export default function CurrencyIcon({
 
     switch (config.envConfig.chainId) {
       case 137:
-      case 80001:
+      case 80002:
         usedCurrency = Currencies.POLYGON;
         break;
       default:

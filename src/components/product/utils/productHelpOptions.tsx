@@ -4,8 +4,8 @@ export const productTypeHelp = [
   {
     title: "What is a phygital?",
     description:
-      "A Phygital item is one that exists both digitally (in the form of an NFT) and also in a physical form. The digital item must be a visual representation of the physical."
-  } as const,
+      "A phygital item is one that bundles a physical item with an identical digital wearable, an NFT, or other digital or experiential products and services. When a user redeems the rNFT they will receive both the physical and digital or experiential product."
+  },
   {
     title: "Why would I sell a phygital item?",
     description:
@@ -15,14 +15,36 @@ export const productTypeHelp = [
     title: "What are variants?",
     description:
       "Variants are alternate forms of the same product, for example, color and size. Choosing the 'Different variants' option on the left allows you to leverage all of the same product data for the different variants, instead of manually creating a new product offer for each variant."
-  } as const,
+  },
   {
     title: "What is a token gated offer?",
     description:
       "A token gated offer allows you to make the product exclusive by limiting the ability to purchase it only to users holding a specific token."
-  } as const
-];
-
+  }
+] as const;
+export const productDigitalHelp = [
+  {
+    title: "What is a wearable?",
+    description:
+      "A wearable is an NFT that is a visual representation of the physical item. The wearable can be worn by the owner's avatar in the metaverse."
+  },
+  {
+    title: "Does my NFT need to be minted before creating the offer?",
+    description:
+      "No, the NFT does not need to be minted before creating the offer. We recommend providing buyers as much detail as possible to ensure they are aware of what they will receive."
+  },
+  {
+    title: "What digital file formats can I list?",
+    description:
+      "While there are no restrictions on the file format you can list, some email providers or softwares that send files impose restrictions."
+  },
+  {
+    title:
+      "How do I know when and where to send the digital or experiential item?",
+    description:
+      "You can define the criteria and time when you will send the digital or experiential item, along with what information you will need from the buyer to do so. At redemption, the buyer will provide this information that you will receive, similar to receiving the shipping or delivery address for the physical item."
+  }
+] as const;
 export const productInformationHelp = [
   {
     title: "How do I describe my item?",
@@ -35,8 +57,12 @@ export const productInformationHelp = [
           inspiration behind it.
         </Typography>
         <Typography tag="p" style={{ margin: "0" }}>
-          It is also beneficial to include other operational details like
-          whether duties and taxes are included in price.
+          It is also beneficial to include other operational details, such as
+          whether duties and taxes are included in the price. We also recommend
+          including any relevant details pertaining to consumer protection laws
+          in your jurisdiction, for example, the compatibility of digital
+          content with hardware and other software, and information about
+          copyright protections.
         </Typography>
       </>
     )

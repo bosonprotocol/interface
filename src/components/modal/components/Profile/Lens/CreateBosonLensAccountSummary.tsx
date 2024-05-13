@@ -57,7 +57,8 @@ export default function CreateBosonLensAccountSummary({
   const seller = admins?.[0];
   const hasAdminSellerAccount = !!seller;
   const hasLensHandleLinked = seller?.authTokenType === authTokenTypes.LENS;
-  const alreadyHasRoyaltiesDefined = !!seller?.royaltyPercentage;
+  const alreadyHasRoyaltiesDefined =
+    seller && "royaltyPercentage" in seller && !!seller?.royaltyPercentage; // TODO: royaltyPercentage was removed
   const {
     isSuccess: isCreatedSellerAccount,
     isLoading: isCreatingSellerAccount,

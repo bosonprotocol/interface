@@ -161,7 +161,7 @@ export const ManageStoreFrontsPage = () => {
               }}
             />
           </Grid>
-          <Grid tag="ul" gap="1rem" flexDirection="column" padding="1rem 0">
+          <Grid as="ul" gap="1rem" flexDirection="column" padding="1rem 0">
             {storeFronts?.map((sf) => {
               const name = sf.name || "Unnamed storefront";
               const preview: string = sf.deployments?.[0]?.link || "";

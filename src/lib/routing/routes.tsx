@@ -25,6 +25,7 @@ export const BosonRoutes = addViewModePrefixToPaths(
     SellerPage: `/seller/:${UrlParameters.sellerId}`,
     LicenseLegacy: `/license/:${UrlParameters.uuid}`,
     License: `/license/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`,
+    LicenseBundle: `/license-bundle/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`,
     ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
     DRAdmin: "/dr-admin",
     DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,
@@ -65,6 +66,15 @@ export const ProductRoutes = addViewModePrefixToPaths(
   {
     Root: "/products",
     ProductDetail: `/products/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`
+  } as const
+);
+
+export const BundleRoutes = addViewModePrefixToPaths(
+  viewMode.current,
+  ViewMode.DAPP,
+  {
+    Root: "/products",
+    BundleDetail: `/bundles/:${UrlParameters.sellerId}/:${UrlParameters.uuid}`
   } as const
 );
 

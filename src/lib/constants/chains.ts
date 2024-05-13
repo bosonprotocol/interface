@@ -59,7 +59,7 @@ const SUPPORTED_CHAINS = [
   LocalChainId,
   ChainId_POLYGON_AMOY,
   ..._SUPPORTED_CHAINS
-];
+] as const;
 export declare type SupportedChainsType = (typeof SUPPORTED_CHAINS)[number];
 
 // Include ChainIds in this array if they are not supported by the UX yet, but are already in the SDK.

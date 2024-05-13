@@ -1,17 +1,23 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import {
+  digitalTypeMapping,
+  hooks,
+  isBundle,
+  isNftItem,
+  NftItem,
+  subgraph
+} from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { isTruthy } from "lib/types/helpers";
+import { getProductV1BundleItemsFilter } from "lib/utils/bundle/filter";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
-import useProductByUuid, {
-  ReturnUseProductByUuid
-} from "lib/utils/hooks/product/useProductByUuid";
 import { useCurrentSellers } from "lib/utils/hooks/useCurrentSellers";
 import { didReleaseVersionChange } from "lib/utils/release";
 import { useCoreSDK } from "lib/utils/useCoreSdk";
 import uniqBy from "lodash.uniqby";
 import { getDisputePeriodDurationFromSubgraphInDays } from "pages/create-product/utils/helpers";
+import { VariantV1 } from "pages/products/types";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
@@ -27,15 +33,32 @@ import {
   saveItemInStorage
 } from "../../../lib/utils/hooks/localstorage/useLocalStorage";
 import {
+  DigitalFile,
+  ExistingNFT,
+  Experiential,
+  NewNFT
+} from "../productDigital/getIsBundleItem";
+import {
+  BUYER_TRANSFER_INFO_OPTIONS,
   CATEGORY_OPTIONS,
+  DIGITAL_NFT_TYPE,
+  DIGITAL_TYPE,
+  digitalFileInfo,
+  experientialInfo,
+  getDigitalTypeOption,
+  getIsMintedAlreadyOption,
   getOptionsCurrencies,
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
+  mintedNftInfo,
+  newNftInfo,
+  NFT_TOKEN_TYPES,
   OPTIONS_LENGTH,
+  OPTIONS_PERIOD,
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
   ProductMetadataAttributeKeys,
-  ProductTypeValues,
+  ProductTypeVariantsValues,
   SUPPORTED_FILE_FORMATS,
   TOKEN_CRITERIA,
   TOKEN_TYPES,
@@ -44,7 +67,7 @@ import {
 } from "./const";
 import { getVariantName } from "./getVariantName";
 import { initialValues as baseValues } from "./initialValues";
-import type { CreateProductForm } from "./types";
+import type { CreateProductForm, ProductImages } from "./types";
 
 const MAIN_KEY = "create-product";
 export function useInitialValues() {
@@ -59,6 +82,9 @@ export function useInitialValues() {
   );
   const fromProductUuid = searchParams.get(
     SellerHubQueryParameters.fromProductUuid
+  );
+  const fromBundleUuid = searchParams.get(
+    SellerHubQueryParameters.fromBundleUuid
   );
   const cloneBaseValues = useMemo(
     () =>
@@ -81,10 +107,24 @@ export function useInitialValues() {
     }
     return savedProduct;
   }, []);
+  const enableUseProductByUuid = !!fromProductUuid && !!sellerId;
+  const { data: product } = hooks.useProductByUuid(
+    sellerId,
+    fromProductUuid,
+    core,
+    {
+      enabled: enableUseProductByUuid
+    }
+  );
 
-  const { data: product } = useProductByUuid(sellerId, fromProductUuid, {
-    enabled: !!fromProductUuid && !!sellerId
-  });
+  const { data: bundles } = hooks.useBundleByUuid(
+    sellerId,
+    fromBundleUuid,
+    core,
+    {
+      enabled: !!fromBundleUuid && !!sellerId && !enableUseProductByUuid
+    }
+  );
 
   const OPTIONS_CURRENCIES = useMemo(
     () => getOptionsCurrencies(config.envConfig),
@@ -117,7 +157,44 @@ export function useInitialValues() {
         OPTIONS_CURRENCIES
       );
     }, [product, cloneBaseValues, OPTIONS_CURRENCIES, tokenDecimals]);
-
+  const valuesFromExistingBundle: CreateProductForm | null | undefined =
+    useMemo(() => {
+      let product: subgraph.ProductV1Product | undefined;
+      const variantsWithV1: VariantV1[] | undefined = bundles
+        ?.filter((bundle) => bundle.bundleUuid === fromBundleUuid)
+        ?.flatMap((bundle) => {
+          const bundleItems = bundle.items;
+          const productV1Items = bundleItems
+            ? getProductV1BundleItemsFilter(bundleItems)
+            : undefined;
+          if (!productV1Items) {
+            return null;
+          }
+          if (!product) {
+            product = productV1Items[0].product as subgraph.ProductV1Product;
+          }
+          return productV1Items.map(
+            (productV1Item) =>
+              ({
+                variations: productV1Item.variations,
+                offer: bundle.offer
+              }) as VariantV1
+          );
+        })
+        .filter(isTruthy);
+      return loadExistingProduct<typeof cloneBaseValues>(
+        { variants: variantsWithV1, product },
+        tokenDecimals,
+        cloneBaseValues,
+        OPTIONS_CURRENCIES
+      );
+    }, [
+      bundles,
+      tokenDecimals,
+      cloneBaseValues,
+      OPTIONS_CURRENCIES,
+      fromBundleUuid
+    ]);
   const cloneInitialValues = useMemo(
     () => (initialValues ? structuredClone(initialValues) : null),
     [initialValues]
@@ -133,10 +210,12 @@ export function useInitialValues() {
   }
 
   return {
-    shouldDisplayModal: cloneInitialValues !== null && !fromProductUuid,
+    shouldDisplayModal:
+      cloneInitialValues !== null && !fromProductUuid && !fromBundleUuid,
     base: cloneBaseValues,
     draft: cloneInitialValues,
     fromProductUuid: valuesFromExistingProduct,
+    fromBundleUuid: valuesFromExistingBundle,
     remove: removeItemInStorage,
     save: saveItemInStorage,
     clear: clearLocalStorage,
@@ -144,7 +223,12 @@ export function useInitialValues() {
   } as const;
 }
 function loadExistingProduct<T extends CreateProductForm>(
-  productWithVariants: ReturnUseProductByUuid,
+  productWithVariants:
+    | hooks.ReturnUseProductByUuid
+    | {
+        product: subgraph.ProductV1Product | undefined;
+        variants: VariantV1[] | undefined;
+      },
   tokenDecimals: number | undefined,
   cloneBaseValues: T,
   OPTIONS_CURRENCIES: {
@@ -156,13 +240,17 @@ function loadExistingProduct<T extends CreateProductForm>(
     return;
   }
 
-  const { product, variants = [] } = productWithVariants;
+  const { product, variants: vars = [] } = productWithVariants;
+  if (!product) {
+    return;
+  }
+  const variants = vars || [];
   const [firstOfferAndVariations] = variants;
   const { offer: firstOffer } = firstOfferAndVariations;
   const firstOfferMetadata = firstOffer.metadata as
     | subgraph.ProductV1MetadataEntity
     | undefined;
-  const hasVariantSpecificImages = variants.some((variant) => {
+  const hasVariantSpecificImages = (variants || []).some((variant) => {
     return (
       variant.offer.metadata &&
       "productOverrides" in variant.offer.metadata &&
@@ -176,6 +264,19 @@ function loadExistingProduct<T extends CreateProductForm>(
         }
       ]
     : undefined;
+  const bundleItemsMedia: ProductImages["bundleItemsMedia"] | undefined =
+    isBundle(firstOffer)
+      ? firstOffer.metadata.items.filter(isNftItem).map((item) => {
+          return {
+            image: item.image
+              ? [{ src: item.image, type: SUPPORTED_FILE_FORMATS[0] }]
+              : undefined,
+            video: item.animationUrl
+              ? [{ src: item.animationUrl, type: "video/mp4" }]
+              : undefined
+          };
+        })
+      : undefined;
   const getProductImages = () => {
     const buildGetNextImg = () => {
       let index = 0;
@@ -271,12 +372,16 @@ function loadExistingProduct<T extends CreateProductForm>(
       productType: product.details_offerCategory.toLowerCase(),
       productVariant:
         variants.length > 1
-          ? ProductTypeValues.differentVariants
-          : ProductTypeValues.oneItemType,
+          ? ProductTypeVariantsValues.differentVariants
+          : ProductTypeVariantsValues.oneItemType,
       tokenGatedOffer: firstOffer.condition ? "true" : "false"
     },
     productInformation: {
       ...cloneBaseValues.productInformation,
+      bundleName: isBundle(firstOffer) ? firstOffer.metadata.name : undefined,
+      bundleDescription: isBundle(firstOffer)
+        ? firstOffer.metadata.description
+        : undefined,
       productTitle: product.title ?? "",
       description: product.description ?? "",
       category:
@@ -311,6 +416,210 @@ function loadExistingProduct<T extends CreateProductForm>(
         ? product.productionInformation_materials?.join(",")
         : ""
     },
+    productDigital: isBundle(firstOffer)
+      ? (() => {
+          return {
+            ...cloneBaseValues.productDigital,
+            bundleItems: firstOffer.metadata.items
+              .filter((item): item is NftItem => isNftItem(item))
+              .map((nftItem) => {
+                const type = nftItem.attributes?.find(
+                  (attribute) => attribute.traitType === "type"
+                )?.value;
+                if (type === digitalTypeMapping["digital-nft"]) {
+                  if (nftItem.contract) {
+                    const transferTime =
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key === mintedNftInfo.mintedNftTransferTime.key
+                      )?.value ?? "";
+                    const tokenTypeValue =
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key === mintedNftInfo.mintedNftTokenType.key
+                      )?.value ?? "";
+                    const nftType =
+                      nftItem.terms?.find(
+                        (term) => term.key === mintedNftInfo.mintedNftType.key
+                      )?.value ?? "";
+                    const buyerTransferInfo =
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key ===
+                          mintedNftInfo.mintedNftBuyerTransferInfo.normalizedKey
+                      )?.value ?? "";
+                    const existingNft: ExistingNFT = {
+                      type:
+                        getDigitalTypeOption("digital-nft") || DIGITAL_TYPE[0],
+                      isNftMintedAlready:
+                        getIsMintedAlreadyOption("true") || null,
+                      mintedNftType:
+                        DIGITAL_NFT_TYPE.find(
+                          (tokenType) => tokenType.value === nftType
+                        ) || DIGITAL_NFT_TYPE[0],
+                      mintedNftTokenType:
+                        NFT_TOKEN_TYPES.find(
+                          (tokenType) => tokenType.value === tokenTypeValue
+                        ) || NFT_TOKEN_TYPES[0],
+                      mintedNftContractAddress: nftItem.contract,
+                      mintedNftExternalUrl: nftItem.externalUrl ?? "",
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      mintedNftTransferTime:
+                        transferTime && !isNaN(Number(transferTime))
+                          ? Number(transferTime)
+                          : "",
+                      mintedNftTokenIdRangeMax: Number(
+                        nftItem.tokenIdRange?.max || "0"
+                      ),
+                      mintedNftTokenIdRangeMin: Number(
+                        nftItem.tokenIdRange?.min || "0"
+                      ),
+                      mintedNftTransferCriteria:
+                        nftItem.terms?.find(
+                          (term) =>
+                            term.key ===
+                            mintedNftInfo.mintedNftTransferCriteria.key
+                        )?.value ?? "",
+                      mintedNftTransferTimeUnit: OPTIONS_PERIOD[0],
+                      mintedNftBuyerTransferInfo:
+                        BUYER_TRANSFER_INFO_OPTIONS.find(
+                          (option) => option.value === buyerTransferInfo
+                        ) || BUYER_TRANSFER_INFO_OPTIONS[0]
+                    };
+                    return existingNft;
+                  } else {
+                    const transferTime =
+                      nftItem.terms?.find(
+                        (term) => term.key === newNftInfo.newNftTransferTime.key
+                      )?.value ?? "";
+                    const buyerTransferInfo =
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key ===
+                          newNftInfo.newNftBuyerTransferInfo.normalizedKey
+                      )?.value ?? "";
+                    const nftType =
+                      nftItem.terms?.find(
+                        (term) => term.key === newNftInfo.newNftType.key
+                      )?.value ?? "";
+                    const newNft: NewNFT = {
+                      type:
+                        getDigitalTypeOption("digital-nft") || DIGITAL_TYPE[0],
+                      isNftMintedAlready:
+                        getIsMintedAlreadyOption("false") || null,
+                      newNftType:
+                        DIGITAL_NFT_TYPE.find(
+                          (tokenType) => tokenType.value === nftType
+                        ) || DIGITAL_NFT_TYPE[0],
+                      newNftName: nftItem.name,
+                      newNftDescription: nftItem.description || "",
+                      newNftTransferCriteria:
+                        nftItem.terms?.find(
+                          (term) =>
+                            term.key === newNftInfo.newNftTransferCriteria.key
+                        )?.value ?? "",
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      newNftTransferTime:
+                        transferTime && !isNaN(Number(transferTime))
+                          ? Number(transferTime)
+                          : "",
+                      newNftTransferTimeUnit: OPTIONS_PERIOD[0],
+                      newNftBuyerTransferInfo:
+                        BUYER_TRANSFER_INFO_OPTIONS.find(
+                          (option) => option.value === buyerTransferInfo
+                        ) || BUYER_TRANSFER_INFO_OPTIONS[0]
+                    };
+                    return newNft;
+                  }
+                } else if (type === digitalTypeMapping["digital-file"]) {
+                  const transferTime =
+                    nftItem.terms?.find(
+                      (term) =>
+                        term.key === digitalFileInfo.digitalFileTransferTime.key
+                    )?.value ?? "";
+                  const buyerTransferInfo =
+                    nftItem.terms?.find(
+                      (term) =>
+                        term.key ===
+                        digitalFileInfo.digitalFileBuyerTransferInfo
+                          .normalizedKey
+                    )?.value ?? "";
+                  const digitalFile: DigitalFile = {
+                    type:
+                      getDigitalTypeOption("digital-file") || DIGITAL_TYPE[0],
+                    isNftMintedAlready: null,
+                    digitalFileName: nftItem.name,
+                    digitalFileDescription: nftItem.description ?? "",
+                    digitalFileFormat:
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key === digitalFileInfo.digitalFileFormat.key
+                      )?.value ?? "",
+                    digitalFileTransferTimeUnit: OPTIONS_PERIOD[0],
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    digitalFileTransferTime:
+                      transferTime && !isNaN(Number(transferTime))
+                        ? Number(transferTime)
+                        : "",
+                    digitalFileTransferCriteria:
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key ===
+                          digitalFileInfo.digitalFileTransferCriteria.key
+                      )?.value ?? "",
+                    digitalFileBuyerTransferInfo:
+                      BUYER_TRANSFER_INFO_OPTIONS.find(
+                        (option) => option.value === buyerTransferInfo
+                      ) || BUYER_TRANSFER_INFO_OPTIONS[0]
+                  };
+                  return digitalFile;
+                } else if (type === digitalTypeMapping.experiential) {
+                  const transferTime =
+                    nftItem.terms?.find(
+                      (term) =>
+                        term.key ===
+                        experientialInfo.experientialTransferTime.key
+                    )?.value ?? "";
+                  const buyerTransferInfo =
+                    nftItem.terms?.find(
+                      (term) =>
+                        term.key ===
+                        experientialInfo.experientialBuyerTransferInfo
+                          .normalizedKey
+                    )?.value ?? "";
+                  const experiential: Experiential = {
+                    type:
+                      getDigitalTypeOption("experiential") || DIGITAL_TYPE[0],
+                    isNftMintedAlready: null,
+                    experientialName: nftItem.name,
+                    experientialDescription: nftItem.description ?? "",
+                    experientialTransferCriteria:
+                      nftItem.terms?.find(
+                        (term) =>
+                          term.key ===
+                          experientialInfo.experientialTransferCriteria.key
+                      )?.value ?? "",
+                    experientialTransferTime:
+                      transferTime && !isNaN(Number(transferTime))
+                        ? Number(transferTime)
+                        : ("" as unknown as number),
+                    experientialTransferTimeUnit: OPTIONS_PERIOD[0],
+                    experientialBuyerTransferInfo:
+                      BUYER_TRANSFER_INFO_OPTIONS.find(
+                        (option) => option.value === buyerTransferInfo
+                      ) || BUYER_TRANSFER_INFO_OPTIONS[0]
+                  };
+                  return experiential;
+                }
+                return null;
+              })
+              .filter(isTruthy)
+          };
+        })()
+      : cloneBaseValues.productDigital,
     productVariants: {
       ...cloneBaseValues.productVariants,
       colors:
@@ -352,9 +661,10 @@ function loadExistingProduct<T extends CreateProductForm>(
               size: sizeVariation?.option
             }),
             price: utils.formatUnits(offer.price, offer.exchangeToken.decimals),
-            currency: OPTIONS_CURRENCIES.find(
-              (currency) => currency.value === offer.exchangeToken.symbol
-            ),
+            currency:
+              OPTIONS_CURRENCIES.find(
+                (currency) => currency.value === offer.exchangeToken.symbol
+              ) || OPTIONS_CURRENCIES[0],
             quantity: offer.quantityInitial,
             color: colorVariation?.option,
             size: sizeVariation?.option
@@ -390,6 +700,7 @@ function loadExistingProduct<T extends CreateProductForm>(
             const getImg = buildGetImg();
             return {
               productAnimation,
+              bundleItemsMedia,
               productImages: {
                 thumbnail: getImg(),
                 secondary: getImg(),
@@ -411,27 +722,27 @@ function loadExistingProduct<T extends CreateProductForm>(
       ) ?? cloneBaseValues.imagesSpecificOrAll,
     productImages: getProductImages() ?? cloneBaseValues.productImages,
     productAnimation,
+    bundleItemsMedia,
     variantsCoreTermsOfSale: {
       ...cloneBaseValues.variantsCoreTermsOfSale,
       ...commonCoreTermsOfSale
     },
-    coreTermsOfSale: {
-      ...cloneBaseValues.coreTermsOfSale,
-      ...commonCoreTermsOfSale,
-      currency: {
-        value: OPTIONS_CURRENCIES.find(
+    coreTermsOfSale: (() => {
+      const currency =
+        OPTIONS_CURRENCIES.find(
           (currency) => currency.value === firstOffer.exchangeToken.symbol
-        )?.value,
-        label: OPTIONS_CURRENCIES.find(
-          (currency) => currency.value === firstOffer.exchangeToken.symbol
-        )?.label
-      },
-      price: utils.formatUnits(
-        firstOffer.price,
-        firstOffer.exchangeToken.decimals
-      ),
-      quantity: firstOffer.quantityInitial
-    },
+        ) || OPTIONS_CURRENCIES[0];
+      return {
+        ...cloneBaseValues.coreTermsOfSale,
+        ...commonCoreTermsOfSale,
+        currency,
+        price: utils.formatUnits(
+          firstOffer.price,
+          firstOffer.exchangeToken.decimals
+        ),
+        quantity: firstOffer.quantityInitial
+      };
+    })(),
     termsOfExchange: {
       ...cloneBaseValues.termsOfExchange,
       exchangePolicy: cloneBaseValues.termsOfExchange.exchangePolicy, // default exchange policy

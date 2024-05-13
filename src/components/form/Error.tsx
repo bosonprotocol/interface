@@ -2,7 +2,11 @@ import { colors } from "../../lib/styles/colors";
 import { Typography } from "../ui/Typography";
 import type { ErrorProps } from "./types";
 
-export default function Error({ display = false, message = "" }: ErrorProps) {
+export default function Error({
+  display = false,
+  message = "",
+  ...rest
+}: ErrorProps) {
   if (!display) {
     return null;
   }
@@ -14,6 +18,7 @@ export default function Error({ display = false, message = "" }: ErrorProps) {
       fontWeight="600"
       fontSize="0.75rem"
       style={{ whiteSpace: "pre-wrap" }}
+      {...rest}
     >
       {message}
     </Typography>

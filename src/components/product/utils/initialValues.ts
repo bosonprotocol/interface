@@ -16,6 +16,7 @@ import {
   CoreTermsOfSale,
   CreateProductForm,
   CreateYourProfile,
+  ProductDigital,
   TokenGating,
   VariantsCoreTermsOfSale
 } from "./types";
@@ -43,6 +44,8 @@ export const productTypeInitialValues = {
 
 export const productInformationInitialValues = {
   productInformation: {
+    bundleName: "",
+    bundleDescription: "",
     productTitle: "",
     description: "",
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,6 +68,13 @@ export const productInformationInitialValues = {
   }
 };
 
+export const productDigitalInitialValues = {
+  productDigital: {
+    bundleItems: []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as Record<keyof ProductDigital["productDigital"], any>
+} as const;
+
 export const productVariantsInitialValues = {
   productVariants: {
     colors: [] as string[],
@@ -75,7 +85,8 @@ export const productVariantsInitialValues = {
 
 export const productVariantsImagesInitialValues = {
   productVariantsImages: [],
-  productAnimation: []
+  productAnimation: [],
+  bundleItemsMedia: []
 };
 
 export const productImagesInitialValues = {
@@ -89,7 +100,8 @@ export const productImagesInitialValues = {
     sizeAndScale: undefined,
     more: undefined
   },
-  productAnimation: []
+  productAnimation: [],
+  bundleItemsMedia: []
 } as const;
 
 export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {
@@ -180,6 +192,7 @@ export const initialValues: CreateProductForm = {
   ...productTypeInitialValues,
   ...productVariantsInitialValues,
   ...productInformationInitialValues,
+  ...productDigitalInitialValues,
   ...productImagesInitialValues,
   ...productVariantsImagesInitialValues,
   ...coreTermsOfSaleInitialValues,

@@ -5,6 +5,7 @@ import {
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { poll } from "lib/utils/promises";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -74,6 +75,7 @@ export default function RevokeProduct({
   const sellerDepositDollars = conversionRate
     ? (sellerDepositPercentage * conversionRate).toFixed(2)
     : "";
+  const { mainImage } = getOfferDetails(exchange.offer.metadata);
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
@@ -81,7 +83,7 @@ export default function RevokeProduct({
         <Grid justifyContent="space-between" alignItems="center" gap="1rem">
           <Grid justifyContent="flex-start" gap="1rem">
             <Image
-              src={exchange?.offer?.metadata?.image}
+              src={mainImage}
               showPlaceholderText={false}
               style={{
                 width: "4rem",
@@ -95,8 +97,8 @@ export default function RevokeProduct({
                 <b>{exchange?.offer?.metadata?.name}</b>
               </Typography>
               <SellerID
-                offer={exchange?.offer}
-                buyerOrSeller={exchange?.offer?.seller}
+                offerMetadata={exchange?.offer.metadata}
+                accountToShow={exchange?.offer?.seller}
                 withProfileImage
               />
             </div>
@@ -204,7 +206,7 @@ export default function RevokeProduct({
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}
-                  action={`Revoked exchange: ${exchange.offer.metadata.name}`}
+                  action={`Revoked exchange: ${exchange.offer.metadata?.name}`}
                   url={config.envConfig.getTxExplorerUrl?.(
                     receipt.transactionHash
                   )}

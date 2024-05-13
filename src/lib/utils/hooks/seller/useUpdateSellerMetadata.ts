@@ -150,7 +150,11 @@ async function updateSellerMedatata(
     }),
     socialLinks: [],
     ...(values.website && { website: values.website }),
-    images: metadataImagesToSave,
+    images: metadataImagesToSave?.map((meta) => ({
+      ...meta,
+      fit: meta.fit ?? undefined,
+      position: meta.position ?? undefined
+    })),
     salesChannels: values.salesChannels
       ? values.salesChannels
       : seller.metadata?.salesChannels

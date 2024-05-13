@@ -50,5 +50,6 @@ export const swapQueryParameters = {
 };
 
 export const SellerHubQueryParameters = {
-  fromProductUuid: "fromProductUuid"
+  fromProductUuid: "fromProductUuid",
+  fromBundleUuid: "fromBundleUuid"
 };

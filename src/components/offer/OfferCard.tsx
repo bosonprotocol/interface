@@ -120,7 +120,7 @@ export default function OfferCard({
 }: Props) {
   const offerId = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
-  const offerImg = offer.metadata.imageUrl;
+  const offerImg = offer.metadata?.imageUrl ?? "";
   const name = offer.metadata?.name || "Untitled";
   const sellerAddress = offer.seller?.assistant;
 
@@ -165,8 +165,8 @@ export default function OfferCard({
       <Content>
         {isSellerVisible && sellerAddress && (
           <SellerID
-            offer={offer}
-            buyerOrSeller={offer?.seller}
+            offerMetadata={offer.metadata}
+            accountToShow={offer?.seller}
             withProfileImage={false}
           >
             <PriceText>Price</PriceText>

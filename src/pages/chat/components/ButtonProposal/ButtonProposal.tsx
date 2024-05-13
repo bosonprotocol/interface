@@ -1,3 +1,4 @@
+import { Exchange } from "lib/utils/hooks/useExchanges";
 import { Plus } from "phosphor-react";
 import styled from "styled-components";
 
@@ -5,7 +6,7 @@ import { useModal } from "../../../../components/modal/useModal";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { FileWithEncodedData } from "../../../../lib/utils/files";
-import { NewProposal, Thread } from "../../types";
+import { NewProposal } from "../../types";
 
 const StyledButton = styled.button`
   border: 3px solid ${colors.secondary};
@@ -31,7 +32,7 @@ const StyledButton = styled.button`
 `;
 
 interface Props {
-  exchange: NonNullable<Thread["exchange"]>;
+  exchange: Exchange;
   onSendProposal: (
     proposal: NewProposal,
     proposalFiles: FileWithEncodedData[]

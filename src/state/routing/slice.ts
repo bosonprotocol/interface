@@ -55,7 +55,11 @@ function getRoutingAPIConfig(args: GetQuoteArgs): RoutingConfig {
     tradeType,
     tokenOutAddress,
     tokenInChainId,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     uniswapXForceSyntheticQuotes,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     uniswapXEthOutputEnabled,
     routerPreference
   } = args;
@@ -81,6 +85,8 @@ function getRoutingAPIConfig(args: GetQuoteArgs): RoutingConfig {
   // UniswapX doesn't support native out, exact-out, or non-mainnet trades (yet),
   // so even if the user has selected UniswapX as their router preference, force them to receive a Classic quote.
   if (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     !args.uniswapXEnabled ||
     (args.userDisabledUniswapX && routerPreference !== RouterPreference.X) ||
     (tokenOutIsNative && !uniswapXEthOutputEnabled) ||
@@ -146,6 +152,8 @@ export const routingApi = createApi({
               tokenOutChainId,
               amount,
               tradeType,
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
               forceUniswapXOn
             } = args;
             const type = isExactInput(tradeType)

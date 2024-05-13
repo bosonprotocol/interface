@@ -1,6 +1,9 @@
+import { hooks, MetadataType } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { Offer } from "lib/types/offer";
+import { useCoreSDK } from "lib/utils/useCoreSdk";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -15,17 +18,16 @@ import {
 } from "../../components/detail/Detail.style";
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
-import SellerID, { Seller } from "../../components/ui/SellerID";
+import SellerID from "../../components/ui/SellerID";
 import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
+import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import {
   getOfferAnimationUrl,
   getOfferDetails
-} from "../../lib/utils/getOfferDetails";
-import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
-import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
+} from "../../lib/utils/offer/getOfferDetails";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
@@ -39,28 +41,36 @@ export default function ProductDetail() {
     [UrlParameters.uuid]: productUuid = "",
     [UrlParameters.sellerId]: sellerId = ""
   } = useParams();
+  const coreSDK = useCoreSDK();
   const {
     data: productResult,
     isError,
     isLoading
-  } = useProductByUuid(sellerId, productUuid, { enabled: !!productUuid });
+  } = hooks.useProductByUuid(sellerId, productUuid, coreSDK, {
+    enabled: !!productUuid
+  });
 
   const product = productResult?.product;
   const variants = productResult?.variants;
   const variantsWithV1 = variants?.filter(
-    ({ offer: { metadata } }) => metadata?.type === "PRODUCT_V1"
+    ({ offer: { metadata } }) =>
+      metadata?.type === MetadataType.PRODUCT_V1.toString()
   ) as VariantV1[] | undefined;
-  const defaultVariant =
-    variantsWithV1?.find((variant) => !variant.offer.voided) ||
+
+  const defaultVariant: VariantV1 | undefined =
+    variantsWithV1?.find((variant) => !variant.offer.voided) ??
     variantsWithV1?.[0];
 
   const [selectedVariant, setSelectedVariant] = useState<VariantV1 | undefined>(
     defaultVariant
   );
-  const selectedOffer = selectedVariant?.offer;
+  const selectedOffer: Offer | undefined = selectedVariant?.offer;
 
   const animationUrl = useMemo(
-    () => getOfferAnimationUrl(selectedOffer),
+    () =>
+      selectedOffer?.metadata && "animationUrl" in selectedOffer.metadata
+        ? getOfferAnimationUrl(selectedOffer.metadata)
+        : "",
     [selectedOffer]
   );
   const hasVariants =
@@ -125,7 +135,7 @@ export default function ProductDetail() {
     return <NotFound />;
   }
 
-  const { name, offerImg } = getOfferDetails(selectedOffer);
+  const { name, offerImg } = getOfferDetails(selectedOffer.metadata);
   const OfferImage = (
     <ObjectContainImage
       src={offerImg || ""}
@@ -154,8 +164,8 @@ export default function ProductDetail() {
             )}
             <SellerAndOpenSeaGrid>
               <SellerID
-                offer={selectedOffer}
-                buyerOrSeller={selectedOffer?.seller as Seller}
+                offerMetadata={selectedOffer.metadata}
+                accountToShow={selectedOffer?.seller}
                 justifyContent="flex-start"
                 withProfileImage
               />
@@ -171,7 +181,7 @@ export default function ProductDetail() {
                 {name}
               </Typography>
 
-              {hasVariants && (
+              {hasVariants && selectedVariant && (
                 <VariationSelects
                   selectedVariant={selectedVariant}
                   setSelectedVariant={setSelectedVariant}
@@ -179,15 +189,17 @@ export default function ProductDetail() {
                 />
               )}
             </>
-            <CommitDetailWidget
-              selectedVariant={selectedVariant}
-              isPreview={false}
-            />
+            {selectedVariant && (
+              <CommitDetailWidget
+                selectedVariant={selectedVariant}
+                isPreview={false}
+              />
+            )}
           </div>
           <DetailShare />
         </MainDetailGrid>
       </LightBackground>
-      <OfferFullDescription offer={selectedVariant.offer} exchange={null} />
+      <OfferFullDescription offer={selectedOffer} exchange={null} />
     </DetailWrapper>
   );
 }

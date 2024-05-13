@@ -15,7 +15,7 @@ interface Props {
 
 export default function Step({ state = StepState.Inactive, ...props }: Props) {
   return (
-    <StepStyle state={state} {...props}>
+    <StepStyle state={state} {...props} disabled={!!props.disabled}>
       <div />
     </StepStyle>
   );

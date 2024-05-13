@@ -1,3 +1,4 @@
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { ArrowLeft } from "phosphor-react";
 import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
@@ -140,7 +141,7 @@ interface Props {
   myBuyerId: string;
   mySellerId: string;
   exchanges: Exchange[];
-  sellerLensProfilePerSellerId: Map<string, Profile>;
+  sellerLensProfilePerSellerId: Map<string, Profile> | undefined;
   onChangeConversation: (exchange: Exchange) => void;
   chatListOpen: boolean;
   currentExchange?: Exchange;
@@ -252,11 +253,12 @@ export default memo(function MessageList({
               : iAmTheBuyer
                 ? exchange?.seller
                 : exchange?.buyer;
-            const animationUrl = exchange?.offer.metadata.animationUrl || "";
+            const { mainImage } = getOfferDetails(exchange.offer.metadata);
+            const animationUrl = exchange?.offer.metadata?.animationUrl || "";
             const renderProductImage = () => {
               return (
                 <StyledImage
-                  src={exchange?.offer.metadata.imageUrl}
+                  src={exchange?.offer.metadata?.imageUrl || mainImage}
                   alt={"exchange image" + exchange.id}
                   style={{
                     height: "3.125rem",
@@ -301,11 +303,11 @@ export default memo(function MessageList({
 
                   <MessageInfo>
                     <ExchangeName>
-                      {exchange.id} - {exchange?.offer.metadata.name}
+                      {exchange.id} - {exchange?.offer.metadata?.name}
                     </ExchangeName>
                     <SellerID
-                      offer={exchange?.offer}
-                      buyerOrSeller={buyerOrSellerToShow}
+                      offerMetadata={exchange?.offer.metadata}
+                      accountToShow={buyerOrSellerToShow}
                       withProfileImage
                       onClick={() => null}
                       withBosonStyles={false}

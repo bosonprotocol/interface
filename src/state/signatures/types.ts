@@ -1,4 +1,4 @@
-import { UniswapXOrderStatus } from "lib/hooks/orders/types";
+import { UniswapXOrderStatus } from "lib/utils/hooks/orders/types";
 
 import {
   ExactInputSwapTransactionInfo,

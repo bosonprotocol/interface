@@ -10,13 +10,13 @@ export const SellerComponent = memo(
     size,
     withProfileText,
     exchange,
-    buyerOrSeller,
+    accountToShow,
     lensProfile
   }: {
     size: number;
     withProfileText?: boolean;
     exchange: Exchange | undefined;
-    buyerOrSeller: BuyerOrSeller;
+    accountToShow: BuyerOrSeller;
     lensProfile?: Profile;
   }) => {
     if (!exchange) {
@@ -24,8 +24,8 @@ export const SellerComponent = memo(
     }
     return (
       <SellerID
-        offer={exchange?.offer}
-        buyerOrSeller={buyerOrSeller}
+        offerMetadata={exchange?.offer.metadata}
+        accountToShow={accountToShow}
         withProfileImage
         accountImageSize={size}
         withProfileText={withProfileText}

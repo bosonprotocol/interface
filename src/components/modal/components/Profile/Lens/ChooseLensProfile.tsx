@@ -38,7 +38,8 @@ export default function ChooseLensProfile({
     }
   );
   const seller = admins?.[0];
-  const alreadyHasRoyaltiesDefined = !!seller?.royaltyPercentage;
+  const alreadyHasRoyaltiesDefined =
+    seller && "royaltyPercentage" in seller && !!seller?.royaltyPercentage; // TODO: royaltyPercentage was removed
   const { updateProps, store } = useModal();
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({

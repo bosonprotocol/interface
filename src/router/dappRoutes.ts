@@ -2,6 +2,7 @@ import { lazy } from "react";
 
 import {
   BosonRoutes,
+  BundleRoutes,
   OffersRoutes,
   ProductRoutes,
   SellerCenterRoutes
@@ -19,11 +20,13 @@ const ExchangePage = lazy(() => import("../pages/exchange/Exchange"));
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 const OfferDetailPage = lazy(() => import("../pages/offers/OfferDetail"));
 const ProductDetailPage = lazy(() => import("../pages/products/ProductDetail"));
+const BundleDetailPage = lazy(() => import("../pages/bundles/BundleDetail"));
 const PrivateAccountPage = lazy(
   () => import("../pages/account/private/PrivateAccountContainer")
 );
 const ProfilePagePage = lazy(() => import("../pages/profile/ProfilePage"));
 const LicensePage = lazy(() => import("../pages/license/License"));
+const LicenseBundlePage = lazy(() => import("../pages/license/LicenseBundle"));
 const ContractualAgreementPage = lazy(
   () => import("../pages/contractualAgreement/ContractualAgreement")
 );
@@ -204,6 +207,15 @@ export default [
   },
   {
     ...base,
+    path: BundleRoutes.BundleDetail,
+    component: BundleDetailPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
+  },
+  {
+    ...base,
     path: OffersRoutes.OfferUuid,
     component: OfferUuidReroute,
     app: {
@@ -229,6 +241,11 @@ export default [
     ...base,
     path: BosonRoutes.LicenseLegacy,
     component: LicensePage
+  },
+  {
+    ...base,
+    path: BosonRoutes.LicenseBundle,
+    component: LicenseBundlePage
   },
   {
     ...base,

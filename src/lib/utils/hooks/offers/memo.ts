@@ -24,7 +24,7 @@ export function memoMergeAndSortOffers() {
         ...base.offer,
         metadata: {
           ...base.offer.metadata,
-          imageUrl: base.offer.metadata.image
+          imageUrl: base.offer.metadata?.image
         },
         isValid: true
       } as Offer;
@@ -42,7 +42,7 @@ export function memoMergeAndSortOffers() {
     }
 
     const sortedOffers = uniqueOffers.sort((a, b) => {
-      if (a.metadata.name && b.metadata.name) {
+      if (a.metadata?.name && b.metadata?.name) {
         return a.metadata.name.localeCompare(b.metadata.name);
       }
       return 0;

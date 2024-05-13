@@ -19,7 +19,8 @@ import {
 } from "./Product.styles";
 import {
   CATEGORY_OPTIONS,
-  ProductInformation as ProductInformationType
+  ProductInformation as ProductInformationType,
+  ProductTypeTypeValues
 } from "./utils";
 
 const StyledTextarea = styled(Textarea)`
@@ -144,7 +145,7 @@ const AddAttributesContainer = ({
 export default function ProductInformation() {
   const {
     nextIsDisabled,
-    values: { productInformation }
+    values: { productInformation, productType }
   } = useForm();
 
   const [hasDuplicated, setHasDuplicated] = useState<boolean>(false);
@@ -157,9 +158,36 @@ export default function ProductInformation() {
     !!productInformation?.manufacture ||
     !!productInformation?.manufactureModelName ||
     !!productInformation?.partNumber;
+  const isPhygital =
+    productType.productType === ProductTypeTypeValues.phygital.toString();
   return (
     <ContainerProductPage>
-      <SectionTitle tag="h2">Product Information</SectionTitle>
+      {isPhygital && (
+        <>
+          <SectionTitle tag="h2">Phygital Information</SectionTitle>
+          <FormField
+            title="Phygital title"
+            required
+            subTitle="Give you phygital bundle a title, using words people would look for when searching for it."
+          >
+            <Input
+              name="productInformation.bundleName"
+              placeholder="Phygital title"
+            />
+          </FormField>
+          <FormField
+            title="Description"
+            required
+            subTitle="Describe the items in your phygital giving as much detail as possible."
+          >
+            <StyledTextarea
+              name="productInformation.bundleDescription"
+              placeholder="Include information like what this phygital includes"
+            />
+          </FormField>
+        </>
+      )}
+      <SectionTitle tag="h2">Physical Product Information</SectionTitle>
       <FormField
         title="Product title"
         required

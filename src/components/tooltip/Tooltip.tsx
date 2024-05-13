@@ -8,7 +8,6 @@ import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import { IButton } from "../ui/Button";
 import * as Styles from "../ui/styles";
 interface Props extends Omit<TippyProps, "children"> {
   content: string | JSX.Element | React.ReactNode;
@@ -39,7 +38,6 @@ interface Props extends Omit<TippyProps, "children"> {
     | "click"
     | "focusin"
     | "manual";
-  theme?: IButton["theme"];
 }
 
 const Button = styled.button`
@@ -60,7 +58,6 @@ export default function Tooltip({
   size = 18,
   weight = "regular",
   trigger = "mouseenter focus",
-  theme = "primary",
   wrap = true,
   ...rest
 }: Props) {
@@ -76,7 +73,7 @@ export default function Tooltip({
       {...rest}
     >
       {wrap ? (
-        <Button type="button" theme={theme}>
+        <Button type="button">
           {children ? children : <Question size={size} weight={weight} />}
         </Button>
       ) : (

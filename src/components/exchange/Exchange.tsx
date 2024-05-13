@@ -5,12 +5,15 @@ import {
   ExchangeCardStatus,
   exchanges,
   hooks,
+  isBundle,
+  ProductType,
   subgraph
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { CONFIG } from "lib/config";
 import { useAccount, useSigner } from "lib/utils/hooks/connection/connection";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { CameraSlash } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
 import { generatePath } from "react-router-dom";
@@ -93,7 +96,8 @@ export default function Exchange({
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
-  const imageSrc = getImageUrl(offer.metadata.imageUrl, {
+  const { mainImage } = getOfferDetails(offer.metadata);
+  const imageSrc = getImageUrl((mainImage || offer?.metadata?.imageUrl) ?? "", {
     height: 500
   });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
@@ -233,14 +237,14 @@ export default function Exchange({
         };
     }
   };
-
+  const isPhygital = isBundle(offer);
   return (
     <ExchangeCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <ExchangeCard
         onCardClick={handleOnCardClick}
         dataCard="exchange-card"
         id={offer.id}
-        title={offer.metadata.name}
+        title={offer.metadata?.name || ""}
         avatarName={sellerName}
         avatar={avatar || mockedAvatar}
         imageProps={{
@@ -254,6 +258,7 @@ export default function Exchange({
         onAvatarNameClick={handleOnAvatarClick}
         price={Number(price)}
         currency={offer.exchangeToken.symbol as Currencies}
+        productType={isPhygital ? ProductType.phygital : ProductType.physical}
         {...createSpecificCardConfig()}
       />
     </ExchangeCardWrapper>

@@ -1,6 +1,6 @@
 import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
 import { ReactNode } from "react";
-import styled, { css, IntrinsicElementsKeys } from "styled-components";
+import styled, { css } from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
@@ -42,7 +42,7 @@ const InfoListItem = styled.li`
 
 interface Props {
   policyIcon?: ReactNode;
-  titleTag?: IntrinsicElementsKeys;
+  titleTag?: keyof JSX.IntrinsicElements;
   bulletPointIcon?: ReactNode;
 }
 

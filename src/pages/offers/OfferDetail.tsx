@@ -17,12 +17,12 @@ import {
 } from "../../components/detail/Detail.style";
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
-import SellerID, { Seller } from "../../components/ui/SellerID";
+import SellerID from "../../components/ui/SellerID";
 import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
+import { getOfferDetails } from "../../lib/utils/offer/getOfferDetails";
 import NotFound from "../not-found/NotFound";
 const ObjectContainImage = styled(Image)`
   > * {
@@ -93,7 +93,7 @@ export default function OfferDetail() {
     return <NotFound />;
   }
 
-  const { name, offerImg, animationUrl } = getOfferDetails(offer);
+  const { name, offerImg, animationUrl } = getOfferDetails(offer.metadata);
   const OfferImage = (
     <ObjectContainImage
       src={offerImg || ""}
@@ -119,8 +119,8 @@ export default function OfferDetail() {
             )}
             <SellerAndOpenSeaGrid>
               <SellerID
-                offer={offer}
-                buyerOrSeller={offer?.seller as Seller}
+                offerMetadata={offer.metadata}
+                accountToShow={offer?.seller}
                 justifyContent="flex-start"
                 withProfileImage
               />

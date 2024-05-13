@@ -1,7 +1,7 @@
+import { isTruthy } from "lib/types/helpers";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import { breakpoint } from "../../lib/styles/breakpoint";
 import bytesToSize from "../../lib/utils/bytesToSize";
 import { useForm } from "../../lib/utils/hooks/useForm";
 import { Select, Upload } from "../form";
@@ -10,32 +10,33 @@ import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
 import Tabs from "../tabs/Tabs";
 import BosonButton from "../ui/BosonButton";
 import { Grid } from "../ui/Grid";
+import { DigitalUploadImages } from "./DigitalProductImages";
+import { PhysicalUploadImages } from "./PhysicalProductImages";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
+import { getBundleItemId } from "./productDigital/getBundleItemId";
+import { getBundleItemName } from "./productDigital/getBundleItemName";
 import {
+  DigitalFile,
+  Experiential,
+  getIsBundleItem,
+  NewNFT
+} from "./productDigital/getIsBundleItem";
+import {
+  CreateProductForm,
   IMAGE_SPECIFIC_OR_ALL_OPTIONS,
   ImageSpecificOrAll,
-  ProductTypeValues
+  MAX_VIDEO_FILE_SIZE,
+  ProductTypeTypeValues,
+  ProductTypeVariantsValues
 } from "./utils";
-
-const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
 
 const ContainerProductImage = styled.div`
   max-width: 43.5rem;
   width: 100%;
-`;
-
-const SpaceContainer = styled.div`
-  display: grid;
-  grid-column-gap: 2rem;
-  grid-row-gap: 2rem;
-  justify-content: space-between;
-
-  grid-template-columns: repeat(1, max-content);
-  ${breakpoint.xs} {
-    grid-template-columns: repeat(2, max-content);
-  }
-  ${breakpoint.m} {
-    grid-template-columns: repeat(4, max-content);
+  &:has(.digital) {
+    #product-animation {
+      display: none;
+    }
   }
 `;
 
@@ -47,88 +48,124 @@ const StyledTabs = styled(Tabs)`
   [data-tab-title] {
     padding-right: 2rem;
     font-size: 0.8063rem;
+    &.digital[data-active="false"] {
+      width: 16ch;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: content-box;
+    }
   }
 `;
 
-function UploadImages({ prefix }: { prefix: string }) {
-  return (
-    <>
-      <SpaceContainer>
-        <div>
-          <Upload
-            name={`${prefix}.thumbnail`}
-            placeholder="Thumbnail"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload
-            name={`${prefix}.secondary`}
-            placeholder="Secondary"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload
-            name={`${prefix}.everyAngle`}
-            placeholder="Every angle"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload name={`${prefix}.details`} placeholder="Details" withUpload />
-        </div>
-        <div>
-          <Upload name={`${prefix}.inUse`} placeholder="In Use" withUpload />
-        </div>
-        <div>
-          <Upload
-            name={`${prefix}.styledScene`}
-            placeholder="Styled Scene"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload
-            name={`${prefix}.sizeAndScale`}
-            placeholder="Size and scale"
-            withUpload
-          />
-        </div>
-        <div>
-          <Upload name={`${prefix}.more`} placeholder="More" withUpload />
-        </div>
-      </SpaceContainer>
-    </>
-  );
-}
 interface Props {
   onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
 }
 const productImagesPrefix = "productImages";
+const getProductImageError = (
+  index: number,
+  errors: ReturnType<typeof useForm<CreateProductForm>>["errors"]
+) => {
+  const error =
+    errors.productImages && typeof errors.productImages === "string"
+      ? errors.productImages
+      : typeof errors.productImages === "object" &&
+          Array.isArray(errors.productImages) &&
+          typeof errors.productImages[index] === "object" &&
+          typeof Object.values(errors.productImages[index])?.[0] === "string"
+        ? (Object.values(errors.productImages[index])?.[0] as string) || ""
+        : typeof errors.productImages === "object" &&
+            typeof Object.values(errors.productImages)?.[0] === "string"
+          ? Object.values(errors.productImages)?.[0]
+          : null;
+  return error;
+};
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
-  const { nextIsDisabled, values } = useForm();
+  const { nextIsDisabled, values, errors } = useForm();
   const [isVideoLoading, setVideoLoading] = useState<boolean>();
   const hasVariants =
-    values.productType.productVariant === ProductTypeValues.differentVariants;
+    values.productType.productVariant ===
+    ProductTypeVariantsValues.differentVariants;
   const oneSetOfImages =
     !hasVariants ||
     values.imagesSpecificOrAll?.value === ImageSpecificOrAll.all;
+  const isPhygital =
+    values.productType.productType === ProductTypeTypeValues.phygital;
   const tabsData = useMemo(() => {
-    return (
-      values.productVariants?.variants?.map((variant, index) => {
-        return {
-          id: variant.name || index + "",
-          title: variant.name || `Variant ${index}`,
-          content: (
-            <UploadImages
-              prefix={`productVariantsImages[${index}].productImages`}
-            />
-          )
-        };
-      }) || []
-    );
-  }, [values.productVariants?.variants]);
+    return [
+      ...(oneSetOfImages
+        ? [
+            {
+              id: "physical-item",
+              title: "Physical item",
+              content: (
+                <PhysicalUploadImages
+                  prefix={productImagesPrefix}
+                  error={getProductImageError(0, errors)}
+                />
+              )
+            }
+          ]
+        : values.productVariants?.variants?.map((variant, index) => {
+            return {
+              id: variant.name || index + "",
+              title: variant.name || `Variant ${index}`,
+              content: (
+                <PhysicalUploadImages
+                  prefix={`productVariantsImages[${index}].productImages`}
+                  error={getProductImageError(index, errors)}
+                />
+              )
+            };
+          }) || []),
+      ...(isPhygital
+        ? values.productDigital?.bundleItems
+            ?.map((bi, index) => {
+              const isNewNft = getIsBundleItem<NewNFT>(bi, "newNftName");
+              const isNotNFT =
+                getIsBundleItem<DigitalFile>(bi, "digitalFileName") ||
+                getIsBundleItem<Experiential>(bi, "experientialName");
+              if (isNewNft || isNotNFT) {
+                const error =
+                  errors.bundleItemsMedia &&
+                  typeof errors.bundleItemsMedia === "string"
+                    ? errors.bundleItemsMedia
+                    : typeof errors.bundleItemsMedia === "object" &&
+                        Array.isArray(errors.bundleItemsMedia) &&
+                        typeof errors.bundleItemsMedia[index] === "object" &&
+                        typeof Object.values(
+                          errors.bundleItemsMedia[index]
+                        )?.[0] === "string"
+                      ? (Object.values(
+                          errors.bundleItemsMedia[index]
+                        )?.[0] as string) || ""
+                      : null;
+                const name = getBundleItemName(bi);
+                return {
+                  id: `${getBundleItemId(bi)}-${index}`,
+                  title: `Digital Item - ${name}`,
+                  className: "digital",
+                  content: (
+                    <DigitalUploadImages
+                      className="digital"
+                      prefix={`bundleItemsMedia[${index}]`}
+                      error={error}
+                    />
+                  )
+                };
+              }
+              return null;
+            })
+            .filter(isTruthy) ?? []
+        : [])
+    ];
+  }, [
+    errors,
+    oneSetOfImages,
+    values.productDigital?.bundleItems,
+    values.productVariants?.variants,
+    isPhygital
+  ]);
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
   }, []);
@@ -159,6 +196,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     ? true
     : values.productVariants.variants.length ===
       values.productVariantsImages?.length;
+
   return (
     <ContainerProductImage>
       <Grid>
@@ -176,13 +214,17 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         title="Upload your product images"
         subTitle={`Use a max. size of ${bytesToSize(MAX_FILE_SIZE)} per image`}
       >
-        {oneSetOfImages ? (
-          <UploadImages prefix={productImagesPrefix} />
+        {oneSetOfImages && !isPhygital ? (
+          <PhysicalUploadImages
+            prefix={productImagesPrefix}
+            error={getProductImageError(0, errors)}
+          />
         ) : (
           <StyledTabs tabsData={tabsData} Content={TabsContent} />
         )}
       </FormField>
       <FormField
+        id="product-animation"
         title="Upload your product animation video"
         // subTitle={`${
         //   hasVariants

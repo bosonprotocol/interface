@@ -12,7 +12,7 @@ const StyledFieldInput = styled(FieldInput)`
 `;
 const StyledClearButton = styled(ClearButton)`
   top: 1px;
-  height: calc(100% - 2px);
+  height: calc(100% - 4px);
   margin-left: 0;
 `;
 export const Input = forwardRef<HTMLInputElement, InputProps>(

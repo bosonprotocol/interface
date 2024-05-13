@@ -1,7 +1,17 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
-import { ProtocolConfig } from "@bosonprotocol/react-kit";
+import {
+  BuyerTransferInfo,
+  digitalTypeMapping
+} from "@bosonprotocol/react-kit";
+export { BuyerTransferInfo } from "@bosonprotocol/react-kit";
+import {
+  digitalNftTypeMapping,
+  digitalTypeMappingDisplay,
+  ProtocolConfig
+} from "@bosonprotocol/react-kit";
 import countries from "lib/constants/countries.json";
 import { onlyFairExchangePolicyLabel } from "lib/constants/policies";
+import { BUYER_TRANSFER_INFO_KEY } from "pages/create-product/utils/const";
 
 import { CONFIG } from "../../../lib/config";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
@@ -9,6 +19,8 @@ import { ContactPreference } from "../../modal/components/Profile/const";
 
 export const MAX_LOGO_SIZE = 600 * 1024;
 export const MAX_IMAGE_SIZE = 600 * 1024;
+export const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
+
 export const SUPPORTED_FILE_FORMATS = [
   "image/jpg",
   "image/jpeg",
@@ -16,14 +28,28 @@ export const SUPPORTED_FILE_FORMATS = [
   "image/png",
   "image/webp"
 ];
-
-export const CREATE_PRODUCT_STEPS = (
-  isMultiVariant: boolean,
-  isTokenGated: boolean
-) => [
+const yesOrNoOptions = [
+  {
+    value: "false",
+    label: "No"
+  },
+  {
+    value: "true",
+    label: "Yes"
+  }
+] as const;
+export const getCreateProductSteps = ({
+  isMultiVariant,
+  isPhygital,
+  isTokenGated
+}: {
+  isMultiVariant: boolean;
+  isTokenGated: boolean;
+  isPhygital: boolean;
+}) => [
   {
     name: "Product Data",
-    steps: isMultiVariant ? 4 : 3
+    steps: 3 + (isMultiVariant ? 1 : 0) + (isPhygital ? 1 : 0)
   } as const,
   {
     name: "Terms of Sale",
@@ -66,6 +92,171 @@ export const CATEGORY_OPTIONS = [
   }
 ] as const;
 
+export const DIGITAL_TYPE = Object.entries(digitalTypeMappingDisplay).map(
+  ([key, value]) => ({
+    value: key,
+    label: value
+  })
+);
+
+export const getDigitalTypeOption = (key: keyof typeof digitalTypeMapping) => {
+  return DIGITAL_TYPE.find((digitalType) => digitalType.value === key);
+};
+
+export const DIGITAL_NFT_TYPE = Object.entries(digitalNftTypeMapping).map(
+  ([key, value]) => ({
+    value: key,
+    label: value
+  })
+);
+
+export const isNftMintedAlreadyOptions = [...yesOrNoOptions] as const;
+export const getIsMintedAlreadyOption = (key: "true" | "false") => {
+  return isNftMintedAlreadyOptions.find((option) => option.value === key);
+};
+export const buyerTranferInfoTitle = "Buyer information required for transfer";
+const getTransferCriteriaCopy = (item: "NFT" | "digital file" | "experience") =>
+  `Describe when the ${item} will be transferred to the buyer & the conditions that need to be met to receive it`;
+const getTransferTimeCopy = (item: "NFT" | "digital file" | "experience") =>
+  `The time by when the buyer can expect to receive the ${item} once the transfer criteria has been met`;
+export const newNftInfo = {
+  newNftType: {
+    key: "newNftType",
+    displayKey: "NFT type"
+  },
+  newNftName: {
+    key: "newNftName",
+    displayKey: "Name"
+  },
+  newNftDescription: {
+    key: "newNftDescription",
+    displayKey: "Description"
+  },
+  newNftTransferCriteria: {
+    key: "newNftTransferCriteria",
+    displayKey: "Transfer criteria",
+    subtitle: getTransferCriteriaCopy("NFT")
+  },
+  newNftTransferTime: {
+    key: "newNftTransferTime",
+    displayKey: "Transfer time",
+    subtitle: getTransferTimeCopy("NFT")
+  },
+  newNftTransferTimeUnit: {
+    key: "newNftTransferTimeUnit"
+  },
+  newNftBuyerTransferInfo: {
+    key: "newNftBuyerTransferInfo",
+    displayKey: buyerTranferInfoTitle,
+    normalizedKey: BUYER_TRANSFER_INFO_KEY
+  }
+} as const;
+export const mintedNftInfo = {
+  mintedNftContractAddress: {
+    key: "mintedNftContractAddress",
+    displayKey: "Contract address"
+  },
+  mintedNftType: {
+    key: "mintedNftType",
+    displayKey: "NFT type"
+  },
+  mintedNftTokenType: {
+    key: "mintedNftTokenType",
+    displayKey: "Token type"
+  },
+  mintedNftTokenIdRangeMin: {
+    key: "mintedNftTokenIdRangeMin",
+    displayKey: "Min token ID"
+  },
+  mintedNftTokenIdRangeMax: {
+    key: "mintedNftTokenIdRangeMax",
+    displayKey: "Max token ID"
+  },
+  mintedNftExternalUrl: {
+    key: "mintedNftExternalUrl",
+    displayKey: "External URL"
+  },
+  mintedNftTransferTime: {
+    key: "mintedNftTransferTime",
+    displayKey: "Transfer time",
+    subtitle: getTransferTimeCopy("NFT")
+  },
+  mintedNftTransferTimeUnit: {
+    key: "mintedNftTransferTimeUnit"
+  },
+  mintedNftTransferCriteria: {
+    key: "mintedNftTransferCriteria",
+    displayKey: "Transfer criteria",
+    subtitle: getTransferCriteriaCopy("NFT")
+  },
+  mintedNftBuyerTransferInfo: {
+    key: "mintedNftBuyerTransferInfo",
+    displayKey: buyerTranferInfoTitle,
+    normalizedKey: BUYER_TRANSFER_INFO_KEY
+  }
+} as const;
+export const digitalFileInfo = {
+  digitalFileName: {
+    key: "digitalFileName",
+    displayKey: "Digital file title"
+  },
+  digitalFileDescription: {
+    key: "digitalFileDescription",
+    displayKey: "Digital file description"
+  },
+  digitalFileFormat: {
+    key: "digitalFileFormat",
+    displayKey: "Digital file format"
+  },
+  digitalFileTransferCriteria: {
+    key: "digitalFileTransferCriteria",
+    displayKey: "Transfer criteria",
+    subtitle: getTransferCriteriaCopy("digital file")
+  },
+  digitalFileTransferTime: {
+    key: "digitalFileTransferTime",
+    displayKey: "Transfer time",
+    subtitle: getTransferTimeCopy("digital file")
+  },
+  digitalFileTransferTimeUnit: {
+    key: "digitalFileTransferTimeUnit"
+  },
+  digitalFileBuyerTransferInfo: {
+    key: "digitalFileBuyerTransferInfo",
+    displayKey: buyerTranferInfoTitle,
+    normalizedKey: BUYER_TRANSFER_INFO_KEY
+  }
+} as const;
+
+export const experientialInfo = {
+  experientialName: {
+    key: "experientialName",
+    displayKey: "Experience title"
+  },
+  experientialDescription: {
+    key: "experientialDescription",
+    displayKey: "Description of experience"
+  },
+  experientialTransferTime: {
+    key: "experientialTransferTime",
+    displayKey: "Transfer time",
+    subtitle: getTransferTimeCopy("experience")
+  },
+  experientialTransferTimeUnit: {
+    key: "experientialTransferTimeUnit"
+  },
+  experientialTransferCriteria: {
+    key: "experientialTransferCriteria",
+    displayKey: "Transfer criteria",
+    subtitle: getTransferCriteriaCopy("experience")
+  },
+  experientialBuyerTransferInfo: {
+    key: "experientialBuyerTransferInfo",
+    displayKey: buyerTranferInfoTitle,
+    normalizedKey: BUYER_TRANSFER_INFO_KEY
+  }
+} as const;
+
 export const getOptionsCurrencies = (
   envConfig: ProtocolConfig
 ): {
@@ -85,16 +276,8 @@ export const getOptionsCurrencies = (
           label: envConfig.nativeCoin?.symbol || ""
         }
       ];
-export const OPTIONS_TOKEN_GATED = [
-  {
-    value: "false",
-    label: "No"
-  },
-  {
-    value: "true",
-    label: "Yes"
-  }
-] as const;
+
+export const OPTIONS_TOKEN_GATED = [...yesOrNoOptions] as const;
 
 export enum TokenTypes {
   "erc20" = "erc20",
@@ -120,6 +303,28 @@ export const TOKEN_TYPES = [
   {
     value: TokenTypes.erc1155,
     label: "ERC1155"
+  }
+] as const;
+
+export const NFT_TOKEN_TYPES = [
+  {
+    value: TokenTypes.erc721,
+    label: "ERC721"
+  },
+  {
+    value: TokenTypes.erc1155,
+    label: "ERC1155"
+  }
+] as const;
+
+export const BUYER_TRANSFER_INFO_OPTIONS = [
+  {
+    value: BuyerTransferInfo.email,
+    label: "E-mail"
+  },
+  {
+    value: BuyerTransferInfo.walletAddress,
+    label: "Wallet address"
   }
 ] as const;
 
@@ -231,7 +436,12 @@ export const OPTIONS_WEIGHT = [
   }
 ] as const;
 
-export enum ProductTypeValues {
+export enum ProductTypeTypeValues {
+  physical = "physical",
+  phygital = "phygital"
+}
+
+export enum ProductTypeVariantsValues {
   oneItemType = "oneItemType",
   differentVariants = "differentVariants"
 }

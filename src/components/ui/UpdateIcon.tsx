@@ -2,9 +2,9 @@ import { ArrowsClockwise } from "phosphor-react";
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 
-const StyledRefresh = styled(ArrowsClockwise)<{ isLoading: boolean }>`
-  ${({ isLoading }) => {
-    if (isLoading) {
+const StyledRefresh = styled(ArrowsClockwise)<{ $isLoading: boolean }>`
+  ${({ $isLoading }) => {
+    if ($isLoading) {
       return css`
         animation: rotation 0.8s linear infinite;
       `;
@@ -31,7 +31,7 @@ export const UpdateIcon: React.FC<UpdateIconProps> = ({ onClick, ...rest }) => {
     <StyledRefresh
       {...rest}
       style={{ ...rest.style, cursor: "pointer" }}
-      isLoading={isLoading}
+      $isLoading={isLoading}
       onClick={async () => {
         setLoading(true);
         await onClick();

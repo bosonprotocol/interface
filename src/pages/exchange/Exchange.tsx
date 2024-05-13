@@ -1,6 +1,8 @@
+import { isBundle, isProductV1 } from "@bosonprotocol/react-kit";
 import { ExchangeDetailWidget } from "components/detail/DetailWidget/ExchangeDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
+import { PhygitalLabel } from "components/ui/PhygitalLabel";
 import { OfferFullDescription } from "pages/common/OfferFullDescription";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -20,13 +22,13 @@ import SellerID from "../../components/ui/SellerID";
 import { Typography } from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useLensProfilesPerSellerIds } from "../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
   useSellerCurationListFn,
   useSellers
 } from "../../lib/utils/hooks/useSellers";
+import { getOfferDetails } from "../../lib/utils/offer/getOfferDetails";
 import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
@@ -63,8 +65,8 @@ export default function Exchange() {
   );
   const exchange = exchanges?.[0];
   const offer = exchange?.offer;
-  const metadata = offer?.metadata;
-  const variations = metadata?.variations;
+  const variations =
+    offer && isProductV1(offer) ? offer.metadata?.variations : [];
   const hasVariations = !!variations?.length;
   const sellerId = exchange?.seller.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
@@ -132,13 +134,9 @@ export default function Exchange() {
     return <NotFound />;
   }
 
-  const { name, offerImg, animationUrl } = getOfferDetails(offer);
+  const { name, animationUrl, mainImage } = getOfferDetails(offer.metadata);
   const OfferImage = (
-    <ObjectContainImage
-      src={offerImg || ""}
-      dataTestId="offerImage"
-      alt="Offer"
-    />
+    <ObjectContainImage src={mainImage} dataTestId="offerImage" alt="Offer" />
   );
   return (
     <>
@@ -146,6 +144,7 @@ export default function Exchange() {
         <LightBackground>
           <MainDetailGrid>
             <ImageWrapper>
+              {isBundle(offer) && <PhygitalLabel />}
               {animationUrl ? (
                 <Video
                   src={animationUrl}
@@ -159,8 +158,8 @@ export default function Exchange() {
               )}
               <SellerAndOpenSeaGrid>
                 <SellerID
-                  offer={offer}
-                  buyerOrSeller={exchange?.seller}
+                  offerMetadata={offer.metadata}
+                  accountToShow={exchange?.seller}
                   justifyContent="flex-start"
                   withProfileImage
                   lensProfile={sellerLensProfile}

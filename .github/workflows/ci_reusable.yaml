@@ -175,6 +175,8 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
       - run: npm run prettier
+      - run: npm run tsc
+      - run: npm run test
       - run: npm run lint
       - id: lint
         run: echo "::set-output name=pass::success"

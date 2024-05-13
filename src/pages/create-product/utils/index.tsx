@@ -1,6 +1,7 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import ConfirmProductDetails from "components/product/confirmProductDetailsPage/ConfirmProductDetails";
 import CoreTermsOfSale from "components/product/coreTermsOfSale/CoreTermsOfSale";
+import { ProductDigital } from "components/product/productDigital/ProductDigital";
 import ProductImages from "components/product/ProductImages";
 import ProductInformation from "components/product/ProductInformation";
 import ProductType from "components/product/ProductType";
@@ -9,14 +10,14 @@ import ShippingInfo from "components/product/ShippingInfo";
 import TermsOfExchange from "components/product/TermsOfExchange";
 import TokenGating from "components/product/tokenGating/TokenGating";
 import {
-  CoreTermsOfSaleValidationSchema,
   getCoreTermsOfSaleValidationSchema,
+  getProductDigitalValidationSchema,
+  getProductImagesValidationSchema,
+  getProductInformationValidationSchema,
+  getProductVariantsImagesValidationSchema,
   getProductVariantsValidationSchema,
   getTokenGatingValidationSchema,
-  productImagesValidationSchema,
-  productInformationValidationSchema,
   productTypeValidationSchema,
-  productVariantsImagesValidationSchema,
   regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
@@ -24,6 +25,7 @@ import {
 } from "components/product/utils";
 import {
   coreTermsOfSaleHelp,
+  productDigitalHelp,
   productImagesHelp,
   productInformationHelp,
   productTypeHelp,
@@ -38,44 +40,6 @@ import { isTruthy } from "lib/types/helpers";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
 import React from "react";
 
-export type CreateProductSteps = {
-  0: {
-    ui: JSX.Element;
-    validation: typeof productTypeValidationSchema;
-    helpSection: typeof productTypeHelp;
-  };
-  1: {
-    ui: JSX.Element;
-    validation: typeof productInformationValidationSchema;
-    helpSection: typeof productInformationHelp;
-  };
-  2: {
-    ui: JSX.Element;
-    validation: typeof productImagesValidationSchema;
-    helpSection: typeof productImagesHelp;
-  };
-  3: {
-    ui: JSX.Element;
-    validation: CoreTermsOfSaleValidationSchema;
-    helpSection: typeof coreTermsOfSaleHelp;
-  };
-  4: {
-    ui: JSX.Element;
-    validation: typeof termsOfExchangeValidationSchema;
-    helpSection: typeof termsOfExchangeHelp;
-  };
-  5: {
-    ui: JSX.Element;
-    validation: typeof shippingInfoValidationSchema;
-    helpSection: typeof shippingInfoHelp;
-  };
-  6: {
-    ui: JSX.Element;
-    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
-    helpSection: null;
-  };
-};
-
 type CreateProductStepsParams = {
   setIsPreviewVisible: React.Dispatch<React.SetStateAction<boolean>>;
   chatInitializationStatus: ChatInitializationStatus;
@@ -83,6 +47,7 @@ type CreateProductStepsParams = {
   showInvalidRoleModal: () => void;
   isDraftModalClosed: boolean;
   isMultiVariant: boolean;
+  isPhygital: boolean;
   isTokenGated: boolean;
   onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
   isOneSetOfImages: boolean;
@@ -97,6 +62,7 @@ export const createProductSteps = ({
   showInvalidRoleModal,
   isDraftModalClosed,
   isMultiVariant,
+  isPhygital,
   isTokenGated,
   onChangeOneSetOfImages,
   isOneSetOfImages,
@@ -126,7 +92,7 @@ export const createProductSteps = ({
         <ProductInformation />
       </>
     ),
-    validation: productInformationValidationSchema,
+    validation: getProductInformationValidationSchema({ isPhygital }),
     helpSection: productInformationHelp
   };
   const productImages = {
@@ -137,8 +103,12 @@ export const createProductSteps = ({
       </>
     ),
     validation: isOneSetOfImages
-      ? productImagesValidationSchema
-      : productVariantsImagesValidationSchema,
+      ? getProductImagesValidationSchema({
+          isPhygital
+        })
+      : getProductVariantsImagesValidationSchema({
+          isPhygital
+        }),
     helpSection: productImagesHelp
   };
   const coreTermsOfSale = {
@@ -198,12 +168,34 @@ export const createProductSteps = ({
     validation: null,
     helpSection: null
   };
+  const productDigital = {
+    ui: (
+      <>
+        <ScrollToID id="multisteps_wrapper" />
+        <ProductDigital />
+      </>
+    ),
+    validation: getProductDigitalValidationSchema({ coreSDK }),
+    helpSection: productDigitalHelp
+  };
+  const productVariants = {
+    ui: (
+      <>
+        <ScrollToID id="multisteps_wrapper" />
+        <ProductVariants />
+      </>
+    ),
+    validation: getProductVariantsValidationSchema(config),
+    helpSection: productVariantsHelp
+  };
 
-  const defaultSteps = Object.fromEntries(
+  return Object.fromEntries(
     Object.entries(
       [
         productType,
         productInformation,
+        isPhygital && productDigital,
+        isMultiVariant && productVariants,
         productImages,
         coreTermsOfSale,
         isTokenGated && tokenGating,
@@ -213,37 +205,6 @@ export const createProductSteps = ({
       ].filter(isTruthy)
     )
   );
-
-  if (isMultiVariant) {
-    const productVariants = {
-      ui: (
-        <>
-          <ScrollToID id="multisteps_wrapper" />
-          <ProductVariants />
-        </>
-      ),
-      validation: getProductVariantsValidationSchema(config),
-      helpSection: productVariantsHelp,
-      stepNo: "productVariants"
-    };
-    return Object.fromEntries(
-      Object.entries(
-        [
-          productType,
-          productInformation,
-          productVariants,
-          productImages,
-          coreTermsOfSale,
-          isTokenGated && tokenGating,
-          termsOfExchange,
-          shippingInfo,
-          preview
-        ].filter(isTruthy)
-      )
-    );
-  }
-
-  return defaultSteps;
 };
 
 export const FIRST_STEP = 0;

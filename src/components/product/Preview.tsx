@@ -2,6 +2,7 @@ import { Grid, subgraph } from "@bosonprotocol/react-kit";
 import { CommitDetailWidget } from "components/detail/DetailWidget/CommitDetailWidget";
 import { Spinner } from "components/loading/Spinner";
 import Loading from "components/ui/Loading";
+import { PhygitalLabel } from "components/ui/PhygitalLabel";
 import { ChatInitializationStatus } from "lib/utils/hooks/chat/useChatStatus";
 import map from "lodash/map";
 import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
@@ -10,7 +11,7 @@ import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTerm
 import styled from "styled-components";
 
 import Image from "../../components/ui/Image";
-import SellerID, { Seller } from "../../components/ui/SellerID";
+import SellerID from "../../components/ui/SellerID";
 import { isTruthy } from "../../lib/types/helpers";
 import { useForm } from "../../lib/utils/hooks/useForm";
 import { VariantV1 } from "../../pages/products/types";
@@ -26,6 +27,7 @@ import BosonButton from "../ui/BosonButton";
 import { Typography } from "../ui/Typography";
 import Video from "../ui/Video";
 import { ConfirmProductDetailsButtonGroup } from "./confirmProductDetailsPage/ConfirmProductDetails.styles";
+import { ProductTypeTypeValues } from "./utils";
 import { usePreviewOffers } from "./utils/usePreviewOffers";
 const ObjectContainImage = styled(Image)`
   > * {
@@ -189,6 +191,8 @@ export default function Preview({
           <LightBackground>
             <MainDetailGrid>
               <ImageWrapper>
+                {values.productType.productType ===
+                  ProductTypeTypeValues.phygital && <PhygitalLabel />}
                 {animationUrl ? (
                   <Video
                     src={animationUrl}
@@ -202,8 +206,8 @@ export default function Preview({
                 )}
                 <SellerAndOpenSeaGrid>
                   <SellerID
-                    offer={offer}
-                    buyerOrSeller={offer?.seller as Seller}
+                    offerMetadata={offer.metadata}
+                    accountToShow={offer?.seller}
                     justifyContent="flex-start"
                     withProfileImage
                     onClick={null}

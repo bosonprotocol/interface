@@ -594,7 +594,7 @@ const ChatConversation = ({
           <SellerComponent
             size={24}
             exchange={exchange}
-            buyerOrSeller={buyerOrSellerToShow}
+            accountToShow={buyerOrSellerToShow}
             lensProfile={sellerLensProfile}
           />
         </Header>

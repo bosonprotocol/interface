@@ -322,7 +322,7 @@ export default function ResolveDisputeModal({
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}
-                  action={`Raised dispute: ${exchange.offer.metadata.name}`}
+                  action={`Raised dispute: ${exchange.offer.metadata?.name}`}
                   url={config.envConfig.getTxExplorerUrl?.(tx?.hash)}
                 />
               ));

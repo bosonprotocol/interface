@@ -1,3 +1,4 @@
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { ClockClockwise } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
@@ -95,16 +96,18 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
   const deadlineTimeLeft = `${daysLeftToResolveDispute}/${totalDaysToResolveDispute}`;
   const isResolved =
     exchange.dispute?.buyerPercent && exchange.dispute?.buyerPercent !== "0";
+  const { mainImage } = getOfferDetails(exchange.offer.metadata);
+
   return (
     <Container>
       <OfferImage>
-        <StyledImage src={exchange?.offer.metadata.image} />
+        <StyledImage src={mainImage} />
       </OfferImage>
       <MessageInfo>
-        <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
+        <ExchangeName>{exchange?.offer.metadata?.name}</ExchangeName>
         <StyledSellerID
-          offer={exchange?.offer}
-          buyerOrSeller={exchange?.offer.seller}
+          offerMetadata={exchange?.offer.metadata}
+          accountToShow={exchange?.offer.seller}
           withProfileImage
           onClick={() => null}
         />

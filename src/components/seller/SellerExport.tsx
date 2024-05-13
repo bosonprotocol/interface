@@ -4,7 +4,7 @@ import { CommonPropTypes } from "react-csv/components/CommonPropTypes";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Button, { IButton } from "../ui/Button";
+import Button from "../ui/Button";
 
 const ExportButton = styled(Button)`
   color: ${colors.secondary};
@@ -17,13 +17,12 @@ const ExportButton = styled(Button)`
 
 interface Props {
   csvProps: CommonPropTypes;
-  buttonProps?: IButton;
 }
 
-function SellerExport({ csvProps, buttonProps = {} }: Props) {
+function SellerExport({ csvProps }: Props) {
   return (
     <CSVLink {...csvProps} filename={csvProps.filename ?? "filename"}>
-      <ExportButton themeVal="outline" size="small" {...buttonProps}>
+      <ExportButton themeVal="outline" size="small">
         Export <DownloadSimple size={16} />
       </ExportButton>
     </CSVLink>

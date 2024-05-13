@@ -32,7 +32,6 @@ import { CONFIG } from "lib/config";
 import { BosonRoutes } from "lib/routing/routes";
 import { isTruthy } from "lib/types/helpers";
 import { getDateTimestamp } from "lib/utils/getDateTimestamp";
-import { getOfferDetails } from "lib/utils/getOfferDetails";
 import {
   useAccount,
   useChainId,
@@ -50,6 +49,7 @@ import {
 } from "lib/utils/hooks/transactions/usePendingTransactions";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellers } from "lib/utils/hooks/useSellers";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { poll } from "lib/utils/promises";
 import { useCoreSDK } from "lib/utils/useCoreSdk";
 import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
@@ -64,7 +64,7 @@ import { BosonSnapshotGate__factory } from "./BosonSnapshotGate/typechain/factor
 const StyledRedeemButton = styled(RedeemButton)`
   width: 100%;
 `;
-const containerBreakpoint = "400px";
+const containerBreakpoint = "450px";
 const CTAsGrid = styled(Grid)`
   .show-in-larger-view {
     display: none;
@@ -333,14 +333,14 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       });
     }
   };
-  const { offerImg } = getOfferDetails(offer);
+  const { mainImage } = getOfferDetails(offer.metadata);
   const BASE_MODAL_DATA = useMemo(
     () => ({
-      animationUrl: offer.metadata.animationUrl || "",
-      image: image || offerImg || "",
+      animationUrl: offer.metadata?.animationUrl || "",
+      image: image || mainImage || "",
       name
     }),
-    [image, offerImg, name, offer.metadata.animationUrl]
+    [image, mainImage, name, offer.metadata?.animationUrl]
   );
   const onCommitSuccess = async (
     _receipt: ethers.providers.TransactionReceipt,
@@ -382,7 +382,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
       toast((t) => (
         <SuccessTransactionToast
           t={t}
-          action={`Commit to offer: ${offer.metadata.name}`}
+          action={`Commit to offer: ${offer.metadata?.name || ""}`}
           onViewDetails={() => {
             showDetailWidgetModal();
           }}

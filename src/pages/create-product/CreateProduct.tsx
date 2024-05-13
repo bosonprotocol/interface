@@ -63,7 +63,7 @@ function CreateProduct() {
   const store = useInitialValues();
   const [searchParams] = useSearchParams();
   const [initial, setInitial] = useState<CreateProductForm>(
-    store.fromProductUuid ?? store.base
+    store.fromProductUuid ?? store.fromBundleUuid ?? store.base
   );
   useEffect(() => {
     if (store.fromProductUuid) {

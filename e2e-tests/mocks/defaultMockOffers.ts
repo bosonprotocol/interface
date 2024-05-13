@@ -44,5 +44,5 @@ export const defaultMockOffers: Offer[] = [
       licenseUrl: "licenseUrl",
       schemaUrl: "schemaUrl"
     }
-  }
+  } as unknown as Offer
 ];

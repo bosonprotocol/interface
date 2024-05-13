@@ -33,7 +33,7 @@ const customStyles = (
   singleValue: (provided: any, state: any) => {
     return {
       ...provided,
-      color: textColor,
+      color: state.isDisabled ? colors.darkGrey : textColor,
       fontSize: "13.33px"
     };
   },
@@ -123,7 +123,7 @@ const useSelectColors = () => {
   };
 };
 
-export default function SelectForm({
+export function SelectForm({
   name,
   options,
   placeholder = "Choose...",
@@ -218,7 +218,7 @@ export default function SelectForm({
     </>
   );
 }
-
+export default SelectForm;
 export function Select({
   options,
   placeholder = "Choose...",
