@@ -1,3 +1,4 @@
+import { ProductTypeTypeValues } from "components/product/utils";
 import React from "react";
 import styled from "styled-components";
 
@@ -197,7 +198,13 @@ export const SellerLandingPage: React.FC = () => {
                     VariableStep.AddSalesChannels
                   ],
                   to: {
-                    pathname: SellerCenterRoutes.CreateProduct
+                    pathname: SellerCenterRoutes.CreateProduct,
+                    search: [
+                      [
+                        SellerLandingPageParameters.slproductType,
+                        ProductTypeTypeValues.physical
+                      ]
+                    ]
                   },
                   firstActiveStep: hasSeller ? 1 : 0,
                   doSetQueryParams: true
@@ -208,10 +215,27 @@ export const SellerLandingPage: React.FC = () => {
               image={<img src={sneakerNftImg} width="128" height="128" />}
               title="Create Phygitals"
               subtitle="Bundle physical products with a digital twin all in one offer"
-              as="a"
-              href="https://form.typeform.com/to/NaiNUsqn"
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={() => {
+                showModal("VARIABLE_STEPS_EXPLAINER", {
+                  title: "Create Phygitals",
+                  order: [
+                    VariableStep.CreateYourProfile,
+                    VariableStep.CreateYourProducts,
+                    VariableStep.AddSalesChannels
+                  ],
+                  to: {
+                    pathname: SellerCenterRoutes.CreateProduct,
+                    search: [
+                      [
+                        SellerLandingPageParameters.slproductType,
+                        ProductTypeTypeValues.phygital
+                      ]
+                    ]
+                  },
+                  firstActiveStep: hasSeller ? 1 : 0,
+                  doSetQueryParams: true
+                });
+              }}
             />
             <CreateTokenGatedOffers
               hasSeller={hasSeller}
