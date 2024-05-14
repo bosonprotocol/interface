@@ -35,7 +35,8 @@ export const UrlParameters = {
 export const SellerLandingPageParameters = {
   slsteps: "slsteps", // slsteps = seller landing steps
   sltitle: "sltitle",
-  sltokenGated: "sltokenGated"
+  sltokenGated: "sltokenGated",
+  slproductType: "slproductType"
 };
 
 export const configQueryParameters = {

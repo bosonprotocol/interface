@@ -58,6 +58,7 @@ import {
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
   ProductMetadataAttributeKeys,
+  ProductTypeTypeValues,
   ProductTypeVariantsValues,
   SUPPORTED_FILE_FORMATS,
   TOKEN_CRITERIA,
@@ -79,6 +80,12 @@ export function useInitialValues() {
   const [searchParams] = useSearchParams();
   const isTokenGated = searchParams.get(
     SellerLandingPageParameters.sltokenGated
+  );
+  const productTypeQueryParam = searchParams.get(
+    SellerLandingPageParameters.slproductType
+  );
+  const productType = Object.values(ProductTypeTypeValues).find(
+    (validProductType) => validProductType === productTypeQueryParam
   );
   const fromProductUuid = searchParams.get(
     SellerHubQueryParameters.fromProductUuid
@@ -206,6 +213,14 @@ export function useInitialValues() {
     }
     if (cloneInitialValues?.productType) {
       cloneInitialValues.productType.tokenGatedOffer = "true";
+    }
+  }
+  if (productType) {
+    if (cloneBaseValues.productType) {
+      cloneBaseValues.productType.productType = productType;
+    }
+    if (cloneInitialValues?.productType) {
+      cloneInitialValues.productType.productType = productType;
     }
   }
 
