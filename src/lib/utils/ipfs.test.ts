@@ -87,4 +87,11 @@ describe("getIpfsGatewayUrl", () => {
     const result = getIpfsGatewayUrl(uri);
     expect(result).toBe(expected);
   });
+
+  it("should return a sanitized URL when the input URI is just the cid", () => {
+    const cid = "QmSeuDdMZqHxTqvraUKzKKJn9Vo9RELsA8xJUbDn6BGc6d";
+    const expected = `https://ipfs.io/ipfs/${cid}`;
+    const result = getIpfsGatewayUrl(cid);
+    expect(result).toBe(expected);
+  });
 });
