@@ -91,16 +91,14 @@ interface IconButtonProps
 type IconBlockProps = React.ComponentPropsWithoutRef<"a" | "button">;
 
 const IconBlock = forwardRef<
-  (HTMLAnchorElement | HTMLDivElement) & { color: string },
-  IconBlockProps
+  HTMLAnchorElement | HTMLDivElement,
+  IconBlockProps & { color: string }
 >(function IconBlock(props, ref) {
   const $color = props.color;
   if ("href" in props) {
     return (
       <IconBlockLink
         ref={ref as React.ForwardedRef<HTMLAnchorElement>}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         $color={$color}
         {...props}
       />
