@@ -2,7 +2,6 @@ import { ConfigId, ProtocolConfig } from "@bosonprotocol/react-kit";
 import { ChainId } from "@uniswap/sdk-core";
 import { useWeb3React } from "@web3-react/core";
 import { useConfigContext } from "components/config/ConfigContext";
-import { useAtomValue } from "jotai";
 import { envConfigsFilteredByEnv } from "lib/config";
 import {
   CaretDown as ChevronDown,
@@ -28,7 +27,6 @@ import useSelectChain from "../../../lib/utils/hooks/useSelectChain";
 import useSyncChainQuery from "../../../lib/utils/hooks/useSyncChainQuery";
 import { Portal } from "../../portal/Portal";
 import Tooltip from "../../tooltip/Tooltip";
-import { showTestnetsAtom } from "../accountDrawer/TestnetsToggle";
 import { NavDropdown } from "../navDropdown/NavDropdown";
 import ChainSelectorRow from "./ChainSelectorRow";
 
@@ -75,20 +73,21 @@ function useWalletSupportedChains(): ChainId[] {
       return NETWORK_SELECTOR_CHAINS_IDS;
   }
 }
-
+const chevronProps = {
+  height: 20,
+  width: 20
+};
 export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const { config } = useConfigContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isXS: isMobile } = useBreakpoints();
 
-  const showTestnets = useAtomValue(showTestnetsAtom);
   const walletSupportsChain = useWalletSupportedChains();
 
   const [supportedConfigs, unsupportedChains] = useMemo(() => {
     const { supported, unsupported } = NETWORK_SELECTOR_CHAINS.filter(
       (config) => {
         return (
-          showTestnets ||
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           !TESTNET_CHAIN_IDS.includes(config.chainId as any)
         );
@@ -111,7 +110,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
         { supported: [], unsupported: [] } as Record<string, ProtocolConfig[]>
       );
     return [supported, unsupported];
-  }, [showTestnets, walletSupportsChain]);
+  }, [walletSupportsChain]);
 
   const ref = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -176,11 +175,6 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
       </div>
     </NavDropdown>
   );
-
-  const chevronProps = {
-    height: 20,
-    width: 20
-  };
 
   return (
     <div style={{ position: "relative", display: "flex" }} ref={ref}>

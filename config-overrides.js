@@ -31,7 +31,10 @@ module.exports = {
         util: require.resolve("util/")
       };
 
-      config.ignoreWarnings = [/Failed to parse source map/];
+      config.ignoreWarnings = [
+        /Failed to parse source map/,
+        /Critical dependency: Accessing import\.meta directly is unsupported \(only property access is supported\)/
+      ];
 
       return config;
     },
