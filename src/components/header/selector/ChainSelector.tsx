@@ -89,7 +89,7 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
       (config) => {
         return (
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          !TESTNET_CHAIN_IDS.includes(config.chainId as any)
+          TESTNET_CHAIN_IDS.includes(config.chainId as any)
         );
       }
     )
