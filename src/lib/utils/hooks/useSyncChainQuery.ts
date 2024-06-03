@@ -69,17 +69,14 @@ export default function useSyncChainQuery() {
       // connecting
 
       if (!isSupportedChain(chainId)) {
-        {
-          // connecting account to an unsupported chain ${chainId}
-          const configIdToConnect = (urlConfigId ||
-            currentConfigId) as ConfigId;
-          selectChain(configIdToConnect);
+        // connecting account to an unsupported chain ${chainId}
+        const configIdToConnect = (urlConfigId || currentConfigId) as ConfigId;
+        selectChain(configIdToConnect);
 
-          if (configIdToConnect) {
-            searchParams.set(configQueryParameters.configId, configIdToConnect);
-            setSearchParams(searchParams);
-            configIdRef.current = configIdToConnect;
-          }
+        if (configIdToConnect) {
+          searchParams.set(configQueryParameters.configId, configIdToConnect);
+          setSearchParams(searchParams);
+          configIdRef.current = configIdToConnect;
         }
       }
     }

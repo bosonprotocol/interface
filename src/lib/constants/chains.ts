@@ -108,9 +108,9 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
 
 export const TESTNET_CHAIN_IDS = [
   ChainId.GOERLI,
-  // ChainId.SEPOLIA,
+  ChainId.SEPOLIA,
   ChainId.POLYGON_MUMBAI,
-  80002,
+  ChainId_POLYGON_AMOY,
   LocalChainId
   // ChainId.ARBITRUM_GOERLI,
   // ChainId.OPTIMISM_GOERLI,
@@ -127,7 +127,7 @@ export const L1_CHAIN_IDS = [
   // ChainId.SEPOLIA,
   ChainId.POLYGON,
   ChainId.POLYGON_MUMBAI,
-  80002,
+  ChainId_POLYGON_AMOY,
   LocalChainId
   // ChainId.CELO,
   // ChainId.CELO_ALFAJORES
@@ -165,7 +165,7 @@ export function getChainPriority(chainId: number): number {
       return 0;
     case ChainId.POLYGON:
     case ChainId.POLYGON_MUMBAI:
-    case 80002:
+    case ChainId_POLYGON_AMOY:
       return 1;
     // case ChainId.ARBITRUM_ONE:
     // case ChainId.ARBITRUM_GOERLI:
