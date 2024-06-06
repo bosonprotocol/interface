@@ -462,7 +462,9 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         externalConnectedChainId: connectedChainId,
         externalConnectedAccount: account,
         externalConnectedSigner: signer,
-        withReduxProvider: false
+        withReduxProvider: false,
+        withWeb3React: false,
+        withCustomReduxContext: false
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}

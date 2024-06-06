@@ -1,4 +1,4 @@
-import { MagicLoginButton } from "@bosonprotocol/react-kit";
+import { bosonButtonThemes, MagicLoginButton } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
 import { LinkWithQuery } from "components/customNavigation/LinkWithQuery";
 import { AutoColumn } from "components/ui/column";
@@ -97,7 +97,8 @@ export default function WalletModal() {
           </OptionGrid>
           <MagicLoginButton
             buttonProps={{
-              style: {
+              theme: {
+                ...bosonButtonThemes({ withBosonStyle: false })["primary"],
                 color: magicLoginTextColor
               }
             }}

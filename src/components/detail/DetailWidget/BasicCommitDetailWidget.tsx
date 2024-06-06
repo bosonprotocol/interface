@@ -38,7 +38,9 @@ export const BasicCommitDetailWidget: React.FC<
         contactSellerForExchangeUrl: "",
         sellerCurationListBetweenCommas:
           curationLists?.sellerCurationList?.join(",") || "",
-        withReduxProvider: false
+        withReduxProvider: false,
+        withCustomReduxContext: false,
+        withWeb3React: false
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}

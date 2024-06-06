@@ -86,7 +86,9 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
         withExternalConnectionProps: true,
         externalConnectedChainId: connectedChainId,
         externalConnectedAccount: account,
-        externalConnectedSigner: signer
+        externalConnectedSigner: signer,
+        withWeb3React: false,
+        withCustomReduxContext: false
       }}
     />
   );

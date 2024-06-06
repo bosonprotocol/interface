@@ -27,9 +27,7 @@ export default function Web3Provider({ children }: { children: ReactNode }) {
 
 /** A component to run hooks under the Web3ReactProvider context. */
 function Updater() {
-  const { account } = useWeb3React();
-
-  const { connector } = useWeb3React();
+  const { account, connector } = useWeb3React();
 
   const previousAccount = usePrevious(account);
   const [, addConnectedWallet] = useConnectedWallets();
