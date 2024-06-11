@@ -180,7 +180,10 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
         withExternalConnectionProps: true,
         externalConnectedChainId: connectedChainId,
         externalConnectedAccount: address,
-        externalConnectedSigner: signer
+        externalConnectedSigner: signer,
+        withWeb3React: false,
+        withCustomReduxContext: false,
+        withReduxProvider: false
       }}
       showBosonLogo={isCustomStoreFront}
       showPriceAsterisk={false}
