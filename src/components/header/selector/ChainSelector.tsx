@@ -17,7 +17,6 @@ import { WalletConnectV2 } from "../../../lib/connection/WalletConnectV2";
 import { getChainInfo } from "../../../lib/constants/chainInfo";
 import {
   getChainPriority,
-  TESTNET_CHAIN_IDS,
   UniWalletSupportedChains
 } from "../../../lib/constants/chains";
 import { getSupportedChainIdsFromWalletConnectSession } from "../../../lib/utils/getSupportedChainIdsFromWalletConnectSession";
@@ -85,30 +84,21 @@ export const ChainSelector = ({ leftAlign }: ChainSelectorProps) => {
   const walletSupportsChain = useWalletSupportedChains();
 
   const [supportedConfigs, unsupportedChains] = useMemo(() => {
-    const { supported, unsupported } = NETWORK_SELECTOR_CHAINS.filter(
-      (config) => {
-        return (
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          TESTNET_CHAIN_IDS.includes(config.chainId as any)
-        );
-      }
-    )
-      .sort(
-        ({ chainId: a }, { chainId: b }) =>
-          getChainPriority(a as ChainId) - getChainPriority(b as ChainId)
-      )
-      .reduce(
-        (acc, config) => {
-          const { chainId: chain } = config;
-          if (walletSupportsChain.includes(chain as ChainId)) {
-            acc.supported.push(config);
-          } else {
-            acc.unsupported.push(config);
-          }
-          return acc;
-        },
-        { supported: [], unsupported: [] } as Record<string, ProtocolConfig[]>
-      );
+    const { supported, unsupported } = NETWORK_SELECTOR_CHAINS.sort(
+      ({ chainId: a }, { chainId: b }) =>
+        getChainPriority(a as ChainId) - getChainPriority(b as ChainId)
+    ).reduce(
+      (acc, config) => {
+        const { chainId: chain } = config;
+        if (walletSupportsChain.includes(chain as ChainId)) {
+          acc.supported.push(config);
+        } else {
+          acc.unsupported.push(config);
+        }
+        return acc;
+      },
+      { supported: [], unsupported: [] } as Record<string, ProtocolConfig[]>
+    );
     return [supported, unsupported];
   }, [walletSupportsChain]);
 

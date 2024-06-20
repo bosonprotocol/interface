@@ -3,7 +3,6 @@ import { CommitWidgetReduxProvider } from "@bosonprotocol/react-kit";
 import { ConfigProvider } from "components/config/ConfigProvider";
 import { CoreSDKProvider } from "components/core-sdk/CoreSDKProvider";
 import { FiatLinkProvider } from "components/header/accountDrawer/fiatOnrampModal/FiatLink";
-import { CoreComponentsUpdaters } from "CoreComponentsUpdaters";
 import { apolloClient } from "graphql/data/apollo";
 import { MulticallUpdater } from "lib/state/multicall";
 import { BlockNumberProvider } from "lib/utils/hooks/useBlockNumber";
@@ -62,7 +61,6 @@ root.render(
             <ApolloProvider client={apolloClient}>
               <BlockNumberProvider>
                 <Updaters />
-                <CoreComponentsUpdaters />
                 <Toaster
                   position="top-right"
                   toastOptions={{
