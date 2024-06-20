@@ -12,7 +12,6 @@ import { GridContainer } from "../../../ui/GridContainer";
 import { ProfilePreview } from "./ProfilePreview";
 
 interface Props {
-  onBlurName?: () => void;
   logoSubtitle?: string;
   coverSubtitle?: string;
   handleComponent?: ReactNode;
@@ -23,7 +22,6 @@ interface Props {
 }
 
 export function ProfileFormFields({
-  onBlurName,
   logoSubtitle,
   coverSubtitle,
   handleComponent: HandleComponent,
@@ -97,12 +95,7 @@ export function ProfileFormFields({
         </FormField>
       </GridContainer>
       <FormField title="Your brand / name" required>
-        <Input
-          name="name"
-          placeholder="Name"
-          onBlur={onBlurName}
-          disabled={disableName}
-        />
+        <Input name="name" placeholder="Name" disabled={disableName} />
       </FormField>
       {HandleComponent}
       <FormField title="Description" required>
