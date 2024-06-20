@@ -6,7 +6,6 @@ import { Typography } from "../../../../ui/Typography";
 import { ProfileFormFields } from "../ProfileFormFields";
 
 interface Props {
-  onBlurName?: () => void;
   logoSubtitle?: string;
   coverSubtitle?: string;
   disableHandle?: boolean;
@@ -18,7 +17,6 @@ interface Props {
 }
 
 export default function LensFormFields({
-  onBlurName,
   logoSubtitle,
   coverSubtitle,
   disableHandle,
@@ -42,7 +40,6 @@ export default function LensFormFields({
         <div>{children}</div>
       </Grid>
       <ProfileFormFields
-        onBlurName={onBlurName}
         logoSubtitle={logoSubtitle}
         coverSubtitle={coverSubtitle}
         handleComponent={

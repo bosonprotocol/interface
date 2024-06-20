@@ -120,6 +120,10 @@ function BatchCreateOffers() {
       setOffersList([]);
       setInvalidFile(false);
     }
+    if (e.target) {
+      // reset value so the same file can be uploaded again (in case the file was modified)
+      e.target.value = "";
+    }
   };
 
   const sellerOffers = useOffers(
@@ -232,12 +236,24 @@ function BatchCreateOffers() {
       if (hasUserRejectedTx) {
         showModal("TRANSACTION_FAILED");
       } else {
+        const defaultError = "Please retry this action";
+        const userFriendlyError = await extractUserFriendlyError(error, {
+          txResponse: txResponse as providers.TransactionResponse,
+          provider: signer?.provider as Provider,
+          defaultError
+        });
+        const isValidationError =
+          error &&
+          typeof error === "object" &&
+          "errors" in error &&
+          Array.isArray(error.errors) &&
+          Object.values(error.errors).every((err) => typeof err === "string");
         showModal("TRANSACTION_FAILED", {
           errorMessage: "Something went wrong",
-          detailedErrorMessage: await extractUserFriendlyError(error, {
-            txResponse: txResponse as providers.TransactionResponse,
-            provider: signer?.provider as Provider
-          })
+          detailedErrorMessage:
+            defaultError === userFriendlyError && isValidationError
+              ? (error?.errors as string[])?.join("\n") || defaultError
+              : defaultError
         });
       }
     }
