@@ -11,7 +11,7 @@ import React, {
   useState,
   VideoHTMLAttributes
 } from "react";
-import styled, { css } from "styled-components";
+import styled, { css, CSSProperties } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
@@ -23,12 +23,12 @@ const StyledMuteButton = styled(MuteButton)`
   position: absolute;
   top: 1rem;
   right: 1rem;
+  z-index: 1;
 `;
 const VideoWrapper = styled.div<{ $hasOnClick?: boolean }>`
   overflow: hidden;
   position: relative;
   z-index: ${zIndex.OfferCard};
-  height: 0;
   padding-top: 120%;
   font-size: inherit;
   ${({ $hasOnClick }) =>
@@ -63,8 +63,15 @@ const VideoContainer = styled.video`
   object-fit: contain;
 `;
 
-const VideoPlaceholder = styled.div`
-  position: absolute;
+const VideoPlaceholder = styled.div<{ $position?: CSSProperties["position"] }>`
+  ${({ $position }) =>
+    $position
+      ? css`
+          position: ${$position};
+        `
+      : css`
+          position: absolute;
+        `}
   top: 0;
   height: 100%;
   width: 100%;
@@ -120,6 +127,8 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
             ipfsMetadataStorage
           );
           setVideoSrc(base64str as string);
+          setIsLoaded(true);
+          setIsError(false);
         } catch (error) {
           console.error("error in Video", error);
           Sentry.captureException(error);
@@ -132,8 +141,13 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
       }
     }
     if (!isLoaded && videoSrc === null) {
-      if (src?.includes("ipfs://")) {
-        const newString = src.split("//");
+      if (
+        src?.startsWith("ipfs://") ||
+        src?.startsWith("https://bosonprotocol.infura-ipfs.io/ipfs/")
+      ) {
+        const newString = src?.startsWith("ipfs://")
+          ? src.split("//")
+          : src.split("https://bosonprotocol.infura-ipfs.io/ipfs/");
         const CID = newString[newString.length - 1];
         fetchData(`ipfs://${CID}`);
       } else if (src?.startsWith("undefined") && src?.length > 9) {
@@ -144,12 +158,6 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
       }
     }
   }, []); // eslint-disable-line
-
-  useEffect(() => {
-    if (videoSrc !== null) {
-      setTimeout(() => setIsLoaded(true), 100);
-    }
-  }, [videoSrc]);
 
   const mp4Src = useMemo(() => {
     const octetSrc =
@@ -179,13 +187,14 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
       videoRef.current.play();
     }
   }, [muted]);
+
   if (!isLoaded && !isError) {
     if (ComponentWhileLoading) {
       return <ComponentWhileLoading />;
     }
     return (
       <VideoWrapper {...rest}>
-        <VideoPlaceholder>
+        <VideoPlaceholder $position="static">
           <Typography tag="div">
             <Loading />
           </Typography>
@@ -197,7 +206,7 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
   if (isLoaded && isError) {
     return (
       <VideoWrapper {...rest}>
-        <VideoPlaceholder data-video-placeholder>
+        <VideoPlaceholder data-video-placeholder $position="static">
           {showPlaceholderText ? (
             <VideoIcon size={50} color={colors.white} />
           ) : (
@@ -227,6 +236,10 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
             data-testid={dataTestId}
             {...videoProps}
             src={mp4Src || ""}
+            onError={() => {
+              setIsLoaded(true);
+              setIsError(true);
+            }}
           />
         </>
       )}
