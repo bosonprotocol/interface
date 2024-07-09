@@ -1,10 +1,11 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import {
   CoreSDK,
+  CreateListingButton,
   hooks,
+  PremintButton,
   Provider,
-  subgraph,
-  VoidButton
+  subgraph
 } from "@bosonprotocol/react-kit";
 import {
   extractUserFriendlyError,
@@ -12,16 +13,22 @@ import {
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
-import { BigNumberish } from "ethers";
+import { BigNumber, BigNumberish } from "ethers";
 import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
 import { poll } from "lib/utils/promises";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
+import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
-import { useSigner } from "../../../lib/utils/hooks/connection/connection";
+import {
+  useAccount,
+  useChainId,
+  useSigner,
+  useSignerV6
+} from "../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { Break } from "../../detail/Detail.style";
@@ -207,8 +214,15 @@ export default function VoidProduct({
   const addPendingTransaction = useAddPendingTransaction();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const signer = useSigner();
+  const { data: signerV6 } = useSignerV6();
   const { hideModal } = useModal();
   const { isMetaTx } = hooks.useMetaTx(coreSdk);
+  const tokenId =
+    offerId && offer?.range
+      ? BigNumber.from(offerId).shl(128).add(offer.range.start).toString()
+      : undefined;
+  const connectedChainId = useChainId();
+  const { account } = useAccount();
 
   const handleFinish = useCallback(() => {
     hideModal();
@@ -340,7 +354,7 @@ export default function VoidProduct({
       {offer && (
         <Grid justifyContent="center">
           <VoidButtonWrapper>
-            <VoidButton
+            <PremintButton
               variant="accentInverted"
               coreSdkConfig={{
                 envName: config.envName,
@@ -349,6 +363,8 @@ export default function VoidProduct({
                 metaTx: config.metaTx
               }}
               offerId={offerId || 0}
+              reserveLength={offer.range ? 0 : offer.quantityAvailable}
+              preMintAmount={1}
               onError={async (error, { txResponse }) => {
                 console.error("onError", error);
                 const hasUserRejectedTx = getHasUserRejectedTx(error);
@@ -397,6 +413,89 @@ export default function VoidProduct({
               onSuccess={handleSuccess}
             />
           </VoidButtonWrapper>
+          {tokenId && (
+            <VoidButtonWrapper>
+              <CreateListingButton
+                providerProps={{
+                  ...CONFIG,
+                  envName: config.envName,
+                  configId: config.envConfig.configId,
+                  defaultCurrencySymbol: CONFIG.defaultCurrency.symbol,
+                  defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
+                  licenseTemplate: CONFIG.rNFTLicenseTemplate,
+                  minimumDisputeResolutionPeriodDays:
+                    CONFIG.minimumDisputePeriodInDays,
+                  walletConnectProjectId: CONFIG.walletConnect.projectId,
+                  ipfsProjectId: CONFIG.infuraProjectId,
+                  ipfsProjectSecret: CONFIG.infuraProjectSecret,
+                  contactSellerForExchangeUrl: "",
+                  sellerCurationListBetweenCommas: "",
+                  withExternalConnectionProps: true,
+                  externalConnectedChainId: connectedChainId,
+                  externalConnectedAccount: account,
+                  externalConnectedSigner: signer,
+                  externalConnectedSignerV6: signerV6,
+                  withWeb3React: false,
+                  withCustomReduxContext: false
+                }}
+                variant="accentInverted"
+                coreSdkConfig={{
+                  envName: config.envName,
+                  configId: config.envConfig.configId,
+                  web3Provider: signer?.provider as Provider,
+                  metaTx: config.metaTx
+                }}
+                tokenId={tokenId}
+                price={"1000000000000000000"}
+                onError={async (error, { txResponse }) => {
+                  console.error("onError", error);
+                  const hasUserRejectedTx = getHasUserRejectedTx(error);
+                  if (hasUserRejectedTx) {
+                    showModal("TRANSACTION_FAILED");
+                  } else {
+                    Sentry.captureException(error);
+                    showModal("TRANSACTION_FAILED", {
+                      errorMessage: "Something went wrong",
+                      detailedErrorMessage: await extractUserFriendlyError(
+                        error,
+                        {
+                          txResponse,
+                          provider: signer?.provider as Provider
+                        }
+                      )
+                    });
+                  }
+                }}
+                onPendingSignature={() => {
+                  showModal(
+                    "WAITING_FOR_CONFIRMATION",
+                    undefined,
+                    "auto",
+                    undefined,
+                    {
+                      xs: "400px"
+                    }
+                  );
+                }}
+                onPendingTransaction={(hash, isMetaTx) => {
+                  showModal("TRANSACTION_SUBMITTED", {
+                    action: "Void",
+                    txHash: hash
+                  });
+                  addPendingTransaction({
+                    type: subgraph.EventType.OFFER_VOIDED,
+                    hash,
+                    isMetaTx,
+                    accountType: "Seller",
+                    offer: {
+                      id: offer.id
+                    }
+                  });
+                }}
+                onSuccess={handleSuccess}
+              />
+            </VoidButtonWrapper>
+          )}
         </Grid>
       )}
       {offers && !!offers.length && (

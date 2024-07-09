@@ -3,8 +3,10 @@
 
 import { hooks, useUser } from "@bosonprotocol/react-kit";
 import { useWeb3React } from "@web3-react/core";
+import { providers } from "ethers";
+import { BrowserProvider } from "ethers-v6";
 import { useMemo } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 export function useProvider() {
   const { provider } = useWeb3React();
@@ -23,6 +25,35 @@ export function useSigner() {
     return provider?.getSigner();
   }, [provider]);
   return signer;
+}
+
+export function useSignerV6() {
+  const providerV5 = useProvider();
+  const url = providerV5?.connection?.url;
+  return useQuery(["signer", url], async () => {
+    const providerV6 = providerV5toV6(providerV5);
+    return await providerV6?.getSigner();
+  });
+}
+
+function providerV5toV6(
+  providerV5: providers.Web3Provider
+): BrowserProvider | undefined {
+  return providerV5
+    ? new BrowserProvider({
+        request: async (request: {
+          method: string;
+          params?: Array<any> | Record<string, any>;
+        }) => {
+          const params = request.params
+            ? Array.isArray(request.params)
+              ? (request.params as Array<any>)
+              : Array.from(request.params.values())
+            : [];
+          return providerV5.send(request.method, params);
+        }
+      })
+    : undefined;
 }
 
 export function useAccount() {
