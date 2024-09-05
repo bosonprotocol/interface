@@ -168,7 +168,7 @@ export default function ProductInformation() {
           <FormField
             title="Phygital title"
             required
-            subTitle="Give you phygital bundle a title, using words people would look for when searching for it."
+            subTitle="Give your phygital bundle a title, using words people would look for when searching for it."
           >
             <Input
               name="productInformation.bundleName"

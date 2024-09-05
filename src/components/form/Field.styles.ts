@@ -72,7 +72,7 @@ export const FieldInput = styled.input<{ error?: any }>`
         `}
 `;
 
-export const FileUploadWrapper = styled.div<{ error: unknown }>`
+export const FileUploadWrapper = styled.div<{ $error: unknown }>`
   position: relative;
   overflow: hidden;
   display: flex;
@@ -105,8 +105,8 @@ export const FileUploadWrapper = styled.div<{ error: unknown }>`
   border-radius: 0;
   outline: none;
 
-  ${({ error }) =>
-    !checkIfValueIsEmpty(error)
+  ${({ $error }) =>
+    !checkIfValueIsEmpty($error)
       ? css`
           border: 1px solid ${colors.orange};
         `
@@ -118,7 +118,7 @@ export const FileUploadWrapper = styled.div<{ error: unknown }>`
 
   &:focus,
   &:hover {
-    border: 1px solid var(--secondary);
+    border: 1px solid ${colors.lightGrey};
   }
 
   /* prettier-ignore */

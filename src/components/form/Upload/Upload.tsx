@@ -298,7 +298,7 @@ function Upload({
           <FileUploadWrapper
             data-disabled={disabled}
             onClick={handleChooseFile}
-            error={errorMessage}
+            $error={errorMessage}
             style={style}
           >
             {isLoading ? (
