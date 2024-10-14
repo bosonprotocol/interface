@@ -54,8 +54,11 @@ const ProductCardWrapper = styled.div<{
   $avatarTextColor: string;
 }>`
   [data-card="product-card"] {
-    height: 500px;
-    background: var(--upperCardBgColor);
+    background: transparent;
+    box-shadow: none;
+    &:hover {
+      box-shadow: 0 0 0 2px ${colors.lightGrey};
+    }
     ${({ $isLowerCardBgColorDefined, $bottomCardTextColor }) => {
       if ($isLowerCardBgColorDefined) {
         return css`
@@ -77,14 +80,6 @@ const ProductCardWrapper = styled.div<{
         object-fit: contain;
       }
     }
-    ${({ $isCustomStoreFront }) => {
-      if (!$isCustomStoreFront) {
-        return css`
-          border: 1px solid rgba(85, 96, 114, 0.15);
-        `;
-      }
-      return "";
-    }}
   }
   [data-avatarname="product-card"] {
     max-width: 100%;

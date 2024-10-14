@@ -39,7 +39,7 @@ const TopContainer = styled.div`
 `;
 const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
   background: ${({ $isPrimaryBgChanged }) =>
-    $isPrimaryBgChanged ? "var(--primaryBgColor)" : colors.lightGrey};
+    $isPrimaryBgChanged ? "var(--primaryBgColor)" : colors.white};
   padding: 3rem 0 4rem 0;
   min-height: 55.5vh;
 `;

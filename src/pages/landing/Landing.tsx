@@ -1,5 +1,15 @@
-import { useConfigContext } from "components/config/ConfigContext";
-import { ReactNode, useState } from "react";
+import { CollectionsCardSkeleton } from "@bosonprotocol/react-kit";
+import CollectionsCard from "components/modal/components/Explore/Collections/CollectionsCard";
+import { useSortOffers } from "components/price/useSortOffers";
+import { colors } from "lib/styles/colors";
+import { Profile } from "lib/utils/hooks/lens/graphql/generated";
+import useProducts from "lib/utils/hooks/product/useProducts";
+import useProductsByFilteredOffers from "lib/utils/hooks/product/useProductsByFilteredOffers";
+import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
+import extractUniqueRandomProducts from "lib/utils/product/extractUniqueRandomProducts";
+import { ExtendedSeller } from "pages/explore/WithAllOffers";
+import { ProductGridContainer } from "pages/profile/ProfilePage.styles";
+import { Fragment, ReactNode, useMemo, useState } from "react";
 import styled, { css } from "styled-components";
 
 import Layout, { LayoutRoot } from "../../components/layout/Layout";
@@ -12,10 +22,9 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import FeaturedOffers from "../../pages/landing/FeaturedOffers";
+import FeaturedOffers, { ViewMore } from "../../pages/landing/FeaturedOffers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
-import Carousel from "./Carousel";
-import Step from "./Step";
+import AnimatedImageGrid from "./AnimatedImageGrid";
 
 const LandingPage = styled.div<{ isCustomStoreFront: string }>`
   width: 100%;
@@ -44,15 +53,9 @@ const StyledGridWithZindex = styled(GridWithZindex)`
 `;
 
 const Title = styled(Typography)`
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-
-  font-size: 2.5rem;
-  line-height: 1.3;
-  ${breakpoint.s} {
-    font-size: 3.15rem;
-    line-height: 1.2;
-  }
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
 `;
 const SubTitle = styled(Typography)`
   margin-bottom: 0.5rem;
@@ -62,7 +65,7 @@ const ExploreContainer = styled.div`
 `;
 
 const DarkerBackground = styled.div.attrs({ id: "darker-background" })`
-  background-color: var(--secondary);
+  background-color: ${colors.white};
   width: 100vw;
   position: relative;
   left: 50%;
@@ -79,11 +82,25 @@ const ExploreProductsButton = styled(BosonButton)`
   color: var(--buttonTextColor);
 `;
 
+const LandingContainer = styled.div`
+  border: 2px solid ${colors.lightGrey};
+  border-radius: 0.5rem;
+  background-color: ${colors.white};
+  margin-bottom: 3.813rem;
+`;
+
+const AnimatedGridContainer = styled.div`
+  width: 100%;
+  height: 355px;
+  margin-left: 2rem;
+  position: relative;
+`;
+
 const Div = ({ children }: { children: ReactNode }) => {
   return <div>{children}</div>;
 };
+
 export default function Landing() {
-  const { config } = useConfigContext();
   const { isLteS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
@@ -107,6 +124,64 @@ export default function Landing() {
   const withUnderBanner = bannerUrl && realBannerImgPosition === "under";
   const TitleAndDescriptionWrapper = withUnderBanner ? Layout : Div;
   const LayoutWrapper = isSideNavBar ? Grid : DarkerBackground;
+
+  const numOffers = 5;
+
+  const { products, isLoading, isError, sellerLensProfilePerSellerId } =
+    useProductsByFilteredOffers({
+      voided: false,
+      valid: true,
+      first: numOffers,
+      quantityAvailable_gte: 1
+    });
+
+  const shuffledOffers = useMemo(() => {
+    try {
+      return extractUniqueRandomProducts({
+        products,
+        quantity: numOffers
+      });
+    } catch (error) {
+      console.error(error);
+      return products;
+    }
+  }, [products, numOffers]);
+
+  const offerImages = useMemo(() => {
+    return shuffledOffers
+      ?.slice(0, 8)
+      .map((offer) => {
+        const { mainImage } = getOfferDetails(offer.metadata);
+        return mainImage || offer?.metadata?.imageUrl;
+      })
+      .filter((image): image is string => !!image);
+  }, [shuffledOffers]);
+
+  const allProducts = useProducts(
+    {
+      onlyNotVoided: true,
+      onlyValid: true
+    },
+    {
+      enableCurationList: true,
+      withNumExchanges: true,
+      refetchOnMount: true
+    }
+  );
+  const collections = useSortOffers({
+    type: "sellers",
+    data: allProducts?.sellers || []
+  });
+
+  const sellerLensProfilePerSellerIdAllProducts = (
+    allProducts?.sellers || []
+  ).reduce((map, seller) => {
+    if (!map.has(seller.id) && !!seller.lensProfile) {
+      map.set(seller.id, seller.lensProfile);
+    }
+    return map;
+  }, new Map<string, Profile>());
+
   return (
     <LandingPage isCustomStoreFront={isCustomStoreFront}>
       {isCustomStoreFront ? (
@@ -159,18 +234,21 @@ export default function Landing() {
           </div>
         </div>
       ) : (
-        <>
+        <LandingContainer>
           <Grid
             flexBasis="50%"
             flexDirection={isLteS ? "column-reverse" : "row"}
-            gap="2.5rem"
           >
-            <GridWithZindex alignItems="flex-start" flexDirection="column">
-              <Title tag="h1" fontWeight="600">
+            <GridWithZindex
+              alignItems="flex-start"
+              flexDirection="column"
+              padding="0.9375rem 2.5rem 2.5rem 2.5rem"
+            >
+              <Title tag="h1" fontWeight="600" fontSize="2.0625rem">
                 Tokenize, transfer and trade any physical asset
                 as&nbsp;an&nbsp;NFT
               </Title>
-              <SubTitle tag="h4" fontWeight="400">
+              <SubTitle tag="h4" fontWeight="400" fontSize="1.25rem">
                 The first decentralized marketplace built on Boson Protocol
               </SubTitle>
               <ExploreContainer>
@@ -183,36 +261,69 @@ export default function Landing() {
                 </ExploreProductsButton>
               </ExploreContainer>
             </GridWithZindex>
-            <Carousel key={config.envConfig.configId} />
+            <AnimatedGridContainer>
+              {offerImages.length > 0 && (
+                <AnimatedImageGrid images={offerImages} />
+              )}
+            </AnimatedGridContainer>
           </Grid>
-          <Grid
-            alignItems="flex-start"
-            flexDirection={isLteS ? "column" : "row"}
-            gap="50px"
-            margin="5rem 0"
-          >
-            <Step number={1} title="Commit">
-              Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
-              exchanged for the real-world item it represents
-            </Step>
-            <Step number={2} title="Hold, Trade or Transfer ">
-              You can hold, transfer or easily trade your rNFT on the secondary
-              market
-            </Step>
-            <Step number={3} title="Redeem">
-              Redeem your rNFT to receive the underlying item. The rNFT will be
-              destroyed in the process.
-            </Step>
-          </Grid>
-        </>
+        </LandingContainer>
       )}
+
       <LayoutWrapper>
         <LayoutRoot style={{ ...(isSideNavBar && { padding: "initial" }) }}>
           <LandingPage
             isCustomStoreFront={isCustomStoreFront}
             style={{ paddingTop: "2rem", paddingBottom: "2rem" }}
           >
-            <FeaturedOffers title="Products" />
+            <Grid
+              justifyContent="flex-start"
+              alignItems="flex-end"
+              margin="1rem 0 2rem 0"
+            >
+              <Title tag="h3" style={{ margin: "0" }}>
+                Brands & Sellers
+              </Title>
+              <ViewMore to={BosonRoutes.Explore}>View all</ViewMore>
+            </Grid>
+            <ProductGridContainer
+              itemsPerRow={{
+                xs: 1,
+                s: 2,
+                m: 3,
+                l: 4,
+                xl: 4
+              }}
+            >
+              {isLoading
+                ? new Array(4)
+                    .fill(0)
+                    .map((_, index) => <CollectionsCardSkeleton key={index} />)
+                : collections?.slice(0, 4)?.map((collection) => (
+                    <Fragment
+                      key={`CollectionsCard_${
+                        collection?.brandName || collection?.id
+                      }`}
+                    >
+                      <CollectionsCard
+                        collection={collection as ExtendedSeller}
+                        lensProfile={sellerLensProfilePerSellerIdAllProducts.get(
+                          collection.id
+                        )}
+                      />
+                    </Fragment>
+                  ))}
+            </ProductGridContainer>
+            <Grid marginTop="2.5rem">
+              <FeaturedOffers
+                title="Products"
+                offers={shuffledOffers}
+                isLoading={isLoading}
+                isError={isError}
+                numOffers={numOffers}
+                sellerLensProfilePerSellerId={sellerLensProfilePerSellerId}
+              />
+            </Grid>
           </LandingPage>
         </LayoutRoot>
       </LayoutWrapper>

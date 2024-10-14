@@ -1,18 +1,16 @@
 import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 
 import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
-import { zIndex } from "../../../../../lib/styles/zIndex";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import useSellerNumbers from "../../../../../lib/utils/hooks/useSellerNumbers";
 import { useCustomStoreQueryParameter } from "../../../../../pages/custom-store/useCustomStoreQueryParameter";
 import { ExtendedSeller } from "../../../../../pages/explore/WithAllOffers";
-import { Grid } from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import { Typography } from "../../../../ui/Typography";
 
@@ -20,23 +18,13 @@ const CardContainer = styled.div<{
   $isUpperCardBgColorDefined: boolean;
 }>`
   position: relative;
-  padding-bottom: 7.8125rem;
-  background: ${colors.lightGrey};
+  background: #f5f5f5;
   display: flex;
   flex-direction: column;
-  border: 1px solid ${colors.black}20;
-  transition: all 300ms ease-in-out;
-  box-shadow: 0px 4px 110px rgb(21 30 52 / 10%);
-  &:hover {
-    box-shadow:
-      0px 0px 0px rgb(0 0 0 / 5%),
-      4px 4px 4px rgb(0 0 0 / 5%),
-      8px 8px 8px rgb(0 0 0 / 5%),
-      16px 16px 16px rgb(0 0 0 / 5%);
-    img[data-testid] {
-      transform: translate(-50%, -50%) scale(1.05);
-    }
-  }
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px ${colors.lightGrey};
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  min-width: 16.5625rem;
   ${({ $isUpperCardBgColorDefined }) => {
     if ($isUpperCardBgColorDefined) {
       return css`
@@ -46,32 +34,97 @@ const CardContainer = styled.div<{
     return css``;
   }}
 `;
+
 const ImagesContainer = styled.div`
-  display: grid;
-  grid-template-columns: 50% 50%;
+  display: flex;
+  padding: 1rem;
+  gap: 1rem;
+  background: ${colors.lightGrey2};
+  height: 13rem;
+  max-height: 13rem;
+`;
+
+const LargeImageContainer = styled.div`
+  flex: 2;
+  height: 6.375rem;
+  position: relative;
+  max-height: 6.375rem;
+  min-height: 6.375rem;
+`;
+
+const SmallImagesContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+`;
+
+const LargeImage = styled(Image)`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  height: 6.375rem;
+  max-height: 6.375rem;
+  position: relative;
+  left: 0;
+  height: 6.375rem;
+  max-height: 6.375rem;
+  img {
+    height: 6.375rem;
+    max-height: 6.375rem;
+    object-fit: contain;
+    transform: none;
+    left: 0;
+    top: 30px;
+    box-shadow: 0 0 0 2px ${colors.lightGrey};
+    width: inherit;
+  }
+`;
+
+const BaseSmallImage = css`
+  width: 100%;
+  height: 3.125rem;
+  max-height: 3.125rem;
+  object-fit: cover;
+  border-radius: 4px;
+  position: relative;
   padding: 0;
-  margin: 0;
-  overflow: hidden;
+  overflow: visible;
+  img {
+    height: 3.125rem;
+    max-height: 3.125rem;
+    object-fit: contain;
+    box-shadow: 0 0 0 2px ${colors.lightGrey};
+    width: 100%;
+    left: unset;
+    transform: none;
+  }
+`;
+
+const SmallImageTop = styled(Image)`
+  ${BaseSmallImage}
+  img {
+    top: 1.25rem;
+  }
+`;
+
+const SmallImageBottom = styled(Image)`
+  ${BaseSmallImage}
 `;
 
 const DataContainer = styled.div<{
   $isLowerCardBgColorDefined: boolean;
 }>`
-  padding: 1rem 1.5rem 1rem 1.5rem;
-  background: ${colors.white};
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: ${zIndex.OfferCard};
+  padding: 16px;
+  background: white;
 
   ${({ $isLowerCardBgColorDefined }) => {
     if ($isLowerCardBgColorDefined) {
       return css`
         color: var(--textColor);
-
         background: var(--lowerCardBgColor);
-
         * {
           color: var(--textColor);
         }
@@ -81,15 +134,26 @@ const DataContainer = styled.div<{
   }}
 `;
 
-const StyledGrid = styled(Grid)`
-  max-width: 6.5625rem;
+const ProfileImage = styled.img`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+`;
+
+const NameContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
 `;
 
 interface Props {
   collection: ExtendedSeller;
   lensProfile?: Profile;
 }
-const imagesNumber = 4;
+
+const imagesNumber = 3;
+
 export default function CollectionsCard({ collection, lensProfile }: Props) {
   const [sellerId] = useState<string>(collection.id);
 
@@ -111,7 +175,7 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
   const images = useMemo(() => {
     const array = (collection && collection?.additional?.images) || [];
 
-    if (array.length < 3) {
+    if (array.length < imagesNumber) {
       for (let index = 0; index < imagesNumber; index++) {
         array.push("");
       }
@@ -119,8 +183,8 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
 
     return array.slice(0, imagesNumber);
   }, [collection]);
-  const upperCardBgColor = useCustomStoreQueryParameter("upperCardBgColor");
 
+  const upperCardBgColor = useCustomStoreQueryParameter("upperCardBgColor");
   const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
 
   return (
@@ -135,41 +199,45 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
       }}
     >
       <ImagesContainer>
-        {images &&
-          images?.map(
-            (img: string, index: number) =>
-              img !== "" && (
-                <Fragment key={`CollectionsCardImage_${index}`}>
-                  <Image src={img} optimizationOpts={{ height: 500 }} />
-                </Fragment>
-              )
+        <LargeImageContainer>
+          {images[0] && (
+            <LargeImage
+              src={images[0]}
+              style={{ height: 102, objectFit: "contain" }}
+              withLoading={false}
+            />
           )}
+        </LargeImageContainer>
+        <SmallImagesContainer>
+          {images[1] && (
+            <SmallImageTop
+              src={images[1]}
+              withLoading={false}
+              style={{ height: 60, objectFit: "contain" }}
+            />
+          )}
+          {images[2] && (
+            <SmallImageBottom
+              src={images[2]}
+              withLoading={false}
+              style={{ height: 60, objectFit: "contain" }}
+            />
+          )}
+        </SmallImagesContainer>
       </ImagesContainer>
       <DataContainer $isLowerCardBgColorDefined={!!lowerCardBgColor}>
-        <div>
-          <Typography
-            color={colors.black}
-            fontSize="1.25rem"
-            fontWeight="600"
-            margin="0 0 0.625rem 0"
-          >
+        <NameContainer>
+          <ProfileImage
+            src={lensProfile?.picture?.original?.url || "/default-profile.png"}
+            alt={name}
+          />
+          <Typography color={colors.black} fontSize="1rem" fontWeight="600">
             {name}
           </Typography>
-          <StyledGrid alignItems="flex-start" margin="0 0 0.3125rem 0">
-            <Typography
-              fontSize="12px"
-              fontWeight="400"
-              color={colors.darkGrey}
-            >
-              Products
-            </Typography>
-          </StyledGrid>
-          <StyledGrid alignItems="flex-start">
-            <Typography fontSize="20px" fontWeight="600" color={colors.black}>
-              {numProducts}
-            </Typography>
-          </StyledGrid>
-        </div>
+        </NameContainer>
+        <Typography fontSize="0.75rem" fontWeight="400" color={colors.darkGrey}>
+          {numProducts} Products
+        </Typography>
       </DataContainer>
     </CardContainer>
   );

@@ -40,7 +40,7 @@ interface Props {
 
 const Container = styled.div<{ $isPrimaryBgChanged: boolean }>`
   background: ${({ $isPrimaryBgChanged }) =>
-    $isPrimaryBgChanged ? "var(--secondaryBgColor)" : colors.lightGrey};
+    $isPrimaryBgChanged ? "var(--secondaryBgColor)" : colors.white};
 `;
 
 const ViewMoreButton = styled.button`
@@ -169,15 +169,17 @@ export default function OfferList({
             : offers?.map((offer: Offer | ExtendedOffer) => {
                 return (
                   (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
-                    <ProductCard
-                      key={offer.id}
-                      offer={offer}
-                      dataTestId="offer"
-                      lensProfile={
-                        seller?.lensProfile ||
-                        sellerLensProfilePerSellerId?.get(offer.seller.id)
-                      }
-                    />
+                    <>
+                      <ProductCard
+                        key={offer.id}
+                        offer={offer}
+                        dataTestId="offer"
+                        lensProfile={
+                          seller?.lensProfile ||
+                          sellerLensProfilePerSellerId?.get(offer.seller.id)
+                        }
+                      />
+                    </>
                   )
                 );
               })}
