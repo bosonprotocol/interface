@@ -6,7 +6,11 @@ import styled, { css } from "styled-components";
 import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
-import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
+import {
+  MediaSet,
+  NftImage,
+  Profile
+} from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import useSellerNumbers from "../../../../../lib/utils/hooks/useSellerNumbers";
 import { useCustomStoreQueryParameter } from "../../../../../pages/custom-store/useCustomStoreQueryParameter";
@@ -186,7 +190,21 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
 
   const upperCardBgColor = useCustomStoreQueryParameter("upperCardBgColor");
   const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
+  const getProfilePictureUrl = (picture?: Profile["picture"]): string => {
+    if (!picture) return "/default-profile.png";
 
+    if (typeof picture === "string") return picture;
+
+    if ("original" in picture) {
+      return (picture as MediaSet).original.url;
+    }
+
+    if ("uri" in picture) {
+      return (picture as NftImage).uri;
+    }
+
+    return "/default-profile.png";
+  };
   return (
     <CardContainer
       $isUpperCardBgColorDefined={!!upperCardBgColor}
@@ -228,7 +246,7 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
       <DataContainer $isLowerCardBgColorDefined={!!lowerCardBgColor}>
         <NameContainer>
           <ProfileImage
-            src={lensProfile?.picture?.original?.url || "/default-profile.png"}
+            src={getProfilePictureUrl(lensProfile?.picture)}
             alt={name}
           />
           <Typography color={colors.black} fontSize="1rem" fontWeight="600">
