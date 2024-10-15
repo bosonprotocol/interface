@@ -125,7 +125,7 @@ export default function Landing() {
   const TitleAndDescriptionWrapper = withUnderBanner ? Layout : Div;
   const LayoutWrapper = isSideNavBar ? Grid : DarkerBackground;
 
-  const numOffers = 5;
+  const numOffers = 10;
 
   const { products, isLoading, isError, sellerLensProfilePerSellerId } =
     useProductsByFilteredOffers({
