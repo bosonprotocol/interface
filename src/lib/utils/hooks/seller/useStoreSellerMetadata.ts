@@ -1,11 +1,11 @@
-import { CoreSDK, OfferOrSellerMetadata } from "@bosonprotocol/react-kit";
+import { CoreSDK, seller } from "@bosonprotocol/react-kit";
 import { useMutation } from "react-query";
 
 import { ContactPreference } from "../../../../components/modal/components/Profile/const";
 import { useCoreSDK } from "../../useCoreSdk";
 
 type CreateSellerMetadata = Omit<
-  Extract<OfferOrSellerMetadata, { type: "SELLER" }>,
+  seller.SellerMetadata,
   "__typename" | "id" | "createdAt" | "type" | "contactPreference"
 > & { contactPreference: ContactPreference };
 type Props = Parameters<typeof storeSellerMetadata>[1];
