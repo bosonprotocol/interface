@@ -22,11 +22,12 @@ const CardContainer = styled.div<{
   $isUpperCardBgColorDefined: boolean;
 }>`
   position: relative;
-  background: #f5f5f5;
+  background: ${colors.lightGrey2};
   display: flex;
   flex-direction: column;
-  border-radius: 8px;
   box-shadow: 0 0 0 2px ${colors.lightGrey};
+  filter: drop-shadow(0 0 2px ${colors.lightGrey});
+  border-radius: 4px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   min-width: 16.5625rem;
   ${({ $isUpperCardBgColorDefined }) => {

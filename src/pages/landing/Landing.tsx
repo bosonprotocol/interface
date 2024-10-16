@@ -90,7 +90,7 @@ const LandingContainer = styled.div`
 `;
 
 const AnimatedGridContainer = styled.div`
-  width: 100%;
+  width: 96%;
   height: 355px;
   margin-left: 2rem;
   position: relative;
@@ -99,6 +99,8 @@ const AnimatedGridContainer = styled.div`
 const Div = ({ children }: { children: ReactNode }) => {
   return <div>{children}</div>;
 };
+
+const numOffers = 10;
 
 export default function Landing() {
   const { isLteS } = useBreakpoints();
@@ -124,9 +126,6 @@ export default function Landing() {
   const withUnderBanner = bannerUrl && realBannerImgPosition === "under";
   const TitleAndDescriptionWrapper = withUnderBanner ? Layout : Div;
   const LayoutWrapper = isSideNavBar ? Grid : DarkerBackground;
-
-  const numOffers = 10;
-
   const { products, isLoading, isError, sellerLensProfilePerSellerId } =
     useProductsByFilteredOffers({
       voided: false,
@@ -281,7 +280,7 @@ export default function Landing() {
               alignItems="flex-end"
               margin="1rem 0 2rem 0"
             >
-              <Title tag="h3" style={{ margin: "0" }}>
+              <Title tag="h3" margin="0">
                 Brands & Sellers
               </Title>
               <ViewMore to={BosonRoutes.Explore}>View all</ViewMore>

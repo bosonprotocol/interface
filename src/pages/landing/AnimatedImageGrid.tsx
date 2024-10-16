@@ -1,4 +1,5 @@
 import { Grid } from "@bosonprotocol/react-kit";
+import { CONFIG } from "lib/config";
 import { resolveUrlFromIPFS } from "lib/utils/hooks/useResolveUrlFromIPFS";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
@@ -93,7 +94,7 @@ const AnimatedImageGrid: React.FC<AnimatedImageGridProps> = ({ images }) => {
   useEffect(() => {
     const loadImages = async () => {
       const resolvedUrls = images.map((url) =>
-        resolveUrlFromIPFS(url, "https://ipfs.io/ipfs")
+        resolveUrlFromIPFS(url, CONFIG.ipfsImageGateway)
       );
       const loadedUrls = await Promise.all(
         resolvedUrls.map(async (url) => {

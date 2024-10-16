@@ -21,7 +21,6 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
-import { displayFloat } from "../../lib/utils/calcPrice";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -58,6 +57,8 @@ const ProductCardWrapper = styled.div<{
     box-shadow: none;
     &:hover {
       box-shadow: 0 0 0 2px ${colors.lightGrey};
+      filter: drop-shadow(0 0 2px ${colors.lightGrey});
+      border-radius: 4px;
     }
     ${({ $isLowerCardBgColorDefined, $bottomCardTextColor }) => {
       if ($isLowerCardBgColorDefined) {
@@ -272,7 +273,11 @@ export default function ProductCard({
             });
           }
         }}
-        price={Number(displayFloat(price?.price || 0))}
+        price={
+          /e/i.test(String(Number(price?.price || 0)))
+            ? Number(price?.price || 0).toFixed(10)
+            : (price?.price ?? 0).toString()
+        }
         asterisk={hasVariantsWithDifferentPrice}
         tooltip={
           hasVariantsWithDifferentPrice
