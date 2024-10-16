@@ -232,17 +232,14 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
           alignItems="center"
           justifyContent="flex-start"
         >
-          {collection.metadata?.images &&
-            collection.metadata.images.length > 0 && (
-              <ProfileImage
-                src={
-                  collection.metadata.images.find(
-                    (image) => image.tag === "profile"
-                  )?.url
-                }
-                alt={name}
-              />
-            )}
+          {metadata?.images && metadata.images.length > 0 && (
+            <ProfileImage
+              src={
+                metadata.images.find((image) => image.tag === "profile")?.url
+              }
+              alt={name}
+            />
+          )}
           <div>
             <NameContainer>
               <Typography color={colors.black} fontSize="1rem" fontWeight="600">
