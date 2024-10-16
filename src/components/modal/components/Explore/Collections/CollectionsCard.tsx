@@ -1,4 +1,4 @@
-import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
+import { AuthTokenType, Grid, subgraph } from "@bosonprotocol/react-kit";
 import { useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -6,11 +6,7 @@ import styled, { css } from "styled-components";
 import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
-import {
-  MediaSet,
-  NftImage,
-  Profile
-} from "../../../../../lib/utils/hooks/lens/graphql/generated";
+import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import useSellerNumbers from "../../../../../lib/utils/hooks/useSellerNumbers";
 import { useCustomStoreQueryParameter } from "../../../../../pages/custom-store/useCustomStoreQueryParameter";
@@ -24,6 +20,7 @@ const CardContainer = styled.div<{
   position: relative;
   background: ${colors.lightGrey2};
   display: flex;
+  cursor: pointer;
   flex-direction: column;
   box-shadow: 0 0 0 2px ${colors.lightGrey};
   filter: drop-shadow(0 0 2px ${colors.lightGrey});
@@ -124,7 +121,6 @@ const DataContainer = styled.div<{
 }>`
   padding: 16px;
   background: white;
-
   ${({ $isLowerCardBgColorDefined }) => {
     if ($isLowerCardBgColorDefined) {
       return css`
@@ -140,8 +136,8 @@ const DataContainer = styled.div<{
 `;
 
 const ProfileImage = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
   margin-right: 8px;
 `;
@@ -191,21 +187,7 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
 
   const upperCardBgColor = useCustomStoreQueryParameter("upperCardBgColor");
   const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
-  const getProfilePictureUrl = (picture?: Profile["picture"]): string => {
-    if (!picture) return "/default-profile.png";
 
-    if (typeof picture === "string") return picture;
-
-    if ("original" in picture) {
-      return (picture as MediaSet).original.url;
-    }
-
-    if ("uri" in picture) {
-      return (picture as NftImage).uri;
-    }
-
-    return "/default-profile.png";
-  };
   return (
     <CardContainer
       $isUpperCardBgColorDefined={!!upperCardBgColor}
@@ -245,18 +227,37 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
         </SmallImagesContainer>
       </ImagesContainer>
       <DataContainer $isLowerCardBgColorDefined={!!lowerCardBgColor}>
-        <NameContainer>
-          <ProfileImage
-            src={getProfilePictureUrl(lensProfile?.picture)}
-            alt={name}
-          />
-          <Typography color={colors.black} fontSize="1rem" fontWeight="600">
-            {name}
-          </Typography>
-        </NameContainer>
-        <Typography fontSize="0.75rem" fontWeight="400" color={colors.darkGrey}>
-          {numProducts} Products
-        </Typography>
+        <Grid
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="flex-start"
+        >
+          {collection.metadata?.images &&
+            collection.metadata.images.length > 0 && (
+              <ProfileImage
+                src={
+                  collection.metadata.images.find(
+                    (image) => image.tag === "profile"
+                  )?.url
+                }
+                alt={name}
+              />
+            )}
+          <div>
+            <NameContainer>
+              <Typography color={colors.black} fontSize="1rem" fontWeight="600">
+                {name}
+              </Typography>
+            </NameContainer>
+            <Typography
+              fontSize="0.75rem"
+              fontWeight="400"
+              color={colors.darkGrey}
+            >
+              {numProducts} Products
+            </Typography>
+          </div>
+        </Grid>
       </DataContainer>
     </CardContainer>
   );

@@ -273,11 +273,7 @@ export default function ProductCard({
             });
           }
         }}
-        price={
-          /e/i.test(String(Number(price?.price || 0)))
-            ? Number(price?.price || 0).toFixed(10)
-            : (price?.price ?? 0).toString()
-        }
+        price={price?.price || "0"}
         asterisk={hasVariantsWithDifferentPrice}
         tooltip={
           hasVariantsWithDifferentPrice
@@ -289,7 +285,7 @@ export default function ProductCard({
         imageProps={{
           src: imageSrc,
           fallbackSrc: getFallbackImageUrl(imageSrc),
-          withLoading: true,
+          withLoading: false,
           errorConfig: {
             errorIcon: <CameraSlash size={32} color={colors.white} />
           }

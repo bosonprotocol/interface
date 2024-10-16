@@ -36,7 +36,7 @@ export const ViewMore = styled(LinkWithQuery)`
   margin-left: 1.5rem;
   font-size: 0.875rem;
   font-weight: 600;
-  margin-bottom: 1px;
+  margin-bottom: 0.0625rem;
   ${() => buttonText};
   color: var(--accent);
 

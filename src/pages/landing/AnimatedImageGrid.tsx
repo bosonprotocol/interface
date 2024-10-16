@@ -51,7 +51,7 @@ const StyledImage = styled.img`
 
 const LoadingContainer = styled(Grid)`
   height: 100%;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #333;
 `;
 
