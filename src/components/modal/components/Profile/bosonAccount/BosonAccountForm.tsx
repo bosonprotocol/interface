@@ -40,15 +40,20 @@ export default function BosonAccountForm({
     if (contractURI && !formValues) {
       (async () => {
         try {
-          const openSeaMetadata = await ipfsMetadataStorage.get<{
+          type OpenSeaMetadata = {
             name: string;
             description: string;
             image: string;
             external_link: string;
             seller_fee_basis_points: string;
             fee_recipient: string;
-          }>(contractURI, true);
-          if (typeof openSeaMetadata !== "string") {
+          };
+          const openSeaMetadata =
+            (await ipfsMetadataStorage.get<OpenSeaMetadata>(
+              contractURI,
+              true
+            )) as OpenSeaMetadata;
+          if (typeof openSeaMetadata === "object") {
             setInitialValues({
               secondaryRoyalties:
                 Number(openSeaMetadata.seller_fee_basis_points) / 100,

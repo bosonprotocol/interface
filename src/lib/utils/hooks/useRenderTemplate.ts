@@ -36,10 +36,10 @@ export function useRenderTemplate(
       setRenderStatus(ExtendedProgressStatus.LOADING);
       if (ipfsMetadataStorage && coreSDK) {
         try {
-          const rawTemplate = await ipfsMetadataStorage.get<Uint8Array>(
+          const rawTemplate = (await ipfsMetadataStorage.get<Uint8Array>(
             templateUrl,
             false
-          );
+          )) as Uint8Array;
           const template = Buffer.from(rawTemplate).toString("utf-8");
           let theOfferData = offerData;
           if (

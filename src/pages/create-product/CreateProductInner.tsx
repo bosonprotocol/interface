@@ -580,7 +580,9 @@ function CreateProductInner({
             });
           }
         }
-        let metadatas: AnyMetadata[];
+        let metadatas:
+          | productV1Item.ProductV1Item[]
+          | productV1.ProductV1Metadata[];
         if (isPhygital) {
           const productItemV1Metadata = await getProductItemV1Metadata({
             uuid: bundleUuid,

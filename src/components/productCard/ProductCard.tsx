@@ -21,7 +21,6 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
-import { displayFloat } from "../../lib/utils/calcPrice";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -54,8 +53,13 @@ const ProductCardWrapper = styled.div<{
   $avatarTextColor: string;
 }>`
   [data-card="product-card"] {
-    height: 500px;
-    background: var(--upperCardBgColor);
+    background: transparent;
+    box-shadow: none;
+    &:hover {
+      box-shadow: 0 0 0 2px ${colors.lightGrey};
+      filter: drop-shadow(0 0 2px ${colors.lightGrey});
+      border-radius: 4px;
+    }
     ${({ $isLowerCardBgColorDefined, $bottomCardTextColor }) => {
       if ($isLowerCardBgColorDefined) {
         return css`
@@ -77,14 +81,6 @@ const ProductCardWrapper = styled.div<{
         object-fit: contain;
       }
     }
-    ${({ $isCustomStoreFront }) => {
-      if (!$isCustomStoreFront) {
-        return css`
-          border: 1px solid rgba(85, 96, 114, 0.15);
-        `;
-      }
-      return "";
-    }}
   }
   [data-avatarname="product-card"] {
     max-width: 100%;
@@ -277,7 +273,7 @@ export default function ProductCard({
             });
           }
         }}
-        price={Number(displayFloat(price?.price || 0))}
+        price={price?.price || "0"}
         asterisk={hasVariantsWithDifferentPrice}
         tooltip={
           hasVariantsWithDifferentPrice
@@ -289,7 +285,7 @@ export default function ProductCard({
         imageProps={{
           src: imageSrc,
           fallbackSrc: getFallbackImageUrl(imageSrc),
-          withLoading: true,
+          withLoading: false,
           errorConfig: {
             errorIcon: <CameraSlash size={32} color={colors.white} />
           }

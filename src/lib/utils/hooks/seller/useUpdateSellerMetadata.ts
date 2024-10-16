@@ -1,5 +1,5 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { AuthTokenType, OfferOrSellerMetadata } from "@bosonprotocol/react-kit";
+import { AuthTokenType, seller } from "@bosonprotocol/react-kit";
 import { useMutation } from "react-query";
 
 import {
@@ -17,7 +17,7 @@ import useStoreSellerMetadata from "./useStoreSellerMetadata";
 import useUpdateSeller from "./useUpdateSeller";
 
 type Props = Parameters<typeof updateSellerMedatata>[0];
-type SellerMetadata = Extract<OfferOrSellerMetadata, { type: "SELLER" }>;
+type SellerMetadata = seller.SellerMetadata;
 type SalesChannels = SellerMetadata["salesChannels"];
 type UpdateSellerFn = ReturnType<typeof useUpdateSeller>["mutateAsync"];
 type StoreSellerMetadataFn = ReturnType<

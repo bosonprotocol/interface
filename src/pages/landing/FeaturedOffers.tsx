@@ -1,17 +1,14 @@
-import * as Sentry from "@sentry/browser";
-import { CaretRight } from "phosphor-react";
-import { useMemo } from "react";
+import { buttonText } from "components/ui/styles";
+import { Profile } from "lib/utils/hooks/lens/graphql/generated";
+import { ExtendedOffer } from "pages/explore/WithAllOffers";
+import React from "react";
 import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
 import OfferList from "../../components/offers/OfferList";
 import { Grid } from "../../components/ui/Grid";
-import { buttonText } from "../../components/ui/styles";
 import { Typography } from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
-import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import extractUniqueRandomProducts from "../../lib/utils/product/extractUniqueRandomProducts";
 
 const Root = styled.div`
   width: 100%;
@@ -30,12 +27,16 @@ const Title = styled(Typography)`
   line-height: 1.2;
 `;
 
-const ViewMore = styled(LinkWithQuery)`
+export const ViewMore = styled(LinkWithQuery)`
   all: unset;
   display: flex;
   gap: 0.5rem;
   align-items: center;
   cursor: pointer;
+  margin-left: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.0625rem;
   ${() => buttonText};
   color: var(--accent);
 
@@ -54,49 +55,35 @@ const ViewMore = styled(LinkWithQuery)`
 
 interface IFeaturedOffers {
   title?: string;
+  offers: ExtendedOffer[];
+  isLoading: boolean;
+  isError: boolean;
+  numOffers: number;
+  sellerLensProfilePerSellerId?: Map<string, Profile>;
 }
 
 const FeaturedOffers: React.FC<IFeaturedOffers> = ({
-  title = "Explore Offers"
+  title = "Explore Offers",
+  offers,
+  isLoading,
+  isError,
+  numOffers,
+  sellerLensProfilePerSellerId
 }) => {
-  const { isLteXS } = useBreakpoints();
-  const numOffers = isLteXS ? 6 : 12;
-  const { products, isLoading, isError, sellerLensProfilePerSellerId } =
-    useProductsByFilteredOffers({
-      voided: false,
-      valid: true,
-      first: numOffers,
-      quantityAvailable_gte: 1
-    });
-  const shuffledOffers = useMemo(() => {
-    try {
-      return extractUniqueRandomProducts({
-        products,
-        quantity: numOffers
-      });
-    } catch (error) {
-      console.error(error);
-      Sentry.captureException(error);
-      return products;
-    }
-  }, [products, numOffers]);
   return (
     <Root data-testid={"featureOffers"}>
       <Grid
-        justifyContent="space-between"
-        alignItems="center"
+        justifyContent="flex-start"
+        alignItems="flex-end"
         margin="1rem 0 2rem 0"
       >
         <Title tag="h3" style={{ margin: "0" }}>
           {title}
         </Title>
-        <ViewMore to={BosonRoutes.Explore}>
-          View more
-          <CaretRight size={24} />
-        </ViewMore>
+        <ViewMore to={BosonRoutes.Explore}>View all</ViewMore>
       </Grid>
       <OfferList
-        offers={shuffledOffers?.slice(0, numOffers)}
+        offers={offers?.slice(0, numOffers)}
         isError={isError}
         isLoading={isLoading}
         numOffers={numOffers}
@@ -106,8 +93,8 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
           xs: 1,
           s: 2,
           m: 3,
-          l: 4,
-          xl: 4
+          l: 5,
+          xl: 5
         }}
         sellerLensProfilePerSellerId={sellerLensProfilePerSellerId}
       />
