@@ -1,3 +1,4 @@
+import { validateMetadata } from "@bosonprotocol/core-sdk";
 import { hooks } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { CONFIG } from "lib/config";
@@ -7,6 +8,7 @@ export function useIpfsStorage() {
   const storage = hooks.useIpfsMetadataStorage(
     config.envName,
     config.envConfig.configId,
+    validateMetadata,
     config.ipfsMetadataStorageUrl,
     CONFIG.ipfsMetadataStorageHeaders
   );
