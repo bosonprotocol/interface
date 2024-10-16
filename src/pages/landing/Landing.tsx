@@ -144,7 +144,7 @@ export default function Landing() {
       console.error(error);
       return products;
     }
-  }, [products, numOffers]);
+  }, [products]);
 
   const offerImages = useMemo(() => {
     return shuffledOffers
