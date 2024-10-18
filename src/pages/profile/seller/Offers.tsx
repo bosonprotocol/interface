@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 
-import { Action } from "../../../components/offer/OfferCard";
 import OfferList from "../../../components/offers/OfferList";
 import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { ExtendedSeller } from "../../explore/WithAllOffers";
+export type Action = "commit" | "redeem" | "contact-seller" | null;
 
 interface Props {
   products: ExtendedSeller;
