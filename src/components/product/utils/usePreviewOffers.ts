@@ -35,6 +35,7 @@ export const usePreviewOffers = ({
   const { values } = useForm();
   const chainId = useChainId();
   const { config } = useConfigContext();
+  const chainIdToUse = chainId || config.envConfig.chainId;
   const disputeResolverId = config.envConfig.defaultDisputeResolverId;
   const { disputeResolver } = useDisputeResolver(disputeResolverId);
   const escalationResponsePeriod =
@@ -224,7 +225,7 @@ export const usePreviewOffers = ({
                 productV1Seller,
                 shipping
               },
-              ...getDigitalMetadatas({ chainId, values })
+              ...getDigitalMetadatas({ chainId: chainIdToUse, values })
             ]
           }),
           product,
@@ -244,7 +245,6 @@ export const usePreviewOffers = ({
       return offer;
     },
     [
-      chainId,
       config.envConfig.defaultTokens,
       config.envConfig.nativeCoin?.decimals,
       disputeResolver,
@@ -260,7 +260,8 @@ export const usePreviewOffers = ({
       values,
       voucherRedeemableFromDateInMS,
       voucherRedeemableUntilDateInMS,
-      voucherValidDurationInMS
+      voucherValidDurationInMS,
+      chainIdToUse
     ]
   );
   const offerData: Offer[] = useMemo(() => {
