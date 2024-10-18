@@ -1,6 +1,7 @@
 import { CollectionsCardSkeleton, isTruthy } from "@bosonprotocol/react-kit";
 import CollectionsCard from "components/modal/components/Explore/Collections/CollectionsCard";
 import { useSortOffers } from "components/price/useSortOffers";
+import Loading from "components/ui/Loading";
 import { colors } from "lib/styles/colors";
 import { Profile } from "lib/utils/hooks/lens/graphql/generated";
 import { useOffersWhitelist } from "lib/utils/hooks/offers/useOffersWhitelist";
@@ -295,8 +296,10 @@ export default function Landing() {
               </ExploreContainer>
             </GridWithZindex>
             <AnimatedGridContainer>
-              {offerImages.length > 0 && (
+              {offerImages.length > 0 ? (
                 <AnimatedImageGrid images={offerImages} />
+              ) : (
+                <Loading wrapperStyle={{ height: "100%" }} />
               )}
             </AnimatedGridContainer>
           </Grid>

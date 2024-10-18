@@ -1,6 +1,7 @@
-import { Grid } from "@bosonprotocol/react-kit";
+import { isTruthy } from "@bosonprotocol/react-kit";
+import Loading from "components/ui/Loading";
 import { CONFIG } from "lib/config";
-import { resolveUrlFromIPFS } from "lib/utils/hooks/useResolveUrlFromIPFS";
+import { getImageUrl } from "lib/utils/images";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 
@@ -49,12 +50,6 @@ const StyledImage = styled.img`
   border-radius: 8px;
 `;
 
-const LoadingContainer = styled(Grid)`
-  height: 100%;
-  font-size: 1.125rem;
-  color: #333;
-`;
-
 interface ImageItemProps {
   top: string;
   left: string;
@@ -93,42 +88,33 @@ const AnimatedImageGrid: React.FC<AnimatedImageGridProps> = ({ images }) => {
 
   useEffect(() => {
     const loadImages = async () => {
-      const resolvedUrls = images.map((url) =>
-        resolveUrlFromIPFS(url, CONFIG.ipfsImageGateway)
-      );
       const loadedUrls = await Promise.all(
-        resolvedUrls.map(async (url) => {
-          try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Network response was not ok");
-            const blob = await response.blob();
-            return URL.createObjectURL(blob);
-          } catch (error) {
-            console.error("Error loading image:", error);
-            return null;
-          }
+        images.map(async (url) => {
+          return getImageUrl(url, { gateway: CONFIG.ipfsImageGateway });
         })
       );
-      setLoadedImages(loadedUrls.filter(Boolean) as string[]);
+      setLoadedImages(loadedUrls.filter(isTruthy));
     };
 
     loadImages();
   }, [images]);
 
   useEffect(() => {
+    function runTransition() {
+      setActiveIndex((prevIndex) => {
+        setTransitioningIndex(prevIndex);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        timeoutRef.current = setTimeout(() => {
+          setTransitioningIndex(null);
+        }, 50);
+        return (prevIndex + 1) % imageItems.length;
+      });
+    }
     if (loadedImages.length === images.length) {
-      const interval = setInterval(() => {
-        setActiveIndex((prevIndex) => {
-          setTransitioningIndex(prevIndex);
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-          }
-          timeoutRef.current = setTimeout(() => {
-            setTransitioningIndex(null);
-          }, 50);
-          return (prevIndex + 1) % imageItems.length;
-        });
-      }, 2000);
+      runTransition();
+      const interval = setInterval(() => runTransition(), 2000);
 
       return () => {
         clearInterval(interval);
@@ -140,15 +126,7 @@ const AnimatedImageGrid: React.FC<AnimatedImageGridProps> = ({ images }) => {
   }, [loadedImages, images.length, imageItems.length]);
 
   if (loadedImages.length !== images.length) {
-    return (
-      <LoadingContainer
-        width={"100%"}
-        justifyContent="center"
-        alignItems="center"
-      >
-        Loading images...
-      </LoadingContainer>
-    );
+    return <Loading wrapperStyle={{ height: "100%" }} />;
   }
 
   return (
