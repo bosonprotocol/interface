@@ -153,7 +153,8 @@ export default function Landing() {
     {
       voided: false,
       valid: true,
-      quantityAvailable_gte: 1
+      quantityAvailable_gte: 1,
+      first: offersWhitelisted?.length || 0
     },
     {
       enabled: !!offersWhitelisted?.length,
@@ -187,7 +188,8 @@ export default function Landing() {
     return offers
       .map((offer) => {
         const { mainImage } = getOfferDetails(offer.metadata);
-        return mainImage || offer?.metadata?.imageUrl;
+        const img = mainImage || offer?.metadata?.imageUrl;
+        return img;
       })
       .filter(isTruthy);
   }, [validOffersWhitelisted, shuffledOffers]);

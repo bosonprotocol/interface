@@ -22,7 +22,7 @@ export function useOffers(
     ...options.overrides,
     // if there is a offer list defined at .env level, then use that or the intersection with the overrides
     // otherwise, use the overrides offer list
-    offerCurationList: offerlistFromCuration
+    offerCurationList: offerlistFromCuration?.length
       ? options.overrides?.offerCurationList
         ? options.overrides.offerCurationList.filter((o) =>
             offerlistFromCuration.includes(o)
