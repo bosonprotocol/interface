@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import OfferList from "../../../components/offers/OfferList";
 import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { ExtendedSeller } from "../../explore/WithAllOffers";
-export type Action = "commit" | "redeem" | "contact-seller" | null;
+import { Action } from "./const";
 
 interface Props {
   products: ExtendedSeller;

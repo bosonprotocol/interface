@@ -12,8 +12,8 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import { useIsCustomStoreValueChanged } from "../../pages/custom-store/useIsCustomStoreValueChanged";
 import { ExtendedOffer } from "../../pages/explore/WithAllOffers";
 import { ProductGridContainer } from "../../pages/profile/ProfilePage.styles";
+import { Action } from "../../pages/profile/seller/const";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
-import { Action } from "../offer/OfferCard";
 import ProductCard from "../productCard/ProductCard";
 import { Grid } from "../ui/Grid";
 import { ItemsPerRow } from "../ui/GridContainer";
