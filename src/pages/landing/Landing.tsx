@@ -1,8 +1,9 @@
-import { CollectionsCardSkeleton } from "@bosonprotocol/react-kit";
+import { CollectionsCardSkeleton, isTruthy } from "@bosonprotocol/react-kit";
 import CollectionsCard from "components/modal/components/Explore/Collections/CollectionsCard";
 import { useSortOffers } from "components/price/useSortOffers";
 import { colors } from "lib/styles/colors";
 import { Profile } from "lib/utils/hooks/lens/graphql/generated";
+import { useOffersWhitelist } from "lib/utils/hooks/offers/useOffersWhitelist";
 import useProducts from "lib/utils/hooks/product/useProducts";
 import useProductsByFilteredOffers from "lib/utils/hooks/product/useProductsByFilteredOffers";
 import { getOfferDetails } from "lib/utils/offer/getOfferDetails";
@@ -128,9 +129,9 @@ export default function Landing() {
   const LayoutWrapper = isSideNavBar ? Grid : DarkerBackground;
   const { products, isLoading, isError, sellerLensProfilePerSellerId } =
     useProductsByFilteredOffers({
+      first: 200,
       voided: false,
       valid: true,
-      first: numOffers,
       quantityAvailable_gte: 1
     });
 
@@ -146,15 +147,49 @@ export default function Landing() {
     }
   }, [products]);
 
+  const { data: offersWhitelisted } = useOffersWhitelist();
+  const { products: validOffersWhitelisted } = useProductsByFilteredOffers(
+    {
+      voided: false,
+      valid: true,
+      quantityAvailable_gte: 1
+    },
+    {
+      enabled: !!offersWhitelisted?.length,
+      overrides: {
+        enableCurationLists: true,
+        offerCurationList: offersWhitelisted
+      }
+    }
+  );
   const offerImages = useMemo(() => {
-    return shuffledOffers
-      ?.slice(0, 8)
+    function getOffersForAnimatedGrid() {
+      const numOffersInAnimatedGrid = 8;
+      if (validOffersWhitelisted.length >= numOffersInAnimatedGrid) {
+        return validOffersWhitelisted;
+      }
+      const validOfferWhitelistedIdMap = new Map(
+        validOffersWhitelisted.map((offer) => [offer.id, true])
+      );
+
+      const offersToAdd = [...validOffersWhitelisted];
+      for (const offer of shuffledOffers) {
+        if (offersToAdd.length >= numOffersInAnimatedGrid) break;
+
+        if (!validOfferWhitelistedIdMap.has(offer.id)) {
+          offersToAdd.push(offer);
+        }
+      }
+      return offersToAdd;
+    }
+    const offers = getOffersForAnimatedGrid();
+    return offers
       .map((offer) => {
         const { mainImage } = getOfferDetails(offer.metadata);
         return mainImage || offer?.metadata?.imageUrl;
       })
-      .filter((image): image is string => !!image);
-  }, [shuffledOffers]);
+      .filter(isTruthy);
+  }, [validOffersWhitelisted, shuffledOffers]);
 
   const allProducts = useProducts(
     {
@@ -244,8 +279,7 @@ export default function Landing() {
               padding="0.9375rem 2.5rem 2.5rem 2.5rem"
             >
               <Title tag="h1" fontWeight="600" fontSize="2.0625rem">
-                Tokenize, transfer and trade any physical asset
-                as&nbsp;an&nbsp;NFT
+                Tokenize, transfer and trade any physical asset as an NFT
               </Title>
               <SubTitle tag="h4" fontWeight="400" fontSize="1.25rem">
                 The first decentralized marketplace built on Boson Protocol

@@ -2,12 +2,14 @@ import { useMemo } from "react";
 
 import { isTruthy } from "../../../types/helpers";
 import { useOffers } from "../offers";
+import { UseOfferOptionsProps } from "../offers/types";
 import useProducts from "./useProducts";
 
 export default function useProductsByFilteredOffers(
-  props: Parameters<typeof useOffers>[0] = {}
+  props: Parameters<typeof useOffers>[0] = {},
+  options?: UseOfferOptionsProps
 ) {
-  const { data, isLoading, isError } = useOffers({ ...props, first: 200 });
+  const { data, isLoading, isError } = useOffers(props, options);
   const productsIds = useMemo(
     // use product ids instead of uuids
     () =>

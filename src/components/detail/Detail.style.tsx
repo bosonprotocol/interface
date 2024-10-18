@@ -197,29 +197,6 @@ export const ImageWrapper = styled.div`
   width: -webkit-fill-available;
 `;
 
-export const GlideWrapper = styled.div<{ $afterBackground: string }>`
-  &:after {
-    content: "";
-    position: absolute;
-    height: 100%;
-    width: 4rem;
-    z-index: ${zIndex.Carousel};
-    top: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(
-      -90deg,
-      ${({ $afterBackground }) => $afterBackground} 0%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
-`;
-
-export const GlideSlide = styled.div`
-  overflow: hidden;
-`;
-
 const tableBorder = css`
   tbody {
     tr {

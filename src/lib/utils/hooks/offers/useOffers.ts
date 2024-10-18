@@ -4,31 +4,40 @@ import { useQuery } from "react-query";
 import { useConvertedPriceFunction } from "../../../../components/price/useConvertedPriceFunction";
 import { useCurationLists } from "../useCurationLists";
 import { getOffers } from "./getOffers";
-import { UseOffersProps } from "./types";
+import { UseOfferOptionsProps, UseOffersProps } from "./types";
 
 export function useOffers(
   props: UseOffersProps,
-  options: {
-    enabled?: boolean;
-  } = {}
+  options: UseOfferOptionsProps = {}
 ) {
   const { config } = useConfigContext();
   const { subgraphUrl, defaultDisputeResolverId } = config.envConfig;
 
   const curationLists = useCurationLists();
   const convertPrice = useConvertedPriceFunction();
-
-  props = {
+  const offerlistFromCuration = curationLists.offerCurationList;
+  const newProps = {
     ...props,
-    ...curationLists
-  };
+    ...curationLists,
+    ...options.overrides,
+    // if there is a offer list defined at .env level, then use that or the intersection with the overrides
+    // otherwise, use the overrides offer list
+    offerCurationList: offerlistFromCuration
+      ? options.overrides?.offerCurationList
+        ? options.overrides.offerCurationList.filter((o) =>
+            offerlistFromCuration.includes(o)
+          )
+        : offerlistFromCuration
+      : options.overrides?.offerCurationList
+  } satisfies UseOffersProps;
+
   return useQuery(
-    ["offers", props, subgraphUrl, defaultDisputeResolverId],
+    ["offers", newProps, subgraphUrl, defaultDisputeResolverId],
     async () => {
       const offersList =
         !curationLists.sellerCurationList ||
         curationLists.sellerCurationList.length > 0
-          ? await getOffers(subgraphUrl, defaultDisputeResolverId, props)
+          ? await getOffers(subgraphUrl, defaultDisputeResolverId, newProps)
           : [];
 
       // sort the offers by price
@@ -43,6 +52,8 @@ export function useOffers(
 
       return orderedOffers;
     },
-    options
+    {
+      enabled: options.enabled
+    }
   );
 }
