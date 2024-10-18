@@ -160,10 +160,6 @@ function AboutPage() {
         </a>
       </Text>
       <Text margin="0 0 0.5rem 0">
-        <span>Carousel Promoted SellerId:</span>
-        <span>{config.carouselPromotedSellerId || "-"}</span>
-      </Text>
-      <Text margin="0 0 0.5rem 0">
         <span>dApp View Mode Url:</span>
         <span>{CONFIG.envViewMode?.dappViewModeUrl || "-"}</span>
       </Text>

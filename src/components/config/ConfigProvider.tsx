@@ -1,6 +1,10 @@
-import { ProtocolConfig } from "@bosonprotocol/react-kit";
+import {
+  ConfigProvider as BosonConfigProvider,
+  ProtocolConfig
+} from "@bosonprotocol/react-kit";
 import { MagicProvider } from "components/magicLink/MagicContext";
 import {
+  CONFIG,
   defaultEnvConfig,
   envConfigsFilteredByEnv,
   getDappConfig
@@ -35,9 +39,29 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   const dappConfig = getDappConfig(envConfig || defaultEnvConfig);
   return (
     <Context.Provider value={{ config: dappConfig, setEnvConfig }}>
-      <MagicProvider>
-        <SyncCurrentConfigId>{children}</SyncCurrentConfigId>
-      </MagicProvider>
+      <BosonConfigProvider
+        dateFormat={CONFIG.dateFormat}
+        {...{
+          configId: dappConfig.envConfig.configId,
+          envName: dappConfig.envName,
+          shortDateFormat: CONFIG.shortDateFormat,
+          infuraKey: CONFIG.infuraKey,
+          walletConnectProjectId: CONFIG.walletConnect.projectId,
+          defaultCurrencySymbol: CONFIG.defaultCurrency.symbol,
+          defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
+          licenseTemplate: CONFIG.rNFTLicenseTemplate,
+          minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
+          contactSellerForExchangeUrl: "",
+          withExternalConnectionProps: true,
+          withReduxProvider: false,
+          withWeb3React: false,
+          withCustomReduxContext: false
+        }}
+      >
+        <MagicProvider>
+          <SyncCurrentConfigId>{children}</SyncCurrentConfigId>
+        </MagicProvider>
+      </BosonConfigProvider>
     </Context.Provider>
   );
 }

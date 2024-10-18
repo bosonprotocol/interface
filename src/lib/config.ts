@@ -81,25 +81,6 @@ function getMetaTxApiKey(envConfig: ProtocolConfig) {
   return apiKey;
 }
 
-function getCarouselPromotedSellerId(
-  envConfig: ProtocolConfig
-): string | undefined {
-  let carouselPromotedSellerId: string | undefined;
-  const sellerMap = process.env.REACT_APP_CAROUSEL_PROMOTED_SELLER_ID_MAP;
-  if (sellerMap) {
-    try {
-      const carouselPromotedSellerIdMap = JSON.parse(sellerMap || "{}");
-      carouselPromotedSellerId =
-        carouselPromotedSellerIdMap[envConfig.configId];
-    } catch (error) {
-      console.error(error);
-      Sentry.captureException(error);
-    }
-  }
-
-  return carouselPromotedSellerId;
-}
-
 export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(envName);
 export const envChainIds = envConfigsFilteredByEnv.map(
   (envConf) => envConf.chainId
@@ -222,8 +203,7 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
       LENS_PROFILES_CONTRACT_PARTIAL_ABI:
         envConfig.lens?.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
       LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
-    },
-    carouselPromotedSellerId: getCarouselPromotedSellerId(envConfig)
+    }
   };
 };
 

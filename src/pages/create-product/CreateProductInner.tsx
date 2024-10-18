@@ -125,8 +125,9 @@ function CreateProductInner({
   isDraftModalClosed
 }: Props) {
   const chainId = useChainId();
-  const signer = useSigner();
   const { config } = useConfigContext();
+  const chainIdToUse = chainId || config.envConfig.chainId;
+  const signer = useSigner();
   const history = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -526,7 +527,7 @@ function CreateProductInner({
       const offersToCreate: offers.CreateOfferArgs[] = [];
       const productAnimation = values.productAnimation?.[0];
       const newNftMetadatas = getDigitalMetadatas({
-        chainId,
+        chainId: chainIdToUse,
         values
       });
       const nftMetadataIpfsLinks: string[] = (

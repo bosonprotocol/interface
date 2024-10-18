@@ -32,3 +32,10 @@ export interface UseOffersProps extends CommonProps {
 export interface UseOfferProps extends CommonProps {
   offerId: string;
 }
+
+export interface UseOfferOptionsProps {
+  enabled?: boolean;
+  overrides?: Partial<
+    Pick<UseOffersProps, "enableCurationLists" | "offerCurationList">
+  >;
+}
