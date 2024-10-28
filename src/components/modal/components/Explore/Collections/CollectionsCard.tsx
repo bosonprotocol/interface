@@ -242,7 +242,11 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
           )}
           <div>
             <NameContainer>
-              <Typography color={colors.black} fontSize="1rem" fontWeight="600">
+              <Typography
+                color={colors.black}
+                fontSize="0.875rem"
+                fontWeight="600"
+              >
                 {name}
               </Typography>
             </NameContainer>

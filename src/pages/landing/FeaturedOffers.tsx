@@ -22,8 +22,6 @@ const Root = styled.div`
 `;
 
 const Title = styled(Typography)`
-  font-size: 2rem;
-  font-weight: 600;
   line-height: 1.2;
 `;
 
@@ -34,9 +32,7 @@ export const ViewMore = styled(LinkWithQuery)`
   align-items: center;
   cursor: pointer;
   margin-left: 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: 0.0625rem;
+  line-height: 1.3125rem;
   ${() => buttonText};
   color: var(--accent);
 
@@ -51,6 +47,8 @@ export const ViewMore = styled(LinkWithQuery)`
       transform: translateX(5px);
     }
   }
+  font-size: 0.875rem;
+  font-weight: 600;
 `;
 
 interface IFeaturedOffers {
