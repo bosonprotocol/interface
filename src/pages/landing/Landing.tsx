@@ -55,7 +55,6 @@ const StyledGridWithZindex = styled(GridWithZindex)`
 `;
 
 const Title = styled(Typography)`
-  font-size: 2rem;
   font-weight: 600;
   line-height: 1.2;
 `;
@@ -89,6 +88,37 @@ const LandingContainer = styled.div`
   border-radius: 0.5rem;
   background-color: ${colors.white};
   margin-bottom: 3.813rem;
+  position: relative;
+  transform-style: preserve-3d;
+
+  &:before {
+    content: "";
+    position: absolute;
+    inset: 0px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 140, 0, 0.1) 0%,
+        rgba(128, 0, 128, 0.1) 50%,
+        rgba(75, 0, 130, 0.1) 100%
+      ),
+      radial-gradient(
+        circle at 20% 100%,
+        rgba(76, 217, 100, 0.15) 0%,
+        transparent 50%
+      ),
+      radial-gradient(circle at 0% 100%, rgba(0, 0, 0, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 90% 90%, rgba(0, 0, 0, 0.1) 0%, transparent 40%),
+      radial-gradient(
+        circle at 100% 25%,
+        rgba(0, 0, 0, 0.1) 0%,
+        transparent 40%
+      );
+    filter: blur(20px);
+    transform: translate3d(28px, 34px, -1px);
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.2;
+  }
 `;
 
 const AnimatedGridContainer = styled.div`
