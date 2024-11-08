@@ -22,8 +22,7 @@ const CardContainer = styled.div<{
   display: flex;
   cursor: pointer;
   flex-direction: column;
-  box-shadow: 0 0 0 2px ${colors.lightGrey};
-  filter: drop-shadow(0 0 2px ${colors.lightGrey});
+  border: 2px solid ${colors.lightGrey};
   border-radius: 4px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   min-width: 16.5625rem;

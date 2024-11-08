@@ -199,7 +199,7 @@ const HeaderItems = styled.nav<{
   }}
 `;
 const logoXXSHeightPx = 24;
-const logoSHeightPx = 47;
+const logoSHeightPx = 24;
 const LogoImg = styled.img`
   height: ${logoXXSHeightPx}px;
   cursor: pointer;

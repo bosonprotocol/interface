@@ -60,6 +60,9 @@ const Title = styled(Typography)`
 `;
 const SubTitle = styled(Typography)`
   margin-bottom: 0.5rem;
+  ${breakpoint.m} {
+    max-width: 21.25rem;
+  }
 `;
 const ExploreContainer = styled.div`
   margin-top: 2rem;
@@ -81,6 +84,7 @@ const ExploreProductsButton = styled(BosonButton)`
   background-color: var(--buttonBgColor);
   border-color: var(--buttonBgColor);
   color: var(--buttonTextColor);
+  margin-top: 0.625rem;
 `;
 
 const LandingContainer = styled.div`
@@ -311,7 +315,12 @@ export default function Landing() {
               flexDirection="column"
               padding="0.9375rem 2.5rem 2.5rem 2.5rem"
             >
-              <Title tag="h1" fontWeight="600" fontSize="2.0625rem">
+              <Title
+                tag="h1"
+                fontWeight="600"
+                fontSize="2.0625rem"
+                marginBottom={"0.625rem"}
+              >
                 Tokenize, transfer and trade any physical asset as an NFT
               </Title>
               <SubTitle tag="h4" fontWeight="400" fontSize="1.25rem">
