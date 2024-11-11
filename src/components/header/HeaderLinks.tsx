@@ -111,8 +111,8 @@ const NavigationLinks = styled.div<{
                 justify-content: center;
                 padding-top: 1rem;
                 padding-bottom: 1rem;
-                padding-left: 0.1rem;
-                padding-right: 0.1rem;
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
               }
             `;
           }}
@@ -148,7 +148,7 @@ const ItemsList = styled.div<{
   ${({ $isMobile }) =>
     !$isMobile &&
     css`
-      gap: 1rem;
+      gap: 0;
     `}
 `;
 
