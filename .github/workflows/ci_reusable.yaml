@@ -66,6 +66,9 @@ on:
       REACT_APP_META_TX_API_IDS_MAP:
         required: true
         type: string
+      REACT_APP_META_TX_RELAYER_URL:
+        required: false
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -121,6 +124,7 @@ jobs:
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID }}
       REACT_APP_META_TX_API_KEY_MAP: ${{ inputs.REACT_APP_META_TX_API_KEY_MAP }}
       REACT_APP_META_TX_API_IDS_MAP: ${{ inputs.REACT_APP_META_TX_API_IDS_MAP }}
+      REACT_APP_META_TX_RELAYER_URL: ${{ inputs.REACT_APP_META_TX_RELAYER_URL }}
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID }}
       REACT_APP_RELEASE_TAG: ${{ inputs.REACT_APP_RELEASE_TAG }}
       REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}
