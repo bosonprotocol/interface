@@ -15,7 +15,7 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import { DetailsStep } from "./steps/details/DetailsStep";
 import { ExecuteStep } from "./steps/execute/ExecuteStep";
 import { DCLLayout } from "./styles";
-import { FormType, validationSchema } from "./validationSchema";
+import { FormType, LocationValues, validationSchema } from "./validationSchema";
 const Background = styled.div`
   width: 100%;
 `;
@@ -108,7 +108,7 @@ export default () => {
     >
       <Formik<FormType>
         initialValues={{
-          location: ""
+          location: "" as LocationValues.OwnLand | LocationValues.BosonLand
         }}
         validationSchema={validationSchema}
         onSubmit={() => {

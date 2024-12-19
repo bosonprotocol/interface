@@ -31,6 +31,7 @@ import { Warning } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
 
+import { FileProps } from "../../form/Upload/types";
 import { SectionTitle } from "../Product.styles";
 import { getBundleItemName } from "../productDigital/getBundleItemName";
 import {
@@ -310,12 +311,12 @@ export default function ConfirmProductDetails({
                                     ([name, images]) => {
                                       if (
                                         !images ||
-                                        !images.length ||
-                                        !images?.[0]?.src
+                                        !(images as FileProps[]).length ||
+                                        !(images as FileProps[])?.[0]?.src
                                       ) {
                                         return null;
                                       }
-                                      const [img] = images;
+                                      const [img] = images as FileProps[];
                                       const imgSrc = img.src;
                                       return (
                                         <VariantImage src={imgSrc} key={name} />

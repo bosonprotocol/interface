@@ -21,8 +21,11 @@ export const validationOfFile = ({
   supportedFormats?: string[];
 }) => {
   const formats = supportedFormats || SUPPORTED_FILE_FORMATS;
-  return Yup.mixed()
-    .nullable(isOptional ? true : undefined)
+  let schema = Yup.mixed();
+  if (!isOptional) {
+    schema = schema.nullable();
+  }
+  return schema
     .test("numFiles", `Please upload one file`, (files: File[]) => {
       return isOptional ? true : !!(files || []).length;
     })

@@ -179,7 +179,14 @@ function getTimesInFailedPeriod(failedTimesArray: Time[]) {
     if (dateStep === time.dateStep) {
       return null;
     }
-    const subTimePeriods = [];
+    const subTimePeriods: {
+      startTime: Date;
+      endTime: Date;
+      isBeginning: boolean;
+      dateStep: DateStep;
+      dateStepValue: number;
+      genesisDate: Date;
+    }[] = [];
     let iDateIndex = 1;
     let from = time.startTime;
     while (dayjs(from).isBefore(time.endTime)) {

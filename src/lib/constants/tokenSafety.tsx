@@ -1,4 +1,5 @@
 import { constants } from "ethers";
+import { ReactElement } from "react";
 
 import { NATIVE_CHAIN_ID } from "./tokens";
 import tokenSafetyLookup, { TOKEN_LIST_TYPES } from "./tokenSafetyLookup";
@@ -13,8 +14,8 @@ export enum WARNING_LEVEL {
 }
 
 export function getWarningCopy(warning: Warning | null, plural = false) {
-  let heading = null,
-    description = null;
+  let heading: ReactElement | null = null,
+    description: ReactElement | null = null;
   if (warning) {
     switch (warning.level) {
       case WARNING_LEVEL.MEDIUM:
