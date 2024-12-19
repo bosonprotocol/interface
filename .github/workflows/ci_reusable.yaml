@@ -107,7 +107,7 @@ on:
 jobs:
   build-test-deploy:
     name: Build, Test and Deploy the Marketplace Interface
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: "ipfs://QmaUobgQYrMnm2jZ3WowPtwRs4MpMR2TSinp3ChebjnZwe"
       REACT_APP_RNFT_LICENSE_TEMPLATE: "ipfs://QmPbzbp7xcSKhQPjT5VacLRMVgM1U6DB4LiF2GVyHhvcA7"

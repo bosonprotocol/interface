@@ -21,7 +21,7 @@ on:
 jobs:
   prejob:
     name: Get Latest Tag
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       releaseTag: ${{ steps.tag.outputs.tag }}
       releaseName: ${{ steps.name.outputs.name }}
@@ -191,7 +191,7 @@ jobs:
 
   job-summary:
     name: Create Job Summary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
     needs:
       [
