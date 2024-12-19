@@ -9,6 +9,7 @@ import {
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
+  ProductTypeTypeValues,
   TOKEN_CRITERIA,
   TOKEN_TYPES
 } from "./const";
@@ -36,9 +37,9 @@ export const createYourProfileInitialValues: CreateYourProfile = {
 
 export const productTypeInitialValues = {
   productType: {
-    productType: "",
+    productType: "" as ProductTypeTypeValues,
     productVariant: "",
-    tokenGatedOffer: ""
+    tokenGatedOffer: "false"
   }
 } as const;
 
@@ -176,7 +177,7 @@ export const shippingInfoInitialValues = {
 
 export const imagesSpecificOrAllInitialValues = {
   imagesSpecificOrAll: {
-    value: "all",
+    value: "all" as NonNullable<"all" | "specific" | undefined>,
     label: "All"
   }
 };

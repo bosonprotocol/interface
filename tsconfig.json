@@ -16,6 +16,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "noImplicitThis": false,
+    "noImplicitAny": false,
     "jsx": "react-jsx",
     "paths": {
       "stream": ["./node_modules/readable-stream"],

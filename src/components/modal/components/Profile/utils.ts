@@ -30,8 +30,14 @@ export function buildProfileFromMetadata(
     (img) => img.tag === "cover"
   );
   const isLens = useLens && lensProfile;
-  let lensCoverPicture = null,
-    lensProfileImage = null;
+  let lensCoverPicture: {
+    url: string;
+    type: string;
+  } | null = null;
+  let lensProfileImage: {
+    url: string;
+    type: string;
+  } | null = null;
   if (isLens) {
     const lensCoverPictureUrl = getLensCoverPictureUrl(lensProfile);
     const lensCoverPictureType = lensCoverPictureUrl
@@ -68,17 +74,16 @@ export function buildProfileFromMetadata(
           {
             ...coverPicture,
             src: coverPicture.url,
-            fit: "fit" in coverPicture ? coverPicture.fit : undefined,
+            fit:
+              "fit" in coverPicture ? (coverPicture.fit as string) : undefined,
             position:
               "position" in coverPicture
-                ? coverPicture.position ?? undefined
+                ? (coverPicture.position as string) || undefined
                 : undefined
           }
-        ] ?? []
+        ]
       : [],
-    logo: profileImage
-      ? [{ ...profileImage, src: profileImage.url }] ?? []
-      : [],
+    logo: profileImage ? [{ ...profileImage, src: profileImage.url }] : [],
     contactPreference:
       OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
         (obj) => obj.value === metadata?.contactPreference

@@ -7,8 +7,7 @@ import {
 import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
 import { checkValidUrl, notUrlErrorMessage } from "lib/validation/regex/url";
-import { ValidationError } from "yup";
-import { AnyObject } from "yup/lib/types";
+import { AnyObject, ValidationError } from "yup";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
@@ -118,7 +117,7 @@ const getBundleItemsMedia = ({
     Yup.object({
       image: validationOfIpfsImage(),
       video: validationOfIpfsImage()
-    }).nullable(true)
+    }).nullable()
   ).test(
     "invalidBundleItemsMedia",
     "Please add an image for new NFTs",
@@ -347,7 +346,7 @@ const transferCriteria = Yup.string().required(validationMessage.required);
 const transferTime = Yup.number()
   .min(0, "It cannot be negative")
   .required(validationMessage.required)
-  .nullable(true);
+  .nullable();
 const transferTimeUnit = Yup.object({
   value: Yup.string(),
   label: Yup.string()
@@ -362,7 +361,7 @@ const buyerTransferInfo = Yup.object({
   label: Yup.string()
 })
   .required(validationMessage.required)
-  .nullable(true);
+  .nullable();
 const testTokenAddress = async function ({
   tokenType,
   coreSDK,
@@ -472,7 +471,7 @@ const commonFieldsBundleItem = {
     label: Yup.string()
   })
     .required(validationMessage.required)
-    .nullable(true)
+    .nullable()
     .default(undefined),
   isNftMintedAlready: Yup.object({
     value: Yup.string().oneOf(
@@ -488,7 +487,7 @@ const commonFieldsBundleItem = {
       otherwise: (schema) => schema
     })
     .default(undefined)
-    .nullable(true)
+    .nullable()
 };
 const nftType = Yup.object({
   value: Yup.string()
@@ -497,7 +496,7 @@ const nftType = Yup.object({
   label: Yup.string()
 })
   .required(validationMessage.required)
-  .nullable(true);
+  .nullable();
 const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
   Yup.object({
     ...commonFieldsBundleItem,
@@ -511,7 +510,7 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
       label: Yup.string()
     })
       .required(validationMessage.required)
-      .nullable(true)
+      .nullable()
       .default([{ value: "", label: "" }]),
     mintedNftContractAddress: Yup.string()
       .required(validationMessage.required)
@@ -690,30 +689,32 @@ export const commonCoreTermsOfSaleValidationSchema = {
   offerValidityPeriod: Yup.mixed<Dayjs | Dayjs[]>()
     .when("infiniteExpirationOffers", {
       is: true,
-      then: Yup.mixed<Dayjs>()
-        .required(validationMessage.required)
-        .defined(validationMessage.required),
-      otherwise: Yup.mixed<Dayjs[]>()
-        .required(validationMessage.required)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        .isOfferValidityDatesValid()
+      then: (schema) =>
+        schema
+          .required(validationMessage.required)
+          .defined(validationMessage.required),
+      otherwise: (schema) =>
+        schema
+          .required(validationMessage.required)
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          .isOfferValidityDatesValid()
     })
     .required(validationMessage.required),
   redemptionPeriod: Yup.mixed<Dayjs | Dayjs[]>().when(
     "infiniteExpirationOffers",
     {
       is: true,
-      then: Yup.mixed<Dayjs>().optional(),
+      then: (schema) => schema.optional(),
       // .required(validationMessage.required)
       // .defined(validationMessage.required),
-      otherwise: Yup.mixed<Dayjs[]>()
-        // Yup.array<Dayjs>()
-        .required(validationMessage.required)
-        // .min(2, validationMessage.required)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        .isRedemptionDatesValid()
+      otherwise: (schema) =>
+        schema
+          .required(validationMessage.required)
+          // .min(2, validationMessage.required)
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          .isRedemptionDatesValid()
     }
   ),
   voucherValidDurationInDays: Yup.number().when("infiniteExpirationOffers", {
@@ -723,7 +724,7 @@ export const commonCoreTermsOfSaleValidationSchema = {
         .required(validationMessage.required)
         .min(1, "It has to be 1 at least");
     },
-    otherwise: Yup.number().min(0, "It must be 0").max(0, "It must be 0")
+    otherwise: (schema) => schema.min(0, "It must be 0").max(0, "It must be 0")
   })
 };
 

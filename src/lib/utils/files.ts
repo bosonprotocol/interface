@@ -3,7 +3,7 @@ export type FileWithEncodedData = File & { encodedData: string };
 export const getFilesWithEncodedData = async (
   files: File[]
 ): Promise<FileWithEncodedData[]> => {
-  const promises = [];
+  const promises: Array<Promise<FileWithEncodedData>> = [];
   for (const file of files as FileWithEncodedData[]) {
     promises.push(
       new Promise<FileWithEncodedData>((resolve, reject) => {

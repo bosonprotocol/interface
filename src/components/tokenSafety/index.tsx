@@ -19,6 +19,7 @@ import { ExplorerDataType, getExplorerLink } from "lib/utils/getExplorerLink";
 import { useToken } from "lib/utils/hooks/Tokens";
 import { ArrowSquareOut as LinkIconFeather, Copy } from "phosphor-react";
 import { lighten } from "polished";
+import { ReactElement } from "react-markdown/lib/react-markdown";
 import { useAddUserToken } from "state/user/hooks";
 import styled from "styled-components";
 
@@ -230,8 +231,8 @@ export default function TokenSafety({
   onBlocked,
   showCancel
 }: TokenSafetyProps) {
-  const logos = [];
-  const urls = [];
+  const logos: ReactElement[] = [];
+  const urls: ReactElement[] = [];
 
   const token1Warning = tokenAddress ? checkWarning(tokenAddress) : null;
   const token1 = useToken(tokenAddress);

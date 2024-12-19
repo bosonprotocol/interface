@@ -553,7 +553,7 @@ function CreateProductInner({
         for (const [index, variant] of Object.entries(variants)) {
           const productImages =
             productVariantsImages?.[Number(index)]?.productImages;
-          const { color, size } = variant;
+          const { color, size } = variant as { color: string; size: string };
           const typeOptions = [
             {
               type: TypeKeys.Size,

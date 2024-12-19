@@ -25,8 +25,8 @@
     "coverage:e2e": "cross-env CI=true npx playwright test --project=chromium && npx nyc report --reporter=json",
     "coverage:e2e:view": "npx nyc report --reporter html && echo 'open coverage/index.html to see it'",
     "coverage:report": "npm run coverage:unit",
-    "upgrade:corec:latest": "npm install @bosonprotocol/common@latest @bosonprotocol/core-sdk@latest @bosonprotocol/ethers-sdk@latest @bosonprotocol/ipfs-storage@latest @bosonprotocol/react-kit@latest @bosonprotocol/widgets-sdk@latest",
-    "upgrade:corec:alpha": "npm install @bosonprotocol/common@alpha @bosonprotocol/core-sdk@alpha @bosonprotocol/ethers-sdk@alpha @bosonprotocol/ipfs-storage@alpha @bosonprotocol/react-kit@alpha @bosonprotocol/widgets-sdk@alpha",
+    "upgrade:corec:latest": "npm install @bosonprotocol/react-kit@latest",
+    "upgrade:corec:alpha": "npm install @bosonprotocol/react-kit@alpha",
     "generate": "graphql-codegen",
     "clean-react-cache": "run-script-os",
     "clean-react-cache:default": "rm -rf node_modules/.cache",
@@ -46,7 +46,7 @@
   "dependencies": {
     "@apollo/client": "^3.8.1",
     "@bosonprotocol/chat-sdk": "^1.3.1-alpha.9",
-    "@bosonprotocol/react-kit": "^0.34.0",
+    "@bosonprotocol/react-kit": "^0.35.1-alpha.7",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",
     "@ethersproject/units": "^5.7.0",
@@ -158,7 +158,7 @@
     "viem": "^1.21.4",
     "web-vitals": "^2.1.4",
     "webpack": "^5.73.0",
-    "yup": "^0.32.11",
+    "yup": "^1.5.0",
     "zustand": "^4.1.2"
   },
   "devDependencies": {

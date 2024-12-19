@@ -70,7 +70,7 @@ export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
           return false;
         }
 
-        const ipfsArray = [];
+        const ipfsArray: FileProps[] = [];
         for (let i = 0; i < filesArray.length; i++) {
           const file = filesArray[i];
           const cid = await saveFile(file);
