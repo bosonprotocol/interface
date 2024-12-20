@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useConfigContext } from "components/config/ConfigContext";
 import { useField } from "formik";
-import { useCallback, useEffect } from "react";
+import { Key, useCallback, useEffect } from "react";
 import styled from "styled-components";
 
 import { isTruthy } from "../../lib/types/helpers";
@@ -102,21 +102,21 @@ const deleteTagsIfNoVariants = (
   const { color, size } = variantToDelete;
   if (colors?.length) {
     const variantsWithSameColor = variants.filter(
-      (variant) => variant.color === color
+      (variant: { color: string }) => variant.color === color
     );
     if (variantsWithSameColor.length <= 1) {
       // 1 because the variantToDelete is still there
-      const filtered = colors.filter((item) => item !== color);
+      const filtered = colors.filter((item: string) => item !== color);
       setColors(filtered);
     }
   }
   if (sizes?.length) {
     const variantsWithSameSize = variants.filter(
-      (variant) => variant.size === size
+      (variant: { size: string }) => variant.size === size
     );
     if (variantsWithSameSize.length <= 1) {
       // 1 because the variantToDelete is still there
-      const filtered = sizes.filter((item) => item !== size);
+      const filtered = sizes.filter((item: string) => item !== size);
       setSizes(filtered);
     }
   }
@@ -147,10 +147,10 @@ export default function ProductVariants() {
       }
       const existingVariants = new Set<string>();
       const colors = (fieldColors?.value || []).filter(
-        (value) => !!value
+        (value: any) => !!value
       ) as string[];
       const sizes = (fieldSizes?.value || []).filter(
-        (value) => !!value
+        (value: any) => !!value
       ) as string[];
       for (const variant of variants) {
         variant.color && existingVariants.add(getColorSizeKey(variant.color));
@@ -188,12 +188,14 @@ export default function ProductVariants() {
       });
 
       // remove variants with single tags of the other type
-      const variantsToKeep = variants.filter((variant) => {
-        const { color, size } = variant;
-        const hasOnlyTheOtherTag =
-          type === "color" ? !!size && !color : !!color && !size;
-        return !hasOnlyTheOtherTag;
-      });
+      const variantsToKeep = variants.filter(
+        (variant: { color: string; size: string }) => {
+          const { color, size } = variant;
+          const hasOnlyTheOtherTag =
+            type === "color" ? !!size && !color : !!color && !size;
+          return !hasOnlyTheOtherTag;
+        }
+      );
 
       // add variants with pair Color / Size
       for (const otherTag of otherTags) {
@@ -235,9 +237,11 @@ export default function ProductVariants() {
     (type: "color" | "size", tag: string) => {
       const variants = fieldVariants?.value || [];
 
-      const variantsToKeep = variants.filter((variant) => {
-        return variant[type] !== tag;
-      });
+      const variantsToKeep = variants.filter(
+        (variant: { [x: string]: string }) => {
+          return variant[type] !== tag;
+        }
+      );
       helpersVariants.setValue([...variantsToKeep]);
     },
     [fieldVariants?.value, helpersVariants]
@@ -311,62 +315,71 @@ export default function ProductVariants() {
             </tr>
           </THead>
           <TBody>
-            {variants?.map((variant, idx) => {
-              return (
-                <tr key={variant.name}>
-                  <Grid
-                    data-name
-                    as="td"
-                    flexDirection="row"
-                    alignItems="flex-start"
-                  >
-                    {variant.name}
-                  </Grid>
-                  <td data-price>
-                    <Input
-                      name={`${variantsKey}[${idx}].price`}
-                      type="number"
-                    />
-                  </td>
-                  <TdFlex data-currency>
-                    <Select
-                      name={`${variantsKey}[${idx}].currency`}
-                      options={OPTIONS_CURRENCIES}
-                      classNamePrefix="react-select"
-                    />
-                  </TdFlex>
-                  <td data-quantity>
-                    <Input
-                      name={`${variantsKey}[${idx}].quantity`}
-                      type="number"
-                    />
-                  </td>
-                  <td data-action>
-                    <Grid justifyContent="center">
-                      <BosonButton
-                        variant="secondaryInverted"
-                        size="small"
-                        onClick={() => {
-                          deleteTagsIfNoVariants(
-                            variant,
-                            variants,
-                            fieldColors.value,
-                            helpersColors.setValue,
-                            fieldSizes.value,
-                            helpersSizes.setValue
-                          );
-                          helpersVariants.setValue([
-                            ...variants.filter((_, index) => index !== idx)
-                          ]);
-                        }}
-                      >
-                        Remove
-                      </BosonButton>
+            {variants?.map(
+              (
+                variant: {
+                  name: Key | null | undefined;
+                },
+                idx: number
+              ) => {
+                return (
+                  <tr key={variant.name}>
+                    <Grid
+                      data-name
+                      as="td"
+                      flexDirection="row"
+                      alignItems="flex-start"
+                    >
+                      {variant.name}
                     </Grid>
-                  </td>
-                </tr>
-              );
-            })}
+                    <td data-price>
+                      <Input
+                        name={`${variantsKey}[${idx}].price`}
+                        type="number"
+                      />
+                    </td>
+                    <TdFlex data-currency>
+                      <Select
+                        name={`${variantsKey}[${idx}].currency`}
+                        options={OPTIONS_CURRENCIES}
+                        classNamePrefix="react-select"
+                      />
+                    </TdFlex>
+                    <td data-quantity>
+                      <Input
+                        name={`${variantsKey}[${idx}].quantity`}
+                        type="number"
+                      />
+                    </td>
+                    <td data-action>
+                      <Grid justifyContent="center">
+                        <BosonButton
+                          variant="secondaryInverted"
+                          size="small"
+                          onClick={() => {
+                            deleteTagsIfNoVariants(
+                              variant,
+                              variants,
+                              fieldColors.value,
+                              helpersColors.setValue,
+                              fieldSizes.value,
+                              helpersSizes.setValue
+                            );
+                            helpersVariants.setValue([
+                              ...variants.filter(
+                                (_: never, index: number) => index !== idx
+                              )
+                            ]);
+                          }}
+                        >
+                          Remove
+                        </BosonButton>
+                      </Grid>
+                    </td>
+                  </tr>
+                );
+              }
+            )}
           </TBody>
         </Table>
       </StyledFormField>

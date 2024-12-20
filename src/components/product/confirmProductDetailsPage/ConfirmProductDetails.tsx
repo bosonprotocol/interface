@@ -28,7 +28,7 @@ import map from "lodash/map";
 import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
 import { AgreeToTermsAndSellerAgreement } from "pages/create-product/AgreeToTermsAndSellerAgreement";
 import { Warning } from "phosphor-react";
-import { useMemo } from "react";
+import { Key, ReactElement, ReactFragment, ReactPortal, useMemo } from "react";
 import styled from "styled-components";
 
 import { FileProps } from "../../form/Upload/types";
@@ -278,57 +278,96 @@ export default function ConfirmProductDetails({
                     </tr>
                   </thead>
                   <tbody>
-                    {values.productVariants.variants.map((variant, idx) => {
-                      const variantImages =
-                        values.productVariantsImages?.[idx]?.productImages;
-                      return (
-                        <tr key={variant.name}>
-                          <td data-name>
-                            <Typography justifyContent="flex-start">
-                              {variant.name}
-                            </Typography>
-                          </td>
-                          <td data-price>
-                            <Typography justifyContent="center">
-                              {variant.price}
-                            </Typography>
-                          </td>
-                          <td data-currency>
-                            <Typography justifyContent="center">
-                              {variant.currency.label}
-                            </Typography>
-                          </td>
-                          <td data-quantity>
-                            <Typography justifyContent="center">
-                              {variant.quantity}
-                            </Typography>
-                          </td>
-                          {!isOneSetOfImages && (
-                            <td data-images>
-                              <Grid justifyContent="flex-start" gap="0.5rem">
-                                {variantImages &&
-                                  Object.entries(variantImages).map(
-                                    ([name, images]) => {
-                                      if (
-                                        !images ||
-                                        !(images as FileProps[]).length ||
-                                        !(images as FileProps[])?.[0]?.src
-                                      ) {
-                                        return null;
-                                      }
-                                      const [img] = images as FileProps[];
-                                      const imgSrc = img.src;
-                                      return (
-                                        <VariantImage src={imgSrc} key={name} />
-                                      );
-                                    }
-                                  )}
-                              </Grid>
+                    {values.productVariants.variants.map(
+                      (
+                        variant: {
+                          name: Key | null | undefined;
+                          price:
+                            | string
+                            | number
+                            | boolean
+                            | ReactElement
+                            | ReactFragment
+                            | ReactPortal
+                            | null
+                            | undefined;
+                          currency: {
+                            label:
+                              | string
+                              | number
+                              | boolean
+                              | ReactElement
+                              | ReactFragment
+                              | ReactPortal
+                              | null
+                              | undefined;
+                          };
+                          quantity:
+                            | string
+                            | number
+                            | boolean
+                            | ReactElement
+                            | ReactFragment
+                            | ReactPortal
+                            | null
+                            | undefined;
+                        },
+                        idx: string | number
+                      ) => {
+                        const variantImages =
+                          values.productVariantsImages?.[idx]?.productImages;
+                        return (
+                          <tr key={variant.name}>
+                            <td data-name>
+                              <Typography justifyContent="flex-start">
+                                {variant.name}
+                              </Typography>
                             </td>
-                          )}
-                        </tr>
-                      );
-                    })}
+                            <td data-price>
+                              <Typography justifyContent="center">
+                                {variant.price}
+                              </Typography>
+                            </td>
+                            <td data-currency>
+                              <Typography justifyContent="center">
+                                {variant.currency.label}
+                              </Typography>
+                            </td>
+                            <td data-quantity>
+                              <Typography justifyContent="center">
+                                {variant.quantity}
+                              </Typography>
+                            </td>
+                            {!isOneSetOfImages && (
+                              <td data-images>
+                                <Grid justifyContent="flex-start" gap="0.5rem">
+                                  {variantImages &&
+                                    Object.entries(variantImages).map(
+                                      ([name, images]) => {
+                                        if (
+                                          !images ||
+                                          !(images as FileProps[]).length ||
+                                          !(images as FileProps[])?.[0]?.src
+                                        ) {
+                                          return null;
+                                        }
+                                        const [img] = images as FileProps[];
+                                        const imgSrc = img.src;
+                                        return (
+                                          <VariantImage
+                                            src={imgSrc}
+                                            key={name}
+                                          />
+                                        );
+                                      }
+                                    )}
+                                </Grid>
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      }
+                    )}
                   </tbody>
                 </VariantsTable>
               </div>
@@ -372,9 +411,14 @@ export default function ConfirmProductDetails({
                 <ProductSubtitle tag="h4">
                   Digital images & videos
                 </ProductSubtitle>
-                {values.bundleItemsMedia
-                  .filter(isTruthy)
-                  .map((biMedia, index) => {
+                {values.bundleItemsMedia.filter(isTruthy).map(
+                  (
+                    biMedia: {
+                      image: { src: string }[];
+                      video: { src: string }[];
+                    },
+                    index: number
+                  ) => {
                     const bundleItem =
                       values.productDigital?.bundleItems?.[index];
                     const name = getBundleItemName(bundleItem);
@@ -398,7 +442,8 @@ export default function ConfirmProductDetails({
                         </SpaceContainer>
                       </Grid>
                     );
-                  })}
+                  }
+                )}
               </div>
             )}
           </ProductInformationContent>

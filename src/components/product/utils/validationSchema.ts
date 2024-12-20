@@ -121,49 +121,75 @@ const getBundleItemsMedia = ({
   ).test(
     "invalidBundleItemsMedia",
     "Please add an image for new NFTs",
-    async function (bundleItemsMedia, context) {
+    async function (
+      bundleItemsMedia: { image: FileProps[]; video: FileProps[] }[],
+      context: {
+        parent: {
+          productDigital: {
+            bundleItems: Array<
+              NewNFT | ExistingNFT | DigitalFile | Experiential
+            >;
+          };
+        };
+        options: {
+          from: {
+            value: {
+              productDigital: {
+                bundleItems: Array<
+                  NewNFT | ExistingNFT | DigitalFile | Experiential
+                >;
+              };
+            };
+          }[];
+        };
+        createError: (arg0: { path: string; message: string }) => Error;
+      }
+    ) {
       if (isPhygital) {
         const productDigital =
           context.parent.productDigital ??
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           context.options?.from?.find((from) => from.value.productDigital)
             ?.value?.productDigital;
 
         const results = await Promise.allSettled(
-          bundleItemsMedia?.map(async (bundleItemMedia, index) => {
-            const bundleItem = productDigital.bundleItems[index];
-            if (!bundleItem) {
-              throw new Error(
-                `something went wrong as bundleItem could not be found from bundleItemMedia=${JSON.stringify(bundleItemMedia)}, all bundleItems=${JSON.stringify(productDigital.bundleItems)}, index=${index}`
-              );
+          bundleItemsMedia?.map(
+            async (
+              bundleItemMedia: { image: FileProps[]; video: FileProps[] },
+              index: number
+            ) => {
+              const bundleItem = productDigital.bundleItems[index];
+              if (!bundleItem) {
+                throw new Error(
+                  `something went wrong as bundleItem could not be found from bundleItemMedia=${JSON.stringify(bundleItemMedia)}, all bundleItems=${JSON.stringify(productDigital.bundleItems)}, index=${index}`
+                );
+              }
+              if (
+                getIsBundleItem<ExistingNFT>(
+                  bundleItem,
+                  "mintedNftContractAddress"
+                )
+              ) {
+                return; // nothing to test, no images must be uploaded
+              }
+              if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
+                const isValid = await Yup.object({
+                  image: validationOfRequiredIpfsImage(),
+                  video: validationOfIpfsImage()
+                }).validate(bundleItemMedia);
+                return isValid;
+              }
+              if (
+                getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
+                getIsBundleItem<Experiential>(bundleItem, "experientialName")
+              ) {
+                const isValid = await Yup.object({
+                  image: validationOfIpfsImage(),
+                  video: validationOfIpfsImage()
+                }).validate(bundleItemMedia);
+                return isValid;
+              }
             }
-            if (
-              getIsBundleItem<ExistingNFT>(
-                bundleItem,
-                "mintedNftContractAddress"
-              )
-            ) {
-              return; // nothing to test, no images must be uploaded
-            }
-            if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
-              const isValid = await Yup.object({
-                image: validationOfRequiredIpfsImage(),
-                video: validationOfIpfsImage()
-              }).validate(bundleItemMedia);
-              return isValid;
-            }
-            if (
-              getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
-              getIsBundleItem<Experiential>(bundleItem, "experientialName")
-            ) {
-              const isValid = await Yup.object({
-                image: validationOfIpfsImage(),
-                video: validationOfIpfsImage()
-              }).validate(bundleItemMedia);
-              return isValid;
-            }
-          }) || []
+          ) || []
         );
 
         results.forEach((result, index) => {
@@ -276,7 +302,7 @@ export const getProductVariantsImagesValidationSchema = ({
       })
     ).test({
       name: "minLength",
-      test: function (value) {
+      test: function (value: never[]) {
         return value?.length === this.parent.productVariants?.variants.length;
       }
     })
@@ -768,7 +794,7 @@ export const getTokenGatingValidationSchema = ({
               : (
                   formValues.productVariants
                     .variants as Yup.InferType<ProductVariantsValidationSchema>["productVariants"]["variants"]
-                ).reduce((acum, current) => {
+                ).reduce((acum: number, current: { quantity: number }) => {
                   acum = acum + current.quantity;
                   return acum;
                 }, 0);

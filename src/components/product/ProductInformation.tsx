@@ -56,9 +56,11 @@ const checkLastElementIsPristine = (
 const checkIfElementIsDuplicated = (
   elements: ProductInformationType["productInformation"]["attributes"]
 ): boolean => {
-  const listElements = elements.map((element) => {
-    return `${element.name}_${element.value}`.toLowerCase();
-  });
+  const listElements = elements.map(
+    (element: { name: string; value: string }) => {
+      return `${element.name}_${element.value}`.toLowerCase();
+    }
+  );
   return new Set(listElements).size !== listElements.length;
 };
 
@@ -93,31 +95,35 @@ const AddAttributesContainer = ({
             <>
               {render && (
                 <>
-                  {elements.map((_el, index, array) => (
-                    <AddProductContainer key={`add_product_container_${index}`}>
-                      <div>
-                        <Input
-                          placeholder="Attribute"
-                          name={`productInformation.attributes[${index}].name`}
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          placeholder="Attribute value"
-                          name={`productInformation.attributes[${index}].value`}
-                        />
-                      </div>
-                      {array.length > 1 && (
-                        <X
-                          size={14}
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            arrayHelpers.remove(index);
-                          }}
-                        />
-                      )}
-                    </AddProductContainer>
-                  ))}
+                  {elements.map(
+                    (_el: never, index: number, array: string | never[]) => (
+                      <AddProductContainer
+                        key={`add_product_container_${index}`}
+                      >
+                        <div>
+                          <Input
+                            placeholder="Attribute"
+                            name={`productInformation.attributes[${index}].name`}
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            placeholder="Attribute value"
+                            name={`productInformation.attributes[${index}].value`}
+                          />
+                        </div>
+                        {array.length > 1 && (
+                          <X
+                            size={14}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              arrayHelpers.remove(index);
+                            }}
+                          />
+                        )}
+                      </AddProductContainer>
+                    )
+                  )}
                 </>
               )}
 

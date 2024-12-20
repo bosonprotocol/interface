@@ -80,14 +80,16 @@ export default function TermsOfExchange() {
     values.productType?.productVariant ===
       ProductTypeVariantsValues.differentVariants &&
     new Set(
-      values.productVariants?.variants?.map((variant) => variant.currency.value)
+      values.productVariants?.variants?.map(
+        (variant: { currency: { value: string } }) => variant.currency.value
+      )
     ).size > 1;
   const maxPricePenOrSellerDeposit =
     values.productType?.productVariant ===
     ProductTypeVariantsValues.differentVariants
       ? Math.min(
           ...(values.productVariants?.variants?.map(
-            (variant) => variant.price
+            (variant: { price: string }) => variant.price
           ) ?? [])
         )
       : values.coreTermsOfSale?.price;

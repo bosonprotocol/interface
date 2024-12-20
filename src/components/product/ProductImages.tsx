@@ -106,18 +106,20 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
               )
             }
           ]
-        : values.productVariants?.variants?.map((variant, index) => {
-            return {
-              id: variant.name || index + "",
-              title: variant.name || `Variant ${index}`,
-              content: (
-                <PhysicalUploadImages
-                  prefix={`productVariantsImages[${index}].productImages`}
-                  error={getProductImageError(index, errors)}
-                />
-              )
-            };
-          }) || []),
+        : values.productVariants?.variants?.map(
+            (variant: { name: string }, index: number) => {
+              return {
+                id: variant.name || index + "",
+                title: variant.name || `Variant ${index}`,
+                content: (
+                  <PhysicalUploadImages
+                    prefix={`productVariantsImages[${index}].productImages`}
+                    error={getProductImageError(index, errors)}
+                  />
+                )
+              };
+            }
+          ) || []),
       ...(isPhygital
         ? values.productDigital?.bundleItems
             ?.map((bi, index) => {

@@ -57,16 +57,19 @@ export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
               salesChannels: Object.keys(Channels)
                 .filter(
                   (chKey) =>
-                    channels?.some((ch) => ch.value === chKey) ||
-                    sellerSalesChannels.some((slch) => slch.tag === chKey)
+                    channels?.some(
+                      (ch: { value: string }) => ch.value === chKey
+                    ) || sellerSalesChannels.some((slch) => slch.tag === chKey)
                 )
                 .map((chKey) => {
                   const sl = sellerSalesChannels.find(
                     (slch) => slch.tag === chKey
                   );
-                  const channel = channels?.find((ch) => ch.value === chKey);
+                  const channel = channels?.find(
+                    (ch: { value: string }) => ch.value === chKey
+                  );
                   const isProductInChannel = !!channels?.some(
-                    (ch) => ch.value === chKey
+                    (ch: { value: string }) => ch.value === chKey
                   );
                   return {
                     ...sl,

@@ -120,9 +120,14 @@ export const usePreviewOffers = ({
         supportedJurisdictions:
           values.shippingInfo.jurisdiction.length > 0
             ? values.shippingInfo.jurisdiction
-                .filter((v) => v.time && v.region)
+                .filter(
+                  (v: { time: string; region: string }) => v.time && v.region
+                )
                 .reduce(
-                  (prev, current) => {
+                  (
+                    prev: { id: string; label: string; deliveryTime: string }[],
+                    current: { region: string; time: string }
+                  ) => {
                     const { region, time } = current;
                     if (
                       !region ||
@@ -268,13 +273,19 @@ export const usePreviewOffers = ({
     if (isMultiVariant) {
       const { variants = [] } = values.productVariants;
 
-      return variants.map((variant) => {
-        return buildOffer({
-          price: variant.price || 0,
-          quantityAvailable: variant.quantity,
-          exchangeSymbol: variant.currency.value
-        });
-      });
+      return variants.map(
+        (variant: {
+          price: number;
+          quantity: number;
+          currency: { value: string };
+        }) => {
+          return buildOffer({
+            price: variant.price || 0,
+            quantityAvailable: variant.quantity,
+            exchangeSymbol: variant.currency.value
+          });
+        }
+      );
     }
 
     return [
