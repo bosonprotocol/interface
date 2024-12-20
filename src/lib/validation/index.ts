@@ -7,7 +7,7 @@ import isOfferValidityDatesValid from "./isOfferValidityDatesValid";
 import isRedemptionDatesValid from "./isRedemptionDatesValid";
 import returnPeriodValue from "./returnPeriodValue";
 
-Yup.addMethod<Yup.ArraySchema<Yup.BaseSchema<Dayjs>>>(
+Yup.addMethod(
   Yup.array<Dayjs>,
   "isRedemptionDatesValid",
   isRedemptionDatesValid
@@ -17,7 +17,7 @@ Yup.addMethod<Yup.MixedSchema<Dayjs[] | undefined>>(
   "isRedemptionDatesValid",
   isRedemptionDatesValid
 );
-Yup.addMethod<Yup.ArraySchema<Yup.BaseSchema<Dayjs>>>(
+Yup.addMethod(
   Yup.array<Dayjs>,
   "isOfferValidityDatesValid",
   isOfferValidityDatesValid
@@ -27,11 +27,7 @@ Yup.addMethod<Yup.MixedSchema<Dayjs[] | undefined>>(
   "isOfferValidityDatesValid",
   isOfferValidityDatesValid
 );
-Yup.addMethod<Yup.ArraySchema<Yup.BaseSchema<Dayjs>>>(
-  Yup.array<Dayjs>,
-  "isItBeforeNow",
-  isItBeforeNow
-);
+Yup.addMethod(Yup.array<Dayjs>, "isItBeforeNow", isItBeforeNow);
 Yup.addMethod<Yup.StringSchema>(
   Yup.string,
   "disputePeriodValue",

@@ -66,6 +66,9 @@ on:
       REACT_APP_META_TX_API_IDS_MAP:
         required: true
         type: string
+      REACT_APP_META_TX_RELAYER_URL:
+        required: false
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -104,7 +107,7 @@ on:
 jobs:
   build-test-deploy:
     name: Build, Test and Deploy the Marketplace Interface
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: "ipfs://QmaUobgQYrMnm2jZ3WowPtwRs4MpMR2TSinp3ChebjnZwe"
       REACT_APP_RNFT_LICENSE_TEMPLATE: "ipfs://QmPbzbp7xcSKhQPjT5VacLRMVgM1U6DB4LiF2GVyHhvcA7"
@@ -121,6 +124,7 @@ jobs:
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID }}
       REACT_APP_META_TX_API_KEY_MAP: ${{ inputs.REACT_APP_META_TX_API_KEY_MAP }}
       REACT_APP_META_TX_API_IDS_MAP: ${{ inputs.REACT_APP_META_TX_API_IDS_MAP }}
+      REACT_APP_META_TX_RELAYER_URL: ${{ inputs.REACT_APP_META_TX_RELAYER_URL }}
       REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID }}
       REACT_APP_RELEASE_TAG: ${{ inputs.REACT_APP_RELEASE_TAG }}
       REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}

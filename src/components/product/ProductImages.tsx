@@ -65,7 +65,7 @@ const productImagesPrefix = "productImages";
 const getProductImageError = (
   index: number,
   errors: ReturnType<typeof useForm<CreateProductForm>>["errors"]
-) => {
+): string | null => {
   const error =
     errors.productImages && typeof errors.productImages === "string"
       ? errors.productImages
@@ -78,7 +78,7 @@ const getProductImageError = (
             typeof Object.values(errors.productImages)?.[0] === "string"
           ? Object.values(errors.productImages)?.[0]
           : null;
-  return error;
+  return error ? String(error) : null;
 };
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const { nextIsDisabled, values, errors } = useForm();
@@ -106,18 +106,20 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
               )
             }
           ]
-        : values.productVariants?.variants?.map((variant, index) => {
-            return {
-              id: variant.name || index + "",
-              title: variant.name || `Variant ${index}`,
-              content: (
-                <PhysicalUploadImages
-                  prefix={`productVariantsImages[${index}].productImages`}
-                  error={getProductImageError(index, errors)}
-                />
-              )
-            };
-          }) || []),
+        : values.productVariants?.variants?.map(
+            (variant: { name: string }, index: number) => {
+              return {
+                id: variant.name || index + "",
+                title: variant.name || `Variant ${index}`,
+                content: (
+                  <PhysicalUploadImages
+                    prefix={`productVariantsImages[${index}].productImages`}
+                    error={getProductImageError(index, errors)}
+                  />
+                )
+              };
+            }
+          ) || []),
       ...(isPhygital
         ? values.productDigital?.bundleItems
             ?.map((bi, index) => {

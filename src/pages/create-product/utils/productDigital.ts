@@ -120,7 +120,7 @@ export function getDigitalMetadatas({
 
           {
             traitType: "nft-type",
-            value: bundleItem.newNftType.value,
+            value: bundleItem.newNftType?.value || "",
             displayType: "NFT type"
           }
         ];
@@ -169,7 +169,7 @@ export function getDigitalMetadatas({
 
           {
             traitType: "nft-type",
-            value: bundleItem.mintedNftType.value,
+            value: bundleItem.mintedNftType?.value || "",
             displayType: "NFT type"
           }
         ];

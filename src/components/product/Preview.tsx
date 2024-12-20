@@ -165,16 +165,20 @@ export default function Preview({
   const variant: VariantV1 = {
     offer,
     variations: [
-      ...(values.productVariants?.colors?.filter(isTruthy).map((color) => ({
-        id: color,
-        option: color,
-        type: "Color" as const
-      })) ?? []),
-      ...(values.productVariants?.sizes?.filter(isTruthy).map((size) => ({
-        id: size,
-        option: size,
-        type: "Size" as const
-      })) ?? [])
+      ...(values.productVariants?.colors
+        ?.filter(isTruthy)
+        .map((color: string) => ({
+          id: color,
+          option: color,
+          type: "Color" as const
+        })) ?? []),
+      ...(values.productVariants?.sizes
+        ?.filter(isTruthy)
+        .map((size: string) => ({
+          id: size,
+          option: size,
+          type: "Size" as const
+        })) ?? [])
     ]
   };
   const OfferImage = (

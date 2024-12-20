@@ -56,11 +56,11 @@ export const ConfirmProductDigital: React.FC = () => {
                   <BundleItemWrapper>
                     <li>
                       <span>Type: </span>
-                      {bi.type.label}
+                      {bi.type?.label}
                     </li>
                     <li>
                       <span>NFT type: </span>
-                      {bi.newNftType.label}
+                      {bi.newNftType?.label}
                     </li>
                     <li>
                       <span>Name: </span>
@@ -78,7 +78,7 @@ export const ConfirmProductDigital: React.FC = () => {
                     </li>
                     <li>
                       <span>Buyer information required for transfer:</span>{" "}
-                      {bi.newNftBuyerTransferInfo.label}
+                      {bi.newNftBuyerTransferInfo?.label}
                     </li>
                   </BundleItemWrapper>
                 </div>
@@ -91,11 +91,11 @@ export const ConfirmProductDigital: React.FC = () => {
                   <BundleItemWrapper>
                     <li>
                       <span>Type: </span>
-                      {bi.type.label}
+                      {bi.type?.label}
                     </li>
                     <li>
                       <span>NFT type: </span>
-                      {bi.mintedNftType.label}
+                      {bi.mintedNftType?.label}
                     </li>
                     <li>
                       <span>ContractAddress:</span>{" "}
@@ -117,7 +117,7 @@ export const ConfirmProductDigital: React.FC = () => {
                     </li>
                     <li>
                       <span>Buyer information required for transfer:</span>{" "}
-                      {bi.mintedNftBuyerTransferInfo.label}
+                      {bi.mintedNftBuyerTransferInfo?.label}
                     </li>
                   </BundleItemWrapper>
                 </div>
@@ -130,7 +130,7 @@ export const ConfirmProductDigital: React.FC = () => {
                   <BundleItemWrapper>
                     <li>
                       <span>Type: </span>
-                      {bi.type.label}
+                      {bi.type?.label}
                     </li>
                     <li>
                       <span>Name:</span> {bi.digitalFileName}
@@ -150,7 +150,7 @@ export const ConfirmProductDigital: React.FC = () => {
                     </li>
                     <li>
                       <span>Buyer information required for transfer:</span>{" "}
-                      {bi.digitalFileBuyerTransferInfo.label}
+                      {bi.digitalFileBuyerTransferInfo?.label}
                     </li>
                   </BundleItemWrapper>
                 </div>
@@ -163,7 +163,7 @@ export const ConfirmProductDigital: React.FC = () => {
                   <BundleItemWrapper>
                     <li>
                       <span>Type: </span>
-                      {bi.type.label}
+                      {bi.type?.label}
                     </li>
                     <li>
                       <span>Name:</span> {bi.experientialName}
@@ -180,7 +180,7 @@ export const ConfirmProductDigital: React.FC = () => {
                     </li>
                     <li>
                       <span>Buyer information required for transfer:</span>{" "}
-                      {bi.experientialBuyerTransferInfo.label}
+                      {bi.experientialBuyerTransferInfo?.label}
                     </li>
                   </BundleItemWrapper>
                 </div>

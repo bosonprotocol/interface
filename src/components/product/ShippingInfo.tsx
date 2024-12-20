@@ -101,51 +101,53 @@ const AddSupportedJurisdictions = () => {
               <>
                 {render && (
                   <>
-                    {jurisdictions.map((_, index, array) => (
-                      <SortableItem
-                        key={`field_container_jurisdictions_${index}`}
-                      >
-                        <FieldContainerJurisdictions>
-                          <div>
-                            <Input
-                              placeholder="Region"
-                              name={`shippingInfo.jurisdiction[${index}].region`}
-                              onBlur={(e) => {
-                                handleBlur(e);
-                                setFieldTouched(
-                                  `shippingInfo.jurisdiction[${index}].time`,
-                                  true
-                                );
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              placeholder="Delivery Time"
-                              name={`shippingInfo.jurisdiction[${index}].time`}
-                              onBlur={(e) => {
-                                handleBlur(e);
-                                setFieldTouched(
-                                  `shippingInfo.jurisdiction[${index}].region`,
-                                  true
-                                );
-                              }}
-                            />
-                          </div>
-                          {array.length > 1 && (
-                            <div style={{ alignSelf: "center" }}>
-                              <X
-                                size={14}
-                                style={{ cursor: "pointer" }}
-                                onClick={() => {
-                                  arrayHelpers.remove(index);
+                    {jurisdictions.map(
+                      (_: never, index: number, array: string | never[]) => (
+                        <SortableItem
+                          key={`field_container_jurisdictions_${index}`}
+                        >
+                          <FieldContainerJurisdictions>
+                            <div>
+                              <Input
+                                placeholder="Region"
+                                name={`shippingInfo.jurisdiction[${index}].region`}
+                                onBlur={(e) => {
+                                  handleBlur(e);
+                                  setFieldTouched(
+                                    `shippingInfo.jurisdiction[${index}].time`,
+                                    true
+                                  );
                                 }}
                               />
                             </div>
-                          )}
-                        </FieldContainerJurisdictions>
-                      </SortableItem>
-                    ))}
+                            <div>
+                              <Input
+                                placeholder="Delivery Time"
+                                name={`shippingInfo.jurisdiction[${index}].time`}
+                                onBlur={(e) => {
+                                  handleBlur(e);
+                                  setFieldTouched(
+                                    `shippingInfo.jurisdiction[${index}].region`,
+                                    true
+                                  );
+                                }}
+                              />
+                            </div>
+                            {array.length > 1 && (
+                              <div style={{ alignSelf: "center" }}>
+                                <X
+                                  size={14}
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    arrayHelpers.remove(index);
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </FieldContainerJurisdictions>
+                        </SortableItem>
+                      )
+                    )}
                   </>
                 )}
                 {!checkLastElementIsPristine(jurisdictions) && (

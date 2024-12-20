@@ -26,7 +26,7 @@ export const buildCondition = (
   let threshold: string | undefined;
   let tokenId = partialTokenGating.tokenId || "0";
 
-  let formatedValue = null;
+  let formatedValue: string | null = null;
   if (decimals && partialTokenGating.minBalance) {
     formatedValue = utils
       .parseUnits(partialTokenGating.minBalance, decimals)

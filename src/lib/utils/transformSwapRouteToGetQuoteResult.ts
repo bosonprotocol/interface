@@ -40,7 +40,7 @@ export function transformSwapRouteToGetQuoteResult(
       const tokenIn = tokenPath[i];
       const tokenOut = tokenPath[i + 1];
 
-      let edgeAmountIn = undefined;
+      let edgeAmountIn: string | undefined = undefined;
       if (i === 0) {
         edgeAmountIn =
           tradeType === TradeType.EXACT_INPUT
@@ -48,7 +48,7 @@ export function transformSwapRouteToGetQuoteResult(
             : quote.quotient.toString();
       }
 
-      let edgeAmountOut = undefined;
+      let edgeAmountOut: string | undefined = undefined;
       if (i === pools.length - 1) {
         edgeAmountOut =
           tradeType === TradeType.EXACT_INPUT

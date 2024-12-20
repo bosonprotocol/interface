@@ -3,7 +3,7 @@ import Modal from "components/modal/Modal";
 import TokenSafety from "components/tokenSafety";
 import { useLast } from "lib/utils/hooks/useLast";
 import { useWindowSize } from "lib/utils/hooks/useWindowSize";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, ReactElement, useCallback, useEffect, useState } from "react";
 import { useUserAddedTokens } from "state/user/hooks";
 import styled from "styled-components";
 
@@ -84,7 +84,7 @@ export default memo(function CurrencySearchModal({
   const { height: windowHeight } = useWindowSize();
   // change min height if not searching
   let modalHeight: number | undefined = 80;
-  let content = null;
+  let content: ReactElement | null = null;
   switch (modalView) {
     case CurrencyModalView.search:
       if (windowHeight) {
