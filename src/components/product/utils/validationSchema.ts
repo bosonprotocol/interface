@@ -111,8 +111,6 @@ const getBundleItemsMedia = ({
 }: {
   isPhygital: boolean;
 }): ArrayOfMedia => ({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   bundleItemsMedia: Yup.array(
     Yup.object({
       image: validationOfIpfsImage(),
@@ -650,8 +648,7 @@ export const getProductDigitalValidationSchema = ({
           }
 
           const results = await Promise.allSettled(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (bundleItems as any).map(async (bundleItem: unknown) => {
+            (bundleItems as unknown[]).map(async (bundleItem: unknown) => {
               if (
                 getIsBundleItem<ExistingNFT>(
                   bundleItem,
@@ -720,11 +717,7 @@ export const commonCoreTermsOfSaleValidationSchema = {
           .required(validationMessage.required)
           .defined(validationMessage.required),
       otherwise: (schema) =>
-        schema
-          .required(validationMessage.required)
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          .isOfferValidityDatesValid()
+        schema.required(validationMessage.required).isOfferValidityDatesValid()
     })
     .required(validationMessage.required),
   redemptionPeriod: Yup.mixed<Dayjs | Dayjs[]>().when(
@@ -738,8 +731,6 @@ export const commonCoreTermsOfSaleValidationSchema = {
         schema
           .required(validationMessage.required)
           // .min(2, validationMessage.required)
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           .isRedemptionDatesValid()
     }
   ),
@@ -783,9 +774,7 @@ export const getTokenGatingValidationSchema = ({
         .matches(/^\+?[1-9]\d*$/, "Value must greater than 0")
         .test("notGreaterThan_initialQuantity", function (value, context) {
           if (value && Number.isInteger(Number.parseInt(value))) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const formValues = context.from[1].value;
+            const formValues = context.from?.[1].value;
             const isOneVariant =
               formValues.productType.productVariant ===
               ProductTypeVariantsValues.oneItemType;
