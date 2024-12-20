@@ -65,7 +65,7 @@ const productImagesPrefix = "productImages";
 const getProductImageError = (
   index: number,
   errors: ReturnType<typeof useForm<CreateProductForm>>["errors"]
-) => {
+): string | null => {
   const error =
     errors.productImages && typeof errors.productImages === "string"
       ? errors.productImages
@@ -78,7 +78,7 @@ const getProductImageError = (
             typeof Object.values(errors.productImages)?.[0] === "string"
           ? Object.values(errors.productImages)?.[0]
           : null;
-  return error? String(error) : error;
+  return error ? String(error) : null;
 };
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const { nextIsDisabled, values, errors } = useForm();
