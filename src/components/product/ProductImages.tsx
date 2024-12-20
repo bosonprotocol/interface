@@ -78,7 +78,7 @@ const getProductImageError = (
             typeof Object.values(errors.productImages)?.[0] === "string"
           ? Object.values(errors.productImages)?.[0]
           : null;
-  return String(error);
+  return error? String(error) : error;
 };
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const { nextIsDisabled, values, errors } = useForm();
