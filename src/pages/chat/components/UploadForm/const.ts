@@ -22,7 +22,7 @@ export const validationOfFile = ({
 }) => {
   const formats = supportedFormats || SUPPORTED_FILE_FORMATS;
   let schema = Yup.mixed();
-  if (!isOptional) {
+  if (isOptional) {
     schema = schema.nullable();
   }
   return schema
