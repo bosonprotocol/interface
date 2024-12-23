@@ -232,7 +232,7 @@ export function useInfiniteThread({
 }
 
 const setIsValidToMessages = async (newThreadXmtp: ThreadObjectWithInfo) => {
-  const promises = [];
+  const promises: Array<boolean | Promise<boolean>> = [];
   for (const message of newThreadXmtp.messages) {
     promises.push(
       message.isValid === undefined

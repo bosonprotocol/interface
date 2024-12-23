@@ -21,7 +21,7 @@ on:
 jobs:
   prejob:
     name: Get Latest Tag
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       releaseTag: ${{ steps.tag.outputs.tag }}
       releaseName: ${{ steps.name.outputs.name }}
@@ -59,6 +59,7 @@ jobs:
       REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
       REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_TESTING }}
       REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_TESTING }}
+      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_TESTING }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -93,6 +94,7 @@ jobs:
       REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
       REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_TESTING }}
       REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_TESTING }}
+      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_TESTING }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -132,6 +134,7 @@ jobs:
       REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
       REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_STAGING }}
       REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_STAGING }}
+      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_STAGING }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -171,6 +174,7 @@ jobs:
       REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
       REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_PRODUCTION }}
       REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_PRODUCTION }}
+      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_PRODUCTION }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -187,7 +191,7 @@ jobs:
 
   job-summary:
     name: Create Job Summary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
     needs:
       [

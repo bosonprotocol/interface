@@ -7,8 +7,7 @@ import {
 import { Dayjs } from "dayjs";
 import { ethers } from "ethers";
 import { checkValidUrl, notUrlErrorMessage } from "lib/validation/regex/url";
-import { ValidationError } from "yup";
-import { AnyObject } from "yup/lib/types";
+import { AnyObject, ValidationError } from "yup";
 
 import { validationMessage } from "../../../lib/constants/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
@@ -112,59 +111,83 @@ const getBundleItemsMedia = ({
 }: {
   isPhygital: boolean;
 }): ArrayOfMedia => ({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   bundleItemsMedia: Yup.array(
     Yup.object({
       image: validationOfIpfsImage(),
       video: validationOfIpfsImage()
-    }).nullable(true)
+    }).nullable()
   ).test(
     "invalidBundleItemsMedia",
     "Please add an image for new NFTs",
-    async function (bundleItemsMedia, context) {
+    async function (
+      bundleItemsMedia: { image: FileProps[]; video: FileProps[] }[],
+      context: {
+        parent: {
+          productDigital: {
+            bundleItems: Array<
+              NewNFT | ExistingNFT | DigitalFile | Experiential
+            >;
+          };
+        };
+        options: {
+          from: {
+            value: {
+              productDigital: {
+                bundleItems: Array<
+                  NewNFT | ExistingNFT | DigitalFile | Experiential
+                >;
+              };
+            };
+          }[];
+        };
+        createError: (arg0: { path: string; message: string }) => Error;
+      }
+    ) {
       if (isPhygital) {
         const productDigital =
           context.parent.productDigital ??
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           context.options?.from?.find((from) => from.value.productDigital)
             ?.value?.productDigital;
 
         const results = await Promise.allSettled(
-          bundleItemsMedia?.map(async (bundleItemMedia, index) => {
-            const bundleItem = productDigital.bundleItems[index];
-            if (!bundleItem) {
-              throw new Error(
-                `something went wrong as bundleItem could not be found from bundleItemMedia=${JSON.stringify(bundleItemMedia)}, all bundleItems=${JSON.stringify(productDigital.bundleItems)}, index=${index}`
-              );
+          bundleItemsMedia?.map(
+            async (
+              bundleItemMedia: { image: FileProps[]; video: FileProps[] },
+              index: number
+            ) => {
+              const bundleItem = productDigital.bundleItems[index];
+              if (!bundleItem) {
+                throw new Error(
+                  `something went wrong as bundleItem could not be found from bundleItemMedia=${JSON.stringify(bundleItemMedia)}, all bundleItems=${JSON.stringify(productDigital.bundleItems)}, index=${index}`
+                );
+              }
+              if (
+                getIsBundleItem<ExistingNFT>(
+                  bundleItem,
+                  "mintedNftContractAddress"
+                )
+              ) {
+                return; // nothing to test, no images must be uploaded
+              }
+              if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
+                const isValid = await Yup.object({
+                  image: validationOfRequiredIpfsImage(),
+                  video: validationOfIpfsImage()
+                }).validate(bundleItemMedia);
+                return isValid;
+              }
+              if (
+                getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
+                getIsBundleItem<Experiential>(bundleItem, "experientialName")
+              ) {
+                const isValid = await Yup.object({
+                  image: validationOfIpfsImage(),
+                  video: validationOfIpfsImage()
+                }).validate(bundleItemMedia);
+                return isValid;
+              }
             }
-            if (
-              getIsBundleItem<ExistingNFT>(
-                bundleItem,
-                "mintedNftContractAddress"
-              )
-            ) {
-              return; // nothing to test, no images must be uploaded
-            }
-            if (getIsBundleItem<NewNFT>(bundleItem, "newNftName")) {
-              const isValid = await Yup.object({
-                image: validationOfRequiredIpfsImage(),
-                video: validationOfIpfsImage()
-              }).validate(bundleItemMedia);
-              return isValid;
-            }
-            if (
-              getIsBundleItem<DigitalFile>(bundleItem, "digitalFileName") ||
-              getIsBundleItem<Experiential>(bundleItem, "experientialName")
-            ) {
-              const isValid = await Yup.object({
-                image: validationOfIpfsImage(),
-                video: validationOfIpfsImage()
-              }).validate(bundleItemMedia);
-              return isValid;
-            }
-          }) || []
+          ) || []
         );
 
         results.forEach((result, index) => {
@@ -277,7 +300,7 @@ export const getProductVariantsImagesValidationSchema = ({
       })
     ).test({
       name: "minLength",
-      test: function (value) {
+      test: function (value: never[]) {
         return value?.length === this.parent.productVariants?.variants.length;
       }
     })
@@ -347,7 +370,7 @@ const transferCriteria = Yup.string().required(validationMessage.required);
 const transferTime = Yup.number()
   .min(0, "It cannot be negative")
   .required(validationMessage.required)
-  .nullable(true);
+  .nullable();
 const transferTimeUnit = Yup.object({
   value: Yup.string(),
   label: Yup.string()
@@ -362,7 +385,7 @@ const buyerTransferInfo = Yup.object({
   label: Yup.string()
 })
   .required(validationMessage.required)
-  .nullable(true);
+  .nullable();
 const testTokenAddress = async function ({
   tokenType,
   coreSDK,
@@ -472,7 +495,7 @@ const commonFieldsBundleItem = {
     label: Yup.string()
   })
     .required(validationMessage.required)
-    .nullable(true)
+    .nullable()
     .default(undefined),
   isNftMintedAlready: Yup.object({
     value: Yup.string().oneOf(
@@ -488,7 +511,7 @@ const commonFieldsBundleItem = {
       otherwise: (schema) => schema
     })
     .default(undefined)
-    .nullable(true)
+    .nullable()
 };
 const nftType = Yup.object({
   value: Yup.string()
@@ -497,7 +520,7 @@ const nftType = Yup.object({
   label: Yup.string()
 })
   .required(validationMessage.required)
-  .nullable(true);
+  .nullable();
 const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
   Yup.object({
     ...commonFieldsBundleItem,
@@ -511,7 +534,7 @@ const getExistingNftSchema = ({ coreSDK }: { coreSDK: CoreSDK }) =>
       label: Yup.string()
     })
       .required(validationMessage.required)
-      .nullable(true)
+      .nullable()
       .default([{ value: "", label: "" }]),
     mintedNftContractAddress: Yup.string()
       .required(validationMessage.required)
@@ -625,8 +648,7 @@ export const getProductDigitalValidationSchema = ({
           }
 
           const results = await Promise.allSettled(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (bundleItems as any).map(async (bundleItem: unknown) => {
+            (bundleItems as unknown[]).map(async (bundleItem: unknown) => {
               if (
                 getIsBundleItem<ExistingNFT>(
                   bundleItem,
@@ -690,30 +712,26 @@ export const commonCoreTermsOfSaleValidationSchema = {
   offerValidityPeriod: Yup.mixed<Dayjs | Dayjs[]>()
     .when("infiniteExpirationOffers", {
       is: true,
-      then: Yup.mixed<Dayjs>()
-        .required(validationMessage.required)
-        .defined(validationMessage.required),
-      otherwise: Yup.mixed<Dayjs[]>()
-        .required(validationMessage.required)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        .isOfferValidityDatesValid()
+      then: (schema) =>
+        schema
+          .required(validationMessage.required)
+          .defined(validationMessage.required),
+      otherwise: (schema) =>
+        schema.required(validationMessage.required).isOfferValidityDatesValid()
     })
     .required(validationMessage.required),
   redemptionPeriod: Yup.mixed<Dayjs | Dayjs[]>().when(
     "infiniteExpirationOffers",
     {
       is: true,
-      then: Yup.mixed<Dayjs>().optional(),
+      then: (schema) => schema.optional(),
       // .required(validationMessage.required)
       // .defined(validationMessage.required),
-      otherwise: Yup.mixed<Dayjs[]>()
-        // Yup.array<Dayjs>()
-        .required(validationMessage.required)
-        // .min(2, validationMessage.required)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        .isRedemptionDatesValid()
+      otherwise: (schema) =>
+        schema
+          .required(validationMessage.required)
+          // .min(2, validationMessage.required)
+          .isRedemptionDatesValid()
     }
   ),
   voucherValidDurationInDays: Yup.number().when("infiniteExpirationOffers", {
@@ -723,7 +741,7 @@ export const commonCoreTermsOfSaleValidationSchema = {
         .required(validationMessage.required)
         .min(1, "It has to be 1 at least");
     },
-    otherwise: Yup.number().min(0, "It must be 0").max(0, "It must be 0")
+    otherwise: (schema) => schema.min(0, "It must be 0").max(0, "It must be 0")
   })
 };
 
@@ -756,9 +774,7 @@ export const getTokenGatingValidationSchema = ({
         .matches(/^\+?[1-9]\d*$/, "Value must greater than 0")
         .test("notGreaterThan_initialQuantity", function (value, context) {
           if (value && Number.isInteger(Number.parseInt(value))) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const formValues = context.from[1].value;
+            const formValues = context.from?.[1].value;
             const isOneVariant =
               formValues.productType.productVariant ===
               ProductTypeVariantsValues.oneItemType;
@@ -767,7 +783,7 @@ export const getTokenGatingValidationSchema = ({
               : (
                   formValues.productVariants
                     .variants as Yup.InferType<ProductVariantsValidationSchema>["productVariants"]["variants"]
-                ).reduce((acum, current) => {
+                ).reduce((acum: number, current: { quantity: number }) => {
                   acum = acum + current.quantity;
                   return acum;
                 }, 0);

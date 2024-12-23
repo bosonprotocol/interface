@@ -185,6 +185,9 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
     metaTx: envConfig.metaTx
       ? {
           ...envConfig.metaTx,
+          relayerUrl:
+            process.env.REACT_APP_META_TX_RELAYER_URL ||
+            envConfig.metaTx?.relayerUrl,
           apiKey: getMetaTxApiKey(envConfig),
           apiIds: getMetaTxApiIds(envConfig)
         }

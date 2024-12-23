@@ -6,7 +6,7 @@ export const useOffersWhitelist = () => {
   const {
     config: { envConfig }
   } = useConfigContext();
-  return useQuery(
+  return useQuery<string[]>(
     ["useOffersWhitelist", envConfig.configId, envConfig.offersWhiteList],
     async () => {
       const response = await fetch(envConfig.offersWhiteList);

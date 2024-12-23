@@ -383,25 +383,31 @@ function CreateProductInner({
 
       const productMainImageLink: string | undefined =
         isMultiVariant && !isOneSetOfImages
-          ? productVariantsImages?.find((variant) => {
-              return variant.productImages?.thumbnail?.[0]?.src;
-            })?.productImages?.thumbnail?.[0]?.src
+          ? productVariantsImages?.find(
+              (variant: {
+                productImages: { thumbnail: { src: string }[] };
+              }) => {
+                return variant.productImages?.thumbnail?.[0]?.src;
+              }
+            )?.productImages?.thumbnail?.[0]?.src
           : productImages?.thumbnail?.[0]?.src;
 
       const productAttributes: Array<{
         traitType: string;
         value: string;
-      }> = productInformation.attributes.map(({ name, value }) => {
-        return {
-          traitType: name || "",
-          value: value || ""
-        };
-      });
+      }> = productInformation.attributes.map(
+        ({ name, value }: { name: string; value: string }) => {
+          return {
+            traitType: name || "",
+            value: value || ""
+          };
+        }
+      );
 
       const supportedJurisdictions: Array<SupportedJuridiction> =
         shippingInfo.jurisdiction
-          .filter((v) => v.time && v.region)
-          .reduce((prev, current) => {
+          .filter((v: { time: any; region: any }) => v.time && v.region)
+          .reduce((prev: any, current: { region: any; time: any }) => {
             const { region, time } = current;
             if (!region || region.length === 0 || !time || time.length === 0) {
               return prev;
@@ -553,7 +559,7 @@ function CreateProductInner({
         for (const [index, variant] of Object.entries(variants)) {
           const productImages =
             productVariantsImages?.[Number(index)]?.productImages;
-          const { color, size } = variant;
+          const { color, size } = variant as { color: string; size: string };
           const typeOptions = [
             {
               type: TypeKeys.Size,
