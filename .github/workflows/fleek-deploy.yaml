@@ -1,0 +1,20 @@
+name: Deploy DR_Center_testing via Fleek
+on:
+  workflow_call:
+jobs:
+  deploy-to-fleek:
+    runs-on: ubuntu-latest
+    env:
+      FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
+      FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install Packages
+        run: npm ci
+      - name: Build & deploy sites
+        run: npx fleek -- sites deploy --config ./.fleek_dr_center_testing.json
