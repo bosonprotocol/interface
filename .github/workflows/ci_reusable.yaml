@@ -94,6 +94,10 @@ on:
         required: true
       SENTRY_AUTH_TOKEN:
         required: false
+      FLEEK_TOKEN:
+        required: false
+      FLEEK_PROJECT_ID:
+        required: false
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -213,23 +217,24 @@ jobs:
       - name: Deploy via fleek
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
         id: Deploy
-        run: npx @fleekhq/fleek-cli site:deploy
+        run: npx @fleek-platform/cli sites deploy --config ./.fleek.json
         env:
-          FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+          FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
+          FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
       - name: Build dapp to show the dr_center only
         run: npm run build
         if: ${{ inputs.IS_PREVIEW == false && inputs.DEPLOY_TO_FLEEK }}
         env:
           REACT_APP_VIEW_MODE: "dr_center"
-      - name: (if DR Center 'testing' env) Copy contents from .fleek_dr_center_testing.json to .fleek.json
+      - name: (if DR Center 'testing' env) Copy contents from .fleek_dr_center_testing.json to .fleek_dr_center.json
         if: ${{ inputs.ENV_NAME == 'testing' }}
-        run: mv .fleek_dr_center_testing.json .fleek.json
-      - name: (if DR Center 'staging' env) Copy contents from .fleek_dr_center_staging.json to .fleek.json
+        run: mv .fleek_dr_center_testing.json .fleek_dr_center.json
+      - name: (if DR Center 'staging' env) Copy contents from .fleek_dr_center_staging.json to .fleek_dr_center.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
-        run: mv .fleek_dr_center_staging.json .fleek.json
-      - name: (if DR Center 'production' env) Copy contents from .fleek_dr_center_production.json to .fleek.json
+        run: mv .fleek_dr_center_staging.json .fleek_dr_center.json
+      - name: (if DR Center 'production' env) Copy contents from .fleek_dr_center_production.json to .fleek_dr_center.json
         if: ${{ inputs.ENV_NAME == 'production' }}
-        run: mv .fleek_dr_center_production.json .fleek.json
+        run: mv .fleek_dr_center_production.json .fleek_dr_center.json
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -238,6 +243,7 @@ jobs:
       - name: Deploy via fleek
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
         id: deploy_dr_center
-        run: npx @fleekhq/fleek-cli site:deploy
+        run: npx @fleek-platform/cli sites deploy --config ./.fleek_dr_center.json
         env:
-          FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+          FLEEK_TOKEN: ${{ secret.FLEEK_TOKEN }}
+          FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}

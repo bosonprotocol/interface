@@ -51,7 +51,7 @@ jobs:
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
       REACT_APP_DAPP_VIEW_MODE: "same_origin"
       REACT_APP_DR_CENTER_VIEW_MODE: "same_origin"
-      REACT_APP_WIDGETS_URL: "https://widgets-test.on.fleek.co"
+      REACT_APP_WIDGETS_URL: "https://widgets-test.on-fleek.app"
       REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
       REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
@@ -84,9 +84,9 @@ jobs:
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
-      REACT_APP_DAPP_VIEW_MODE: "https://interface-test.on.fleek.co"
-      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-test.on.fleek.co"
-      REACT_APP_WIDGETS_URL: "https://widgets-test.on.fleek.co"
+      REACT_APP_DAPP_VIEW_MODE: "https://interface-test.on-fleek.app"
+      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-test.on-fleek.app"
+      REACT_APP_WIDGETS_URL: "https://widgets-test.on-fleek.app"
       REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
       REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
@@ -108,6 +108,8 @@ jobs:
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_TESTING }}
       REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_TESTING }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
+      FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
 
   call-reusable-workflow-staging:
     uses: ./.github/workflows/ci_reusable.yaml
@@ -124,9 +126,9 @@ jobs:
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
-      REACT_APP_DAPP_VIEW_MODE: "https://interface-staging.on.fleek.co"
-      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-staging.on.fleek.co"
-      REACT_APP_WIDGETS_URL: "https://widgets-staging.on.fleek.co"
+      REACT_APP_DAPP_VIEW_MODE: "https://interface-staging.on-fleek.app"
+      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-staging.on-fleek.app"
+      REACT_APP_WIDGETS_URL: "https://widgets-staging.on-fleek.app"
       REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
       REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
@@ -148,6 +150,8 @@ jobs:
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_STAGING }}
       REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_STAGING }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
+      FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
 
   call-reusable-workflow-production:
     uses: ./.github/workflows/ci_reusable.yaml
@@ -188,6 +192,8 @@ jobs:
       REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_PRODUCTION }}
       REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_PRODUCTION }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
+      FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
 
   job-summary:
     name: Create Job Summary
