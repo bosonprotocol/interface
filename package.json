@@ -162,7 +162,7 @@
     "zustand": "^4.1.2"
   },
   "devDependencies": {
-    "@fleekhq/fleek-cli": "^0.1.8",
+    "@fleek-platform/cli": "^3.8.2",
     "@graphql-codegen/cli": "^2.13.1",
     "@graphql-codegen/typed-document-node": "^2.3.3",
     "@graphql-codegen/typescript": "^2.7.3",
@@ -196,6 +196,7 @@
     "husky": "^8.0.1",
     "istanbul": "^0.4.5",
     "lint-staged": "^13.0.3",
+    "multihashes": "^4.0.3",
     "nyc": "^15.1.0",
     "prettier": "^3.2.5",
     "react-app-rewire-alias": "^1.1.7",
