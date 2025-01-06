@@ -1,6 +1,6 @@
 name: Deploy DR_Center_testing via Fleek
 on:
-  workflow_call:
+  workflow_dispatch:
 jobs:
   deploy-to-fleek:
     runs-on: ubuntu-latest
