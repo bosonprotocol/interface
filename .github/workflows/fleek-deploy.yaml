@@ -7,6 +7,28 @@ jobs:
     env:
       FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
       FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
+      REACT_APP_ENV_NAME: "testing"
+      REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
+      REACT_APP_RELEASE_TAG: "unknown"
+      REACT_APP_RELEASE_NAME: "unknown"
+      REACT_APP_DAPP_VIEW_MODE: "https://interface-test.on-fleek.app"
+      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-test.on-fleek.app"
+      REACT_APP_WIDGETS_URL: "https://widgets-test.on-fleek.app"
+      REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
+      REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
+      REACT_APP_MOONPAY_API: "https://api.moonpay.com"
+      REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
+      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
+      REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_TESTING }}
+      REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_TESTING }}
+      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_TESTING }}
+      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_TESTING }}
+      REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_TESTING }}
+      REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_TESTING }}
+      REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_TESTING }}
+      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_TESTING }}
+      REACT_APP_VIEW_MODE: "dr_center"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
