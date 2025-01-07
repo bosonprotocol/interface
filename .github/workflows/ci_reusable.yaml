@@ -245,5 +245,6 @@ jobs:
         id: deploy_dr_center
         run: npx @fleek-platform/cli sites deploy --config ./.fleek_dr_center.json
         env:
+          REACT_APP_VIEW_MODE: "dr_center"
           FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
           FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
