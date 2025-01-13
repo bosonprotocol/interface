@@ -145,11 +145,11 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
   const handleWalletDropdownClick = useCallback(() => {
     toggleAccountDrawer();
   }, [toggleAccountDrawer]);
-  const buttonBgColor = useCSSVariable("--buttonBgColor") || colors.primary;
+  const buttonBgColor = useCSSVariable("--buttonBgColor") || colors.green;
   const textColor = useCSSVariable("--textColor") || colors.black;
   const connectedButtonTextColor = getColor1OverColor2WithContrast({
-    color2: useCSSVariable("--buttonBgColor") || colors.primary,
-    color1: useCSSVariable("--textColor") || colors.black
+    color2: buttonBgColor,
+    color1: textColor
   });
   const wasConnected = !!accountRef.current;
   const previousChainId = chainIdRef.current;

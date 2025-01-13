@@ -46,7 +46,7 @@ export default function RegularProfileSummary({
       <Grid flexDirection="column" gap="2.625rem">
         <Grid flexDirection="column" gap="1rem">
           <Grid
-            style={{ background: colors.lightGrey }}
+            style={{ background: colors.greyLight }}
             flexDirection="column"
             padding="1.5rem 2.5rem"
           >
@@ -238,7 +238,7 @@ export default function RegularProfileSummary({
             </Collapse>
           </Grid>
           <Grid
-            style={{ background: colors.lightGrey }}
+            style={{ background: colors.greyLight }}
             flexDirection="column"
             padding="1.5rem 2.5rem"
           >

@@ -22,7 +22,7 @@ const StyledGrid = styled(Grid)<{ $cardTheme: CardCTAProps["cardTheme"] }>`
       `;
     }
     return css`
-      background: ${colors.lightGrey};
+      background: ${colors.greyLight};
     `;
   }}
 `;

@@ -48,13 +48,13 @@ const StepWrapper = styled.div<{ $numSteps: number }>`
 const Step = styled.div<{ $isActive: boolean }>`
   position: relative;
   padding: 1rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   ${({ $isActive }) => {
     if ($isActive) {
       return css``;
     }
     return css`
-      background: ${colors.lightGrey}AA;
+      background: ${colors.greyLight}AA;
       color: ${colors.black}AA;
       svg {
         filter: opacity(50%);
@@ -73,13 +73,13 @@ const Step = styled.div<{ $isActive: boolean }>`
       transform: translate(-50%, 0);
       border-left: 30rem solid transparent;
       border-right: 30rem solid transparent;
-      border-top: 1rem solid ${colors.lightGrey};
+      border-top: 1rem solid ${colors.greyLight};
       ${({ $isActive }) => {
         if ($isActive) {
           return css``;
         }
         return css`
-          border-top: 1rem solid ${colors.lightGrey}AA;
+          border-top: 1rem solid ${colors.greyLight}AA;
         `;
       }}
     }
@@ -116,7 +116,7 @@ const Step = styled.div<{ $isActive: boolean }>`
         left: initial;
         transform: translate(0%, -50%);
         border-top: 10rem solid transparent;
-        border-left: 1rem solid ${colors.lightGrey};
+        border-left: 1rem solid ${colors.greyLight};
         border-bottom: 10rem solid transparent;
         border-right: none;
         ${({ $isActive }) => {
@@ -124,7 +124,7 @@ const Step = styled.div<{ $isActive: boolean }>`
             return css``;
           }
           return css`
-            border-left: 1rem solid ${colors.lightGrey}AA;
+            border-left: 1rem solid ${colors.greyLight}AA;
           `;
         }}
       }

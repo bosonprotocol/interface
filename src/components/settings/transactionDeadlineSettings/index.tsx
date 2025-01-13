@@ -69,7 +69,7 @@ export default function TransactionDeadlineSettings() {
       testId="transaction-deadline-settings"
       header={
         <Grid width="auto">
-          <Typography color={colors.darkGrey}>
+          <Typography color={colors.greyDark}>
             <>Transaction deadline</>
           </Typography>
           <QuestionHelper

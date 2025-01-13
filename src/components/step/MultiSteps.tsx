@@ -44,7 +44,7 @@ export default function MultiSteps({
           <ArrowLeft
             size={32}
             style={{ cursor: active && callback ? "pointer" : "not-allowed" }}
-            color={active === 0 ? colors.lightArrowColor : colors.darkGrey}
+            color={active === 0 ? colors.lightArrowColor : colors.greyDark}
             onClick={() => {
               if (active && callback) {
                 callback(active - 1);
@@ -111,7 +111,7 @@ export default function MultiSteps({
           <ArrowRight
             size={32}
             color={
-              isRightArrowEnabled ? colors.darkGrey : colors.lightArrowColor
+              isRightArrowEnabled ? colors.greyDark : colors.lightArrowColor
             }
             style={{ cursor: isRightArrowEnabled ? "pointer" : "not-allowed" }}
             onClick={() => {

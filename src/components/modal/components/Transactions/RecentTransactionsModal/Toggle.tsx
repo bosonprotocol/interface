@@ -6,7 +6,7 @@ import Button from "../../../../ui/Button";
 import { Grid } from "../../../../ui/Grid";
 
 const StyledGrid = styled(Grid)`
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
 `;
 
 const StyledButton = styled(Button)<{ $isActive: boolean }>`
@@ -16,7 +16,7 @@ const StyledButton = styled(Button)<{ $isActive: boolean }>`
     !$isActive &&
     css`
       border-color: transparent;
-      background-color: ${colors.lightGrey};
+      background-color: ${colors.greyLight};
     `}
 `;
 

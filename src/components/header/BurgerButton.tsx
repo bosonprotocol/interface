@@ -29,7 +29,7 @@ type BurgerButtonProps = {
 export const BurgerButton: React.FC<BurgerButtonProps> = ({ onClick }) => {
   const backgroundColor = getColor1OverColor2WithContrast({
     color2: useCSSVariable("--headerBgColor") || colors.white,
-    color1: useCSSVariable("--accent") || colors.darkGrey,
+    color1: useCSSVariable("--accent") || colors.greyDark,
     contrastThreshold: 4
   });
   return (

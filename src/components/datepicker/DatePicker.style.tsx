@@ -104,7 +104,7 @@ export const CalendarRow = styled.div`
 export const CalendarHeader = styled(CalendarFlex)`
   margin-bottom: 0.5rem;
   > div {
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
     font-size: 0.875rem;
     font-weight: 600;
   }
@@ -136,7 +136,7 @@ export const CalendarDay = styled(CalendarCell)<{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: ${colors.lightGrey};
+    background: ${colors.greyLight};
     border-radius: 50%;
     width: 0;
     height: 0;

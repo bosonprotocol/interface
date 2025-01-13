@@ -18,7 +18,7 @@ type Props = EscalateChatProps & {
 };
 
 const Container = styled.div`
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
 `;
 
 const StyledMultiSteps = styled(MultiSteps)`

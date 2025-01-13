@@ -82,7 +82,7 @@ const customStyles: StylesConfig<
     cursor: state.isDisabled ? "not-allowed" : "pointer",
     opacity: state.isDisabled ? "0.5" : "1",
     background:
-      state.isSelected || state.isFocused ? colors.lightGrey : colors.white,
+      state.isSelected || state.isFocused ? colors.greyLight : colors.white,
     color: state.isSelected ? colors.secondary : colors.black
   }),
   indicatorSeparator: () => ({

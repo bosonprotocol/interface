@@ -33,7 +33,7 @@ const customStyles = {
         borderColor: colors.secondary,
         borderWidth: "1px"
       },
-      background: colors.lightGrey,
+      background: colors.greyLight,
       border: state.isFocused
         ? `1px solid ${colors.secondary}`
         : `1px solid ${colors.border}`,
@@ -52,7 +52,7 @@ const customStyles = {
     opacity: state.isDisabled ? "0.5" : "1",
     background:
       state.isOptionSelected || state.isSelected || state.isFocused
-        ? colors.lightGrey
+        ? colors.greyLight
         : colors.white,
     color:
       state.isOptionSelected || state.isSelected
@@ -97,7 +97,7 @@ const PhoneWrapper = styled.div`
     width: 100%;
     padding: 1rem;
     gap: 0.5rem;
-    background: ${colors.lightGrey};
+    background: ${colors.greyLight};
     border: 1px solid ${colors.border};
     border-radius: 0;
     outline: none;

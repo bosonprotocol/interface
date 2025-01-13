@@ -100,7 +100,7 @@ export const AddressContainer = styled.div`
   flex-basis: 50%;
   margin-top: 0.5rem;
   [data-addrest-text] {
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
     font-size: 1.25rem;
   }
   ${breakpoint.s} {

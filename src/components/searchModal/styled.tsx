@@ -47,7 +47,7 @@ export const SearchInput = styled.input`
   border-radius: 12px;
   color: ${({ theme }) => theme.textPrimary};
   border-style: solid;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   -webkit-appearance: none;
 
   font-size: 1rem;
@@ -59,14 +59,14 @@ export const SearchInput = styled.input`
   transition: border 100ms;
   &:focus {
     border: 1px solid ${({ theme }) => theme.accentActiveSoft};
-    background-color: ${colors.lightGrey};
+    background-color: ${colors.greyLight};
     outline: none;
   }
 `;
 export const Separator = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
 `;
 
 export const LoadingRows = styled(BaseLoadingRows)`

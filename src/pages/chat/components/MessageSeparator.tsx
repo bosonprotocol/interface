@@ -24,7 +24,7 @@ const Separator = styled.div`
     font-size: 0.75rem;
     &:before {
       position: absolute;
-      background-color: ${colors.lightGrey};
+      background-color: ${colors.greyLight};
       left: -0.625rem;
       height: 100%;
       width: 0.625rem;
@@ -32,7 +32,7 @@ const Separator = styled.div`
     }
     &:after {
       position: absolute;
-      background-color: ${colors.lightGrey};
+      background-color: ${colors.greyLight};
       right: -0.625rem;
       height: 100%;
       width: 0.625rem;

@@ -16,7 +16,7 @@ const Table = styled.table`
 
 const TableHeader = styled.th`
   text-align: left;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   font-size: 1.1rem;
   font-weight: 600;
   font-family: inherit;

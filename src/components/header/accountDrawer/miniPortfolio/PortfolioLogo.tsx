@@ -65,13 +65,13 @@ const CircleLogoImage = styled.img<{ size: string }>`
 
 const L2LogoContainer = styled.div<{ $hasSquareLogo?: boolean }>`
   background-color: ${({ $hasSquareLogo }) =>
-    $hasSquareLogo ? colors.lightGrey : colors.white};
+    $hasSquareLogo ? colors.greyLight : colors.white};
   border-radius: 2px;
   height: 16px;
   left: 60%;
   position: absolute;
   top: 60%;
-  outline: 2px solid ${colors.lightGrey};
+  outline: 2px solid ${colors.greyLight};
   width: 16px;
   display: flex;
   align-items: center;

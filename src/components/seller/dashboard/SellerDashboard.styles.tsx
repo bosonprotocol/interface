@@ -75,7 +75,7 @@ export const ItemsDates = styled(Typography)`
   }
   > * {
     font-size: 0.75rem;
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
     &:first-child {
       font-weight: 600;
     }

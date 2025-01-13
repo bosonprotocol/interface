@@ -1,12 +1,12 @@
 import {
-  CommitButton,
   ExternalCommitDetailView,
   extractUserFriendlyError,
   getHasUserRejectedTx,
   getIsOfferExpired,
   Provider,
   RedeemButton,
-  subgraph
+  subgraph,
+  ThemedCommitButton
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
@@ -231,7 +231,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         disabled={disabled}
         data-commit-proxy-address
         style={{ height: "3.5rem" }}
-        withBosonStyle
       >
         Commit <small>Step 1/2</small>
       </BosonButton>
@@ -464,7 +463,9 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         externalConnectedSigner: signer,
         withReduxProvider: false,
         withWeb3React: false,
-        withCustomReduxContext: false
+        withCustomReduxContext: false,
+        sendDeliveryInfoThroughXMTP: true,
+        roundness: "min"
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}
@@ -475,11 +476,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
           offerId: selectedVariant.offer.id,
           offerData: selectedVariant.offer,
           exchangePolicyCheckResult: exchangePolicyCheckResult
-        });
-      }}
-      onPurchaseOverview={() => {
-        showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
-          title: "Commit to Buy and Redeem"
         });
       }}
       onClickBuyOrSwap={({ swapParams }) => {
@@ -513,14 +509,13 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
                   {showCommitProxyButton ? (
                     <CommitProxyButton />
                   ) : (
-                    <CommitButton
+                    <ThemedCommitButton
                       coreSdkConfig={{
                         envName: config.envName,
                         configId: config.envConfig.configId,
                         web3Provider: signer?.provider as Provider,
                         metaTx: config.metaTx
                       }}
-                      variant="primaryFill"
                       isPauseCommitting={!address}
                       buttonRef={commitButtonRef}
                       onGetSignerAddress={handleOnGetSignerAddress}
@@ -533,7 +528,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
                       onPendingTransaction={onCommitPendingTransaction}
                       onSuccess={onCommitSuccess}
                       extraInfo="Step 1/2"
-                      withBosonStyle
                     />
                   )}
                 </>
@@ -566,7 +560,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
               metaTx: config.envConfig.metaTx
             }}
             disabled
-            withBosonStyle
             exchangeId="0"
             extraInfo="Step 2/2"
             variant="primaryFill"

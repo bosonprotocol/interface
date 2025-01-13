@@ -104,7 +104,7 @@ const Table = styled.table`
   border-collapse: collapse;
   .th {
     font-weight: 600;
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
     :not([data-sortable]) {
       cursor: default !important;
     }
@@ -144,7 +144,7 @@ const Table = styled.table`
       display: flex;
       &:hover {
         .td {
-          background-color: ${colors.darkGrey}08;
+          background-color: ${colors.greyDark}08;
           cursor: pointer;
         }
       }
@@ -188,7 +188,7 @@ const Pagination = styled.div`
 `;
 const Span = styled.span`
   font-size: 0.75rem;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   &:not(:last-of-type) {
     margin-right: 1rem;
   }
@@ -573,7 +573,7 @@ export default function SellerExchangeTable({
                         : colors.black,
                     background:
                       pageNumber === pageIndex
-                        ? colors.lightGrey
+                        ? colors.greyLight
                         : "transparent"
                   }}
                   onClick={() => gotoPage(pageNumber)}

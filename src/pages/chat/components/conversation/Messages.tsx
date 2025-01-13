@@ -16,7 +16,7 @@ import MessageSeparator from "../MessageSeparator";
 import { SellerComponent } from "./SellerComponent";
 
 const Container = styled.div<{ $overflow: string }>`
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   overflow: ${({ $overflow }) => $overflow};
   display: flex;
   flex-direction: column-reverse;
@@ -25,7 +25,7 @@ const Container = styled.div<{ $overflow: string }>`
 
 const LoadingContainer = styled.div`
   display: flex;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -39,7 +39,7 @@ const Conversation = styled.div<{ $alignStart: boolean }>`
   align-items: ${({ $alignStart }) =>
     $alignStart ? "flex-start" : "flex-end"};
   flex-grow: 1;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   padding-bottom: 1.875rem;
   position: relative;
 `;

@@ -24,7 +24,7 @@ const commonStyles = css`
   right: 0;
   top: 0;
   bottom: 0;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   padding: 0.5rem;
   width: 100%;
 `;
@@ -39,7 +39,7 @@ const Back = styled.div<{ $backgroundColor: CSSProperties["background"] }>`
 const Front = styled.div<{ $progress: number }>`
   ${commonStyles};
   color: ${colors.black};
-  background: ${darken(0.05, colors.lightGrey)};
+  background: ${darken(0.05, colors.greyLight)};
   clip-path: inset(0 0 0 ${({ $progress }) => $progress}%);
   transition: clip-path 1s linear;
 `;

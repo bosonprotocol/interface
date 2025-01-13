@@ -44,7 +44,7 @@ const OptionGrid = styled.div`
 
 const PrivacyPolicyWrapper = styled.div`
   padding: 0 4px;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   font-weight: 400;
   font-size: 0.75rem;
 
@@ -72,12 +72,12 @@ export default function WalletModal() {
   }, [chainId, connector]);
   const viewMode = getCurrentViewMode();
   const magicLoginTextColor = getColor1OverColor2WithContrast({
-    color2: useCSSVariable("--accentNoDefault") || colors.white,
-    color1: useCSSVariable("--textColor") || colors.darkGrey
+    color2: colors.white,
+    color1: useCSSVariable("--textColor") || colors.greyDark
   });
   const privacyTextColor = getColor1OverColor2WithContrast({
     color2: useCSSVariable("--primaryBgColor") || colors.white,
-    color1: useCSSVariable("--textColor") || colors.darkGrey
+    color1: useCSSVariable("--textColor") || colors.greyDark
   });
   return (
     <Wrapper data-testid="wallet-modal">
@@ -98,7 +98,7 @@ export default function WalletModal() {
           <MagicLoginButton
             buttonProps={{
               theme: {
-                ...bosonButtonThemes({ withBosonStyle: false })["primary"],
+                ...bosonButtonThemes()["primary"],
                 color: magicLoginTextColor
               }
             }}

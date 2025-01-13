@@ -46,7 +46,7 @@ const SellerCalculationContainer = styled.div`
 const LensTitle = styled(Typography)`
   font-weight: 600;
   margin: 0.5rem 0 0 0;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   ${breakpoint.s} {
     margin: 0 0.5rem 0 0;
     font-size: 1rem;
@@ -293,7 +293,7 @@ export default function Seller() {
                     tag="p"
                     fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
                     margin="0"
-                    color={colors.darkGrey}
+                    color={colors.greyDark}
                   >
                     Products
                   </Typography>

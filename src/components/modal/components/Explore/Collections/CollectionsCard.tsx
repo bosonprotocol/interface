@@ -22,7 +22,7 @@ const CardContainer = styled.div<{
   display: flex;
   cursor: pointer;
   flex-direction: column;
-  border: 2px solid ${colors.lightGrey};
+  border: 2px solid ${colors.greyLight};
   border-radius: 4px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   min-width: 16.5625rem;
@@ -79,7 +79,7 @@ const LargeImage = styled(Image)`
     transform: none;
     left: 0;
     top: 30px;
-    box-shadow: 0 0 0 2px ${colors.lightGrey};
+    box-shadow: 0 0 0 2px ${colors.greyLight};
     width: inherit;
   }
 `;
@@ -97,7 +97,7 @@ const BaseSmallImage = css`
     height: 3.125rem;
     max-height: 3.125rem;
     object-fit: contain;
-    box-shadow: 0 0 0 2px ${colors.lightGrey};
+    box-shadow: 0 0 0 2px ${colors.greyLight};
     width: 100%;
     left: unset;
     transform: none;
@@ -252,7 +252,7 @@ export default function CollectionsCard({ collection, lensProfile }: Props) {
             <Typography
               fontSize="0.75rem"
               fontWeight="400"
-              color={colors.darkGrey}
+              color={colors.greyDark}
             >
               {numProducts} Products
             </Typography>

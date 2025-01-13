@@ -49,7 +49,7 @@ function Breadcrumbs({ steps, margin }: Props) {
           <Typography
             fontSize="0.875rem"
             fontWeight="600"
-            color={step.hightlighted ? "var(--accent)" : colors.darkGrey}
+            color={step.hightlighted ? "var(--accent)" : colors.greyDark}
             margin="0 0.3125rem 0 0"
           >
             {step.label}
@@ -57,7 +57,7 @@ function Breadcrumbs({ steps, margin }: Props) {
           {isNotFinalStep(step.id) && (
             <StyledCaret
               size={18}
-              color={step.hightlighted ? "var(--accent)" : colors.darkGrey}
+              color={step.hightlighted ? "var(--accent)" : colors.greyDark}
             />
           )}
         </Button>

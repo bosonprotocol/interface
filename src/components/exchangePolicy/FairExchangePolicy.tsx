@@ -36,7 +36,7 @@ const InfoListItem = styled.li`
 
   p {
     margin: 0;
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
   }
 `;
 

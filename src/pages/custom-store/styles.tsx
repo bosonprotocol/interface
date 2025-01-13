@@ -28,7 +28,7 @@ export const FieldDescription = styled(Typography)`
   font-size: 0.75rem;
   line-height: 150%;
   font-feature-settings: "zero" on;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
 `;
 export const gapBetweenInputs = "2rem";
 export const subFieldsMarginLeft = "4rem";

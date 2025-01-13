@@ -72,7 +72,7 @@ const StyledBannerImage = styled.img<{
 }>`
   pointer-events: auto;
   max-width: 100%;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   transform: none !important;
   height: 100%;
   width: 100%;

@@ -51,7 +51,7 @@ export default function ProgressBarModal({ progress, text, onCancel }: Props) {
           fontWeight="600"
           fontSize="1rem"
           lineHeight="150%"
-          color={colors.darkGrey}
+          color={colors.greyDark}
           margin="0.5rem 0 1.5rem 0"
         >
           {text}

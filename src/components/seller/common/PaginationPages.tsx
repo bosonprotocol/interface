@@ -4,7 +4,7 @@ import { colors } from "../../../lib/styles/colors";
 
 const Span = styled.span`
   font-size: 0.75rem;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   &:not(:last-of-type) {
     margin-right: 1rem;
   }

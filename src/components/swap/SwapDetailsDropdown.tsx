@@ -55,7 +55,7 @@ const StyledPollingDot = styled.div`
   min-width: 8px;
   border-radius: 50%;
   position: relative;
-  /* background-color: ${colors.lightGrey}; */
+  /* background-color: ${colors.greyLight}; */
   transition: 250ms ease background-color;
 `;
 

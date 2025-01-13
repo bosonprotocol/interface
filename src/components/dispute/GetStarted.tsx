@@ -16,7 +16,7 @@ const FormButton = styled.button`
   align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  border-bottom: 1px solid ${colors.lightGrey};
+  border-bottom: 1px solid ${colors.greyLight};
   padding: 0;
   font-size: 1rem;
   font-family: ${defaultFontFamily};
@@ -52,7 +52,7 @@ function GetStarted({
         <Typography fontWeight="600" fontSize="2rem">
           Get started
         </Typography>
-        <Typography fontSize="1.25rem" color={colors.darkGrey}>
+        <Typography fontSize="1.25rem" color={colors.greyDark}>
           First, choose the issue you're facing with your exchange.
         </Typography>
       </div>

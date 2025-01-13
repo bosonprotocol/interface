@@ -16,7 +16,7 @@ const customStyles = (error: any) => ({
       borderColor: colors.secondary,
       borderWidth: "1px"
     },
-    background: colors.lightGrey,
+    background: colors.greyLight,
     border: state.isFocused
       ? `1px solid ${colors.secondary}`
       : !checkIfValueIsEmpty(error)
@@ -35,7 +35,7 @@ const customStyles = (error: any) => ({
     opacity: state.isDisabled ? "0.5" : "1",
     background:
       state.isOptionSelected || state.isSelected || state.isFocused
-        ? colors.lightGrey
+        ? colors.greyLight
         : colors.white,
     color:
       state.isOptionSelected || state.isSelected

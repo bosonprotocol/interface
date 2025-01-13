@@ -8,7 +8,6 @@ export const useCSSVariable = (
     | "--primary"
     | "--secondary"
     | "--accent"
-    | "--accentNoDefault"
     | "--accentDark"
     | "--textColor"
     | "--primaryBgColor"
@@ -22,9 +21,13 @@ export const useCSSVariable = (
 ) => {
   const [value, setValue] = useState<string>();
   useEffect(() => {
-    setValue(
-      getComputedStyle(document.documentElement).getPropertyValue(variableName)
-    );
+    const computedCssVar = getComputedStyle(
+      document.documentElement
+    ).getPropertyValue(variableName);
+    if (!computedCssVar) {
+      console.error(`CSS variable ${variableName} is not defined`);
+    }
+    setValue(computedCssVar);
   }, [variableName]);
   return value;
 };

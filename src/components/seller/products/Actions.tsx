@@ -62,15 +62,15 @@ const GlobalStyle = createGlobalStyle`
 .DropdownMenuCheckboxItem[data-disabled],
 .DropdownMenuRadioItem[data-disabled],
 .DropdownMenuSubTrigger[data-disabled] {
-  color: ${colors.lightGrey};
+  color: ${colors.greyLight};
   pointer-events: none;
 }
 .DropdownMenuItem[data-highlighted],
 .DropdownMenuCheckboxItem[data-highlighted],
 .DropdownMenuRadioItem[data-highlighted],
 .DropdownMenuSubTrigger[data-highlighted] {
-  background-color: ${colors.lightGrey};
-  color: ${colors.darkGrey};
+  background-color: ${colors.greyLight};
+  color: ${colors.greyDark};
 }
 
 .DropdownMenuLabel {

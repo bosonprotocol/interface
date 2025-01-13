@@ -15,9 +15,9 @@ const shimmerMixin = css`
   animation-fill-mode: both;
   background: linear-gradient(
     to left,
-    ${colors.darkGrey} 25%,
-    ${colors.lightGrey} 50%,
-    ${colors.darkGrey} 75%
+    ${colors.greyDark} 25%,
+    ${colors.greyLight} 50%,
+    ${colors.greyDark} 75%
   );
   background-size: 400%;
   will-change: background-position;

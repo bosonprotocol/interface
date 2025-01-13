@@ -26,7 +26,7 @@ const GridContainer = styled.div`
   grid-gap: 0.625rem;
   margin-top: 1.5625rem;
   padding-bottom: 15px;
-  border-bottom: 1px solid ${colors.lightGrey};
+  border-bottom: 1px solid ${colors.greyLight};
 `;
 
 const StyledArrowSquare = styled(ArrowSquareOut)`
@@ -68,55 +68,55 @@ function EscalateStepOne({ exchange }: Props) {
         <Typography fontWeight="600" fontSize="2rem" margin="1rem 0 0 0">
           Escalate Dispute
         </Typography>
-        <Typography fontSize="1rem" fontWeight="400" color={colors.darkGrey}>
+        <Typography fontSize="1rem" fontWeight="400" color={colors.greyDark}>
           Escalating a dispute will enable the dispute resolver to decide on the
           outcome of the dispute. The dispute resolver will decide based on the
           contractual agreement and evidence submitted by both parties.
         </Typography>
         <GridContainer>
-          <Typography fontWeight="400" fontSize="1rem" color={colors.darkGrey}>
+          <Typography fontWeight="400" fontSize="1rem" color={colors.greyDark}>
             Dispute resolver
           </Typography>
           <Typography
             fontWeight="600"
             fontSize="1rem"
-            color={colors.darkGrey}
+            color={colors.greyDark}
             justifyContent="flex-end"
           >
             Redeemeum
           </Typography>
-          <Typography fontWeight="400" fontSize="1rem" color={colors.darkGrey}>
+          <Typography fontWeight="400" fontSize="1rem" color={colors.greyDark}>
             Exchange policy
           </Typography>
           <Grid justifyContent="flex-end">
             <Typography
               fontWeight="600"
               fontSize="1rem"
-              color={colors.darkGrey}
+              color={colors.greyDark}
               justifyContent="flex-end"
             >
               {onlyFairExchangePolicyLabel}
             </Typography>
             <StyledArrowSquare color={colors.secondary} size={22} />
           </Grid>
-          <Typography fontWeight="400" fontSize="1rem" color={colors.darkGrey}>
+          <Typography fontWeight="400" fontSize="1rem" color={colors.greyDark}>
             Escalation deposit
           </Typography>
           <Typography
             fontWeight="600"
             fontSize="1rem"
-            color={colors.darkGrey}
+            color={colors.greyDark}
             justifyContent="flex-end"
           >
             {feeAmount}
           </Typography>
-          <Typography fontWeight="400" fontSize="1rem" color={colors.darkGrey}>
+          <Typography fontWeight="400" fontSize="1rem" color={colors.greyDark}>
             Dispute period
           </Typography>
           <Typography
             fontWeight="600"
             fontSize="1rem"
-            color={colors.darkGrey}
+            color={colors.greyDark}
             justifyContent="flex-end"
           >
             {deadlineTimeLeft}

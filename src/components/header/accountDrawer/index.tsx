@@ -59,7 +59,7 @@ const ScrimBackground = styled.div<{ open: boolean }>`
   position: fixed;
   width: 100%;
   height: 100%;
-  background-color: ${colors.darkGrey};
+  background-color: ${colors.greyDark};
 
   opacity: 0;
   pointer-events: none;

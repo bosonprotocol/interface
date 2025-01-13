@@ -10,7 +10,7 @@ import Loading from "../../ui/Loading";
 
 const Close = styled(X)`
   line {
-    stroke: ${colors.darkGrey};
+    stroke: ${colors.greyDark};
   }
 `;
 const StyledButton = styled(Button)`

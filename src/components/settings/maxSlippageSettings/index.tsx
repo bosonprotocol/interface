@@ -31,7 +31,7 @@ const Option = styled(Grid)<{ isActive: boolean }>`
 const Switch = styled(Grid)`
   width: auto;
   padding: 4px;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   border-radius: 16px;
 `;
 
@@ -112,7 +112,7 @@ export default function MaxSlippageSettings({
       onToggle={() => setIsOpen(!isOpen)}
       header={
         <Grid width="auto">
-          <Typography color={colors.darkGrey}>
+          <Typography color={colors.greyDark}>
             <>Max slippage</>
           </Typography>
           <QuestionHelper

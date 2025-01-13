@@ -43,7 +43,7 @@ interface Props extends Omit<TippyProps, "children"> {
 const Button = styled.button`
   ${() => Styles.button};
   display: flex;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   background-color: transparent;
   &:hover {
     color: ${colors.black};

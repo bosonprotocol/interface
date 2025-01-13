@@ -21,7 +21,7 @@ const ArrowContainer = styled.div`
   font-size: 1.5rem;
 `;
 const CollapseWrapper = styled.div`
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   padding: 1rem;
 `;
 

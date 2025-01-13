@@ -85,7 +85,7 @@ export default function DRAside() {
                   <Icon
                     size={16}
                     weight={isActive ? "regular" : "thin"}
-                    color={isActive ? colors.black : colors.darkGrey}
+                    color={isActive ? colors.black : colors.greyDark}
                   />
                   {label}
                 </Grid>

@@ -91,7 +91,7 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
                     fontWeight="600"
                     fontSize="1rem"
                     margin="1.5rem 0"
-                    color={colors.darkGrey}
+                    color={colors.greyDark}
                   >
                     Your own land
                   </Typography>
@@ -126,7 +126,7 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
                     fontWeight="600"
                     fontSize="1rem"
                     margin="1.5rem 0"
-                    color={colors.darkGrey}
+                    color={colors.greyDark}
                   >
                     Boson Boulevard
                   </Typography>

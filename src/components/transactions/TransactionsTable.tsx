@@ -278,7 +278,7 @@ export default function TransactionsTable({ transactions }: Props) {
                         : colors.black,
                     background:
                       pageNumber === pageIndex
-                        ? colors.lightGrey
+                        ? colors.greyLight
                         : "transparent"
                   }}
                   onClick={() => gotoPage(pageNumber)}

@@ -121,7 +121,7 @@ const Table = styled.table`
       }
       &:hover {
         td {
-          background: ${colors.lightGrey};
+          background: ${colors.greyLight};
         }
       }
     }

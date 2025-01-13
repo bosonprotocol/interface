@@ -23,9 +23,9 @@ export const PageWrapper = styled.div`
 // Mostly copied from `AppBody` but it was getting too hard to maintain backwards compatibility.
 export const SwapWrapper = styled.main<{ chainId?: number }>`
   position: relative;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border-radius: 24px;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   padding: 8px;
   padding-top: 12px;
   box-shadow: ${({ chainId }) =>
@@ -34,7 +34,7 @@ export const SwapWrapper = styled.main<{ chainId?: number }>`
   transition: transform 250ms ease;
 
   &:hover {
-    border: 1px solid ${colors.lightGrey};
+    border: 1px solid ${colors.greyLight};
   }
 `;
 
@@ -45,9 +45,9 @@ export const UniswapPopoverContainer = styled.div`
   font-size: 0.75rem;
   line-height: 16px;
   word-break: break-word;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border-radius: 20px;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.9, theme.shadow1)};
   position: relative;
   overflow: hidden;
@@ -132,11 +132,11 @@ export const UniswapXOptInLargeContainer = styled.div<{ visible: boolean }>`
 
 export const SwapMustache = styled.main`
   position: relative;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border-radius: 16px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   border-top-width: 0;
   padding: 18px;
   padding-top: calc(12px + 18px);
@@ -165,7 +165,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   margin-bottom: -18px;
   margin-left: auto;
   margin-right: auto;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   border: 4px solid;
   border-color: ${colors.white};
 

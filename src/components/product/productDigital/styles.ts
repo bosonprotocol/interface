@@ -11,7 +11,7 @@ export const Delete = styled(Trash)`
   border-radius: 50%;
   box-sizing: content-box;
   &:hover {
-    background-color: ${colors.lightGrey};
+    background-color: ${colors.greyLight};
   }
 `;
 

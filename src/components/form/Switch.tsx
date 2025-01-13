@@ -39,11 +39,11 @@ const StyledSwitchRoot = styled(ReactSwitch.Root)`
     cursor: not-allowed;
     ~ *,
     * {
-      color: ${colors.darkGrey};
+      color: ${colors.greyDark};
       cursor: not-allowed;
     }
     ${StyledSwitchThumb} {
-      background-color: ${colors.darkGrey};
+      background-color: ${colors.greyDark};
     }
   }
 `;

@@ -8,11 +8,11 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 
 const ReadMoreContainer = styled.div`
   margin-bottom: 2rem;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
 `;
 
 const ReadMoreButton = styled(Button)`
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   outline: none;
   border: none;
   padding: 0;

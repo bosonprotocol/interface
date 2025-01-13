@@ -1,5 +1,4 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
-import { PurchaseOverviewInner } from "@bosonprotocol/react-kit";
 
 import { BuyerSellerAgreementModal } from "./components/BuyerSellerAgreementModal";
 import EscalateModal from "./components/Chat/components/EscalateModal/EscalateModal";
@@ -70,7 +69,6 @@ export const MODAL_TYPES = {
   UPLOAD_MODAL: "UPLOAD_MODAL",
   VOID_PRODUCT: "VOID_PRODUCT",
   WAITING_FOR_CONFIRMATION: "WAITING_FOR_CONFIRMATION",
-  WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   PROGRESS_BAR: "PROGRESS_BAR",
   EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
   PROFILE_DETAILS: "PROFILE_DETAILS",
@@ -121,7 +119,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.UPLOAD_MODAL]: Upload,
   [MODAL_TYPES.VOID_PRODUCT]: VoidProduct,
   [MODAL_TYPES.WAITING_FOR_CONFIRMATION]: WaitingForConfirmationModal,
-  [MODAL_TYPES.WHAT_IS_REDEEM]: PurchaseOverviewInner,
   [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
   [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
     ExportExchangesWithDeliveryModal,

@@ -16,7 +16,7 @@ import { Typography } from "../../../../ui/Typography";
 const Info = styled(Grid)`
   display: flex;
   justify-content: space-between;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   padding: 1.5rem;
 `;
 

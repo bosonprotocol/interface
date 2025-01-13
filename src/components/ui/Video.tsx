@@ -75,7 +75,7 @@ const VideoPlaceholder = styled.div<{ $position?: CSSProperties["position"] }>`
   top: 0;
   height: 100%;
   width: 100%;
-  background-color: ${colors.darkGrey};
+  background-color: ${colors.greyDark};
   display: flex;
   flex-direction: column;
   justify-content: center;

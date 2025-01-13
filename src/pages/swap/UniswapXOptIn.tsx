@@ -35,9 +35,9 @@ export const Arrow = styled.div`
     z-index: 9998;
 
     content: "";
-    border: 1px solid ${colors.lightGrey};
+    border: 1px solid ${colors.greyLight};
     transform: rotate(45deg);
-    background: ${colors.lightGrey};
+    background: ${colors.greyLight};
   }
 
   &.arrow-top {

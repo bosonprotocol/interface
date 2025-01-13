@@ -19,7 +19,7 @@ const Container = styled.div`
   width: ${containerWidth};
   display: block;
   padding: 0 1rem 0.0625rem 1rem;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
 `;
 
 const OfferImage = styled.div`
@@ -112,7 +112,7 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
           onClick={() => null}
         />
       </MessageInfo>
-      <Typography fontWeight="400" fontSize="12px" color={colors.darkGrey}>
+      <Typography fontWeight="400" fontSize="12px" color={colors.greyDark}>
         State
       </Typography>
       <Grid>
@@ -124,14 +124,14 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
           alignItems="flex-start"
           justifyContent="flex-end"
           margin="0 0 0 0"
-          color={colors.darkGrey}
+          color={colors.greyDark}
         >
           {isResolved ? (
             <>
               <DisputeEndDate
                 size={17}
                 fontWeight="light"
-                color={colors.darkGrey}
+                color={colors.greyDark}
               />
               {deadlineTimeLeft}{" "}
             </>

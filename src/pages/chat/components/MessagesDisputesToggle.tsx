@@ -12,7 +12,7 @@ const StyledButton = styled(Button)<{ $isActive: boolean }>`
     css`
       && {
         border-color: transparent;
-        background-color: ${colors.lightGrey};
+        background-color: ${colors.greyLight};
       }
     `}
 `;

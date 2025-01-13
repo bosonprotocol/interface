@@ -64,7 +64,7 @@ const InfoWrapper = styled.div`
 
 const InfoWrapperList = styled.div`
   padding: 1.25rem 1.5rem 1.5rem 1.5rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   > p {
     margin: 0;
   }

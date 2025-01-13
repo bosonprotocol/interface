@@ -7,7 +7,7 @@ import { Grid, GridProps } from "../ui/Grid";
 import { Typography } from "../ui/Typography";
 
 const StyledGrid = styled(Grid)`
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
 `;
 
 interface Props extends GridProps {

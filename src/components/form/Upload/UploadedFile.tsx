@@ -15,7 +15,7 @@ const AttachmentContainer = styled.div<{ $isLeftAligned: boolean }>`
   align-items: center;
   padding: 1rem;
   background-color: ${({ $isLeftAligned }) =>
-    $isLeftAligned ? "inherit" : colors.lightGrey};
+    $isLeftAligned ? "inherit" : colors.greyLight};
   ${({ $isLeftAligned }) =>
     $isLeftAligned ? `border: 2px solid ${colors.white}` : ""};
   color: ${({ $isLeftAligned }) => ($isLeftAligned ? "inherit" : colors.black)};

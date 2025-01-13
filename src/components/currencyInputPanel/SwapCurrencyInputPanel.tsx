@@ -97,7 +97,7 @@ const CurrencySelect = styled(Button)<{
     &:hover,
     &:active {
       background-color: ${({ selected }) =>
-        selected ? colors.darkGrey : colors.secondary};
+        selected ? colors.greyDark : colors.secondary};
       color: ${colors.white};
     }
 
@@ -115,11 +115,11 @@ const CurrencySelect = styled(Button)<{
     }
 
     &:hover:before {
-      background-color: ${opacify(8, colors.darkGrey)};
+      background-color: ${opacify(8, colors.greyDark)};
     }
 
     &:active:before {
-      background-color: ${opacify(24, colors.lightGrey)};
+      background-color: ${opacify(24, colors.greyLight)};
     }
   }
 
@@ -135,13 +135,13 @@ const InputRow = styled.div`
 const LabelRow = styled.div`
   ${flexRowNoWrap};
   align-items: center;
-  color: ${colors.lightGrey};
+  color: ${colors.greyLight};
   font-size: 0.75rem;
   line-height: 1rem;
 
   span:hover {
     cursor: pointer;
-    color: ${darken(0.2, colors.lightGrey)};
+    color: ${darken(0.2, colors.greyLight)};
   }
 `;
 
@@ -285,7 +285,7 @@ export default function SwapCurrencyInputPanel({
         </FixedContainer>
       )}
       <Container hideInput={hideInput}>
-        <Typography color={colors.darkGrey}>{label}</Typography>
+        <Typography color={colors.greyDark}>{label}</Typography>
         <InputRow
           style={hideInput ? { padding: "0", borderRadius: "8px" } : {}}
         >

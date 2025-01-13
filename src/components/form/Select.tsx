@@ -33,7 +33,7 @@ const customStyles = (
   singleValue: (provided: any, state: any) => {
     return {
       ...provided,
-      color: state.isDisabled ? colors.darkGrey : textColor,
+      color: state.isDisabled ? colors.greyDark : textColor,
       fontSize: "13.33px"
     };
   },
@@ -80,7 +80,7 @@ const customStyles = (
     opacity: state.isDisabled ? "0.5" : "1",
     background:
       state.isOptionSelected || state.isSelected || state.isFocused
-        ? colors.lightGrey
+        ? colors.greyLight
         : colors.white,
     color:
       state.isOptionSelected || state.isSelected
@@ -112,10 +112,10 @@ const customStyles = (
 });
 
 const useSelectColors = () => {
-  const backgroundColor = colors.lightGrey;
+  const backgroundColor = colors.greyLight;
   const textColor = getColor1OverColor2WithContrast({
     color2: backgroundColor,
-    color1: useCSSVariable("--buttonTextColor") || colors.darkGrey
+    color1: useCSSVariable("--buttonTextColor") || colors.greyDark
   });
   return {
     backgroundColor,

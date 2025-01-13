@@ -56,7 +56,7 @@ export const DrHasDecided: React.FC<DrHasDecidedProps> = ({
     <Grid flexDirection="column" padding="1rem 1rem 0 1rem" gap="1rem">
       <Typography
         padding="1rem"
-        background={colors.lightGrey}
+        background={colors.greyLight}
         flexDirection="column"
         style={{ width: "100%", position: "relative" }}
       >

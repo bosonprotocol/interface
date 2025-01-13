@@ -12,7 +12,7 @@ const VariantsGrid = styled.div`
   grid-template-columns: repeat(3, 1fr);
   margin: 1rem 0 2rem 0;
   * {
-    border: 1px solid ${colors.lightGrey};
+    border: 1px solid ${colors.greyLight};
     padding: 0.5rem;
   }
 `;

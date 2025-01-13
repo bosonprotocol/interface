@@ -60,7 +60,7 @@ const iconStyle: CSSProperties = {
   margin: "1.1875rem",
   position: "absolute",
   top: 0,
-  color: colors.darkGrey
+  color: colors.greyDark
 };
 const iconSize = 32;
 
