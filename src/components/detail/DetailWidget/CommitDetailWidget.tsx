@@ -57,6 +57,7 @@ import { VariantV1 } from "pages/products/types";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import styled from "styled-components";
+import { themeVars } from "theme";
 
 import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
 import bosonSnapshotGateAbi from "./BosonSnapshotGate/BosonSnapshotGate.json";
@@ -465,7 +466,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         withWeb3React: false,
         withCustomReduxContext: false,
         sendDeliveryInfoThroughXMTP: true,
-        roundness: "min"
+        roundness: themeVars.roundness
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}

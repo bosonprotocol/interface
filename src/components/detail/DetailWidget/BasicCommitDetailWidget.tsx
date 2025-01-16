@@ -7,6 +7,7 @@ import { BosonRoutes } from "lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { VariantV1 } from "pages/products/types";
 import React, { ReactNode } from "react";
+import { themeVars } from "theme";
 
 import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
 
@@ -42,7 +43,7 @@ export const BasicCommitDetailWidget: React.FC<
         withReduxProvider: false,
         withCustomReduxContext: false,
         withWeb3React: false,
-        roundness: "min"
+        roundness: themeVars.roundness
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}
