@@ -15,7 +15,7 @@ import useENSName from "lib/utils/hooks/useENSName";
 import { useLast } from "lib/utils/hooks/useLast";
 import { memo, useCallback, useEffect, useRef } from "react";
 import { useAppSelector } from "state/hooks";
-import styled from "styled-components";
+import styled, { CSSProperties } from "styled-components";
 
 import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { formatAddress } from "../../../lib/utils/address";
@@ -98,9 +98,9 @@ const Text = styled.p`
   font-weight: 500;
 `;
 
-const StyledConnectButton = styled(Button)`
+const StyledConnectButton = styled(Button)<{ $color: CSSProperties["color"] }>`
   background-color: var(--buttonBgColor);
-  color: inherit;
+  color: ${({ $color }) => $color};
 `;
 
 const getCommonWalletButtonProps = (isXXS: boolean) =>
@@ -224,9 +224,9 @@ function Web3StatusInner({ showOnlyIcon }: { showOnlyIcon?: boolean }) {
           {...getCommonWalletButtonProps(isXXS)}
           variant="primaryFill"
           style={{
-            ...getCommonWalletButtonProps(isXXS).style,
-            color: connectedButtonTextColor
+            ...getCommonWalletButtonProps(isXXS).style
           }}
+          $color={connectedButtonTextColor}
         >
           Connect Wallet
         </StyledConnectButton>

@@ -1,3 +1,4 @@
+import { cssVars } from "@bosonprotocol/react-kit";
 import { createGlobalStyle } from "styled-components";
 
 import barlowRegular from "../../assets/fonts/Barlow-Regular.ttf";
@@ -100,6 +101,8 @@ const GlobalStyle = createGlobalStyle<{
       props.$lowerCardBgColor && !props.$withBosonStyles
         ? props.$lowerCardBgColor
         : colors.white};
+
+    ${cssVars};
 
     font-size: 0.75rem;
     ${breakpoint.xs} {

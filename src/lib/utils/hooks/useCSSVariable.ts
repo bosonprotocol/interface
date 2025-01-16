@@ -1,3 +1,4 @@
+import { CssVarKeys } from "@bosonprotocol/react-kit";
 import { useEffect, useState } from "react";
 
 // all css variables can be found in src/components/app/index.tsx
@@ -18,6 +19,7 @@ export const useCSSVariable = (
     | "--buttonTextColor"
     | "--upperCardBgColor"
     | "--lowerCardBgColor"
+    | CssVarKeys
 ) => {
   const [value, setValue] = useState<string>();
   useEffect(() => {
