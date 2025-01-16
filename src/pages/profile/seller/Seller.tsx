@@ -56,20 +56,20 @@ const LensTitle = styled(Typography)`
 const SellerButton = styled.div`
   margin-left: 0.75rem;
   padding: 0.25rem 1rem;
-  border: 2px solid ${colors.secondary};
-  color: ${colors.secondary};
+  border: 2px solid ${colors.violet};
+  color: ${colors.violet};
   cursor: pointer;
   &:hover {
     color: ${colors.white};
-    background: ${colors.secondary};
+    background: ${colors.violet};
     a {
       color: ${colors.white};
     }
   }
   a {
-    color: ${colors.secondary};
+    color: ${colors.violet};
     &:hover {
-      background: ${colors.secondary};
+      background: ${colors.violet};
       color: ${colors.white};
     }
   }

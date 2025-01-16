@@ -504,7 +504,7 @@ export const RaiseProblemButton = styled(Button)`
 export const StyledCancelButton = RaiseProblemButton;
 export const ContactSellerButton = styled(RaiseProblemButton)`
   && {
-    color: ${colors.secondary};
+    color: ${colors.violet};
   }
 `;
 

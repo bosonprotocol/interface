@@ -66,7 +66,7 @@ const BackToSellerCenterButton = styled.button`
   background: unset;
   padding: unset;
   border: unset;
-  color: ${colors.secondary};
+  color: ${colors.violet};
   z-index: ${zIndex.LandingTitle};
 `;
 

@@ -226,7 +226,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
           }}
         >
           <CardCTA
-            icon={<Megaphone color={colors.secondary} />}
+            icon={<Megaphone color={colors.violet} />}
             title="Add a sales channel"
             text="Adding more sales channels expands the reach of your products by selling them  across different destinations."
             cta={
@@ -241,12 +241,12 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
                   });
                 }}
               >
-                Add a sales channel <Plus color={colors.secondary} size={20} />
+                Add a sales channel <Plus color={colors.violet} size={20} />
               </Button>
             }
           />
           <CardCTA
-            icon={<Storefront color={colors.secondary} />}
+            icon={<Storefront color={colors.violet} />}
             title="Create new products"
             text="Create new products and benefits to grow revenues and engage new audiences."
             cta={
@@ -256,7 +256,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
                   goToCreateNewProduct();
                 }}
               >
-                Create new products <Plus color={colors.secondary} size={20} />
+                Create new products <Plus color={colors.violet} size={20} />
               </Button>
             }
           />

@@ -30,12 +30,12 @@ const customStyles = {
       padding: "0.4rem 0.25rem",
       boxShadow: "none",
       ":hover": {
-        borderColor: colors.secondary,
+        borderColor: colors.violet,
         borderWidth: "1px"
       },
       background: colors.greyLight,
       border: state.isFocused
-        ? `1px solid ${colors.secondary}`
+        ? `1px solid ${colors.violet}`
         : `1px solid ${colors.border}`,
       ...before
     };
@@ -55,9 +55,7 @@ const customStyles = {
         ? colors.greyLight
         : colors.white,
     color:
-      state.isOptionSelected || state.isSelected
-        ? colors.secondary
-        : colors.black
+      state.isOptionSelected || state.isSelected ? colors.violet : colors.black
   }),
   indicatorSeparator: () => ({
     display: "none"

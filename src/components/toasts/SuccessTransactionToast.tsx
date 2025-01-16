@@ -25,7 +25,7 @@ export default function SuccessTransactionToast({
         <Typography>{action}</Typography>
         {onViewDetails ? (
           <Typography
-            color={colors.secondary}
+            color={colors.violet}
             style={{
               cursor: "pointer"
             }}
@@ -35,7 +35,7 @@ export default function SuccessTransactionToast({
           </Typography>
         ) : url ? (
           <a href={sanitizeUrl(url)} target="_blank" rel="noopener noreferrer">
-            <Typography color={colors.secondary}>View details</Typography>
+            <Typography color={colors.violet}>View details</Typography>
           </a>
         ) : null}
       </Grid>

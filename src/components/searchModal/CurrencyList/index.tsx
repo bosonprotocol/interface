@@ -40,7 +40,7 @@ const CheckIcon = styled(Check)`
   height: 20px;
   width: 20px;
   margin-left: 4px;
-  color: ${colors.secondary};
+  color: ${colors.violet};
 `;
 
 const StyledBalanceText = styled(Typography)`

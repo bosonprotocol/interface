@@ -40,7 +40,7 @@ export const ItemsName = styled(Grid)`
   }
   &:hover {
     * {
-      color: ${colors.secondary};
+      color: ${colors.violet};
     }
     svg {
       margin-right: 0.5rem;

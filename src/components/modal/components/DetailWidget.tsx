@@ -95,7 +95,7 @@ export default function DetailWidget({
               </Typography>
               <Typography
                 tag="h2"
-                style={{ margin: "1rem 0", color: colors.secondary }}
+                style={{ margin: "1rem 0", color: colors.violet }}
               >
                 {name}
               </Typography>

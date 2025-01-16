@@ -167,7 +167,7 @@ function DisputeModal({ exchangeId }: Props) {
       </Typography>
       <ModalGrid>
         <ModalGridColumns>
-          <Chats size={24} color={colors.secondary} data-columns-icon />
+          <Chats size={24} color={colors.violet} data-columns-icon />
           <Typography
             margin="0"
             fontSize="1.25rem"
@@ -178,7 +178,7 @@ function DisputeModal({ exchangeId }: Props) {
           </Typography>
         </ModalGridColumns>
         <ModalGridColumns data-modal-columns>
-          <FilePlus size={24} color={colors.secondary} data-columns-icon />
+          <FilePlus size={24} color={colors.violet} data-columns-icon />
           <Typography
             margin="0"
             fontSize="1.25rem"
@@ -189,7 +189,7 @@ function DisputeModal({ exchangeId }: Props) {
           </Typography>
         </ModalGridColumns>
         <ModalGridColumns data-modal-columns>
-          <Handshake size={24} color={colors.secondary} data-columns-icon />
+          <Handshake size={24} color={colors.violet} data-columns-icon />
           <Typography
             margin="0"
             fontSize="1.25rem"

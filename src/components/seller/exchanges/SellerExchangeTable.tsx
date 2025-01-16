@@ -568,9 +568,7 @@ export default function SellerExchangeTable({
                   themeVal="blank"
                   style={{
                     color:
-                      pageNumber === pageIndex
-                        ? colors.secondary
-                        : colors.black,
+                      pageNumber === pageIndex ? colors.violet : colors.black,
                     background:
                       pageNumber === pageIndex
                         ? colors.greyLight

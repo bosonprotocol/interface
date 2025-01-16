@@ -89,11 +89,7 @@ export default function ChainSelectorRow({
       {isPending && <CaptionText>Approve in wallet</CaptionText>}
       <Status>
         {active && (
-          <Check
-            width={LOGO_SIZE}
-            height={LOGO_SIZE}
-            color={colors.secondary}
-          />
+          <Check width={LOGO_SIZE} height={LOGO_SIZE} color={colors.violet} />
         )}
         {!active && isPending && (
           <Spinner width={LOGO_SIZE} height={LOGO_SIZE} />

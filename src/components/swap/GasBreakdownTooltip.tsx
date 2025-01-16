@@ -17,7 +17,7 @@ const Container = styled(AutoColumn)`
 `;
 
 const InlineLink = styled(Typography)`
-  color: ${colors.secondary};
+  color: ${colors.violet};
   display: inline;
   cursor: pointer;
   &:hover {

@@ -224,7 +224,7 @@ export function SwapCallbackError({ error }: { error: ReactNode }) {
 export const SwapShowAcceptChanges = styled(AutoColumn)`
   background-color: ${({ theme }) =>
     transparentize(0.95, theme.deprecated_primary3)};
-  color: ${colors.secondary};
+  color: ${colors.violet};
   padding: 12px;
   border-radius: 12px;
   margin-top: 8px;

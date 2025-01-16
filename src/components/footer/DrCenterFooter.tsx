@@ -60,7 +60,7 @@ const NavigationLinks = styled.nav<INavigationLinks>`
     color: ${colors.white};
   }
   a:hover {
-    color: ${colors.secondary};
+    color: ${colors.violet};
   }
 
   ${breakpoint.xs} {

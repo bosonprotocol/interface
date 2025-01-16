@@ -184,7 +184,7 @@ export const CreateProductCongratulations: React.FC<
           }}
         >
           <CardCTA
-            icon={<Megaphone color={colors.secondary} />}
+            icon={<Megaphone color={colors.violet} />}
             title="Add Sales Channels"
             text="You can now add more Sales Channels to promote and sell your product at different places."
             cta={
@@ -199,12 +199,12 @@ export const CreateProductCongratulations: React.FC<
                   });
                 }}
               >
-                Add a Sales Channel <Plus color={colors.secondary} size={20} />
+                Add a Sales Channel <Plus color={colors.violet} size={20} />
               </Button>
             }
           />
           <CardCTA
-            icon={<Storefront color={colors.secondary} />}
+            icon={<Storefront color={colors.violet} />}
             title="Create new product"
             text="Save time when creating multiple products. You can add new channels and pay your deposits later."
             cta={
@@ -214,7 +214,7 @@ export const CreateProductCongratulations: React.FC<
                   goToCreateNewProduct();
                 }}
               >
-                Create new product <Plus color={colors.secondary} size={20} />
+                Create new product <Plus color={colors.violet} size={20} />
               </Button>
             }
           />

@@ -54,12 +54,12 @@ const customStyles = (
       padding: "0.4rem 0.25rem",
       boxShadow: "none",
       ":hover": {
-        borderColor: colors.secondary,
+        borderColor: colors.violet,
         borderWidth: "1px"
       },
       background: backgroundColor,
       border: state.isFocused
-        ? `1px solid ${colors.secondary}`
+        ? `1px solid ${colors.violet}`
         : !checkIfValueIsEmpty(error)
           ? `1px solid ${colors.orange}`
           : `1px solid ${colors.border}`,
@@ -83,9 +83,7 @@ const customStyles = (
         ? colors.greyLight
         : colors.white,
     color:
-      state.isOptionSelected || state.isSelected
-        ? colors.secondary
-        : colors.black
+      state.isOptionSelected || state.isSelected ? colors.violet : colors.black
   }),
   indicatorSeparator: () => ({
     display: "none"

@@ -46,7 +46,7 @@ const StepCircle = styled.div<{ active: boolean }>`
   width: 10px;
   border-radius: 50%;
   /* background-color: {({ theme, active }) =>
-    active ? colors.secondary : theme.textTertiary};
+    active ? colors.violet : theme.textTertiary};
   outline: 3px solid
     {({ theme, active }) =>
     active ? theme.accentActionSoft : theme.accentTextLightTertiary}; */

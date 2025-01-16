@@ -8,7 +8,7 @@ const LoadingPlaceholder = styled.div<{ size: number }>`
   width: ${({ size }) => size}rem;
   min-height: ${({ size }) => size}rem;
   min-width: ${({ size }) => size}rem;
-  border: 5px solid ${colors.secondary};
+  border: 5px solid ${colors.violet};
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;

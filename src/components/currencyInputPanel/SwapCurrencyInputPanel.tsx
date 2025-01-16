@@ -63,7 +63,7 @@ const CurrencySelect = styled(Button)<{
   min-width: 175px;
   align-items: center;
   background-color: ${({ selected }) =>
-    selected ? colors.black : colors.secondary};
+    selected ? colors.black : colors.violet};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) =>
     selected ? "none" : "0px 6px 10px rgba(0, 0, 0, 0.075)"};
@@ -97,7 +97,7 @@ const CurrencySelect = styled(Button)<{
     &:hover,
     &:active {
       background-color: ${({ selected }) =>
-        selected ? colors.greyDark : colors.secondary};
+        selected ? colors.greyDark : colors.violet};
       color: ${colors.white};
     }
 
@@ -182,7 +182,7 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
 const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: transparent;
   border: none;
-  color: ${colors.secondary};
+  color: ${colors.violet};
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;

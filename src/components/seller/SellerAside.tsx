@@ -92,7 +92,7 @@ const AsideLink = styled.li<{ $active?: boolean }>`
     color: ${colors.black};
   }
   svg:first-child {
-    fill: ${(props) => (props.$active ? colors.secondary : colors.black)};
+    fill: ${(props) => (props.$active ? colors.violet : colors.black)};
     width: 1.5rem;
     height: 1.5rem;
   }

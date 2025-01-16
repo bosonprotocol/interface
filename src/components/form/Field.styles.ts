@@ -277,7 +277,7 @@ export const CheckboxWrapper = styled.label<{ error?: unknown }>`
       + div {
         cursor: pointer;
         &:hover {
-          border: 1px solid ${colors.secondary};
+          border: 1px solid ${colors.violet};
           svg {
             opacity: 0.25;
           }

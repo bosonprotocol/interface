@@ -135,7 +135,6 @@ export default function Tabs({
           <Offers
             products={products}
             seller={seller}
-            action={isPrivateProfile ? null : "commit"}
             showInvalidOffers={isPrivateProfile}
             isPrivateProfile={isPrivateProfile}
             isLoading={isLoading}

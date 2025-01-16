@@ -33,7 +33,7 @@ const StyledSwitchRoot = styled(ReactSwitch.Root)`
   box-shadow: 0 2px 10px hsl(0 0% 0% / 0.141);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   &[data-state="checked"] {
-    background-color: ${colors.secondary};
+    background-color: ${colors.violet};
   }
   &:disabled {
     cursor: not-allowed;

@@ -119,7 +119,7 @@ export const SocialIconContainer = styled.div`
   display: flex;
   align-items: center;
   svg {
-    color: ${colors.secondary};
+    color: ${colors.violet};
     vertical-align: bottom;
   }
 `;
@@ -147,7 +147,7 @@ export const DetailShareWrapper = styled.div`
 export const LoadingWrapper = styled.div`
   padding: 2rem;
   text-align: center;
-  color: ${colors.secondary};
+  color: ${colors.violet};
 `;
 
 export const ProductGridContainer = styled(GridContainer)`

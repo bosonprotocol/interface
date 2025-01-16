@@ -170,7 +170,7 @@ export const CalendarDay = styled(CalendarCell)<{
     active &&
     css`
       &:after {
-        background: ${colors.secondary};
+        background: ${colors.violet};
         width: 2.25rem;
         height: 2.25rem;
         z-index: 2;
@@ -185,7 +185,7 @@ export const CalendarDay = styled(CalendarCell)<{
     !active &&
     css`
       &:after {
-        background: ${colors.secondary};
+        background: ${colors.violet};
         width: 1.75rem;
         height: 1.75rem;
         z-index: 2;

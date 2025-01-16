@@ -41,7 +41,7 @@ import { Channels } from "./SalesChannelsModal/form";
 
 const CopyIcon = styled(CopySimple)`
   cursor: pointer;
-  color: ${colors.secondary};
+  color: ${colors.violet};
 `;
 
 const Heading = styled(Typography).attrs({

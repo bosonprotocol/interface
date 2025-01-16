@@ -176,7 +176,7 @@ export default function SwapModalFooter({
           <Grid>
             <Grid>
               <StyledAlertTriangle size={20} />
-              <Typography //color={colors.secondary}
+              <Typography //color={colors.violet}
               >
                 <>Price updated</>
               </Typography>

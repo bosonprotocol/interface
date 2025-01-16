@@ -97,7 +97,7 @@ function EscalateStepOne({ exchange }: Props) {
             >
               {onlyFairExchangePolicyLabel}
             </Typography>
-            <StyledArrowSquare color={colors.secondary} size={22} />
+            <StyledArrowSquare color={colors.violet} size={22} />
           </Grid>
           <Typography fontWeight="400" fontSize="1rem" color={colors.greyDark}>
             Escalation deposit

@@ -48,7 +48,7 @@ export const CoreTermsOfSaleDates: React.FC<CoreTermsOfSaleDatesProps> = ({
             invertValue
             label={() => (
               <Typography
-                color={colors.secondary}
+                color={colors.violet}
                 fontSize="0.8rem"
                 cursor="pointer"
               >

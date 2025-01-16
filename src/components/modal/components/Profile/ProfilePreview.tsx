@@ -54,7 +54,7 @@ export const ProfilePreview: React.FC<ProfilePreviewProps> = ({
     <>
       <Gear
         size={24}
-        color={colors.secondary}
+        color={colors.violet}
         weight="light"
         style={{ cursor: "pointer" }}
         onClick={() => {

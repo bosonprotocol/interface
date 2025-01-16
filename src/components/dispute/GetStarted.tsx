@@ -11,7 +11,7 @@ import { Typography } from "../ui/Typography";
 const FormButton = styled.button`
   border: none;
   background: none;
-  color: ${colors.secondary};
+  color: ${colors.violet};
   display: flex;
   align-items: flex-start;
   justify-content: space-between;

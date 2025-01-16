@@ -7,7 +7,7 @@ import { colors } from "../../lib/styles/colors";
 import Button from "../ui/Button";
 
 const ExportButton = styled(Button)`
-  color: ${colors.secondary};
+  color: ${colors.violet};
   border: none;
   gap: 0.3125rem;
   > div {

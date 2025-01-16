@@ -544,7 +544,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   name={storeFields.bannerSwitch}
                   label={({ toggleFormValue, checked }) => (
                     <Typography
-                      color={colors.secondary}
+                      color={colors.violet}
                       fontSize="0.8rem"
                       onClick={() => toggleFormValue?.()}
                       cursor="pointer"

@@ -12,7 +12,6 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import { useIsCustomStoreValueChanged } from "../../pages/custom-store/useIsCustomStoreValueChanged";
 import { ExtendedOffer } from "../../pages/explore/WithAllOffers";
 import { ProductGridContainer } from "../../pages/profile/ProfilePage.styles";
-import { Action } from "../../pages/profile/seller/const";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import ProductCard from "../productCard/ProductCard";
 import { Grid } from "../ui/Grid";
@@ -24,7 +23,6 @@ interface Props {
   isError: boolean;
   isLoading?: boolean;
   showSeller?: boolean;
-  action: Action;
   showInvalidOffers: boolean;
   isPrivateProfile?: boolean;
   type?: "gone" | "hot" | "soon" | undefined;

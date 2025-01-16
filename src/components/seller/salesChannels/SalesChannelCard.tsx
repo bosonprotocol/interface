@@ -41,7 +41,7 @@ export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
   return (
     <StyledGrid flexDirection="column" alignItems="flex-start" padding="1.5rem">
       <Time gap="0.25rem">
-        <Clock size={16} color={colors.secondary} />
+        <Clock size={16} color={colors.violet} />
         <Typography fontWeight="600" fontSize="0.75rem" color={colors.greyDark}>
           {time}
         </Typography>
