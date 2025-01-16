@@ -65,7 +65,7 @@ import { BosonSnapshotGate__factory } from "./BosonSnapshotGate/typechain/factor
 const StyledRedeemButton = styled(RedeemButton)`
   width: 100%;
 `;
-const containerBreakpoint = "450px";
+const containerBreakpoint = "550px";
 const CTAsGrid = styled(Grid)`
   .show-in-larger-view {
     display: none;
