@@ -521,7 +521,7 @@ export const initialValues: Yup.InferType<typeof validationSchema> = {
   // [storeFields.footerBgColor]: colors.black,
   [storeFields.upperCardBgColor]: colors.white,
   [storeFields.lowerCardBgColor]: colors.white,
-  [storeFields.buttonBgColor]: colors.primary,
+  [storeFields.buttonBgColor]: colors.green,
   [storeFields.buttonTextColor]: colors.black,
   [storeFields.footerTextColor]: colors.white,
   [storeFields.fontFamily]: formModel.formFields.fontFamily.options.find(
