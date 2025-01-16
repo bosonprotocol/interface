@@ -233,7 +233,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         data-commit-proxy-address
         style={{ height: "3.5rem" }}
       >
-        Commit <small>Step 1/2</small>
+        Buy <small>Step 1/2</small>
       </BosonButton>
     );
   };
@@ -539,7 +539,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
               fontSize="0.8rem"
               marginTop="0.25rem"
             >
-              By proceeding to Commit, I agree to the{" "}
+              By proceeding to Buy, I agree to the{" "}
               <span
                 style={{
                   fontSize: "inherit",
@@ -572,7 +572,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
           fontSize="0.8rem"
           marginTop="0.25rem"
         >
-          By proceeding to Commit, I agree to the{" "}
+          By proceeding to Buy, I agree to the{" "}
           <span
             style={{
               fontSize: "inherit",
