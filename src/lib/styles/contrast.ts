@@ -14,10 +14,6 @@ export const getColor1OverColor2WithContrast = ({
   defaultDarkColor1?: string;
   contrastThreshold?: number;
 }) => {
-  if (!color2 || !color1) {
-    // eslint-disable-next-line no-debugger
-    debugger;
-  }
   const contrast = getContrast(color2, color1);
   const contrastWithWhite = getContrast(color2, defaultLightColor1);
   const contrastWithBlack = getContrast(color2, defaultDarkColor1);
