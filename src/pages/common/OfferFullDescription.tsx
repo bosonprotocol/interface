@@ -77,7 +77,6 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
         defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
         licenseTemplate: CONFIG.rNFTLicenseTemplate,
         minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
-        // walletConnectProjectId: CONFIG.walletConnect.projectId,
         ipfsProjectId: CONFIG.infuraProjectId,
         ipfsProjectSecret: CONFIG.infuraProjectSecret,
         contactSellerForExchangeUrl: "",
