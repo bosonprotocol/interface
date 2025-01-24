@@ -327,7 +327,6 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
                 data-config-id={config.envConfig.configId}
                 data-account={address}
                 data-with-external-signer="true"
-                withBosonStyle
                 style={{ width: "100%" }}
               >
                 <span>Redeem</span>

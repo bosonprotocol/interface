@@ -14,7 +14,7 @@ const Separator = styled.div`
   z-index: ${zIndex.Default};
   div:nth-of-type(1) {
     width: max-content;
-    background-color: ${colors.darkGreyTimeStamp};
+    background-color: ${colors.greyLight};
     padding: 0.25rem 1rem 0.25rem 1rem;
     display: block;
     margin: 0 auto;
@@ -42,7 +42,7 @@ const Separator = styled.div`
   div:nth-of-type(2) {
     width: calc(100% - 2.5rem);
     height: 0.125rem;
-    background-color: ${colors.darkGreyTimeStamp};
+    background-color: ${colors.greyLight};
     z-index: ${zIndex.Default};
     position: relative;
     margin-left: auto;

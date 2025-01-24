@@ -225,7 +225,7 @@ export const CreateProductCongratulations: React.FC<
               text="You must provide funds to cover your seller deposit. For multiple products you can do all at once."
               cta={
                 <Button
-                  themeVal="bosonPrimary"
+                  themeVal="primary"
                   onClick={() => {
                     navigateTo({
                       pathname: getSellerCenterPath("Finances")

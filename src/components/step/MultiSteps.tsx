@@ -44,7 +44,7 @@ export default function MultiSteps({
           <ArrowLeft
             size={32}
             style={{ cursor: active && callback ? "pointer" : "not-allowed" }}
-            color={active === 0 ? colors.lightArrowColor : colors.greyDark}
+            color={active === 0 ? colors.greyLight2 : colors.greyDark}
             onClick={() => {
               if (active && callback) {
                 callback(active - 1);
@@ -110,9 +110,7 @@ export default function MultiSteps({
         <Grid alignItems="flex-end" width="auto">
           <ArrowRight
             size={32}
-            color={
-              isRightArrowEnabled ? colors.greyDark : colors.lightArrowColor
-            }
+            color={isRightArrowEnabled ? colors.greyDark : colors.greyLight2}
             style={{ cursor: isRightArrowEnabled ? "pointer" : "not-allowed" }}
             onClick={() => {
               if (

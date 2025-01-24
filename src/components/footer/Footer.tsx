@@ -108,7 +108,7 @@ const NavigationLinks = styled.nav<INavigationLinks>`
     color: var(--footerTextColor);
   }
   a:hover {
-    color: ${colors.accent};
+    color: ${colors.violet};
   }
 
   ${breakpoint.xs} {

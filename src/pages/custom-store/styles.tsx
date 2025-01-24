@@ -9,7 +9,7 @@ export const Section = styled.div`
   line-height: 0.945rem;
   text-transform: uppercase;
   padding: 0.8125rem 0;
-  color: ${colors.grey3};
+  color: ${colors.greyLight4};
 `;
 
 export const FieldTitle = styled.div`

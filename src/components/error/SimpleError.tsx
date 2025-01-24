@@ -28,7 +28,7 @@ export default function SimpleError({
       padding="1.5rem"
       {...rest}
     >
-      <Warning color={colors.darkOrange} size={16} />
+      <Warning color={colors.orangeDark} size={16} />
       {children ? (
         children
       ) : (

@@ -213,9 +213,7 @@ function RaiseDisputePage() {
           <Grid alignItems="center" style={{ flex: "1 1 0" }}>
             <ArrowLeft
               size={32}
-              color={
-                currentStep === 0 ? colors.lightArrowColor : colors.greyDark
-              }
+              color={currentStep === 0 ? colors.greyLight2 : colors.greyDark}
               onClick={() => {
                 goToViewMode(
                   ViewMode.DAPP,

@@ -209,7 +209,7 @@ const StatusToComponent = (
       [exchanges.ExtendedExchangeState.NotRedeemableYet]: (
         <Status
           $color={colors.greyDark}
-          $background={colors.darkOrange}
+          $background={colors.orangeDark}
           $size={size}
           style={style}
           className="status"

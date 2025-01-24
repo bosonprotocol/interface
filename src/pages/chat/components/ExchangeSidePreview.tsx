@@ -272,7 +272,7 @@ const getOfferDetailData = (
         ) : (
           <Typography
             tag="p"
-            color={colors.accent}
+            color={colors.violet}
             fontSize={fontSizeExchangePolicy}
             alignItems="center"
           >

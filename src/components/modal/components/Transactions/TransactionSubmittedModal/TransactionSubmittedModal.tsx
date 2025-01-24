@@ -68,9 +68,7 @@ export default function TransactionSubmittedModal({
         </Typography>
       </a>
 
-      <StyledButton onClick={hideModal} withBosonStyle>
-        Close
-      </StyledButton>
+      <StyledButton onClick={hideModal}>Close</StyledButton>
     </Grid>
   );
 }

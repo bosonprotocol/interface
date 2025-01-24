@@ -489,7 +489,7 @@ export const RaiseProblemButton = styled(Button)`
     padding: 0.75rem 1rem;
 
     font-weight: 600;
-    color: ${colors.accent};
+    color: ${colors.violet};
     cursor: pointer;
     transition: all 150ms ease-in-out;
     &:hover:not(:disabled) {

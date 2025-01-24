@@ -167,7 +167,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 
   path {
-    stroke: ${({ selected }) => (selected ? colors.primary : colors.white)};
+    stroke: ${({ selected }) => (selected ? colors.green : colors.white)};
     stroke-width: 2px;
   }
 `;

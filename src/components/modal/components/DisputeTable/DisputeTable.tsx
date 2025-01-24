@@ -31,7 +31,7 @@ const TableElementContainer = styled.tr`
   position: relative;
   &:after {
     position: absolute;
-    background: ${colors.darkGreyTimeStamp};
+    background: ${colors.greyLight};
     content: "";
     left: 0;
     bottom: 0;

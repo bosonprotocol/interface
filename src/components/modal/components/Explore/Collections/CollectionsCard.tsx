@@ -18,7 +18,7 @@ const CardContainer = styled.div<{
   $isUpperCardBgColorDefined: boolean;
 }>`
   position: relative;
-  background: ${colors.lightGrey2};
+  background: ${colors.greyLight};
   display: flex;
   cursor: pointer;
   flex-direction: column;
@@ -40,7 +40,7 @@ const ImagesContainer = styled.div`
   display: flex;
   padding: 1rem;
   gap: 1rem;
-  background: ${colors.lightGrey2};
+  background: ${colors.greyLight};
   height: 13rem;
   max-height: 13rem;
 `;

@@ -6,7 +6,7 @@ import { Typography } from "../../../components/ui/Typography";
 import { colors } from "../../../lib/styles/colors";
 
 const StyledGrid = styled(Grid)`
-  background: ${colors.lightGrey2};
+  background: ${colors.greyLight};
   padding: 1.5rem;
   color: initial;
   &:hover {

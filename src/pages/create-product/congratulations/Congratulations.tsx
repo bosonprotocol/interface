@@ -267,7 +267,7 @@ export const Congratulations: React.FC<CongratulationsProps> = ({
               text="Provide funds  in the seller pool for your offer to go live. Funds in the pool will apply to all your products."
               cta={
                 <Button
-                  themeVal="bosonPrimary"
+                  themeVal="primary"
                   onClick={() => {
                     navigateTo({
                       pathname: getSellerCenterPath("Finances")
