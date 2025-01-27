@@ -12,9 +12,9 @@ export const inputTheme = {
   background: colors.greyLight,
   borderColor: colors.border,
   borderRadius: 0,
-  color: "inherit",
+  color: undefined,
   placeholder: {
-    color: "inherit"
+    color: undefined
   },
   focus: {
     caretColor: "initial"
