@@ -20,7 +20,13 @@ import polygonSquareLogoUrl from "assets/svg/polygon_square_logo.svg";
 import polygonMaticLogo from "assets/svg/polygon-matic-logo.svg";
 import ms from "ms";
 
-import { LocalChainId, SupportedL1ChainId, SupportedL2ChainId } from "./chains";
+import {
+  ChainId_BASE_SEPOLIA,
+  ChainId_POLYGON_AMOY,
+  LocalChainId,
+  SupportedL1ChainId,
+  SupportedL2ChainId
+} from "./chains";
 import {
   ARBITRUM_LIST,
   AVALANCHE_LIST,
@@ -205,7 +211,7 @@ const CHAIN_INFO: ChainInfoMap = {
       decimals: 18
     }
   },
-  80002: {
+  [ChainId_POLYGON_AMOY]: {
     networkType: NetworkType.L1,
     blockWaitMsBeforeWarning: ms(`10m`),
     bridge: "https://wallet.polygon.technology/polygon/bridge/deposit",
@@ -303,6 +309,22 @@ const CHAIN_INFO: ChainInfoMap = {
     circleLogoUrl: baseLogo,
     squareLogoUrl: baseSquareLogo,
     nativeCurrency: { name: "Base Goerli Ether", symbol: "ETH", decimals: 18 }
+  },
+  [ChainId_BASE_SEPOLIA]: {
+    networkType: NetworkType.L2,
+    blockWaitMsBeforeWarning: ms(`10m`),
+    bridge: "https://testnets.superbridge.app/base-sepolia",
+    docs: "https://www.base.org",
+    explorer: "https://sepolia.basescan.org/",
+    infoLink: "https://info.uniswap.org/#/base-sepolia/",
+    label: "Base Sepolia",
+    logoUrl: ethereumLogoUrl,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18
+    },
+    defaultListUrl: ""
   },
   [LocalChainId]: {
     networkType: NetworkType.L1,
