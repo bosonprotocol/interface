@@ -12,17 +12,17 @@ import Loading from "./Loading";
 
 const ExportButton = styled(Button)`
   && {
-    color: ${colors.secondary};
+    color: ${colors.violet};
     border: none;
     gap: 0.5rem;
-    border: 2px solid ${colors.secondary};
+    border: 2px solid ${colors.violet};
     padding-right: 2.125rem;
     padding-left: 0.75rem;
     position: relative;
     transition: all 300ms ease-in-out;
 
     &:hover:not(:disabled) {
-      background: ${colors.secondary};
+      background: ${colors.violet};
       color: ${colors.white};
       div,
       button {
@@ -51,7 +51,7 @@ const ExportButton = styled(Button)`
       top: 0;
       bottom: 0;
       right: 1.5rem;
-      background: ${colors.secondary};
+      background: ${colors.violet};
       width: 1px;
       height: 100%;
     }
@@ -60,7 +60,7 @@ const ExportButton = styled(Button)`
       height: 0;
       border-left: 0.25rem solid transparent;
       border-right: 0.25rem solid transparent;
-      border-top: 0.5rem solid ${colors.secondary};
+      border-top: 0.5rem solid ${colors.violet};
       top: 50%;
       right: 0.5rem;
       transform: translate(0, -50%);
@@ -85,9 +85,9 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
   position: relative;
 
   display: inline-block;
-  border: 0.0625rem solid ${colors.secondary};
+  border: 0.0625rem solid ${colors.violet};
   border-top: 0rem;
-  color: ${colors.secondary};
+  color: ${colors.violet};
   font-size: 0.75rem;
   max-width: 7.1875rem;
   text-align: center;
@@ -96,7 +96,7 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
   z-index: ${zIndex.Select};
   transition: all 300ms ease-in-out;
   &:hover {
-    background-color: ${colors.secondary};
+    background-color: ${colors.violet};
     color: ${colors.white};
   }
   text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};

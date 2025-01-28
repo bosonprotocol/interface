@@ -21,7 +21,7 @@ const WarningIcon = styled(WarningTriangle)<{ size?: string }>`
 
 const BlockedIcon = styled(Prohibit)<{ size?: string }>`
   ${WarningIconStyle}
-  color: ${colors.lightGrey};
+  color: ${colors.greyLight};
 `;
 
 export default function TokenSafetyIcon({

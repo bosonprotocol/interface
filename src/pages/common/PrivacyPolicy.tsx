@@ -8,7 +8,7 @@ import { colors } from "../../lib/styles/colors";
 
 const Wrapper = styled(Grid)`
   a {
-    color: ${colors.secondary};
+    color: ${colors.violet};
     text-decoration: none;
     transition: all 150ms ease-in-out;
     &:hover {
@@ -55,7 +55,7 @@ const Title = styled.h1`
   display: inline-block;
   text-align: center;
 
-  color: ${colors.secondary};
+  color: ${colors.violet};
   margin: 4rem 0 1rem 0;
   font-weight: 800;
 `;
@@ -121,7 +121,7 @@ const Table = styled.table`
       }
       &:hover {
         td {
-          background: ${colors.lightGrey};
+          background: ${colors.greyLight};
         }
       }
     }
@@ -1398,7 +1398,7 @@ export default function PrivacyPolicy() {
           </List>
         </li>
       </List>
-      <Typography color={colors.secondary} tag="h4">
+      <Typography color={colors.violet} tag="h4">
         ANNEX A
       </Typography>
       <Typography color={colors.grey} tag="h6" fontWeight="400" margin="0">

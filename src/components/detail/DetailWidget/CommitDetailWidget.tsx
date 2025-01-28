@@ -1,12 +1,12 @@
 import {
-  CommitButton,
   ExternalCommitDetailView,
   extractUserFriendlyError,
   getHasUserRejectedTx,
   getIsOfferExpired,
   Provider,
   RedeemButton,
-  subgraph
+  subgraph,
+  ThemedCommitButton
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
@@ -57,6 +57,7 @@ import { VariantV1 } from "pages/products/types";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import styled from "styled-components";
+import { themeVars } from "theme";
 
 import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
 import bosonSnapshotGateAbi from "./BosonSnapshotGate/BosonSnapshotGate.json";
@@ -64,7 +65,7 @@ import { BosonSnapshotGate__factory } from "./BosonSnapshotGate/typechain/factor
 const StyledRedeemButton = styled(RedeemButton)`
   width: 100%;
 `;
-const containerBreakpoint = "450px";
+const containerBreakpoint = "550px";
 const CTAsGrid = styled(Grid)`
   .show-in-larger-view {
     display: none;
@@ -231,9 +232,8 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         disabled={disabled}
         data-commit-proxy-address
         style={{ height: "3.5rem" }}
-        withBosonStyle
       >
-        Commit <small>Step 1/2</small>
+        Buy <small>Step 1/2</small>
       </BosonButton>
     );
   };
@@ -464,7 +464,9 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
         externalConnectedSigner: signer,
         withReduxProvider: false,
         withWeb3React: false,
-        withCustomReduxContext: false
+        withCustomReduxContext: false,
+        sendDeliveryInfoThroughXMTP: true,
+        roundness: themeVars.roundness
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}
@@ -475,11 +477,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
           offerId: selectedVariant.offer.id,
           offerData: selectedVariant.offer,
           exchangePolicyCheckResult: exchangePolicyCheckResult
-        });
-      }}
-      onPurchaseOverview={() => {
-        showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
-          title: "Commit to Buy and Redeem"
         });
       }}
       onClickBuyOrSwap={({ swapParams }) => {
@@ -513,14 +510,13 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
                   {showCommitProxyButton ? (
                     <CommitProxyButton />
                   ) : (
-                    <CommitButton
+                    <ThemedCommitButton
                       coreSdkConfig={{
                         envName: config.envName,
                         configId: config.envConfig.configId,
                         web3Provider: signer?.provider as Provider,
                         metaTx: config.metaTx
                       }}
-                      variant="primaryFill"
                       isPauseCommitting={!address}
                       buttonRef={commitButtonRef}
                       onGetSignerAddress={handleOnGetSignerAddress}
@@ -533,7 +529,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
                       onPendingTransaction={onCommitPendingTransaction}
                       onSuccess={onCommitSuccess}
                       extraInfo="Step 1/2"
-                      withBosonStyle
                     />
                   )}
                 </>
@@ -544,7 +539,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
               fontSize="0.8rem"
               marginTop="0.25rem"
             >
-              By proceeding to Commit, I agree to the{" "}
+              By proceeding to Buy, I agree to the{" "}
               <span
                 style={{
                   fontSize: "inherit",
@@ -566,7 +561,6 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
               metaTx: config.envConfig.metaTx
             }}
             disabled
-            withBosonStyle
             exchangeId="0"
             extraInfo="Step 2/2"
             variant="primaryFill"
@@ -578,7 +572,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
           fontSize="0.8rem"
           marginTop="0.25rem"
         >
-          By proceeding to Commit, I agree to the{" "}
+          By proceeding to Buy, I agree to the{" "}
           <span
             style={{
               fontSize: "inherit",

@@ -9,7 +9,7 @@ import { Grid } from "../../ui/Grid";
 
 const Close = styled(X)`
   line {
-    stroke: ${colors.darkGrey};
+    stroke: ${colors.greyDark};
   }
 `;
 const StyledButton = styled(Button)`

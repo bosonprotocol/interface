@@ -32,7 +32,7 @@ const Menu = styled.div`
 const MenuFlyout = styled(AutoColumn)`
   min-width: 20.125rem;
   background-color: ${colors.white};
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   box-shadow:
     0px 0px 1px rgba(0, 0, 0, 0.01),
     0px 4px 8px rgba(0, 0, 0, 0.04),
@@ -76,7 +76,7 @@ const MobileMenuWrapper = styled(Column)<{ open: boolean }>`
   height: min-content;
   width: 100%;
   padding: 8px 16px 24px;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   overflow: hidden;
   position: absolute;
   bottom: ${({ open }) => (open ? `100vh` : 0)};

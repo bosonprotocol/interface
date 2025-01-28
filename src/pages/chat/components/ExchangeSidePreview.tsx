@@ -70,7 +70,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-160vw")};
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   ${breakpoint.m} {
     padding-top: 0;
     width: 100%;
@@ -118,7 +118,7 @@ const sectionStyles = css`
   ${breakpoint.l} {
     background: ${colors.white};
   }
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
 `;
 const Section = styled.div`
   ${sectionStyles};
@@ -272,7 +272,7 @@ const getOfferDetailData = (
         ) : (
           <Typography
             tag="p"
-            color={colors.accent}
+            color={colors.violet}
             fontSize={fontSizeExchangePolicy}
             alignItems="center"
           >

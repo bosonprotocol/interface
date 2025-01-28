@@ -103,7 +103,7 @@ const DeleteButton = ({
 
 const StoreFrontItem = styled.li`
   list-style-type: none;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   padding: 2rem;
   width: 100%;
 `;

@@ -9,7 +9,7 @@ export const Section = styled.div`
   line-height: 0.945rem;
   text-transform: uppercase;
   padding: 0.8125rem 0;
-  color: ${colors.grey3};
+  color: ${colors.greyLight4};
 `;
 
 export const FieldTitle = styled.div`
@@ -28,7 +28,7 @@ export const FieldDescription = styled(Typography)`
   font-size: 0.75rem;
   line-height: 150%;
   font-feature-settings: "zero" on;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
 `;
 export const gapBetweenInputs = "2rem";
 export const subFieldsMarginLeft = "4rem";

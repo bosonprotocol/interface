@@ -31,7 +31,7 @@ export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
       <Typography fontSize="2rem" fontWeight="600">
         Add documents to support your case
       </Typography>
-      <Typography fontSize="1.25rem" color={colors.darkGrey}>
+      <Typography fontSize="1.25rem" color={colors.greyDark}>
         You may provide any information or attach any files that support your
         case.
       </Typography>

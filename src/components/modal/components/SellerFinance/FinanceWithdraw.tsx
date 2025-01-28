@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { colors, subgraph } from "@bosonprotocol/react-kit";
 import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
 import {
   extractUserFriendlyError,
@@ -15,7 +15,6 @@ import {
 import { useState } from "react";
 import styled from "styled-components";
 
-import { colors } from "../../../../lib/styles/colors";
 import { useSigner } from "../../../../lib/utils/hooks/connection/connection";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Spinner } from "../../../loading/Spinner";
@@ -30,7 +29,7 @@ import {
 } from "./FinancesStyles";
 
 const MaxLimitWrapper = styled.div`
-  color: ${colors.grey};
+  color: ${colors.greyDark};
   margin-top: 0.25rem;
 `;
 

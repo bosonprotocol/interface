@@ -40,7 +40,7 @@ export const ItemsName = styled(Grid)`
   }
   &:hover {
     * {
-      color: ${colors.secondary};
+      color: ${colors.violet};
     }
     svg {
       margin-right: 0.5rem;
@@ -75,7 +75,7 @@ export const ItemsDates = styled(Typography)`
   }
   > * {
     font-size: 0.75rem;
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
     &:first-child {
       font-weight: 600;
     }

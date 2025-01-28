@@ -242,6 +242,7 @@ export default function Exchange({
     <ExchangeCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <ExchangeCard
         onCardClick={handleOnCardClick}
+        isConnected={!!address}
         dataCard="exchange-card"
         id={offer.id}
         title={offer.metadata?.name || ""}

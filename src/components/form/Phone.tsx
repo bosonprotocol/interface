@@ -37,12 +37,12 @@ const customStyles = {
       padding: "0.4rem 0.25rem",
       boxShadow: "none",
       ":hover": {
-        borderColor: colors.secondary,
+        borderColor: colors.violet,
         borderWidth: "1px"
       },
-      background: colors.lightGrey,
+      background: colors.greyLight,
       border: state.isFocused
-        ? `1px solid ${colors.secondary}`
+        ? `1px solid ${colors.violet}`
         : `1px solid ${colors.border}`,
       ...before
     };
@@ -59,12 +59,10 @@ const customStyles = {
     opacity: state.isDisabled ? "0.5" : "1",
     background:
       state.isOptionSelected || state.isSelected || state.isFocused
-        ? colors.lightGrey
+        ? colors.greyLight
         : colors.white,
     color:
-      state.isOptionSelected || state.isSelected
-        ? colors.secondary
-        : colors.black
+      state.isOptionSelected || state.isSelected ? colors.violet : colors.black
   }),
   indicatorSeparator: () => ({
     display: "none"
@@ -112,7 +110,7 @@ export const PhoneWrapper = styled.div`
     width: 100%;
     padding: 1rem;
     gap: 0.5rem;
-    background: ${colors.lightGrey};
+    background: ${colors.greyLight};
     border: 1px solid ${colors.border};
     border-radius: 0;
     outline: none;

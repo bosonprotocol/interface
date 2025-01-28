@@ -15,7 +15,7 @@ export const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
 
 export const CollapseContainer = styled.div`
   padding: 1.5rem 2rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   &:nth-of-type(2) {
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -74,7 +74,7 @@ export const ProductTypeBox = styled(GridBox)`
 
 export const ContentValue = styled(Typography)`
   font-size: 0.75rem;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   word-break: break-all;
   white-space: pre-wrap;
   gap: 0.5rem;
@@ -160,7 +160,7 @@ export const InitializeChatContainer = styled.div`
 
 export const Info = styled(Grid)`
   justify-content: space-between;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   padding: 1.5rem;
 `;
 

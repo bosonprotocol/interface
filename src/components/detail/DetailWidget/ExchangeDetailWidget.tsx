@@ -197,11 +197,6 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
           exchangePolicyCheckResult: exchangePolicyCheckResult
         });
       }}
-      onPurchaseOverview={() => {
-        showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
-          title: "Commit to Buy and Redeem"
-        });
-      }}
       topChildren={
         isExchangeExpired ? (
           <Grid
@@ -225,12 +220,12 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
           >
             <Typography
               tag="p"
-              style={{ color: colors.darkGrey, margin: 0 }}
+              style={{ color: colors.greyDark, margin: 0 }}
               fontSize="0.75rem"
             >
               You can withdraw your funds here
             </Typography>
-            <ArrowRight size={18} color={colors.darkGrey} />
+            <ArrowRight size={18} color={colors.greyDark} />
           </Grid>
         ) : isToRedeem ? (
           <RedeemLeftButton style={{ paddingTop: 0, paddingBottom: 0 }}>
@@ -332,7 +327,6 @@ export const ExchangeDetailWidget: React.FC<ExchangeDetailWidgetProps> = ({
                 data-config-id={config.envConfig.configId}
                 data-account={address}
                 data-with-external-signer="true"
-                withBosonStyle
                 style={{ width: "100%" }}
               >
                 <span>Redeem</span>

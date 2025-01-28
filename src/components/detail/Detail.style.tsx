@@ -37,7 +37,7 @@ export const CommitStepWrapper = styled.div`
 export const CommitStep = styled.div`
   position: relative;
   padding: 1rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   &:not(:last-child) {
     &:before {
       position: absolute;
@@ -50,7 +50,7 @@ export const CommitStep = styled.div`
       transform: translate(-50%, 0);
       border-left: 30rem solid transparent;
       border-right: 30rem solid transparent;
-      border-top: 1rem solid ${colors.lightGrey};
+      border-top: 1rem solid ${colors.greyLight};
     }
 
     &:after {
@@ -85,7 +85,7 @@ export const CommitStep = styled.div`
         left: initial;
         transform: translate(0%, -50%);
         border-top: 10rem solid transparent;
-        border-left: 1rem solid ${colors.lightGrey};
+        border-left: 1rem solid ${colors.greyLight};
         border-bottom: 10rem solid transparent;
         border-right: none;
       }
@@ -269,7 +269,7 @@ export const Table = styled.table<{
             color: inherit;
           `
         : css`
-            color: ${colors.darkGrey};
+            color: ${colors.greyDark};
           `}
   }
   tr {
@@ -472,7 +472,7 @@ export const RedeemLeftButton = styled.button`
   cursor: pointer;
   transition: all 150ms ease-in-out;
   &:hover {
-    background: ${colors.lightGrey};
+    background: ${colors.greyLight};
   }
 
   ${miniButton}
@@ -489,12 +489,12 @@ export const RaiseProblemButton = styled(Button)`
     padding: 0.75rem 1rem;
 
     font-weight: 600;
-    color: ${colors.accent};
+    color: ${colors.violet};
     cursor: pointer;
     transition: all 150ms ease-in-out;
     &:hover:not(:disabled) {
       color: ${colors.red};
-      background: ${colors.lightGrey};
+      background: ${colors.greyLight};
     }
     svg {
       margin-left: 1rem;
@@ -504,7 +504,7 @@ export const RaiseProblemButton = styled(Button)`
 export const StyledCancelButton = RaiseProblemButton;
 export const ContactSellerButton = styled(RaiseProblemButton)`
   && {
-    color: ${colors.secondary};
+    color: ${colors.violet};
   }
 `;
 

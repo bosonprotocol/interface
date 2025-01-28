@@ -121,7 +121,7 @@ const Bottom = styled.div<{ $isLeftAligned: boolean }>`
   align-items: center;
   * {
     color: ${({ $isLeftAligned }) =>
-      $isLeftAligned ? colors.lightGrey : colors.darkGrey};
+      $isLeftAligned ? colors.greyLight : colors.greyDark};
     font-size: 0.75rem;
   }
 `;

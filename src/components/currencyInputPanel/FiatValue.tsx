@@ -23,9 +23,9 @@ export function FiatValue({
     if (!priceImpact) return undefined;
     if (priceImpact.lessThan("0")) return colors.green;
     const severity = warningSeverity(priceImpact);
-    if (severity < 1) return colors.secondary;
+    if (severity < 1) return colors.violet;
     if (severity < 3) return "yellow";
-    return colors.darkRed;
+    return colors.redDark;
   }, [priceImpact]);
 
   if (fiatValue.isLoading) {
@@ -34,7 +34,7 @@ export function FiatValue({
 
   return (
     <Grid gap="1rem">
-      <Typography color={colors.secondary}>
+      <Typography color={colors.violet}>
         {fiatValue.data ? (
           formatNumber(fiatValue.data, NumberType.FiatTokenPrice)
         ) : (

@@ -1,3 +1,4 @@
+import { cssVars } from "@bosonprotocol/react-kit";
 import { createGlobalStyle } from "styled-components";
 
 import barlowRegular from "../../assets/fonts/Barlow-Regular.ttf";
@@ -47,21 +48,19 @@ const GlobalStyle = createGlobalStyle<{
     --headerTextColor: ${(props) =>
       props.$headerTextColor && !props.$withBosonStyles
         ? props.$headerTextColor
-        : colors.darkGrey};
+        : colors.greyDark};
     --primary: ${(props) =>
       props.$primaryBgColor && !props.$withBosonStyles
         ? props.$primaryBgColor
-        : colors.primary};
+        : colors.green};
     --secondary: ${(props) =>
       props.$secondaryBgColor && !props.$withBosonStyles
         ? props.$secondaryBgColor
-        : colors.lightGrey};
+        : colors.greyLight};
     --accent: ${(props) =>
       props.$accentColor && !props.$withBosonStyles
         ? props.$accentColor
-        : colors.accent};
-    --accentNoDefault : ${(props) =>
-      props.$accentColor && !props.$withBosonStyles ? props.$accentColor : ""};
+        : colors.violet};
     --accentDark: ${(props) =>
       props.$accentColor && !props.$withBosonStyles
         ? props.$accentColor
@@ -73,11 +72,11 @@ const GlobalStyle = createGlobalStyle<{
     --primaryBgColor: ${(props) =>
       props.$primaryBgColor && !props.$withBosonStyles
         ? props.$primaryBgColor
-        : colors.primaryBgColor};
+        : colors.white};
     --secondaryBgColor: ${(props) =>
       props.$secondaryBgColor && !props.$withBosonStyles
         ? props.$secondaryBgColor
-        : colors.secondary};
+        : colors.violet};
     --footerBgColor: ${(props) =>
       props.$footerBgColor && !props.$withBosonStyles
         ? props.$footerBgColor
@@ -89,7 +88,7 @@ const GlobalStyle = createGlobalStyle<{
     --buttonBgColor: ${(props) =>
       props.$buttonBgColor && !props.$withBosonStyles
         ? props.$buttonBgColor
-        : colors.primary};
+        : colors.green};
     --buttonTextColor: ${(props) =>
       props.$buttonTextColor && !props.$withBosonStyles
         ? props.$buttonTextColor
@@ -102,6 +101,8 @@ const GlobalStyle = createGlobalStyle<{
       props.$lowerCardBgColor && !props.$withBosonStyles
         ? props.$lowerCardBgColor
         : colors.white};
+
+    ${cssVars};
 
     font-size: 0.75rem;
     ${breakpoint.xs} {

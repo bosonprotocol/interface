@@ -11,7 +11,7 @@ export const Divider = styled.div`
   height: 1px;
   border-width: 0;
   margin: 0;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
 `;
 
 export const Separator = styled.div`

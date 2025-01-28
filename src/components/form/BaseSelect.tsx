@@ -13,12 +13,12 @@ const customStyles = (error: any) => ({
     padding: "0.4rem 0.25rem",
     boxShadow: "none",
     ":hover": {
-      borderColor: colors.secondary,
+      borderColor: colors.violet,
       borderWidth: "1px"
     },
-    background: colors.lightGrey,
+    background: colors.greyLight,
     border: state.isFocused
-      ? `1px solid ${colors.secondary}`
+      ? `1px solid ${colors.violet}`
       : !checkIfValueIsEmpty(error)
         ? `1px solid ${colors.orange}`
         : `1px solid ${colors.border}`
@@ -35,12 +35,10 @@ const customStyles = (error: any) => ({
     opacity: state.isDisabled ? "0.5" : "1",
     background:
       state.isOptionSelected || state.isSelected || state.isFocused
-        ? colors.lightGrey
+        ? colors.greyLight
         : colors.white,
     color:
-      state.isOptionSelected || state.isSelected
-        ? colors.secondary
-        : colors.black
+      state.isOptionSelected || state.isSelected ? colors.violet : colors.black
   }),
   indicatorsContainer: () => ({
     display: "none"

@@ -8,7 +8,7 @@ import { Congratulations, CongratulationsProps } from "./Congratulations";
 type CongratulationsPageProps = CongratulationsProps;
 
 const Background = styled.div`
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   width: 100vw;
   transform: translate(-50%);
   margin-left: 50%;

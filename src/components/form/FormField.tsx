@@ -41,7 +41,7 @@ export default function FormField({
           {valueToCopy && (
             <Copy
               size={24}
-              color={colors.secondary}
+              color={colors.violet}
               style={{ cursor: "pointer" }}
               weight="light"
               onClick={() => {

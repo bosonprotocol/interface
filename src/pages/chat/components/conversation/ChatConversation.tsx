@@ -119,7 +119,7 @@ const SimpleMessage = styled.p`
   width: 100%;
   height: 100%;
   padding: 1rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
 `;
 
 const GridHeader = styled.div`
@@ -142,7 +142,7 @@ const HeaderButton = styled.button`
   background: none;
   padding: none;
   border: none;
-  color: ${colors.secondary};
+  color: ${colors.violet};
   z-index: ${zIndex.LandingTitle};
 `;
 
@@ -151,7 +151,7 @@ const NavigationMobile = styled.div`
   align-items: flex-end;
   justify-content: space-between;
   svg {
-    color: ${colors.secondary};
+    color: ${colors.violet};
     margin-right: 0.438rem;
     margin-bottom: -0.1875rem;
   }

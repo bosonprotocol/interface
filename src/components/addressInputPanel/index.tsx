@@ -14,7 +14,7 @@ const InputPanel = styled.div`
   ${flexColumnNoWrap};
   position: relative;
   border-radius: 1.25rem;
-  background-color: ${colors.darkGrey};
+  background-color: ${colors.greyDark};
   z-index: 1;
   width: 100%;
 `;
@@ -30,7 +30,7 @@ const ContainerRow = styled.div<{ error: boolean }>`
   transition:
     border-color 300ms ${({ error }) => (error ? "step-end" : "step-start")},
     color 500ms ${({ error }) => (error ? "step-end" : "step-start")};
-  background-color: ${colors.darkGrey};
+  background-color: ${colors.greyDark};
 `;
 
 const InputContainer = styled.div`
@@ -44,7 +44,7 @@ const Input = styled.input<{ error?: boolean }>`
   border: none;
   flex: 1 1 auto;
   width: 0;
-  background-color: ${colors.darkGrey};
+  background-color: ${colors.greyDark};
   transition: color 300ms ${({ error }) => (error ? "step-end" : "step-start")};
   color: ${({ error, theme }) =>
     error ? theme.accentFailure : theme.textPrimary};
@@ -111,7 +111,7 @@ export default function AddressInputPanel({
           <AutoColumn $gap="md">
             <Grid>
               <Typography
-                color={colors.lightGrey}
+                color={colors.greyLight}
                 fontWeight={500}
                 fontSize={14}
               >

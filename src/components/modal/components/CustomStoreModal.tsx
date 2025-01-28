@@ -41,7 +41,7 @@ import { Channels } from "./SalesChannelsModal/form";
 
 const CopyIcon = styled(CopySimple)`
   cursor: pointer;
-  color: ${colors.secondary};
+  color: ${colors.violet};
 `;
 
 const Heading = styled(Typography).attrs({
@@ -54,14 +54,14 @@ const Heading = styled(Typography).attrs({
 const marginBetweenContainers = `1.875rem`;
 const CollapsibleContainer = styled.div`
   margin-top: ${marginBetweenContainers};
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   padding: 1.5rem;
 `;
 
 const StyledTooltip = styled.div`
   background: ${colors.white};
   padding: 1rem;
-  border: 1px solid ${colors.darkGrey};
+  border: 1px solid ${colors.greyDark};
   max-width: 20rem;
 `;
 
@@ -115,7 +115,7 @@ export function CustomStoreModal({
   return (
     <>
       <Typography
-        color={colors.darkGrey}
+        color={colors.greyDark}
         fontWeight="600"
         fontSize="1.25rem"
         lineHeight="1.875rem"

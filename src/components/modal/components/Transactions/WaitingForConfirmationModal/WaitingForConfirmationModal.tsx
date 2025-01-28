@@ -45,7 +45,7 @@ export default function WaitingForConfirmationModal({ action }: Props) {
         fontWeight="600"
         fontSize="1rem"
         lineHeight="150%"
-        color={colors.darkGrey}
+        color={colors.greyDark}
         margin="0.5rem 0 1.5rem 0"
       >
         {action}
@@ -54,7 +54,7 @@ export default function WaitingForConfirmationModal({ action }: Props) {
         fontWeight="400"
         fontSize="0.75rem"
         lineHeight="150%"
-        color={colors.darkGrey}
+        color={colors.greyDark}
       >
         Confirm this transaction into your wallet
       </Typography>

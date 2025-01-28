@@ -44,7 +44,7 @@ export const ProposalButtons: React.FC<ProposalButtonsProps> = ({
       {showText && (
         <Typography
           padding="1rem"
-          background={colors.lightGrey}
+          background={colors.greyLight}
           flexDirection="column"
           style={{ width: "100%", position: "relative" }}
         >

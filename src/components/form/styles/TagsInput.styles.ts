@@ -25,7 +25,7 @@ export const Helper = styled.div`
   }
 `;
 export const TagWrapper = styled.div`
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   display: inline-block;
   padding: 0.5em 0.75em;
   margin-top: 1rem;
@@ -35,7 +35,7 @@ export const TagWrapper = styled.div`
 `;
 
 export const Close = styled.span`
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   border-radius: 50%;
   display: inline-flex;
   justify-content: center;

@@ -1,10 +1,11 @@
+import { BosonThemeProvider } from "@bosonprotocol/react-kit";
 import { IconContext } from "phosphor-react";
 import { ThemeProvider } from "styled-components";
 
 import ModalProvider from "../../components/modal/ModalProvider";
 import { getCurrentViewMode, ViewMode } from "../../lib/viewMode";
 import ChatProvider from "../../pages/chat/ChatProvider/ChatProvider";
-import theme from "../../theme";
+import theme, { themeVars } from "../../theme";
 import CookieBanner from "../cookie/CookieBanner";
 import { AppView } from "./AppView";
 import { Container } from "./index.styles";
@@ -39,8 +40,11 @@ export default function App({
         }}
       >
         <ChatProvider>
-          <ModalProvider>
-            <>
+          <BosonThemeProvider
+            roundness={themeVars.roundness}
+            theme={themeVars.themeKey}
+          >
+            <ModalProvider>
               <Container>
                 <AppView
                   wrapper={Wrapper}
@@ -53,8 +57,8 @@ export default function App({
                 </AppView>
               </Container>
               <CookieBanner isDapp={getCurrentViewMode() === ViewMode.DAPP} />
-            </>
-          </ModalProvider>
+            </ModalProvider>
+          </BosonThemeProvider>
         </ChatProvider>
       </IconContext.Provider>
     </ThemeProvider>

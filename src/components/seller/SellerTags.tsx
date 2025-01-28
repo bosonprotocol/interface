@@ -19,7 +19,7 @@ const TagItem = styled.li<{ $active: boolean; $disabled?: boolean }>`
   border-bottom: ${(props) =>
     props.$active ? `1px solid ${colors.black}` : colors.black};
   color: ${(props) =>
-    props.$active ? `1px solid ${colors.black}` : colors.darkGrey};
+    props.$active ? `1px solid ${colors.black}` : colors.greyDark};
   padding: 1.125rem 1.5rem;
   display: flex;
   list-style-type: none;

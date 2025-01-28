@@ -1,19 +1,21 @@
 import "styled-components";
 
-import {
-  BaseTagsInputProps,
-  theme as bosonTheme
-} from "@bosonprotocol/react-kit";
+import { BaseTagsInputProps, getThemes } from "@bosonprotocol/react-kit";
 import { colors } from "lib/styles/colors";
-
-const theme = {
-  ...bosonTheme
-};
+export const themeVars = {
+  roundness: "min",
+  themeKey: "light"
+} as const;
+const theme = getThemes({ roundness: themeVars.roundness })[themeVars.themeKey];
 
 export const inputTheme = {
-  background: colors.lightGrey,
+  background: colors.greyLight,
   borderColor: colors.border,
   borderRadius: 0,
+  color: undefined,
+  placeholder: {
+    color: undefined
+  },
   focus: {
     caretColor: "initial"
   },

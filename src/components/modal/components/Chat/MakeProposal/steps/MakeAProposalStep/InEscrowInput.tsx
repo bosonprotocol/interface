@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border: 1px solid ${colors.border};
   padding: 0 0 0 0.5rem;
 

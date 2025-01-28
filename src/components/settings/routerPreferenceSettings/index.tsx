@@ -14,7 +14,7 @@ import { updateDisabledUniswapX } from "state/user/reducer";
 import styled from "styled-components";
 
 const InlineLink = styled(Typography)`
-  color: ${colors.secondary};
+  color: ${colors.violet};
   display: inline;
   cursor: pointer;
   &:hover {
@@ -71,7 +71,7 @@ export default function RouterPreferenceSettings() {
       <Grid gap="sm">
         <Grid>
           <Column gap="xs">
-            <Typography color={colors.darkGrey}>
+            <Typography color={colors.greyDark}>
               <>Local routing</>
             </Typography>
           </Column>

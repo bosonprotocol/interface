@@ -32,7 +32,7 @@ const TitleContainer = styled.div`
 const SubTitleContainer = styled.div`
   > p {
     font-size: 0.75rem;
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
     margin: 0 0 0.75rem 0;
   }
 `;

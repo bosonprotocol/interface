@@ -99,9 +99,9 @@ export const ArrowContainer = styled.div`
 `;
 
 const SwapSection = styled.div`
-  /* background-color: ${colors.darkGrey}; */
+  /* background-color: ${colors.greyDark}; */
   border-radius: 16px;
-  color: ${colors.lightGrey};
+  color: ${colors.greyLight};
   font-size: 0.875remå;
   font-weight: 500;
   height: 120px;
@@ -130,7 +130,7 @@ const SwapSection = styled.div`
   }
 
   &:focus-within:before {
-    /* border-color: ${opacify(24, colors.lightGrey)}; */
+    /* border-color: ${opacify(24, colors.greyLight)}; */
   }
 `;
 
@@ -774,7 +774,7 @@ export function Swap({
                   style={{ padding: "0 1rem" }}
                 >
                   <ArrowWrapper clickable={false}>
-                    <ArrowDown size="16" color={colors.lightGrey} />
+                    <ArrowDown size="16" color={colors.greyLight} />
                   </ArrowWrapper>
                   <Button
                     id="remove-recipient-button"

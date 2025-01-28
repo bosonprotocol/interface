@@ -284,7 +284,7 @@ function EscalateStepTwo({
                   <Typography
                     fontSize="1rem"
                     fontWeight="400"
-                    color={colors.darkGrey}
+                    color={colors.greyDark}
                   >
                     Click the button below to sign an arbitrary message with
                     your wallet. This will allow the dispute resolver to verify
@@ -330,7 +330,7 @@ function EscalateStepTwo({
                   <Typography
                     fontSize="1rem"
                     fontWeight="400"
-                    color={colors.darkGrey}
+                    color={colors.greyDark}
                   >
                     Email the dispute resolver by copying the below details and
                     attaching any evidence (e.g. Chat Transcript, Files, etc)
@@ -422,7 +422,7 @@ function EscalateStepTwo({
                   <Typography
                     fontSize="1rem"
                     fontWeight="400"
-                    color={colors.darkGrey}
+                    color={colors.greyDark}
                   >
                     Your Escalation deposit is {feeAmount} {""}
                     {exchange.offer.exchangeToken.symbol}. This dispute resolver

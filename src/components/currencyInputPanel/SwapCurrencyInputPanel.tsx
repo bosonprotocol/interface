@@ -63,7 +63,7 @@ const CurrencySelect = styled(Button)<{
   min-width: 175px;
   align-items: center;
   background-color: ${({ selected }) =>
-    selected ? colors.black : colors.secondary};
+    selected ? colors.black : colors.violet};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) =>
     selected ? "none" : "0px 6px 10px rgba(0, 0, 0, 0.075)"};
@@ -97,7 +97,7 @@ const CurrencySelect = styled(Button)<{
     &:hover,
     &:active {
       background-color: ${({ selected }) =>
-        selected ? colors.darkGrey : colors.secondary};
+        selected ? colors.greyDark : colors.violet};
       color: ${colors.white};
     }
 
@@ -115,11 +115,11 @@ const CurrencySelect = styled(Button)<{
     }
 
     &:hover:before {
-      background-color: ${opacify(8, colors.darkGrey)};
+      background-color: ${opacify(8, colors.greyDark)};
     }
 
     &:active:before {
-      background-color: ${opacify(24, colors.lightGrey)};
+      background-color: ${opacify(24, colors.greyLight)};
     }
   }
 
@@ -135,13 +135,13 @@ const InputRow = styled.div`
 const LabelRow = styled.div`
   ${flexRowNoWrap};
   align-items: center;
-  color: ${colors.lightGrey};
+  color: ${colors.greyLight};
   font-size: 0.75rem;
   line-height: 1rem;
 
   span:hover {
     cursor: pointer;
-    color: ${darken(0.2, colors.lightGrey)};
+    color: ${darken(0.2, colors.greyLight)};
   }
 `;
 
@@ -167,7 +167,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 
   path {
-    stroke: ${({ selected }) => (selected ? colors.primary : colors.white)};
+    stroke: ${({ selected }) => (selected ? colors.green : colors.white)};
     stroke-width: 2px;
   }
 `;
@@ -182,7 +182,7 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
 const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: transparent;
   border: none;
-  color: ${colors.secondary};
+  color: ${colors.violet};
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
@@ -285,7 +285,7 @@ export default function SwapCurrencyInputPanel({
         </FixedContainer>
       )}
       <Container hideInput={hideInput}>
-        <Typography color={colors.darkGrey}>{label}</Typography>
+        <Typography color={colors.greyDark}>{label}</Typography>
         <InputRow
           style={hideInput ? { padding: "0", borderRadius: "8px" } : {}}
         >

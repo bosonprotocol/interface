@@ -124,7 +124,7 @@ export default function RefundRequest({ exchange, iAmTheBuyer }: Props) {
           <div
             style={{
               width: "100%",
-              background: colors.lightGrey,
+              background: colors.greyLight,
               paddingRight: "1rem",
               display: "flex",
               justifyContent: "flex-end",

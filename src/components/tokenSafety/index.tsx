@@ -69,11 +69,11 @@ const StyledCancelButton = styled(Button)`
 `;
 
 const StyledCloseButton = styled(StyledButton)`
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   /* color: ${({ theme }) => theme.textPrimary}; */
 
   &:hover {
-    background-color: ${colors.lightGrey};
+    background-color: ${colors.greyLight};
     opacity: 0.6;
     transition: opacity 250ms ease;
   }

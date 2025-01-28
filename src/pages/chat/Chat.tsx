@@ -60,7 +60,7 @@ const SimpleMessage = styled.p`
   width: 100%;
   height: 100%;
   padding: 1rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
 `;
 
 export default function Chat() {

@@ -28,7 +28,7 @@ const Container = styled.button<{ disabled: boolean }>`
 
   &:hover {
     background-color: ${({ disabled }) =>
-      disabled ? "none" : colors.lightGrey};
+      disabled ? "none" : colors.greyLight};
   }
 `;
 
@@ -47,7 +47,7 @@ const Status = styled.div`
 `;
 
 const CaptionText = styled.div`
-  /* color: ${colors.lightGrey}; */
+  /* color: ${colors.greyLight}; */
   font-size: 0.75rem;
   grid-column: 2;
   grid-row: 2;
@@ -89,11 +89,7 @@ export default function ChainSelectorRow({
       {isPending && <CaptionText>Approve in wallet</CaptionText>}
       <Status>
         {active && (
-          <Check
-            width={LOGO_SIZE}
-            height={LOGO_SIZE}
-            color={colors.secondary}
-          />
+          <Check width={LOGO_SIZE} height={LOGO_SIZE} color={colors.violet} />
         )}
         {!active && isPending && (
           <Spinner width={LOGO_SIZE} height={LOGO_SIZE} />

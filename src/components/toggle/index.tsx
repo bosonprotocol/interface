@@ -5,10 +5,9 @@ import styled, { keyframes } from "styled-components";
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
   align-items: center;
-  background: ${({ isActive }) =>
-    isActive ? colors.secondary : "transparent"};
+  background: ${({ isActive }) => (isActive ? colors.violet : "transparent")};
   border: ${({ isActive }) =>
-    isActive ? "1px solid transparent" : `1px solid ${colors.darkGrey}`};
+    isActive ? "1px solid transparent" : `1px solid ${colors.greyDark}`};
   border-radius: 20px;
   cursor: pointer;
   display: flex;
@@ -46,8 +45,8 @@ const ToggleElementHoverStyle = (hasBgColor: boolean, isActive?: boolean) =>
       }
     : {
         background: isActive
-          ? lighten(0.15, colors.secondary)
-          : darken(0.05, colors.lightGrey),
+          ? lighten(0.15, colors.violet)
+          : darken(0.05, colors.greyLight),
         color: isActive ? colors.white : colors.black
       };
 
@@ -62,10 +61,10 @@ const ToggleElement = styled.span<{
     ease-in;
   background: ${({ bgColor, isActive }) =>
     isActive
-      ? bgColor ?? lighten(0.09, colors.secondary)
+      ? bgColor ?? lighten(0.09, colors.violet)
       : bgColor
-        ? colors.lightGrey
-        : colors.darkGrey};
+        ? colors.greyLight
+        : colors.greyDark};
   border-radius: 50%;
   height: 24px;
   &:hover {

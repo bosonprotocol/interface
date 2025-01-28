@@ -173,7 +173,7 @@ export default function DisputesTable({ disputes }: Props) {
               {emailAddress && (
                 <BosonButton
                   type="button"
-                  variant="accentInvertedNoBorder"
+                  variant="accentInverted"
                   size="small"
                   style={{
                     whiteSpace: "pre"
@@ -405,12 +405,10 @@ export default function DisputesTable({ disputes }: Props) {
                   themeVal="blank"
                   style={{
                     color:
-                      pageNumber === pageIndex
-                        ? colors.secondary
-                        : colors.black,
+                      pageNumber === pageIndex ? colors.violet : colors.black,
                     background:
                       pageNumber === pageIndex
-                        ? colors.lightGrey
+                        ? colors.greyLight
                         : "transparent"
                   }}
                   onClick={() => gotoPage(pageNumber)}

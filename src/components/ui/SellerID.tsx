@@ -41,7 +41,7 @@ const SellerInfo = styled.div<{ $withBosonStyles?: boolean }>`
   ${({ $withBosonStyles }) =>
     $withBosonStyles
       ? css`
-          color: ${colors.secondary};
+          color: ${colors.violet};
           font-family: ${defaultFontFamily};
         `
       : css`

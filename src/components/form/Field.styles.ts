@@ -17,7 +17,7 @@ export const FieldInput = styled.input<{ error?: any }>`
   padding: 1rem;
   gap: 0.5rem;
 
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border: 1px solid ${colors.border};
   border-radius: 0;
   outline: none;
@@ -101,7 +101,7 @@ export const FileUploadWrapper = styled.div<{ $error: unknown }>`
     }
   }
 
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border-radius: 0;
   outline: none;
 
@@ -118,7 +118,7 @@ export const FileUploadWrapper = styled.div<{ $error: unknown }>`
 
   &:focus,
   &:hover {
-    border: 1px solid ${colors.lightGrey};
+    border: 1px solid ${colors.greyLight};
   }
 
   /* prettier-ignore */
@@ -172,7 +172,7 @@ export const FieldTextArea = styled.textarea<{ error: unknown }>`
   gap: 0.5rem;
   font-family: ${defaultFontFamily};
 
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border: 1px solid ${colors.border};
   border-radius: 0;
   outline: none;
@@ -257,7 +257,7 @@ export const FormFieldWrapper = styled(Grid)`
     margin: 0;
     font-weight: 400;
     font-size: 0.75rem;
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
   }
 `;
 
@@ -277,7 +277,7 @@ export const CheckboxWrapper = styled.label<{ error?: unknown }>`
       + div {
         cursor: pointer;
         &:hover {
-          border: 1px solid ${colors.secondary};
+          border: 1px solid ${colors.violet};
           svg {
             opacity: 0.25;
           }
@@ -297,7 +297,7 @@ export const CheckboxWrapper = styled.label<{ error?: unknown }>`
     width: 1.5rem;
     height: 1.5rem;
 
-    background: ${colors.lightGrey};
+    background: ${colors.greyLight};
 
     margin-right: 0.5rem;
   }
@@ -330,11 +330,11 @@ export const CheckboxWrapper = styled.label<{ error?: unknown }>`
 `;
 
 export const VideoPreview = styled.video`
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   height: 100%;
   width: 100%;
   object-fit: contain;
 `;
 export const ImagePreview = styled.img`
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
 `;

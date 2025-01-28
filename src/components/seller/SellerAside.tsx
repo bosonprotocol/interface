@@ -92,7 +92,7 @@ const AsideLink = styled.li<{ $active?: boolean }>`
     color: ${colors.black};
   }
   svg:first-child {
-    fill: ${(props) => (props.$active ? colors.secondary : colors.black)};
+    fill: ${(props) => (props.$active ? colors.violet : colors.black)};
     width: 1.5rem;
     height: 1.5rem;
   }
@@ -183,7 +183,7 @@ export default function SellerAside(
                     <Icon
                       size={16}
                       weight={isActive ? "regular" : "thin"}
-                      color={isActive ? colors.black : colors.darkGrey}
+                      color={isActive ? colors.black : colors.greyDark}
                     />
                     {collapsed && showWarning && (
                       <WarningCircle size={16} color={colors.orange} />

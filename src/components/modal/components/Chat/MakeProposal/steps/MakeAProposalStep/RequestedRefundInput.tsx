@@ -14,7 +14,7 @@ import { FormModel } from "../../MakeProposalFormModel";
 
 const RefundAmountWrapper = styled.div`
   width: 100%;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border: 1px solid ${colors.border};
 
   [data-currency] {

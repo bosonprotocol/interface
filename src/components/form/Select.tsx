@@ -33,7 +33,7 @@ const customStyles = (
   singleValue: (provided: any, state: any) => {
     return {
       ...provided,
-      color: state.isDisabled ? colors.darkGrey : textColor,
+      color: state.isDisabled ? colors.greyDark : textColor,
       fontSize: "13.33px"
     };
   },
@@ -54,12 +54,12 @@ const customStyles = (
       padding: "0.4rem 0.25rem",
       boxShadow: "none",
       ":hover": {
-        borderColor: colors.secondary,
+        borderColor: colors.violet,
         borderWidth: "1px"
       },
       background: backgroundColor,
       border: state.isFocused
-        ? `1px solid ${colors.secondary}`
+        ? `1px solid ${colors.violet}`
         : !checkIfValueIsEmpty(error)
           ? `1px solid ${colors.orange}`
           : `1px solid ${colors.border}`,
@@ -80,12 +80,10 @@ const customStyles = (
     opacity: state.isDisabled ? "0.5" : "1",
     background:
       state.isOptionSelected || state.isSelected || state.isFocused
-        ? colors.lightGrey
+        ? colors.greyLight
         : colors.white,
     color:
-      state.isOptionSelected || state.isSelected
-        ? colors.secondary
-        : colors.black
+      state.isOptionSelected || state.isSelected ? colors.violet : colors.black
   }),
   indicatorSeparator: () => ({
     display: "none"
@@ -112,10 +110,10 @@ const customStyles = (
 });
 
 const useSelectColors = () => {
-  const backgroundColor = colors.lightGrey;
+  const backgroundColor = colors.greyLight;
   const textColor = getColor1OverColor2WithContrast({
     color2: backgroundColor,
-    color1: useCSSVariable("--buttonTextColor") || colors.darkGrey
+    color1: useCSSVariable("--buttonTextColor") || colors.greyDark
   });
   return {
     backgroundColor,

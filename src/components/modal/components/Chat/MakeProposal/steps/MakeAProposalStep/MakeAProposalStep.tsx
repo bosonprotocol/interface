@@ -70,7 +70,7 @@ export default function MakeAProposalStep({
       <Typography fontSize="2rem" fontWeight="600">
         Make a {proposalOrCounterProposal}
       </Typography>
-      <Typography fontSize="1.25rem" color={colors.darkGrey}>
+      <Typography fontSize="1.25rem" color={colors.greyDark}>
         Here you can make a {proposalOrCounterProposal} to the{" "}
         {counterPartyText} on how you would like the issue to be resolved. Note
         that this proposal is binding and if the &nbsp;{counterPartyText} agrees

@@ -13,12 +13,12 @@ import { Typography } from "../ui/Typography";
 const FormButton = styled.button`
   border: none;
   background: none;
-  color: ${colors.secondary};
+  color: ${colors.violet};
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  border-bottom: 1px solid ${colors.lightGrey};
+  border-bottom: 1px solid ${colors.greyLight};
   padding: 0;
   font-size: 1rem;
   font-family: ${defaultFontFamily};
@@ -59,7 +59,7 @@ function TellUsMore({
         <Typography fontWeight="600" fontSize="2rem">
           Tell us more about your problem
         </Typography>
-        <Typography fontSize="1.25rem" color={colors.darkGrey}>
+        <Typography fontSize="1.25rem" color={colors.greyDark}>
           Choose from one of the problems listed below
         </Typography>
       </Grid>

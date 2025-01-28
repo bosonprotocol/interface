@@ -196,7 +196,7 @@ export default function HeaderLinks({
       $navigationBarPosition={navigationBarPosition}
       $hoverHeaderTextColor={getColor1OverColor2WithContrast({
         color2: useCSSVariable("--headerBgColor") || colors.white,
-        color1: useCSSVariable("--headerTextColor") || colors.darkGrey
+        color1: useCSSVariable("--headerTextColor") || colors.greyDark
       })}
     >
       {withSearch && (

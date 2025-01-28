@@ -24,7 +24,7 @@ const Statuses = styled.div`
       &[data-testid="voided-status"] {
         &:before {
           background: transparent;
-          box-shadow: inset 0px 0px 0px 2px ${colors.darkGrey};
+          box-shadow: inset 0px 0px 0px 2px ${colors.greyDark};
         }
       }
       padding-left: 1.5rem;
@@ -36,7 +36,7 @@ const Statuses = styled.div`
         transform: translate(0.25rem, -50%);
         width: 0.5rem;
         height: 0.5rem;
-        background: ${colors.darkGrey};
+        background: ${colors.greyDark};
         opacity: 0.6;
         border-radius: 50%;
       }
@@ -124,7 +124,7 @@ const StatusToComponent = (
     return {
       [subgraph.ExchangeState.CANCELLED]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={colors.red}
           $size={size}
           style={style}
@@ -136,7 +136,7 @@ const StatusToComponent = (
       ),
       [subgraph.ExchangeState.COMMITTED]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={colors.green}
           $size={size}
           style={style}
@@ -148,8 +148,8 @@ const StatusToComponent = (
       ),
       [subgraph.ExchangeState.COMPLETED]: (
         <Status
-          $color={colors.darkGrey}
-          $background={colors.lightGrey}
+          $color={colors.greyDark}
+          $background={colors.greyLight}
           $size={size}
           style={style}
           className="status"
@@ -160,7 +160,7 @@ const StatusToComponent = (
       ),
       [subgraph.ExchangeState.DISPUTED]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={colors.torquise}
           $size={size}
           style={style}
@@ -172,7 +172,7 @@ const StatusToComponent = (
       ),
       [subgraph.ExchangeState.REVOKED]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={colors.blue}
           $size={size}
           style={style}
@@ -184,7 +184,7 @@ const StatusToComponent = (
       ),
       [subgraph.ExchangeState.REDEEMED]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={colors.lime}
           $size={size}
           style={style}
@@ -196,7 +196,7 @@ const StatusToComponent = (
       ),
       [exchanges.ExtendedExchangeState.Expired]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={colors.red}
           $size={size}
           style={style}
@@ -208,8 +208,8 @@ const StatusToComponent = (
       ),
       [exchanges.ExtendedExchangeState.NotRedeemableYet]: (
         <Status
-          $color={colors.darkGrey}
-          $background={colors.darkOrange}
+          $color={colors.greyDark}
+          $background={colors.orangeDark}
           $size={size}
           style={style}
           className="status"

@@ -83,7 +83,7 @@ const ItemWidget = styled.div``;
 
 const DisputeContainer = styled(Grid)`
   height: 100%;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
 `;
 
 const GetStartedBox = styled.div<{ isLteS: boolean }>`
@@ -213,9 +213,7 @@ function RaiseDisputePage() {
           <Grid alignItems="center" style={{ flex: "1 1 0" }}>
             <ArrowLeft
               size={32}
-              color={
-                currentStep === 0 ? colors.lightArrowColor : colors.darkGrey
-              }
+              color={currentStep === 0 ? colors.greyLight2 : colors.greyDark}
               onClick={() => {
                 goToViewMode(
                   ViewMode.DAPP,

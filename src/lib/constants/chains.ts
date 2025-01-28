@@ -6,13 +6,14 @@ import { envChainIds } from "lib/config";
 
 export const LocalChainId = 31337;
 export const ChainId_POLYGON_AMOY = 80002;
+export const ChainId_BASE_SEPOLIA = 84532;
 
 export const UniWalletSupportedChains = [
   ChainId.MAINNET,
   // ChainId.ARBITRUM_ONE,
   // ChainId.OPTIMISM,
-  ChainId.POLYGON
-  // ChainId.BASE
+  ChainId.POLYGON,
+  ChainId.BASE
 ];
 
 export const CHAIN_IDS_TO_NAMES = {
@@ -21,7 +22,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.SEPOLIA]: "sepolia",
   [ChainId.POLYGON]: "polygon",
   [ChainId.POLYGON_MUMBAI]: "polygon_mumbai",
-  80002: "polygon_amoy",
+  [ChainId_POLYGON_AMOY]: "polygon_amoy",
   [ChainId.CELO]: "celo",
   [ChainId.CELO_ALFAJORES]: "celo_alfajores",
   [ChainId.ARBITRUM_ONE]: "arbitrum",
@@ -32,6 +33,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.AVALANCHE]: "avalanche",
   [ChainId.BASE]: "base",
   [ChainId.BASE_GOERLI]: "base_goerli",
+  [ChainId_BASE_SEPOLIA]: "base_sepolia",
   [LocalChainId]: "local"
 } as const;
 
@@ -41,7 +43,7 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
   [ChainId.SEPOLIA]: "Sepolia",
   [ChainId.POLYGON]: "Polygon",
   [ChainId.POLYGON_MUMBAI]: "Polygon Mumbai",
-  80002: "Polygon Amoy",
+  [ChainId_POLYGON_AMOY]: "Polygon Amoy",
   [ChainId.CELO]: "Celo",
   [ChainId.CELO_ALFAJORES]: "Celo Alfajores",
   [ChainId.ARBITRUM_ONE]: "Arbitrum",
@@ -52,12 +54,14 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
   [ChainId.AVALANCHE]: "Avalanche",
   [ChainId.BASE]: "Base",
   [ChainId.BASE_GOERLI]: "Base Goerli",
+  [ChainId_BASE_SEPOLIA]: "Base Sepolia",
   [LocalChainId]: "Local Hardhat"
 } as const;
 
 const SUPPORTED_CHAINS = [
   LocalChainId,
   ChainId_POLYGON_AMOY,
+  ChainId_BASE_SEPOLIA,
   ..._SUPPORTED_CHAINS
 ] as const;
 export declare type SupportedChainsType = (typeof SUPPORTED_CHAINS)[number];
@@ -97,13 +101,13 @@ export function asSupportedChain(
 
 export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   ChainId.MAINNET,
-  ChainId.POLYGON
+  ChainId.POLYGON,
   // ChainId.CELO,
   // ChainId.OPTIMISM,
   // ChainId.ARBITRUM_ONE
   // ChainId.BNB,
   // ChainId.AVALANCHE,
-  // ChainId.BASE
+  ChainId.BASE
 ] as const;
 
 export const TESTNET_CHAIN_IDS = [
@@ -111,6 +115,7 @@ export const TESTNET_CHAIN_IDS = [
   ChainId.SEPOLIA,
   ChainId.POLYGON_MUMBAI,
   ChainId_POLYGON_AMOY,
+  ChainId_BASE_SEPOLIA,
   LocalChainId
   // ChainId.ARBITRUM_GOERLI,
   // ChainId.OPTIMISM_GOERLI,
@@ -123,8 +128,8 @@ export const TESTNET_CHAIN_IDS = [
  */
 export const L1_CHAIN_IDS = [
   ChainId.MAINNET,
-  ChainId.GOERLI,
-  // ChainId.SEPOLIA,
+  // ChainId.GOERLI,
+  ChainId.SEPOLIA,
   ChainId.POLYGON,
   ChainId.POLYGON_MUMBAI,
   ChainId_POLYGON_AMOY,
@@ -146,7 +151,8 @@ export const L2_CHAIN_IDS = [
   // ChainId.ARBITRUM_GOERLI,
   // ChainId.OPTIMISM,
   // ChainId.OPTIMISM_GOERLI
-  // ChainId.BASE,
+  ChainId.BASE,
+  ChainId_BASE_SEPOLIA
   // ChainId.BASE_GOERLI
 ] as const;
 
@@ -166,6 +172,8 @@ export function getChainPriority(chainId: number): number {
     case ChainId.POLYGON:
     case ChainId.POLYGON_MUMBAI:
     case ChainId_POLYGON_AMOY:
+    case ChainId.BASE:
+    case ChainId_BASE_SEPOLIA:
       return 1;
     // case ChainId.ARBITRUM_ONE:
     // case ChainId.ARBITRUM_GOERLI:

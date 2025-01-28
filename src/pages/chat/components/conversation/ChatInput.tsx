@@ -49,7 +49,7 @@ const InputWrapper = styled.div`
 const Input = styled.div`
   width: 100%;
   font-size: 1rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   height: max-content;
   font-family: ${defaultFontFamily};
   font-style: normal;

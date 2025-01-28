@@ -32,7 +32,7 @@ function currencyKey(currency: Currency): string {
   } */
 const StyledFixedSizeList = styled(FixedSizeList)`
   scrollbar-width: thin;
-  scrollbar-color: ${colors.darkGrey} transparent;
+  scrollbar-color: ${colors.greyDark} transparent;
   height: 100%;
 `;
 
@@ -40,7 +40,7 @@ const CheckIcon = styled(Check)`
   height: 20px;
   width: 20px;
   margin-left: 4px;
-  color: ${colors.secondary};
+  color: ${colors.violet};
 `;
 
 const StyledBalanceText = styled(Typography)`
@@ -59,7 +59,7 @@ const CurrencyName = styled(Typography)`
 
 const Tag = styled.div`
   background-color: ${({ theme }) => theme.deprecated_bg3};
-  color: ${colors.lightGrey};
+  color: ${colors.greyLight};
   font-size: 0.875rem;
   border-radius: 4px;
   padding: 0.25rem 0.3rem 0.25rem 0.3rem;

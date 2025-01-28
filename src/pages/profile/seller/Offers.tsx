@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import OfferList from "../../../components/offers/OfferList";
 import { Profile } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { ExtendedSeller } from "../../explore/WithAllOffers";
-import { Action } from "./const";
 
 interface Props {
   products: ExtendedSeller;
@@ -11,7 +10,6 @@ interface Props {
     sellerId: string;
     lensProfile?: Profile;
   };
-  action: Action;
   showInvalidOffers: boolean;
   isPrivateProfile: boolean;
   isLoading: boolean;
@@ -19,7 +17,6 @@ interface Props {
 
 export default function Offers({
   products,
-  action,
   showInvalidOffers,
   isPrivateProfile,
   isLoading,
@@ -36,7 +33,6 @@ export default function Offers({
       offers={allOffers}
       isError={false}
       showSeller={false}
-      action={action}
       showInvalidOffers={showInvalidOffers}
       isPrivateProfile={isPrivateProfile}
       itemsPerRow={{

@@ -47,12 +47,12 @@ const DottedLine = styled.div`
 
 const DotColor = styled(DotLine)`
   path {
-    stroke: ${colors.lightGrey};
+    stroke: ${colors.greyLight};
   }
 `;
 // styled(Badge);
 const OpaqueBadge = styled.div`
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   border-radius: 8px;
   display: grid;
   font-size: 0.75rem;
@@ -65,7 +65,7 @@ const OpaqueBadge = styled.div`
 
 const ProtocolBadge = styled.div`
   border-radius: 4px;
-  color: ${colors.lightGrey};
+  color: ${colors.greyLight};
   font-size: 0.625rem;
   padding: 2px 4px;
   /* z-index: {Z_INDEX.sticky + 1}; */

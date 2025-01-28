@@ -56,8 +56,8 @@ const ProductCardWrapper = styled.div<{
     background: transparent;
     box-shadow: none;
     &:hover {
-      box-shadow: 0 0 0 2px ${colors.lightGrey};
-      filter: drop-shadow(0 0 2px ${colors.lightGrey});
+      box-shadow: 0 0 0 2px ${colors.greyLight};
+      filter: drop-shadow(0 0 2px ${colors.greyLight});
       border-radius: 4px;
     }
     ${({ $isLowerCardBgColorDefined, $bottomCardTextColor }) => {
@@ -221,13 +221,16 @@ export default function ProductCard({
     (useLens ? lensProfile?.name : metadata?.name) ?? metadata?.name ?? "";
   const lowerCardBgColor = useCustomStoreQueryParameter("lowerCardBgColor");
   const isLowerCardBgColorDefined = !!lowerCardBgColor;
+  const bottomCardTextColor2 =
+    useCSSVariable("--lowerCardBgColor") || colors.white;
   const bottomCardTextColor = getColor1OverColor2WithContrast({
-    color2: useCSSVariable("--lowerCardBgColor") || colors.white,
-    color1: useCSSVariable("--textColor") || colors.darkGrey
+    color2: bottomCardTextColor2,
+    color1: useCSSVariable("--textColor") || colors.greyDark
   });
+  const avatarTextColor2 = useCSSVariable("--lowerCardBgColor") || colors.white;
   const avatarTextColor = getColor1OverColor2WithContrast({
-    color2: useCSSVariable("--lowerCardBgColor") || colors.white,
-    color1: colors.accent,
+    color2: avatarTextColor2,
+    color1: colors.violet,
     contrastThreshold: 4
   });
   const isPhygital = isBundle(offer);
@@ -246,11 +249,9 @@ export default function ProductCard({
       <BosonProductCard
         dataCard="product-card"
         dataTestId={dataTestId}
-        productId={offer?.id}
         onCardClick={handleOnCardClick}
         title={offer?.metadata?.name ?? ""}
         avatarName={name ? name : `Seller ID: ${offer.seller.id}`}
-        avatar={avatarObj.avatarUrl || fallbackSellerAvatarUrl || mockedAvatar}
         onAvatarError={() => {
           // to avoid infinite loop
           if (avatarObj.status === "lens" && avatarDifferentIpfsGateway) {

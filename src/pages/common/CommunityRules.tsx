@@ -8,7 +8,7 @@ import { colors } from "../../lib/styles/colors";
 
 const Wrapper = styled(Grid)`
   a {
-    color: ${colors.secondary};
+    color: ${colors.violet};
     text-decoration: none;
     transition: all 150ms ease-in-out;
     &:hover {
@@ -70,7 +70,7 @@ const Title = styled.h1`
   display: inline-block;
   text-align: center;
 
-  color: ${colors.secondary};
+  color: ${colors.violet};
   margin: 4rem 0 1rem 0;
   font-weight: 800;
 `;

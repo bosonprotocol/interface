@@ -4,18 +4,17 @@ import { colors } from "./colors";
 
 export const PreventCustomStoreStyles = styled.div`
   --headerBgColor: ${colors.white};
-  --headerTextColor: ${colors.darkGrey};
-  --primary: ${colors.primary};
-  --secondary: ${colors.lightGrey};
-  --accent: ${colors.accent};
-  --accentNoDefault: initial;
+  --headerTextColor: ${colors.greyDark};
+  --primary: ${colors.green};
+  --secondary: ${colors.greyLight};
+  --accent: ${colors.violet};
   --accentDark: ${colors.arsenic};
   --textColor: ${colors.black};
-  --primaryBgColor: ${colors.primaryBgColor};
-  --secondaryBgColor: ${colors.secondary};
+  --primaryBgColor: ${colors.white};
+  --secondaryBgColor: ${colors.violet};
   --footerBgColor: ${colors.black};
   --footerTextColor: ${colors.white};
-  --buttonBgColor: ${colors.primary};
+  --buttonBgColor: ${colors.green};
   --buttonTextColor: ${colors.black};
   --upperCardBgColor: ${colors.white};
   --lowerCardBgColor: ${colors.white};

@@ -376,7 +376,7 @@ export const HeaderComponent = forwardRef<HTMLElement, Props>(
                   </LinkWithQuery>
                   {isSideCrossVisible && (
                     <X
-                      color={colors.secondary}
+                      color={colors.violet}
                       onClick={toggleMenu}
                       style={{
                         cursor: "pointer",

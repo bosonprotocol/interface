@@ -42,7 +42,7 @@ export const DaysLeftToResolve: React.FC<DaysLeftToResolveProps> = ({
       {showText && (
         <Typography
           padding="1rem"
-          background={colors.lightGrey}
+          background={colors.greyLight}
           flexDirection="column"
           style={{ width: "100%", position: "relative" }}
         >

@@ -42,7 +42,7 @@ const IconContainerWithSlippage = styled(IconContainer)<{
 }>`
   /* TODO: div {
     color: ${({ theme, displayWarning }) =>
-    displayWarning ? theme.accentWarning : colors.lightGrey};
+    displayWarning ? theme.accentWarning : colors.greyLight};
   }
 
   background-color: ${({ theme, displayWarning }) =>

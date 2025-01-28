@@ -88,7 +88,7 @@ const ExploreProductsButton = styled(BosonButton)`
 `;
 
 const LandingContainer = styled.div`
-  border: 2px solid ${colors.lightGrey};
+  border: 2px solid ${colors.greyLight};
   border-radius: 0.5rem;
   background-color: ${colors.white};
   margin-bottom: 3.813rem;

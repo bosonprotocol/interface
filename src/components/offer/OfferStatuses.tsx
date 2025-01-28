@@ -23,7 +23,7 @@ const Statuses = styled.div`
       &[data-testid="voided-status"] {
         &:before {
           background: transparent;
-          box-shadow: inset 0px 0px 0px 2px ${colors.darkGrey};
+          box-shadow: inset 0px 0px 0px 2px ${colors.greyDark};
         }
       }
       padding-left: 1.5rem;
@@ -35,7 +35,7 @@ const Statuses = styled.div`
         transform: translate(0.25rem, -50%);
         width: 0.5rem;
         height: 0.5rem;
-        background: ${colors.darkGrey};
+        background: ${colors.greyDark};
         opacity: 0.6;
         border-radius: 50%;
       }
@@ -101,7 +101,7 @@ const StatusToComponent = (
     ({
       [offers.OfferState.EXPIRED]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={`${colors.red}`}
           $size={size}
           style={style}
@@ -113,8 +113,8 @@ const StatusToComponent = (
       ),
       [offers.OfferState.VOIDED]: (
         <Status
-          $color={colors.darkGrey}
-          $background={`${colors.darkGrey}`}
+          $color={colors.greyDark}
+          $background={`${colors.greyDark}`}
           $size={size}
           style={style}
           className="status"
@@ -125,7 +125,7 @@ const StatusToComponent = (
       ),
       [offers.OfferState.NOT_YET_VALID]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={`${colors.orange}`}
           $size={size}
           style={style}
@@ -137,7 +137,7 @@ const StatusToComponent = (
       ),
       [offers.OfferState.VALID]: (
         <Status
-          $color={colors.darkGrey}
+          $color={colors.greyDark}
           $background={`${colors.lime}`}
           $size={size}
           style={style}

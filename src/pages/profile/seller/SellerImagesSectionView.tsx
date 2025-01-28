@@ -78,7 +78,7 @@ export const SellerImagesSectionView: React.FC<SellerImagesSectionProps> = ({
       <StyledBannerImage
         src={coverImageUrl || whiteImg}
         data-cover-img
-        style={{ border: `1px solid ${colors.lightGrey}` }}
+        style={{ border: `1px solid ${colors.greyLight}` }}
         $objectFit={metadataCoverImage?.fit}
         $objectPosition={metadataCoverImage?.position}
       />

@@ -54,7 +54,7 @@ const customStyles: StylesConfig<
     borderRadius: 0,
     boxShadow: "none",
     ":hover": {
-      borderColor: colors.secondary,
+      borderColor: colors.violet,
       borderWidth: "0"
     },
     background: "none",
@@ -82,8 +82,8 @@ const customStyles: StylesConfig<
     cursor: state.isDisabled ? "not-allowed" : "pointer",
     opacity: state.isDisabled ? "0.5" : "1",
     background:
-      state.isSelected || state.isFocused ? colors.lightGrey : colors.white,
-    color: state.isSelected ? colors.secondary : colors.black
+      state.isSelected || state.isFocused ? colors.greyLight : colors.white,
+    color: state.isSelected ? colors.violet : colors.black
   }),
   indicatorSeparator: () => ({
     display: "none"

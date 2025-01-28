@@ -7,6 +7,7 @@ import { BosonRoutes } from "lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { VariantV1 } from "pages/products/types";
 import React, { ReactNode } from "react";
+import { themeVars } from "theme";
 
 import { useCurationLists } from "../../../lib/utils/hooks/useCurationLists";
 
@@ -28,6 +29,7 @@ export const BasicCommitDetailWidget: React.FC<
     <ExternalCommitDetailView
       providerProps={{
         ...CONFIG,
+        sendDeliveryInfoThroughXMTP: true,
         envName: config.envName,
         configId: config.envConfig.configId,
         walletConnectProjectId: CONFIG.walletConnect.projectId,
@@ -40,7 +42,8 @@ export const BasicCommitDetailWidget: React.FC<
           curationLists?.sellerCurationList?.join(",") || "",
         withReduxProvider: false,
         withCustomReduxContext: false,
-        withWeb3React: false
+        withWeb3React: false,
+        roundness: themeVars.roundness
       }}
       selectedVariant={selectedVariant}
       showPriceAsterisk={isPreview}
@@ -51,11 +54,6 @@ export const BasicCommitDetailWidget: React.FC<
           offerId: selectedVariant.offer.id,
           offerData: selectedVariant.offer,
           exchangePolicyCheckResult: exchangePolicyCheckResult
-        });
-      }}
-      onPurchaseOverview={() => {
-        showModal(MODAL_TYPES.WHAT_IS_REDEEM, {
-          title: "Commit to Buy and Redeem"
         });
       }}
       onClickBuyOrSwap={({ swapParams }) => {

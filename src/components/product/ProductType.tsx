@@ -64,7 +64,7 @@ const productTypeItemsPerRow = {
 export const Label = styled.label`
   max-width: 12.5rem;
   align-items: center;
-  border: 1px solid ${colors.lightGrey};
+  border: 1px solid ${colors.greyLight};
   width: 100%;
   text-align: center;
   margin-top: 0.25rem;
@@ -99,7 +99,7 @@ const RadioButtonText = styled(Typography).attrs({
   fontWeight: "600",
   fontSize: "1rem",
   margin: "1.5rem 0",
-  color: colors.darkGrey
+  color: colors.greyDark
 })``;
 
 const Container = styled.div`
@@ -427,7 +427,7 @@ export default function ProductType({
                     fontWeight="600"
                     fontSize="1rem"
                     margin="1.5rem 0"
-                    color={colors.darkGrey}
+                    color={colors.greyDark}
                   >
                     Physical
                   </Typography>
@@ -457,7 +457,7 @@ export default function ProductType({
                     fontWeight="600"
                     fontSize="1rem"
                     margin="1.5rem 0"
-                    color={colors.darkGrey}
+                    color={colors.greyDark}
                   >
                     Phygital
                   </Typography>

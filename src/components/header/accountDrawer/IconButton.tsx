@@ -214,7 +214,7 @@ export const IconWithConfirmTextButton = ({
   const width = showText ? dimensions.frame + dimensions.innerText + xPad : 32;
   const mouseLeaveTimeout = useRef<NodeJS.Timeout>();
   const color = getColor1OverColor2WithContrast({
-    color2: useCSSVariable("--buttonBgColor") || colors.primary,
+    color2: useCSSVariable("--buttonBgColor") || colors.green,
     color1: useCSSVariable("--textColor") || colors.black
   });
   return (

@@ -38,7 +38,7 @@ const StyledStatus = styled.span`
 `;
 
 const StyledDate = styled.span`
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   font-size: 0.75rem;
 `;
 

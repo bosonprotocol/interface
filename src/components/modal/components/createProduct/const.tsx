@@ -55,14 +55,14 @@ export const variableStepToQueryParam = {
 export const variableStepMap = {
   [VariableStep.CreateYourProfile]: {
     key: VariableStep.CreateYourProfile,
-    icon: <UserCirclePlus color={colors.secondary} />,
+    icon: <UserCirclePlus color={colors.violet} />,
     title: "Create your profile",
     body: "Creating a profile helps establish your branding and Web3 presence in dComemrce",
     to: { pathname: "" }
   },
   [VariableStep.CreateYourTokenGatedProduct]: {
     key: VariableStep.CreateYourTokenGatedProduct,
-    icon: <CirclesThreePlus color={colors.secondary} />,
+    icon: <CirclesThreePlus color={colors.violet} />,
     title: "Setup a token-gated offer",
     body: "Create a physical or phygital product, enriching it with details, such as images and videos",
     to: {
@@ -72,28 +72,28 @@ export const variableStepMap = {
   },
   [VariableStep.SetupYourDCLStore]: {
     key: VariableStep.SetupYourDCLStore,
-    icon: <Megaphone color={colors.secondary} />,
+    icon: <Megaphone color={colors.violet} />,
     title: "Setup your DCL store",
     body: "Configure your metaverse store on your own land in DCL or on Boson Boulevard.",
     to: { pathname: SellerCenterRoutes.DCL }
   },
   [VariableStep.SetupYourWeb3Store]: {
     key: VariableStep.SetupYourWeb3Store,
-    icon: <Storefront color={colors.secondary} />,
+    icon: <Storefront color={colors.violet} />,
     title: "Setup your Web3 store",
     body: "Build and customize your own bespoke decentralized commerce storefront",
     to: { pathname: BosonRoutes.CreateStorefront }
   },
   [VariableStep.AddSalesChannels]: {
     key: VariableStep.AddSalesChannels,
-    icon: <Megaphone color={colors.secondary} />,
+    icon: <Megaphone color={colors.violet} />,
     title: "Add sales channels",
     body: "Choose one or many channels where your products will be shown, selling everywhere!",
     to: { pathname: getSellerCenterPath("Sales Channels") }
   },
   [VariableStep.CreateYourProducts]: {
     key: VariableStep.CreateYourProducts,
-    icon: <CirclesThreePlus color={colors.secondary} />,
+    icon: <CirclesThreePlus color={colors.violet} />,
     title: "Create your products",
     body: "Create a physical or digi-physical product, enriching it with details, such as images and videos.",
     to: { pathname: SellerCenterRoutes.CreateProduct }

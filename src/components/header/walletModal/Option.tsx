@@ -116,22 +116,19 @@ export default function Option({ connection }: OptionProps) {
   const isCurrentOptionPending =
     isSomeOptionPending && activationState.connection.type === connection.type;
   const headerTextColor = getColor1OverColor2WithContrast({
-    color2: useCSSVariable("--secondaryBgColor") || colors.secondary,
+    color2: useCSSVariable("--secondaryBgColor") || colors.violet,
     color1: useCSSVariable("--textColor") || colors.black
   });
   const hoverHeaderBackground = getColor1OverColor2WithContrast({
-    color2: useCSSVariable("--secondaryBgColor") || colors.secondary,
-    color1: darken(
-      0.2,
-      useCSSVariable("--secondaryBgColor") || colors.secondary
-    ),
+    color2: useCSSVariable("--secondaryBgColor") || colors.violet,
+    color1: darken(0.2, useCSSVariable("--secondaryBgColor") || colors.violet),
     defaultDarkColor1: darken(
       0.75,
-      useCSSVariable("--secondaryBgColor") || colors.secondary
+      useCSSVariable("--secondaryBgColor") || colors.violet
     ),
     defaultLightColor1: lighten(
       0.1,
-      useCSSVariable("--secondaryBgColor") || colors.secondary
+      useCSSVariable("--secondaryBgColor") || colors.violet
     )
   });
   return (

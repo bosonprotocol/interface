@@ -64,7 +64,7 @@ export default function BosonAccountFormFields({
             <Grid>
               <Grid
                 style={{
-                  background: colors.lightGrey,
+                  background: colors.greyLight,
                   border: `1px solid ${colors.border}`,
                   height: inputHeight
                 }}

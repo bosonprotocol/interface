@@ -19,7 +19,7 @@ const HelpWrapper = styled.aside<{ $background?: string }>`
   width: 23.25rem;
   display: flex;
   flex-direction: column;
-  background: ${(props) => props.$background || colors.lightGrey};
+  background: ${(props) => props.$background || colors.greyLight};
 `;
 
 const HelpTitleContainer = styled.div`

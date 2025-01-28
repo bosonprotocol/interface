@@ -70,7 +70,7 @@ export default function EditProfileModal({
         checked={switchChecked}
         label={() => (
           <Typography
-            color={colors.secondary}
+            color={colors.violet}
             fontSize="0.8rem"
             onClick={() => setSwitchAndProfileType(!switchChecked)}
             cursor="pointer"

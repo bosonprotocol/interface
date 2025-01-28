@@ -9,11 +9,11 @@ import { FileWithEncodedData } from "../../../../lib/utils/files";
 import { NewProposal } from "../../types";
 
 const StyledButton = styled.button`
-  border: 3px solid ${colors.secondary};
+  border: 3px solid ${colors.violet};
   padding: 0.75rem 2.5rem 0.75rem 1.2rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: ${colors.secondary};
+  color: ${colors.violet};
   background-color: transparent;
   position: relative;
   cursor: pointer;

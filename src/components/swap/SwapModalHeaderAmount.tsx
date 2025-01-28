@@ -68,7 +68,7 @@ export function SwapModalHeaderAmount({
             {formatReviewSwapCurrencyAmount(amount)} {currency?.symbol}
           </ResponsiveHeadline>
           {usdAmount && (
-            <Typography color={colors.darkGrey}>
+            <Typography color={colors.greyDark}>
               {formatNumber(usdAmount, NumberType.FiatTokenQuantity)}
             </Typography>
           )}

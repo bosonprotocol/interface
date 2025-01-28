@@ -7,7 +7,7 @@ import { Grid, GridProps } from "../ui/Grid";
 import { Typography } from "../ui/Typography";
 
 const StyledGrid = styled(Grid)`
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
 `;
 
 interface Props extends GridProps {
@@ -28,7 +28,7 @@ export default function SimpleError({
       padding="1.5rem"
       {...rest}
     >
-      <Warning color={colors.darkOrange} size={16} />
+      <Warning color={colors.orangeDark} size={16} />
       {children ? (
         children
       ) : (

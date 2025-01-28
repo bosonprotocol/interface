@@ -30,7 +30,7 @@ const Title = styled(Typography)`
 `;
 
 const Background = styled.div`
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   width: 100%;
   margin-bottom: 5rem;
 `;

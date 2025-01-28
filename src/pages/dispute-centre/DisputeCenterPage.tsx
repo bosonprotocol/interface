@@ -26,7 +26,7 @@ import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { goToViewMode, ViewMode } from "../../lib/viewMode";
 
 const DisputeListHeader = styled.div`
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   width: 100vw;
   translate: -50%;
   margin-left: 50%;

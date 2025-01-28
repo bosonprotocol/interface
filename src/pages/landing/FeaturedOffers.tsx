@@ -85,7 +85,6 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         isError={isError}
         isLoading={isLoading}
         numOffers={numOffers}
-        action="commit"
         showInvalidOffers={false}
         itemsPerRow={{
           xs: 1,

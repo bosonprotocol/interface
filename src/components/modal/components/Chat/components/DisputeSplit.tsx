@@ -11,7 +11,7 @@ import { Grid } from "../../../../ui/Grid";
 
 const StyledTable = styled.table`
   width: 100%;
-  color: ${colors.darkGrey};
+  color: ${colors.greyDark};
   .receive {
     font-weight: 600;
     color: ${colors.black};

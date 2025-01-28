@@ -100,7 +100,7 @@ export const AddressContainer = styled.div`
   flex-basis: 50%;
   margin-top: 0.5rem;
   [data-addrest-text] {
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
     font-size: 1.25rem;
   }
   ${breakpoint.s} {
@@ -119,7 +119,7 @@ export const SocialIconContainer = styled.div`
   display: flex;
   align-items: center;
   svg {
-    color: ${colors.secondary};
+    color: ${colors.violet};
     vertical-align: bottom;
   }
 `;
@@ -147,7 +147,7 @@ export const DetailShareWrapper = styled.div`
 export const LoadingWrapper = styled.div`
   padding: 2rem;
   text-align: center;
-  color: ${colors.secondary};
+  color: ${colors.violet};
 `;
 
 export const ProductGridContainer = styled(GridContainer)`

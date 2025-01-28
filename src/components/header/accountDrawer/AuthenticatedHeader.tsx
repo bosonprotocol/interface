@@ -211,9 +211,9 @@ export default function AuthenticatedHeader({ account }: { account: string }) {
     () => setShow(false),
     [setShow]
   );
-
+  const color2 = useCSSVariable("--buttonBgColor") || colors.green;
   const color = getColor1OverColor2WithContrast({
-    color2: useCSSVariable("--buttonBgColor") || colors.primary,
+    color2,
     color1: useCSSVariable("--textColor") || colors.black
   });
   const { isFiatLoading } = useFiatLinkContext();

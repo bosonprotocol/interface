@@ -67,7 +67,7 @@ function BosonButton(props: IBosonButton) {
       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
       {/* @ts-ignore */}
       <Wrapper {...wrapperParams}>
-        <StyledBosonButton {...restProps} disabled={disabled} withBosonStyle>
+        <StyledBosonButton {...restProps} disabled={disabled}>
           <ChildWrapperButton data-child-wrapper-button>
             {props.children}
           </ChildWrapperButton>

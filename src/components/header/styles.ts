@@ -16,7 +16,7 @@ export const ClickableStyle = css`
 export const ScrollBarStyles = css<{ $isHorizontalScroll?: boolean }>`
   // Firefox scrollbar styling
   scrollbar-width: thin;
-  scrollbar-color: ${colors.lightGrey} transparent;
+  scrollbar-color: ${colors.greyLight} transparent;
   height: 100%;
 
   // safari and chrome scrollbar styling
@@ -38,7 +38,7 @@ export const ScrollBarStyles = css<{ $isHorizontalScroll?: boolean }>`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${colors.lightGrey};
+    background: ${colors.greyLight};
     border-radius: 8px;
   }
 `;

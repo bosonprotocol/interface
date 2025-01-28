@@ -7,7 +7,12 @@ import { ChainId } from "@uniswap/sdk-core";
 import { CONFIG } from "lib/config";
 
 import { AVERAGE_L1_BLOCK_TIME } from "./chainInfo";
-import { CHAIN_IDS_TO_NAMES, SupportedChainsType } from "./chains";
+import {
+  CHAIN_IDS_TO_NAMES,
+  ChainId_BASE_SEPOLIA,
+  ChainId_POLYGON_AMOY,
+  SupportedChainsType
+} from "./chains";
 const RPC_URLS = CONFIG.rpcUrls;
 
 class AppJsonRpcProvider extends StaticJsonRpcProvider {
@@ -75,11 +80,12 @@ export const RPC_PROVIDERS: {
   [ChainId.ARBITRUM_GOERLI]: new AppJsonRpcProvider(ChainId.ARBITRUM_GOERLI),
   [ChainId.POLYGON]: new AppJsonRpcProvider(ChainId.POLYGON),
   [ChainId.POLYGON_MUMBAI]: new AppJsonRpcProvider(ChainId.POLYGON_MUMBAI),
-  80002: new AppJsonRpcProvider(80002),
+  [ChainId_POLYGON_AMOY]: new AppJsonRpcProvider(ChainId_POLYGON_AMOY),
   [ChainId.CELO]: new AppJsonRpcProvider(ChainId.CELO),
   [ChainId.CELO_ALFAJORES]: new AppJsonRpcProvider(ChainId.CELO_ALFAJORES),
   [ChainId.BNB]: new AppJsonRpcProvider(ChainId.BNB),
   [ChainId.AVALANCHE]: new AppJsonRpcProvider(ChainId.AVALANCHE),
   [ChainId.BASE]: new AppJsonRpcProvider(ChainId.BASE),
-  [ChainId.BASE_GOERLI]: new AppJsonRpcProvider(ChainId.BASE_GOERLI)
+  [ChainId.BASE_GOERLI]: new AppJsonRpcProvider(ChainId.BASE_GOERLI),
+  [ChainId_BASE_SEPOLIA]: new AppJsonRpcProvider(ChainId_BASE_SEPOLIA)
 };

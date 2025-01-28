@@ -21,13 +21,13 @@ const ModalGrid = styled.div`
 `;
 
 const ModalGridColumns = styled.div`
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   padding: 1.5625rem;
   grid-gap: 0.3125rem;
   position: relative;
   &:nth-of-type(1) {
     &:after {
-      background-color: ${colors.lightGrey};
+      background-color: ${colors.greyLight};
       content: "";
       bottom: calc(-100% + 1px);
       width: 100%;
@@ -38,7 +38,7 @@ const ModalGridColumns = styled.div`
       left: 0;
       ${breakpoint.m} {
         clip-path: polygon(0 0, 0% 100%, 13% 49%);
-        background-color: ${colors.lightGrey};
+        background-color: ${colors.greyLight};
         content: "";
         height: 100%;
         width: 6.25rem;
@@ -72,7 +72,7 @@ const ModalGridColumns = styled.div`
       }
     }
     &:after {
-      background-color: ${colors.lightGrey};
+      background-color: ${colors.greyLight};
       content: "";
       bottom: calc(-100% + 0.0625rem);
       width: 100%;
@@ -83,7 +83,7 @@ const ModalGridColumns = styled.div`
       left: 0;
       ${breakpoint.m} {
         clip-path: polygon(0 0, 0% 100%, 13% 49%);
-        background-color: ${colors.lightGrey};
+        background-color: ${colors.greyLight};
         content: "";
         height: 100%;
         width: 6.25rem;
@@ -154,7 +154,7 @@ function DisputeModal({ exchangeId }: Props) {
       </Typography>
       <Typography
         fontSize="1.25rem"
-        color={colors.darkGrey}
+        color={colors.greyDark}
         marginTop="0.5rem"
         marginBottom="2rem"
       >
@@ -167,7 +167,7 @@ function DisputeModal({ exchangeId }: Props) {
       </Typography>
       <ModalGrid>
         <ModalGridColumns>
-          <Chats size={24} color={colors.secondary} data-columns-icon />
+          <Chats size={24} color={colors.violet} data-columns-icon />
           <Typography
             margin="0"
             fontSize="1.25rem"
@@ -178,7 +178,7 @@ function DisputeModal({ exchangeId }: Props) {
           </Typography>
         </ModalGridColumns>
         <ModalGridColumns data-modal-columns>
-          <FilePlus size={24} color={colors.secondary} data-columns-icon />
+          <FilePlus size={24} color={colors.violet} data-columns-icon />
           <Typography
             margin="0"
             fontSize="1.25rem"
@@ -189,7 +189,7 @@ function DisputeModal({ exchangeId }: Props) {
           </Typography>
         </ModalGridColumns>
         <ModalGridColumns data-modal-columns>
-          <Handshake size={24} color={colors.secondary} data-columns-icon />
+          <Handshake size={24} color={colors.violet} data-columns-icon />
           <Typography
             margin="0"
             fontSize="1.25rem"

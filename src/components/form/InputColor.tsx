@@ -14,7 +14,7 @@ const Container = styled.div`
   align-items: center;
   width: 100%;
   padding: 0.5rem 1rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   border: 1px solid ${colors.border};
   border-radius: 0;
   outline: none;
@@ -47,7 +47,7 @@ export default function InputColor({ name, ...props }: InputColorProps) {
           colorRef.current?.click();
         }}
       >
-        <span style={{ color: colors.darkGrey }}>
+        <span style={{ color: colors.greyDark }}>
           {field.value?.toUpperCase() || props.placeholder}
         </span>
         <ColorPicker name={name} ref={colorRef} />

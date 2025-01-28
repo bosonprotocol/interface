@@ -5,7 +5,7 @@ import { Typography } from "../ui/Typography";
 
 const DisputeResolverMain = styled.main`
   padding: 1.375rem 2.5rem 2.75rem 2.5rem;
-  background: ${colors.lightGrey};
+  background: ${colors.greyLight};
   min-height: calc(100vh - 5.5rem);
 `;
 const DisputeResolverTitle = styled(Typography)`

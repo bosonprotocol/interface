@@ -101,7 +101,7 @@ export default function TransactionsTable({ transactions }: Props) {
                 fontWeight="600"
                 fontSize="0.75rem"
                 lineHeight="150%"
-                color={colors.secondary}
+                color={colors.violet}
               >
                 View on Explorer
               </Typography>
@@ -273,12 +273,10 @@ export default function TransactionsTable({ transactions }: Props) {
                   themeVal="blank"
                   style={{
                     color:
-                      pageNumber === pageIndex
-                        ? colors.secondary
-                        : colors.black,
+                      pageNumber === pageIndex ? colors.violet : colors.black,
                     background:
                       pageNumber === pageIndex
-                        ? colors.lightGrey
+                        ? colors.greyLight
                         : "transparent"
                   }}
                   onClick={() => gotoPage(pageNumber)}

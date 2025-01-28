@@ -50,9 +50,9 @@ export const StepStyle = styled.div<{
       ${!disabled &&
       css`
         &:hover {
-          background: ${colors.lightGrey};
+          background: ${colors.greyLight};
           &:before {
-            background: ${colors.darkGrey};
+            background: ${colors.greyDark};
             width: 0.5rem;
             height: 0.5rem;
           }
@@ -151,7 +151,7 @@ export const MultiStepStyle = styled.div<{ $isLteS: boolean }>`
     font-weight: 600;
     font-size: 0.75rem;
     line-height: 1.5;
-    color: ${colors.darkGrey};
+    color: ${colors.greyDark};
   }
 `;
 

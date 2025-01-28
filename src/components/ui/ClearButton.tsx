@@ -15,7 +15,7 @@ const CrossIcon = (props: Record<string, unknown>) => (
 );
 export const ClearButton = styled(CrossIcon)`
   position: absolute;
-  background-color: ${colors.lightGrey};
+  background-color: ${colors.greyLight};
   top: 0;
   right: 0;
   height: 100%;
