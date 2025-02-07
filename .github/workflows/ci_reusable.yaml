@@ -209,11 +209,6 @@ jobs:
       - name: (if 'production' env) Copy contents from .fleek_production.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'production' }}
         run: mv .fleek_production.json .fleek.json
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
       - name: Deploy via fleek
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
         id: Deploy
@@ -235,11 +230,6 @@ jobs:
       - name: (if DR Center 'production' env) Copy contents from .fleek_dr_center_production.json to .fleek_dr_center.json
         if: ${{ inputs.ENV_NAME == 'production' }}
         run: mv .fleek_dr_center_production.json .fleek_dr_center.json
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
       - name: Deploy via fleek
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
         id: deploy_dr_center
