@@ -29,6 +29,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.ARBITRUM_GOERLI]: "arbitrum_goerli",
   [ChainId.OPTIMISM]: "optimism",
   [ChainId.OPTIMISM_GOERLI]: "optimism_goerli",
+  [ChainId.OPTIMISM_SEPOLIA]: "optimism_sepolia",
   [ChainId.BNB]: "bnb",
   [ChainId.AVALANCHE]: "avalanche",
   [ChainId.BASE]: "base",
@@ -50,6 +51,7 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
   [ChainId.ARBITRUM_GOERLI]: "Arbitrum Goerli",
   [ChainId.OPTIMISM]: "Optimism",
   [ChainId.OPTIMISM_GOERLI]: "Optimism Goerli",
+  [ChainId.OPTIMISM_SEPOLIA]: "OP-Sepolia",
   [ChainId.BNB]: "Bnb",
   [ChainId.AVALANCHE]: "Avalanche",
   [ChainId.BASE]: "Base",
@@ -80,6 +82,7 @@ export function isSupportedChain(
   if (featureFlags && chainId && chainId in featureFlags) {
     return featureFlags[chainId];
   }
+  // TODO: add Optimism chains
   return (
     !!chainId &&
     ACTUALLY_SUPPORTED_CHAINS.indexOf(chainId) !== -1 &&

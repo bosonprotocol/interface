@@ -150,6 +150,25 @@ const CHAIN_INFO: ChainInfoMap = {
       decimals: 18
     }
   },
+  [ChainId.OPTIMISM_SEPOLIA]: {
+    networkType: NetworkType.L2,
+    blockWaitMsBeforeWarning: ms(`25m`),
+    defaultListUrl: OPTIMISM_LIST,
+    bridge: "https://testnets.superbridge.app/optimism-sepolia",
+    docs: "https://docs.optimism.io",
+    explorer: "https://sepolia-optimistic.etherscan.io/",
+    infoLink: "https://info.uniswap.org/#/optimism-sepolia/",
+    label: "Optimism Sepolia",
+    logoUrl: optimismLogoUrl,
+    statusPage: "https://optimism.io/status",
+    helpCenterUrl:
+      "https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ",
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "OpETH",
+      decimals: 18
+    }
+  },
   [ChainId.ARBITRUM_ONE]: {
     networkType: NetworkType.L2,
     blockWaitMsBeforeWarning: ms(`10m`),
