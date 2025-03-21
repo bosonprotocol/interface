@@ -12,7 +12,11 @@ import {
   walletConnectV2Connection
 } from "../../connection";
 import { getChainInfo } from "../../constants/chainInfo";
-import { isSupportedChain, SupportedChainsType } from "../../constants/chains";
+import {
+  ChainId_POLYGON_AMOY,
+  isSupportedChain,
+  SupportedChainsType
+} from "../../constants/chains";
 import { useChainId } from "./connection/connection";
 const RPC_URLS = CONFIG.rpcUrls;
 const localChainId = 31337;
@@ -22,9 +26,8 @@ const localRpcUrl = getEnvConfigs("local").find(
 function getRpcUrl(chainId: SupportedChainsType): string {
   switch (chainId) {
     case ChainId.MAINNET:
-    case ChainId.GOERLI:
     case ChainId.SEPOLIA:
-    case 80002:
+    case ChainId_POLYGON_AMOY:
       return RPC_URLS[chainId][0];
     case localChainId: {
       if (localRpcUrl) {

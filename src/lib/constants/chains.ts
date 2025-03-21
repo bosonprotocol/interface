@@ -1,7 +1,4 @@
-import {
-  ChainId,
-  SUPPORTED_CHAINS as _SUPPORTED_CHAINS
-} from "@uniswap/sdk-core";
+import { ChainId } from "@uniswap/sdk-core";
 import { envChainIds } from "lib/config";
 
 export const LocalChainId = 31337;
@@ -27,6 +24,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.CELO_ALFAJORES]: "celo_alfajores",
   [ChainId.ARBITRUM_ONE]: "arbitrum",
   [ChainId.ARBITRUM_GOERLI]: "arbitrum_goerli",
+  [ChainId.ARBITRUM_SEPOLIA]: "arbitrum_sepolia",
   [ChainId.OPTIMISM]: "optimism",
   [ChainId.OPTIMISM_GOERLI]: "optimism_goerli",
   [ChainId.OPTIMISM_SEPOLIA]: "optimism_sepolia",
@@ -62,9 +60,14 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
 
 const SUPPORTED_CHAINS = [
   LocalChainId,
+  ChainId.MAINNET,
+  ChainId.POLYGON,
+  ChainId.OPTIMISM,
+  ChainId.BASE,
+  ChainId.SEPOLIA,
   ChainId_POLYGON_AMOY,
   ChainId_BASE_SEPOLIA,
-  ..._SUPPORTED_CHAINS
+  ChainId.OPTIMISM_SEPOLIA
 ] as const;
 export declare type SupportedChainsType = (typeof SUPPORTED_CHAINS)[number];
 
