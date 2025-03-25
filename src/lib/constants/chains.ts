@@ -109,7 +109,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   ChainId.MAINNET,
   ChainId.POLYGON,
   // ChainId.CELO,
-  // ChainId.OPTIMISM,
+  ChainId.OPTIMISM,
   // ChainId.ARBITRUM_ONE
   // ChainId.BNB,
   // ChainId.AVALANCHE,
@@ -122,6 +122,7 @@ export const TESTNET_CHAIN_IDS = [
   ChainId.POLYGON_MUMBAI,
   ChainId_POLYGON_AMOY,
   ChainId_BASE_SEPOLIA,
+  ChainId.OPTIMISM_SEPOLIA,
   LocalChainId
   // ChainId.ARBITRUM_GOERLI,
   // ChainId.OPTIMISM_GOERLI,
@@ -155,8 +156,8 @@ export type SupportedL1ChainId = (typeof L1_CHAIN_IDS)[number];
 export const L2_CHAIN_IDS = [
   // ChainId.ARBITRUM_ONE,
   // ChainId.ARBITRUM_GOERLI,
-  // ChainId.OPTIMISM,
-  // ChainId.OPTIMISM_GOERLI
+  ChainId.OPTIMISM,
+  ChainId.OPTIMISM_SEPOLIA,
   ChainId.BASE,
   ChainId_BASE_SEPOLIA
   // ChainId.BASE_GOERLI
@@ -183,10 +184,10 @@ export function getChainPriority(chainId: number): number {
       return 1;
     // case ChainId.ARBITRUM_ONE:
     // case ChainId.ARBITRUM_GOERLI:
-    //   return 2;
-    // case ChainId.OPTIMISM:
-    // case ChainId.OPTIMISM_GOERLI:
-    //   return 3;
+    // return 2;
+    case ChainId.OPTIMISM:
+    case ChainId.OPTIMISM_SEPOLIA:
+      return 3;
     // case ChainId.BNB:
     //   return 4;
     // case ChainId.AVALANCHE:

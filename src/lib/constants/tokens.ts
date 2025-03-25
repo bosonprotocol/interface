@@ -376,6 +376,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
       "WETH",
       "Wrapped Ether"
     ),
+    [ChainId.OPTIMISM_SEPOLIA]: new Token(
+      ChainId.OPTIMISM_SEPOLIA,
+      "0x4200000000000000000000000000000000000006",
+      18,
+      "WETH",
+      "Wrapped Ether"
+    ),
     [ChainId.BASE]: new Token(
       ChainId.BASE,
       "0x4200000000000000000000000000000000000006",
