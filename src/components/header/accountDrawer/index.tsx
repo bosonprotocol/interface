@@ -1,5 +1,4 @@
-import { atom } from "jotai";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { colors } from "lib/styles/colors";
 import { CaretDoubleRight } from "phosphor-react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -23,14 +22,14 @@ const DRAWER_TOP_MARGIN_MOBILE_WEB = "72px";
 const accountDrawerOpenAtom = atom(false);
 
 export function useToggleAccountDrawer() {
-  const updateAccountDrawerOpen = useUpdateAtom(accountDrawerOpenAtom);
+  const updateAccountDrawerOpen = useSetAtom(accountDrawerOpenAtom);
   return useCallback(() => {
     updateAccountDrawerOpen((open) => !open);
   }, [updateAccountDrawerOpen]);
 }
 
 export function useCloseAccountDrawer() {
-  const updateAccountDrawerOpen = useUpdateAtom(accountDrawerOpenAtom);
+  const updateAccountDrawerOpen = useSetAtom(accountDrawerOpenAtom);
   return useCallback(
     () => updateAccountDrawerOpen(false),
     [updateAccountDrawerOpen]
@@ -44,7 +43,7 @@ export function useAccountDrawer(): [boolean, () => void] {
 
 export function useOpenAccountDrawer(): [boolean, () => void] {
   const accountDrawerOpen = useAtomValue(accountDrawerOpenAtom);
-  const updateAccountDrawerOpen = useUpdateAtom(accountDrawerOpenAtom);
+  const updateAccountDrawerOpen = useSetAtom(accountDrawerOpenAtom);
   return [
     accountDrawerOpen,
     useCallback(() => updateAccountDrawerOpen(true), [updateAccountDrawerOpen])
