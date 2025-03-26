@@ -77,5 +77,6 @@ export const RPC_PROVIDERS: {
   [ChainId.POLYGON]: new AppJsonRpcProvider(ChainId.POLYGON),
   [ChainId_POLYGON_AMOY]: new AppJsonRpcProvider(ChainId_POLYGON_AMOY),
   [ChainId.BASE]: new AppJsonRpcProvider(ChainId.BASE),
-  [ChainId_BASE_SEPOLIA]: new AppJsonRpcProvider(ChainId_BASE_SEPOLIA)
+  [ChainId_BASE_SEPOLIA]: new AppJsonRpcProvider(ChainId_BASE_SEPOLIA),
+  [ChainId.OPTIMISM_SEPOLIA]: new AppJsonRpcProvider(ChainId.OPTIMISM_SEPOLIA)
 };
