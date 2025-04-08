@@ -95,6 +95,10 @@ export const COMMON_BASES: ChainCurrencyList = {
     WRAPPED_NATIVE_CURRENCY[ChainId.ARBITRUM_GOERLI] as Token,
     USDC_ARBITRUM_GOERLI
   ],
+  [ChainId.ARBITRUM_SEPOLIA]: [
+    nativeOnChain(ChainId.ARBITRUM_SEPOLIA),
+    WRAPPED_NATIVE_CURRENCY[ChainId.ARBITRUM_SEPOLIA] as Token
+  ],
   [ChainId.OPTIMISM]: [
     nativeOnChain(ChainId.OPTIMISM),
     OP,
