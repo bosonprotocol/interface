@@ -47,6 +47,7 @@ export const CHAIN_IDS_TO_FRIENDLY_NAMES = {
   [ChainId.CELO_ALFAJORES]: "Celo Alfajores",
   [ChainId.ARBITRUM_ONE]: "Arbitrum",
   [ChainId.ARBITRUM_GOERLI]: "Arbitrum Goerli",
+  [ChainId.ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
   [ChainId.OPTIMISM]: "Optimism",
   [ChainId.OPTIMISM_GOERLI]: "Optimism Goerli",
   [ChainId.OPTIMISM_SEPOLIA]: "OP-Sepolia",
@@ -67,7 +68,9 @@ const SUPPORTED_CHAINS = [
   ChainId.SEPOLIA,
   ChainId_POLYGON_AMOY,
   ChainId_BASE_SEPOLIA,
-  ChainId.OPTIMISM_SEPOLIA
+  ChainId.OPTIMISM_SEPOLIA,
+  ChainId.ARBITRUM_ONE,
+  ChainId.ARBITRUM_SEPOLIA
 ] as const;
 export declare type SupportedChainsType = (typeof SUPPORTED_CHAINS)[number];
 
@@ -110,7 +113,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   ChainId.POLYGON,
   // ChainId.CELO,
   ChainId.OPTIMISM,
-  // ChainId.ARBITRUM_ONE
+  ChainId.ARBITRUM_ONE,
   // ChainId.BNB,
   // ChainId.AVALANCHE,
   ChainId.BASE
@@ -123,6 +126,7 @@ export const TESTNET_CHAIN_IDS = [
   ChainId_POLYGON_AMOY,
   ChainId_BASE_SEPOLIA,
   ChainId.OPTIMISM_SEPOLIA,
+  ChainId.ARBITRUM_SEPOLIA,
   LocalChainId
   // ChainId.ARBITRUM_GOERLI,
   // ChainId.OPTIMISM_GOERLI,
@@ -154,7 +158,8 @@ export type SupportedL1ChainId = (typeof L1_CHAIN_IDS)[number];
  * The expectation is that all of these networks have immediate transaction confirmation.
  */
 export const L2_CHAIN_IDS = [
-  // ChainId.ARBITRUM_ONE,
+  ChainId.ARBITRUM_ONE,
+  ChainId.ARBITRUM_SEPOLIA,
   // ChainId.ARBITRUM_GOERLI,
   ChainId.OPTIMISM,
   ChainId.OPTIMISM_SEPOLIA,
@@ -182,9 +187,10 @@ export function getChainPriority(chainId: number): number {
     case ChainId.BASE:
     case ChainId_BASE_SEPOLIA:
       return 1;
-    // case ChainId.ARBITRUM_ONE:
-    // case ChainId.ARBITRUM_GOERLI:
-    // return 2;
+    case ChainId.ARBITRUM_ONE:
+    case ChainId.ARBITRUM_SEPOLIA:
+      // case ChainId.ARBITRUM_GOERLI:
+      return 2;
     case ChainId.OPTIMISM:
     case ChainId.OPTIMISM_SEPOLIA:
       return 3;

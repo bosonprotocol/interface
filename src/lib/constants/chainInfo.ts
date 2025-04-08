@@ -202,6 +202,21 @@ const CHAIN_INFO: ChainInfoMap = {
       decimals: 18
     }
   },
+  [ChainId.ARBITRUM_SEPOLIA]: {
+    networkType: NetworkType.L2,
+    blockWaitMsBeforeWarning: ms(`10m`),
+    bridge: "https://testnets.superbridge.app/arbitrum-sepolia",
+    docs: "https://docs.arbitrum.io",
+    explorer: "https://sepolia.arbiscan.io/",
+    infoLink: "https://info.uniswap.org/#/arbitrum-sepolia/",
+    label: "Arbitrum Sepolia",
+    logoUrl: arbitrumLogoUrl,
+    circleLogoUrl: arbitrumCircleLogoUrl,
+    defaultListUrl: ARBITRUM_LIST,
+    helpCenterUrl:
+      "https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum",
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 }
+  },
   [ChainId.POLYGON]: {
     networkType: NetworkType.L1,
     blockWaitMsBeforeWarning: ms(`10m`),
