@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { DetailOpenSea, subgraph } from "@bosonprotocol/react-kit";
 import { BasicCommitDetailWidget } from "components/detail/DetailWidget/BasicCommitDetailWidget";
 import { Offer } from "lib/types/offer";
 import { generatePath } from "react-router-dom";
@@ -10,7 +10,6 @@ import {
   Widget,
   WidgetButtonWrapper
 } from "../../../components/detail/Detail.style";
-import DetailOpenSea from "../../../components/detail/DetailOpenSea";
 import {
   AccountQueryParameters,
   UrlParameters

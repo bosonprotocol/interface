@@ -1,4 +1,4 @@
-import { isBundle, isProductV1 } from "@bosonprotocol/react-kit";
+import { DetailOpenSea, isBundle, isProductV1 } from "@bosonprotocol/react-kit";
 import { ExchangeDetailWidget } from "components/detail/DetailWidget/ExchangeDetailWidget";
 import { EmptyErrorMessage } from "components/error/EmptyErrorMessage";
 import { LoadingMessage } from "components/loading/LoadingMessage";
@@ -15,7 +15,6 @@ import {
   MainDetailGrid,
   SellerAndOpenSeaGrid
 } from "../../components/detail/Detail.style";
-import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
