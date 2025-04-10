@@ -594,8 +594,7 @@ export default function SellerProductsTable({
                         </Typography>
                       ),
                       action: !(
-                        variantStatus === OffersKit.OfferState.VOIDED ||
-                        variant?.quantityAvailable === "0"
+                        variantStatus === OffersKit.OfferState.VOIDED
                       ) && (
                         <Grid justifyContent="flex-end">
                           <VoidButton
@@ -608,7 +607,7 @@ export default function SellerProductsTable({
                                 showModal(
                                   modalTypes.VOID_PRODUCT,
                                   {
-                                    title: "Void Confirmation",
+                                    title: "Premint Confirmation",
                                     offerId: variant.id,
                                     offer: variant as Offer,
                                     refetch
@@ -618,7 +617,7 @@ export default function SellerProductsTable({
                               }
                             }}
                           >
-                            Void
+                            Premint
                           </VoidButton>
                         </Grid>
                       )
@@ -762,10 +761,7 @@ export default function SellerProductsTable({
               );
             })(),
             action: (() => {
-              const withVoidButton = !(
-                status === OffersKit.OfferState.VOIDED ||
-                offer?.quantityAvailable === "0"
-              );
+              const withVoidButton = !(status === OffersKit.OfferState.VOIDED);
               return (
                 <Grid gap="1rem" justifyContent="flex-end">
                   <Actions
@@ -786,7 +782,7 @@ export default function SellerProductsTable({
                                         showModal(
                                           modalTypes.VOID_PRODUCT,
                                           {
-                                            title: "Void Confirmation",
+                                            title: "Premint Confirmation",
                                             offers:
                                               offer.additional?.variants.filter(
                                                 (variant) => {
@@ -808,7 +804,7 @@ export default function SellerProductsTable({
                                         showModal(
                                           modalTypes.VOID_PRODUCT,
                                           {
-                                            title: "Void Confirmation",
+                                            title: "Premint Confirmation",
                                             offerId: offer.id,
                                             offer,
                                             refetch
@@ -819,7 +815,7 @@ export default function SellerProductsTable({
                                     }
                                   }}
                                 >
-                                  Void
+                                  Premint
                                 </UnthemedButton>
                               )
                             }
