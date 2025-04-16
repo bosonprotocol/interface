@@ -1,4 +1,4 @@
 import { DappConfig } from "lib/config";
 
 export const getChatEnvName = (dappConfig: DappConfig) =>
-  `${dappConfig.envName}-${dappConfig.envConfig.contracts.protocolDiamond}`;
+  `bosonprotocol-${dappConfig.envName}-${dappConfig.envConfig.contracts.protocolDiamond}`.toLowerCase();
