@@ -57,7 +57,7 @@ interface Props {
 export default function MessageSeparator({ message }: Props) {
   const { diffInDays, sentDate } = useMemo(() => {
     const currentDate = dayjs().startOf("day");
-    const sentDate = dayjs(message.timestamp).startOf("day");
+    const sentDate = dayjs(Number(message.timestamp)).startOf("day");
 
     return { diffInDays: currentDate.diff(sentDate, "day"), sentDate };
   }, [message]);

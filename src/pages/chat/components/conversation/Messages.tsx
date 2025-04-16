@@ -1,7 +1,9 @@
+import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import { MessageData } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Exchange } from "lib/utils/hooks/useExchanges";
+import { useChatContext } from "pages/chat/ChatProvider/ChatContext";
 import { WarningCircle } from "phosphor-react";
 import { memo, RefObject, useMemo } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -67,8 +69,11 @@ const LoadMoreMessages = styled.button.attrs({ type: "button" })`
   }
 `;
 
-const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
-  return myAddress === sender;
+const getWasItSentByMe = (
+  bosonXmtp: BosonXmtpClient | undefined,
+  sender: string
+) => {
+  return bosonXmtp?.client.inboxId === sender;
 };
 
 type MessagesProps = {
@@ -95,12 +100,13 @@ export const Messages: React.FC<MessagesProps> = memo(
     loadMoreMessages,
     thread,
     areThreadsLoading,
-    address,
     iAmTheBuyer,
     messagesContainerRef,
     lastReceivedProposal,
     lastSentProposal
   }) => {
+    const { bosonXmtp } = useChatContext();
+
     const hasMoreMessages = !isBeginningOfTimes;
     const Buyer = useMemo(() => {
       return (
@@ -173,21 +179,26 @@ export const Messages: React.FC<MessagesProps> = memo(
               const isFirstMessage = index === 0;
               const isPreviousMessageInADifferentDay = isFirstMessage
                 ? false
-                : dayjs(message.timestamp)
+                : dayjs(Number(message.timestamp))
                     .startOf("day")
                     .diff(
-                      dayjs(thread.messages[index - 1].timestamp).startOf("day")
+                      dayjs(
+                        Number(thread.messages[index - 1].timestamp)
+                      ).startOf("day")
                     ) > 0;
               const showMessageSeparator =
                 isFirstMessage || isPreviousMessageInADifferentDay;
-              const wasItMe = getWasItSentByMe(address, message.sender);
+              const wasItMe = getWasItSentByMe(bosonXmtp, message.sender);
               const Child =
                 (wasItMe && iAmTheBuyer) || (!wasItMe && !iAmTheBuyer)
                   ? Buyer
                   : Seller;
               const leftAligned = !wasItMe;
               return (
-                <Conversation key={message.timestamp} $alignStart={leftAligned}>
+                <Conversation
+                  key={message.timestamp.toString()}
+                  $alignStart={leftAligned}
+                >
                   <>
                     {showMessageSeparator && (
                       <MessageSeparator message={message} />

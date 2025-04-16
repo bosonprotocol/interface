@@ -187,6 +187,7 @@ const ChatConversation = ({
   refetchExchanges
 }: ChatConversationProps) => {
   const { account: address } = useAccount();
+  const { bosonXmtp } = useChatContext();
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
@@ -207,7 +208,6 @@ const ChatConversation = ({
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
-  const { bosonXmtp } = useChatContext();
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
       return null;
@@ -236,7 +236,7 @@ const ChatConversation = ({
   const onMessagesReceived = useCallback(
     (messages: MessageData[]) => {
       const sortedMessages = messages.sort((msgA, msgB) => {
-        return msgB.timestamp - msgA.timestamp;
+        return Number((msgB.timestamp - msgA.timestamp).toString());
       });
       const tempAcceptedProposal = sortedMessages.find((message) => {
         return message.data.contentType === MessageType.AcceptProposal;
@@ -245,7 +245,8 @@ const ChatConversation = ({
         .filter(filterProposals)
         .find((message) => {
           const isAProposalFromSomeoneElse =
-            message.sender.toLowerCase() !== address?.toLowerCase();
+            message.sender.toLowerCase() !==
+            bosonXmtp?.client.inboxId?.toLowerCase();
           const hasProposals = !!(message.data.content as ProposalContent)
             ?.value.proposals?.length;
           return hasProposals && isAProposalFromSomeoneElse;
@@ -254,7 +255,8 @@ const ChatConversation = ({
         .filter(filterProposals)
         .find((message) => {
           const isMyProposal =
-            message.sender.toLowerCase() === address?.toLowerCase();
+            message.sender.toLowerCase() ===
+            bosonXmtp?.client.inboxId?.toLowerCase();
           const hasProposals = !!(message.data.content as ProposalContent)
             ?.value.proposals?.length;
 
@@ -283,7 +285,7 @@ const ChatConversation = ({
         });
       }
     },
-    [address]
+    [bosonXmtp?.client.inboxId]
   );
 
   const {
@@ -303,7 +305,7 @@ const ChatConversation = ({
     counterParty: destinationAddress,
     genesisDate: exchange?.committedDate
       ? new Date(Number(exchange?.committedDate) * 1000)
-      : new Date("2022-08-25"),
+      : new Date("2025-04-14"),
     checkCustomCondition: (mergedThread) => {
       // load conversation until we receive a proposal
 
@@ -313,11 +315,12 @@ const ChatConversation = ({
       const sortedProposals = [...mergedThread.messages]
         .filter(filterProposals)
         .sort((msgA, msgB) => {
-          return msgB.timestamp - msgA.timestamp;
+          return Number((msgB.timestamp - msgA.timestamp).toString());
         });
       return sortedProposals.some((message) => {
         const isAProposalFromSomeoneElse =
-          message.sender.toLowerCase() !== address?.toLowerCase();
+          message.sender.toLowerCase() !==
+          bosonXmtp?.client.inboxId?.toLowerCase();
         return isAProposalFromSomeoneElse;
       });
     },

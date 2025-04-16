@@ -152,7 +152,7 @@ export default function RetractDisputeModal({
 
                   await addMessage({
                     authorityId: "",
-                    timestamp: Date.now(),
+                    timestamp: BigInt(Date.now()) * BigInt(1_000_000),
                     sender: address,
                     recipient: destinationAddress,
                     data: newMessage,

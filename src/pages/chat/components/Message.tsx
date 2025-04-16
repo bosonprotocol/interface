@@ -133,7 +133,7 @@ const BottomDateStamp = ({
   isLeftAligned: Props["isLeftAligned"];
   message: Props["message"];
 }) => {
-  const sentDate = new Date(message.timestamp);
+  const sentDate = new Date(Number(message.timestamp / BigInt(1_000_000)));
   return (
     <Bottom $isLeftAligned={isLeftAligned}>
       <span>

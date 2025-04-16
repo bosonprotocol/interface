@@ -103,5 +103,7 @@ export function getDedupSortedMessages(
     seenMessagesSet.add(id);
     return !duplicate;
   });
-  return uniqueMessages.sort((msgA, msgB) => msgA.timestamp - msgB.timestamp);
+  return uniqueMessages.sort((msgA, msgB) =>
+    Number(msgA.timestamp - msgB.timestamp)
+  );
 }
