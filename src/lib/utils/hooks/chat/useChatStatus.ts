@@ -1,4 +1,3 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useEffect, useState } from "react";
 
@@ -26,6 +25,9 @@ export const useChatStatus = (): {
   const { account: address } = useAccount();
 
   useEffect(() => {
+    if (!chatEnvName) {
+      throw new Error(`chatEnvName is falsy ${chatEnvName}`);
+    }
     if (
       chatInitializationStatus === ChatInitializationStatus.PENDING &&
       !!bosonXmtp
@@ -37,11 +39,8 @@ export const useChatStatus = (): {
     ) {
       setError(null);
 
-      BosonXmtpClient.isXmtpEnabled(
-        address,
-        config.envConfig.envName === "production" ? "production" : "dev",
-        chatEnvName
-      )
+      bosonXmtp
+        ?.isXmtpEnabled()
         .then((isEnabled) => {
           if (isEnabled) {
             setChatInitializationStatus(ChatInitializationStatus.INITIALIZED);

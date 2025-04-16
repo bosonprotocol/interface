@@ -71,6 +71,12 @@ export async function getThread({
               genesisDate
             });
           });
+    console.log(
+      "timesArrayInRange",
+      timesArrayInRange,
+      "failedTimes",
+      failedTimes
+    );
     const timesArray = [...timesArrayInRange, ...failedTimes];
     failedTimesArray = [];
     const promises = timesArray.map((times) => {
