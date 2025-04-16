@@ -76,7 +76,7 @@ export const ChatConversationBottom: React.FC<ChatConversationBottomProps> = ({
             await addMessage({
               authorityId: "",
               timestamp: BigInt(Date.now()) * BigInt(1_000_000),
-              sender: address,
+              sender: bosonXmtp.inboxId || "",
               recipient: destinationAddress,
               data: newMessage,
               isValid: false,

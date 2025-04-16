@@ -319,8 +319,7 @@ const ChatConversation = ({
         });
       return sortedProposals.some((message) => {
         const isAProposalFromSomeoneElse =
-          message.sender.toLowerCase() !==
-          bosonXmtp?.client.inboxId?.toLowerCase();
+          message.sender.toLowerCase() !== bosonXmtp?.inboxId;
         return isAProposalFromSomeoneElse;
       });
     },
@@ -366,14 +365,12 @@ const ChatConversation = ({
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
-      const messagesWithIsValid = await Promise.all(
-        newMessages.map(async (message) => {
-          if (message.isValid === undefined) {
-            message.isValid = await validateMessage(message.data);
-          }
-          return message;
-        })
-      );
+      const messagesWithIsValid = newMessages.map((message) => {
+        if (message.isValid === undefined) {
+          message.isValid = validateMessage(message.data);
+        }
+        return message;
+      });
       appendMessages(messagesWithIsValid);
     },
     [appendMessages]

@@ -153,7 +153,7 @@ export default function RetractDisputeModal({
                   await addMessage({
                     authorityId: "",
                     timestamp: BigInt(Date.now()) * BigInt(1_000_000),
-                    sender: address,
+                    sender: bosonXmtp.inboxId || "",
                     recipient: destinationAddress,
                     data: newMessage,
                     isValid: false,
@@ -214,7 +214,6 @@ export default function RetractDisputeModal({
                       bosonXmtp,
                       addMessage,
                       onSentMessage,
-                      address,
                       destinationAddress,
                       newMessage: errorMessageObj
                     }));

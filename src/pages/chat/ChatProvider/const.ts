@@ -1,4 +1,5 @@
+import { EnvironmentType } from "@bosonprotocol/react-kit";
 import { DappConfig } from "lib/config";
 
 export const getChatEnvName = (dappConfig: DappConfig) =>
-  `bosonprotocol-${dappConfig.envName}-${dappConfig.envConfig.contracts.protocolDiamond}`.toLowerCase();
+  `${dappConfig.envName}-${dappConfig.envConfig.contracts.protocolDiamond}`.toLowerCase() as `${EnvironmentType}-0x123`;

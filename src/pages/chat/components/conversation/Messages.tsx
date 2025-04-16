@@ -73,7 +73,7 @@ const getWasItSentByMe = (
   bosonXmtp: BosonXmtpClient | undefined,
   sender: string
 ) => {
-  return bosonXmtp?.client.inboxId === sender;
+  return bosonXmtp?.inboxId === sender;
 };
 
 type MessagesProps = {
@@ -177,13 +177,17 @@ export const Messages: React.FC<MessagesProps> = memo(
             )}
             {thread?.messages.map((message, index) => {
               const isFirstMessage = index === 0;
+              const timeStampInMs = message.timestamp / BigInt(1_000_000);
               const isPreviousMessageInADifferentDay = isFirstMessage
                 ? false
-                : dayjs(Number(message.timestamp))
+                : dayjs(Number(timeStampInMs))
                     .startOf("day")
                     .diff(
                       dayjs(
-                        Number(thread.messages[index - 1].timestamp)
+                        Number(
+                          thread.messages[index - 1].timestamp /
+                            BigInt(1_000_000)
+                        )
                       ).startOf("day")
                     ) > 0;
               const showMessageSeparator =
@@ -196,7 +200,7 @@ export const Messages: React.FC<MessagesProps> = memo(
               const leftAligned = !wasItMe;
               return (
                 <Conversation
-                  key={message.timestamp.toString()}
+                  key={timeStampInMs.toString()}
                   $alignStart={leftAligned}
                 >
                   <>
