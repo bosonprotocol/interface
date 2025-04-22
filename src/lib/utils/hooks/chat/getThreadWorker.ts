@@ -84,15 +84,10 @@ export async function getThread({
         return null;
       }
       return () => {
-        return bosonXmtp.getThread(
-          threadId,
-          counterParty
-          //   , // TODO: add back
-          //   {
-          //   sentAfterNs: BigInt(times.startTime.getTime()) * BigInt(1_000_000),
-          //   sentBeforeNs: BigInt(times.endTime.getTime()) * BigInt(1_000_000)
-          // }
-        );
+        return bosonXmtp.getThread(threadId, counterParty, {
+          sentAfterNs: BigInt(times.startTime.getTime()) * BigInt(1_000_000),
+          sentBeforeNs: BigInt(times.endTime.getTime()) * BigInt(1_000_000)
+        });
       };
     });
     if (!promises.filter((v) => !!v).length) {
