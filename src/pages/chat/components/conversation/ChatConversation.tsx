@@ -287,7 +287,9 @@ const ChatConversation = ({
     },
     [bosonXmtp?.client.inboxId]
   );
-
+  useEffect(() => {
+    bosonXmtp?.client.conversations.syncAll();
+  }, [bosonXmtp?.client.conversations]);
   const {
     data: thread,
     isLoading: areThreadsLoading,
