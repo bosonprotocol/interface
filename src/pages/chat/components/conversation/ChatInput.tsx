@@ -190,7 +190,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
         await addMessage({
           authorityId: "",
-          timestamp: BigInt(Date.now()),
+          timestamp: BigInt(Date.now()) * BigInt(1_000_000),
           sender: bosonXmtp.inboxId || "",
           recipient: destinationAddress,
           data: newMessage,
