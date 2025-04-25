@@ -288,8 +288,15 @@ const ChatConversation = ({
     [bosonXmtp?.client.inboxId]
   );
   useEffect(() => {
-    bosonXmtp?.client.conversations.syncAll();
+    if (!bosonXmtp?.client.conversations) return;
+
+    const interval = setInterval(() => {
+      bosonXmtp.client.conversations.syncAll();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, [bosonXmtp?.client.conversations]);
+
   const {
     data: thread,
     isLoading: areThreadsLoading,
