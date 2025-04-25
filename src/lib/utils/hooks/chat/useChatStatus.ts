@@ -38,11 +38,8 @@ export const useChatStatus = (): {
       chatInitializationStatus !== ChatInitializationStatus.ALREADY_INITIALIZED
     ) {
       setError(null);
-      if (!bosonXmtp) {
-        throw new Error(`bosonXmtp is falsy ${bosonXmtp}`);
-      }
       bosonXmtp
-        .isXmtpEnabled()
+        ?.isXmtpEnabled()
         .then((isEnabled) => {
           if (isEnabled) {
             setChatInitializationStatus(ChatInitializationStatus.INITIALIZED);
