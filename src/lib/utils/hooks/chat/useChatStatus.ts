@@ -9,6 +9,7 @@ export enum ChatInitializationStatus {
   PENDING = "PENDING",
   ALREADY_INITIALIZED = "ALREADY_INITIALIZED",
   INITIALIZED = "INITIALIZED",
+  INITIALIZING = "INITIALIZING",
   NOT_INITIALIZED = "NOT_INITIALIZED",
   ERROR = "ERROR"
 }
@@ -36,7 +37,10 @@ export const useChatStatus = (): {
       chatInitializationStatus !== ChatInitializationStatus.ALREADY_INITIALIZED
     ) {
       setError(null);
-
+      if (!chatEnvName) {
+        return;
+      }
+      setChatInitializationStatus(ChatInitializationStatus.INITIALIZING);
       BosonXmtpClient.isXmtpEnabled(
         address,
         config.envConfig.envName === "production" ? "production" : "dev",

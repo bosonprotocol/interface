@@ -217,7 +217,6 @@ export default function ResolveDisputeModal({
                     bosonXmtp,
                     addMessage,
                     onSentMessage,
-                    address,
                     destinationAddress,
                     newMessage
                   });
@@ -276,7 +275,6 @@ export default function ResolveDisputeModal({
                       bosonXmtp,
                       addMessage,
                       onSentMessage,
-                      address,
                       destinationAddress,
                       newMessage: errorMessageObj
                     }));

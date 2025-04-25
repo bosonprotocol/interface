@@ -319,7 +319,6 @@ function RaiseDisputePage() {
                       bosonXmtp &&
                         (await sendAndAddMessageToUI({
                           bosonXmtp,
-                          address,
                           destinationAddress,
                           newMessage: errorMessageObj
                         }));

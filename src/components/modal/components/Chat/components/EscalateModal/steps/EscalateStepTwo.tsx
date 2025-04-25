@@ -463,7 +463,6 @@ function EscalateStepTwo({
                               bosonXmtp,
                               addMessage,
                               onSentMessage,
-                              address,
                               destinationAddress,
                               newMessage
                             });
@@ -524,7 +523,6 @@ function EscalateStepTwo({
                                 bosonXmtp,
                                 addMessage,
                                 onSentMessage,
-                                address,
                                 destinationAddress,
                                 newMessage: errorMessageObj
                               }));

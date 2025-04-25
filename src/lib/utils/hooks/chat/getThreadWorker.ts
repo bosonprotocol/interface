@@ -79,8 +79,8 @@ export async function getThread({
       }
       return () => {
         return bosonXmtp.getThread(threadId, counterParty, {
-          startTime: times.startTime,
-          endTime: times.endTime
+          sentAfterNs: BigInt(times.startTime.getTime()) * BigInt(1_000_000),
+          sentBeforeNs: BigInt(times.endTime.getTime()) * BigInt(1_000_000)
         });
       };
     });

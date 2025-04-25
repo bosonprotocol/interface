@@ -693,7 +693,7 @@ export default function ConfirmProductDetails({
             }
           >
             {chatInitializationStatus ===
-              ChatInitializationStatus.NOT_INITIALIZED && bosonXmtp ? (
+              ChatInitializationStatus.INITIALIZING && bosonXmtp ? (
               <Spinner size={20} />
             ) : (
               "Confirm"

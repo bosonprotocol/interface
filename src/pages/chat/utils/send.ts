@@ -187,7 +187,6 @@ export const sendAndAddMessageToUI = async ({
   bosonXmtp,
   addMessage,
   onSentMessage,
-  address,
   destinationAddress,
   newMessage
 }: {
@@ -200,7 +199,6 @@ export const sendAndAddMessageToUI = async ({
   onSentMessage?:
     | ((messageData: MessageData, uuid: string) => Promise<void>)
     | undefined;
-  address: string;
   destinationAddress: string;
   newMessage: MessageObject;
 }) => {
@@ -208,8 +206,8 @@ export const sendAndAddMessageToUI = async ({
 
   await addMessage?.({
     authorityId: "",
-    timestamp: Date.now(),
-    sender: address,
+    timestamp: BigInt(Date.now()) * BigInt(1_000_000),
+    sender: bosonXmtp.inboxId || "",
     recipient: destinationAddress,
     data: newMessage,
     isValid: false,

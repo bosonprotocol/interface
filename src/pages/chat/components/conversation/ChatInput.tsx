@@ -190,8 +190,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
         await addMessage({
           authorityId: "",
-          timestamp: Date.now(),
-          sender: address,
+          timestamp: BigInt(Date.now()) * BigInt(1_000_000),
+          sender: bosonXmtp.inboxId || "",
           recipient: destinationAddress,
           data: newMessage,
           isValid: false,
@@ -247,8 +247,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           callbackSendingMessage: async (newMessage, uuid) => {
             await addMessage({
               authorityId: "",
-              timestamp: Date.now(),
-              sender: address,
+              timestamp: BigInt(Date.now()) * BigInt(1_000_000),
+              sender: bosonXmtp.inboxId || "",
               recipient: destinationAddress,
               data: newMessage,
               isValid: false,
