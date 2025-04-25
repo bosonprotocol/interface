@@ -20,14 +20,11 @@ export const useChatStatus = (): {
   const [error, setError] = useState<Error | null>(null);
   const [chatInitializationStatus, setChatInitializationStatus] =
     useState<ChatInitializationStatus>(ChatInitializationStatus.PENDING);
-  const { bosonXmtp, chatEnvName } = useChatContext();
+  const { bosonXmtp } = useChatContext();
   const { config } = useConfigContext();
   const { account: address } = useAccount();
 
   useEffect(() => {
-    if (!chatEnvName) {
-      throw new Error(`chatEnvName is falsy ${chatEnvName}`);
-    }
     if (
       chatInitializationStatus === ChatInitializationStatus.PENDING &&
       !!bosonXmtp
@@ -54,13 +51,7 @@ export const useChatStatus = (): {
           setChatInitializationStatus(ChatInitializationStatus.ERROR);
         });
     }
-  }, [
-    address,
-    bosonXmtp,
-    chatInitializationStatus,
-    chatEnvName,
-    config.envConfig.envName
-  ]);
+  }, [address, bosonXmtp, chatInitializationStatus, config.envConfig.envName]);
   return {
     chatInitializationStatus,
     error,
