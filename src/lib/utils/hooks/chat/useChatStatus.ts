@@ -1,3 +1,4 @@
+import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useEffect, useState } from "react";
 
@@ -8,6 +9,7 @@ export enum ChatInitializationStatus {
   PENDING = "PENDING",
   ALREADY_INITIALIZED = "ALREADY_INITIALIZED",
   INITIALIZED = "INITIALIZED",
+  INITIALIZING = "INITIALIZING",
   NOT_INITIALIZED = "NOT_INITIALIZED",
   ERROR = "ERROR"
 }
@@ -20,7 +22,7 @@ export const useChatStatus = (): {
   const [error, setError] = useState<Error | null>(null);
   const [chatInitializationStatus, setChatInitializationStatus] =
     useState<ChatInitializationStatus>(ChatInitializationStatus.PENDING);
-  const { bosonXmtp } = useChatContext();
+  const { bosonXmtp, chatEnvName } = useChatContext();
   const { config } = useConfigContext();
   const { account: address } = useAccount();
 
@@ -35,8 +37,15 @@ export const useChatStatus = (): {
       chatInitializationStatus !== ChatInitializationStatus.ALREADY_INITIALIZED
     ) {
       setError(null);
-      bosonXmtp
-        ?.isXmtpEnabled()
+      if (!chatEnvName) {
+        return;
+      }
+      setChatInitializationStatus(ChatInitializationStatus.INITIALIZING);
+      BosonXmtpClient.isXmtpEnabled(
+        address,
+        config.envConfig.envName === "production" ? "production" : "dev",
+        chatEnvName
+      )
         .then((isEnabled) => {
           if (isEnabled) {
             setChatInitializationStatus(ChatInitializationStatus.INITIALIZED);
@@ -51,7 +60,13 @@ export const useChatStatus = (): {
           setChatInitializationStatus(ChatInitializationStatus.ERROR);
         });
     }
-  }, [address, bosonXmtp, chatInitializationStatus, config.envConfig.envName]);
+  }, [
+    address,
+    bosonXmtp,
+    chatInitializationStatus,
+    chatEnvName,
+    config.envConfig.envName
+  ]);
   return {
     chatInitializationStatus,
     error,
