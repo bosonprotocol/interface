@@ -21,7 +21,6 @@ export default function ChatProvider({ children }: Props) {
   const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpClient>();
   const chatEnvName = getChatEnvName(config);
   useEffect(() => {
-    console.log({ signer, initialize, bosonXmtp });
     if (signer && initialize && !bosonXmtp) {
       setLoading(true);
       BosonXmtpClient.initialise(
