@@ -290,6 +290,8 @@ const ChatConversation = ({
   useEffect(() => {
     if (!bosonXmtp?.client.conversations) return;
 
+    bosonXmtp.client.conversations.syncAll();
+
     const interval = setInterval(() => {
       bosonXmtp.client.conversations.syncAll();
     }, 5000);
