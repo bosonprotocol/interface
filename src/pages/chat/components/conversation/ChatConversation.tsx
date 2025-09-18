@@ -5,7 +5,7 @@ import {
   ThreadId
 } from "@bosonprotocol/chat-sdk";
 import { validateMessage } from "@bosonprotocol/chat-sdk";
-import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";
