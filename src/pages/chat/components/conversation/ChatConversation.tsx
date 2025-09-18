@@ -1,11 +1,11 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
 import {
   MessageData,
   MessageType,
   ProposalContent,
   ThreadId
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
+} from "@bosonprotocol/chat-sdk";
+import { validateMessage } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";
@@ -436,7 +436,7 @@ const ChatConversation = ({
       destinationAddress
     }: {
       threadId: ThreadId;
-      bosonXmtp: BosonXmtpClient;
+      bosonXmtp: BosonXmtpBrowserClient;
       destinationAddress: string;
     }) => {
       try {
