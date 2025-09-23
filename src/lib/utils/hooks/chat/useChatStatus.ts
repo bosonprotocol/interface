@@ -1,4 +1,4 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useEffect, useState } from "react";
 
@@ -41,7 +41,7 @@ export const useChatStatus = (): {
         return;
       }
       setChatInitializationStatus(ChatInitializationStatus.INITIALIZING);
-      BosonXmtpClient.isXmtpEnabled(
+      BosonXmtpBrowserClient.isXmtpEnabled(
         address,
         config.envConfig.envName === "production" ? "production" : "dev",
         chatEnvName

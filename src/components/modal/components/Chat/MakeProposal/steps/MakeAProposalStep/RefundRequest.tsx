@@ -146,12 +146,12 @@ export default function RefundRequest({ exchange, iAmTheBuyer }: Props) {
                 if (isNaN(valueAsNumber)) {
                   return;
                 }
-                const valueInDecimals: string = formatIntValueToDecimals(
-                  BigNumber.from(inEscrow)
-                    .mul(valueAsNumber * 1000)
-                    .div(100 * 1000)
-                    .toString()
-                );
+                const valueAsString = BigNumber.from(inEscrow)
+                  .mul(valueAsNumber * 1000)
+                  .div(100 * 1000)
+                  .toString();
+                const valueInDecimals: string =
+                  formatIntValueToDecimals(valueAsString);
                 setFieldValue(
                   FormModel.formFields.refundAmount.name,
                   valueInDecimals,

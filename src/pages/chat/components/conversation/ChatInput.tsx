@@ -3,7 +3,7 @@ import {
   MessageType,
   ThreadId,
   version
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { defaultFontFamily } from "lib/styles/fonts";

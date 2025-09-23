@@ -1,10 +1,10 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk";
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
 import { getChatEnvName } from "./const";
 
 export const Context = createContext<{
-  bosonXmtp: BosonXmtpClient | undefined;
+  bosonXmtp: BosonXmtpBrowserClient | undefined;
   initialize: Dispatch<SetStateAction<void>>;
   chatEnvName: ReturnType<typeof getChatEnvName> | null;
   error: unknown;

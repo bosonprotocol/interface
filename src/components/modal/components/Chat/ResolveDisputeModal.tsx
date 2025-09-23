@@ -4,7 +4,7 @@ import {
   MessageType,
   ThreadId,
   version
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk";
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, hooks, Provider, subgraph } from "@bosonprotocol/react-kit";
 import {

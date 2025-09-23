@@ -1,4 +1,4 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk";
 import {
   FileContent,
   MessageData,
@@ -8,7 +8,7 @@ import {
   SupportedFileMimeTypes,
   ThreadId,
   version
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk";
 import { getHasUserRejectedTx } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 
@@ -24,7 +24,7 @@ export const sendFilesToChat = async ({
   callbackSendingMessage,
   callback
 }: {
-  bosonXmtp: BosonXmtpClient;
+  bosonXmtp: BosonXmtpBrowserClient;
   files: FileWithEncodedData[];
   destinationAddress: string;
   threadId: ThreadId;
@@ -74,7 +74,7 @@ export const sendProposalToChat = async ({
   callback,
   type
 }: {
-  bosonXmtp: BosonXmtpClient;
+  bosonXmtp: BosonXmtpBrowserClient;
   proposal: ProposalContent["value"];
   files: FileWithEncodedData[];
   destinationAddress: string;
@@ -190,7 +190,7 @@ export const sendAndAddMessageToUI = async ({
   destinationAddress,
   newMessage
 }: {
-  bosonXmtp: BosonXmtpClient;
+  bosonXmtp: BosonXmtpBrowserClient;
   addMessage?:
     | ((
         newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]

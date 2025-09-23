@@ -7,7 +7,7 @@ import {
   ProposalContent,
   StringContent,
   StringIconContent
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk";
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Check, Clock } from "phosphor-react";
 import React, {

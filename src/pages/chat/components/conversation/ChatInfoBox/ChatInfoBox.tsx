@@ -1,4 +1,4 @@
-import { MessageData } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { MessageData } from "@bosonprotocol/chat-sdk";
 import { subgraph } from "@bosonprotocol/react-kit";
 
 import { getExchangeDisputeDates } from "../../../../../lib/utils/exchange";
