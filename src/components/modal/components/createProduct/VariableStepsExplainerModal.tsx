@@ -190,14 +190,6 @@ const VariableStepsExplainerModal: React.FC<
     }
     return [];
   }, [doSetQueryParams, order, modalTitle]);
-  console.log({
-    order,
-    to,
-    text,
-    firstActiveStep,
-    doSetQueryParams,
-    buttonText
-  });
   return (
     <>
       <Grid flexDirection="column" marginBottom="2.5rem">
