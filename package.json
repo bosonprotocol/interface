@@ -18,7 +18,7 @@
     "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --fix",
     "prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
     "prepare": "husky install",
-    "test": "vitest --testPathIgnorePatterns .spec.ts",
+    "test": "vitest --exclude \"**/*.spec.ts\"",
     "test:e2e": "playwright test --project=chromium",
     "test:e2e:ci": "cross-env CI=true playwright test --project=chromium",
     "test:e2e:debug": "cross-env PWDEBUG=console playwright test --project=chromium",
