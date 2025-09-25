@@ -47,6 +47,10 @@ export function useCurationLists() {
       : CONFIG.enableCurationLists
         ? CONFIG.offerCurationList
         : undefined,
-    isError: sellerBlacklist.isError
+    isError: sellerBlacklist.isError,
+    isLoading: sellerBlacklist.isLoading,
+    isFetched: sellerBlacklist.isFetched,
+    isFetching: sellerBlacklist.isFetching,
+    lastSellerIdFetched: sellerBlacklist.lastSellerIdFetched
   };
 }

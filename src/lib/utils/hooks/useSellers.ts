@@ -20,6 +20,9 @@ export const useSellerCurationListFn = () => {
 
   const isSellerInCurationList = useCallback(
     (sellerID: string) => {
+      if (curationLists?.isLoading) {
+        return undefined;
+      }
       if (curationLists?.sellerCurationList && sellerID !== "") {
         return curationLists.sellerCurationList.includes(sellerID as string);
       } else if (!curationLists?.enableCurationLists) {
