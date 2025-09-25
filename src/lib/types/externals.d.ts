@@ -1,7 +1,5 @@
 declare module "@metamask/jazzicon";
 
-declare module "pretty";
-
 declare module "*.ttf";
 
 declare module "*.svg?react" {
@@ -11,6 +9,11 @@ declare module "*.svg?react" {
 }
 
 declare module "*.svg?url" {
+  const content: string;
+  export default content;
+}
+
+declare module "*.png?inline" {
   const content: string;
   export default content;
 }

@@ -3,8 +3,8 @@ import React from "react";
 
 import { Error, FormField } from "../../../../components/form";
 import Help from "../../../../components/product/Help";
-import oneItemTypeProduct from "../../../../components/product/img/one-item-product.png";
-import phygitalProduct from "../../../../components/product/img/phygital-product.png";
+import oneItemTypeProduct from "../../../../components/product/img/one-item-product.png?inline";
+import phygitalProduct from "../../../../components/product/img/phygital-product.png?inline";
 import {
   Label,
   ProductImage,
