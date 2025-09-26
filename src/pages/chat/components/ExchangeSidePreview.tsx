@@ -1,7 +1,4 @@
-import {
-  MessageData,
-  ThreadId
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { MessageData, ThreadId } from "@bosonprotocol/chat-sdk";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
 import {
   buyerAndSellerAgreementIncluding,

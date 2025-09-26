@@ -1,5 +1,5 @@
-import { ThreadId } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
-import { ThreadObject } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { ThreadId } from "@bosonprotocol/chat-sdk";
+import { ThreadObject } from "@bosonprotocol/chat-sdk";
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";

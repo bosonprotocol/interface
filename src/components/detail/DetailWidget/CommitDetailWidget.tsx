@@ -195,7 +195,8 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
               offer.exchangeToken.address,
               constants.MaxInt256,
               {
-                spender: commitProxyAddress
+                spender: commitProxyAddress,
+                returnTxInfo: false
               }
             );
             await tx.wait();
