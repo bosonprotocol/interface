@@ -26,9 +26,9 @@ const packages = [
 ];
 
 async function main() {
-  for (const package of packages) {
-    for (const folder of package.folders) {
-      const target = `${resolve(ccRepo, "packages", package.path, folder)}`;
+  for (const pkg of packages) {
+    for (const folder of pkg.folders) {
+      const target = `${resolve(ccRepo, "packages", pkg.path, folder)}`;
       if (!existsSync(target)) {
         console.error(`Target ${target} does not exist.`);
         continue;
@@ -37,7 +37,7 @@ async function main() {
         __dirname,
         "..",
         "node_modules/@bosonprotocol",
-        package.path,
+        pkg.path,
         folder
       )}`;
       while (existsSync(linkPath)) {
@@ -45,11 +45,11 @@ async function main() {
         rmSync(linkPath, { recursive: true });
         await new Promise((r) => setTimeout(r, 200));
       }
-      if (package.mode === "link") {
+      if (pkg.mode === "link") {
         console.log(`Create link ${linkPath} --> ${target}`);
         symlinkSync(target, linkPath, "junction");
       }
-      if (package.mode === "copy") {
+      if (pkg.mode === "copy") {
         console.log(`Copy ${target} into ${linkPath}`);
         cpSync(target, linkPath, {
           recursive: true,

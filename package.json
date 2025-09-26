@@ -32,8 +32,8 @@
     "clean-react-cache": "run-script-os",
     "clean-react-cache:default": "rm -rf node_modules/.cache",
     "clean-react-cache:win32": "rmdir /S /Q node_modules\\.cache",
-    "link-cc": "node ./scripts/link-to-local-core-components.js",
-    "link-chat": "node ./scripts/link-to-local-chat-sdk.js --link",
+    "link-cc": "node ./scripts/link-to-local-core-components.cjs",
+    "link-chat": "node ./scripts/link-to-local-chat-sdk.cjs --link",
     "ts-coverage": "typescript-coverage-report",
     "tsc": "tsc"
   },
