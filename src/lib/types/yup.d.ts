@@ -1,6 +1,7 @@
-import type { Dayjs } from "dayjs";
-import * as yup from "yup";
-import { MixedSchema as OriginalMixedSchema } from "yup/lib/mixed";
+import "yup";
+// import type { Dayjs } from "dayjs";
+// import * as yup from "yup";
+// import { MixedSchema as OriginalMixedSchema } from "yup/lib/mixed";
 declare module "yup" {
   interface StringSchema<
     TType extends Maybe<string> = string | undefined,
@@ -32,6 +33,11 @@ declare module "yup" {
     AnyObject,
     TType | undefined
   >;
+  function addMethod<T = any>(
+    schemaType: any,
+    name: string,
+    method: (this: T, ...args: any[]) => any
+  ): void;
 }
 
 export default yup;
