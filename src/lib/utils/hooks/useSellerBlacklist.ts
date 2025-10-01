@@ -17,6 +17,10 @@ export function useSellerBlacklist(
 ): {
   isSuccess: boolean;
   isError: boolean;
+  isLoading: boolean;
+  isFetched: boolean;
+  isFetching: boolean;
+  lastSellerIdFetched: string | undefined;
   curatedSellerIds: string[] | undefined;
 } {
   const { config } = useConfigContext();
@@ -27,11 +31,13 @@ export function useSellerBlacklist(
     ["all-sellers", props, subgraphUrl],
     async () => {
       const maxSellerPerReq = 1000;
-      const fetched = await accounts.subgraph.getSellers(subgraphUrl, {
-        sellersFirst: maxSellerPerReq,
-        sellersOrderBy: subgraph.Seller_OrderBy.SELLERID,
-        sellersOrderDirection: subgraph.OrderDirection.ASC
-      });
+      const fetched = (
+        await accounts.subgraph.getSellers(subgraphUrl, {
+          sellersFirst: maxSellerPerReq,
+          sellersOrderBy: subgraph.Seller_OrderBy.SELLERID,
+          sellersOrderDirection: subgraph.OrderDirection.ASC
+        })
+      ).map((seller) => seller.id);
       let loop = fetched.length === maxSellerPerReq;
       let sellersSkip = maxSellerPerReq;
       while (loop) {
@@ -41,10 +47,11 @@ export function useSellerBlacklist(
           sellersOrderBy: subgraph.Seller_OrderBy.SELLERID,
           sellersOrderDirection: subgraph.OrderDirection.ASC
         });
-        fetched.push(...toAdd);
+        fetched.push(...toAdd.map((seller) => seller.id));
         loop = toAdd.length === maxSellerPerReq;
         sellersSkip += maxSellerPerReq;
       }
+
       return fetched;
     },
     {
@@ -71,9 +78,9 @@ export function useSellerBlacklist(
   return useMemo(() => {
     const sellerIdList =
       blacklist.isSuccess && blacklist.data && allSellers.isSuccess
-        ? allSellers.data
-            .filter((seller) => !blacklist.data?.includes(seller.id))
-            .map((seller) => seller.id)
+        ? allSellers.data.filter(
+            (sellerId) => !blacklist.data?.includes(sellerId)
+          )
         : [];
     if (
       props.allowConnectedSeller &&
@@ -86,7 +93,11 @@ export function useSellerBlacklist(
     return {
       isSuccess: blacklist.isSuccess,
       isError: blacklist.isError,
-      curatedSellerIds: sellerIdList
+      curatedSellerIds: sellerIdList,
+      isLoading: blacklist.isLoading,
+      isFetched: blacklist.isFetched,
+      isFetching: blacklist.isFetching,
+      lastSellerIdFetched: allSellers.data?.at(-1)
     };
   }, [
     allSellers,
@@ -95,6 +106,9 @@ export function useSellerBlacklist(
     blacklist.isSuccess,
     blacklist.isError,
     blacklist.data,
+    blacklist.isLoading,
+    blacklist.isFetched,
+    blacklist.isFetching,
     props.allowConnectedSeller
   ]);
 }

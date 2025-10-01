@@ -1,8 +1,10 @@
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import Button from "components/ui/Button";
+import Loading from "components/ui/Loading";
 import { BosonRoutes } from "lib/routing/routes";
 import { removeItemInStorage } from "lib/utils/hooks/localstorage/useLocalStorage";
+import { useCurationLists } from "lib/utils/hooks/useCurationLists";
 import { useKeepQueryParamsNavigate } from "lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -73,8 +75,9 @@ function CreateProduct() {
   const [createdOffersIds, setCreatedOffersIds] = useState<string[]>([]);
   const [isDraftModalClosed, setDraftModalClosed] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
-  const { sellers } = useCurrentSellers();
+  const { sellers, isLoading: sellersLoading } = useCurrentSellers();
   const seller = sellers?.[0];
+  const curationLists = useCurationLists();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
   const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
 
@@ -146,6 +149,16 @@ function CreateProduct() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createdOffersIds, removeLandingQueryParams, nextStepResult]);
+
+  if (
+    sellersLoading ||
+    curationLists.isFetching ||
+    (curationLists.lastSellerIdFetched !== undefined &&
+      seller &&
+      Number(curationLists.lastSellerIdFetched) < Number(seller.id))
+  ) {
+    return <Loading />;
+  }
 
   if (!!seller && !isSellerCurated) {
     return <NotFound />;
