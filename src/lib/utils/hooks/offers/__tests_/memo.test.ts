@@ -1,10 +1,13 @@
 /**
- * @jest-environment ./jest.custom.env
+ * @vitest-environment jsdom
  */
+import { describe, expect, test, vi } from "vitest";
+
 import { getFirstNOffers } from "../../../../../../e2e-tests/utils/getFirstNOffers";
 import { memoMergeAndSortOffers } from "../memo";
 
-jest.mock("@bosonprotocol/react-kit", () => {
+// Convert jest.mock to vi.mock
+vi.mock("@bosonprotocol/react-kit", () => {
   return {
     validation: {
       validateMetadata: () => true

@@ -1,4 +1,4 @@
-import { ReactComponent } from "../../../assets/redeemeum.svg";
+import ReactComponent from "../../../assets/redeemeum.svg?react";
 import { Typography } from "../../ui/Typography";
 
 export const DetailDisputeResolver = {

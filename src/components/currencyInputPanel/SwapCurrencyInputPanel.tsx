@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Percent } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
-import { ReactComponent as DropDown } from "assets/images/dropdown.svg";
+import DropDown from "assets/images/dropdown.svg?react";
 import { flexColumnNoWrap, flexRowNoWrap } from "components/header/styles";
 import {
   LoadingOpacityContainer,

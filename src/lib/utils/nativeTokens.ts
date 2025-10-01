@@ -1,5 +1,5 @@
-import { Chain } from "../../graphql/data/__generated__/types-and-hooks";
-import { supportedChainIdFromGQLChain } from "../../graphql/data/util";
+import { Chain } from "../../graphqlData/__generated__/types-and-hooks";
+import { supportedChainIdFromGQLChain } from "../../graphqlData/util";
 import { nativeOnChain } from "../constants/tokens";
 
 export function getNativeTokenDBAddress(chain: Chain): string | undefined {

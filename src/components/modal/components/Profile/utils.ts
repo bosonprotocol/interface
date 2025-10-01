@@ -111,11 +111,9 @@ export function buildRegularProfileFromMetadata(
             position: coverPicture.position ?? undefined,
             src: coverPicture.url
           }
-        ] ?? []
+        ]
       : [],
-    logo: profileImage
-      ? [{ ...profileImage, src: profileImage.url }] ?? []
-      : [],
+    logo: profileImage ? [{ ...profileImage, src: profileImage.url }] : [],
     contactPreference:
       OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
         (obj) => obj.value === metadata?.contactPreference

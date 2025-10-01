@@ -2,8 +2,8 @@ import React, { Fragment } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import { ReactComponent as Dot } from "./timeline-dot.svg";
-import { ReactComponent as VerticalLineSVG } from "./timeline-line.svg";
+import Dot from "./timeline-dot.svg?react";
+import VerticalLineSVG from "./timeline-line.svg?react";
 
 const Container = styled.div<{ $height: string }>`
   display: flex;

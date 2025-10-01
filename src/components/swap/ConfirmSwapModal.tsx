@@ -3,7 +3,7 @@ import Modal from "components/modal/Modal";
 import { AutoColumn } from "components/ui/column";
 import { Grid } from "components/ui/Grid";
 import { Typography } from "components/ui/Typography";
-import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
+import { TransactionStatus } from "graphqlData/__generated__/types-and-hooks";
 import { getChainInfo } from "lib/constants/chainInfo";
 import { USDT as USDT_MAINNET } from "lib/constants/tokens";
 import { isL2ChainId } from "lib/utils/chains";
