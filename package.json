@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "NODE_OPTIONS='--max-old-space-size=8192' vite build",
+    "build": "cross-env NODE_OPTIONS='--max-old-space-size=8192' vite build",
     "preview": "vite preview",
     "build:nomaps": "cross-env GENERATE_SOURCEMAP=false vite build",
     "analyze": "cross-env ANALYZE_BUNDLE=true vite build",
