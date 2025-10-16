@@ -10,7 +10,7 @@ import { InterfaceTrade } from "state/routing/types";
 import { isUniswapXTrade } from "state/routing/utils";
 import styled from "styled-components";
 
-import GasIcon from "../../assets/images/gas-icon.svg?react";
+import { ReactComponent as GasIcon } from "../../assets/images/gas-icon.svg";
 import { GasBreakdownTooltip } from "./GasBreakdownTooltip";
 
 const StyledGasIcon = styled(GasIcon)`

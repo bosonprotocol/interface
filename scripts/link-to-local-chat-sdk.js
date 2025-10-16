@@ -19,9 +19,9 @@ const folders = ["src", "dist"];
 const packages = [{ path: ".", mode, folders }];
 
 async function main() {
-  for (const pkg of packages) {
-    for (const folder of pkg.folders) {
-      const target = `${resolve(chatRepo, pkg.path, folder)}`;
+  for (const package of packages) {
+    for (const folder of package.folders) {
+      const target = `${resolve(chatRepo, package.path, folder)}`;
       if (!existsSync(target)) {
         console.error(`Target ${target} does not exist.`);
         continue;
@@ -30,7 +30,7 @@ async function main() {
         __dirname,
         "..",
         "node_modules/@bosonprotocol/chat-sdk",
-        pkg.path,
+        package.path,
         folder
       )}`;
       while (existsSync(linkPath)) {
@@ -38,11 +38,11 @@ async function main() {
         rmSync(linkPath, { recursive: true });
         await new Promise((r) => setTimeout(r, 200));
       }
-      if (pkg.mode === "link") {
+      if (package.mode === "link") {
         console.log(`Create link ${linkPath} --> ${target}`);
         symlinkSync(target, linkPath, "junction");
       }
-      if (pkg.mode === "copy") {
+      if (package.mode === "copy") {
         console.log(`Copy ${target} into ${linkPath}`);
         cpSync(target, linkPath, {
           recursive: true,

@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import type { TransactionResponse } from "@ethersproject/providers";
 import { ChainId, SUPPORTED_CHAINS, Token } from "@uniswap/sdk-core";
-import { TransactionStatus } from "graphqlData/__generated__/types-and-hooks";
+import { TransactionStatus } from "graphql/data/__generated__/types-and-hooks";
 import { useAccount, useChainId } from "lib/utils/hooks/connection/connection";
 import { SwapResult } from "lib/utils/hooks/useSwapCallback";
 import { useCallback, useMemo } from "react";

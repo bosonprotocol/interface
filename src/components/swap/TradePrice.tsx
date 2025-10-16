@@ -57,7 +57,7 @@ export default function TradePrice({ price }: TradePriceProps) {
   );
 
   const text = `${
-    "1 " + labelInverted + " = " + (formattedPrice ?? "-")
+    "1 " + labelInverted + " = " + formattedPrice ?? "-"
   } ${label}`;
 
   return (

@@ -3,8 +3,8 @@ import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { useState } from "react";
 
-import bosonIcon from "./images/boson.svg?react";
-import daiIcon from "./images/dai.svg?react";
+import { ReactComponent as bosonIcon } from "./images/boson.svg";
+import { ReactComponent as daiIcon } from "./images/dai.svg";
 
 const currencyImages = {
   DAI: daiIcon,

@@ -9,12 +9,12 @@ import {
 import {
   Chain,
   useTokenSpotPriceQuery
-} from "graphqlData/__generated__/types-and-hooks";
+} from "graphql/data/__generated__/types-and-hooks";
 import {
   chainIdToBackendName,
   isGqlSupportedChain,
   PollingInterval
-} from "graphqlData/util";
+} from "graphql/data/util";
 import { nativeOnChain } from "lib/constants/tokens";
 import { getNativeTokenDBAddress } from "lib/utils/nativeTokens";
 import {

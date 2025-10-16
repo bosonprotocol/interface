@@ -1,8 +1,8 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
-import { html as beautifyHtml } from "js-beautify";
 import { Copy, CopySimple, Info } from "phosphor-react";
+import * as pretty from "pretty";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
@@ -346,7 +346,7 @@ export function CustomStoreModal({
                 tag)
                 <ol type="a" style={{ padding: 0 }}>
                   <StyledPre>
-                    <code>{beautifyHtml(iframeString)}</code>
+                    <code>{pretty(iframeString)}</code>
                     <StyledCopyButton
                       onClick={() => {
                         try {
@@ -368,7 +368,7 @@ export function CustomStoreModal({
                 For example, this is what a simple HTML page would look like:
                 <ol type="a" style={{ padding: 0 }}>
                   <StyledPre>
-                    <code>{beautifyHtml(htmlString)}</code>
+                    <code>{pretty(htmlString)}</code>
                   </StyledPre>
                 </ol>
               </li>

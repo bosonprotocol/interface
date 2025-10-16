@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-import LensLogo from "../../../../assets/lens.svg?react";
+import { ReactComponent as LensLogo } from "../../../../assets/lens.svg";
 import Button from "../../../ui/Button";
 import { Grid } from "../../../ui/Grid";
 import { Typography } from "../../../ui/Typography";
