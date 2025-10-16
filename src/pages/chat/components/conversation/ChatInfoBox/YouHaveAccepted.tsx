@@ -2,7 +2,7 @@ import {
   AcceptProposalContent,
   MessageData,
   ProposalContent
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk";
 import { useAccount } from "lib/utils/hooks/connection/connection";
 import { Info, X } from "phosphor-react";
 import { useState } from "react";

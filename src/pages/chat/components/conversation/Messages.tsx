@@ -1,5 +1,5 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
-import { MessageData } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk";
+import { MessageData } from "@bosonprotocol/chat-sdk";
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Exchange } from "lib/utils/hooks/useExchanges";
@@ -70,7 +70,7 @@ const LoadMoreMessages = styled.button.attrs({ type: "button" })`
 `;
 
 const getWasItSentByMe = (
-  bosonXmtp: BosonXmtpClient | undefined,
+  bosonXmtp: BosonXmtpBrowserClient | undefined,
   sender: string
 ) => {
   return bosonXmtp?.inboxId === sender;

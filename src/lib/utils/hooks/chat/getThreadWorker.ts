@@ -1,8 +1,5 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
-import {
-  ThreadId,
-  ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk";
+import { ThreadId, ThreadObject } from "@bosonprotocol/chat-sdk";
 import dayjs from "dayjs";
 import { MutableRefObject } from "react";
 
@@ -29,7 +26,7 @@ export async function getThread({
   checkCustomCondition,
   stopRef
 }: {
-  bosonXmtp: BosonXmtpClient;
+  bosonXmtp: BosonXmtpBrowserClient;
   threadId: ThreadId;
   counterParty: string;
   dateIndex: number;
