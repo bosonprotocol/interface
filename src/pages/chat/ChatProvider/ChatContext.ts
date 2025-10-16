@@ -1,4 +1,4 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpBrowserClient as BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
 import { getChatEnvName } from "./const";

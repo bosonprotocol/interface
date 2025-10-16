@@ -91,7 +91,7 @@ function useAllTransactions(): { [txHash: string]: TransactionDetails } {
 
   const state = useAppSelector((state) => state.transactions);
 
-  return chainId ? state[chainId] ?? {} : {};
+  return chainId ? (state[chainId] ?? {}) : {};
 }
 
 export function useTransaction(

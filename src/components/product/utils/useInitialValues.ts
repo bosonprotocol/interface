@@ -728,7 +728,7 @@ function loadExistingProduct<T extends CreateProductForm>(
               }
             };
           })
-      : cloneBaseValues.productVariantsImages ?? [],
+      : (cloneBaseValues.productVariantsImages ?? []),
     imagesSpecificOrAll:
       IMAGE_SPECIFIC_OR_ALL_OPTIONS.find((option) =>
         hasVariantSpecificImages
@@ -808,15 +808,15 @@ function loadExistingProduct<T extends CreateProductForm>(
       weight:
         product?.packaging_weight_value ?? cloneBaseValues.shippingInfo.weight,
       weightUnit: product?.packaging_weight_unit
-        ? OPTIONS_WEIGHT.find(
+        ? (OPTIONS_WEIGHT.find(
             (weightOption) =>
               weightOption.value === product.packaging_weight_unit
-          ) ?? cloneBaseValues.shippingInfo.weightUnit
+          ) ?? cloneBaseValues.shippingInfo.weightUnit)
         : cloneBaseValues.shippingInfo.weightUnit,
       measurementUnit: product?.packaging_dimensions_unit
-        ? OPTIONS_LENGTH.find(
+        ? (OPTIONS_LENGTH.find(
             (option) => option.value === product.packaging_dimensions_unit
-          ) ?? cloneBaseValues.shippingInfo.measurementUnit
+          ) ?? cloneBaseValues.shippingInfo.measurementUnit)
         : cloneBaseValues.shippingInfo.measurementUnit,
       height:
         product?.packaging_dimensions_height ??

@@ -283,8 +283,8 @@ function CreateProductInner({
             }
           },
           condition:
-            offerInfo.condition ?? values.tokenGating.tokenContract
-              ? values.tokenGating ?? null
+            (offerInfo.condition ?? values.tokenGating.tokenContract)
+              ? (values.tokenGating ?? null)
               : null
         },
         // these are the ones that we already had before
@@ -909,20 +909,20 @@ function CreateProductInner({
       const redemptionPeriod = Array.isArray(
         values?.[coreTermsOfSaleKey]?.redemptionPeriod
       )
-        ? (
+        ? ((
             values?.[coreTermsOfSaleKey]?.redemptionPeriod as
               | Dayjs[]
               | undefined
-          )?.map((d) => dayjs(d).format()) ?? []
+          )?.map((d) => dayjs(d).format()) ?? [])
         : values?.[coreTermsOfSaleKey]?.redemptionPeriod;
       const offerValidityPeriod = Array.isArray(
         values?.[coreTermsOfSaleKey]?.offerValidityPeriod
       )
-        ? (
+        ? ((
             values?.[coreTermsOfSaleKey]?.offerValidityPeriod as
               | Dayjs[]
               | undefined
-          )?.map((d) => dayjs(d).format()) ?? []
+          )?.map((d) => dayjs(d).format()) ?? [])
         : values?.[coreTermsOfSaleKey]?.offerValidityPeriod;
       return {
         ...values,

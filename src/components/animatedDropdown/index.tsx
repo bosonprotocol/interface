@@ -15,7 +15,7 @@ export default function AnimatedDropdown({
     // On initial render, `height` will be undefined as ref has not been set yet.
     // If the dropdown should be open, we fallback to `auto` to avoid flickering.
     // Otherwise, we just animate between actual height (when open) and 0 (when closed).
-    height: open ? height ?? "auto" : 0,
+    height: open ? (height ?? "auto") : 0,
     config: {
       mass: 1.2,
       tension: 300,

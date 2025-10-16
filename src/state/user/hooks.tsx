@@ -299,7 +299,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 
   // pinned pairs
   const pinnedPairs = useMemo(
-    () => (chainId ? PINNED_PAIRS[chainId] ?? [] : []),
+    () => (chainId ? (PINNED_PAIRS[chainId] ?? []) : []),
     [chainId]
   );
 

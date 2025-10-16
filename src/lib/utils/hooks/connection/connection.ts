@@ -12,8 +12,8 @@ export function useProvider() {
   const isMagicLoggedIn = hooks.useIsMagicLoggedIn();
   return useMemo(() => {
     return isMagicLoggedIn
-      ? magicProvider ?? provider
-      : provider ?? magicProvider;
+      ? (magicProvider ?? provider)
+      : (provider ?? magicProvider);
   }, [provider, magicProvider, isMagicLoggedIn]);
 }
 

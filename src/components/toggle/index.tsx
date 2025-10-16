@@ -61,7 +61,7 @@ const ToggleElement = styled.span<{
     ease-in;
   background: ${({ bgColor, isActive }) =>
     isActive
-      ? bgColor ?? lighten(0.09, colors.violet)
+      ? (bgColor ?? lighten(0.09, colors.violet))
       : bgColor
         ? colors.greyLight
         : colors.greyDark};

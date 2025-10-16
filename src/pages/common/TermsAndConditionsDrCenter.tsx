@@ -282,7 +282,8 @@ export default function TermsAndConditionsDrCenter() {
             <b>License to Use the DR Center.</b> You, subject to and conditioned
             upon such your acceptance of and adherence to these Terms, are
             hereby granted a nontransferable, non-exclusive, personal, non-sub
-            licensable license to use the DR Center for its intended purposes.{" "}
+            licensable license to use the DR Center for its intended
+            purposes.{" "}
           </Text>
           <Text>
             <b>Alterations to DR Center.</b> The Company may from time to time
@@ -984,7 +985,8 @@ export default function TermsAndConditionsDrCenter() {
             the DR Center and content therein) other than those expressly
             contained in these Terms. The software and computer code are
             released under the Apache v2 License (link) which explains the terms
-            and conditions for use, reproduction, and distribution of the code.{" "}
+            and conditions for use, reproduction, and distribution of the
+            code.{" "}
           </Text>
           <Text>
             All the brands, the relative figurative and/or shape trademarks, all

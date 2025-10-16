@@ -1,8 +1,5 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
-import {
-  ThreadId,
-  ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { BosonXmtpBrowserClient as BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { ThreadId, ThreadObject } from "@bosonprotocol/chat-sdk";
 import dayjs from "dayjs";
 import { MutableRefObject } from "react";
 

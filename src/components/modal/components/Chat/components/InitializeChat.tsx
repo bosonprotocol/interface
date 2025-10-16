@@ -58,8 +58,8 @@ export default function InitializeChat({ isError = false, message }: Props) {
         >
           {isError
             ? `Chat initialization failed, please try again`
-            : message ??
-              `To proceed you must first initialize your chat client`}
+            : (message ??
+              `To proceed you must first initialize your chat client`)}
         </Typography>
       </Grid>
       <div>

@@ -100,7 +100,8 @@ export function useSellerBlacklist(
       lastSellerIdFetched: allSellers.data?.at(-1)
     };
   }, [
-    allSellers,
+    allSellers.data,
+    allSellers.isSuccess,
     currentSeller.isSuccess,
     currentSeller.sellerIds,
     blacklist.isSuccess,

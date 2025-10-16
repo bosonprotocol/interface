@@ -125,7 +125,7 @@ async function updateSellerMedatata(
             : [])
         ]
       : kindUsed === ProfileType.REGULAR
-        ? metadataImages ?? undefined
+        ? (metadataImages ?? undefined)
         : undefined;
 
   const meta: Parameters<typeof storeSellerMetadata>[0] = {
@@ -173,8 +173,8 @@ async function updateSellerMedatata(
     ...seller,
     admin: address,
     authTokenId: values.authTokenId // it's assumed to be in hexadecimal
-      ? values.authTokenId ?? "0"
-      : decimalToHex(+seller.authTokenId) ?? "0",
+      ? (values.authTokenId ?? "0")
+      : (decimalToHex(+seller.authTokenId) ?? "0"),
     authTokenType:
       kindUsed === ProfileType.LENS ? AuthTokenType.LENS : AuthTokenType.NONE,
     sellerId: seller.id,

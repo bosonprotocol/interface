@@ -99,7 +99,8 @@ const LandingContainer = styled.div`
     content: "";
     position: absolute;
     inset: 0px;
-    background: linear-gradient(
+    background:
+      linear-gradient(
         135deg,
         rgba(255, 140, 0, 0.1) 0%,
         rgba(128, 0, 128, 0.1) 50%,
@@ -110,8 +111,16 @@ const LandingContainer = styled.div`
         rgba(76, 217, 100, 0.15) 0%,
         transparent 50%
       ),
-      radial-gradient(circle at 0% 100%, rgba(0, 0, 0, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 90% 90%, rgba(0, 0, 0, 0.1) 0%, transparent 40%),
+      radial-gradient(
+        circle at 0% 100%,
+        rgba(0, 0, 0, 0.1) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 90% 90%,
+        rgba(0, 0, 0, 0.1) 0%,
+        transparent 40%
+      ),
       radial-gradient(
         circle at 100% 25%,
         rgba(0, 0, 0, 0.1) 0%,

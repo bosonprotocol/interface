@@ -341,10 +341,10 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
 
   return {
     [Field.INPUT]: {
-      currencyId: inputCurrency === "" ? null : inputCurrency ?? null
+      currencyId: inputCurrency === "" ? null : (inputCurrency ?? null)
     },
     [Field.OUTPUT]: {
-      currencyId: outputCurrency === "" ? null : outputCurrency ?? null
+      currencyId: outputCurrency === "" ? null : (outputCurrency ?? null)
     },
     typedValue,
     independentField,

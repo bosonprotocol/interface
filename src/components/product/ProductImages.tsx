@@ -121,7 +121,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
             }
           ) || []),
       ...(isPhygital
-        ? values.productDigital?.bundleItems
+        ? (values.productDigital?.bundleItems
             ?.map((bi, index) => {
               const isNewNft = getIsBundleItem<NewNFT>(bi, "newNftName");
               const isNotNFT =
@@ -158,7 +158,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
               }
               return null;
             })
-            .filter(isTruthy) ?? []
+            .filter(isTruthy) ?? [])
         : [])
     ];
   }, [

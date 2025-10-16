@@ -312,7 +312,8 @@ export default function TermsAndConditions() {
           </Text>
           <Text>
             <b>Seller Information.</b> The information you input to create a
-            seller profile on the dApp will be public and accessible via IPFS.{" "}
+            seller profile on the dApp will be public and accessible via
+            IPFS.{" "}
           </Text>
           <Text>
             <b>License to Use the dApp.</b> You, subject to and conditioned upon
@@ -1107,7 +1108,8 @@ export default function TermsAndConditions() {
             specific notice of such changes or modifications. Use of the dApp by
             you after any modification of these Terms constitutes your
             acceptance of the modified terms and conditions. If you do not agree
-            to any such modifications, you must immediately stop using the dApp.{" "}
+            to any such modifications, you must immediately stop using the
+            dApp.{" "}
           </Text>
           <Text>
             <b>No Implied Waivers.</b> No failure or delay on the part of the

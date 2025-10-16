@@ -1,8 +1,8 @@
 import {
+  matchThreadIds,
   MessageData,
   ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/functions";
+} from "@bosonprotocol/chat-sdk";
 import dayjs from "dayjs";
 
 export type DateStep =

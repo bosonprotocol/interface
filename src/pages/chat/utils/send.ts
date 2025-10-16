@@ -1,4 +1,4 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpBrowserClient as BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import {
   FileContent,
   MessageData,
@@ -8,7 +8,7 @@ import {
   SupportedFileMimeTypes,
   ThreadId,
   version
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk";
 import { getHasUserRejectedTx } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 

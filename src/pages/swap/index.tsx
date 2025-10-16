@@ -479,7 +479,7 @@ export function Swap({
     () => ({
       [independentField]: typedValue,
       [dependentField]: showWrap
-        ? parsedAmounts[independentField]?.toExact() ?? ""
+        ? (parsedAmounts[independentField]?.toExact() ?? "")
         : formatCurrencyAmount(
             parsedAmounts[dependentField],
             NumberType.SwapTradeAmount,

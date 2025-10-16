@@ -1,11 +1,11 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
 import {
+  BosonXmtpBrowserClient as BosonXmtpClient,
   MessageData,
   MessageType,
   ProposalContent,
-  ThreadId
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
+  ThreadId,
+  validateMessage
+} from "@bosonprotocol/chat-sdk";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";

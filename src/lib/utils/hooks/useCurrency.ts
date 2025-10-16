@@ -191,7 +191,7 @@ export function useCurrencyFromMap(
 
   const token = useTokenFromMapOrNetwork(
     tokens,
-    isNative ? undefined : shorthandMatchAddress ?? currencyId
+    isNative ? undefined : (shorthandMatchAddress ?? currencyId)
   );
 
   if (

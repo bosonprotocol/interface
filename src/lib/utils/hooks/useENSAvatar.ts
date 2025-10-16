@@ -50,7 +50,7 @@ export default function useENSAvatar(
   const changed = debouncedAddress !== address;
   return useMemo(
     () => ({
-      avatar: changed ? null : http ?? null,
+      avatar: changed ? null : (http ?? null),
       loading:
         changed ||
         addressAvatar.loading ||

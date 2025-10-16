@@ -62,10 +62,10 @@ export function buildProfileFromMetadata(
     ? getLensEmail(lensProfile) || getMetadataEmail(metadata) || ""
     : getMetadataEmail(metadata) || "";
   const profileDataFromMetadata: CreateProfile = {
-    name: isLens ? getLensName(lensProfile) ?? "" : metadata?.name ?? "",
+    name: isLens ? (getLensName(lensProfile) ?? "") : (metadata?.name ?? ""),
     description: isLens
-      ? getLensDescription(lensProfile) ?? ""
-      : metadata?.description ?? "",
+      ? (getLensDescription(lensProfile) ?? "")
+      : (metadata?.description ?? ""),
     email,
     legalTradingName: metadata?.legalTradingName ?? undefined,
     website: metadata?.website ?? "",

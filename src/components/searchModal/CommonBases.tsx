@@ -45,7 +45,7 @@ export default function CommonBases({
   selectedCurrency?: Currency | null;
   onSelect: (currency: Currency) => void;
 }) {
-  const bases = chainId !== undefined ? COMMON_BASES[chainId] ?? [] : [];
+  const bases = chainId !== undefined ? (COMMON_BASES[chainId] ?? []) : [];
 
   return bases.length > 0 ? (
     <MobileWrapper $gap="md">
