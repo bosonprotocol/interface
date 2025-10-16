@@ -203,11 +203,22 @@ export function useCreateOffers() {
             const decimals = await onBeforeBuildCondition();
             const condition = buildCondition(tokenGatedInfo, decimals);
 
+            const sellerAddress = sellerToCreate?.assistant;
+            if (!sellerAddress) {
+              throw new Error(`sellerAddress is falsy "${sellerAddress}"`);
+            }
+            const seller = await coreSDK.getSellerByAssistant(sellerAddress);
+            if (!seller) {
+              throw new Error(
+                `seller could not be found with this address="${sellerAddress}"`
+              );
+            }
+            const sellerId = seller.id;
             if (isMetaTx) {
               const nonce = Date.now();
               const { r, s, v, functionName, functionSignature } =
                 await coreSDK.signMetaTxCreateGroup({
-                  createGroupArgs: { offerIds, ...condition },
+                  createGroupArgs: { offerIds, sellerId, ...condition },
                   nonce
                 });
               txResponse = await coreSDK.relayMetaTransaction({
@@ -221,6 +232,7 @@ export function useCreateOffers() {
             } else {
               txResponse = await coreSDK.createGroup({
                 offerIds,
+                sellerId,
                 ...condition
               });
             }
