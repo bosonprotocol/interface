@@ -1,5 +1,5 @@
 import { Currency } from "@uniswap/sdk-core";
-import PapersIcon from "assets/svg/papers-text.svg?react";
+import { ReactComponent as PapersIcon } from "assets/svg/papers-text.svg";
 import { Spinner } from "components/loading/Spinner";
 import CurrencyLogo from "components/logo/CurrencyLogo";
 import { colors } from "lib/styles/colors";

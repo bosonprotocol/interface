@@ -35,10 +35,10 @@ import { Grid } from "../ui/Grid";
 import { GridContainer } from "../ui/GridContainer";
 import Image from "../ui/Image";
 import { Typography } from "../ui/Typography";
-import differentVariantsProduct from "./img/different-variants-product.png?inline";
-import oneItemTypeProduct from "./img/one-item-product.png?inline";
-import phygitalProduct from "./img/phygital-product.png?inline";
-import physicalProduct from "./img/physical-product.png?inline";
+import differentVariantsProduct from "./img/different-variants-product.png";
+import oneItemTypeProduct from "./img/one-item-product.png";
+import phygitalProduct from "./img/phygital-product.png";
+import physicalProduct from "./img/physical-product.png";
 import {
   ContainerProductPage,
   ProductButtonGroup,

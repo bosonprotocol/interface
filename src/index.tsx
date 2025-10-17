@@ -3,7 +3,7 @@ import { CommitWidgetReduxProvider } from "@bosonprotocol/react-kit";
 import { ConfigProvider } from "components/config/ConfigProvider";
 import { CoreSDKProvider } from "components/core-sdk/CoreSDKProvider";
 import { FiatLinkProvider } from "components/header/accountDrawer/fiatOnrampModal/FiatLink";
-import { apolloClient } from "graphqlData/apollo";
+import { apolloClient } from "graphql/data/apollo";
 import { MulticallUpdater } from "lib/state/multicall";
 import { BlockNumberProvider } from "lib/utils/hooks/useBlockNumber";
 import { queryClient, rootElement } from "queryClient";

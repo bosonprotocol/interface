@@ -5,7 +5,6 @@ import {
   ProtocolConfig
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
-import { Buffer } from "buffer";
 
 import { Token } from "../components/convertion-rate/ConvertionRateContext";
 import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-nft-contract-abi.json";
@@ -14,22 +13,21 @@ import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphe
 import { parseCurationList } from "./utils/curationList";
 import { ViewMode } from "./viewMode";
 
-export const envName = import.meta.env.REACT_APP_ENV_NAME as EnvironmentType;
+export const envName = process.env.REACT_APP_ENV_NAME as EnvironmentType;
 if (!envName) {
   throw new Error("REACT_APP_ENV_NAME is not defined");
 }
-const infuraKey = import.meta.env.REACT_APP_INFURA_KEY;
+const infuraKey = process.env.REACT_APP_INFURA_KEY;
 if (!infuraKey) {
   throw new Error("REACT_APP_INFURA_KEY is not defined");
 }
-const widgetsUrl = import.meta.env.REACT_APP_WIDGETS_URL;
+const widgetsUrl = process.env.REACT_APP_WIDGETS_URL;
 if (!widgetsUrl) {
   throw new Error("REACT_APP_WIDGETS_URL is not defined");
 }
 
-const infuraProjectSecret = import.meta.env
-  .REACT_APP_INFURA_IPFS_PROJECT_SECRET;
-const infuraProjectId = import.meta.env.REACT_APP_INFURA_IPFS_PROJECT_ID;
+const infuraProjectSecret = process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET;
+const infuraProjectId = process.env.REACT_APP_INFURA_IPFS_PROJECT_ID;
 
 function getMetaTxApiIds(envConfig: ProtocolConfig) {
   const protocolAddress: string = envConfig.contracts.protocolDiamond;
@@ -37,7 +35,7 @@ function getMetaTxApiIds(envConfig: ProtocolConfig) {
   const apiIds: Record<string, Record<string, string>> = {};
   try {
     const apiIdsInputPerConfigId = JSON.parse(
-      import.meta.env.REACT_APP_META_TX_API_IDS_MAP || "{}"
+      process.env.REACT_APP_META_TX_API_IDS_MAP || "{}"
     );
     const method = "executeMetaTransaction"; // At the moment, both protocol and tokens have the same method
     const tokens = defaultTokens;
@@ -72,7 +70,7 @@ function getMetaTxApiKey(envConfig: ProtocolConfig) {
   let apiKey = "";
   try {
     const apiKeysPerConfigId = JSON.parse(
-      import.meta.env.REACT_APP_META_TX_API_KEY_MAP || "{}"
+      process.env.REACT_APP_META_TX_API_KEY_MAP || "{}"
     );
     apiKey = apiKeysPerConfigId[envConfig.configId];
     return apiKey;
@@ -99,29 +97,29 @@ export const CONFIG = {
     ticker: process.env.DEFAULT_CURRENCY || "USD",
     symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"
   },
-  releaseTag: import.meta.env.REACT_APP_RELEASE_TAG,
-  releaseName: import.meta.env.REACT_APP_RELEASE_NAME,
+  releaseTag: process.env.REACT_APP_RELEASE_TAG,
+  releaseName: process.env.REACT_APP_RELEASE_NAME,
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
   offerCurationList: parseCurationList(
-    import.meta.env.REACT_APP_OFFER_CURATION_LIST
+    process.env.REACT_APP_OFFER_CURATION_LIST
   ),
-  rNFTLicenseTemplate: import.meta.env.REACT_APP_RNFT_LICENSE_TEMPLATE ?? "",
+  rNFTLicenseTemplate: process.env.REACT_APP_RNFT_LICENSE_TEMPLATE ?? "",
   buyerSellerAgreementTemplate:
-    import.meta.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE ?? "",
+    process.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE ?? "",
   fairExchangePolicyRules:
-    import.meta.env.REACT_APP_FAIR_EXCHANGE_POLICY_RULES ?? "",
+    process.env.REACT_APP_FAIR_EXCHANGE_POLICY_RULES ?? "",
   enableCurationLists: stringToBoolean(
-    import.meta.env.REACT_APP_ENABLE_CURATION_LISTS,
+    process.env.REACT_APP_ENABLE_CURATION_LISTS,
     true
   ),
-  mockSellerId: import.meta.env.REACT_APP_MOCK_SELLER_ID,
+  mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID,
   mockConversionRates: stringToBoolean(
     process.env.REACT_MOCK_CONVERSION_RATES,
     false
   ),
   defaultDisputeResolutionPeriodDays:
-    import.meta.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
+    process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
   defaultSellerContactMethod: "Chat App in the dApp",
   defaultDisputeResolverContactMethod:
     process.env.NODE_ENV === "production"
@@ -131,31 +129,31 @@ export const CONFIG = {
   minimumReturnPeriodInDays: 1,
   defaultReturnPeriodInDays: 15,
   minimumDisputePeriodInDays: 30,
-  ipfsGateway: import.meta.env.REACT_APP_IPFS_GATEWAY || "https://ipfs.io/ipfs",
+  ipfsGateway: process.env.REACT_APP_IPFS_GATEWAY || "https://ipfs.io/ipfs",
   ipfsImageGateway:
-    import.meta.env.REACT_APP_IPFS_IMAGE_GATEWAY ||
-    import.meta.env.REACT_APP_IPFS_GATEWAY ||
+    process.env.REACT_APP_IPFS_IMAGE_GATEWAY ||
+    process.env.REACT_APP_IPFS_GATEWAY ||
     "https://ipfs.io/ipfs",
   walletConnect: {
-    projectId: import.meta.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
+    projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
   },
   envViewMode: {
     current: Object.values(ViewMode).includes(
-      (import.meta.env.REACT_APP_VIEW_MODE as ViewMode) || ""
+      (process.env.REACT_APP_VIEW_MODE as ViewMode) || ""
     )
-      ? (import.meta.env.REACT_APP_VIEW_MODE as ViewMode)
+      ? (process.env.REACT_APP_VIEW_MODE as ViewMode)
       : ViewMode.DAPP,
-    dappViewModeUrl: import.meta.env.REACT_APP_DAPP_VIEW_MODE || "",
-    drCenterViewModeUrl: import.meta.env.REACT_APP_DR_CENTER_VIEW_MODE || ""
+    dappViewModeUrl: process.env.REACT_APP_DAPP_VIEW_MODE || "",
+    drCenterViewModeUrl: process.env.REACT_APP_DR_CENTER_VIEW_MODE || ""
   },
   moonpay: {
-    api: import.meta.env.REACT_APP_MOONPAY_API || "",
-    apiKey: import.meta.env.REACT_APP_MOONPAY_API_KEY || "",
-    link: import.meta.env.REACT_APP_MOONPAY_LINK || "",
-    externalLink: import.meta.env.REACT_APP_MOONPAY_EXTERNAL_LINK || ""
+    api: process.env.REACT_APP_MOONPAY_API || "",
+    apiKey: process.env.REACT_APP_MOONPAY_API_KEY || "",
+    link: process.env.REACT_APP_MOONPAY_LINK || "",
+    externalLink: process.env.REACT_APP_MOONPAY_EXTERNAL_LINK || ""
   },
-  awsApiEndpoint: import.meta.env.REACT_APP_AWS_API_ENDPOINT as string,
-  uniswapApiUrl: import.meta.env.REACT_APP_UNISWAP_API_URL as string,
+  awsApiEndpoint: process.env.REACT_APP_AWS_API_ENDPOINT as string,
+  uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
   infuraKey,
   infuraProjectId,
   infuraProjectSecret,
@@ -163,7 +161,7 @@ export const CONFIG = {
     infuraProjectId,
     infuraProjectSecret
   ),
-  magicLinkKey: import.meta.env.REACT_APP_MAGIC_API_KEY as string,
+  magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string,
   rpcUrls: getRpcUrls(infuraKey),
   widgetsUrl
 } as const;
@@ -177,21 +175,18 @@ export const getDappConfig = (envConfig: ProtocolConfig) => {
     envConfig,
     enableSentryLogging:
       process.env.NODE_ENV === "development"
-        ? stringToBoolean(
-            import.meta.env.REACT_APP_ENABLE_SENTRY_LOGGING,
-            false
-          )
+        ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING, false)
         : ["local", "testing"].includes(envConfig.envName),
     envName: envConfig.envName,
     theGraphIpfsUrl:
-      import.meta.env.REACT_APP_THE_GRAPH_IPFS_URL || envConfig.theGraphIpfsUrl,
+      process.env.REACT_APP_THE_GRAPH_IPFS_URL || envConfig.theGraphIpfsUrl,
     ipfsMetadataStorageUrl:
-      import.meta.env.REACT_APP_IPFS_METADATA_URL || envConfig.ipfsMetadataUrl,
+      process.env.REACT_APP_IPFS_METADATA_URL || envConfig.ipfsMetadataUrl,
     metaTx: envConfig.metaTx
       ? {
           ...envConfig.metaTx,
           relayerUrl:
-            import.meta.env.REACT_APP_META_TX_RELAYER_URL ||
+            process.env.REACT_APP_META_TX_RELAYER_URL ||
             envConfig.metaTx?.relayerUrl,
           apiKey: getMetaTxApiKey(envConfig),
           apiIds: getMetaTxApiIds(envConfig)

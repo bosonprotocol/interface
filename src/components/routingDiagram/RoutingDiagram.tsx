@@ -1,7 +1,7 @@
 import { Protocol } from "@uniswap/router-sdk";
 import { Currency } from "@uniswap/sdk-core";
 import { FeeAmount } from "@uniswap/v3-sdk";
-import DotLine from "assets/svg/dot_line.svg?react";
+import { ReactComponent as DotLine } from "assets/svg/dot_line.svg";
 import CurrencyLogo from "components/logo/CurrencyLogo";
 import DoubleCurrencyLogo from "components/logo/DoubleCurrencyLogo";
 import Tooltip from "components/tooltip/Tooltip";
