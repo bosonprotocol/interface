@@ -246,7 +246,7 @@ export default memo(function MessageList({
           .map((exchange) => {
             const messageKey = getMessageItemKey(exchange);
             const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
-            const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
+            const iAmTheSeller = mySellerId === exchange?.offer.seller?.id;
             const iAmBoth = iAmTheBuyer && iAmTheSeller;
             const buyerOrSellerToShow = iAmBoth
               ? exchange?.seller

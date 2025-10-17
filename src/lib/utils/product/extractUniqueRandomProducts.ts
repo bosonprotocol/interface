@@ -15,7 +15,7 @@ export default function extractUniqueRandomProducts({
   products,
   quantity
 }: Props) {
-  const sellerIdToProducts = groupBy(products, (p) => p.seller.id);
+  const sellerIdToProducts = groupBy(products, (p) => p.seller?.id);
   const productsToReturn: ExtendedOffer[] = [];
   const maxProductsToReturn = Math.min(products.length, quantity);
   for (

@@ -164,7 +164,7 @@ export default function ResolveDisputeModal({
     symbol: symbol
   });
   const destinationAddressLowerCase = iAmTheBuyer
-    ? exchange?.offer.seller.assistant
+    ? exchange?.offer.seller?.assistant
     : exchange?.buyer.wallet;
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)

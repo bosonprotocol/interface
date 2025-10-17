@@ -401,7 +401,9 @@ export default memo(function ExchangeSidePreview({
     refetchExchanges();
   }, [refetchExchanges]);
 
-  const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
+  const sellerRoles = useSellerRoles(
+    iAmTheBuyer ? "" : offer?.seller?.id || ""
+  );
   const isVisible = exchange
     ? iAmTheBuyer
       ? isExchangeCompletableByBuyer(exchange)

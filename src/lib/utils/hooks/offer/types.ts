@@ -10,7 +10,7 @@ interface CommonProps {
   voided?: boolean;
   valid?: boolean;
   exchangeTokenAddress?: Offer["exchangeToken"]["address"];
-  sellerId?: Offer["seller"]["id"];
+  sellerId?: string;
   first?: number;
   skip?: number;
   sellerCurationList?: string[];

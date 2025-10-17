@@ -119,9 +119,11 @@ function Explore({
                         offer={offer as ExtendedOffer}
                         filterOptions={filterOptions}
                         dataTestId="offer"
-                        lensProfile={sellerLensProfilePerSellerId.get(
-                          offer.seller.id
-                        )}
+                        lensProfile={
+                          offer.seller
+                            ? sellerLensProfilePerSellerId.get(offer.seller?.id)
+                            : undefined
+                        }
                       />
                     </div>
                   ))}

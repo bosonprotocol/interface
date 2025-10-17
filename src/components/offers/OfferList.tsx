@@ -174,7 +174,11 @@ export default function OfferList({
                         dataTestId="offer"
                         lensProfile={
                           seller?.lensProfile ||
-                          sellerLensProfilePerSellerId?.get(offer.seller.id)
+                          (offer.seller
+                            ? sellerLensProfilePerSellerId?.get(
+                                offer.seller?.id
+                              )
+                            : undefined)
                         }
                       />
                     </>

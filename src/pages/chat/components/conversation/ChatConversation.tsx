@@ -191,7 +191,7 @@ const ChatConversation = ({
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
-  const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
+  const iAmTheSeller = mySellerId === exchange?.offer.seller?.id;
   const iAmBoth = iAmTheBuyer && iAmTheSeller;
   const buyerOrSellerToShow: BuyerOrSeller = useMemo(
     () =>
@@ -203,7 +203,7 @@ const ChatConversation = ({
     [exchange?.buyer, exchange?.seller, iAmBoth, iAmTheBuyer]
   );
   const destinationAddressLowerCase = iAmTheBuyer
-    ? exchange?.offer.seller.assistant
+    ? exchange?.offer.seller?.assistant
     : exchange?.buyer.wallet;
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)

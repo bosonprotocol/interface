@@ -82,8 +82,9 @@ export default function SellerProducts({
   const { products, isLoading, isError, refetch } = productsData;
 
   const allOffers = useMemo(() => {
-    const allOffers =
-      products?.filter((product) => product.seller.id === sellerId) || [];
+    const allOffers = sellerId
+      ? products?.filter((product) => product.seller?.id === sellerId) || []
+      : [];
 
     const filtered =
       allOffers?.map((offer) => {

@@ -216,7 +216,7 @@ function EscalateStepTwo({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
-  const destinationAddressLowerCase = exchange?.offer.seller.assistant;
+  const destinationAddressLowerCase = exchange?.offer.seller?.assistant;
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
