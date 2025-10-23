@@ -1,7 +1,4 @@
-import {
-  MessageData,
-  MessageType
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { MessageData, MessageType } from "@bosonprotocol/chat-sdk";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import React, { useEffect, useState } from "react";

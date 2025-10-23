@@ -1,11 +1,11 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
 import {
   MessageData,
   MessageType,
   ProposalContent,
   ThreadId
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
-import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
+} from "@bosonprotocol/chat-sdk";
+import { validateMessage } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";
@@ -191,7 +191,7 @@ const ChatConversation = ({
   const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
-  const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
+  const iAmTheSeller = mySellerId === exchange?.offer.seller?.id;
   const iAmBoth = iAmTheBuyer && iAmTheSeller;
   const buyerOrSellerToShow: BuyerOrSeller = useMemo(
     () =>
@@ -203,7 +203,7 @@ const ChatConversation = ({
     [exchange?.buyer, exchange?.seller, iAmBoth, iAmTheBuyer]
   );
   const destinationAddressLowerCase = iAmTheBuyer
-    ? exchange?.offer.seller.assistant
+    ? exchange?.offer.seller?.assistant
     : exchange?.buyer.wallet;
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)
@@ -436,7 +436,7 @@ const ChatConversation = ({
       destinationAddress
     }: {
       threadId: ThreadId;
-      bosonXmtp: BosonXmtpClient;
+      bosonXmtp: BosonXmtpBrowserClient;
       destinationAddress: string;
     }) => {
       try {

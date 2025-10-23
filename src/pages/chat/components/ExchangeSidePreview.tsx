@@ -1,7 +1,4 @@
-import {
-  MessageData,
-  ThreadId
-} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { MessageData, ThreadId } from "@bosonprotocol/chat-sdk";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
 import {
   buyerAndSellerAgreementIncluding,
@@ -404,7 +401,9 @@ export default memo(function ExchangeSidePreview({
     refetchExchanges();
   }, [refetchExchanges]);
 
-  const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
+  const sellerRoles = useSellerRoles(
+    iAmTheBuyer ? "" : offer?.seller?.id || ""
+  );
   const isVisible = exchange
     ? iAmTheBuyer
       ? isExchangeCompletableByBuyer(exchange)

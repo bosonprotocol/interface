@@ -81,7 +81,7 @@ export default function ExchangePreview({ exchange }: Props) {
           <Name>{offer.metadata?.name}</Name>
           <SellerID
             offerMetadata={offer.metadata}
-            accountToShow={offer?.seller}
+            accountToShow={offer?.seller || undefined}
             justifyContent="flex-start"
             withProfileImage
             onClick={() => {

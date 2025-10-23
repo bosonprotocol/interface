@@ -1,4 +1,4 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpBrowserClient } from "@bosonprotocol/chat-sdk";
 import * as Sentry from "@sentry/browser";
 import { useConfigContext } from "components/config/ConfigContext";
 import { ReactNode, useEffect, useState } from "react";
@@ -18,12 +18,12 @@ export default function ChatProvider({ children }: Props) {
   const [initialize, setInitialized] = useState<number>(0);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>();
-  const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpClient>();
+  const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpBrowserClient>();
   const chatEnvName = getChatEnvName(config);
   useEffect(() => {
     if (signer && initialize && !bosonXmtp) {
       setLoading(true);
-      BosonXmtpClient.initialise(
+      BosonXmtpBrowserClient.initialise(
         signer,
         config.envConfig.envName === "production" ? "production" : "dev",
         chatEnvName

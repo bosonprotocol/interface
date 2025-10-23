@@ -158,7 +158,7 @@ export default function BundleDetail() {
             <SellerAndOpenSeaGrid>
               <SellerID
                 offerMetadata={selectedOffer.metadata}
-                accountToShow={selectedOffer?.seller}
+                accountToShow={selectedOffer?.seller || undefined}
                 justifyContent="flex-start"
                 withProfileImage
               />

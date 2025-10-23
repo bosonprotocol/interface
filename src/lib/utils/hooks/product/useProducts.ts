@@ -140,8 +140,8 @@ export default function useProducts(
             : (product as subgraph.ProductV1Product).variants;
           const offers = (allVariantsOrOnlyNotVoided || [])?.map(
             ({ offer }) => {
-              if (!sellerMap.has(offer.seller.id)) {
-                sellerMap.set(offer.seller.id, offer.seller);
+              if (!!offer.seller && !sellerMap.has(offer.seller?.id)) {
+                sellerMap.set(offer.seller?.id, offer.seller);
               }
               const status = offersSdk.getOfferStatus(offer);
               const offerPrice = convertPrice({
@@ -336,7 +336,7 @@ export default function useProducts(
       sellerIds?.map((sellerId) => {
         const products =
           groupedSellers[sellerId as keyof typeof groupedSellers];
-        const seller = products?.[0]?.seller || {};
+        const seller: { id?: string } = products?.[0]?.seller || {};
         const title = products?.[0]?.title || {};
         return {
           ...seller,
@@ -372,7 +372,9 @@ export default function useProducts(
           offers: products, // REASSIGN OFFERS for compatibility with previous code
           products,
           numExchanges: exchangesBySellers.data?.[sellerId]?.length ?? 0,
-          lensProfile: sellerLensProfilePerSellerId?.get(seller.id)
+          lensProfile: seller.id
+            ? sellerLensProfilePerSellerId?.get(seller.id)
+            : undefined
         };
       }) || []
     );

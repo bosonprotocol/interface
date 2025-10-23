@@ -84,7 +84,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
             <ExchangeName>{exchange.offer.metadata?.name}</ExchangeName>
             <SellerID
               offerMetadata={exchange.offer.metadata}
-              accountToShow={exchange.offer.seller}
+              accountToShow={exchange.offer.seller || undefined}
               withProfileImage
               onClick={() => null}
             />

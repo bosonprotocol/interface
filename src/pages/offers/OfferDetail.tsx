@@ -54,7 +54,7 @@ export default function OfferDetail() {
       setSelectedVariant(defaultVariant);
     }
   }, [defaultVariant]);
-  const sellerId = offer?.seller.id;
+  const sellerId = offer?.seller?.id;
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
   const isSellerCurated = useMemo(() => {
@@ -120,7 +120,7 @@ export default function OfferDetail() {
             <SellerAndOpenSeaGrid>
               <SellerID
                 offerMetadata={offer.metadata}
-                accountToShow={offer?.seller}
+                accountToShow={offer?.seller || undefined}
                 justifyContent="flex-start"
                 withProfileImage
               />

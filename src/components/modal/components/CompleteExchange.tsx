@@ -77,7 +77,7 @@ function CompleteOffer({ offer }: OfferProps) {
               </Typography>
               <SellerID
                 offerMetadata={offer.metadata}
-                accountToShow={offer?.seller}
+                accountToShow={offer?.seller || undefined}
                 withProfileImage
               />
             </div>

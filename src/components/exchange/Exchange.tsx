@@ -128,7 +128,7 @@ export default function Exchange({
   const handleOnAvatarClick = () => {
     navigate({
       pathname: generatePath(BosonRoutes.SellerPage, {
-        [UrlParameters.sellerId]: offer.seller.id
+        [UrlParameters.sellerId]: offer.seller?.id || null
       })
     });
   };

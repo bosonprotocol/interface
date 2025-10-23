@@ -196,7 +196,7 @@ export default function ProductCard({
   const handleOnAvatarClick = () => {
     navigate({
       pathname: generatePath(BosonRoutes.SellerPage, {
-        [UrlParameters.sellerId]: offer.seller.id
+        [UrlParameters.sellerId]: offer.seller?.id || null
       })
     });
   };
@@ -251,7 +251,7 @@ export default function ProductCard({
         dataTestId={dataTestId}
         onCardClick={handleOnCardClick}
         title={offer?.metadata?.name ?? ""}
-        avatarName={name ? name : `Seller ID: ${offer.seller.id}`}
+        avatarName={name ? name : `Seller ID: ${offer.seller?.id}`}
         onAvatarError={() => {
           // to avoid infinite loop
           if (avatarObj.status === "lens" && avatarDifferentIpfsGateway) {
