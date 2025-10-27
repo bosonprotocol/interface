@@ -152,7 +152,7 @@ function CreateProduct() {
 
   if (
     sellersLoading ||
-    curationLists.isFetching ||
+    curationLists.isLoading ||
     (curationLists.lastSellerIdFetched !== undefined &&
       seller &&
       Number(curationLists.lastSellerIdFetched) < Number(seller.id))
