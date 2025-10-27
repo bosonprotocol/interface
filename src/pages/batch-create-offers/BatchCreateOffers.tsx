@@ -208,6 +208,7 @@ function BatchCreateOffers() {
     try {
       const result = await createOffers({
         sellerToCreate: null,
+        sellerId: currentSeller?.sellerIds?.[0] || null,
         offersToCreate: offersToBeCreated,
         tokenGatedInfo: null, // TODO: add token gated info
         conditionDecimals: decimals,

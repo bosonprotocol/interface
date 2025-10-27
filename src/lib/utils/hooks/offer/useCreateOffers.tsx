@@ -26,6 +26,7 @@ type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
 type UseCreateOffersProps = {
   sellerToCreate: accounts.CreateSellerArgs | null;
+  sellerId: string | null;
   offersToCreate: offers.CreateOfferArgs[];
   tokenGatedInfo?: PartialTokenGating | null;
   conditionDecimals?: number;
@@ -46,6 +47,7 @@ export function useCreateOffers() {
   return useMutation(
     async ({
       sellerToCreate,
+      sellerId,
       offersToCreate,
       tokenGatedInfo,
       conditionDecimals,
@@ -202,22 +204,15 @@ export function useCreateOffers() {
             );
             const decimals = await onBeforeBuildCondition();
             const condition = buildCondition(tokenGatedInfo, decimals);
-            const sellerAddress = sellerToCreate?.assistant;
-            if (!sellerAddress) {
-              throw new Error(`sellerAddress is falsy "${sellerAddress}"`);
-            }
-            const seller = await coreSDK.getSellerByAssistant(sellerAddress);
-            if (!seller) {
-              throw new Error(
-                `seller could not be found with this address="${sellerAddress}"`
-              );
-            }
-            const sellerId = seller.id;
             if (isMetaTx) {
               const nonce = Date.now();
               const { r, s, v, functionName, functionSignature } =
                 await coreSDK.signMetaTxCreateGroup({
-                  createGroupArgs: { offerIds, sellerId, ...condition },
+                  createGroupArgs: {
+                    offerIds,
+                    sellerId: sellerId as string,
+                    ...condition
+                  },
                   nonce
                 });
               txResponse = await coreSDK.relayMetaTransaction({
@@ -231,7 +226,7 @@ export function useCreateOffers() {
             } else {
               txResponse = await coreSDK.createGroup({
                 offerIds,
-                sellerId,
+                sellerId: sellerId as string,
                 ...condition
               });
             }
