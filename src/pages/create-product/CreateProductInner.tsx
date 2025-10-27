@@ -823,6 +823,7 @@ function CreateProductInner({
       const isTokenGated = productType?.tokenGatedOffer === "true";
       const result = await createOffers({
         sellerToCreate: null,
+        sellerId: currentAssistant?.id || null,
         offersToCreate,
         tokenGatedInfo: isTokenGated ? values.tokenGating : null,
         conditionDecimals: decimals,
