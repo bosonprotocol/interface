@@ -1,3 +1,4 @@
+import { PriceType } from "@bosonprotocol/common";
 import {
   ExternalCommitDetailView,
   extractUserFriendlyError,
@@ -290,6 +291,7 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
   const isOfferNotValidYet = dayjs(
     getDateTimestamp(offer?.validFromDate)
   ).isAfter(nowDate);
+  const isPriceDiscoveryOffer = offer.priceType === PriceType.Discovery;
   const isCommitDisabled =
     !hasSellerEnoughFunds ||
     isExpiredOffer ||
@@ -299,7 +301,8 @@ export const CommitDetailWidget: React.FC<CommitDetailWidgetProps> = ({
     isPreview ||
     isOfferNotValidYet ||
     isBuyerInsufficientFunds ||
-    (offer.condition && !isConditionMet);
+    (offer.condition && !isConditionMet) ||
+    isPriceDiscoveryOffer;
   const onCommitPendingSignature = () => {
     setIsLoading(true);
     showModal("WAITING_FOR_CONFIRMATION", undefined, "auto", undefined, {
