@@ -1,4 +1,8 @@
 import { useConfigContext } from "components/config/ConfigContext";
+import { SwitchForm } from "components/form/Switch";
+import { Typography } from "components/ui/Typography";
+import { colors } from "lib/styles/colors";
+import { useEffect } from "react";
 import styled from "styled-components";
 
 import { useForm } from "../../../lib/utils/hooks/useForm";
@@ -23,6 +27,10 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563px;
 `;
 
+const gridProps = {
+  justifyContent: "flex-end"
+} as const;
+
 interface Props {
   isMultiVariant: boolean;
 }
@@ -31,9 +39,17 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
   const { config } = useConfigContext();
   const OPTIONS_CURRENCIES = getOptionsCurrencies(config.envConfig);
 
-  const { nextIsDisabled } = useForm();
+  const { values, setFieldValue, nextIsDisabled } = useForm();
 
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
+
+  const isPriceDiscoveryOffer =
+    !isMultiVariant && !!values["coreTermsOfSale"].isPriceDiscoveryOffer;
+  useEffect(() => {
+    if (isPriceDiscoveryOffer) {
+      setFieldValue(`${prefix}.price`, 0);
+    }
+  }, [isPriceDiscoveryOffer, setFieldValue, prefix]);
 
   return (
     <ContainerProductPage>
@@ -43,18 +59,40 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
           <FormField
             title="Price"
             required
-            subTitle="Input the selling price of the selected item. Note that the price includes shipping."
+            subTitle={
+              !isPriceDiscoveryOffer
+                ? "Input the selling price of the selected item. Note that the price includes shipping."
+                : "This offer will use a price discovery mechanism to determine the final selling price."
+            }
+            titleIcon={
+              <SwitchForm
+                name={`${prefix}.isPriceDiscoveryOffer`}
+                gridProps={gridProps}
+                leftChildren
+                label={() => (
+                  <Typography
+                    color={colors.violet}
+                    fontSize="0.8rem"
+                    cursor="pointer"
+                  >
+                    use a price discovery mechanism
+                  </Typography>
+                )}
+              />
+            }
           >
             <PriceContainer>
-              <div>
-                <Input
-                  placeholder="Token amount"
-                  name={`${prefix}.price`}
-                  type="number"
-                  min="0"
-                  step="0.0000000001"
-                />
-              </div>
+              {!isPriceDiscoveryOffer && (
+                <div>
+                  <Input
+                    placeholder="Token amount"
+                    name={`${prefix}.price`}
+                    type="number"
+                    min="0"
+                    step="0.0000000001"
+                  />
+                </div>
+              )}
               <div>
                 <Select
                   placeholder="Choose currency"

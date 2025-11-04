@@ -1,3 +1,4 @@
+import { PriceType } from "@bosonprotocol/common";
 import {
   digitalTypeMapping,
   hooks,
@@ -680,6 +681,7 @@ function loadExistingProduct<T extends CreateProductForm>(
               OPTIONS_CURRENCIES.find(
                 (currency) => currency.value === offer.exchangeToken.symbol
               ) || OPTIONS_CURRENCIES[0],
+            isPriceDiscoveryOffer: offer.priceType === PriceType.Discovery,
             quantity: offer.quantityInitial,
             color: colorVariation?.option,
             size: sizeVariation?.option
@@ -755,6 +757,7 @@ function loadExistingProduct<T extends CreateProductForm>(
           firstOffer.price,
           firstOffer.exchangeToken.decimals
         ),
+        isPriceDiscoveryOffer: firstOffer.priceType === PriceType.Discovery,
         quantity: firstOffer.quantityInitial
       };
     })(),

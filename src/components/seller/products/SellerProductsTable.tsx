@@ -892,6 +892,44 @@ export default function SellerProductsTable({
                             Update sales channels
                           </UnthemedButton>
                         )
+                      },
+                      {
+                        key: "premint-vouchers",
+                        content: (
+                          <UnthemedButton
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              if (
+                                !offer ||
+                                !offer.additional?.product.uuid ||
+                                !offer.additional?.product.version
+                              ) {
+                                return;
+                              }
+                              showModal(
+                                modalTypes.PREMINT_VOUCHERS,
+                                {
+                                  title: "Premint vouchers",
+                                  productUuid: offer.additional?.product.uuid,
+                                  version: offer.additional?.product.version,
+                                  sellerSalesChannels: salesChannels,
+                                  onClose: () => {
+                                    setTimeout(() => {
+                                      refetchSellers();
+                                    }, 10000); // give enough time to the subgraph to reindex
+                                  }
+                                },
+                                "auto",
+                                undefined,
+                                {
+                                  m: "35rem"
+                                }
+                              );
+                            }}
+                          >
+                            Premint Vouchers
+                          </UnthemedButton>
+                        )
                       }
                     ].filter(isTruthy)}
                   />
