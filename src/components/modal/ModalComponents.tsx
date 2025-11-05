@@ -22,6 +22,7 @@ import { IframeModal } from "./components/IframeModal/IframeModal";
 import { ImageEditorModal } from "./components/ImageEditorModal/ImageEditorModal";
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
+import { PremintVouchersModal } from "./components/PremintVouchersModal/PremintVouchersModal";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import CreateProfileModal from "./components/Profile/CreateProfileModal";
 import EditProfileModal from "./components/Profile/EditProfileModal";
@@ -87,7 +88,8 @@ export const MODAL_TYPES = {
   PRICE_IMPACT: "PRICE_IMPACT",
   CONFIRM_SWAP: "CONFIRM_SWAP",
   BUYER_SELLER_AGREEMENT: "BUYER_SELLER_AGREEMENT",
-  REDEEMABLE_NFT_TERMS: "REDEEMABLE_NFT_TERMS"
+  REDEEMABLE_NFT_TERMS: "REDEEMABLE_NFT_TERMS",
+  PREMINT_VOUCHERS: "PREMINT_VOUCHERS"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -137,5 +139,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.TOKEN_SAFETY]: () => <div></div>,
   [MODAL_TYPES.CURRENCY_SEARCH]: () => <div></div>,
   [MODAL_TYPES.PRICE_IMPACT]: () => <div></div>,
-  [MODAL_TYPES.CONFIRM_SWAP]: () => <div></div>
+  [MODAL_TYPES.CONFIRM_SWAP]: () => <div></div>,
+  [MODAL_TYPES.PREMINT_VOUCHERS]: PremintVouchersModal
 } as const;

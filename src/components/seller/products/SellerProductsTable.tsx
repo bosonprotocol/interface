@@ -909,13 +909,13 @@ export default function SellerProductsTable({
                               showModal(
                                 modalTypes.PREMINT_VOUCHERS,
                                 {
-                                  title: "Premint vouchers",
-                                  productUuid: offer.additional?.product.uuid,
-                                  version: offer.additional?.product.version,
-                                  sellerSalesChannels: salesChannels,
+                                  title: "Premint Vouchers",
+                                  offerId: offer.id,
+                                  offer,
+                                  refetch,
                                   onClose: () => {
                                     setTimeout(() => {
-                                      refetchSellers();
+                                      refetch();
                                     }, 10000); // give enough time to the subgraph to reindex
                                   }
                                 },
