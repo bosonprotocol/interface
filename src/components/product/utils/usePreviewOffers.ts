@@ -1,3 +1,4 @@
+import { PriceType } from "@bosonprotocol/common";
 import { ProductV1Metadata, subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
@@ -245,7 +246,10 @@ export const usePreviewOffers = ({
           },
           productV1Seller
         },
-        condition
+        condition,
+        priceType: values.coreTermsOfSale.isPriceDiscoveryOffer
+          ? PriceType.Discovery
+          : PriceType.Static
       } as unknown as Offer;
       return offer;
     },
