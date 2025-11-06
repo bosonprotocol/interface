@@ -9,7 +9,7 @@
   },
   "scripts": {
     "git-fetch-prune": "git fetch --prune",
-    "set-version": "export REACT_APP_RELEASE_NAME=$(git describe) && export REACT_APP_RELEASE_TAG=$(git describe)",
+    "set-version": "export REACT_APP_RELEASE_NAME=$(git describe --tags) && export REACT_APP_RELEASE_TAG=$(git describe --tags)",
     "dev": "run-script-os",
     "dev:default": "npm run set-version && react-app-rewired start",
     "dev:win32": ".\\scripts\\react-app-rewired.cmd start",
