@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TransactionResponse } from "@bosonprotocol/common";
+import { PriceType, TransactionResponse } from "@bosonprotocol/common";
 import {
   AnyMetadata,
   bundle,
@@ -740,6 +740,9 @@ function CreateProductInner({
             coreSDK,
             config,
             priceBN,
+            priceType: coreTermsOfSale.isPriceDiscoveryOffer
+              ? PriceType.Discovery
+              : PriceType.Static,
             sellerDeposit,
             buyerCancellationPenaltyValue,
             quantityAvailable: coreTermsOfSale.quantity,

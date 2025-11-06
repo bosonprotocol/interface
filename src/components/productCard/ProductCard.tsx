@@ -1,3 +1,4 @@
+import { PriceType } from "@bosonprotocol/common";
 import {
   AuthTokenType,
   Currencies,
@@ -178,6 +179,7 @@ export default function ProductCard({
   }, [offer, filterOptions]);
 
   const price = useConvertedPrice(priceValue);
+  const isPriceDiscoveryOffer = offer.priceType === PriceType.Discovery;
 
   const handleOnCardClick = () => {
     const pathname: string = getOfferDetailPage(offer);
@@ -294,6 +296,7 @@ export default function ProductCard({
         bottomText={handleText}
         isHoverDisabled={isHoverDisabled}
         productType={isPhygital ? ProductType.phygital : ProductType.physical}
+        isPriceDiscoveryOffer={isPriceDiscoveryOffer}
       />
     </ProductCardWrapper>
   );

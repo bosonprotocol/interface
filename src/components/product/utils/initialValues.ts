@@ -110,6 +110,7 @@ export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {
     price: null as unknown as number,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     currency: null as any,
+    isPriceDiscoveryOffer: false,
     quantity: 1,
     redemptionPeriod: undefined,
     offerValidityPeriod: undefined as unknown as Dayjs,

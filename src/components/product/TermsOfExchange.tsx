@@ -108,22 +108,37 @@ export default function TermsOfExchange() {
   );
   const decimals = exchangeToken?.decimals;
   const step = 10 ** -(decimals || 0);
+  const optionsUnitCurrencyOnly = useMemo(
+    () => ({
+      value: optionUnitKeys.fixed,
+      label: currency
+    }),
+    [currency]
+  );
   const optionsUnitWithCurrency = useMemo(
     () =>
       OPTIONS_UNIT.map((option) => {
         if (option.value === optionUnitKeys.fixed) {
-          return {
-            value: option.value,
-            label: currency
-          };
+          return optionsUnitCurrencyOnly;
         }
         return option;
       }),
-    [currency]
+    [optionsUnitCurrencyOnly]
   );
+  const isPriceDiscoveryOffer =
+    !isMultiVariant && !!values["coreTermsOfSale"].isPriceDiscoveryOffer;
   const optionsUnitToShow = useMemo(() => {
-    return isMultiVariant ? PERCENT_OPTIONS_UNIT : optionsUnitWithCurrency;
-  }, [isMultiVariant, optionsUnitWithCurrency]);
+    return isMultiVariant
+      ? PERCENT_OPTIONS_UNIT
+      : isPriceDiscoveryOffer
+        ? [optionsUnitCurrencyOnly]
+        : optionsUnitWithCurrency;
+  }, [
+    isMultiVariant,
+    optionsUnitWithCurrency,
+    optionsUnitCurrencyOnly,
+    isPriceDiscoveryOffer
+  ]);
   useEffect(() => {
     const buyerUnit = (
       optionsUnitToShow as { value: string; label: string }[]

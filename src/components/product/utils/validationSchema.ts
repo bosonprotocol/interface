@@ -249,7 +249,8 @@ export const getProductVariantsValidationSchema = (config: DappConfig) =>
           quantity: Yup.number()
             .nullable()
             .required("Quantity is required")
-            .min(1, "Must be greater than or equal to 1")
+            .min(1, "Must be greater than or equal to 1"),
+          isPriceDiscoveryOffer: Yup.boolean()
         })
       )
         .required("Variants are required")
@@ -882,6 +883,7 @@ export const getCoreTermsOfSaleValidationSchema = (config: DappConfig) =>
       quantity: Yup.number()
         .min(1, "Quantity must be greater than or equal to 1")
         .required(validationMessage.required),
+      isPriceDiscoveryOffer: Yup.boolean().required(validationMessage.required),
       ...commonCoreTermsOfSaleValidationSchema
     })
   });

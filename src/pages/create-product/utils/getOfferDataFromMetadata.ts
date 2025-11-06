@@ -4,6 +4,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 
 dayjs.extend(localizedFormat);
 
+import { PriceType } from "@bosonprotocol/common";
 import { Token } from "components/convertion-rate/ConvertionRateContext";
 import { BigNumber, ethers } from "ethers";
 
@@ -13,6 +14,7 @@ type GetOfferDataFromMetadataProps = {
   coreSDK: CoreSDK;
   config: DappConfig;
   priceBN: BigNumber;
+  priceType?: PriceType;
   sellerDeposit: BigNumber | string;
   buyerCancellationPenaltyValue: BigNumber | string;
   quantityAvailable: number;
@@ -31,6 +33,7 @@ export async function getOfferDataFromMetadata(
     coreSDK,
     config,
     priceBN,
+    priceType,
     sellerDeposit,
     buyerCancellationPenaltyValue,
     quantityAvailable,
@@ -49,6 +52,7 @@ export async function getOfferDataFromMetadata(
   const offerData: offers.CreateOfferArgs = {
     price: priceBN.toString(),
     sellerDeposit: sellerDeposit.toString(),
+    priceType,
     buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
     quantityAvailable: quantityAvailable,
     voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
