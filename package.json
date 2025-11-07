@@ -16,7 +16,7 @@
     "build": "run-script-os",
     "build:default": "npm run set-version && react-app-rewired --max-old-space-size=8192 build",
     "build:win32": ".\\scripts\\react-app-rewired.cmd --max-old-space-size=8192 build",
-    "build:nomaps": "git fetch --prune && run-script-os",
+    "build:nomaps": "run-script-os",
     "build:nomaps:default": "npm run set-version && GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:nomaps:win32": "set GENERATE_SOURCEMAP=false && .\\scripts\\react-app-rewired.cmd build",
     "analyze": "cross-env ANALYZE_BUNDLE=true react-app-rewired build",
