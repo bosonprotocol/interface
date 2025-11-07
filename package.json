@@ -8,7 +8,6 @@
     "url": "git+https://github.com/bosonprotocol/interface.git"
   },
   "scripts": {
-    "git-fetch-prune": "git fetch --prune",
     "set-version": "export REACT_APP_RELEASE_NAME=$(git describe --tags) && export REACT_APP_RELEASE_TAG=$(git describe --tags)",
     "dev": "run-script-os",
     "dev:default": "npm run set-version && react-app-rewired start",
@@ -16,7 +15,7 @@
     "build": "run-script-os",
     "build:default": "npm run set-version && react-app-rewired --max-old-space-size=8192 build",
     "build:win32": ".\\scripts\\react-app-rewired.cmd --max-old-space-size=8192 build",
-    "build:nomaps": "run-script-os",
+    "build:nomaps": "git fetch --tags && run-script-os",
     "build:nomaps:default": "npm run set-version && GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:nomaps:win32": "set GENERATE_SOURCEMAP=false && .\\scripts\\react-app-rewired.cmd build",
     "analyze": "cross-env ANALYZE_BUNDLE=true react-app-rewired build",
