@@ -172,6 +172,11 @@ export const PremintVouchersModal: React.FC<PremintVouchersModalProps> = ({
                       }}
                       offerId={offerId || ""}
                       amount={values?.premintQuantity || 0}
+                      metaTxApiId={
+                        config.metaTx
+                          ? config.metaTx.apiIds?.["FORWARDER"]?.["FORWARD"]
+                          : undefined
+                      }
                       onPendingSignature={() => {
                         setLoading(true);
                       }}
