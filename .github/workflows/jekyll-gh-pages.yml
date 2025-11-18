@@ -35,13 +35,15 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3'
+          bundler-cache: true  # runs 'bundle install' and caches installed gems automatically
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./docs
-          destination: ./_site
+      - name: Build Jekyll site
+        run: bundle exec jekyll build -d ../_site
+        working-directory: ./docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
