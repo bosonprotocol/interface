@@ -1,3 +1,10 @@
+---
+layout: page
+title: Introduction
+parent: Selling on the dApp
+nav_order: 1
+---
+
 # Introduction
 
 ### The Boson dApp <a href="#the-boson-dapp" id="the-boson-dapp"></a>

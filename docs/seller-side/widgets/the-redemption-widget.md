@@ -1,3 +1,10 @@
+---
+layout: page
+title: The Redemption Widget
+parent: Widgets
+nav_order: 4
+---
+
 # The Redemption Widget
 
 ### Redeeming rNFTs using the Boson Widget <a href="#redeeming-rnfts-using-the-boson-widget" id="redeeming-rnfts-using-the-boson-widget"></a>
@@ -8,7 +15,7 @@ Sellers can chose to sell their rNFTs everywhere in the metaverse, in game, on N
 
 The Boson Redemption Widget allows Sellers to simply embed, via a few lines of code, redemption functionality of their rNFTs into an existing website.
 
-![Redemption Widget steps](https://docs.bosonprotocol.io/assets/images/redemption_widget_1-2d5d1375ed4cf49e8064e5cc37ab3473.png)
+![Redemption Widget steps](/assets/redemption_widget_1.png)
 
 To integrate the Boson Redemption Widget, all a seller needs to do is:
 
@@ -24,7 +31,7 @@ To integrate the Boson Redemption Widget, all a seller needs to do is:
 <button type="button" id="boson-redeem">Show Redeem</button>
 ```
 
-![Redemption Widget Items View](https://docs.bosonprotocol.io/assets/images/redemption_widget_2-585f9e186de6d8798d52191cfe5cb02d.png)
+![Redemption Widget Items View](/assets/redemption_widget_2.png)
 
 ### Using the Boson Redemption Button <a href="#using-the-boson-redemption-button" id="using-the-boson-redemption-button"></a>
 
@@ -46,7 +53,7 @@ As a seller you can also chose to use the Boson branded "Redeem" Button on your 
 <button type="button" id="boson-redeem" class="bosonButton">Show Redeem</button>
 ```
 
-![Boson Redeem Button](https://docs.bosonprotocol.io/assets/images/redeem-5189e46f691db92c7e60c134a754dc9b.png)
+![Boson Redeem Button](/assets/redeem.png)
 
 #### Redeeming a specific rNFT <a href="#redeeming-a-specific-rnft" id="redeeming-a-specific-rnft"></a>
 

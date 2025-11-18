@@ -35,7 +35,7 @@
     "link-chat": "node ./scripts/link-to-local-chat-sdk.js --link",
     "ts-coverage": "typescript-coverage-report",
     "tsc": "tsc",
-    "pages:dev": "jekyll serve --livereload --port 4000 --source docs",
+    "pages:dev": "jekyll serve --livereload --port 4000 --source docs --watch",
     "pages:build": "jekyll build --source docs"
   },
   "lint-staged": {

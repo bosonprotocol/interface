@@ -1,3 +1,10 @@
+---
+layout: page
+title: Metaverse Toolkit
+parent: Widgets
+nav_order: 2
+---
+
 # Metaverse toolkit
 
 ### Introduction <a href="#introduction" id="introduction"></a>
@@ -10,10 +17,10 @@ The Boson DCL SDK is an [open-source library](https://github.com/bosonprotocol/b
 
 1.  A Commit Widget (aka the `library`) - Scene developers can choose to instantiate an instance of the Commit Widget from any in-scene action. For example, as a scene developer you might be selling clothes, and in order to buy one, you might want a DCL avatar to walk into a changing booth, or to complete a quest, in order to be able to purchase one of your items. In short, the Commit Widget can be invoked by attaching it to any in game event. Please find below a screen of a Commit Widget, which can be found live in DCL in the [Boson Protocol land](https://play.decentraland.org/?position=-86%2C108).&#x20;
 
-    <figure><img src="https://docs.bosonprotocol.io/assets/images/dcl_widget-a3008dc267373aff54e350e4757df327.png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="/assets/dcl_widget.png" alt=""><figcaption></figcaption></figure>
 2.  A Boson Kiosk (example 3D element) - The Boson Kiosk is an in-scene 3D model of a Kiosk that is deployed directly into a DCL scene. The Kiosk is there for people who wish to display their offers without handcrafting their own visual display. The Kiosk will either render one of the Images uploaded to a given Offer, or optionally a scene developer can provide a 3D model of an item to be displayed. There is an example [3D model of a t-shirt provided in the repo, in the scene folder](https://github.com/bosonprotocol/boson-dcl/blob/main/scene/models/OGShirt.glb).&#x20;
 
-    <figure><img src="https://docs.bosonprotocol.io/assets/images/dcl_kiosk-61a6356fdb56c2874b81883c8843573b.png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="/assets/dcl_kiosk.png" alt=""><figcaption></figcaption></figure>
 
 ### Deploying your Kiosk to Decentraland <a href="#deploying-your-kiosk-to-decentraland" id="deploying-your-kiosk-to-decentraland"></a>
 

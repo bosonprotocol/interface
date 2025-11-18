@@ -1,10 +1,17 @@
+---
+layout: page
+title: Profile Creation
+parent: Selling on the dApp
+nav_order: 2
+---
+
 # Profile Creation
 
 ### Setting up a seller profile on bosonapp.io <a href="#setting-up-a-seller-profile-on-bosonappio" id="setting-up-a-seller-profile-on-bosonappio"></a>
 
 The first thing to be done for selling on the Boson marketplace dApp is creating an account - and if you have a Lens profile, you can use it, too! Simply click on `Sell on Boson` button to get started.
 
-![Creating a Seller profile](https://docs.bosonprotocol.io/assets/images/seller-create-profile-7778ebda3fb391624518d66cb10cd644.png)
+![Creating a Seller profile](/assets/seller-create-profile/seller-create-profile.png)
 
 #### What is a Lens profile and what are its benefits? <a href="#what-is-a-lens-profile-and-what-are-its-benefits" id="what-is-a-lens-profile-and-what-are-its-benefits"></a>
 
@@ -32,10 +39,10 @@ You can optionally specify the percentage amount for secondary royalties that yo
 
 Note that royalties percentage cannot be changed later.
 
-![Setting royalties](https://docs.bosonprotocol.io/assets/images/seller-create-profile-royalties-086642454a92e24eae2a28416591103d.png)
+![Setting royalties](/assets/seller-create-profile/seller-create-profile-royalties.png)
 
 #### Confirm profile creation <a href="#confirm-profile-creation" id="confirm-profile-creation"></a>
 
 As a final step, you have an option to check all the data and finally to confirm it by clicking on `Create Seller Account`. This invokes a signature request in your wallet which you need to confirm to proceed.
 
-![Confirm profile](https://docs.bosonprotocol.io/assets/images/seller-create-profile-zconfirm-77d3b9bb7fe0b50df6d10e4ddb97527c.png)
+![Confirm profile](/assets/seller-create-profile/seller-create-profile-zconfirm.png)

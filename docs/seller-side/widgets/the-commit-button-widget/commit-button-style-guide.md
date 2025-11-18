@@ -1,3 +1,10 @@
+---
+layout: page
+title: Style Guide
+parent: The Commit Button Widget
+nav_order: 2
+---
+
 # Commit button style guide
 
 ### Overview <a href="#overview" id="overview"></a>

@@ -1,7 +1,11 @@
 ---
+layout: page
+title: Token Gated Commerce
 description: >-
   Web3 unlocks new capabilities in commerce, of which token-gating is one of the
   most exciting ones.
+parent: Selling on the dApp
+nav_order: 5
 ---
 
 # Token-gated Commerce
@@ -22,14 +26,14 @@ ERC721 token type can be used in two ways. You can gate it at contract level to 
 
 ERC1155 token type requires an exact **Token ID** to be specified, along with other required fields, as it is a more complex token contract.
 
-![Token gated offer](https://docs.bosonprotocol.io/assets/images/seller-create-product-7gating-cd0e60e7ccf2432a9b2f31f2183ed864.png)
+![Token gated offer](/assets/seller-create-product/seller-create-product-7gating.png)
 
 ### Buying token-gated products <a href="#buying-token-gated-products" id="buying-token-gated-products"></a>
 
 When a product is locked behind a gate, a "lock" icon is displayed over the image, making it easy to see which products are exclusive offers.
 
-![Token gated product](https://docs.bosonprotocol.io/assets/images/seller-create-product-7gating-tile-7217749d34e030bd078e6451aee86172.png)
+![Token gated product](/assets/seller-create-product/seller-create-product-7gating-tile.png)
 
 On the product detail page, more information about the gate is presented, such as the amount of tokens needed and the address of the token contract. If the buyer doesn't have the required token balance and/or ID to unlock the product, purchasing is not possible and this is actually enforced on-chain!
 
-![Token gated product details](https://docs.bosonprotocol.io/assets/images/seller-create-product-7gating-details-9e805527d56b6ddf566670404b275f8d.png)
+![Token gated product details](/assets/seller-create-product/seller-create-product-7gating-details.png)
