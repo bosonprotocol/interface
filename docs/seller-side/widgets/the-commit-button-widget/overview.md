@@ -23,10 +23,6 @@ The Commit widget allows buyers to:
 * connect their Web3 wallet
 * commit to the product (after they have connected their wallet and have enough funds)
 
-If they click on the "What is a physical NFT?", customers will see a purchase overview:&#x20;
-
-<figure><img src="/interface/assets/purchase-overview.png" alt=""><figcaption></figcaption></figure>
-
 ### How to integrate the Boson Commit button? <a href="#how-to-integrate-the-boson-commit-button" id="how-to-integrate-the-boson-commit-button"></a>
 
 To integrate the Boson Commit button, all a seller needs to do is:

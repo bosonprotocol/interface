@@ -41,7 +41,7 @@ Then, install the Boson extension like so:
 * Go to: `WordPress Admin` > `Plugins` > `Add New` to upload the file you downloaded with `Choose File`.
 * Activate the extension.
 
-![Activate the plugin](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-0activate-3c968f20d77473a966b0fc6fb820897b.png)
+![Activate the plugin](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-0activate.png)
 
 > Note: If the extension is already installed and you are trying to update it, you will be asked to confirm if you want to replace the installed version with the new one found in the uploaded .zip file. In that case, proceed.
 
