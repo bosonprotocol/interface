@@ -1,0 +1,48 @@
+- text: Home
+  url: /
+- text: About
+  url: /about/
+- text: Quick Start
+  url: /readme/
+  subitems:
+    - text: Buyer Side
+      url: /buyer-side/
+      subitems:
+        - text: Purchase and redeem an rNFT
+          url: /buyer-side/purchase-and-redeem-an-rnft/
+    - text: Seller Side
+      url: /seller-side/
+      subitems:
+        - text: Boson for WooCommerce
+          url: /seller-side/boson-for-woocommerce/
+        - text: Selling on the dApp
+          url: /seller-side/selling-on-the-dapp/
+          subitems:
+            - text: Introduction
+              url: /seller-side/selling-on-the-dapp/introduction/
+            - text: Profile Creation
+              url: /seller-side/selling-on-the-dapp/profile-creation/
+            - text: Storefront Creation
+              url: /seller-side/selling-on-the-dapp/storefront-creation/
+            - text: Creating a Product
+              url: /seller-side/selling-on-the-dapp/creating-a-product/
+            - text: Token Gated Commerce
+              url: /seller-side/selling-on-the-dapp/token-gated-commerce/
+        - text: Widgets
+          url: /seller-side/widgets/
+          subitems:
+            - text: Overview
+              url: /seller-side/widgets/
+            - text: Metaverse Toolkit
+              url: /seller-side/widgets/metaverse-toolkit/
+            - text: The Commit Button Widget
+              url: /seller-side/widgets/the-commit-button-widget/
+              subitems:
+                - text: Overview
+                  url: /seller-side/widgets/the-commit-button-widget/overview/
+                - text: Style Guide
+                  url: /seller-side/widgets/the-commit-button-widget/commit-button-style-guide/
+            - text: The Redemption Widget
+              url: /seller-side/widgets/the-redemption-widget/
+- text: GitHub
+  url: https://github.com/bosonprotocol/interface
