@@ -11,11 +11,11 @@ nav_order: 1
 
 With the Boson Commit button, sellers can allow their buyers to commit to a Boson offer on their own domains.&#x20;
 
-<div align="left"><figure><img src="/assets/commit-button.png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="./assets/commit-button.png" alt=""><figcaption></figcaption></figure></div>
 
 Clicking on the button as shown above displays the Commit widget. &#x20;
 
-<figure><img src="/assets/commit-widget-overall.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="./assets/commit-widget-overall.png" alt=""><figcaption></figcaption></figure>
 
 The Commit widget allows buyers to:
 
@@ -25,7 +25,7 @@ The Commit widget allows buyers to:
 
 If they click on the "What is a physical NFT?", customers will see a purchase overview:&#x20;
 
-<figure><img src="/assets/purchase-overview.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="./assets/purchase-overview.png" alt=""><figcaption></figcaption></figure>
 
 ### How to integrate the Boson Commit button? <a href="#how-to-integrate-the-boson-commit-button" id="how-to-integrate-the-boson-commit-button"></a>
 

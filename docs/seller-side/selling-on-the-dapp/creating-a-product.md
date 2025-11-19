@@ -9,7 +9,7 @@ nav_order: 4
 
 ### The first decentralized marketplace built on Boson Protocol allows you to tokenize, trade or transfer any physical item as an NFT <a href="#the-first-decentralized-marketplace-built-on-boson-protocol-allows-you-to-tokenize-trade-or-transfer" id="the-first-decentralized-marketplace-built-on-boson-protocol-allows-you-to-tokenize-trade-or-transfer"></a>
 
-![Sell Physicals](/assets/seller_list1.png)
+![Sell Physicals](./assets/seller_list1.png)
 
 In this tutorial you will learn how to create a product and offer it for sale on the Boson decentralized application (dApp).
 
@@ -23,13 +23,13 @@ By now, you should have already created a seller profile and have the wallet con
 
 To continue, click on the `Create Products` button at the top right.
 
-![Create Products](/assets/seller-create-product/seller-create-product-1button.png)
+![Create Products](./assets/seller-create-product/seller-create-product-1button.png)
 
 #### Select the product type <a href="#select-the-product-type" id="select-the-product-type"></a>
 
 You will be presented to choose the type and variants of the product. The column to the right provides explanation of various options and their meaning.
 
-![Product type](/assets/seller-create-product/seller-create-product-2type.png)
+![Product type](./assets/seller-create-product/seller-create-product-2type.png)
 
 Click `Next` when you are ready to move on. For simplicity, we'll now asume that we selected a Physical and One item type.
 
@@ -39,7 +39,7 @@ Describe the product to buyers using the title and description fields.
 
 Tell them about its unique features, or why you are selling it. The goal is to tell them why they might want to buy it. As with selling on any other marketplace, you should aim to provide clear, factual information about the product, for example, the fabric composition or - if you are listing a vintage collectible - the exact condition of the item.
 
-![Product description](/assets/seller-create-product/seller-create-product-3info.png)
+![Product description](./assets/seller-create-product/seller-create-product-3info.png)
 
 Categories will be helpful to focus search results, so it’s best to select an existing category if appropriate. If it is truly unique, you can create your own category by filling in the "other" category field. Select a category using the dropdown menu.
 
@@ -53,7 +53,7 @@ Optionally, you can provide additional information about the product that is com
 
 Larger-scale merchants who have multiple items for sale will find this section invaluable for entering inventory information and other identifiers for products.
 
-![Additional information](/assets/seller-create-product/seller-create-product-4additional.png)
+![Additional information](./assets/seller-create-product/seller-create-product-4additional.png)
 
 Click `Next` to proceed.
 
@@ -65,7 +65,7 @@ You can also add an MP4 video for the extra punch! Animated gifs also work.
 
 When you are happy with your picture selection, click `Next`.
 
-![Product Images](/assets/seller-create-product/seller-create-product-5images.png)
+![Product Images](./assets/seller-create-product/seller-create-product-5images.png)
 
 ### Core Terms of Sale <a href="#core-terms-of-sale" id="core-terms-of-sale"></a>
 
@@ -77,7 +77,7 @@ Offer validity period is the interval during which purchasing the product's rNFT
 
 The redemption period is the time during which the buyer can trade their rNFT. Generally, the longer the redemption period, the better, as this means the buyer will be able to benefit from the option to trade it on secondary markets. However, only make this period as long as you are able to deliver the underlying product.
 
-![Core Terms of Sale](/assets/seller-create-product/seller-create-product-6coreterms.png)
+![Core Terms of Sale](./assets/seller-create-product/seller-create-product-6coreterms.png)
 
 #### Token gated offers <a href="#token-gated-offers" id="token-gated-offers"></a>
 
@@ -102,7 +102,7 @@ Dispute resolver is the entity that is chosen for jumping in when the seller and
 
 The dispute period is a minimum of 30 days after redeeming the rNFT.
 
-![Terms of Exchange](/assets/seller-create-product/seller-create-product-8terms-exchange.png)
+![Terms of Exchange](./assets/seller-create-product/seller-create-product-8terms-exchange.png)
 
 Click `Next` to proceed.
 
@@ -110,17 +110,17 @@ Click `Next` to proceed.
 
 On this screen, define the regions you are prepared to ship to, along with the expected delivery time and acceptable return period in days.
 
-![Shipping Info](/assets/seller-create-product/seller-create-product-9shipping.png)
+![Shipping Info](./assets/seller-create-product/seller-create-product-9shipping.png)
 
 You may optionally wish to add values for parcel measurements and weight, as well as a url to the redemption point (this is set by default to the Boson dApp).
 
-![Additional information](/assets/seller-create-product/seller-create-product-90additional.png)
+![Additional information](./assets/seller-create-product/seller-create-product-90additional.png)
 
 ### Confirm Product Details <a href="#confirm-product-details" id="confirm-product-details"></a>
 
 This is where you get the opportunity to review and confirm everything you have entered so far.
 
-![Initializing chat client](/assets/seller-create-product/seller-create-product-91init-chat.png)
+![Initializing chat client](./assets/seller-create-product/seller-create-product-91init-chat.png)
 
 Preview your product data and terms of sale. You can move between screens using the breadcrumb menu at the top.
 
@@ -134,4 +134,4 @@ This is it! You can preview the final page by clicking the `Preview product deta
 
 Once the transaction is processed, a popup will appear notifying you of the created product. You can inspect its details or continue creating more.
 
-![Overview of new product](/assets/seller-create-product/seller-create-product-92finish.png)
+![Overview of new product](./assets/seller-create-product/seller-create-product-92finish.png)
