@@ -42,7 +42,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build Jekyll site
-        run: bundle exec jekyll build -d ../_site
+        run: bundle install && bundle exec jekyll build -d ../_site
         working-directory: ./docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
