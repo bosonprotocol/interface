@@ -41,3 +41,6 @@ gem "jekyll-sitemap"
 
 # From https://github.com/jekyll/jekyll-watch
 gem "jekyll-watch"
+
+# From https://github.com/just-the-docs/just-the-docs-template/blob/main/README.md
+gem "jekyll-default-layout"
