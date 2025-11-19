@@ -15,15 +15,15 @@ Setting up a storefront is free, and allows you to display your own products and
 
 Navigate to `Templates & Guides` in the footer of the dApp and click on `Set-up a Web3 commerce store`.
 
-![Quick start templates](./assets/seller-storefront/seller-storefront-1sell.png)
+![Quick start templates](/interface/assets/seller-storefront/seller-storefront-1sell.png)
 
 You will see a step-plan of actions. To proceed click on `Get started!` button.
 
-![Creating Store steps](./assets/seller-storefront/seller-storefront-2breadcrumb.png)
+![Creating Store steps](/interface/assets/seller-storefront/seller-storefront-2breadcrumb.png)
 
 A two-column screen appears - on the left side you can customize the storefront, on the right side you can see updates in real time.
 
-![Create Custom Store](./assets/seller-storefront/seller-storefront-3creation.png)
+![Create Custom Store](/interface/assets/seller-storefront/seller-storefront-3creation.png)
 
 First of all, name your store. The first field should contain the name that is shown in the browser tab when people navigate to your store. This can be the same as, or different from, the Title, which is the headline displayed on your storefront.
 
@@ -49,7 +49,7 @@ Once you hit `Create`, your very own store is ready!
 
 You will be presented with further options to make it friendlier.
 
-<figure><img src="./assets/seller-storefront/seller-storefront-4url.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="/interface/assets/seller-storefront/seller-storefront-4url.png" alt=""><figcaption></figcaption></figure>
 
 You will receive an IPFS link to your storefront (example, “[https://bosonprotocol.infura-ipfs.io/ipfs/QmQcbJVmZSM4MGuBZBexRUVM1TdwBX4hfWzoHJwPFhNK3E](https://bosonprotocol.infura-ipfs.io/ipfs/QmQcbJVmZSM4MGuBZBexRUVM1TdwBX4hfWzoHJwPFhNK3E)…”). We recommend that you have an ENS domain ready to hide that IPFS link behind a friendlier name. You could even create a subdomain from your current ENS (example, store.myname.eth).
 

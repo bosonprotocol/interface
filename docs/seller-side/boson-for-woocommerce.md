@@ -41,7 +41,7 @@ Then, install the Boson extension like so:
 * Go to: `WordPress Admin` > `Plugins` > `Add New` to upload the file you downloaded with `Choose File`.
 * Activate the extension.
 
-![Activate the plugin](./assets/woo-redeem-plugin/woo-redeem-plugin-0activate-3c968f20d77473a966b0fc6fb820897b.png)
+![Activate the plugin](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-0activate-3c968f20d77473a966b0fc6fb820897b.png)
 
 > Note: If the extension is already installed and you are trying to update it, you will be asked to confirm if you want to replace the installed version with the new one found in the uploaded .zip file. In that case, proceed.
 
@@ -53,19 +53,19 @@ After activating the plugin, we need to link the account used on Boson Protocol.
 
 (1) Go to: `WooCommerce` > `Boson for WooCommerce`. (2) Select `Connect Account` if you already have a Boson seller profile, otherwise, click on `Create Account` to create one.
 
-![Connect account](./assets/woo-redeem-plugin/woo-redeem-plugin-1connect.png)
+![Connect account](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-1connect.png)
 
 (3) Select a Web3 Client and connect your wallet.
 
-![Select Web3 provider](./assets/woo-redeem-plugin/woo-redeem-plugin-2wallet_select.png)
+![Select Web3 provider](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-2wallet_select.png)
 
 (4) You'll see the connected wallet address, and the plugin will check the validity of your seller account with Boson Protocol on-chain. Click `Proceed` if the displayed wallet address is as expected, or connect a different wallet and repeat the above step.
 
-![Confirm address](./assets/woo-redeem-plugin/woo-redeem-plugin-3wallet_confirm.png)
+![Confirm address](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-3wallet_confirm.png)
 
 (5) Clicking `Proceed` will prompt you to sign a message through your Web3 client. This message will be used to secure the integration of the Boson Redemption Widget to the particular domain of your website.
 
-![Sign origin](./assets/woo-redeem-plugin/woo-redeem-plugin-4wallet_sign.png)
+![Sign origin](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-4wallet_sign.png)
 
 (6) Once your connected wallet address is identified as a registered Boson seller, the extension is ready for use!
 
@@ -77,7 +77,7 @@ The Redemption page is where your customers will be able to redeem their rNFTs t
 
 This is the page that should include the block (or shortcode) offered by the extension for rendering the Boson Redemption Widget. Your customers will be able to connect their wallet and redeem their rNFTs through that page or even raise disputes for their already redeemed rNFTs. The extension offers an option to create a very basic redemption page for you by clicking the `Create Redemption Page` button, which you will be able to customize if you wish to!
 
-![Create redemption page](./assets/woo-redeem-plugin/woo-redeem-plugin-5redeem_page.png)
+![Create redemption page](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-5redeem_page.png)
 
 The extension offers two blocks to render the redemption widget:
 
@@ -104,7 +104,7 @@ Once the Redemption page is created, you will also be able to find it under the 
 
 You can specify the shipping method that will be used for all Boson orders. The shipping method, regardless of its registered cost, will be attached to the order at 0 cost for the customer. Third party integration with shipping (if applicable), will be able to pick up the registered shipping method from each Boson order.
 
-![Shipping configuration](./assets/woo-redeem-plugin/woo-redeem-plugin-6shipping.png)
+![Shipping configuration](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-6shipping.png)
 
 ### Synchronizing data <a href="#synchronizing-data" id="synchronizing-data"></a>
 
@@ -112,6 +112,6 @@ Once the seller's Boson profile is linked to WooCommerce, the data will start sy
 
 The data that is synchronized includes products, buyer redemptions and any potential disputes raised. The sync task runs every 30 minutes, but can also be run manually on demand.
 
-![Synchronization](./assets/woo-redeem-plugin/woo-redeem-plugin-7sync.png)
+![Synchronization](/interface/assets/woo-redeem-plugin/woo-redeem-plugin-7sync.png)
 
 > Note: If the buyer redeems an rNFT outside the WooCommerce plugin, a warning is displayed that this order should be managed elsewhere, i.e. via the Boson dApp. This is needed because the delivery information and other buyer-seller communication must have happened outsite Boson for WooCommerce plugin, so the plugin has no way of accessing that data.

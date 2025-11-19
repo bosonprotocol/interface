@@ -26,14 +26,14 @@ ERC721 token type can be used in two ways. You can gate it at contract level to 
 
 ERC1155 token type requires an exact **Token ID** to be specified, along with other required fields, as it is a more complex token contract.
 
-![Token gated offer](./assets/seller-create-product/seller-create-product-7gating.png)
+![Token gated offer](/interface/assets/seller-create-product/seller-create-product-7gating.png)
 
 ### Buying token-gated products <a href="#buying-token-gated-products" id="buying-token-gated-products"></a>
 
 When a product is locked behind a gate, a "lock" icon is displayed over the image, making it easy to see which products are exclusive offers.
 
-![Token gated product](./assets/seller-create-product/seller-create-product-7gating-tile.png)
+![Token gated product](/interface/assets/seller-create-product/seller-create-product-7gating-tile.png)
 
 On the product detail page, more information about the gate is presented, such as the amount of tokens needed and the address of the token contract. If the buyer doesn't have the required token balance and/or ID to unlock the product, purchasing is not possible and this is actually enforced on-chain!
 
-![Token gated product details](./assets/seller-create-product/seller-create-product-7gating-details.png)
+![Token gated product details](/interface/assets/seller-create-product/seller-create-product-7gating-details.png)

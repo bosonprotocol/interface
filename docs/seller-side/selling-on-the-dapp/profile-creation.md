@@ -11,7 +11,7 @@ nav_order: 2
 
 The first thing to be done for selling on the Boson marketplace dApp is creating an account - and if you have a Lens profile, you can use it, too! Simply click on `Sell on Boson` button to get started.
 
-![Creating a Seller profile](./assets/seller-create-profile/seller-create-profile.png)
+![Creating a Seller profile](/interface/assets/seller-create-profile/seller-create-profile.png)
 
 #### What is a Lens profile and what are its benefits? <a href="#what-is-a-lens-profile-and-what-are-its-benefits" id="what-is-a-lens-profile-and-what-are-its-benefits"></a>
 
@@ -39,10 +39,10 @@ You can optionally specify the percentage amount for secondary royalties that yo
 
 Note that royalties percentage cannot be changed later.
 
-![Setting royalties](./assets/seller-create-profile/seller-create-profile-royalties.png)
+![Setting royalties](/interface/assets/seller-create-profile/seller-create-profile-royalties.png)
 
 #### Confirm profile creation <a href="#confirm-profile-creation" id="confirm-profile-creation"></a>
 
 As a final step, you have an option to check all the data and finally to confirm it by clicking on `Create Seller Account`. This invokes a signature request in your wallet which you need to confirm to proceed.
 
-![Confirm profile](./assets/seller-create-profile/seller-create-profile-zconfirm.png)
+![Confirm profile](/interface/assets/seller-create-profile/seller-create-profile-zconfirm.png)

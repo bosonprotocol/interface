@@ -24,7 +24,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   decentralized commerce, enabling trustless exchange of digital and physical goods
   using smart contracts on the blockchain.
 author: Boson Protocol Team
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/interface" # the subpath of your site, e.g. /blog
 url: "https://bosonprotocol.github.io/interface"
 twitter_username: bosonprotocol
 github_username:  bosonprotocol
