@@ -32,7 +32,7 @@ export default function App({
 }: Props) {
   const Wrapper = useWrapper({ withFullLayout, withLayout });
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme as any}>
       <IconContext.Provider
         value={{
           size: 32,
