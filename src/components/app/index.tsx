@@ -1,6 +1,6 @@
 import { BosonThemeProvider } from "@bosonprotocol/react-kit";
 import { IconContext } from "phosphor-react";
-import { ThemeProvider } from "styled-components";
+import { DefaultTheme, ThemeProvider } from "styled-components";
 
 import ModalProvider from "../../components/modal/ModalProvider";
 import { getCurrentViewMode, ViewMode } from "../../lib/viewMode";
@@ -32,7 +32,7 @@ export default function App({
 }: Props) {
   const Wrapper = useWrapper({ withFullLayout, withLayout });
   return (
-    <ThemeProvider theme={theme as any}>
+    <ThemeProvider theme={theme as DefaultTheme}>
       <IconContext.Provider
         value={{
           size: 32,

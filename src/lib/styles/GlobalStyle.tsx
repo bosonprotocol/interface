@@ -102,7 +102,8 @@ const GlobalStyle = createGlobalStyle<{
         ? props.$lowerCardBgColor
         : colors.white};
 
-    ${cssVars as any};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ${cssVars};
 
     font-size: 0.75rem;
     ${breakpoint.xs} {
