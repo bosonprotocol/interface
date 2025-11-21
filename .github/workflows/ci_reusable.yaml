@@ -159,12 +159,9 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
           cache: "npm"
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - uses: pnpm/action-setup@v4
         with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
+          version: 10
       - name: Create Sentry release
         if: ${{ inputs.IS_PREVIEW == false }}
         uses: getsentry/action-release@v1
@@ -175,7 +172,7 @@ jobs:
         with:
           environment: ${{ inputs.ENV_NAME }}
           version: ${{ inputs.REACT_APP_RELEASE_NAME }}
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
       - run: npm run prettier

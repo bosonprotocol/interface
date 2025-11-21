@@ -8,6 +8,7 @@
     "url": "git+https://github.com/bosonprotocol/interface.git"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "react-app-rewired start",
     "build": "react-app-rewired --max-old-space-size=8192 build",
     "build:nomaps": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
@@ -25,8 +26,8 @@
     "coverage:e2e": "cross-env CI=true npx playwright test --project=chromium && npx nyc report --reporter=json",
     "coverage:e2e:view": "npx nyc report --reporter html && echo 'open coverage/index.html to see it'",
     "coverage:report": "npm run coverage:unit",
-    "upgrade:corec:latest": "npm install @bosonprotocol/common@latest @bosonprotocol/react-kit@latest",
-    "upgrade:corec:alpha": "npm install @bosonprotocol/common@alpha @bosonprotocol/react-kit@alpha",
+    "upgrade:corec:latest": "pnpm install @bosonprotocol/common@latest @bosonprotocol/react-kit@latest",
+    "upgrade:corec:alpha": "pnpm install @bosonprotocol/common@alpha @bosonprotocol/react-kit@alpha",
     "generate": "graphql-codegen",
     "clean-react-cache": "run-script-os",
     "clean-react-cache:default": "rm -rf node_modules/.cache",
@@ -233,6 +234,7 @@
     "math-intrinsics": "^1.1.0",
     "multihashes": "^4.0.3",
     "nyc": "^15.1.0",
+    "only-allow": "^1.2.1",
     "prettier": "^3.2.5",
     "react-app-rewire-alias": "^1.1.7",
     "react-app-rewired": "^2.2.1",

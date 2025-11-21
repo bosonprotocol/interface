@@ -36,7 +36,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Install Packages
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Build & deploy sites
         run: npx fleek -- sites deploy --config ./.fleek_dr_center_testing.json
