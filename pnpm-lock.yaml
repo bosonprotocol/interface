@@ -138,8 +138,8 @@ importers:
         specifier: 3.15.14
         version: 3.15.14(bufferutil@4.0.6)(encoding@0.1.13)(hardhat@2.17.1(bufferutil@4.0.6)(ts-node@10.9.1(@types/node@24.10.1)(typescript@5.1.6))(typescript@5.1.6)(utf-8-validate@5.0.9))(jsbi@3.2.5)(utf-8-validate@5.0.9)
       '@uniswap/token-lists':
-        specifier: ^1.0.0-beta.33
-        version: 1.0.0-beta.33
+        specifier: 1.0.0-beta.35
+        version: 1.0.0-beta.35
       '@uniswap/uniswapx-sdk':
         specifier: ^1.4.0
         version: 1.4.0(bufferutil@4.0.6)(utf-8-validate@5.0.9)
@@ -5185,8 +5185,8 @@ packages:
     engines: {node: '>=10'}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
-  '@uniswap/token-lists@1.0.0-beta.33':
-    resolution: {integrity: sha512-JQkXcpRI3jFG8y3/CGC4TS8NkDgcxXaOQuYW8Qdvd6DcDiIyg2vVYCG9igFEzF0G6UvxgHkBKC7cWCgzZNYvQg==}
+  '@uniswap/token-lists@1.0.0-beta.35':
+    resolution: {integrity: sha512-v43brw8Fx+D904fOCXL5kTU75cIPH40U/WTKB96K1gxOibk2jVsxW3AULBE5Buj5dJpeVwj/l6TNgB6QPw7lJg==}
     engines: {node: '>=10'}
 
   '@uniswap/uniswapx-sdk@1.4.0':
@@ -17121,7 +17121,7 @@ snapshots:
       '@tippyjs/react': 4.2.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@uniswap/redux-multicall': 1.1.8(@ethersproject/abi@5.7.0)(@ethersproject/bignumber@5.8.0)(@ethersproject/contracts@5.8.0)(@reduxjs/toolkit@1.9.7(react-redux@8.1.3(@types/react-dom@18.0.6)(@types/react@18.0.20)(react-dom@18.2.0(react@18.2.0))(react-native@0.72.4(@babel/core@7.28.5)(@babel/preset-env@7.24.0(@babel/core@7.28.5))(bufferutil@4.0.6)(encoding@0.1.13)(react@18.2.0)(utf-8-validate@5.0.9))(react@18.2.0)(redux@4.2.1))(react@18.2.0))(react-redux@8.1.3(@types/react-dom@18.0.6)(@types/react@18.0.20)(react-dom@18.2.0(react@18.2.0))(react-native@0.72.4(@babel/core@7.28.5)(@babel/preset-env@7.24.0(@babel/core@7.28.5))(bufferutil@4.0.6)(encoding@0.1.13)(react@18.2.0)(utf-8-validate@5.0.9))(react@18.2.0)(redux@4.2.1))(react@18.2.0)
       '@uniswap/sdk-core': 4.2.1
-      '@uniswap/token-lists': 1.0.0-beta.33
+      '@uniswap/token-lists': 1.0.0-beta.35
       '@uniswap/v2-sdk': 3.3.0
       '@uniswap/v3-periphery': 1.4.4
       '@web3-react/coinbase-wallet': 8.2.3(@coinbase/wallet-sdk@3.7.1(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9))(@types/react@18.0.20)(immer@9.0.21)(react@18.2.0)
@@ -21677,7 +21677,7 @@ snapshots:
       '@uniswap/router-sdk': 1.6.0(hardhat@2.17.1(bufferutil@4.0.6)(ts-node@10.9.1(@types/node@24.10.1)(typescript@5.1.6))(typescript@5.1.6)(utf-8-validate@5.0.9))
       '@uniswap/sdk-core': 4.2.1
       '@uniswap/swap-router-contracts': 1.3.0(hardhat@2.17.1(bufferutil@4.0.6)(ts-node@10.9.1(@types/node@24.10.1)(typescript@5.1.6))(typescript@5.1.6)(utf-8-validate@5.0.9))
-      '@uniswap/token-lists': 1.0.0-beta.33
+      '@uniswap/token-lists': 1.0.0-beta.35
       '@uniswap/universal-router': 1.6.0
       '@uniswap/universal-router-sdk': 1.5.7(bufferutil@4.0.6)(hardhat@2.17.1(bufferutil@4.0.6)(ts-node@10.9.1(@types/node@24.10.1)(typescript@5.1.6))(typescript@5.1.6)(utf-8-validate@5.0.9))(utf-8-validate@5.0.9)
       '@uniswap/v2-sdk': 3.3.0
@@ -21723,7 +21723,7 @@ snapshots:
     transitivePeerDependencies:
       - hardhat
 
-  '@uniswap/token-lists@1.0.0-beta.33': {}
+  '@uniswap/token-lists@1.0.0-beta.35': {}
 
   '@uniswap/uniswapx-sdk@1.4.0(bufferutil@4.0.6)(utf-8-validate@5.0.9)':
     dependencies:
