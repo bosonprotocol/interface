@@ -89,6 +89,9 @@ importers:
       '@types/react':
         specifier: ^18.0.20
         version: 18.0.21
+      '@types/react-dom':
+        specifier: 18.0.6
+        version: 18.0.6
       '@uniswap/conedison':
         specifier: ^1.8.0
         version: 1.8.0(@uniswap/sdk-core@4.2.1)(ethers@5.7.2(bufferutil@4.0.6)(utf-8-validate@5.0.9))
@@ -17338,7 +17341,7 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 29.6.4
       '@jest/types': 29.6.3
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
       jest-mock: 29.6.3
 
   '@jest/fake-timers@27.5.1':
@@ -17354,7 +17357,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
       jest-message-util: 29.6.3
       jest-mock: 29.6.3
       jest-util: 29.6.3
@@ -17456,7 +17459,7 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
       '@types/yargs': 15.0.15
       chalk: 4.1.2
 
@@ -17482,7 +17485,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
       '@types/yargs': 17.0.24
       chalk: 4.1.2
 
@@ -20030,7 +20033,7 @@ snapshots:
 
   '@types/readable-stream@2.3.15':
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
       safe-buffer: 5.1.2
 
   '@types/resolve@1.17.1':
@@ -20084,7 +20087,7 @@ snapshots:
 
   '@types/ws@7.4.7':
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
 
   '@types/ws@8.5.3':
     dependencies:
@@ -25966,7 +25969,7 @@ snapshots:
       '@jest/environment': 29.6.4
       '@jest/fake-timers': 29.6.4
       '@jest/types': 29.6.3
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
       jest-mock: 29.6.3
       jest-util: 29.6.3
 
@@ -26078,7 +26081,7 @@ snapshots:
   jest-mock@29.6.3:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
       jest-util: 29.6.3
 
   jest-pnp-resolver@1.2.2(jest-resolve@27.5.1):
@@ -26219,7 +26222,7 @@ snapshots:
   jest-util@29.6.3:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.7.5
+      '@types/node': 18.15.13
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.10

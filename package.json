@@ -72,6 +72,7 @@
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.20",
+    "@types/react-dom": "18.0.6",
     "@uniswap/conedison": "^1.8.0",
     "@uniswap/permit2-sdk": "^1.2.0",
     "@uniswap/redux-multicall": "^1.1.8",
