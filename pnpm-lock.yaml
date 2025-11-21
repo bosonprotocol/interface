@@ -138,8 +138,8 @@ importers:
         specifier: 3.15.14
         version: 3.15.14(bufferutil@4.0.6)(encoding@0.1.13)(hardhat@2.17.1(bufferutil@4.0.6)(ts-node@10.9.1(@types/node@24.10.1)(typescript@5.1.6))(typescript@5.1.6)(utf-8-validate@5.0.9))(jsbi@3.2.5)(utf-8-validate@5.0.9)
       '@uniswap/token-lists':
-        specifier: 1.0.0-beta.35
-        version: 1.0.0-beta.35
+        specifier: 1.0.0-beta.33
+        version: 1.0.0-beta.33
       '@uniswap/uniswapx-sdk':
         specifier: ^1.4.0
         version: 1.4.0(bufferutil@4.0.6)(utf-8-validate@5.0.9)
@@ -5198,6 +5198,10 @@ packages:
     resolution: {integrity: sha512-iKvCuRkHXEe0EMjOf8HFUISTIhlxI57kKFllf3C3PUIE0HmwxrayyoflwAz5u/TRsFGYqJ9IjX2UgzLCsrNa5A==}
     engines: {node: '>=10'}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+  '@uniswap/token-lists@1.0.0-beta.33':
+    resolution: {integrity: sha512-JQkXcpRI3jFG8y3/CGC4TS8NkDgcxXaOQuYW8Qdvd6DcDiIyg2vVYCG9igFEzF0G6UvxgHkBKC7cWCgzZNYvQg==}
+    engines: {node: '>=10'}
 
   '@uniswap/token-lists@1.0.0-beta.35':
     resolution: {integrity: sha512-v43brw8Fx+D904fOCXL5kTU75cIPH40U/WTKB96K1gxOibk2jVsxW3AULBE5Buj5dJpeVwj/l6TNgB6QPw7lJg==}
@@ -21743,6 +21747,8 @@ snapshots:
       hardhat-watcher: 2.5.0(hardhat@2.17.1(bufferutil@4.0.6)(ts-node@10.9.1(@types/node@24.10.1)(typescript@5.1.6))(typescript@5.1.6)(utf-8-validate@5.0.9))
     transitivePeerDependencies:
       - hardhat
+
+  '@uniswap/token-lists@1.0.0-beta.33': {}
 
   '@uniswap/token-lists@1.0.0-beta.35': {}
 
