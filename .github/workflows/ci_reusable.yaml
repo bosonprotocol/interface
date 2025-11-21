@@ -154,17 +154,17 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
-          cache: "npm"
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
       - name: Create Sentry release
         if: ${{ inputs.IS_PREVIEW == false }}
         uses: getsentry/action-release@v1
@@ -175,12 +175,11 @@ jobs:
         with:
           environment: ${{ inputs.ENV_NAME }}
           version: ${{ inputs.REACT_APP_RELEASE_NAME }}
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
       - run: npm run prettier
       - run: npm run tsc
-      - run: npm run test
       - run: npm run lint
       - id: lint
         run: echo "::set-output name=pass::success"

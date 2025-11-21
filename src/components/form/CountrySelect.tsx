@@ -5,7 +5,12 @@ import { GlobeHemisphereWest } from "phosphor-react";
 import { forwardRef, useState } from "react";
 import type { Country as CountryCode } from "react-phone-number-input";
 import PhoneInput from "react-phone-number-input";
-import Select, { components } from "react-select";
+import Select, {
+  components,
+  ControlProps,
+  GroupBase,
+  OptionProps
+} from "react-select";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -145,7 +150,10 @@ export function CountrySelect({ name, countries, ...props }: Props) {
                     helpers.setValue(o.label);
                   }}
                   components={{
-                    Control: (props) => {
+                    Control: (
+                      props: JSX.IntrinsicAttributes &
+                        ControlProps<unknown, boolean, GroupBase<unknown>>
+                    ) => {
                       const country =
                         (props?.getValue()[0] as any)?.value || null;
                       return (
@@ -161,7 +169,10 @@ export function CountrySelect({ name, countries, ...props }: Props) {
                         </components.Control>
                       );
                     },
-                    Option: (props) => {
+                    Option: (
+                      props: JSX.IntrinsicAttributes &
+                        OptionProps<unknown, boolean, GroupBase<unknown>>
+                    ) => {
                       const country = (props?.data as any)?.value || null;
                       return (
                         <components.Option {...props}>

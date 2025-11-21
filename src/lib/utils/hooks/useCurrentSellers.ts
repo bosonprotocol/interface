@@ -1,6 +1,4 @@
-import { subgraph } from "@bosonprotocol/core-sdk";
-import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
@@ -38,7 +36,7 @@ const getSellersByIds =
             voucherCloneAddress: string;
             active: boolean;
             sellerId: string;
-            metadata: SellerFieldsFragment["metadata"];
+            metadata: subgraph.SellerFieldsFragment["metadata"];
           }[];
         }>(
           subgraphUrl,
@@ -297,8 +295,7 @@ export function useCurrentSellers({
     () =>
       (sellerAddressType === "ADDRESS"
         ? resultByAddress.data?.sellers || []
-        : ([sellerById?.data] as unknown as subgraph.SellerFieldsFragment[]) ||
-          []
+        : ([sellerById?.data] as unknown as subgraph.SellerFieldsFragment[])
       ).filter((value) => !!value),
 
     [resultByAddress.data?.sellers, sellerAddressType, sellerById?.data]

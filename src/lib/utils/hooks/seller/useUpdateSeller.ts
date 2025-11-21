@@ -1,5 +1,4 @@
-import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { accounts, CoreSDK, hooks } from "@bosonprotocol/react-kit";
+import { accounts, CoreSDK, hooks, subgraph } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useMutation } from "react-query";
 
@@ -55,7 +54,7 @@ async function updateSellerAccount(
   };
   const seller = await coreSDK.getSellerById(sellerId);
   const thereAreChanges = Object.entries(newSeller).some(([key, value]) => {
-    const oldSellerValue = seller[key as keyof SellerFieldsFragment];
+    const oldSellerValue = seller[key as keyof subgraph.SellerFieldsFragment];
     if (typeof value === "string" && typeof oldSellerValue === "string") {
       return value.toLowerCase() !== oldSellerValue.toLowerCase();
     }

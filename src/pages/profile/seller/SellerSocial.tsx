@@ -1,5 +1,4 @@
-import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { Globe } from "phosphor-react";
 import { useEffect, useState } from "react";
@@ -40,7 +39,7 @@ function RenderSocial({
 
 interface Props {
   sellerLens?: ProfileFieldsFragment | undefined;
-  seller: SellerFieldsFragment | undefined;
+  seller: subgraph.SellerFieldsFragment | undefined;
   voucherCloneAddress?: string;
 }
 export default function SellerSocial({

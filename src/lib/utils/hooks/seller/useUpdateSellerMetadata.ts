@@ -1,5 +1,4 @@
-import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { AuthTokenType, seller } from "@bosonprotocol/react-kit";
+import { AuthTokenType, seller, subgraph } from "@bosonprotocol/react-kit";
 import { useMutation } from "react-query";
 
 import {
@@ -81,7 +80,10 @@ async function updateSellerMedatata(
     >;
     kind?: ProfileType;
   },
-  { seller, address }: { seller: SellerFieldsFragment; address: string },
+  {
+    seller,
+    address
+  }: { seller: subgraph.SellerFieldsFragment; address: string },
   {
     updateSeller,
     storeSellerMetadata

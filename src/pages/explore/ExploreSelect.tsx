@@ -1,8 +1,12 @@
 import { useCustomStoreQueryParameter } from "pages/custom-store/useCustomStoreQueryParameter";
 import { ParsedQuery } from "query-string";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { default as ReactSelect, StylesConfig } from "react-select";
+import {
+  CSSObjectWithLabel,
+  default as ReactSelect,
+  StylesConfig
+} from "react-select";
 import styled, { css } from "styled-components";
 
 import { Typography } from "../../components/ui/Typography";
@@ -48,50 +52,56 @@ const customStyles: StylesConfig<
   },
   false
 > = {
-  control: (provided) => ({
-    ...provided,
-    cursor: "pointer",
-    borderRadius: 0,
-    boxShadow: "none",
-    ":hover": {
-      borderColor: colors.violet,
-      borderWidth: "0"
-    },
-    background: "none",
-    border: "none"
-  }),
-  container: (provided, state) => ({
-    ...provided,
-    zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
-    position: "static",
-    width: "100%",
-    padding: 0,
-    backgound: "none"
-  }),
-  valueContainer: (provided) => ({
-    ...provided,
-    padding: 0
-  }),
-  menu: (provided) => ({
-    ...provided,
-    position: "absolute",
-    left: "0"
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    cursor: state.isDisabled ? "not-allowed" : "pointer",
-    opacity: state.isDisabled ? "0.5" : "1",
-    background:
-      state.isSelected || state.isFocused ? colors.greyLight : colors.white,
-    color: state.isSelected ? colors.violet : colors.black
-  }),
+  control: (provided) =>
+    ({
+      ...provided,
+      cursor: "pointer",
+      borderRadius: 0,
+      boxShadow: "none",
+      ":hover": {
+        borderColor: colors.violet,
+        borderWidth: "0"
+      },
+      background: "none",
+      border: "none"
+    }) as CSSObjectWithLabel,
+  container: (provided, state) =>
+    ({
+      ...provided,
+      zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
+      position: "static",
+      width: "100%",
+      padding: 0,
+      backgound: "none"
+    }) as CSSObjectWithLabel,
+  valueContainer: (provided) =>
+    ({
+      ...provided,
+      padding: 0
+    }) as CSSObjectWithLabel,
+  menu: (provided) =>
+    ({
+      ...provided,
+      position: "absolute",
+      left: "0"
+    }) as CSSObjectWithLabel,
+  option: (provided, state) =>
+    ({
+      ...provided,
+      cursor: state.isDisabled ? "not-allowed" : "pointer",
+      opacity: state.isDisabled ? "0.5" : "1",
+      background:
+        state.isSelected || state.isFocused ? colors.greyLight : colors.white,
+      color: state.isSelected ? colors.violet : colors.black
+    }) as CSSObjectWithLabel,
   indicatorSeparator: () => ({
     display: "none"
   }),
-  dropdownIndicator: (provided) => ({
-    ...provided,
-    padding: 0
-  })
+  dropdownIndicator: (provided) =>
+    ({
+      ...provided,
+      padding: 0
+    }) as CSSObjectWithLabel
 };
 
 const SelectFilterWrapper = styled.div<{ $color: string }>`
@@ -147,7 +157,7 @@ export default function ExploreSelect({ params, handleChange }: Props) {
         placeholder=""
         value={filter}
         options={selectOptions}
-        onChange={(option) => {
+        onChange={(option: SetStateAction<FilterValue | null>) => {
           if (option !== null) {
             setFilter(option);
           }
