@@ -1,5 +1,5 @@
 import { cssVars } from "@bosonprotocol/react-kit";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, RuleSet } from "styled-components";
 
 import barlowRegular from "../../assets/fonts/Barlow-Regular.ttf";
 import neuropolitical_rg from "../../assets/fonts/neuropolitical_rg.ttf";
@@ -103,7 +103,24 @@ const GlobalStyle = createGlobalStyle<{
         : colors.white};
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ${cssVars};
+    ${
+      cssVars as RuleSet<{
+        $withBosonStyles?: boolean;
+        $headerBgColor?: string;
+        $headerTextColor?: string;
+        $primaryBgColor?: string;
+        $secondaryBgColor?: string;
+        $accentColor?: string;
+        $textColor?: string;
+        $footerBgColor?: string;
+        $footerTextColor?: string;
+        $fontFamily?: string;
+        $buttonBgColor?: string;
+        $buttonTextColor?: string;
+        $upperCardBgColor?: string;
+        $lowerCardBgColor?: string;
+      }>
+    };
 
     font-size: 0.75rem;
     ${breakpoint.xs} {
