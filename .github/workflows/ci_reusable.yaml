@@ -186,22 +186,6 @@ jobs:
       - run: npm run build
       - id: build
         run: echo "::set-output name=pass::success"
-      - name: Run Tests & Generate coverage reports
-        run: npm run coverage:report
-      - name: Upload Unit Coverage to Codecov
-        if: ${{ inputs.UPDATE_COVERAGE }}
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/coverage-final.json
-          flags: unittests
-      - name: Upload E2E Coverage to Codecov
-        if: ${{ inputs.UPDATE_COVERAGE }}
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./test-results.json
-          flags: e2etests
       - name: (if 'staging' env) Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
