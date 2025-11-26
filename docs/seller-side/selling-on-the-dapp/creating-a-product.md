@@ -31,7 +31,7 @@ You will be presented to choose the type and variants of the product. The column
 
 ![Product type](/interface/assets/seller-create-product/seller-create-product-2type.png)
 
-Click `Next` when you are ready to move on. For simplicity, we'll now asume that we selected a Physical and One item type.
+Click `Next` when you are ready to move on. For simplicity, we'll now assume that we selected a Physical and One item type.
 
 #### Product Information screen <a href="#product-information-screen" id="product-information-screen"></a>
 

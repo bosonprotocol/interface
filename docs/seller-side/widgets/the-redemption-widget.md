@@ -11,7 +11,7 @@ nav_order: 4
 
 With the release of the Boson Redemption Widget Sellers can now offer redemption of their rNFTs on their own domains.
 
-Sellers can chose to sell their rNFTs everywhere in the metaverse, in game, on NFT marketplaces, or from the Boson dApp whilst bringing users back to their own domain to redeem their NFTs.
+Sellers can choose to sell their rNFTs everywhere in the metaverse, in game, on NFT marketplaces, or from the Boson dApp whilst bringing users back to their own domain to redeem their NFTs.
 
 The Boson Redemption Widget allows Sellers to simply embed, via a few lines of code, redemption functionality of their rNFTs into an existing website.
 
@@ -35,7 +35,7 @@ To integrate the Boson Redemption Widget, all a seller needs to do is:
 
 ### Using the Boson Redemption Button <a href="#using-the-boson-redemption-button" id="using-the-boson-redemption-button"></a>
 
-As a seller you can also chose to use the Boson branded "Redeem" Button on your website, if you would like to do this, all you need to do is :
+As a seller you can also choose to use the Boson branded "Redeem" Button on your website, if you would like to do this, all you need to do is :
 
 1. Add the below 2 lines of code in HTML `<head>` section:
 
@@ -57,7 +57,7 @@ As a seller you can also chose to use the Boson branded "Redeem" Button on your 
 
 #### Redeeming a specific rNFT <a href="#redeeming-a-specific-rnft" id="redeeming-a-specific-rnft"></a>
 
-The Boson Widget's default behaviour is to show a buyer all of their redeemable vouchers, the widget be configured to direct a buyer to a given rNFT for redemption, this enables different user flows. This the way that the Widget is used on [the Boson dApp](https://bosonapp.io/).
+The Boson Widget's default behaviour is to show a buyer all of their redeemable vouchers, the widget can be configured to direct a buyer to a given rNFT for redemption, this enables different user flows. This the way that the Widget is used on [the Boson dApp](https://bosonapp.io/).
 
 A Seller can specify which exchange is going to be redeemed by the widget, by:
 
@@ -67,4 +67,4 @@ A Seller can specify which exchange is going to be redeemed by the widget, by:
 <button type="button" id="boson-redeem" data-exchange-id="80">Redeem Exchange 80</button>
 ```
 
-You can find an example HTML file which embeds the widgets on the the widgets subdomain : [https://widgets.bosonprotocol.io/example.html](https://widgets.bosonprotocol.io/example.html)
+You can find an example HTML file which embeds the widgets on the widgets subdomain : [https://widgets.bosonprotocol.io/example.html](https://widgets.bosonprotocol.io/example.html)

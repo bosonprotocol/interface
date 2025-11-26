@@ -147,4 +147,4 @@ const instance = CommitButton({
 
 The Commit Widget is part of the React Component library from Boson Core Component you can discover on this [Storybook page](https://main--65f314a856a256708dd840ea.chromatic.com/?path=/story/widgets-commit--commit). Also, you can play around with the Commit button itself [Storybook page](https://main--65f314a856a256708dd840ea.chromatic.com/?path=/story/visual-components-buttons-commitbutton--base).
 
-You can find an example HTML file which embeds the commit button on the the widgets subdomain: [https://widgets.bosonprotocol.io/scripts/commit-button-example.html](https://widgets.bosonprotocol.io/scripts/commit-button-example.html)
+You can find an example HTML file which embeds the commit button on the widgets subdomain: [https://widgets.bosonprotocol.io/scripts/commit-button-example.html](https://widgets.bosonprotocol.io/scripts/commit-button-example.html)

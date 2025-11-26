@@ -44,7 +44,7 @@ After Commit, you can now simply hold the rNFT and store it as a claim on the ph
 
 ### Step 2 - Redeeming an rNFT <a href="#step-2---redeeming-an-rnft" id="step-2---redeeming-an-rnft"></a>
 
-The product listing displays a redemption period during which your rNFT is valid and can be exchanged for the asset it represents. During this time you are also free to trade, sell or gift the rNFT. Note that if you do not redeem your item within this time, the seller will no longer be obliged to the exchange and you will incurr buyer penalty set initially in the offer agreement.
+The product listing displays a redemption period during which your rNFT is valid and can be exchanged for the asset it represents. During this time you are also free to trade, sell or gift the rNFT. Note that if you do not redeem your item within this time, the seller will no longer be obliged to the exchange and you will incur buyer penalty set initially in the offer agreement.
 
 When you are ready to take possession of the physical (or phygital) item, go back to the dApp to redeem your rNFT. The rNFT will be burned in the process.
 
