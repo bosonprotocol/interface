@@ -3,7 +3,7 @@
     {
       "slug": "dapp-interface-production",
       "distDir": "build",
-      "buildCommand": "npm run build"
+      "buildCommand": "pnpm build"
     }
   ]
 }

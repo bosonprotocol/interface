@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/core-sdk";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { generatePath } from "react-router-dom";
 
 import { BosonRoutes, OffersRoutes } from "../routing/routes";

@@ -3,7 +3,7 @@
     {
       "slug": "drcenter-test",
       "distDir": "build",
-      "buildCommand": "npm run build"
+      "buildCommand": "pnpm build"
     }
   ]
 }

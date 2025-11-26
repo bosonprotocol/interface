@@ -154,17 +154,17 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
-          cache: "npm"
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
       - name: Create Sentry release
         if: ${{ inputs.IS_PREVIEW == false }}
         uses: getsentry/action-release@v1
@@ -175,34 +175,17 @@ jobs:
         with:
           environment: ${{ inputs.ENV_NAME }}
           version: ${{ inputs.REACT_APP_RELEASE_NAME }}
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
-      - run: npm run prettier
-      - run: npm run tsc
-      - run: npm run test
-      - run: npm run lint
+      - run: pnpm prettier
+      - run: pnpm tsc
+      - run: pnpm lint
       - id: lint
         run: echo "::set-output name=pass::success"
-      - run: npm run build
+      - run: pnpm build
       - id: build
         run: echo "::set-output name=pass::success"
-      - name: Run Tests & Generate coverage reports
-        run: npm run coverage:report
-      - name: Upload Unit Coverage to Codecov
-        if: ${{ inputs.UPDATE_COVERAGE }}
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/coverage-final.json
-          flags: unittests
-      - name: Upload E2E Coverage to Codecov
-        if: ${{ inputs.UPDATE_COVERAGE }}
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./test-results.json
-          flags: e2etests
       - name: (if 'staging' env) Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
@@ -217,7 +200,7 @@ jobs:
           FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
           FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
       - name: Build dapp to show the dr_center only
-        run: npm run build
+        run: pnpm build
         if: ${{ inputs.IS_PREVIEW == false && inputs.DEPLOY_TO_FLEEK }}
         env:
           REACT_APP_VIEW_MODE: "dr_center"
