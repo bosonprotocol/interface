@@ -1,5 +1,4 @@
-import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { AuthTokenType, subgraph } from "@bosonprotocol/react-kit";
 
 import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
 import {
@@ -15,7 +14,7 @@ import {
 } from "./Lens/utils";
 
 export function buildProfileFromMetadata(
-  metadata: SellerFieldsFragment["metadata"] | undefined | null,
+  metadata: subgraph.SellerFieldsFragment["metadata"] | undefined | null,
   sellerAuthTokenType:
     | (typeof AuthTokenType)[keyof typeof AuthTokenType]
     | undefined
@@ -93,7 +92,7 @@ export function buildProfileFromMetadata(
 }
 
 export function buildRegularProfileFromMetadata(
-  metadata: SellerFieldsFragment["metadata"] | undefined | null
+  metadata: subgraph.SellerFieldsFragment["metadata"] | undefined | null
 ): CreateProfile {
   const profileImage = metadata?.images?.find((img) => img.tag === "profile");
   const coverPicture = metadata?.images?.find((img) => img.tag === "cover");
@@ -111,11 +110,9 @@ export function buildRegularProfileFromMetadata(
             position: coverPicture.position ?? undefined,
             src: coverPicture.url
           }
-        ] ?? []
+        ]
       : [],
-    logo: profileImage
-      ? [{ ...profileImage, src: profileImage.url }] ?? []
-      : [],
+    logo: profileImage ? [{ ...profileImage, src: profileImage.url }] : [],
     contactPreference:
       OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
         (obj) => obj.value === metadata?.contactPreference
@@ -124,6 +121,8 @@ export function buildRegularProfileFromMetadata(
   return profileDataFromMetadata;
 }
 
-export function getMetadataEmail(metadata: SellerFieldsFragment["metadata"]) {
+export function getMetadataEmail(
+  metadata: subgraph.SellerFieldsFragment["metadata"]
+) {
   return metadata?.contactLinks?.find((cl) => cl.tag === "email")?.url ?? "";
 }

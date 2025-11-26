@@ -3,7 +3,7 @@
     {
       "slug": "interface-staging",
       "distDir": "build",
-      "buildCommand": "npm run build"
+      "buildCommand": "pnpm build"
     }
   ]
 }
