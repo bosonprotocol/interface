@@ -218,7 +218,9 @@ export function SelectForm({
         isSearchable={isSearchable}
         isClearable={isClearable}
         isDisabled={disabled}
-        isOptionDisabled={(option: { disabled: any }) => !!option.disabled}
+        isOptionDisabled={(option: { disabled: boolean | undefined }) =>
+          !!option.disabled
+        }
       />
       <Error display={displayError} message={displayErrorMessage} />{" "}
     </>
