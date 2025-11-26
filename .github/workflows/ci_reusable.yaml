@@ -178,12 +178,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
-      - run: npm run prettier
-      - run: npm run tsc
-      - run: npm run lint
+      - run: pnpm prettier
+      - run: pnpm tsc
+      - run: pnpm lint
       - id: lint
         run: echo "::set-output name=pass::success"
-      - run: npm run build
+      - run: pnpm build
       - id: build
         run: echo "::set-output name=pass::success"
       - name: (if 'staging' env) Copy contents from .fleek_staging.json to .fleek.json
@@ -200,7 +200,7 @@ jobs:
           FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
           FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
       - name: Build dapp to show the dr_center only
-        run: npm run build
+        run: pnpm build
         if: ${{ inputs.IS_PREVIEW == false && inputs.DEPLOY_TO_FLEEK }}
         env:
           REACT_APP_VIEW_MODE: "dr_center"

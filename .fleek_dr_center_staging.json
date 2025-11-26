@@ -3,7 +3,7 @@
     {
       "slug": "drcenter-staging",
       "distDir": "build",
-      "buildCommand": "npm run build"
+      "buildCommand": "pnpm build"
     }
   ]
 }

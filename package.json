@@ -22,10 +22,10 @@
     "test:e2e:ci": "cross-env CI=true playwright test --project=chromium",
     "test:e2e:debug": "cross-env PWDEBUG=console playwright test --project=chromium",
     "test:e2e:report": "playwright show-report",
-    "coverage:unit": "npm run test -- --silent --watchAll=false --coverage --coverageReporters 'json'",
+    "coverage:unit": "pnpm test -- --silent --watchAll=false --coverage --coverageReporters 'json'",
     "coverage:e2e": "cross-env CI=true npx playwright test --project=chromium && npx nyc report --reporter=json",
     "coverage:e2e:view": "npx nyc report --reporter html && echo 'open coverage/index.html to see it'",
-    "coverage:report": "npm run coverage:unit",
+    "coverage:report": "pnpm coverage:unit",
     "upgrade:corec:latest": "pnpm install @bosonprotocol/common@latest @bosonprotocol/react-kit@latest",
     "upgrade:corec:alpha": "pnpm install @bosonprotocol/common@alpha @bosonprotocol/react-kit@alpha",
     "generate": "graphql-codegen",
@@ -39,7 +39,7 @@
   },
   "lint-staged": {
     "src/**/*.+(js|json|ts|tsx)": [
-      "npm run lint"
+      "pnpm lint"
     ],
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
