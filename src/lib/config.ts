@@ -59,6 +59,9 @@ function getMetaTxApiIds(envConfig: ProtocolConfig) {
       if (key.toLowerCase() === "protocol") {
         apiIds[protocolAddress.toLowerCase()] = {};
         apiIds[protocolAddress.toLowerCase()][method] = apiIdsInput[key];
+      } else if (key.toLowerCase() === "forwarder") {
+        apiIds["FORWARDER"] = {};
+        apiIds["FORWARDER"]["FORWARD"] = apiIdsInput[key];
       } else {
         const token = tokens.find(
           (t: Token) => t.symbol.toLowerCase() === key.toLowerCase()
