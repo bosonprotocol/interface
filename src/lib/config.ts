@@ -177,7 +177,10 @@ export const CONFIG = {
   ),
   magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string,
   rpcUrls: getRpcUrls(infuraKey),
-  widgetsUrl
+  widgetsUrl,
+  guidesUrl:
+    process.env.REACT_APP_GUIDES_URL ||
+    "https://bosonprotocol.github.io/interface"
 } as const;
 export type GlobalConfig = typeof CONFIG;
 export const lensHandleMaxLength = Math.max(

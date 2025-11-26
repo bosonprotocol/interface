@@ -36,7 +36,8 @@ export const BosonRoutes = addViewModePrefixToPaths(
 );
 
 export const BosonProtocolRoutes = {
-  LearnMore: "https://www.bosonprotocol.io/technology"
+  LearnMore: "https://www.bosonprotocol.io/technology",
+  Guides: CONFIG.guidesUrl
 };
 
 export const SellerCenterRoutes = {

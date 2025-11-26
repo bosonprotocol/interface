@@ -11,6 +11,7 @@ import { generatePath } from "react-router-dom";
 import { DrCenterRoutes } from "../../lib/routing/drCenterRoutes";
 import { UrlParameters } from "../../lib/routing/parameters";
 import {
+  BosonProtocolRoutes,
   BosonRoutes,
   SellerCenterRoutes,
   SocialRoutes
@@ -147,7 +148,7 @@ export const getSellRoutes = ({
   const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
   productRoutes.push({
-    name: "Templates & Guides",
+    name: "Templates",
     url: BosonRoutes.Sell
   });
   productRoutes.push({
@@ -204,6 +205,11 @@ export const getHelpLinks = ({
     {
       name: "Email",
       email: "info@bosonapp.io"
+    },
+    {
+      name: "Guides",
+      url: BosonProtocolRoutes.Guides,
+      absolute: true
     }
   ].filter(isTruthy);
 };
