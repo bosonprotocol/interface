@@ -5,6 +5,7 @@ import { zIndex } from "lib/styles/zIndex";
 import { useCSSVariable } from "lib/utils/hooks/useCSSVariable";
 import ReactSelect, {
   ActionMeta,
+  CSSObjectWithLabel,
   MultiValue,
   SingleValue,
   StylesConfig
@@ -90,22 +91,29 @@ const customStyles = (
   }),
   multiValue: (base, state) => {
     return (state.data as Record<string, any>).isFixed
-      ? { ...base, backgroundColor: backgroundColor }
+      ? ({ ...base, backgroundColor: backgroundColor } as CSSObjectWithLabel)
       : base;
   },
   multiValueLabel: (base, state) => {
     return state.data.isFixed
-      ? { ...base, fontWeight: "bold", color: colors.white, paddingRight: 6 }
+      ? ({
+          ...base,
+          fontWeight: "bold",
+          color: colors.white,
+          paddingRight: 6
+        } as CSSObjectWithLabel)
       : base;
   },
   multiValueRemove: (base, state) => {
-    return state.data.isFixed ? { ...base, display: "none" } : base;
+    return state.data.isFixed
+      ? ({ ...base, display: "none" } as CSSObjectWithLabel)
+      : base;
   },
   input(base) {
     return {
       ...base,
       color: textColor
-    };
+    } as CSSObjectWithLabel;
   }
 });
 
@@ -210,7 +218,9 @@ export function SelectForm({
         isSearchable={isSearchable}
         isClearable={isClearable}
         isDisabled={disabled}
-        isOptionDisabled={(option) => !!option.disabled}
+        isOptionDisabled={(option: { disabled: boolean | undefined }) =>
+          !!option.disabled
+        }
       />
       <Error display={displayError} message={displayErrorMessage} />{" "}
     </>
@@ -243,7 +253,9 @@ export function Select({
         isSearchable={isSearchable}
         isClearable={isClearable}
         isDisabled={disabled}
-        isOptionDisabled={(option) => !!option.disabled}
+        isOptionDisabled={(option: { disabled: boolean | undefined }) =>
+          !!option.disabled
+        }
         isMulti={!!isMulti}
       />
       <Error display={displayError} message={displayErrorMessage} />{" "}

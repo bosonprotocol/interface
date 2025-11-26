@@ -37,9 +37,9 @@ For ease of use, each environment has a DNS name that always points to the lates
 Installing the correct versions of node and npm can be done by installing [`volta`](https://volta.sh/). Volta will automatically get those versions from the package.json file. Once that's done, the required steps to develop and test the dApp interface locally are as follows:
 
 1. Clone the repository: i.e. Run `git clone git@github.com:bosonprotocol/interface.git`
-2. Navigate into the directory & install dependencies: i.e. Run `cd interface && npm ci`
+2. Navigate into the directory & install dependencies: i.e. Run `cd interface && pnpm install`
 3. Copy the `.env.example` file to `.env` and fill out any necessary values.
-4. Start the application: i.e. Run `npm run dev`
+4. Start the application: i.e. Run `pnpm dev`
 5. Navigate to `http://localhost:3000/` in a browser.
 
 

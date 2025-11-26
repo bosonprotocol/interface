@@ -32,11 +32,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 24
+          version: 10
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
       - name: Install Packages
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Build & deploy sites
         run: npx fleek -- sites deploy --config ./.fleek_dr_center_testing.json
