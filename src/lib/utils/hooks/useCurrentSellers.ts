@@ -293,10 +293,11 @@ export function useCurrentSellers({
   );
   const sellerValues = useMemo(
     () =>
-      (sellerAddressType === "ADDRESS"
+      sellerAddressType === "ADDRESS"
         ? resultByAddress.data?.sellers || []
-        : ([sellerById?.data] as unknown as subgraph.SellerFieldsFragment[])
-      ).filter((value) => !!value),
+        : sellerById?.data
+          ? ([sellerById?.data] as unknown as subgraph.SellerFieldsFragment[])
+          : [],
 
     [resultByAddress.data?.sellers, sellerAddressType, sellerById?.data]
   );
