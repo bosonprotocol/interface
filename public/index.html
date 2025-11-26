@@ -44,8 +44,17 @@
     <meta property="og:description" content="Buy and sell physical products as redeemable NFTs on Boson Protocol" />
     <meta property="og:image" content="https://bosonprotocol.infura-ipfs.io/ipfs/QmTC3qTdY47aVA55skZ4EcAiRWD8ZSTdRqN58Hkc9yjYMd" />
     <!-- using Boson Protocol Widgets -->
-    <link rel="stylesheet" href="%REACT_APP_WIDGETS_URL%/styles.css">
-    <script async type="text/javascript" src="%REACT_APP_WIDGETS_URL%/scripts/boson-widgets.js"></script>
+    <script>
+      // Remove trailing slash from WIDGETS_URL if present
+      window.WIDGETS_URL = '%REACT_APP_WIDGETS_URL%'.replace(/\/$/, '');
+    </script>
+    <link rel="stylesheet" id="widgets-css">
+    <script async type="text/javascript" id="widgets-js"></script>
+    <script>
+      // Set the href and src attributes after processing the URL
+      document.getElementById('widgets-css').href = window.WIDGETS_URL + '/styles.css';
+      document.getElementById('widgets-js').src = window.WIDGETS_URL + '/scripts/boson-widgets.js';
+    </script>
     <!-- -->
   </head>
   <body>

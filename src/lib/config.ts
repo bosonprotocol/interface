@@ -13,6 +13,18 @@ import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphe
 import { parseCurationList } from "./utils/curationList";
 import { ViewMode } from "./viewMode";
 
+/**
+ * Remove trailing slash from a URL string if it exists
+ * @param url - The URL string to process
+ * @returns The URL string without trailing slash
+ */
+export function removeTrailingSlash(url: string | undefined): string {
+  if (!url) {
+    return "";
+  }
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+}
+
 export const envName = process.env.REACT_APP_ENV_NAME as EnvironmentType;
 if (!envName) {
   throw new Error("REACT_APP_ENV_NAME is not defined");
@@ -21,7 +33,7 @@ const infuraKey = process.env.REACT_APP_INFURA_KEY;
 if (!infuraKey) {
   throw new Error("REACT_APP_INFURA_KEY is not defined");
 }
-const widgetsUrl = process.env.REACT_APP_WIDGETS_URL;
+const widgetsUrl = removeTrailingSlash(process.env.REACT_APP_WIDGETS_URL);
 if (!widgetsUrl) {
   throw new Error("REACT_APP_WIDGETS_URL is not defined");
 }
@@ -146,8 +158,10 @@ export const CONFIG = {
     )
       ? (process.env.REACT_APP_VIEW_MODE as ViewMode)
       : ViewMode.DAPP,
-    dappViewModeUrl: process.env.REACT_APP_DAPP_VIEW_MODE || "",
-    drCenterViewModeUrl: process.env.REACT_APP_DR_CENTER_VIEW_MODE || ""
+    dappViewModeUrl: removeTrailingSlash(process.env.REACT_APP_DAPP_VIEW_MODE),
+    drCenterViewModeUrl: removeTrailingSlash(
+      process.env.REACT_APP_DR_CENTER_VIEW_MODE
+    )
   },
   moonpay: {
     api: process.env.REACT_APP_MOONPAY_API || "",
@@ -166,7 +180,10 @@ export const CONFIG = {
   ),
   magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string,
   rpcUrls: getRpcUrls(infuraKey),
-  widgetsUrl
+  widgetsUrl,
+  guidesUrl:
+    process.env.REACT_APP_GUIDES_URL ||
+    "https://bosonprotocol.github.io/interface"
 } as const;
 export type GlobalConfig = typeof CONFIG;
 export const lensHandleMaxLength = Math.max(
