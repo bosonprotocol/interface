@@ -251,7 +251,9 @@ export function Select({
         isSearchable={isSearchable}
         isClearable={isClearable}
         isDisabled={disabled}
-        isOptionDisabled={(option: { disabled: any }) => !!option.disabled}
+        isOptionDisabled={(option: { disabled: boolean | undefined }) =>
+          !!option.disabled
+        }
         isMulti={!!isMulti}
       />
       <Error display={displayError} message={displayErrorMessage} />{" "}
