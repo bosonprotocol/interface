@@ -26,23 +26,7 @@ export function getViewModeUrl(
   viewMode: ViewMode.DAPP | ViewMode.DR_CENTER,
   path: `/${string}`
 ): string {
-  let origin = window.location.origin;
-  try {
-    // use document.URL to get origin: useful when serving dapp locally with the prod build
-    const documentOrigin = document.URL.substring(
-      0,
-      document.URL.indexOf("#/")
-    );
-    if (documentOrigin.startsWith(origin)) {
-      origin = documentOrigin;
-    }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    if (origin === window.location.origin) {
-      origin = `${origin}/`;
-    }
-  }
+  const origin = getOrigin();
   const dappViewModeUrl =
     CONFIG.envViewMode.dappViewModeUrl === "same_origin" ||
     !CONFIG.envViewMode.dappViewModeUrl
@@ -71,6 +55,27 @@ export function getCurrentViewMode() {
   const isDapp =
     CONFIG.envViewMode.current === ViewMode.DAPP ||
     (CONFIG.envViewMode.current === ViewMode.BOTH &&
-      location.href.startsWith(`${location.origin}/#/${ViewMode.DAPP}`));
+      location.href.startsWith(`${getOrigin()}/#/${ViewMode.DAPP}`));
   return isDapp ? ViewMode.DAPP : ViewMode.DR_CENTER;
+}
+
+function getOrigin(): string {
+  let origin = window.location.origin;
+  try {
+    // use document.URL to get origin: useful when serving dapp locally with the prod build
+    const documentOrigin = document.URL.substring(
+      0,
+      document.URL.indexOf("/#/")
+    );
+    if (documentOrigin.startsWith(origin)) {
+      origin = documentOrigin;
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    if (origin === window.location.origin) {
+      origin = `${origin}`;
+    }
+  }
+  return origin;
 }

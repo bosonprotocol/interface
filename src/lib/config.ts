@@ -113,7 +113,11 @@ export const CONFIG = {
     symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"
   },
   releaseTag: process.env.REACT_APP_RELEASE_TAG,
-  releaseName: process.env.REACT_APP_RELEASE_NAME,
+  releaseName:
+    process.env.REACT_APP_RELEASE_NAME ||
+    (process.env.DATE && process.env.TIME
+      ? `${process.env.DATE} ${process.env.TIME}`
+      : undefined),
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
   offerCurationList: parseCurationList(

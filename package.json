@@ -35,7 +35,8 @@
     "link-cc": "node ./scripts/link-to-local-core-components.js",
     "link-chat": "node ./scripts/link-to-local-chat-sdk.js --link",
     "ts-coverage": "typescript-coverage-report",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "pinata:deploy": "node ./scripts/pinata/deploy.ts"
   },
   "lint-staged": {
     "src/**/*.+(js|json|ts|tsx)": [
@@ -63,6 +64,7 @@
     "@ethersproject/providers": "5.8.0",
     "@ethersproject/strings": "5.8.0",
     "@ethersproject/units": "^5.7.0",
+    "@fleek-platform/cli": "3.8.3",
     "@glidejs/glide": "^3.5.2",
     "@graphql-codegen/fragment-matcher": "^3.3.1",
     "@graphql-typed-document-node/core": "3.2.0",
@@ -193,7 +195,6 @@
     "zustand": "^4.1.2"
   },
   "devDependencies": {
-    "@fleek-platform/cli": "^3.9.4",
     "@graphql-codegen/cli": "^2.13.1",
     "@graphql-codegen/typed-document-node": "^2.3.3",
     "@graphql-codegen/typescript": "^2.7.3",
@@ -221,6 +222,7 @@
     "commander": "^9.4.1",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
+    "dotenv": "^17.2.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
@@ -238,6 +240,7 @@
     "multihashes": "^4.0.3",
     "nyc": "^15.1.0",
     "only-allow": "^1.2.1",
+    "pinata": "^2.5.1",
     "prettier": "^3.2.5",
     "react-app-rewire-alias": "^1.1.7",
     "react-app-rewired": "^2.2.1",
