@@ -48,3 +48,17 @@ Installing the correct versions of node and npm can be done by installing [`volt
 We welcome contributions! The ultimate goal is for all of the Boson Protocol repositories to be fully owned by the community and contributors. Issues, pull requests, suggestions, and any sort of involvement are more than welcome.
 
 By being in this community, you agree to the [Code of Conduct](/docs/code-of-conduct.md). Take a look at it, if you haven't already.
+
+## Deployment
+
+Deployment to Fleek Hosting Service (via GH pipeline) is currently down.
+
+Alternatively, Boson dApp is deployed on Cloudflare Pages
+
+| env | how to trigger deployment | links | |
+| - | - | - | - |
+| testing (preview) | push to any PR branch | https://[commit-SHA].interface-a9d.pages.dev  |
+| testing | push to '*main*' branch | https://interface-a9d.pages.dev | https://boson-dr-center-testing.pages.dev |
+| staging | create a release + push to '*deploy/staging*' branch (*git checkout deploy/staging* + *git reset --hard <RELEASE_TAG>*) | https://boson-dapp-staging.pages.dev/ | https://boson-dr-center-staging.pages.dev/ |
+| production | push to '*deploy/production*' branch (*git checkout deploy/production* + *git reset --hard <RELEASE_TAG>*) | https://bosonapp.io | https://disputes.bosonprotocol.io |
+
