@@ -15,11 +15,11 @@ importers:
         specifier: ^1.4.5
         version: 1.4.5(@babel/core@7.28.5)(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)(vite@6.3.2(@types/node@24.10.1)(jiti@2.4.2)(terser@5.19.3)(tsx@4.19.2)(yaml@2.7.1))(vitest@3.1.2)(yup@1.5.0)
       '@bosonprotocol/common':
-        specifier: 1.32.1-alpha.3
-        version: 1.32.1-alpha.3
+        specifier: 1.32.2
+        version: 1.32.2
       '@bosonprotocol/react-kit':
-        specifier: 0.42.0-alpha.4
-        version: 0.42.0-alpha.4(6a6a21dfda5e2b85d698be89e302fd2e)
+        specifier: 0.42.1
+        version: 0.42.1(6a6a21dfda5e2b85d698be89e302fd2e)
       '@davatar/react':
         specifier: ^1.10.4
         version: 1.11.1(bufferutil@4.0.6)(react@18.2.0)(utf-8-validate@5.0.9)
@@ -1631,17 +1631,14 @@ packages:
     peerDependencies:
       yup: ^1.5.0
 
-  '@bosonprotocol/common@1.32.0':
-    resolution: {integrity: sha512-YSMpjqPyBXw5WRYlpFKdwCQwyXgSWxNDF1OqTRwFU9wdO+8R/VdG4QV0YTi+uEuy/9rFLyQZvrbxwLNVO4ZdBg==}
+  '@bosonprotocol/common@1.32.2':
+    resolution: {integrity: sha512-SXaUvMIEHT1yGxcTNlbxoWzyPUqoacrKSIYXpIUJVVOU/5uLYrojULx2htZlqF5OKl6XDxXHSPLyjUxuIEe5lg==}
 
-  '@bosonprotocol/common@1.32.1-alpha.3':
-    resolution: {integrity: sha512-peSbfKEdfMw/d1vZDy4NQ1si9HfWJsqr3Ae822Sf+1mlv4Y+VIVrp59obkNOkvUsNMU3PMDLH+00vLHGsZRX0w==}
+  '@bosonprotocol/core-sdk@1.46.1':
+    resolution: {integrity: sha512-T8DlfmWJNrD5vAosvjoZcvEiRWRj81NQRGQtStpEOAVHycsbHAO3zuiHK8Csz4yYeitzHZKMauLUP58Xef3p1g==}
 
-  '@bosonprotocol/core-sdk@1.46.0-alpha.4':
-    resolution: {integrity: sha512-eRT9BI22syRsZtuN2qajbic8F+lNhv6AUa4icz4hkg54MjoxVII/6Kl9C61ki3U418GJ+0Nhfv7gcXdqSvYmIw==}
-
-  '@bosonprotocol/ethers-sdk@1.17.1-alpha.3':
-    resolution: {integrity: sha512-NS+22sYNvO5vJ2mPUvxwirnEyzDaz30k/VgT99vj9/hYiTlpeqScxrUzT37Iag9P40I4Hi/L+8QT1fdBfipw4A==}
+  '@bosonprotocol/ethers-sdk@1.17.2':
+    resolution: {integrity: sha512-dCzs71Y0599kf0HQAKi4YnfA1OeHg34BG2p4Mw5Z1DLPGVx1Bf8YJdrFeo88udiJ/g1stDLjQGqSDHmP2bWEwQ==}
     peerDependencies:
       ethers: ^5.5.0
 
@@ -1654,8 +1651,8 @@ packages:
   '@bosonprotocol/metadata@1.16.3':
     resolution: {integrity: sha512-9SDhtoq2DwrRiGvT4MDfHO9rU6iNE961rldbwbVAXOjwqGa/wpKiASE37Ip68hr5GZ/Da07Db4OqQsYDHuz3Rw==}
 
-  '@bosonprotocol/react-kit@0.42.0-alpha.4':
-    resolution: {integrity: sha512-MfCVJ2TTtbOI1XftikeQhGVF2JNOoVh6dRkErfw/ixBlwfROkdndnOEr1eaNl83yMfCbxDoOjwKrbgsD/0v1vg==}
+  '@bosonprotocol/react-kit@0.42.1':
+    resolution: {integrity: sha512-zrGVJvKKJhZ4BJwMr6wROb5Yy8bAuJfdZ0axdYfg+gOp2uxTU2G2ovNTr4B119EK5oAKAjkmklZJiQiScxw6cA==}
     peerDependencies:
       ethers: ^5.7.2
       react: 17 - 18
@@ -17085,7 +17082,7 @@ snapshots:
 
   '@bosonprotocol/chat-sdk@1.4.5(@babel/core@7.28.5)(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)(vite@6.3.2(@types/node@24.10.1)(jiti@2.4.2)(terser@5.19.3)(tsx@4.19.2)(yaml@2.7.1))(vitest@3.1.2)(yup@1.5.0)':
     dependencies:
-      '@bosonprotocol/common': 1.32.0
+      '@bosonprotocol/common': 1.32.2
       '@goat-sdk/core': 0.5.0(zod@3.25.76)
       '@goat-sdk/wallet-evm': 0.3.0(@goat-sdk/core@0.5.0(zod@3.25.76))(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)
       '@modelcontextprotocol/sdk': 1.20.1
@@ -17111,7 +17108,7 @@ snapshots:
       - vitest
       - webdriverio
 
-  '@bosonprotocol/common@1.32.0':
+  '@bosonprotocol/common@1.32.2':
     dependencies:
       '@bosonprotocol/metadata': 1.16.3
       '@ethersproject/abi': 5.7.0
@@ -17120,18 +17117,9 @@ snapshots:
       '@ethersproject/constants': 5.8.0
       '@ethersproject/units': 5.8.0
 
-  '@bosonprotocol/common@1.32.1-alpha.3':
+  '@bosonprotocol/core-sdk@1.46.1(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)':
     dependencies:
-      '@bosonprotocol/metadata': 1.16.3
-      '@ethersproject/abi': 5.7.0
-      '@ethersproject/address': 5.8.0
-      '@ethersproject/bignumber': 5.8.0
-      '@ethersproject/constants': 5.8.0
-      '@ethersproject/units': 5.8.0
-
-  '@bosonprotocol/core-sdk@1.46.0-alpha.4(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)':
-    dependencies:
-      '@bosonprotocol/common': 1.32.1-alpha.3
+      '@bosonprotocol/common': 1.32.2
       '@ethersproject/abi': 5.7.0
       '@ethersproject/address': 5.8.0
       '@ethersproject/bignumber': 5.8.0
@@ -17149,9 +17137,9 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@bosonprotocol/ethers-sdk@1.17.1-alpha.3(ethers@5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9))':
+  '@bosonprotocol/ethers-sdk@1.17.2(ethers@5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9))':
     dependencies:
-      '@bosonprotocol/common': 1.32.1-alpha.3
+      '@bosonprotocol/common': 1.32.2
       ethers: 5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9)
 
   '@bosonprotocol/ipfs-storage@1.13.0(encoding@0.1.13)(node-fetch@2.7.0(encoding@0.1.13))':
@@ -17173,11 +17161,11 @@ snapshots:
       schema-to-yup: 1.12.18
       yup: 1.5.0
 
-  '@bosonprotocol/react-kit@0.42.0-alpha.4(6a6a21dfda5e2b85d698be89e302fd2e)':
+  '@bosonprotocol/react-kit@0.42.1(6a6a21dfda5e2b85d698be89e302fd2e)':
     dependencies:
       '@bosonprotocol/chat-sdk': 1.4.5(@babel/core@7.28.5)(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)(vite@6.3.2(@types/node@24.10.1)(jiti@2.4.2)(terser@5.19.3)(tsx@4.19.2)(yaml@2.7.1))(vitest@3.1.2)(yup@1.5.0)
-      '@bosonprotocol/core-sdk': 1.46.0-alpha.4(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)
-      '@bosonprotocol/ethers-sdk': 1.17.1-alpha.3(ethers@5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9))
+      '@bosonprotocol/core-sdk': 1.46.1(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)
+      '@bosonprotocol/ethers-sdk': 1.17.2(ethers@5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9))
       '@bosonprotocol/ipfs-storage': 1.13.0(encoding@0.1.13)(node-fetch@2.7.0(encoding@0.1.13))
       '@davatar/react': 1.11.1(bufferutil@4.0.6)(react@18.2.0)(utf-8-validate@5.0.9)
       '@ethersproject/units': 5.6.0
