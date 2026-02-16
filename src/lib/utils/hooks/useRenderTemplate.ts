@@ -1,5 +1,5 @@
 import { CreateOfferArgs } from "@bosonprotocol/common";
-import { offers, subgraph } from "@bosonprotocol/react-kit";
+import { MetadataType, offers, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
@@ -106,6 +106,13 @@ function buildOfferData(offerFields: OfferFieldsFragment): {
   offerArgs: CreateOfferArgs;
   offerMetadata: AdditionalOfferMetadata;
 } {
+  const productItemMetadata =
+    offerFields.metadata?.type === MetadataType.BUNDLE
+      ? (offerFields.metadata as subgraph.BundleMetadataEntity).items?.find(
+          (item): item is subgraph.ProductV1ItemMetadataEntity =>
+            item.type === subgraph.ItemMetadataType.ITEM_PRODUCT_V1
+        )
+      : undefined;
   return {
     offerArgs: {
       price: offerFields.price as string,
@@ -153,18 +160,22 @@ function buildOfferData(offerFields: OfferFieldsFragment): {
         (offerFields.metadata as ProductV1MetadataFields)?.exchangePolicy
           ?.sellerContactMethod || "undefined",
       disputeResolverContactMethod:
-        (offerFields.metadata as ProductV1MetadataFields)?.exchangePolicy
-          ?.disputeResolverContactMethod || "undefined",
+        (
+          productItemMetadata ||
+          (offerFields.metadata as subgraph.ProductV1MetadataEntity)
+        )?.exchangePolicy?.disputeResolverContactMethod || "undefined",
       escalationDeposit:
         offerFields.disputeResolutionTerms.buyerEscalationDeposit,
       escalationResponsePeriodInSec:
         offerFields.disputeResolutionTerms.escalationResponsePeriod,
       sellerTradingName:
-        (offerFields.metadata as ProductV1MetadataFields)?.productV1Seller
-          ?.name || "undefined",
+        (offerFields.metadata as subgraph.ProductV1MetadataEntity)
+          ?.productV1Seller?.name || "undefined",
       returnPeriodInDays:
-        (offerFields.metadata as ProductV1MetadataFields)?.shipping
-          ?.returnPeriodInDays || 0
+        (
+          productItemMetadata ||
+          (offerFields.metadata as subgraph.ProductV1MetadataEntity)
+        )?.shipping?.returnPeriodInDays || 0
     }
   };
 }

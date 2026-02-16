@@ -1,4 +1,4 @@
-import { offers, subgraph } from "@bosonprotocol/react-kit";
+import { isBundle, offers, subgraph } from "@bosonprotocol/react-kit";
 import ContractualAgreement from "components/contractualAgreement/ContractualAgreement";
 import { customisedExchangePolicy } from "lib/constants/policies";
 import { getExchangePolicyName } from "lib/utils/policy/getExchangePolicyName";
@@ -30,22 +30,28 @@ export default function ExchangePolicyDetails({
   const isExchangePolicyValid =
     exchangePolicyCheckResult &&
     (exchangePolicyCheckResult.isValid ||
-      !exchangePolicyCheckResult.errors.find(
-        (error) => error.path === "metadata.exchangePolicy.template"
+      !exchangePolicyCheckResult.errors.find((error) =>
+        error.path?.endsWith("exchangePolicy.template")
       ));
+  const productItemMetadata =
+    offerData && isBundle(offerData)
+      ? offerData.metadata.items?.find(
+          (item): item is subgraph.ProductV1ItemMetadataEntity =>
+            item.type === subgraph.ItemMetadataType.ITEM_PRODUCT_V1
+        )
+      : undefined;
+  const exchangePolicyData =
+    productItemMetadata?.exchangePolicy ||
+    (offerData?.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy;
+  const shippingData =
+    productItemMetadata?.shipping ||
+    (offerData?.metadata as subgraph.ProductV1MetadataEntity)?.shipping;
   const exchangePolicy = {
     name: exchangePolicyCheckResult?.isValid
-      ? getExchangePolicyName(
-          (offerData?.metadata as subgraph.ProductV1MetadataEntity)
-            ?.exchangePolicy?.label
-        )
+      ? getExchangePolicyName(exchangePolicyData?.label)
       : customisedExchangePolicy,
-    version: (offerData?.metadata as subgraph.ProductV1MetadataEntity)
-      ?.exchangePolicy?.version
-      ? "v" +
-        (
-          offerData?.metadata as subgraph.ProductV1MetadataEntity
-        )?.exchangePolicy?.version?.toString()
+    version: exchangePolicyData?.version
+      ? "v" + exchangePolicyData.version.toString()
       : "",
     disputePeriod: offerData?.disputePeriodDuration
       ? parseInt(offerData?.disputePeriodDuration) / (3600 * 24)
@@ -53,9 +59,7 @@ export default function ExchangePolicyDetails({
     resolutionPeriod: offerData?.resolutionPeriodDuration
       ? parseInt(offerData?.resolutionPeriodDuration) / (3600 * 24)
       : "unspecified",
-    returnPeriod:
-      (offerData?.metadata as subgraph.ProductV1MetadataEntity)?.shipping
-        ?.returnPeriodInDays || "unspecified",
+    returnPeriod: shippingData?.returnPeriodInDays || "unspecified",
     contractualAgreement: {
       title: isExchangePolicyValid ? (
         "Commerce Agreement"
@@ -141,7 +145,9 @@ export default function ExchangePolicyDetails({
       info: undefined,
       value: period(
         exchangePolicy.returnPeriod,
-        "metadata.shipping.returnPeriodInDays",
+        offerData && isBundle(offerData)
+          ? "shipping.returnPeriodInDays"
+          : "metadata.shipping.returnPeriodInDays",
         exchangePolicyCheckResult
       )
     }
