@@ -1,6 +1,7 @@
 import {
   ExternalOfferFullDescription,
-  ExternalOfferFullDescriptionProps
+  ExternalOfferFullDescriptionProps,
+  isBundle
 } from "@bosonprotocol/react-kit";
 import { useConfigContext } from "components/config/ConfigContext";
 import { MODAL_TYPES } from "components/modal/ModalComponents";
@@ -56,7 +57,11 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
       includeOverviewTab
       imagesToShow={3}
       includeGeneralProductDataTab={false}
-      defaultSelectedOfferTabsIdTab="physical-product-data"
+      defaultSelectedOfferTabsIdTab={
+        props.offer && isBundle(props.offer)
+          ? "overview"
+          : "physical-product-data"
+      } // LLX: if bundle, use "overview" instead
       withFullViewportWidth={true}
       onExchangePolicyClick={({ exchangePolicyCheckResult }) =>
         showModal(MODAL_TYPES.EXCHANGE_POLICY_DETAILS, {
