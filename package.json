@@ -36,7 +36,9 @@
     "link-chat": "node ./scripts/link-to-local-chat-sdk.js --link",
     "ts-coverage": "typescript-coverage-report",
     "tsc": "tsc",
-    "pinata:deploy": "node ./scripts/pinata/deploy.ts"
+    "pinata:deploy": "node ./scripts/pinata/deploy.ts",
+    "pinata:test": "node ./scripts/pinata/test.ts",
+    "cloudflare:test": "node ./scripts/cloudflare/test.ts"
   },
   "lint-staged": {
     "src/**/*.+(js|json|ts|tsx)": [
@@ -219,6 +221,7 @@
     "@types/ua-parser-js": "^0.7.36",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
+    "cloudflare": "^5.2.0",
     "commander": "^9.4.1",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
