@@ -51,7 +51,7 @@ jobs:
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
       REACT_APP_DAPP_VIEW_MODE: "same_origin"
       REACT_APP_DR_CENTER_VIEW_MODE: "same_origin"
-      REACT_APP_WIDGETS_URL: "https://widgets-test.on-fleek.app"
+      REACT_APP_WIDGETS_URL: "https://boson-widgets-testing.pages.dev"
       REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
       REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
@@ -84,9 +84,9 @@ jobs:
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
-      REACT_APP_DAPP_VIEW_MODE: "https://interface-test.on-fleek.app"
-      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-test.on-fleek.app"
-      REACT_APP_WIDGETS_URL: "https://widgets-test.on-fleek.app"
+      REACT_APP_DAPP_VIEW_MODE: "https://interface-a9d.pages.dev"
+      REACT_APP_DR_CENTER_VIEW_MODE: "https://boson-dr-center-testing.pages.dev"
+      REACT_APP_WIDGETS_URL: "https://boson-widgets-testing.pages.dev"
       REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
       REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
@@ -126,9 +126,9 @@ jobs:
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
-      REACT_APP_DAPP_VIEW_MODE: "https://interface-staging.on-fleek.app"
-      REACT_APP_DR_CENTER_VIEW_MODE: "https://drcenter-staging.on-fleek.app"
-      REACT_APP_WIDGETS_URL: "https://widgets-staging.on-fleek.app"
+      REACT_APP_DAPP_VIEW_MODE: "https://boson-dapp-staging.pages.dev"
+      REACT_APP_DR_CENTER_VIEW_MODE: "https://boson-dr-center-staging.pages.dev"
+      REACT_APP_WIDGETS_URL: "https://boson-widgets-staging.pages.dev"
       REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
       REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
       REACT_APP_MOONPAY_API: "https://api.moonpay.com"
