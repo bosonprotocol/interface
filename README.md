@@ -26,9 +26,9 @@ For ease of use, each environment has a DNS name that always points to the lates
 
 | Env          | Networks   | Endpoint                                                        |
 | ------------ | --------- | --------------------------------------------------------------- |
-| testing    | amoy, sepolia | https://interface-test.on-fleek.app/                             |
-| staging    | amoy, sepolia | https://interface-staging.on-fleek.app/                          |
-| production | polygon, ethereum | https://dapp-interface-production.on-fleek.app/                                                           |
+| testing    | amoy, sepolia | https://interface-a9d.pages.dev/                             |
+| staging    | amoy, sepolia | https://boson-dapp-staging.pages.dev/                          |
+| production | polygon, ethereum | https://bosonapp.io/                                                           |
 
 ## Local development
 
