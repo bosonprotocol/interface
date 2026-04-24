@@ -28,7 +28,7 @@ For ease of use, each environment has a DNS name that always points to the lates
 | ------------ | --------- | --------------------------------------------------------------- |
 | testing    | amoy, sepolia | https://interface-a9d.pages.dev/                             |
 | staging    | amoy, sepolia | https://boson-dapp-staging.pages.dev/                          |
-| production | polygon, ethereum | https://bosonapp.io/                                                           |
+| production | polygon, ethereum | https://bosonapp.io/ |
 
 ## Local development
 
