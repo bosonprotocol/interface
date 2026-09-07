@@ -15,7 +15,9 @@
     "analyze": "cross-env ANALYZE_BUNDLE=true react-app-rewired build",
     "eject": "react-app-rewired eject",
     "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --fix",
+    "lint:check": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx .",
     "prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "prettier:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "prepare": "husky install",
     "test": "react-app-rewired test --testPathIgnorePatterns .spec.ts --env ./jest.custom.env.js",
     "test:e2e": "playwright test --project=chromium",
@@ -193,7 +195,6 @@
     "zustand": "^4.1.2"
   },
   "devDependencies": {
-    "@fleek-platform/cli": "^3.9.4",
     "@graphql-codegen/cli": "^2.13.1",
     "@graphql-codegen/typed-document-node": "^2.3.3",
     "@graphql-codegen/typescript": "^2.7.3",
@@ -260,10 +261,7 @@
       "last 1 safari version"
     ]
   },
-  "volta": {
-    "node": "18.19.1",
-    "npm": "10.2.4"
-  },
+  "packageManager": "pnpm@10.34.5",
   "overrides": {
     "typescript": "^5.1.6"
   }

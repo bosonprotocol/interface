@@ -1,259 +1,49 @@
-name: Call reusable workflow - Interface
+name: CI - Interface
 
+# On pushes to main this is invoked by deploy-testing.yaml via workflow_call, so that
+# the deploy is gated on it rather than racing it.
 on:
-  workflow_call:
-    secrets:
-      CODECOV_TOKEN:
-        required: true
-  push:
-    branches:
-      - main
-  release:
-    types: [created]
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-    secrets:
-      CODECOV_TOKEN:
-        required: true
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  prejob:
-    name: Get Latest Tag
+  checks:
+    name: Format, lint, types and build
     runs-on: ubuntu-22.04
-    outputs:
-      releaseTag: ${{ steps.tag.outputs.tag }}
-      releaseName: ${{ steps.name.outputs.name }}
+    permissions:
+      contents: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Only the fork-PR build below reads these. It has to compile, not run, so
+      # placeholders are enough for the three variables config.ts requires at module load.
+      REACT_APP_ENV_NAME: testing
+      REACT_APP_INFURA_KEY: ci-placeholder
+      REACT_APP_WIDGETS_URL: https://example.invalid
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-      - uses: "WyriHaximus/github-action-get-previous-tag@v1"
-        id: tag
-      - run: echo "name=$(git describe --tags)" >> $GITHUB_OUTPUT
-        id: name
+      - uses: actions/checkout@v4
 
-  call-reusable-workflow-PR:
-    uses: ./.github/workflows/ci_reusable.yaml
-    if: github.event_name == 'pull_request'
-    needs: prejob
-    with:
-      REACT_APP_ENV_NAME: "testing"
-      DEPLOY_TO_FLEEK: false
-      IS_PREVIEW: true
-      ENV_NAME: "testing"
-      UPDATE_COVERAGE: false
-      REACT_APP_ENABLE_CURATION_LISTS: false
-      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
-      REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
-      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
-      REACT_APP_DAPP_VIEW_MODE: "same_origin"
-      REACT_APP_DR_CENTER_VIEW_MODE: "same_origin"
-      REACT_APP_WIDGETS_URL: "https://boson-widgets-testing.pages.dev"
-      REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
-      REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
-      REACT_APP_MOONPAY_API: "https://api.moonpay.com"
-      REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
-      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
-      REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_TESTING }}
-      REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_TESTING }}
-      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_TESTING }}
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_TESTING }}
-      REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_TESTING }}
-      REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_TESTING }}
-      REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_TESTING }}
-      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_TESTING }}
+      - uses: ./.github/actions/setup-node-pnpm
 
-  call-reusable-workflow-testing:
-    uses: ./.github/workflows/ci_reusable.yaml
-    if: github.event_name == 'push'
-    needs: prejob
-    with:
-      REACT_APP_ENV_NAME: "testing"
-      DEPLOY_TO_FLEEK: true
-      IS_PREVIEW: false
-      ENV_NAME: "testing"
-      UPDATE_COVERAGE: true
-      REACT_APP_ENABLE_CURATION_LISTS: true
-      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
-      REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
-      REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
-      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
-      REACT_APP_DAPP_VIEW_MODE: "https://interface-a9d.pages.dev"
-      REACT_APP_DR_CENTER_VIEW_MODE: "https://boson-dr-center-testing.pages.dev"
-      REACT_APP_WIDGETS_URL: "https://boson-widgets-testing.pages.dev"
-      REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
-      REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
-      REACT_APP_MOONPAY_API: "https://api.moonpay.com"
-      REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
-      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
-      REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_TESTING }}
-      REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_TESTING }}
-      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_TESTING }}
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
-      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
-      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_TESTING }}
-      REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID_TESTING }}
-      REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_TESTING }}
-      REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_TESTING }}
-      REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_TESTING }}
-      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_TESTING }}
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
-      FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
+      - run: pnpm install --frozen-lockfile
 
-  call-reusable-workflow-staging:
-    uses: ./.github/workflows/ci_reusable.yaml
-    if: github.event_name == 'release' && github.event.action == 'created'
-    needs: prejob
-    with:
-      REACT_APP_ENV_NAME: "staging"
-      DEPLOY_TO_FLEEK: true
-      IS_PREVIEW: false
-      ENV_NAME: "staging"
-      UPDATE_COVERAGE: false
-      REACT_APP_ENABLE_CURATION_LISTS: true
-      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
-      REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
-      REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
-      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
-      REACT_APP_DAPP_VIEW_MODE: "https://boson-dapp-staging.pages.dev"
-      REACT_APP_DR_CENTER_VIEW_MODE: "https://boson-dr-center-staging.pages.dev"
-      REACT_APP_WIDGETS_URL: "https://boson-widgets-staging.pages.dev"
-      REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
-      REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
-      REACT_APP_MOONPAY_API: "https://api.moonpay.com"
-      REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
-      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
-      REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_STAGING }}
-      REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_STAGING }}
-      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_STAGING }}
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
-      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
-      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_STAGING }}
-      REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID_STAGING }}
-      REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_STAGING }}
-      REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_STAGING }}
-      REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_STAGING }}
-      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_STAGING }}
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
-      FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
+      # Non-mutating checks: `pnpm prettier` and `pnpm lint` rewrite files, which would
+      # make them pass unconditionally and would leave the build compiling something other
+      # than the committed code.
+      - run: pnpm prettier:check
+      - run: pnpm lint:check
+      - run: pnpm tsc
 
-  call-reusable-workflow-production:
-    uses: ./.github/workflows/ci_reusable.yaml
-    if: github.event_name == 'workflow_dispatch'
-    needs: prejob
-    with:
-      REACT_APP_ENV_NAME: "production"
-      DEPLOY_TO_FLEEK: true
-      IS_PREVIEW: false
-      ENV_NAME: "production"
-      UPDATE_COVERAGE: false
-      REACT_APP_ENABLE_CURATION_LISTS: true
-      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
-      REACT_APP_IPFS_IMAGE_GATEWAY: "https://gray-permanent-fly-490.mypinata.cloud/ipfs"
-      REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
-      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
-      REACT_APP_DAPP_VIEW_MODE: "https://bosonapp.io"
-      REACT_APP_DR_CENTER_VIEW_MODE: "https://disputes.bosonprotocol.io"
-      REACT_APP_WIDGETS_URL: "https://widgets.bosonprotocol.io"
-      REACT_APP_UNISWAP_API_URL: "https://api.uniswap.org/v2"
-      REACT_APP_AWS_API_ENDPOINT: "https://api.uniswap.org/v1/graphql"
-      REACT_APP_MOONPAY_API: "https://api.moonpay.com"
-      REACT_APP_MOONPAY_LINK: "https://us-central1-uniswap-mobile.cloudfunctions.net/signMoonpayLinkV2?platform=web&env=staging"
-      REACT_APP_MOONPAY_EXTERNAL_LINK: "https://www.moonpay.com/buy"
-      REACT_APP_META_TX_API_KEY_MAP: ${{ vars.REACT_APP_META_TX_API_KEY_MAP_PRODUCTION }}
-      REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP_PRODUCTION }}
-      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL_PRODUCTION }}
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
-      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
-      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_PRODUCTION }}
-      REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID_PROD }}
-      REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID_PRODUCTION }}
-      REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY_PRODUCTION }}
-      REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY_PRODUCTION }}
-      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY_PRODUCTION }}
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      FLEEK_TOKEN: ${{ secrets.FLEEK_TOKEN }}
-      FLEEK_PROJECT_ID: ${{ secrets.FLEEK_PROJECT_ID }}
-
-  job-summary:
-    name: Create Job Summary
-    runs-on: ubuntu-22.04
-    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
-    needs:
-      [
-        call-reusable-workflow-PR,
-        call-reusable-workflow-testing,
-        call-reusable-workflow-staging,
-        call-reusable-workflow-production
-      ]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install JQ
-        uses: r26d/jq-action@master
-        with:
-          cmd: jq -n env
-      - name: Get job outputs
-        env:
-          OUTPUTS: ${{ toJSON(needs) }}
-        run: |
-          succeededJobOutput="$(
-            echo '${{ env.OUTPUTS }}' | jq '.[] | select(.result | startswith("success")) | .outputs'
-          )"
-          echo 'JOB_OUTPUT='$succeededJobOutput >> $GITHUB_ENV
-      - name: Get job vars
-        run: |
-          jobLint="$(
-            echo '${{ env.JOB_OUTPUT }}' |
-            jq '.JOB_LINT'
-          )"
-          echo 'JOB_LINT='$jobLint >> $GITHUB_ENV
-
-          jobBuild="$(
-            echo '${{ env.JOB_OUTPUT }}' |
-            jq '.JOB_BUILD'
-          )"
-          echo 'JOB_BUILD='$jobBuild >> $GITHUB_ENV
-
-          deployUrl="$(
-            echo '${{ env.JOB_OUTPUT }}' |
-            jq '.DEPLOY_URL'
-          )"
-          echo 'DEPLOY_URL='$deployUrl >> $GITHUB_ENV
-
-      - name: Adding Job Summary
-        run: |
-          echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY
-          if [ ${{ env.JOB_LINT }} == success ]; then
-            echo "| Lint | ✅ |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Lint | ❌ |" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ ${{ env.JOB_BUILD }} == success ]; then
-            echo "| Build | ✅ |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Build | ❌ |" >> $GITHUB_STEP_SUMMARY
-          fi
-      - name: Adding Job Summary Deploy Url
-        if: ${{ env.DEPLOY_URL }}
-        run: echo "| URL | ${{ env.DEPLOY_URL }} |" >> $GITHUB_STEP_SUMMARY
+      # Every other path already builds this commit against the real environment values -
+      # deploy-preview.yaml for a PR, deploy-testing.yaml for a push to main - and a deploy
+      # that fails to build publishes nothing. Repeating it here would spend a third full
+      # build to compile the same tree against placeholders. Fork PRs get no preview
+      # deployment (see the `if:` in deploy-preview.yaml), so they are built here.
+      - name: Build (fork PRs only)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: pnpm build

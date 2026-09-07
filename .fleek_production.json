@@ -1,9 +1,0 @@
-{
-  "sites": [
-    {
-      "slug": "dapp-interface-production",
-      "distDir": "build",
-      "buildCommand": "pnpm build"
-    }
-  ]
-}

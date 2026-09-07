@@ -1,0 +1,23 @@
+name: Deploy to testing
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Gate the deploy on the same checks a PR runs: a merge can produce a broken
+  # combination that neither parent had.
+  ci:
+    uses: ./.github/workflows/ci.yaml
+    secrets: inherit
+
+  deploy:
+    needs: ci
+    uses: ./.github/workflows/deploy_reusable.yaml
+    # No `ref`: build the commit that was pushed.
+    with:
+      environment: testing
+      view_modes: '["dapp","dr_center"]'
+      cf_branch: main
+    secrets: inherit

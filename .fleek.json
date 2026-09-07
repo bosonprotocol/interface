@@ -1,9 +1,0 @@
-{
-  "sites": [
-    {
-      "slug": "interface-test",
-      "distDir": "build",
-      "buildCommand": "pnpm build"
-    }
-  ]
-}

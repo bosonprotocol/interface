@@ -1,0 +1,22 @@
+name: Deploy to staging
+
+# `published` rather than `created`: `created` does not fire when a release is
+# published from a draft.
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy_reusable.yaml
+    with:
+      environment: staging
+      view_modes: '["dapp","dr_center"]'
+      # Build the tagged commit itself, so staging matches the release even if main
+      # has moved on since the tag was cut.
+      ref: ${{ github.event.release.tag_name }}
+      release_tag: ${{ github.event.release.tag_name }}
+      # Must equal the staging projects' production branch, or this lands as a Preview
+      # deployment and the staging URLs keep serving the previous build.
+      cf_branch: main
+    secrets: inherit

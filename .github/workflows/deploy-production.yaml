@@ -1,0 +1,58 @@
+name: Deploy to production
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to deploy (e.g. v0.0.301)"
+        required: true
+        type: string
+
+jobs:
+  verify-tag:
+    name: Verify tag exists
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - name: Resolve tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+
+          # The tag is free-form text from the dispatch form and ends up on a wrangler
+          # command line in deploy_reusable.yaml. That step validates it too; rejecting it
+          # here means a bad value fails in seconds instead of after a full build.
+          case "$TAG" in
+            "" | *[!A-Za-z0-9._/+-]*)
+              echo "::error::Tag '${TAG}' must be non-empty and use only A-Z a-z 0-9 . _ / + -"
+              exit 1
+              ;;
+          esac
+
+          # One API call rather than cloning every commit, branch and tag of the repository
+          # onto a runner to answer a yes/no question. The deploy job resolves the commit
+          # it builds from its own checkout, so nothing needs to be handed on from here.
+          if ! object="$(gh api "repos/${REPO}/git/ref/tags/${TAG}" --jq .object.sha 2>/dev/null)"; then
+            echo "::error::Tag '${TAG}' does not exist in this repository."
+            exit 1
+          fi
+          echo "Tag ${TAG} exists (${object})."
+
+  deploy:
+    needs: verify-tag
+    uses: ./.github/workflows/deploy_reusable.yaml
+    with:
+      environment: production
+      view_modes: '["dapp","dr_center"]'
+      ref: ${{ inputs.tag }}
+      release_tag: ${{ inputs.tag }}
+      # Must equal the production projects' production branch, or this lands as a Preview
+      # deployment and bosonapp.io keeps serving the previous build.
+      cf_branch: main
+    # See the note in deploy-preview.yaml: the REACT_APP_* values are environment-scoped
+    # and an explicit allow-list would pass empty repository-scope values instead.
+    secrets: inherit

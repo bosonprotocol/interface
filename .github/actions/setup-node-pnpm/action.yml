@@ -1,0 +1,18 @@
+name: "Setup Node and pnpm"
+description: >-
+  Installs pnpm at the version pinned by package.json's packageManager field and Node at the
+  version in .nvmrc, with the pnpm store cached. Requires the repository to be checked out.
+
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        registry-url: "https://registry.npmjs.org"
+        cache: "pnpm"
+        cache-dependency-path: "./pnpm-lock.yaml"
