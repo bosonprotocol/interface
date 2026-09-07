@@ -8,8 +8,10 @@ on:
 
 jobs:
   deploy:
-    # Fork PRs cannot read environment secrets, so the build would fail on the
-    # required-variable check. Skip them rather than fail them.
+    # This is also the security boundary for the secrets below: a fork PR never reaches
+    # this job, so only code from a branch in this repository is ever built with the
+    # Cloudflare token on the runner. Fork PRs cannot read environment secrets anyway, so
+    # they would fail the required-configuration check rather than deploy.
     if: github.event.pull_request.head.repo.full_name == github.repository
     uses: ./.github/workflows/deploy_reusable.yaml
     with:
@@ -20,10 +22,19 @@ jobs:
       # deployment, published at https://pr-<n>.<project>.pages.dev.
       cf_branch: pr-${{ github.event.number }}
       is_preview: true
+    # `inherit`, not an explicit allow-list: the REACT_APP_* values are scoped to the
+    # `testing` GitHub Environment and are resolved by the called job's `environment:`.
+    # Naming them here would pass this workflow's own repository-scope values instead,
+    # which for an environment-scoped secret is the empty string - a green deploy of a
+    # bundle with no Magic key, no WalletConnect id and no meta-tx keys.
     secrets: inherit
 
   comment:
     needs: deploy
+    # deployment_url comes from a matrix job's output. It should always be set for the
+    # single-entry matrix above, but if it ever is not, post nothing rather than a comment
+    # whose links are the bare relative paths `/#/dapp` and `/#/dr_center`.
+    if: ${{ needs.deploy.outputs.deployment_url != '' }}
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write

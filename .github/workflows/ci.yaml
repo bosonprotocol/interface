@@ -20,32 +20,30 @@ jobs:
       contents: read
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # The build only has to compile here, not run, so placeholders are enough for the
-      # three variables config.ts requires at module load. Real values are injected by
-      # deploy_reusable.yaml from the target environment.
+      # Only the fork-PR build below reads these. It has to compile, not run, so
+      # placeholders are enough for the three variables config.ts requires at module load.
       REACT_APP_ENV_NAME: testing
       REACT_APP_INFURA_KEY: ci-placeholder
       REACT_APP_WIDGETS_URL: https://example.invalid
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          registry-url: "https://registry.npmjs.org"
-          cache: "pnpm"
-          cache-dependency-path: "./pnpm-lock.yaml"
+      - uses: ./.github/actions/setup-node-pnpm
 
       - run: pnpm install --frozen-lockfile
 
-      # Non-mutating checks run first, so they actually gate: `pnpm prettier` and
-      # `pnpm lint` rewrite files, which would make them pass unconditionally and
-      # would leave the build compiling something other than the committed code.
+      # Non-mutating checks: `pnpm prettier` and `pnpm lint` rewrite files, which would
+      # make them pass unconditionally and would leave the build compiling something other
+      # than the committed code.
       - run: pnpm prettier:check
       - run: pnpm lint:check
       - run: pnpm tsc
-      - run: pnpm build
+
+      # Every other path already builds this commit against the real environment values -
+      # deploy-preview.yaml for a PR, deploy-testing.yaml for a push to main - and a deploy
+      # that fails to build publishes nothing. Repeating it here would spend a third full
+      # build to compile the same tree against placeholders. Fork PRs get no preview
+      # deployment (see the `if:` in deploy-preview.yaml), so they are built here.
+      - name: Build (fork PRs only)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: pnpm build

@@ -48,7 +48,10 @@ jobs:
     outputs:
       deployment_url: ${{ steps.deploy.outputs.deployment-url }}
     strategy:
-      # Never cancel a sibling: one view mode failing must not leave the other half-deployed.
+      # dApp and DR Center are separate Cloudflare projects, so a deploy cannot be atomic
+      # across them either way. If one leg fails the other still publishes, and the two
+      # halves sit on different builds until the failed leg is re-run - which is the
+      # recoverable outcome, and the reason not to cancel the sibling as well.
       fail-fast: false
       matrix:
         view_mode: ${{ fromJSON(inputs.view_modes) }}
@@ -84,7 +87,6 @@ jobs:
       REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP }}
       REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL }}
       REACT_APP_OFFER_CURATION_LIST: ${{ vars.REACT_APP_OFFER_CURATION_LIST }}
-      REACT_APP_ENABLE_SENTRY_LOGGING: ${{ vars.REACT_APP_ENABLE_SENTRY_LOGGING }}
 
       # A preview serves both view modes from one deployment, so each half must link to itself.
       REACT_APP_DAPP_VIEW_MODE: ${{ inputs.is_preview && 'same_origin' || vars.REACT_APP_DAPP_VIEW_MODE }}
@@ -110,24 +112,24 @@ jobs:
           # Full history so `git describe --tags` can name untagged testing builds.
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      # Resolved from the checked-out tree, not from the ref this workflow came from, so a
+      # tag cut before this action existed cannot be deployed by re-running the workflow.
+      # Roll back from the Cloudflare dashboard instead, which redeploys a build that has
+      # already been uploaded.
+      - uses: ./.github/actions/setup-node-pnpm
 
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          registry-url: "https://registry.npmjs.org"
-          cache: "pnpm"
-          cache-dependency-path: "./pnpm-lock.yaml"
-
-      - name: Resolve Cloudflare project and release tag
+      - name: Resolve deployment identity
         env:
           VIEW_MODE: ${{ matrix.view_mode }}
+          # The Sentry release belongs to the deploy, not to a view mode, so exactly one
+          # leg of the matrix owns it.
+          PRIMARY_VIEW_MODE: ${{ fromJSON(inputs.view_modes)[0] }}
           ENVIRONMENT: ${{ inputs.environment }}
           INPUT_RELEASE_TAG: ${{ inputs.release_tag }}
+          CF_BRANCH: ${{ inputs.cf_branch }}
           CF_PROJECT_DAPP: ${{ vars.CF_PROJECT_DAPP }}
           CF_PROJECT_DR_CENTER: ${{ vars.CF_PROJECT_DR_CENTER }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
 
@@ -144,39 +146,121 @@ jobs:
                  "Set it to the exact Cloudflare project name from 'wrangler pages project list'."
             exit 1
           fi
-          echo "CF_PROJECT=$project" >> "$GITHUB_ENV"
 
-          tag="$INPUT_RELEASE_TAG"
-          if [ -z "$tag" ]; then
-            # Testing and preview builds are not tagged; name them after the nearest tag.
-            tag="$(git describe --tags --always)"
+          # RELEASE_TAG names the release a build belongs to; RELEASE_NAME names the build
+          # itself. They must not be conflated: src/lib/utils/release.ts wipes the seller
+          # in-progress create-product draft out of localStorage whenever
+          # REACT_APP_RELEASE_TAG changes, so a value that moves with every commit would
+          # clear drafts on every push to main instead of once per release.
+          if [ -n "$INPUT_RELEASE_TAG" ]; then
+            release_tag="$INPUT_RELEASE_TAG"
+            release_name="$INPUT_RELEASE_TAG"
+          else
+            release_tag="$(git describe --tags --abbrev=0 2>/dev/null || git rev-parse --short HEAD)"
+            release_name="$(git describe --tags --always)"
           fi
-          echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
-          echo "REACT_APP_RELEASE_TAG=$tag" >> "$GITHUB_ENV"
-          echo "REACT_APP_RELEASE_NAME=$tag" >> "$GITHUB_ENV"
 
-      - name: Check required build variables are set
+          # The commit that was actually built. github.sha is the ref that triggered the
+          # run, which for a tag dispatch is the tip of the branch the workflow was
+          # launched from - not the tag being deployed.
+          commit_sha="${PR_HEAD_SHA:-$(git rev-parse HEAD)}"
+
+          # These get spliced into the wrangler command line below, which is split into
+          # arguments before wrangler sees it. A space, quote or shell metacharacter would
+          # silently change what runs, and the release tag is free-form text typed into a
+          # workflow_dispatch form.
+          require_safe() {
+            case "$2" in
+              "" | *[!A-Za-z0-9._/+-]*)
+                echo "::error::$1 is '$2'; it must be non-empty and use only A-Z a-z 0-9 . _ / + -"
+                exit 1
+                ;;
+            esac
+          }
+          require_safe "Cloudflare project name" "$project"
+          require_safe "Cloudflare branch" "$CF_BRANCH"
+          require_safe "Release name" "$release_name"
+
+          if [ "$VIEW_MODE" = "$PRIMARY_VIEW_MODE" ]; then
+            primary_leg=true
+          else
+            primary_leg=false
+          fi
+
+          {
+            echo "CF_PROJECT=$project"
+            echo "COMMIT_SHA=$commit_sha"
+            echo "RELEASE_NAME=$release_name"
+            echo "IS_PRIMARY_LEG=$primary_leg"
+            echo "REACT_APP_RELEASE_TAG=$release_tag"
+            echo "REACT_APP_RELEASE_NAME=$release_name"
+          } >> "$GITHUB_ENV"
+
+      - name: Check the build configuration is complete
         env:
           ENVIRONMENT: ${{ inputs.environment }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
-          # config.ts throws on these at *module load*, so an empty value builds green and
-          # then serves a blank page. Fail here instead of shipping it.
+          # Nothing downstream fails on an unset value. Every REACT_APP_* is inlined at
+          # build time, so an unset one becomes an empty string and the feature it
+          # configures is silently dead in a bundle that built and deployed green:
+          # WalletConnect with no project id, email login with no Magic key, gasless
+          # transactions with an empty key map. Listed here is what the app cannot work
+          # without; anything with a real fallback in src/lib/config.ts is left out.
           missing=""
-          for name in REACT_APP_ENV_NAME REACT_APP_INFURA_KEY REACT_APP_WIDGETS_URL; do
+          for name in \
+            REACT_APP_ENV_NAME \
+            REACT_APP_INFURA_KEY \
+            REACT_APP_WIDGETS_URL \
+            REACT_APP_WALLET_CONNECT_PROJECT_ID \
+            REACT_APP_MAGIC_API_KEY \
+            REACT_APP_META_TX_API_KEY_MAP \
+            REACT_APP_META_TX_API_IDS_MAP \
+            REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS \
+            REACT_APP_UNISWAP_API_URL \
+            REACT_APP_AWS_API_ENDPOINT \
+            REACT_APP_MOONPAY_API \
+            REACT_APP_MOONPAY_API_KEY \
+            REACT_APP_MOONPAY_LINK \
+            REACT_APP_MOONPAY_EXTERNAL_LINK \
+            REACT_APP_IPFS_GATEWAY \
+            REACT_APP_RNFT_LICENSE_TEMPLATE \
+            REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE \
+            REACT_APP_FAIR_EXCHANGE_POLICY_RULES \
+            REACT_APP_DAPP_VIEW_MODE \
+            REACT_APP_DR_CENTER_VIEW_MODE \
+            CLOUDFLARE_API_TOKEN \
+            CLOUDFLARE_ACCOUNT_ID; do
             if [ -z "${!name:-}" ]; then
               missing="$missing $name"
             fi
           done
           if [ -n "$missing" ]; then
-            echo "::error::Missing required build variables for environment '${ENVIRONMENT}':$missing"
+            echo "::error::Missing required build configuration for environment '${ENVIRONMENT}':$missing"
             exit 1
           fi
+
+          # A value config.ts does not recognise is as fatal as an empty one, and the
+          # emptiness check above does not catch it: getEnvConfigs() returns [], and
+          # reading defaultEnvConfig.chainId throws while the module is still loading.
+          case "$REACT_APP_ENV_NAME" in
+            testing | staging | production) ;;
+            *)
+              echo "::error::REACT_APP_ENV_NAME is '${REACT_APP_ENV_NAME}' on the '${ENVIRONMENT}' environment;" \
+                   "src/lib/config.ts only accepts testing, staging or production."
+              exit 1
+              ;;
+          esac
 
       - run: pnpm install --frozen-lockfile
 
       - name: Create Sentry release
-        if: ${{ !inputs.is_preview }}
+        # One release per deploy, not one per view mode: both legs of the matrix would
+        # otherwise create the same version at the same time and race each other
+        # associating its commits.
+        if: ${{ !inputs.is_preview && env.IS_PRIMARY_LEG == 'true' }}
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -184,7 +268,7 @@ jobs:
           SENTRY_PROJECT: "v2-dapp"
         with:
           environment: ${{ inputs.environment }}
-          version: ${{ env.RELEASE_TAG }}
+          version: ${{ env.RELEASE_NAME }}
 
       - run: pnpm build
 
@@ -196,19 +280,25 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: "4.129.0"
           # cf_branch must equal the project's production branch to publish a Production
-          # deployment; anything else (pr-123) lands as a Preview.
+          # deployment; anything else (pr-123) lands as a Preview. Every value interpolated
+          # into this command line is validated in "Resolve deployment identity" above.
           command: >-
             pages deploy build
             --project-name=${{ env.CF_PROJECT }}
             --branch=${{ inputs.cf_branch }}
-            --commit-hash=${{ github.sha }}
-            --commit-message=${{ env.RELEASE_TAG }}
+            --commit-hash=${{ env.COMMIT_SHA }}
+            --commit-message=${{ env.RELEASE_NAME }}
 
       - name: Smoke check the deployment
         env:
           DEPLOY_URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
           set -euo pipefail
+          # This runs against a deployment that is already serving traffic, and what it
+          # fetches is an SPA shell: a build that throws in config.ts still returns 200
+          # with a non-empty body, because the crash happens in the browser. So it catches
+          # a failed or empty upload, not a broken build - keeping a broken build from
+          # shipping is what the configuration check before `pnpm build` is for.
           if [ -z "$DEPLOY_URL" ]; then
             echo "::error::wrangler returned no deployment URL."
             exit 1
@@ -234,6 +324,7 @@ jobs:
             echo "| View mode | \`${VIEW_MODE}\` |"
             echo "| CF project | ${CF_PROJECT} |"
             echo "| CF branch | \`${CF_BRANCH}\` |"
-            echo "| Release | ${RELEASE_TAG} |"
+            echo "| Release | ${RELEASE_NAME} |"
+            echo "| Commit | ${COMMIT_SHA} |"
             echo "| URL | ${DEPLOY_URL} |"
           } >> "$GITHUB_STEP_SUMMARY"

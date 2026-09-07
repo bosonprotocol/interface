@@ -41,7 +41,20 @@ Deployments are triggered as follows:
 
 Build-time configuration lives in GitHub: values common to all environments are
 repository variables/secrets, and environment-specific values override them in the
-`testing`, `staging` and `production` GitHub Environments.
+`testing`, `staging` and `production` GitHub Environments. Every `REACT_APP_*` value is
+inlined into the bundle at build time, so an unset one is not an error — it becomes an
+empty string and silently disables whatever it configures. The **Check the build
+configuration is complete** step in `deploy_reusable.yaml` lists the values a deployment
+cannot work without and fails the run before building if any is missing; add to that list
+when you add a variable the app depends on.
+
+Each environment also needs `CF_PROJECT_DAPP` and `CF_PROJECT_DR_CENTER` variables holding
+the exact Cloudflare project names (`wrangler pages project list`), plus the repository
+secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
+Branch protection on `main` should require the **Format, lint, types and build** job of
+**CI - Interface** and the **Deploy PR preview** workflow. Required checks are matched by
+name, so renaming either workflow or job detaches the rule silently.
 
 ## Local development
 
