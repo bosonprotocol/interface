@@ -270,7 +270,16 @@ jobs:
           environment: ${{ inputs.environment }}
           version: ${{ env.RELEASE_NAME }}
 
-      - run: pnpm build
+      - name: Build
+        env:
+          # Cloudflare Pages rejects any file over 25 MiB and the main bundle's source map
+          # is ~38 MiB, so a build carrying maps cannot be uploaded at all. Nothing reads
+          # them either: the Sentry release above uploads no artifacts, and the deployments
+          # this workflow replaced were already built without maps - the bundles live on
+          # bosonapp.io carry no sourceMappingURL. Generating them would only publish the
+          # full source alongside a deploy that fails.
+          GENERATE_SOURCEMAP: "false"
+        run: pnpm build
 
       - name: Deploy to Cloudflare Pages
         id: deploy
