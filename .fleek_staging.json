@@ -1,9 +1,0 @@
-{
-  "sites": [
-    {
-      "slug": "interface-staging",
-      "distDir": "build",
-      "buildCommand": "pnpm build"
-    }
-  ]
-}

@@ -1,9 +1,0 @@
-{
-  "sites": [
-    {
-      "slug": "drcenter-staging",
-      "distDir": "build",
-      "buildCommand": "pnpm build"
-    }
-  ]
-}

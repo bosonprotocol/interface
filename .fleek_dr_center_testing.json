@@ -1,9 +1,0 @@
-{
-  "sites": [
-    {
-      "slug": "drcenter-test",
-      "distDir": "build",
-      "buildCommand": "pnpm build"
-    }
-  ]
-}

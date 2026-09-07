@@ -1,0 +1,239 @@
+name: Build and deploy to Cloudflare Pages - Reusable workflow
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "GitHub Environment supplying the scoped vars/secrets (testing|staging|production)"
+        required: true
+        type: string
+      view_modes:
+        description: 'JSON array of REACT_APP_VIEW_MODE values to build, e.g. ["dapp","dr_center"]'
+        required: true
+        type: string
+      ref:
+        description: "Git ref to build. Leave empty to use the ref that triggered the run."
+        required: false
+        type: string
+        default: ""
+      cf_branch:
+        description: "Cloudflare deployment branch label. Must equal the project's production branch to publish a Production deployment."
+        required: false
+        type: string
+        default: "main"
+      release_tag:
+        description: "Release tag stamped into the bundle and onto the Cloudflare deployment."
+        required: false
+        type: string
+        default: ""
+      is_preview:
+        description: "Preview build: skips the Sentry release and forces both view-mode URLs to same_origin."
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      deployment_url:
+        # With a multi-entry view_modes matrix this is whichever leg finished last, so only
+        # consume it for single-entry calls (the PR preview).
+        description: "URL of the deployment, for single-view-mode calls."
+        value: ${{ jobs.build-deploy.outputs.deployment_url }}
+
+jobs:
+  build-deploy:
+    name: ${{ inputs.environment }} / ${{ matrix.view_mode }}
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+    outputs:
+      deployment_url: ${{ steps.deploy.outputs.deployment-url }}
+    strategy:
+      # Never cancel a sibling: one view mode failing must not leave the other half-deployed.
+      fail-fast: false
+      matrix:
+        view_mode: ${{ fromJSON(inputs.view_modes) }}
+    concurrency:
+      group: deploy-${{ inputs.environment }}-${{ inputs.cf_branch }}-${{ matrix.view_mode }}
+      # Supersede stale preview builds, but never kill an environment deploy mid-upload.
+      cancel-in-progress: ${{ inputs.is_preview }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      REACT_APP_VIEW_MODE: ${{ matrix.view_mode }}
+
+      # Common values: repository-level variables, shared by every environment.
+      REACT_APP_UNISWAP_API_URL: ${{ vars.REACT_APP_UNISWAP_API_URL }}
+      REACT_APP_AWS_API_ENDPOINT: ${{ vars.REACT_APP_AWS_API_ENDPOINT }}
+      REACT_APP_MOONPAY_API: ${{ vars.REACT_APP_MOONPAY_API }}
+      REACT_APP_MOONPAY_LINK: ${{ vars.REACT_APP_MOONPAY_LINK }}
+      REACT_APP_MOONPAY_EXTERNAL_LINK: ${{ vars.REACT_APP_MOONPAY_EXTERNAL_LINK }}
+      REACT_APP_RNFT_LICENSE_TEMPLATE: ${{ vars.REACT_APP_RNFT_LICENSE_TEMPLATE }}
+      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: ${{ vars.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE }}
+      REACT_APP_FAIR_EXCHANGE_POLICY_RULES: ${{ vars.REACT_APP_FAIR_EXCHANGE_POLICY_RULES }}
+      REACT_APP_IPFS_GATEWAY: ${{ vars.REACT_APP_IPFS_GATEWAY }}
+      REACT_APP_GUIDES_URL: ${{ vars.REACT_APP_GUIDES_URL }}
+      REACT_APP_ENABLE_CURATION_LISTS: ${{ vars.REACT_APP_ENABLE_CURATION_LISTS }}
+
+      # Environment-scoped variables. Identical names across environments: GitHub resolves
+      # the environment's value and falls back to the repository-level one when unset.
+      REACT_APP_ENV_NAME: ${{ vars.REACT_APP_ENV_NAME }}
+      REACT_APP_WIDGETS_URL: ${{ vars.REACT_APP_WIDGETS_URL }}
+      REACT_APP_IPFS_IMAGE_GATEWAY: ${{ vars.REACT_APP_IPFS_IMAGE_GATEWAY }}
+      REACT_APP_IPFS_METADATA_URL: ${{ vars.REACT_APP_IPFS_METADATA_URL }}
+      REACT_APP_THE_GRAPH_IPFS_URL: ${{ vars.REACT_APP_THE_GRAPH_IPFS_URL }}
+      REACT_APP_META_TX_API_IDS_MAP: ${{ vars.REACT_APP_META_TX_API_IDS_MAP }}
+      REACT_APP_META_TX_RELAYER_URL: ${{ vars.REACT_APP_META_TX_RELAYER_URL }}
+      REACT_APP_OFFER_CURATION_LIST: ${{ vars.REACT_APP_OFFER_CURATION_LIST }}
+      REACT_APP_ENABLE_SENTRY_LOGGING: ${{ vars.REACT_APP_ENABLE_SENTRY_LOGGING }}
+
+      # A preview serves both view modes from one deployment, so each half must link to itself.
+      REACT_APP_DAPP_VIEW_MODE: ${{ inputs.is_preview && 'same_origin' || vars.REACT_APP_DAPP_VIEW_MODE }}
+      REACT_APP_DR_CENTER_VIEW_MODE: ${{ inputs.is_preview && 'same_origin' || vars.REACT_APP_DR_CENTER_VIEW_MODE }}
+
+      # Environment-scoped secrets.
+      REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY }}
+      REACT_APP_MAGIC_API_KEY: ${{ secrets.REACT_APP_MAGIC_API_KEY }}
+      REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLET_CONNECT_PROJECT_ID }}
+      REACT_APP_MOONPAY_API_KEY: ${{ secrets.REACT_APP_MOONPAY_API_KEY }}
+      REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID }}
+      REACT_APP_META_TX_API_KEY_MAP: ${{ secrets.REACT_APP_META_TX_API_KEY_MAP }}
+      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS }}
+      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
+      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Empty ref means "the ref that triggered this run": the pushed commit, or the
+          # PR merge commit. Staging/production pass an explicit tag instead.
+          ref: ${{ inputs.ref }}
+          # Full history so `git describe --tags` can name untagged testing builds.
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          registry-url: "https://registry.npmjs.org"
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
+
+      - name: Resolve Cloudflare project and release tag
+        env:
+          VIEW_MODE: ${{ matrix.view_mode }}
+          ENVIRONMENT: ${{ inputs.environment }}
+          INPUT_RELEASE_TAG: ${{ inputs.release_tag }}
+          CF_PROJECT_DAPP: ${{ vars.CF_PROJECT_DAPP }}
+          CF_PROJECT_DR_CENTER: ${{ vars.CF_PROJECT_DR_CENTER }}
+        run: |
+          set -euo pipefail
+
+          if [ "$VIEW_MODE" = "dr_center" ]; then
+            project="$CF_PROJECT_DR_CENTER"
+            project_var="CF_PROJECT_DR_CENTER"
+          else
+            project="$CF_PROJECT_DAPP"
+            project_var="CF_PROJECT_DAPP"
+          fi
+
+          if [ -z "$project" ]; then
+            echo "::error::${project_var} is not set on the '${ENVIRONMENT}' environment." \
+                 "Set it to the exact Cloudflare project name from 'wrangler pages project list'."
+            exit 1
+          fi
+          echo "CF_PROJECT=$project" >> "$GITHUB_ENV"
+
+          tag="$INPUT_RELEASE_TAG"
+          if [ -z "$tag" ]; then
+            # Testing and preview builds are not tagged; name them after the nearest tag.
+            tag="$(git describe --tags --always)"
+          fi
+          echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
+          echo "REACT_APP_RELEASE_TAG=$tag" >> "$GITHUB_ENV"
+          echo "REACT_APP_RELEASE_NAME=$tag" >> "$GITHUB_ENV"
+
+      - name: Check required build variables are set
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          set -euo pipefail
+          # config.ts throws on these at *module load*, so an empty value builds green and
+          # then serves a blank page. Fail here instead of shipping it.
+          missing=""
+          for name in REACT_APP_ENV_NAME REACT_APP_INFURA_KEY REACT_APP_WIDGETS_URL; do
+            if [ -z "${!name:-}" ]; then
+              missing="$missing $name"
+            fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing required build variables for environment '${ENVIRONMENT}':$missing"
+            exit 1
+          fi
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Create Sentry release
+        if: ${{ !inputs.is_preview }}
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: "boson-protocol"
+          SENTRY_PROJECT: "v2-dapp"
+        with:
+          environment: ${{ inputs.environment }}
+          version: ${{ env.RELEASE_TAG }}
+
+      - run: pnpm build
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.129.0"
+          # cf_branch must equal the project's production branch to publish a Production
+          # deployment; anything else (pr-123) lands as a Preview.
+          command: >-
+            pages deploy build
+            --project-name=${{ env.CF_PROJECT }}
+            --branch=${{ inputs.cf_branch }}
+            --commit-hash=${{ github.sha }}
+            --commit-message=${{ env.RELEASE_TAG }}
+
+      - name: Smoke check the deployment
+        env:
+          DEPLOY_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          set -euo pipefail
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "::error::wrangler returned no deployment URL."
+            exit 1
+          fi
+          body="$(curl -fsSL --retry 5 --retry-delay 3 --retry-all-errors "$DEPLOY_URL")"
+          if [ -z "$body" ]; then
+            echo "::error::$DEPLOY_URL served an empty response."
+            exit 1
+          fi
+
+      - name: Job summary
+        if: ${{ always() && steps.deploy.outcome == 'success' }}
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          VIEW_MODE: ${{ matrix.view_mode }}
+          CF_BRANCH: ${{ inputs.cf_branch }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          {
+            echo "| Field | Value |"
+            echo "| ---- | ---- |"
+            echo "| Environment | ${ENVIRONMENT} |"
+            echo "| View mode | \`${VIEW_MODE}\` |"
+            echo "| CF project | ${CF_PROJECT} |"
+            echo "| CF branch | \`${CF_BRANCH}\` |"
+            echo "| Release | ${RELEASE_TAG} |"
+            echo "| URL | ${DEPLOY_URL} |"
+          } >> "$GITHUB_STEP_SUMMARY"

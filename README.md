@@ -20,21 +20,37 @@
 
 ## Environments
 
-Each deployment is hosted on IPFS with a custom domain.
+Each environment is deployed to Cloudflare Pages by GitHub Actions. The same bundle is
+built twice per environment — once as the dApp and once as the Dispute Resolution Center —
+selected by the `REACT_APP_VIEW_MODE` build variable.
 
-For ease of use, each environment has a DNS name that always points to the latest IPFS hash: 
+| Env        | Networks          | dApp                                  | DR Center                                    |
+| ---------- | ----------------- | ------------------------------------- | -------------------------------------------- |
+| testing    | amoy, sepolia     | https://interface-a9d.pages.dev/      | https://boson-dr-center-testing.pages.dev/   |
+| staging    | amoy, sepolia     | https://boson-dapp-staging.pages.dev/ | https://boson-dr-center-staging.pages.dev/   |
+| production | polygon, ethereum | https://bosonapp.io/                  | https://disputes.bosonprotocol.io/           |
 
-| Env          | Networks   | Endpoint                                                        |
-| ------------ | --------- | --------------------------------------------------------------- |
-| testing    | amoy, sepolia | https://interface-a9d.pages.dev/                             |
-| staging    | amoy, sepolia | https://boson-dapp-staging.pages.dev/                          |
-| production | polygon, ethereum | https://bosonapp.io/ |
+Deployments are triggered as follows:
+
+| Env        | Trigger                                                     |
+| ---------- | ----------------------------------------------------------- |
+| preview    | Every pull request, as one deployment serving both view modes |
+| testing    | Every push to `main`                                         |
+| staging    | Publishing a GitHub Release (deploys that tag)               |
+| production | Manually running the **Deploy to production** workflow with a tag |
+
+Build-time configuration lives in GitHub: values common to all environments are
+repository variables/secrets, and environment-specific values override them in the
+`testing`, `staging` and `production` GitHub Environments.
 
 ## Local development
 
-### Node & npm
+### Node & pnpm
 
-Installing the correct versions of node and npm can be done by installing [`volta`](https://volta.sh/). Volta will automatically get those versions from the package.json file. Once that's done, the required steps to develop and test the dApp interface locally are as follows:
+The required Node version is in [`.nvmrc`](.nvmrc) — run `nvm use` (or `fnm use`) to pick it
+up. The pnpm version is pinned by the `packageManager` field in `package.json`; `corepack enable`
+will honour it automatically. Once that's done, the required steps to develop and test the dApp
+interface locally are as follows:
 
 1. Clone the repository: i.e. Run `git clone git@github.com:bosonprotocol/interface.git`
 2. Navigate into the directory & install dependencies: i.e. Run `cd interface && pnpm install`

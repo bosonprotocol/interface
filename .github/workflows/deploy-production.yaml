@@ -1,0 +1,43 @@
+name: Deploy to production
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to deploy (e.g. v0.0.301)"
+        required: true
+        type: string
+
+jobs:
+  verify-tag:
+    name: Verify tag exists
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Resolve tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          if ! sha="$(git rev-parse --verify --quiet "refs/tags/${TAG}^{commit}")"; then
+            echo "::error::Tag '${TAG}' does not exist in this repository."
+            exit 1
+          fi
+          echo "Deploying ${TAG} (${sha})"
+
+  deploy:
+    needs: verify-tag
+    uses: ./.github/workflows/deploy_reusable.yaml
+    with:
+      environment: production
+      view_modes: '["dapp","dr_center"]'
+      ref: ${{ inputs.tag }}
+      release_tag: ${{ inputs.tag }}
+      # Must equal the production projects' production branch, or this lands as a Preview
+      # deployment and bosonapp.io keeps serving the previous build.
+      cf_branch: main
+    secrets: inherit
