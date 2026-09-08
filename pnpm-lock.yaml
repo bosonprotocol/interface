@@ -15,11 +15,11 @@ importers:
         specifier: ^1.4.5
         version: 1.4.5(@babel/core@7.28.5)(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)(vite@6.3.2(@types/node@24.10.1)(jiti@2.4.2)(terser@5.19.3)(tsx@4.19.2)(yaml@2.7.1))(vitest@3.1.2)(yup@1.5.0)
       '@bosonprotocol/common':
-        specifier: 1.32.2
-        version: 1.32.2
+        specifier: 1.32.2-alpha.0
+        version: 1.32.2-alpha.0
       '@bosonprotocol/react-kit':
-        specifier: 0.42.1
-        version: 0.42.1(6a6a21dfda5e2b85d698be89e302fd2e)
+        specifier: 0.42.2-alpha.0
+        version: 0.42.2-alpha.0(6a6a21dfda5e2b85d698be89e302fd2e)
       '@davatar/react':
         specifier: ^1.10.4
         version: 1.11.1(bufferutil@4.0.6)(react@18.2.0)(utf-8-validate@5.0.9)
@@ -1510,6 +1510,9 @@ packages:
   '@bosonprotocol/common@1.32.2':
     resolution: {integrity: sha512-SXaUvMIEHT1yGxcTNlbxoWzyPUqoacrKSIYXpIUJVVOU/5uLYrojULx2htZlqF5OKl6XDxXHSPLyjUxuIEe5lg==}
 
+  '@bosonprotocol/common@1.32.2-alpha.0':
+    resolution: {integrity: sha512-BBeUMpDKAlAwe7CIlF8skj+bRwFrEQFdC9UBEqNm1TtvJhfejnZA6gRyvER9tZyHS4YLXNBZkvBSTY6FoxB9zw==}
+
   '@bosonprotocol/core-sdk@1.46.1':
     resolution: {integrity: sha512-T8DlfmWJNrD5vAosvjoZcvEiRWRj81NQRGQtStpEOAVHycsbHAO3zuiHK8Csz4yYeitzHZKMauLUP58Xef3p1g==}
 
@@ -1527,8 +1530,8 @@ packages:
   '@bosonprotocol/metadata@1.16.3':
     resolution: {integrity: sha512-9SDhtoq2DwrRiGvT4MDfHO9rU6iNE961rldbwbVAXOjwqGa/wpKiASE37Ip68hr5GZ/Da07Db4OqQsYDHuz3Rw==}
 
-  '@bosonprotocol/react-kit@0.42.1':
-    resolution: {integrity: sha512-zrGVJvKKJhZ4BJwMr6wROb5Yy8bAuJfdZ0axdYfg+gOp2uxTU2G2ovNTr4B119EK5oAKAjkmklZJiQiScxw6cA==}
+  '@bosonprotocol/react-kit@0.42.2-alpha.0':
+    resolution: {integrity: sha512-ZqD5JBVnxW45EmvQEJaDJyKHhntSEHuCCtJJH5f5ioSYkM+lbvViiDt6Hyw4M8pCFVbal6HBuXSAXvRGoR6G2Q==}
     peerDependencies:
       ethers: ^5.7.2
       react: 17 - 18
@@ -15840,6 +15843,15 @@ snapshots:
       '@ethersproject/constants': 5.8.0
       '@ethersproject/units': 5.8.0
 
+  '@bosonprotocol/common@1.32.2-alpha.0':
+    dependencies:
+      '@bosonprotocol/metadata': 1.16.3
+      '@ethersproject/abi': 5.7.0
+      '@ethersproject/address': 5.8.0
+      '@ethersproject/bignumber': 5.8.0
+      '@ethersproject/constants': 5.8.0
+      '@ethersproject/units': 5.8.0
+
   '@bosonprotocol/core-sdk@1.46.1(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)':
     dependencies:
       '@bosonprotocol/common': 1.32.2
@@ -15884,7 +15896,7 @@ snapshots:
       schema-to-yup: 1.12.18
       yup: 1.5.0
 
-  '@bosonprotocol/react-kit@0.42.1(6a6a21dfda5e2b85d698be89e302fd2e)':
+  '@bosonprotocol/react-kit@0.42.2-alpha.0(6a6a21dfda5e2b85d698be89e302fd2e)':
     dependencies:
       '@bosonprotocol/chat-sdk': 1.4.5(@babel/core@7.28.5)(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)(vite@6.3.2(@types/node@24.10.1)(jiti@2.4.2)(terser@5.19.3)(tsx@4.19.2)(yaml@2.7.1))(vitest@3.1.2)(yup@1.5.0)
       '@bosonprotocol/core-sdk': 1.46.1(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)
