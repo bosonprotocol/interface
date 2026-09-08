@@ -50,8 +50,8 @@
   "dependencies": {
     "@apollo/client": "^3.8.1",
     "@bosonprotocol/chat-sdk": "^1.4.5",
-    "@bosonprotocol/common": "1.35.0-alpha.0",
-    "@bosonprotocol/react-kit": "0.43.0-alpha.0",
+    "@bosonprotocol/common": "1.35.0",
+    "@bosonprotocol/react-kit": "0.43.0",
     "@davatar/react": "^1.10.4",
     "@ethersproject/abi": "5.7.0",
     "@ethersproject/abstract-provider": "5.8.0",
