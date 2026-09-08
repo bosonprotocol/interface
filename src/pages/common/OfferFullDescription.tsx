@@ -82,8 +82,8 @@ export const OfferFullDescription: React.FC<OfferFullDescriptionProps> = (
         defaultCurrencyTicker: CONFIG.defaultCurrency.ticker,
         licenseTemplate: CONFIG.rNFTLicenseTemplate,
         minimumDisputeResolutionPeriodDays: CONFIG.minimumDisputePeriodInDays,
-        ipfsProjectId: CONFIG.infuraProjectId,
-        ipfsProjectSecret: CONFIG.infuraProjectSecret,
+        ipfsJwt: CONFIG.ipfsJwt,
+        ipfsGatewayToken: CONFIG.ipfsGatewayToken,
         contactSellerForExchangeUrl: "",
         sellerCurationListBetweenCommas:
           curationLists?.sellerCurationList?.join(",") || "",

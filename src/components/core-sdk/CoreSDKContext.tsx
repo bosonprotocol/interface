@@ -14,6 +14,8 @@ export function useProviderCoreSDK() {
 
   return hooks.useCoreSdk({
     ipfsMetadataStorageHeaders: CONFIG.ipfsMetadataStorageHeaders,
+    ipfsGateway: CONFIG.ipfsGateway,
+    ipfsGatewayToken: CONFIG.ipfsGatewayToken,
     configId: config.envConfig.configId,
     envName: config.envName,
     ipfsMetadataStorageUrl: config.ipfsMetadataStorageUrl,
