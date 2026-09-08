@@ -97,10 +97,31 @@ function getMetaTxApiKey(envConfig: ProtocolConfig) {
 }
 
 export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(envName);
+if (!envConfigsFilteredByEnv.length) {
+  // Fail fast with context: everything below assumes at least one config, and
+  // without this the app would crash later on an undefined defaultEnvConfig.
+  throw new Error(`No protocol config is available for envName ${envName}`);
+}
 export const envChainIds = envConfigsFilteredByEnv.map(
   (envConf) => envConf.chainId
 );
-export const defaultEnvConfig: ProtocolConfig = envConfigsFilteredByEnv[0];
+
+// Chain the dapp starts on, per environment. getEnvConfigs() lists the Polygon
+// config first, so without this the app would default to Polygon (Amoy on
+// testing/staging). Chain ids are hardcoded rather than imported from
+// lib/constants/chains to avoid a circular import (that module reads
+// envChainIds from here).
+const defaultChainIdPerEnv: Record<EnvironmentType, number> = {
+  local: 31337, // Local Hardhat
+  testing: 84532, // Base Sepolia
+  staging: 84532, // Base Sepolia
+  production: 8453 // Base
+};
+
+export const defaultEnvConfig: ProtocolConfig =
+  envConfigsFilteredByEnv.find(
+    (envConf) => envConf.chainId === defaultChainIdPerEnv[envName]
+  ) ?? envConfigsFilteredByEnv[0];
 export const defaultChainId = defaultEnvConfig.chainId;
 
 export const CONFIG = {
