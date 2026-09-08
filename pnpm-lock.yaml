@@ -15,11 +15,11 @@ importers:
         specifier: ^1.4.5
         version: 1.4.5(@babel/core@7.28.5)(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)(vite@6.3.2(@types/node@24.10.1)(jiti@2.4.2)(terser@5.19.3)(tsx@4.19.2)(yaml@2.7.1))(vitest@3.1.2)(yup@1.5.0)
       '@bosonprotocol/common':
-        specifier: 1.32.2
-        version: 1.32.2
+        specifier: 1.35.0-alpha.0
+        version: 1.35.0-alpha.0
       '@bosonprotocol/react-kit':
-        specifier: 0.42.1
-        version: 0.42.1(6a6a21dfda5e2b85d698be89e302fd2e)
+        specifier: 0.43.0-alpha.0
+        version: 0.43.0-alpha.0(6a6a21dfda5e2b85d698be89e302fd2e)
       '@davatar/react':
         specifier: ^1.10.4
         version: 1.11.1(bufferutil@4.0.6)(react@18.2.0)(utf-8-validate@5.0.9)
@@ -1507,19 +1507,22 @@ packages:
     peerDependencies:
       yup: ^1.5.0
 
-  '@bosonprotocol/common@1.32.2':
-    resolution: {integrity: sha512-SXaUvMIEHT1yGxcTNlbxoWzyPUqoacrKSIYXpIUJVVOU/5uLYrojULx2htZlqF5OKl6XDxXHSPLyjUxuIEe5lg==}
+  '@bosonprotocol/common@1.34.0':
+    resolution: {integrity: sha512-bG5Cz7MrTJToyQxnxByKt2EYWYYcXJWEz6femfenAsrIF8ovmVpsYT8wXleioJL4hhPu5Ar8nWhmFqYvDT79/A==}
 
-  '@bosonprotocol/core-sdk@1.46.1':
-    resolution: {integrity: sha512-T8DlfmWJNrD5vAosvjoZcvEiRWRj81NQRGQtStpEOAVHycsbHAO3zuiHK8Csz4yYeitzHZKMauLUP58Xef3p1g==}
+  '@bosonprotocol/common@1.35.0-alpha.0':
+    resolution: {integrity: sha512-TuejyNyTcftaelW7977jx/+h2h42R27oBSkvtQA+sSwa28gVjLrLZej/wRtgalvs/Cx9+PccEug5ZHkI5C2Ydw==}
 
-  '@bosonprotocol/ethers-sdk@1.17.2':
-    resolution: {integrity: sha512-dCzs71Y0599kf0HQAKi4YnfA1OeHg34BG2p4Mw5Z1DLPGVx1Bf8YJdrFeo88udiJ/g1stDLjQGqSDHmP2bWEwQ==}
+  '@bosonprotocol/core-sdk@1.48.2-alpha.0':
+    resolution: {integrity: sha512-K8jHWujHenOWOKqXbEGno/5UZ3t6JsofzhYBiLQ0kf0C7Tp53ouLbQObqB37RqrlxsObBYdttOKLQZh8y/hevQ==}
+
+  '@bosonprotocol/ethers-sdk@1.18.2-alpha.0':
+    resolution: {integrity: sha512-gdcwQwJG2iTSFZ8a5tS14BLwZsoxnxTMzS1TFWNeyNMQBtnwzO+5nLA6wrqiZ5WeMHxc9C2fCc5u0h+TJLipaQ==}
     peerDependencies:
       ethers: ^5.5.0
 
-  '@bosonprotocol/ipfs-storage@1.13.0':
-    resolution: {integrity: sha512-wroTOkuIhJwgN3kcFODJ6YBkQDfTXLPmy255aKC/tTTOZQ/TRzXMPxJp9xa0e9zozrNvwZK4HcYNInGpP7INxQ==}
+  '@bosonprotocol/ipfs-storage@1.14.0-alpha.0':
+    resolution: {integrity: sha512-ePVs+VyTVx4lvAYe3Jaut5M+RCdmR/VUFs3+Z7XxesR7lYmM39fpbrqBtPVNQygjbaJLhLmNun/Ot+bvGB9CaQ==}
 
   '@bosonprotocol/metadata-storage@1.0.1':
     resolution: {integrity: sha512-f2W2SQAvY5IKD6L9JwaiNye7gGRIIPd/HOB0i+otWLzMPBlwQtbN4JeWSuKeJvuaqu8tyMy7CHzN8EkhrJDB+A==}
@@ -1527,8 +1530,8 @@ packages:
   '@bosonprotocol/metadata@1.16.3':
     resolution: {integrity: sha512-9SDhtoq2DwrRiGvT4MDfHO9rU6iNE961rldbwbVAXOjwqGa/wpKiASE37Ip68hr5GZ/Da07Db4OqQsYDHuz3Rw==}
 
-  '@bosonprotocol/react-kit@0.42.1':
-    resolution: {integrity: sha512-zrGVJvKKJhZ4BJwMr6wROb5Yy8bAuJfdZ0axdYfg+gOp2uxTU2G2ovNTr4B119EK5oAKAjkmklZJiQiScxw6cA==}
+  '@bosonprotocol/react-kit@0.43.0-alpha.0':
+    resolution: {integrity: sha512-BK7c3TZrmzwvngvxvN0o+HPZJ2+N2vJlUmeygxHaZhayXegDyjAhCCe8DcvcayXM/hCPgpwuS6oZiIdcfVesIw==}
     peerDependencies:
       ethers: ^5.7.2
       react: 17 - 18
@@ -6215,6 +6218,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -6920,6 +6924,10 @@ packages:
     resolution: {integrity: sha512-3T8uNMC3OQTHkFUsFq8r/BwAXLHvU/9O9mE0fBc/MY5iq/8H7ncvO947LmYA6ldWw9Uh8Yhf25zu6n7nML5QWQ==}
     engines: {node: '>= 0.4'}
 
+  es-set-tostringtag@2.1.0:
+    resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
+    engines: {node: '>= 0.4'}
+
   es-shim-unscopables@1.0.2:
     resolution: {integrity: sha512-J3yBRXCzDu4ULnQwxyToo/OjdMx6akgVC7K6few0a7F/0wLtmKKN7I73AH5T2836UuXRqN7Qg+IIUw/+YJksRw==}
 
@@ -7576,6 +7584,10 @@ packages:
     resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}
     engines: {node: '>= 6'}
 
+  form-data@4.0.6:
+    resolution: {integrity: sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ==}
+    engines: {node: '>= 6'}
+
   formdata-node@4.4.1:
     resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
     engines: {node: '>= 12.20'}
@@ -7922,6 +7934,10 @@ packages:
 
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
+    engines: {node: '>= 0.4'}
+
+  hasown@2.0.4:
+    resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
     engines: {node: '>= 0.4'}
 
   hast-to-hyperscript@10.0.1:
@@ -10243,6 +10259,7 @@ packages:
   opensea-js@7.4.0:
     resolution: {integrity: sha512-jHg84OO6Rt1OEOQjQk0b+KoDktWtTsZIpi6p09xRzKupWlAlCO8D3qMqKjNDYQaIbstJNi6z1DQAqx+wzxvfIw==}
     engines: {node: '>=20.0.0'}
+    deprecated: This package has been renamed to @opensea/sdk. Install @opensea/sdk instead.
 
   optimism@0.17.5:
     resolution: {integrity: sha512-TEcp8ZwK1RczmvMnvktxHSF2tKgMWjJ71xEFGX5ApLh67VsMSTy1ZUlipJw8W+KaqgOmQ+4pqwkeivY89j+4Vw==}
@@ -13234,7 +13251,7 @@ packages:
 
   uuid@2.0.1:
     resolution: {integrity: sha512-nWg9+Oa3qD2CQzHIP4qKUqwNfzKn8P0LtFhotaCTFchsV7ZfDhAybeip/HZVeMIpZi9JgY1E3nUlwaCmZT1sEg==}
-    deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
@@ -15805,7 +15822,7 @@ snapshots:
 
   '@bosonprotocol/chat-sdk@1.4.5(@babel/core@7.28.5)(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)(vite@6.3.2(@types/node@24.10.1)(jiti@2.4.2)(terser@5.19.3)(tsx@4.19.2)(yaml@2.7.1))(vitest@3.1.2)(yup@1.5.0)':
     dependencies:
-      '@bosonprotocol/common': 1.32.2
+      '@bosonprotocol/common': 1.34.0
       '@goat-sdk/core': 0.5.0(zod@3.25.76)
       '@goat-sdk/wallet-evm': 0.3.0(@goat-sdk/core@0.5.0(zod@3.25.76))(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)
       '@modelcontextprotocol/sdk': 1.20.1
@@ -15831,7 +15848,7 @@ snapshots:
       - vitest
       - webdriverio
 
-  '@bosonprotocol/common@1.32.2':
+  '@bosonprotocol/common@1.34.0':
     dependencies:
       '@bosonprotocol/metadata': 1.16.3
       '@ethersproject/abi': 5.7.0
@@ -15840,14 +15857,24 @@ snapshots:
       '@ethersproject/constants': 5.8.0
       '@ethersproject/units': 5.8.0
 
-  '@bosonprotocol/core-sdk@1.46.1(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)':
+  '@bosonprotocol/common@1.35.0-alpha.0':
     dependencies:
-      '@bosonprotocol/common': 1.32.2
+      '@bosonprotocol/metadata': 1.16.3
+      '@ethersproject/abi': 5.7.0
+      '@ethersproject/address': 5.8.0
+      '@ethersproject/bignumber': 5.8.0
+      '@ethersproject/constants': 5.8.0
+      '@ethersproject/units': 5.8.0
+
+  '@bosonprotocol/core-sdk@1.48.2-alpha.0(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)':
+    dependencies:
+      '@bosonprotocol/common': 1.35.0-alpha.0
       '@ethersproject/abi': 5.7.0
       '@ethersproject/address': 5.8.0
       '@ethersproject/bignumber': 5.8.0
       '@ethersproject/bytes': 5.8.0
       '@ethersproject/constants': 5.8.0
+      '@ethersproject/random': 5.8.0
       '@ethersproject/units': 5.8.0
       cross-fetch: 3.1.5(encoding@0.1.13)
       graphql: 16.5.0
@@ -15860,14 +15887,16 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@bosonprotocol/ethers-sdk@1.17.2(ethers@5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9))':
+  '@bosonprotocol/ethers-sdk@1.18.2-alpha.0(ethers@5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9))':
     dependencies:
-      '@bosonprotocol/common': 1.32.2
+      '@bosonprotocol/common': 1.35.0-alpha.0
       ethers: 5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9)
 
-  '@bosonprotocol/ipfs-storage@1.13.0(encoding@0.1.13)(node-fetch@2.7.0(encoding@0.1.13))':
+  '@bosonprotocol/ipfs-storage@1.14.0-alpha.0(encoding@0.1.13)(node-fetch@2.7.0(encoding@0.1.13))':
     dependencies:
       '@bosonprotocol/metadata-storage': 1.0.1
+      cross-fetch: 3.1.5(encoding@0.1.13)
+      form-data: 4.0.6
       ipfs-http-client: 56.0.3(encoding@0.1.13)(node-fetch@2.7.0(encoding@0.1.13))
       multiformats: 9.9.0
       uint8arrays: 3.1.1
@@ -15884,12 +15913,12 @@ snapshots:
       schema-to-yup: 1.12.18
       yup: 1.5.0
 
-  '@bosonprotocol/react-kit@0.42.1(6a6a21dfda5e2b85d698be89e302fd2e)':
+  '@bosonprotocol/react-kit@0.43.0-alpha.0(6a6a21dfda5e2b85d698be89e302fd2e)':
     dependencies:
       '@bosonprotocol/chat-sdk': 1.4.5(@babel/core@7.28.5)(bufferutil@4.0.6)(typescript@5.1.6)(utf-8-validate@5.0.9)(vite@6.3.2(@types/node@24.10.1)(jiti@2.4.2)(terser@5.19.3)(tsx@4.19.2)(yaml@2.7.1))(vitest@3.1.2)(yup@1.5.0)
-      '@bosonprotocol/core-sdk': 1.46.1(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)
-      '@bosonprotocol/ethers-sdk': 1.17.2(ethers@5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9))
-      '@bosonprotocol/ipfs-storage': 1.13.0(encoding@0.1.13)(node-fetch@2.7.0(encoding@0.1.13))
+      '@bosonprotocol/core-sdk': 1.48.2-alpha.0(bufferutil@4.0.6)(encoding@0.1.13)(utf-8-validate@5.0.9)
+      '@bosonprotocol/ethers-sdk': 1.18.2-alpha.0(ethers@5.8.0(bufferutil@4.0.6)(utf-8-validate@5.0.9))
+      '@bosonprotocol/ipfs-storage': 1.14.0-alpha.0(encoding@0.1.13)(node-fetch@2.7.0(encoding@0.1.13))
       '@davatar/react': 1.11.1(bufferutil@4.0.6)(react@18.2.0)(utf-8-validate@5.0.9)
       '@ethersproject/units': 5.6.0
       '@glidejs/glide': 3.6.0
@@ -23203,6 +23232,13 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
+  es-set-tostringtag@2.1.0:
+    dependencies:
+      es-errors: 1.3.0
+      get-intrinsic: 1.3.0
+      has-tostringtag: 1.0.2
+      hasown: 2.0.4
+
   es-shim-unscopables@1.0.2:
     dependencies:
       hasown: 2.0.2
@@ -24177,6 +24213,14 @@ snapshots:
       combined-stream: 1.0.8
       mime-types: 2.1.35
 
+  form-data@4.0.6:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.4
+      mime-types: 2.1.35
+
   formdata-node@4.4.1:
     dependencies:
       node-domexception: 1.0.0
@@ -24626,6 +24670,10 @@ snapshots:
       type-fest: 0.8.1
 
   hasown@2.0.2:
+    dependencies:
+      function-bind: 1.1.2
+
+  hasown@2.0.4:
     dependencies:
       function-bind: 1.1.2
 

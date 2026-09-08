@@ -9,7 +9,9 @@ export function useIpfsStorage() {
     config.envConfig.configId,
     validateMetadata,
     config.ipfsMetadataStorageUrl,
-    CONFIG.ipfsMetadataStorageHeaders
+    CONFIG.ipfsMetadataStorageHeaders,
+    CONFIG.ipfsGateway,
+    CONFIG.ipfsGatewayToken
   );
   return storage;
 }

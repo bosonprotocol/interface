@@ -2,6 +2,7 @@ import {
   EnvironmentType,
   getEnvConfigs,
   getRpcUrls,
+  hooks,
   ProtocolConfig
 } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
@@ -38,8 +39,11 @@ if (!widgetsUrl) {
   throw new Error("REACT_APP_WIDGETS_URL is not defined");
 }
 
-const infuraProjectSecret = process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET;
-const infuraProjectId = process.env.REACT_APP_INFURA_IPFS_PROJECT_ID;
+// Pinata JWT, authenticating uploads to the IPFS metadata storage.
+const ipfsJwt = process.env.REACT_APP_IPFS_JWT;
+// Optional: only a gateway that restricts reads needs one. Ignored by the SDK
+// for any host that is not a dedicated Pinata gateway.
+const ipfsGatewayToken = process.env.REACT_APP_IPFS_GATEWAY_TOKEN;
 
 function getMetaTxApiIds(envConfig: ProtocolConfig) {
   const protocolAddress: string = envConfig.contracts.protocolDiamond;
@@ -193,12 +197,9 @@ export const CONFIG = {
   awsApiEndpoint: process.env.REACT_APP_AWS_API_ENDPOINT as string,
   uniswapApiUrl: process.env.REACT_APP_UNISWAP_API_URL as string,
   infuraKey,
-  infuraProjectId,
-  infuraProjectSecret,
-  ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
-    infuraProjectId,
-    infuraProjectSecret
-  ),
+  ipfsJwt,
+  ipfsGatewayToken,
+  ipfsMetadataStorageHeaders: hooks.getIpfsHeaders({ ipfsJwt }),
   magicLinkKey: process.env.REACT_APP_MAGIC_API_KEY as string,
   rpcUrls: getRpcUrls(infuraKey),
   widgetsUrl,
@@ -266,19 +267,4 @@ function stringToBoolean(value: unknown | undefined, defaultValue: boolean) {
   }
 
   return Boolean(value);
-}
-
-function getIpfsMetadataStorageHeaders(
-  infuraProjectId?: string,
-  infuraProjectSecret?: string
-) {
-  if (!infuraProjectId && !infuraProjectSecret) {
-    return undefined;
-  }
-
-  return {
-    authorization: `Basic ${Buffer.from(
-      infuraProjectId + ":" + infuraProjectSecret
-    ).toString("base64")}`
-  };
 }
