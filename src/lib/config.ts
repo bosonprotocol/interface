@@ -97,6 +97,11 @@ function getMetaTxApiKey(envConfig: ProtocolConfig) {
 }
 
 export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(envName);
+if (!envConfigsFilteredByEnv.length) {
+  // Fail fast with context: everything below assumes at least one config, and
+  // without this the app would crash later on an undefined defaultEnvConfig.
+  throw new Error(`No protocol config is available for envName ${envName}`);
+}
 export const envChainIds = envConfigsFilteredByEnv.map(
   (envConf) => envConf.chainId
 );
