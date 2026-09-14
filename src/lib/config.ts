@@ -112,7 +112,19 @@ const supportedChainIdsPerEnv: Record<EnvironmentType, number[]> = {
   production: [1, 8453] // Ethereum, Base
 };
 
-const supportedChainIds = supportedChainIdsPerEnv[envName];
+// envName is an unchecked cast of an env var, so at runtime it can be any
+// string: look the chain ids up defensively and fail with a message that names
+// the accepted values, rather than letting an unrelated error surface further
+// down.
+const supportedChainIds: number[] | undefined =
+  supportedChainIdsPerEnv[envName];
+if (!supportedChainIds) {
+  throw new Error(
+    `REACT_APP_ENV_NAME is "${envName}", expected one of ${Object.keys(
+      supportedChainIdsPerEnv
+    ).join(", ")}`
+  );
+}
 
 export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(
   envName
