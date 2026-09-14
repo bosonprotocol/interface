@@ -100,21 +100,38 @@ function getMetaTxApiKey(envConfig: ProtocolConfig) {
   return apiKey;
 }
 
-export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(envName);
+// Chains the dapp exposes, per environment. getEnvConfigs() returns every chain
+// the SDK supports for the environment (Polygon, Optimism and Arbitrum
+// included); the dapp deliberately offers a subset in the network selector.
+// Chain ids are hardcoded rather than imported from lib/constants/chains to
+// avoid a circular import (that module reads envChainIds from here).
+const supportedChainIdsPerEnv: Record<EnvironmentType, number[]> = {
+  local: [31337], // Local Hardhat
+  testing: [11155111, 84532], // Sepolia, Base Sepolia
+  staging: [11155111, 84532], // Sepolia, Base Sepolia
+  production: [1, 8453] // Ethereum, Base
+};
+
+const supportedChainIds = supportedChainIdsPerEnv[envName];
+
+export const envConfigsFilteredByEnv: ProtocolConfig[] = getEnvConfigs(
+  envName
+).filter((envConf) => supportedChainIds.includes(envConf.chainId));
 if (!envConfigsFilteredByEnv.length) {
   // Fail fast with context: everything below assumes at least one config, and
   // without this the app would crash later on an undefined defaultEnvConfig.
-  throw new Error(`No protocol config is available for envName ${envName}`);
+  throw new Error(
+    `No protocol config is available for envName ${envName} and chain ids ${supportedChainIds.join(
+      ", "
+    )}`
+  );
 }
 export const envChainIds = envConfigsFilteredByEnv.map(
   (envConf) => envConf.chainId
 );
 
-// Chain the dapp starts on, per environment. getEnvConfigs() lists the Polygon
-// config first, so without this the app would default to Polygon (Amoy on
-// testing/staging). Chain ids are hardcoded rather than imported from
-// lib/constants/chains to avoid a circular import (that module reads
-// envChainIds from here).
+// Chain the dapp starts on, per environment. Pinned explicitly rather than
+// relying on whichever config getEnvConfigs() happens to return first.
 const defaultChainIdPerEnv: Record<EnvironmentType, number> = {
   local: 31337, // Local Hardhat
   testing: 84532, // Base Sepolia
