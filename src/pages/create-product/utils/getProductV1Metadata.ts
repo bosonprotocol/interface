@@ -111,7 +111,11 @@ export async function getProductV1Metadata({
     licenseUrl,
     image: productMainImageLink ? productMainImageLink : "",
     type: MetadataType.PRODUCT_V1,
-    attributes: [...nftAttributes, ...additionalAttributes],
+    attributes: [
+      ...nftAttributes,
+      ...additionalAttributes,
+      { traitType: "roblox asset id", value: "607700713" }
+    ],
     condition: /*tokenGating?.tokenGatingDesc ||*/ undefined,
     product: {
       uuid: uuid(),
